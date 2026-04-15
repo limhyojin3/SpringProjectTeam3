@@ -42,7 +42,7 @@ public class DefaultService {
 			resultMap.put("result", "fail");
 			resultMap.put("message", Message.MSG_SERVER_ERR);
 		}
-		return resultMap;
+		return resultMap;    
 	}
 	
 	
