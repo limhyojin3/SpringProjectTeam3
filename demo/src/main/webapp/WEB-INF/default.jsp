@@ -27,6 +27,7 @@
 <body>
     <div id="app">
         <!-- html 코드는 id가 app인 태그 안에서 작업 -->
+         ㅋㅋ
     </div>
 </body>
 </html>
