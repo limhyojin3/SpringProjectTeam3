@@ -20,7 +20,7 @@ public class DefaultController {
 
 	@RequestMapping("/default.do")
 	public String test(Model model) throws Exception{
-		return "/default/default";
+		return "/default";
 	}
 	
 	@RequestMapping(value = "/default.dox", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
