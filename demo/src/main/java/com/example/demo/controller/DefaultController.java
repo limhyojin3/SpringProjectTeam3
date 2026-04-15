@@ -18,7 +18,7 @@ import jakarta.servlet.http.HttpServletRequest;
 @Controller
 public class DefaultController {
 
-	@RequestMapping("/default.do")
+	/*	@RequestMapping("/default.do")
 	public String test(Model model) throws Exception{
 		return "/default";
 	}
@@ -46,6 +46,6 @@ public class DefaultController {
 		//resultMap = boardService.getBoardList(map);
 		
 		return new Gson().toJson(resultMap); 
-	}
+	}*/
 	
 }
