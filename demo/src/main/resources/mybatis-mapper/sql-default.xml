@@ -3,24 +3,24 @@
 
 <mapper namespace="com.example.demo.company.mapper.DefaultMapper">
 	<!-- 여러개 검색 -->
-	<select id="selectUserList" parameterType="hashmap" resultType="com.example.demo.admin.model.User">
+	<!--<select id="selectUserList" parameterType="hashmap" resultType="com.example.demo.admin.model.User">
 	</select>
 
-	<!-- 한개 검색 -->
+	 한개 검색 
 	<select id="selectUser" parameterType="hashmap" resultType="com.example.demo.company.model.User">
   </select>
   
-	<!-- 삽입 -->
+	 삽입 
 	<insert id="insertUser" parameterType="hashmap">
 
 	</insert>
 
-	<!-- 삭제 -->
+	 삭제 
 	<delete id="deleteUser" parameterType="hashmap">
 	</delete>
 
-	<!-- 수정 -->
+	 수정 
 	<update id="updateUser" parameterType="hashmap">
-	</update>
+	</update>-->
 
 </mapper>
