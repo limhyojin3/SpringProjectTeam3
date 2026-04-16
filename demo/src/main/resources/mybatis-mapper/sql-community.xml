@@ -59,7 +59,7 @@
     
     <!--조회 수 기능-->
     <update id="updateViewCount" parameterType="hashmap">
-	    UPDATE Community_Post
+	    UPDATE Community_Post 
 	    SET view_cnt = view_cnt + 1
 	    WHERE post_no = #{postNo}
 	</update>
