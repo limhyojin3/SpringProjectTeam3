@@ -5,7 +5,10 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
+@MapperScan("com.example.demo.company.mapper")
 @MapperScan("com.example.demo.admin.mapper")
+@MapperScan("com.example.demo.community.mapper")
+@MapperScan("com.example.demo.member.mapper")
 public class DemoApplication {
 
 	public static void main(String[] args) {

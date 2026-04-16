@@ -5,7 +5,6 @@ import java.util.HashMap;
 import org.apache.ibatis.annotations.Mapper;
 
 import com.example.demo.member.model.Member;
-import com.example.demo.member.model.User;
 
 @Mapper
 public interface MemberMapper {
