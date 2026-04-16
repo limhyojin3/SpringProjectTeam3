@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.demo.common.report.ReportMapper">
+
+    <insert id="insertReport" useGeneratedKeys="true" keyProperty="reportNo">
+        INSERT INTO Report (
+            reporter_id, target_type, target_id, target_user_id, 
+            report_title, report_content, reg_date
+        ) VALUES (
+            #{reporterId}, #{targetType}, #{targetId}, #{targetUserId}, 
+            #{reportTitle}, #{reportContent}, CURRENT_TIMESTAMP
+        )
+    </insert>
+
+    <select id="selectMyReports" resultType="com.example.demo.common.report.Report">
+        SELECT 
+            report_no AS reportNo,
+            reporter_id AS reporterId,
+            target_type AS targetType,
+            target_id AS targetId,
+            target_user_id AS targetUserId,
+            report_title AS reportTitle,
+            report_content AS reportContent,
+            answer_status AS answerStatus,
+            action_status AS actionStatus,
+            reg_date AS regDate
+        FROM Report 
+        WHERE reporter_id = #{reporterId} 
+        ORDER BY reg_date DESC
+    </select>
+
+</mapper>
