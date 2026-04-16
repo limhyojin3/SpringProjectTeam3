@@ -2,12 +2,52 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="com.example.demo.mapper.MemberMapper">
-	<!-- USER ID 검색 -->
-	<select id="selectMember" parameterType="hashmap" resultType="com.example.demo.model.Member">
-		SELECT *
-		FROM MEMBER
-		WHERE USERID = #{userId}
+<mapper namespace="com.example.demo.member.mapper.MemberMapper">
+	<!-- MAMBER ID 검색 -->
+	<select id="selectMember" parameterType="hashmap" resultType="com.example.demo.member.model.Member">
+    SELECT M.*, D.NAME, D.NICKNAME, D.GENDER, D.EMAIL, D.WEDDING_DATE
+    FROM MEMBER M
+    LEFT JOIN USER_DETAIL D ON M.USER_ID = D.USER_ID
+    WHERE M.USER_ID = #{userId}
 	</select>
+	
+	<!-- COMPANY ID 검색 -->
+	<select id="selectCompany" parameterType="hashmap" resultType="String">
+    SELECT COM_NAME
+    FROM COMPANY
+    WHERE USER_ID = #{userId}
+	</select>
+	
+	<!-- member 테이블 INSERT -->
+	<insert id="insertMember" parameterType="hashmap">
+	    INSERT INTO MEMBER (USER_ID, PASSWORD, ROLE, STATUS, TEL, REG_DATE)
+	    VALUES (
+	        #{userId},
+	        #{password},
+	        'USER',
+	        'ACTIVE',
+	        #{userTel},
+	        NOW()
+	    )
+	</insert>
+
+	<!-- user_detail(유저 상세정보) 테이블 INSERT -->
+	<insert id="insertUserDetail" parameterType="hashmap">
+	    INSERT INTO USER_DETAIL (USER_ID, NAME, GENDER, EMAIL, WEDDING_DATE)
+	    VALUES (
+	        #{userId},
+	        #{name},
+	        #{gender},
+	        #{email},
+	        #{weddingDate}
+	    )
+	</insert>
+	<!-- member table에서 user id 중복체크 -->
+	<select id="selectUserId" parameterType="hashmap" resultType="int">
+	    SELECT COUNT(*) 
+	    FROM MEMBER 
+	    WHERE USER_ID = #{userId}
+	</select>
+
 	
 </mapper>

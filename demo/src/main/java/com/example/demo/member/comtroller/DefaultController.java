@@ -1,4 +1,4 @@
-package com.example.demo.controller;
+package com.example.demo.member.comtroller;
 
 import java.util.HashMap;
 

@@ -57,6 +57,15 @@
             background-color: #cc7aff;
             box-shadow: 1px 1px 1px gray;
         }
+        .cusor {
+            display: block;
+            text-align: center;
+            margin-top: 20px;
+            font-size: 15px;
+            color: #666;
+            cursor: pointer;
+            text-decoration: underline;
+        }
     </style>
 </head>
 <body>
@@ -83,7 +92,7 @@
             </div>
         </div>
         </div>
-
+        <span @click="fnLogin()" class="cusor">로그인 페이지로 돌아가기</span>
 
     </div>
 </body>
@@ -98,24 +107,14 @@
         },
         methods: {
             // 함수(메소드) - (key : function())
-            fnList: function () {
-                let self = this;
-                let param = {};
-                $.ajax({
-                    url: "http://localhost:8080/",
-                    dataType: "json",
-                    type: "POST",
-                    data: param,
-                    success: function (data) {
-
-                    }
-                });
+            fnLogin: function () {
+                window.location.href = '/login.do';
             },
             fnUserJoin : function(){
-                window.location.href = '/userJoin.do';
+                window.location.href = '/joinUser.do';
             },
             fnCompanyJoin : function(){
-                window.location.href = '/companyJoin.do';
+                window.location.href = '/joinCompany.do';
             }
         }, // methods
         mounted() {

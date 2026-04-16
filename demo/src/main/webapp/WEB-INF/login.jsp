@@ -10,56 +10,156 @@
     <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
     <script src="/js/page-change.js"></script>
     <style>
-        table, tr, td, th{
-            border : 1px solid black;
-            border-collapse: collapse;
-            padding : 5px 10px;
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { background: #f9f9f9; font-family: 'Noto Sans KR', sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; }
+
+        #container {
+            width: 380px;
+            border: 2px solid #f4a096;
+            border-radius: 12px;
+            padding: 30px;
+            background: white;
             text-align: center;
         }
-        th{
-            background-color: beige;
+
+        /* 탭 버튼 */
+        .tab-wrap {
+            display: flex;
+            margin-bottom: 20px;
         }
-        .login-btn{
+
+        .tab-wrap button {
+            flex: 1;
+            padding: 10px 0;
+            border: 1px solid #ddd;
+            background: white;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .tab-wrap button.active-user {
+            background: #f4a096;
+            color: white;
+            border-color: #f4a096;
+        }
+
+        .tab-wrap button.active-company {
+            background: #9b8fd4;
+            color: white;
+            border-color: #9b8fd4;
+        }
+        /* 업체 탭 선택시 th 색상 변경 */
+        .company-form th {
+            background: #9b8fd4;
+            border-color: #9b8fd4;
+        }
+
+        .company-form td {
+            border-color: #9b8fd4;
+        }
+        /* 유저 탭 선택시 th 색상 변경 */
+        .user-form th {
+            background: #f4a096;
+            border-color: #f4a096;
+        }
+
+        .user-form td {
+            border-color: #f4a096;
+        }
+
+        /* 폼 테이블 */
+        table { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
+        
+        tr { height: 45px; }
+
+        th {
+            background: #f4a096;
+            color: white;
+            padding: 0 15px;    /* 위아래 padding 제거 */
+            text-align: left;
+            font-weight: normal;
+            font-size: 14px;
             width: 100px;
+            border: 1px solid #f4a096;
+            vertical-align: middle;
+        }
+
+        td { 
+            border: 1px solid #f4a096; 
+            vertical-align: middle;
+        }
+
+        td input {
+            width: 100%;
+            border: none;
+            outline: none;
+            padding: 0 10px;    /* 위아래 padding 제거 */
+            height: 45px;       /* tr 높이랑 맞추기 */
+            font-size: 14px;
+            display: block;
+        }
+
+        /* 로그인 버튼 */
+        .login-btn {
+            width: 150px;
+            padding: 10px 0;
+            background: #f0b429;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 15px;
+            cursor: pointer;
         }
     </style>
 </head>
 <body>
     <div id="app">
         <!-- html 코드는 id가 app인 태그 안에서 작업 -->
-        <div id="container">
-            <button @click="FnswitchTab('user')">일반 로그인</button>
-            <button @click="FnswitchTab('company')">업체 로그인</button>
-            <!-- 일반 로그인 폼 -->
-            <div id="userForm">
-                <table>
-                    <tr>
-                        <label><th>아이디</th></label>
-                        <td><input type="text" v-model="userId" placeholder="아이디"></td>
-                    </tr>
-                    <tr>
-                        <label><th>비밀번호</th></label>
-                        <td><input type="password" v-model="userPwd" placeholder="비밀번호"></td>
-                    </tr>
-                </table>
-            </div>
-            <!-- 업체 로그인 폼 -->
-             <div id="companyForm">
-                <table>
-                    <tr>
-                        <label><th>업체 아이디</th></label>
-                        <td><input type="text" v-model="companyId" placeholder="아이디"></td>
-                    </tr>
-                    <tr>
-                        <label><th>비밀번호</th></label>
-                        <td><input type="password" v-model="companyPwd" placeholder="비밀번호"></td>
-                    </tr>
-                </table>
-            </div>
-            <button class="login-btn" @click="fnLogin()">로그인</button>
-            <div>
-                <a href="/join.do"><span>회원가입</span></a><span>아이디/비밀번호 찾기</span>
-            </div>
+        <!-- 로고 -->
+        <div class="logo">
+            로고 이미지 자리
+        </div>
+
+        <!-- 탭 버튼 -->
+        <div class="tab-wrap">
+            <button :class="{'active-user': tab === 'user'}" @click="FnswitchTab('user')">일반 로그인</button>
+            <button :class="{'active-company': tab === 'company'}" @click="FnswitchTab('company')">업체 로그인</button>
+        </div>
+
+        <!-- 일반 로그인 폼 -->
+        <div id="userForm" v-show="tab === 'user'" :class="{'user-form': tab === 'user'}">
+            <table>
+                <tr>
+                    <th>아이디</th>
+                    <td><input type="text" v-model="userId" placeholder="아이디"></td>
+                </tr>
+                <tr>
+                    <th>비밀번호</th>
+                    <td><input type="password" v-model="userPwd" placeholder="비밀번호"></td>
+                </tr>
+            </table>
+        </div>
+
+        <!-- 업체 로그인 폼 -->
+        <div id="companyForm" v-show="tab === 'company'" :class="{'company-form': tab === 'company'}">
+            <table>
+                <tr>
+                    <th>기업 아이디</th>
+                    <td><input type="text" v-model="companyId" placeholder="아이디"></td>
+                </tr>
+                <tr>
+                    <th>비밀번호</th>
+                    <td><input type="password" v-model="companyPwd" placeholder="비밀번호"></td>
+                </tr>
+            </table>
+        </div>
+
+        <button class="login-btn" @click="fnLogin()">로그인</button>
+
+        <div class="link-wrap">
+            <a href="/join.do"><span>회원가입</span></a>
+            <span>|</span>
+            <span>아이디/비밀번호 찾기</span>
         </div>
 
 
@@ -72,6 +172,7 @@
         data() {
             return {
                 // 변수 - (key : value)
+                tab : 'user',
                 userId : "",
                 userPwd : "",
                 companyId : "",
@@ -83,8 +184,9 @@
             fnLogin: function () {
                 let self = this;
                 let param = {
-                    userId : self.userId,
-                    userPwd : self.pwd
+                    userId: this.tab === 'user' ? this.userId : this.companyId,
+                    password: this.tab === 'user' ? this.userPwd : this.companyPwd,
+                    tab: this.tab  // ← 어떤 탭인지
                 };
                 $.ajax({
                     url: "http://localhost:8080/login.dox",
@@ -100,6 +202,7 @@
                 });
             },
             FnswitchTab: function(type) {
+                this.tab = type;
                 if(type === 'user') {
                     document.getElementById('userForm').style.display = 'block';
                     document.getElementById('companyForm').style.display = 'none';

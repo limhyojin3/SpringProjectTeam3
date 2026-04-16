@@ -1,4 +1,4 @@
-package com.example.demo.model;
+package com.example.demo.member.model;
 
 import lombok.Data;
 
@@ -25,5 +25,7 @@ public class Member {
 	String email; //이메일 주소
 	String weddingDate; //결혼 예정일
 	//
-	
+	// company table에 있는 컬럼입니다.
+	String comName;
+	//
 }

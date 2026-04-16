@@ -4,11 +4,11 @@
 
 <mapper namespace="com.example.demo.mapper.DefaultMapper">
 	<!-- 여러개 검색 -->
-	<select id="selectUserList" parameterType="hashmap" resultType="com.example.demo.model.User">
+	<select id="selectUserList" parameterType="hashmap" resultType="com.example.demo.member.model.User">
 	</select>
 	
 	<!-- 한개 검색 -->
-	<select id="selectUser" parameterType="hashmap" resultType="com.example.demo.model.User">
+	<select id="selectUser" parameterType="hashmap" resultType="com.example.demo.member.model.User">
 	</select>
 	
 	<!-- 삽입 -->

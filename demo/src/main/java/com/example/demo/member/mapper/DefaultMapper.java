@@ -1,11 +1,11 @@
-package com.example.demo.mapper;
+package com.example.demo.member.mapper;
 
 import java.util.HashMap;
 import java.util.List;
 
 import org.apache.ibatis.annotations.Mapper;
 
-import com.example.demo.model.User;
+import com.example.demo.member.model.User;
 
 @Mapper
 public interface DefaultMapper {
