@@ -23,4 +23,11 @@ public class AdminController {
 		return "/adminMain";
 	}
 	
+	@RequestMapping(value = "", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
+	@ResponseBody
+	public String login(Model model, @RequestParam HashMap<String, Object> map) throws Exception {
+		HashMap<String, Object> resultMap = new HashMap<String, Object>();
+		
+		return new Gson().toJson(resultMap); 
+	}
 }
