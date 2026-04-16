@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.demo.community_review.mapper.ReviewMapper">
+
+    <insert id="insertReview" useGeneratedKeys="true" keyProperty="reviewNo">
+        INSERT INTO Review (
+            user_id, company_no, res_no, rating, title, content, 
+            original_name, stored_name, is_paid, reg_date
+        ) VALUES (
+            #{userId}, #{companyNo}, #{resNo}, #{rating}, #{title}, #{content}, 
+            #{originalName}, #{storedName}, #{isPaid}, CURRENT_TIMESTAMP
+        )
+    </insert>
+
+    <select id="selectReviewList" resultType="com.example.demo.community_review.model.Review">
+        SELECT * FROM Review ORDER BY reg_date DESC
+    </select>
+
+    <select id="checkReviewLike" resultType="int">
+        SELECT COUNT(*) FROM Review_Like 
+        WHERE review_no = #{reviewNo} AND user_id = #{userId}
+    </select>
+
+    <insert id="insertReviewLike">
+        INSERT INTO Review_Like (review_no, user_id, reg_date)
+        VALUES (#{reviewNo}, #{userId}, CURRENT_TIMESTAMP)
+    </insert>
+
+    <delete id="deleteReviewLike">
+        DELETE FROM Review_Like 
+        WHERE review_no = #{reviewNo} AND user_id = #{userId}
+    </delete>
+
+    <update id="updateReviewLikeCount">
+        UPDATE Review SET like_cnt = like_cnt + #{amount} 
+        WHERE review_no = #{reviewNo}
+    </update>
+
+</mapper>
