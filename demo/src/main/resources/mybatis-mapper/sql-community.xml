@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.example.demo.community.CommunityMapper">
-
+<mapper namespace="com.example.demo.community_review.mapper.CommunityMapper">
+	<!--게시글 추가-->
     <insert id="insertPost" useGeneratedKeys="true" keyProperty="postNo">
         INSERT INTO Community_Post (
             user_id, category, title, content, reg_date
@@ -9,35 +9,71 @@
             #{userId}, #{category}, #{title}, #{content}, CURRENT_TIMESTAMP
         )
     </insert>
-
-    <select id="selectPostList" resultType="com.example.demo.community.Community">
+	<!-- 게시글 리스트 -->
+    <select id="selectPostList" resultType="com.example.demo.community_review.model.Community">
         SELECT * FROM Community_Post 
         WHERE is_deleted = 0 
         ORDER BY reg_date DESC
     </select>
-
-    <select id="selectPostById" resultType="com.example.demo.community.Community">
+	
+    <select id="selectPostById" resultType="com.example.demo.community_review.model.Community">
         SELECT * FROM Community_Post WHERE post_no = #{postNo}
     </select>
-
+    
+	<!--좋아요 기능-->
     <select id="checkPostLike" resultType="int">
         SELECT COUNT(*) FROM Post_Like 
         WHERE post_no = #{postNo} AND user_id = #{userId}
     </select>
-
+    
+	<!--추가 기능-->
     <insert id="insertPostLike">
         INSERT INTO Post_Like (post_no, user_id, reg_date)
         VALUES (#{postNo}, #{userId}, CURRENT_TIMESTAMP)
     </insert>
-
+    
+	<!--삭제 기능-->
     <delete id="deletePostLike">
         DELETE FROM Post_Like 
         WHERE post_no = #{postNo} AND user_id = #{userId}
     </delete>
+    
+    <delete id="deletePost" parameterType="hashmap">
+	    DELETE FROM Community_Post 
+	    WHERE post_no = #{postNo}
+	</delete>
 
+	<!--수정 기능-->
     <update id="updatePostLikeCount">
         UPDATE Community_Post SET like_cnt = like_cnt + #{amount} 
         WHERE post_no = #{postNo}
     </update>
-
+    
+    <update id="updatePost" parameterType="hashmap">
+	    UPDATE Community_Post 
+	    SET title = #{title}, 
+	        content = #{content},
+	        update_date = NOW()
+	    WHERE post_no = #{postNo}
+	</update>
+    
+    <!--조회 수 기능-->
+    <update id="updateViewCount" parameterType="hashmap">
+	    UPDATE Community_Post
+	    SET view_cnt = view_cnt + 1
+	    WHERE post_no = #{postNo}
+	</update>
+	<select id="selectPostDetail" parameterType="hashmap" resultType="com.example.demo.community_review.model.Community">
+	    SELECT 
+	        post_no AS postNo,
+	        user_id AS userId,
+	        title,
+	        content,
+	        view_cnt AS viewCnt,
+	        like_cnt AS likeCnt,
+	        reg_date AS regDate
+	    FROM Community_Post
+	    WHERE post_no = #{postNo}
+	</select>
+	
 </mapper>
