@@ -1,4 +1,4 @@
-package com.example.demo.controller;
+package com.example.demo.company.controller;
 
 import java.util.HashMap;
 
@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.example.demo.dao.CompanyService;
+import com.example.demo.company.dao.CompanyService;
 import com.google.gson.Gson;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -21,25 +21,10 @@ public class CompanyController {
 	@Autowired
 	CompanyService companyService;
 	
-	@RequestMapping("/company.do")
-	public String test0(Model model) throws Exception{
-		return "/company/company";
-	}
-	@RequestMapping("/company1.do")
-	public String test(Model model) throws Exception{
-		return "/company/company1";
-	}
-	
-	@RequestMapping("/company2.do")
-	public String test1(Model model) throws Exception{
-		return "/company/company2";
-	}
-	
-	@RequestMapping("/company3.do")
+	@RequestMapping("/company10.do")
 	public String test2(Model model) throws Exception{
-		return "/company/company3";
+		return "/company/company10";
 	}
-	
 
 	
 }
