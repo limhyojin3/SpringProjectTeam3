@@ -6,11 +6,9 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.example.demo.common.Message;
 import com.example.demo.admin.mapper.AdminMapper;
-import com.example.demo.admin.mapper.DefaultMapper;
 import com.example.demo.admin.model.Admin;
-import com.example.demo.admin.model.User;
+import com.example.demo.common.Message;
 
 @Service
 public class AdminService {

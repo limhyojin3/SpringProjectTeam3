@@ -6,7 +6,6 @@ import java.util.List;
 import org.apache.ibatis.annotations.Mapper;
 
 import com.example.demo.company.model.Company;
-import com.example.demo.company.model.User;
 
 @Mapper
 public interface CompanyMapper {
