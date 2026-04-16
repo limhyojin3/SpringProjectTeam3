@@ -1,4 +1,4 @@
-package com.example.demo.dao;
+package com.example.demo.company.dao;
 
 import java.util.HashMap;
 import java.util.List;
@@ -7,13 +7,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.example.demo.common.Message;
-import com.example.demo.mapper.DefaultMapper;
-import com.example.demo.model.User;
+import com.example.demo.company.mapper.CompanyMapper;
 
 @Service
-public class DefaultService {
+public class CompanyService {
 	@Autowired 
-	DefaultMapper defaultMapper;
+	CompanyMapper companyMapper;
 	
 	// 조회 -> get, 수정 -> edit, 삽입 -> add, 삭제 -> remove
 	// ex) 학생목록 : getStudentList, 학생수정 -> editStudent
@@ -42,25 +41,9 @@ public class DefaultService {
 			resultMap.put("result", "fail");
 			resultMap.put("message", Message.MSG_SERVER_ERR);
 		}
-		return resultMap;
+		return resultMap;    
 	}
 	
 	
-	
-	
-	
-	
-	
-	// =========================
-	public HashMap<String, Object> getUserList(){
-		HashMap<String, Object> resultMap = new HashMap<String, Object>();
-		List<User> list = defaultMapper.selectUserList(resultMap);
-		
-		resultMap.put("list", list);
-		resultMap.put("message", "데이터 조회 성공");
-		resultMap.put("result", "success");
-		
-		return resultMap;
-	}
 	
 }
