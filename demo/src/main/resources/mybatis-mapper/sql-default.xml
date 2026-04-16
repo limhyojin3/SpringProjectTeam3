@@ -1,17 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="com.example.demo.admin.mapper.DefaultMapper">
+<mapper namespace="com.example.demo.company.mapper.DefaultMapper">
 	<!-- 여러개 검색 -->
-	<select id="selectUserList" parameterType="hashmap"
-		resultType="com.example.demo.admin.model.User">
+	<select id="selectUserList" parameterType="hashmap" resultType="com.example.demo.admin.model.User">
 	</select>
 
 	<!-- 한개 검색 -->
-	<select id="selectUser" parameterType="hashmap"
-		resultType="com.example.demo.admin.model.User">
-	</select>
-
+	<select id="selectUser" parameterType="hashmap" resultType="com.example.demo.company.model.User">
+  </select>
+  
 	<!-- 삽입 -->
 	<insert id="insertUser" parameterType="hashmap">
 
