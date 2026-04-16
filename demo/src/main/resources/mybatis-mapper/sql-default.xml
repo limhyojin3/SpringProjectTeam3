@@ -13,6 +13,7 @@
 	
 	<!-- 삽입 -->
 	<insert id="insertUser" parameterType="hashmap">
+		
 	</insert>
 	
 	<!-- 삭제 -->
