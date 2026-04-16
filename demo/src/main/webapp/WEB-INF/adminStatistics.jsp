@@ -10,6 +10,7 @@
             integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
         <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
         <script src="/js/page-change.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
         <style>
             /* 1. 컨테이너: 높이를 명확히 주고 쉼표를 없앰 */
             .container {
@@ -128,52 +129,34 @@
                 /* 카드들이 위쪽에 고정되도록 */
             }
 
-            /* 대시보드 카드 개별 박스 */
-            .dashboard-card {
-                flex: 1;
-                /* 가로 크기 균등 분할 */
-                max-width: 300px;
-                /* 너무 넓어지지 않게 제한 */
-                border: 1px solid #ccc;
-                border-radius: 8px;
-                padding: 15px;
-                background-color: #fff;
-                text-align: center;
-                box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.05);
-            }
-
-            .dashboard-card h4 {
-                margin-top: 0;
-                margin-bottom: 15px;
-            }
-
-            /* 세로가 가로보다 2배 긴 박스 */
-            .data-box {
-                width: 100%;
-                aspect-ratio: 1 / 2;
-                /* 가로 1 : 세로 2 비율 유지 */
-                background-color: #f1f1f1;
-                border: 1px dashed #bbb;
-                margin-bottom: 15px;
+            .tab-buttons {
                 display: flex;
-                align-items: center;
-                justify-content: center;
-                color: #888;
+                gap: 10px;
+                margin-bottom: 20px;
             }
 
-            /* 상세보기 버튼 (적당히 작은 크기) */
-            .detail-btn {
-                padding: 6px 12px;
-                font-size: 12px;
-                background-color: #555;
-                color: white;
+            .tab-buttons button {
+                padding: 10px 15px;
                 border: none;
-                border-radius: 4px;
+                background: #eee;
                 cursor: pointer;
+                border-radius: 5px;
             }
 
-            .detail-btn:hover {
-                background-color: #333;
+            .tab-buttons button:hover {
+                background: #ff6b6b;
+                color: white;
+            }
+
+            .chart-area {
+                background: #fff;
+                padding: 20px;
+                border-radius: 10px;
+            }
+
+            .chart-area div {
+                width: auto;
+                height: auto;
             }
 
             .footer {
@@ -249,7 +232,8 @@
                 </div>
             </div>
             <div class="nav">
-                <button type="button" class="nav-btn">관리자 메인 페이지</button>
+                <button @click="fnGoMain();" type="button" class="nav-btn">관리자 메인
+                    페이지</button>
                 <button type="button" class="nav-btn">전체 회원 목록</button>
                 <button type="button" class="nav-btn">전체 업체 목록</button>
                 <button type="button" class="nav-btn">전체 게시판/리뷰 목록</button>
@@ -258,25 +242,33 @@
                 <button type="button" class="nav-btn">통계</button>
             </div>
             <div class="main">
-                <!-- 리뷰승인 카드 -->
-                <div class="dashboard-card">
-                    <h4>리뷰승인</h4>
-                    <div class="data-box">내용 영역</div>
-                    <button type="button" class="detail-btn">상세보기</button>
-                </div>
-
-                <!-- 신고제보 카드 -->
-                <div class="dashboard-card">
-                    <h4>신고제보</h4>
-                    <div class="data-box">내용 영역</div>
-                    <button type="button" class="detail-btn">상세보기</button>
-                </div>
-
-                <!-- 통계 카드 -->
-                <div class="dashboard-card">
-                    <h4>통계</h4>
-                    <div class="data-box">내용 영역</div>
-                    <button @click="fnStatistics" type="button" class="detail-btn">상세보기</button>
+                <div class="dashboard-container">
+                    <!-- 버튼 영역 -->
+                    <div class="tab-buttons">
+                        <button @click="selectedTab = 'sales'; fnGetSales();">매출현황</button>
+                        <button @click="selectedTab = 'user'; fnGetUsers();">일반 회원 등록수</button>
+                        <button @click="selectedTab = 'company'">일반 업체 등록수</button>
+                        <button @click="selectedTab = 'partner'">제휴업체 등록수</button>
+                    </div>
+                    <!-- 차트 영역 -->
+                    <div class="chart-area">
+                        <div v-if="selectedTab === 'sales'">
+                            <h3>월별 매출 현황</h3>
+                            <div id="chart-sales"></div>
+                        </div>
+                        <div v-if="selectedTab === 'user'">
+                            <h3>일반 회원 등록수</h3>
+                            <div id="chart-user"></div>
+                        </div>
+                        <div v-if="selectedTab === 'company'">
+                            <h3>일반 업체 등록수</h3>
+                            <div id="chart-company"></div>
+                        </div>
+                        <div v-if="selectedTab === 'partner'">
+                            <h3>제휴 업체 등록수</h3>
+                            <div id="chart-partner"></div>
+                        </div>
+                    </div>
                 </div>
             </div>
             <div class="footer">
@@ -312,33 +304,113 @@
                 data() {
                     return {
                         // 변수 - (key : value)
+                        selectedTab: "sales",
+                        list: [],
+                        priceList: [],
+                        monthList: [],
+            
                     };
                 },
                 methods: {
                     // 함수(메소드) - (key : function())
-                    fnStatistics:function () {
-                        location.href="adminStatistics.do"
+                    fnGoMain() {
+                        location.href = 'http://localhost:8080/adminMain.do';
                     },
-                    fnList: function () {
+                    fnSalesChart: function () {
+                        let self = this;
+                        if (self.chart) {
+                            self.chart.destroy(); // 기존 차트 제거
+                        }
+                        var options = {
+                            series: [{
+                                name: "매출액",
+                                data: self.priceList
+                            }],
+                            chart: {
+                                height: 350,
+                                type: 'line',
+                                zoom: {
+                                    enabled: false
+                                }
+                            },
+                            dataLabels: {
+                                enabled: false
+                            },
+                            stroke: {
+                                curve: 'straight'
+                            },
+                            // title: {
+                            //     text: 'Product Trends by Month',
+                            //     align: 'left'
+                            // },
+                            grid: {
+                                row: {
+                                    colors: ['#f3f3f3', 'transparent'], // takes an array which will be repeated on columns
+                                    opacity: 0.5
+                                },
+                            },
+                            xaxis: {
+                                categories: self.monthList
+                            },
+                        };
+                        if(self.selectedTab == "sales"){
+                        self.chart = new ApexCharts(document.querySelector("#chart-sales"), options);
+                        self.chart.render();
+                        }
+                        // if(self.selectedTab == "user"){
+                        // self.chart = new ApexCharts(document.querySelector("#chart-user"), options);
+                        // self.chart.render();
+                        // }
+                    },
+                    fnGetSales: function () {
                         let self = this;
                         let param = {};
                         $.ajax({
-                            url: "http://localhost:8080/",
+                            url: "http://localhost:8080/sales.dox",
                             dataType: "json",
                             type: "POST",
                             data: param,
                             success: function (data) {
-
+                                console.log(data);
+                                self.priceList = [];
+                                self.monthList = [];
+                                for (let i = 0; i < data.list.length; i++) {
+                                    self.priceList.push(data.list[i].totalRevenue);
+                                    self.monthList.push(data.list[i].saleMonth);
+                                }
+                                self.fnSalesChart();
                             }
                         });
-                    }
+                    },
+
+                    fnGetUsers: function () {
+                        let self = this;
+                        let param = {};
+                        $.ajax({
+                            url: "http://localhost:8080/clients.dox",
+                            dataType: "json",
+                            type: "POST",
+                            data: param,
+                            success: function (data) {
+                                console.log(data);
+                                self.priceList = [];
+                                self.monthList = [];
+                                for (let i = 0; i < data.list.length; i++) {
+                                    self.priceList.push(data.list[i].totalRevenue);
+                                    self.monthList.push(data.list[i].saleMonth);
+                                }
+                                self.fnSalesChart();
+                            }
+                        });
+                    },
+
                 }, // methods
                 mounted() {
                     // 처음 시작할 때 실행되는 부분
                     let self = this;
+                    self.fnGetSales();
                 }
             });
-
             app.mount('#app');
         </script>
     </body>

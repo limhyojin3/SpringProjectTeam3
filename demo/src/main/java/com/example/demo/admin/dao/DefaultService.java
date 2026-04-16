@@ -1,4 +1,4 @@
-package com.example.demo.dao;
+package com.example.demo.admin.dao;
 
 import java.util.HashMap;
 import java.util.List;
@@ -7,8 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.example.demo.common.Message;
-import com.example.demo.mapper.DefaultMapper;
-import com.example.demo.model.User;
+import com.example.demo.admin.mapper.DefaultMapper;
+import com.example.demo.admin.model.User;
 
 @Service
 public class DefaultService {
