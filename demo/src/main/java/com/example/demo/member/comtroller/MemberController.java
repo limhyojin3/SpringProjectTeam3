@@ -30,7 +30,7 @@ public class MemberController {
 	//*1. login (로그인)*
 	@RequestMapping("/login.do") // 주소 
 	public String login(Model model) throws Exception{
-		return "/login"; // 파일명
+		return "/member/login"; // 파일명
 	}
 	
 	@RequestMapping(value = "/login.dox", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
@@ -44,7 +44,7 @@ public class MemberController {
 	//*2. join (회원가입)*
 	@RequestMapping("/join.do") // 주소 
 	public String join(Model model) throws Exception{
-		return "/join"; // 파일명
+		return "/member/join"; // 파일명
 	}
 	
 	@RequestMapping(value = "/join.dox", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
@@ -57,7 +57,7 @@ public class MemberController {
 	// 2-1. join-user(유저 회원가입)
 	@RequestMapping("/joinUser.do") // 주소 
 	public String userJoin(Model model) throws Exception{
-		return "/join-user"; // 파일명
+		return "/member/join-user"; // 파일명
 	}
 	@RequestMapping(value = "/joinUser.dox", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
 	@ResponseBody
@@ -72,14 +72,32 @@ public class MemberController {
 	    HashMap<String, Object> resultMap = memberService.getUserIdCount(map);
 	    return new Gson().toJson(resultMap);
 	}
+	// 이메일 중복체크
+		@RequestMapping(value = "/checkEmail.dox", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
+		@ResponseBody
+		public String getUserEmailCount(@RequestParam HashMap<String, Object> map) throws Exception {
+		    HashMap<String, Object> resultMap = memberService.getUserIdCount(map);
+		    return new Gson().toJson(resultMap);
+		}
 	
 	// 2-2. join-company(업체 회원가입)
 	@RequestMapping("/joinCompany.do") // 주소 
 	public String companyJoin(Model model) throws Exception{
-		return "/join-company"; // 파일명
+		return "/member/join-company"; // 파일명
 	}
-	//
-	
+	@RequestMapping(value = "/joinCompany.dox", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
+	@ResponseBody
+	public String joinCompany(@RequestParam HashMap<String, Object> map) throws Exception {
+	    HashMap<String, Object> resultMap = memberService.addCompany(map);
+	    return new Gson().toJson(resultMap);
+	}
+	// 업체명 중복 확인
+	@RequestMapping(value = "/checkComName.dox", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
+	@ResponseBody
+	public String checkComName(@RequestParam HashMap<String, Object> map) throws Exception {
+	    HashMap<String, Object> resultMap = memberService.checkComName(map);
+	    return new Gson().toJson(resultMap);
+	}
 	
 	
 }
