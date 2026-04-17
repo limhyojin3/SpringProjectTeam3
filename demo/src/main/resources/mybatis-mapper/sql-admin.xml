@@ -12,7 +12,6 @@
 		WHERE pay_status = 'SUCCESS'
 		GROUP BY sale_month
 		ORDER BY sale_month;
-
 	</select>
 
 	<select id="selectClientsList" parameterType="hashmap"

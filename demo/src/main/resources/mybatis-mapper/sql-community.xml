@@ -9,10 +9,35 @@
             #{userId}, #{category}, #{title}, #{content}, CURRENT_TIMESTAMP
         )
     </insert>
+    
 	<!-- 게시글 리스트 -->
-    <select id="selectPostList" resultType="com.example.demo.community_review.model.Community">
-        SELECT * FROM Community_Post 
-        WHERE is_deleted = 0 
+   <select id="selectPostList" parameterType="hashmap" resultType="com.example.demo.community_review.model.Community">
+        SELECT 
+            post_no AS postNo,
+            user_id AS userId,
+            category,
+            title,
+            content,
+            reg_date AS regDate,
+            view_cnt AS viewCnt,
+            like_cnt AS likeCnt,
+            is_deleted AS isDeleted
+        FROM Community_Post 
+        WHERE is_deleted = 0
+        <if test="searchKeyword != null and searchKeyword != ''">
+            <choose>
+                <when test="searchType == 'title'">
+                    AND title LIKE CONCAT('%', #{searchKeyword}, '%')
+                </when>
+                <when test="searchType == 'userId'">
+                    AND user_id LIKE CONCAT('%', #{searchKeyword}, '%')
+                </when>
+                <otherwise>
+                    AND (title LIKE CONCAT('%', #{searchKeyword}, '%') 
+                         OR user_id LIKE CONCAT('%', #{searchKeyword}, '%'))
+                </otherwise>
+            </choose>
+        </if>
         ORDER BY reg_date DESC
     </select>
 	
@@ -74,6 +99,11 @@
 	        reg_date AS regDate
 	    FROM Community_Post
 	    WHERE post_no = #{postNo}
+	</select>
+	
+	<!---->
+	<select id="selectPostAuthor" parameterType="hashmap" resultType="String">
+    	SELECT user_id FROM Community_Post WHERE post_no = #{postNo}
 	</select>
 	
 </mapper>

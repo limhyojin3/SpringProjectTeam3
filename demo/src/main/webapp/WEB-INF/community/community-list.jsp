@@ -3,52 +3,105 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>커뮤니티 목록</title>
+    <title>커뮤니티 목록 - MerryView</title>
     <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
     <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/common.css">
+    
     <style>
-        /* (기존 스타일 유지) */
-        #app { width: 1000px; margin: 50px auto; padding: 20px; box-shadow: 0 0 10px rgba(0,0,0,0.1); border-radius: 8px; }
-        table { width: 100%; border-collapse: collapse; margin-top: 20px; background-color: white; }
-        .title-link { text-align: left; cursor: pointer; color: #007bff; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-        .title-link:hover { text-decoration: underline; color: #0056b3; }
-        th, td { border: 1px solid #eee; padding: 12px; text-align: center; }
-        th { background-color: #f8f9fa; font-weight: bold; }
-        .header-area { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+        :root { --primary-color: #ff4d6d; --dark-color: #1a1a1a; }
+
+        /* 1. 메인 컨텐츠 영역 레이아웃 */
+        .main-content {
+            padding: 50px 40px;
+            min-height: 800px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header-area { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 30px; }
+        h2 { font-size: 32px; color: var(--dark-color); font-weight: 800; letter-spacing: -1px; }
+
+        /* 2. 테이블 디자인 (고급스럽게) */
+        .custom-table { width: 100%; border-collapse: separate; border-spacing: 0; margin-top: 10px; }
+        .custom-table th { 
+            background-color: #fff; padding: 20px 15px; border-bottom: 2px solid var(--dark-color); 
+            font-weight: 700; color: #333; text-align: center;
+        }
+        .custom-table td { padding: 20px 15px; border-bottom: 1px solid #eee; text-align: center; color: #555; transition: 0.2s; }
+        .custom-table tbody tr:hover td { background-color: #fff0f3; cursor: pointer; }
+        
+        .title-link { text-align: left !important; font-weight: 600; color: #333; }
+        .title-link:hover { color: var(--primary-color) !important; }
+
+        /* 3. 버튼 스타일 (핑크색 포인트) */
+        .btn-pink { 
+            padding: 12px 25px; border: none; border-radius: 10px; 
+            background-color: var(--primary-color); color: white; font-weight: bold; transition: 0.3s; 
+        }
+        .btn-pink:hover { background-color: #ff1a4a; transform: translateY(-2px); box-shadow: 0 5px 15px rgba(255, 77, 109, 0.3); }
+
+        /* 4. 검색창 스타일 */
+        .search-area select, .search-area input {
+            padding: 10px 15px; border: 1px solid #ddd; border-radius: 8px; outline: none;
+        }
+        .search-area input:focus { border-color: var(--primary-color); }
+        
+        .badge-heart { color: var(--primary-color); font-weight: bold; }
     </style>
 </head>
 <body>
     <div id="app">
-        <div class="header-area">
-            <h2>커뮤니티 게시판</h2>
-            <button @click="fnAddPage" style="padding: 10px 20px; cursor: pointer;">글쓰기</button>
-        </div>  
+        <jsp:include page="/WEB-INF/common/header.jsp" />
 
-        <table>
-            <thead>
-                <tr>
-                    <th>번호</th>
-                    <th>제목</th>
-                    <th>작성자</th>
-                    <th>작성일</th>
-                    <th>조회수</th> <th>좋아요</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr v-for="item in list" :key="item.postNo">
-                    <td>{{ item.postNo }}</td>
-                    <td class="title-link" @click="fnDetail(item.postNo)">
-                        {{ item.title }}
-                    </td>
-                    <td>{{ item.userId }}</td>
-                    <td>{{ item.regDate }}</td>
-                    <td>{{ item.viewCnt }}</td> <td>❤️ {{ item.likeCnt }}</td>
-                </tr>
-                <tr v-if="list.length == 0">
-                    <td colspan="6">게시글이 없습니다.</td>
-                </tr>
-            </tbody>
-        </table>
+        <main class="main-content">
+            <div class="header-area">
+                <div>
+                    <h2>💬 커뮤니티 게시판</h2>
+                    <p class="text-muted mb-0">예비 부부들과 다양한 정보를 공유해보세요.</p>
+                </div>
+                <button class="btn-pink" @click="fnAddPage">글쓰기</button>
+            </div>  
+
+            <div class="search-area" style="margin-bottom: 30px; display: flex; justify-content: flex-end; gap: 10px;">
+                <select v-model="searchType">
+                    <option value="all">전체</option>
+                    <option value="title">제목</option>
+                    <option value="userId">작성자</option>
+                </select>
+                <input type="text" v-model="searchKeyword" @keyup.enter="fnList" placeholder="궁금한 것을 검색해보세요">
+                <button @click="fnList" class="btn-pink" style="padding: 10px 20px;">검색</button>
+            </div>
+
+            <table class="custom-table">
+                <thead>
+                    <tr>
+                        <th style="width: 80px;">번호</th>
+                        <th>제목</th>
+                        <th style="width: 150px;">작성자</th>
+                        <th style="width: 150px;">작성일</th>
+                        <th style="width: 100px;">조회수</th>
+                        <th style="width: 100px;">좋아요</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr v-for="item in list" :key="item.postNo" @click="fnDetail(item.postNo)">
+                        <td>{{ item.postNo }}</td>
+                        <td class="title-link">{{ item.title }}</td>
+                        <td><span class="badge badge-light p-2">@{{ item.userId }}</span></td>
+                        <td class="small text-muted">{{ item.regDate }}</td>
+                        <td>{{ item.viewCnt }}</td>
+                        <td class="badge-heart">❤️ {{ item.likeCnt }}</td>
+                    </tr>
+                    <tr v-if="list.length == 0">
+                        <td colspan="6" style="padding: 100px 0; color: #999;">작성된 게시글이 아직 없습니다.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </main>
+
+        <jsp:include page="/WEB-INF/common/footer.jsp" />
     </div>
 
     <script>
@@ -56,41 +109,39 @@
             data() {
                 return {
                     list: [],
-                    sessionId: "" // 현재 로그인된 사용자 아이디 저장용
+                    sessionId: "",
+                    searchKeyword: "",
+                    searchType: "all"
                 };
             },
             methods: {
-                fnList: function () {
-                    let self = this;
+                fnList() {
+                    const nParam = {
+                        searchKeyword: this.searchKeyword,
+                        searchType: this.searchType
+                    };
                     $.ajax({
                         url: "/api/community/list.dox",
                         dataType: "json",
                         type: "POST", 
-                        data: {},
-                        success: function (data) {
-                            self.list = data.list; 
-                            // 🚩 [체크] 컨트롤러가 보내준 sessionId를 받아야 방어가 작동함!
-                            self.sessionId = data.sessionId; 
+                        contentType: "application/json",
+                        data: JSON.stringify(nParam),
+                        success: (data) => {
+                            this.list = data.list; 
+                            this.sessionId = data.sessionId; 
                         },
-                        error: function(xhr) {
-                            console.error("데이터 로드 실패!");
-                        }
+                        error: (xhr) => console.error("데이터 로드 실패!")
                     });
                 },
-                fnDetail: function(postNo) {
+                fnDetail(postNo) {
                     location.href = "/api/community/detail.do?postNo=" + postNo;
                 },
-                // 🚩 [수정] 글쓰기 버튼 방어 로직 추가
-                fnAddPage: function() {
-                    let self = this;
-                    
-                    // sessionId가 없으면 비회원 취급
-                    if (!self.sessionId || self.sessionId === "") {
+                fnAddPage() {
+                    if (!this.sessionId || this.sessionId === "") {
                         if (confirm("로그인이 필요한 서비스입니다. 로그인 페이지로 이동하시겠습니까?")) {
-                            location.href = "/login.do"; // 본인의 로그인 페이지 경로로 수정
+                            location.href = "/login.do"; 
                         }
                     } else {
-                        // 로그인 상태일 때만 글쓰기 이동
                         location.href = "/api/community/add.do";
                     }
                 }
@@ -98,8 +149,7 @@
             mounted() {
                 this.fnList();
             }
-        });
-        app.mount('#app');
+        }).mount('#app');
     </script>
 </body>
 </html>
