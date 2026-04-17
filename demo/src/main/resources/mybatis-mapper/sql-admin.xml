@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.demo.admin.mapper.AdminMapper">
+
+	<select id="selectSalesList" parameterType="hashmap"
+		resultType="com.example.demo.admin.model.Admin">
+		SELECT
+		DATE_FORMAT(pay_date, '%Y-%m') AS sale_month,
+		SUM(amount) AS total_revenue,
+		COUNT(pay_no) AS order_count
+		FROM payment
+		WHERE pay_status = 'SUCCESS'
+		GROUP BY sale_month
+		ORDER BY sale_month;
+
+	</select>
+
+	<select id="selectClientsList" parameterType="hashmap"
+		resultType="com.example.demo.admin.model.Admin"> SELECT
+		DATE_FORMAT(REG_DATE, '%Y-%m') AS USER_MONTH, Count(*) AS USER_COUNT
+		FROM MEMBER WHERE 1=1
+		<if test="role != null and role != 'ALL'">
+			AND ROLE = #{role}
+		</if>
+		GROUP BY USER_MONTH
+		ORDER BY USER_MONTH;
+	</select>
+
+</mapper>

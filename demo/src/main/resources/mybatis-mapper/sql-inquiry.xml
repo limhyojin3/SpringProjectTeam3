@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.example.demo.common.inquiry.InquiryMapper">
+<mapper namespace="com.example.demo.community_review.mapper.InquiryMapper">
 
     <insert id="insertInquiry" useGeneratedKeys="true" keyProperty="inquiryNo">
         INSERT INTO Inquiry (
@@ -10,7 +10,7 @@
         )
     </insert>
 
-    <select id="selectInquiryList" resultType="com.example.demo.common.inquiry.Inquiry">
+    <select id="selectInquiryList" resultType="com.example.demo.community_review.model.Inquiry">
         SELECT * FROM Inquiry 
         WHERE user_id = #{userId} AND is_deleted = 0
         ORDER BY reg_date DESC
