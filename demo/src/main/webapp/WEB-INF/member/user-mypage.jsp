@@ -9,6 +9,11 @@
     <script src="https://code.jquery.com/jquery-3.7.1.js" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
     <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
     <script src="/js/page-change.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/common.css">
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body { background: #f9f9f9; font-family: 'Noto Sans KR', sans-serif; }
@@ -173,6 +178,7 @@
 <body>
     <!-- 헤더 include 예정 -->
     <div id="app">
+        <!-- <jsp:include page="/WEB-INF/common/header.jsp" /> -->
         <div class="container">
             <!-- 사이드바 -->
             <div class="nav">
@@ -210,6 +216,7 @@
                 <button class="btn-withdraw">탈퇴하기</button>
             </div>
         </div>
+        <jsp:include page="/WEB-INF/common/footer.jsp" />
     </div>
     <!-- 푸터 include 예정 -->
 </body>

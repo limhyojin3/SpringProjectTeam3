@@ -9,6 +9,11 @@
     <script src="https://code.jquery.com/jquery-3.7.1.js" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
     <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
     <script src="/js/page-change.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/common.css">
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body { background: #f9f9f9; font-family: 'Noto Sans KR', sans-serif; }
@@ -208,26 +213,30 @@
 
                 <!-- 탭 버튼 -->
                 <div class="review-tab-wrap">
-                    <button class="review-tab active-tab" @click="switchReviewTab('paid')">유료리뷰</button>
-                    <button class="review-tab" @click="switchReviewTab('free')">무료 리뷰</button>
+                    <button class="review-tab" :class="{'active-tab': reviewTab === 'paid'}" @click="switchReviewTab('paid')">유료리뷰</button>
+                    <button class="review-tab" :class="{'active-tab': reviewTab === 'free'}" @click="switchReviewTab('free')">무료 리뷰</button>
                 </div>
 
-                <!-- 리뷰 목록 -->
-                <div class="review-list">
-                    <!-- 카드형 (왼쪽 디자인) -->
+                <!-- 유료 리뷰 목록 -->
+                <div class="review-list" v-show="reviewTab === 'paid'">
                     <div class="review-card" v-for="i in 6" :key="i">
                         <div class="review-thumbnail">썸네일</div>
                         <div class="review-card-title">리뷰 제목</div>
                     </div>
                 </div>
 
-                <!-- 상세 리뷰 인덱스 버튼 -->
+                <!-- 무료 리뷰 목록 -->
+                <div v-show="reviewTab === 'free'">
+                    <div class="review-list-item" v-for="i in 6" :key="i">리뷰 제목</div>
+                </div>
+
+                <!-- 인덱스 버튼 -->
                 <div class="review-index-wrap">
                     <button class="btn-review-index">상세 리뷰 인덱스</button>
                 </div>
-
             </div>
         </div>
+        <jsp:include page="/WEB-INF/common/footer.jsp" />
     </div>
     <!-- 푸터 include 예정 -->
 </body>

@@ -51,7 +51,6 @@ public class MemberService {
 		    }
 	        
 	        // 4. 비밀번호 비교
-//	        if(passwordEncoder.matches((String)map.get("password"), member.getPassword())) { //암호화 비교 추후 변경
 		    if(passwordEncoder.matches((String)map.get("password"), member.getPassword())) { // 암호화
 	            resultMap.put("loginResult", true);
 	            
