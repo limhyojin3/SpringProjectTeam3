@@ -196,7 +196,7 @@
                     success: function (data) {
                         alert(data.message);
                         if(data.loginResult){
-                            location.href=data.url;
+                            location.href="/merryViewHome.do";
                         }
                     }
                 });

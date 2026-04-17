@@ -11,8 +11,6 @@
         <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
         <script src="/js/page-change.js"></script>
         <style>
-            
-
             /* 기본 레이아웃 */
             body {
                 font-family: 'Malgun Gothic', sans-serif;
@@ -202,6 +200,242 @@
                 font-weight: bold;
                 box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
             }
+
+            /* 리뷰 섹션 공통 */
+            .review-header-info {
+                display: flex;
+                align-items: center;
+                gap: 20px;
+                background: #f9f9f9;
+                padding: 15px;
+                border-radius: 8px;
+                margin-bottom: 20px;
+                border: 1px solid #eee;
+            }
+
+            .review-thumb-box {
+                width: 80px;
+                height: 80px;
+                background: #ffcef0;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                border-radius: 6px;
+                font-size: 12px;
+                color: #d6336c;
+            }
+
+            .review-product-name {
+                flex: 1;
+                font-size: 18px;
+                color: #333;
+            }
+
+            .review-count-badge {
+                font-size: 14px;
+                color: #666;
+                background: #fff;
+                padding: 5px 12px;
+                border-radius: 20px;
+                border: 1px solid #ddd;
+            }
+
+            /* 상세 리뷰 카드 내부 */
+            .detail-review-item {
+                padding: 20px 0;
+                border-bottom: 1px solid #f0f0f0;
+            }
+
+            .star-rating {
+                color: #ffb400;
+                font-weight: bold;
+                margin-bottom: 10px;
+            }
+
+            .review-photo {
+                width: 100px;
+                height: 100px;
+                background: #fff0f3;
+                border-radius: 8px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 11px;
+                color: #ff7f9f;
+                border: 1px solid #ffe0e6;
+            }
+
+            /* 페이징 */
+            .pagination {
+                text-align: center;
+                margin-top: 25px;
+            }
+
+            .pagination a {
+                display: inline-block;
+                padding: 8px 12px;
+                margin: 0 4px;
+                text-decoration: none;
+                color: #666;
+                border-radius: 4px;
+                transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+                cursor: pointer;
+                border: 1px solid transparent;
+                font-weight: 500;
+            }
+
+            .pagination a:hover {
+                background: #ff7f9f;
+                color: white;
+                transform: translateY(-2px);
+                box-shadow: 0 4px 12px rgba(255, 124, 159, 0.3);
+            }
+
+            .pagination a:active {
+                transform: translateY(0px);
+            }
+
+            /* 상품 등록/수정 폼 */
+            .product-form-wrapper {
+                background: white;
+            }
+
+            .product-form-section {
+                margin-bottom: 25px;
+            }
+
+            .form-title-box {
+                background: linear-gradient(135deg, #ff7f9f 0%, #ff9fb8 100%);
+                padding: 12px 20px;
+                color: white;
+                font-weight: bold;
+                font-size: 15px;
+                border-radius: 6px 6px 0 0;
+                margin-bottom: 0;
+            }
+
+            .form-content-box {
+                border: 2px solid #ff7f9f;
+                border-top: none;
+                padding: 25px;
+                border-radius: 0 0 6px 6px;
+            }
+
+            .form-group {
+                margin-bottom: 20px;
+            }
+
+            .form-group:last-child {
+                margin-bottom: 0;
+            }
+
+            .form-label {
+                display: block;
+                font-weight: 600;
+                margin-bottom: 10px;
+                color: #333;
+                font-size: 14px;
+            }
+
+            .category-group {
+                display: flex;
+                gap: 25px;
+                padding: 10px 0;
+            }
+
+            .category-item {
+                display: flex;
+                align-items: center;
+                gap: 8px;
+            }
+
+            .category-item input[type="checkbox"] {
+                cursor: pointer;
+                width: 18px;
+                height: 18px;
+            }
+
+            .category-item label {
+                cursor: pointer;
+                margin: 0;
+                font-size: 14px;
+                color: #555;
+            }
+
+            .form-info-box {
+                background: #fff9f0;
+                border-left: 4px solid #ffb400;
+                padding: 12px 15px;
+                border-radius: 4px;
+                color: #333;
+                font-size: 14px;
+                line-height: 1.6;
+            }
+
+            .form-info-label {
+                font-weight: 600;
+                color: #ff1493;
+            }
+
+            .image-editor-box {
+                background: linear-gradient(135deg, #ffe0e6 0%, #fff0f3 100%);
+                border: 2px dashed #ff7f9f;
+                border-radius: 8px;
+                padding: 40px;
+                text-align: center;
+                color: #ff7f9f;
+                font-weight: 600;
+                min-height: 200px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                cursor: pointer;
+                transition: all 0.3s ease;
+            }
+
+            .image-editor-box:hover {
+                background: linear-gradient(135deg, #ffd4e5 0%, #ffe8ef 100%);
+                border-color: #ff1493;
+            }
+
+            .form-button-group {
+                display: flex;
+                gap: 15px;
+                margin-top: 30px;
+                justify-content: flex-end;
+            }
+
+            .form-button-group button {
+                padding: 12px 30px;
+                border: none;
+                border-radius: 6px;
+                font-weight: 600;
+                cursor: pointer;
+                font-size: 14px;
+                transition: all 0.3s ease;
+            }
+
+            .btn-submit {
+                background: #ff7f9f;
+                color: white;
+            }
+
+            .btn-submit:hover {
+                background: #ff1493;
+                transform: translateY(-2px);
+                box-shadow: 0 4px 12px rgba(255, 124, 159, 0.3);
+            }
+
+            .btn-cancel {
+                background: #f0f0f0;
+                color: #666;
+                border: 1px solid #ddd;
+            }
+
+            .btn-cancel:hover {
+                background: #e8e8e8;
+                border-color: #999;
+            }
         </style>
     </head>
 
@@ -223,7 +457,8 @@
             <div class="container">
                 <aside>
                     <div class="menu-item" v-for="m in menuList" :key="m.id">
-                        <button :class="{ active: currentMenu === m.id }" @click="currentMenu = m.id; productPage = 'list'" >{{ m.name
+                        <button :class="{ active: currentMenu === m.id }"
+                            @click="currentMenu = m.id; productPage = 'list'; page = 1">{{ m.name
                             }}</button>
                         <span class="badge" v-if="m.count > 0">{{ m.count }}</span>
                     </div>
@@ -264,88 +499,159 @@
                         </div>
 
                         <div v-else-if="productPage === 'reg'">
-                            <div>
-                                <h2>상품 등록하기</h2>
-                                <div style="background-color: #ff7f9f;">상품1</div>
-                                <div>
-                                    <input type="checkbox" id="1" name="category" value="스튜디오">
-                                    <label for="1">스튜디오</label>
-                                    <input type="checkbox" id="2" name="category" value="드레스">
-                                    <label for="2">드레스</label>
-                                    <input type="checkbox" id="3" name="category" value="메이크업">
-                                    <label for="3">메이크업</label>
+                            <div class="product-form-wrapper">
+                                <h2 style="color: #333; margin-bottom: 30px;">상품 등록하기</h2>
+
+                                <div class="product-form-section">
+                                    <div class="form-title-box">상품 기본 정보</div>
+                                    <div class="form-content-box">
+                                        <div class="form-group">
+                                            <label class="form-label">카테고리</label>
+                                            <div class="category-group">
+                                                <div class="category-item">
+                                                    <input type="checkbox" id="1" name="category" value="스튜디오">
+                                                    <label for="1">스튜디오</label>
+                                                </div>
+                                                <div class="category-item">
+                                                    <input type="checkbox" id="2" name="category" value="드레스">
+                                                    <label for="2">드레스</label>
+                                                </div>
+                                                <div class="category-item">
+                                                    <input type="checkbox" id="3" name="category" value="메이크업">
+                                                    <label for="3">메이크업</label>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label class="form-label">상품 설명</label>
+                                            <div class="form-info-box">스드메 모두 제공하는 상품1 입니다.</div>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label class="form-label"><span class="form-info-label">예상 견적</span></label>
+                                            <div class="form-info-box">1,700,000원</div>
+                                        </div>
+                                    </div>
                                 </div>
-                                <div>예상 견적 : 1,700,000원</div>
-                                <div>스드메 모두 제공하는 상품1 입니다.</div>
-                                <div style="background-color: #ff7f9f;">
-                                    <!-- 이미지 에디터 API 사용 -->
-                                      이미지 에디터 API 사용 
+
+                                <div class="product-form-section">
+                                    <div class="form-title-box">상품 이미지</div>
+                                    <div class="form-content-box">
+                                        <div class="form-group">
+                                            <div class="image-editor-box">
+                                                📸 이미지 에디터 API 사용
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="form-button-group">
+                                    <button class="btn-cancel" @click="productPage = 'list'">취소(돌아가기)</button>
+                                    <button class="btn-submit">상품 등록</button>
                                 </div>
                             </div>
-                            <button>상품 등록</button>
-                            <br>
-                            <button @click="productPage = 'list'">취소(돌아가기)</button>
                         </div>
 
 
                         <div v-else-if="productPage === 'edit'">
-                            <div>
-                                <h2>상품 수정하기</h2>
-                                <div style="background-color: #ff7f9f;">상품1</div>
-                                <div>
-                                    <input type="checkbox" id="1" name="category" value="스튜디오">
-                                    <label for="1">스튜디오</label>
-                                    <input type="checkbox" id="2" name="category" value="드레스">
-                                    <label for="2">드레스</label>
-                                    <input type="checkbox" id="3" name="category" value="메이크업">
-                                    <label for="3">메이크업</label>
+                            <div class="product-form-wrapper">
+                                <h2 style="color: #333; margin-bottom: 30px;">상품 수정하기</h2>
+
+                                <div class="product-form-section">
+                                    <div class="form-title-box">상품 기본 정보</div>
+                                    <div class="form-content-box">
+                                        <div class="form-group">
+                                            <label class="form-label">카테고리</label>
+                                            <div class="category-group">
+                                                <div class="category-item">
+                                                    <input type="checkbox" id="1" name="category" value="스튜디오">
+                                                    <label for="1">스튜디오</label>
+                                                </div>
+                                                <div class="category-item">
+                                                    <input type="checkbox" id="2" name="category" value="드레스">
+                                                    <label for="2">드레스</label>
+                                                </div>
+                                                <div class="category-item">
+                                                    <input type="checkbox" id="3" name="category" value="메이크업">
+                                                    <label for="3">메이크업</label>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label class="form-label">상품 설명</label>
+                                            <div class="form-info-box">스드메 모두 제공하는 상품1 입니다.</div>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label class="form-label"><span class="form-info-label">예상 견적</span></label>
+                                            <div class="form-info-box">1,700,000원</div>
+                                        </div>
+                                    </div>
                                 </div>
-                                <div>예상 견적 : 1,700,000원</div>
-                                <div>스드메 모두 제공하는 상품1 입니다.</div>
-                                <div style="background-color: #ff7f9f;">
-                                    <!-- 이미지 에디터 API 사용 -->
-                                      이미지 에디터 API 사용 
+
+                                <div class="product-form-section">
+                                    <div class="form-title-box">상품 이미지</div>
+                                    <div class="form-content-box">
+                                        <div class="form-group">
+                                            <div class="image-editor-box">
+                                                📸 이미지 에디터 API 사용
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
-                                
+
+                                <div class="form-button-group">
+                                    <button class="btn-cancel" @click="productPage = 'list'">취소(돌아가기)</button>
+                                    <button class="btn-submit">상품 수정</button>
+                                </div>
                             </div>
-                            <button>상품 수정</button>
-                            <br>
-                            <button @click="productPage = 'list'">취소(돌아가기)</button>
                         </div>
                     </div>
 
                     <div v-if="currentMenu === 'reservation'">
                         <h2>예약 관리 : <span style="color: #ff1493;">새 예약 {{ resCount }}건</span></h2>
-                        <table>
-                            <tr>
-                                <th>예약 상품</th>
-                                <td>드레스 투어</td>
-                            </tr>
-                            <tr>
-                                <th>예약 내용</th>
-                                <td>본식 드레스 투어 하고 싶습니다.</td>
-                            </tr>
-                            <tr>
-                                <th>예약 일자</th>
-                                <td>26.03.01</td>
-                            </tr>
-                            <tr>
-                                <th>이용 일자</th>
-                                <td>26.04.01 14:00PM</td>
-                            </tr>
-                            <tr>
-                                <th>예약자명</th>
-                                <td>김결혼</td>
-                            </tr>
-                            <tr>
-                                <th>연락처</th>
-                                <td>010-1234-5678</td>
-                            </tr>
-                            <tr>
-                                <th>결제 금액</th>
-                                <td>(예약금) 50,000원</td>
-                            </tr>
-                        </table>
+                        <template v-for="res in reservationList" :key="res.id">
+                            <table v-if="page === res.id" style="margin-bottom: 30px;">
+                                <tr>
+                                    <th>예약 상품</th>
+                                    <td>{{ res.product }}</td>
+                                </tr>
+                                <tr>
+                                    <th>예약 내용</th>
+                                    <td>{{ res.content }}</td>
+                                </tr>
+                                <tr>
+                                    <th>예약 일자</th>
+                                    <td>{{ res.resDate }}</td>
+                                </tr>
+                                <tr>
+                                    <th>이용 일자</th>
+                                    <td>{{ res.useDate }}</td>
+                                </tr>
+                                <tr>
+                                    <th>예약자명</th>
+                                    <td>{{ res.name }}</td>
+                                </tr>
+                                <tr>
+                                    <th>연락처</th>
+                                    <td>{{ res.contact }}</td>
+                                </tr>
+                                <tr>
+                                    <th>결제 금액</th>
+                                    <td>(예약금) {{ res.price }}</td>
+                                </tr>
+                            </table>
+                        </template>
+                        <div class="pagination">
+                            <span v-for="num in indexlist2" :key="num">
+                                <a @click="page = num" href="javascript:;"
+                                    :style="page === num ? 'color: #ff1493; border: 1px solid #ff1493;' : ''">
+                                    {{num}}
+                                </a>
+                            </span>
+                        </div>
                     </div>
 
                     <div v-if="currentMenu === 'inquiry'">
@@ -376,66 +682,145 @@
                     </div>
 
                     <div v-if="currentMenu === 'review'">
-                        <div class="tab-menu">
-                            <button :class="{ active: reviewTab === 'detail' }" @click="reviewTab = 'detail'">상세
-                                리뷰(30)</button>
-                            <button :class="{ active: reviewTab === 'simple' }" @click="reviewTab = 'simple'">한줄
-                                리뷰(15)</button>
-                        </div>
-
-                        <div v-if="reviewTab === 'detail'">
-                            <h3>리뷰 내역 : 새 리뷰 10건</h3>
-                            <div class="content-card">
-                                <div style="display: flex; justify-content: space-between;">
-                                    <div><span class="new-label">NEW</span><strong>상품명</strong></div>
-                                    <div>리뷰 갯수: 5개</div>
-                                </div>
-                                <p>평점 ★★★★★</p>
-                                <div style="display: flex; gap: 15px;">
-                                    <div style="width: 100px; height: 100px; background: #ffcef0;">리뷰 사진</div>
-                                    <div>이런 부분이 너무 좋았습니다. 어쩌구 저쩌구 추천합니다!</div>
-                                </div>
-                                <div style="text-align: right; font-size: 12px; margin-top: 10px;">작성자: 김결혼 | 작성일자:
-                                    26.04.08</div>
+                        
+                        <template v-if="page1 === 'main'">
+                            <div class="tab-menu">
+                                <button :class="{ active: reviewTab === 'detail' }" @click="reviewTab = 'detail'">상세
+                                    리뷰(30)</button>
+                                <button :class="{ active: reviewTab === 'simple' }" @click="reviewTab = 'simple'">한줄
+                                    리뷰(15)</button>
                             </div>
-                        </div>
 
-                        <div v-if="reviewTab === 'simple'">
-                            <h3>리뷰 내역 : 새 리뷰 5건</h3>
-                            <table>
-                                <thead>
-                                    <tr style="background: #fef0f3;">
-                                        <th>번호</th>
-                                        <th>내용</th>
-                                        <th>작성자</th>
-                                        <th>평점</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <td>3 <span class="new-label">NEW</span></td>
-                                        <td>추천합니다. 친절해요.</td>
-                                        <td>결혼해듀오</td>
-                                        <td>5</td>
-                                    </tr>
-                                    <tr>
-                                        <td>2 <span class="new-label">NEW</span></td>
-                                        <td>조금 늦었는데 배려해주셔서 감사합니다.</td>
-                                        <td>5월신부</td>
-                                        <td>5</td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
+                            <div v-if="reviewTab === 'detail'" class="content-card">
+
+                                <h3>리뷰 내역 : <span style="color: #ff1493;">새 리뷰 10건</span></h3>
+                                <template v-for="w in weddinglist" :key="w.name">
+                                    <div class="review-header-info" style="margin-bottom: 10px;">
+                                        <div class="review-thumb-box">썸네일</div>
+                                        <div class="review-product-name">
+                                            <a href="javascript:;"
+                                                @click="page1 = w.name"><strong>{{w.name}}</strong></a>
+                                        </div>
+                                        <div class="review-count-badge">리뷰 갯수: {{w.reviewcount}}개 </div>
+                                    </div>
+                                </template>
+                            </div>
+                        </template>
+                        <template v-else>
+                            <template v-for="rev in reviews" :key="rev.id">
+                                <template v-if="page1 === rev.product" class="detail-review-item">
+                                    <!-- {{rev}} -->
+
+                                    <div class="star-rating">평점 : {{rev.rating}}/5</div>
+                                    
+                                    <div style="display: flex; gap: 20px;">
+                                        <div style="position: relative;">
+                                            <span class="new-label"
+                                                style="position: absolute; top: -5px; left: -5px;">NEW
+                                            </span>
+                                            <div class="review-photo">리뷰 사진</div>
+                                        </div>
+                                        <div style="flex: 1; line-height: 1.6; color: #444;">
+                                            {{rev.content}}
+                                        </div>
+                                    </div>
+                                    <div
+                                        style="text-align: right; font-size: 13px; color: #888; margin-top: 15px; border-top: 1px dashed #eee; padding-top: 10px;">
+                                        작성자: <strong>{{rev.author}}</strong> | 작성일자: {{rev.date}}
+                                    </div>
+                                </template>
+                            </template>
+                        </template>
+
+
+
+                        <!-- <div class="review-header-info" v-for="(w, idx) in weddinglist" :key="idx"
+                                style="margin-bottom: 10px;">
+                                <div class="review-thumb-box">썸네일</div>
+                                <div class="review-product-name">
+                                    <a href="javascript:;" @click="page1 = w.name"><strong>{{w.name}}</strong></a>
+                                </div>
+                                <div class="review-count-badge">리뷰 갯수: {{w.reviewcount}}개 </div>
+                            </div>
+
+                            <div class="content-card" v-for="w in weddinglist" :key="w.name">
+                                <template
+                                <div v-for="rev in reviews" :key="rev.id">
+                                    <div v-if="page === rev.id" class="detail-review-item">
+                                        <div class="star-rating">평점 : {{rev.rating}}/5</div>
+
+                                        <div style="display: flex; gap: 20px;">
+                                            <div style="position: relative;">
+                                                <span class="new-label"
+                                                    style="position: absolute; top: -5px; left: -5px;">NEW</span>
+                                                <div class="review-photo">리뷰 사진</div>
+                                            </div>
+                                            <div style="flex: 1; line-height: 1.6; color: #444;">
+                                                {{rev.content}}
+                                            </div>
+                                        </div>
+
+                                        <div
+                                            style="text-align: right; font-size: 13px; color: #888; margin-top: 15px; border-top: 1px dashed #eee; padding-top: 10px;">
+                                            작성자: <strong>{{rev.author}}</strong> | 작성일자: {{rev.date}}
+                                        </div>
+                                    </div>
+                                </div> -->
+
+                        <!-- <div class="pagination">
+                                    <span v-for="num in indexlist" :key="num">
+                                        <a @click="page = num" href="javascript:;"
+                                            :style="page === num ? 'color: #ff1493; border: 1px solid #ff1493;' : ''">
+                                            {{num}}
+                                        </a>
+                                    </span>
+                                </div> -->
                     </div>
-                </main>
             </div>
 
-            <footer>
-                푸터 → 업체 정보 | 사업자번호: 000-00-00000 | 고객센터: 1588-0000
-            </footer>
+            <div v-if="reviewTab === 'simple'">
+                <h3>리뷰 내역 : <span style="color: #ff1493;">새 리뷰 5건</span></h3>
 
-            <div class="ai-chatbot">ai 챗봇</div>
+                <div class="review-header-info" style="margin-bottom: 10px;">
+                    <div class="review-thumb-box">썸네일</div>
+                    <div class="review-product-name"><strong>상품명</strong></div>
+                    <div class="review-count-badge">리뷰 갯수: 5개</div>
+                </div>
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>번호</th>
+                            <th>내용</th>
+                            <th>작성자</th>
+                            <th>평점</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>3 <span class="new-label">NEW</span></td>
+                            <td>추천합니다. 친절해요.</td>
+                            <td>결혼해듀오</td>
+                            <td style="color: #ffb400;">★★★★★</td>
+                        </tr>
+                        <tr>
+                            <td>2 <span class="new-label">NEW</span></td>
+                            <td>조금 늦었는데 배려해주셔서 감사합니다.</td>
+                            <td>5월신부</td>
+                            <td style="color: #ffb400;">★★★★★</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        </main>
+        </div>
+
+        <footer>
+            푸터 → 업체 정보 | 사업자번호: 000-00-00000 | 고객센터: 1588-0000
+        </footer>
+
+        <div class="ai-chatbot">ai 챗봇</div>
         </div>
     </body>
 
@@ -447,18 +832,68 @@
                 return {
                     // 변수 - (key : value)
                     userName: 'ooo',
-                        currentMenu: 'main', // 초기 화면
-                        reviewTab: 'detail',
-                        resCount: 3,
-                        menuList: [
-                            { id: 'main', name: '마이 페이지', count: 0 },
-                            { id: 'product', name: '상품 관리', count: 0 },
-                            { id: 'reservation', name: '예약 관리', count: 3 },
-                            { id: 'inquiry', name: '문의 내역', count: 2 },
-                            { id: 'review', name: '리뷰 내역', count: 10 },
-                            { id: 'customer', name: '고객센터', count: 0 }
-                        ],
-                        productPage: 'list' //(list: 목록, reg: 등록, edit: 수정)
+                    currentMenu: 'main', // 초기 화면
+                    reviewTab: 'detail',
+                    resCount: 3,
+                    menuList: [
+                        { id: 'main', name: '마이 페이지', count: 0 },
+                        { id: 'product', name: '상품 관리', count: 0 },
+                        { id: 'reservation', name: '예약 관리', count: 3 },
+                        { id: 'inquiry', name: '문의 내역', count: 2 },
+                        { id: 'review', name: '리뷰 내역', count: 10 },
+                        { id: 'customer', name: '고객센터', count: 0 }
+                    ],
+                    page1: 'main', // 상품별 리뷰 페이지 구분 변수
+                    productPage: 'list', //(list: 목록, reg: 등록, edit: 수정)
+                    indexlist: [1, 2, 3, 4, 5],
+                    page: 1,
+                    reviews: [
+                        { id: 1, product: '스몰 웨딩', rating: 5, author: '김결혼', content: '웨딩 플래너님이 정말 세심하게 도와주셔서 만족스러웠어요.', date: '26.04.08' },
+                        { id: 2, product: '스몰 웨딩', rating: 4, author: '김tntn', content: '드레스 퀄리티가 기대 이상이었습니다!', date: '26.04.08' },
+                        { id: 3, product: '스몰 웨딩', rating: 5, author: '김발랄', content: '스튜디오 촬영 분위기가 너무 좋아서 즐겁게 찍었어요.', date: '26.04.08' },
+                        { id: 4, product: '스몰 웨딩', rating: 5, author: '김망고', content: '스냅 사진 퀄리티가 정말 좋아요.', date: '26.04.01' },
+                        { id: 5, product: '스몰 웨딩', rating: 3, author: '김딸기', content: '예식 진행 스태프들이 매우 프로페셔널했습니다.', date: '26.04.08' },
+                        { id: 6, product: '스몰 웨딩', rating: 4, author: '김포도', content: '예약 과정이 간편해서 좋았어요.', date: '26.04.07' },
+                        { id: 7, product: '스몰 웨딩', rating: 3, author: '김사과', content: '디테일까지 신경 써주셔서 감동이었습니다.', date: '26.04.08' },
+                        { id: 8, product: '스몰 웨딩', rating: 3, author: '김오렌지', content: '예산에 맞춰 잘 추천해주셔서 도움이 많이 됐어요.', date: '26.04.06' },
+                        { id: 9, product: '스몰 웨딩', rating: 5, author: '김자몽', content: '웨딩 촬영 결과물이 정말 만족스러웠습니다.', date: '26.04.05' },
+                        { id: 10, product: '스몰 웨딩', rating: 3, author: '김레몬', content: '당일 진행이 체계적이라 믿고 맡길 수 있었어요.', date: '26.04.08' },
+                        { id: 11, product: '스몰 웨딩', rating: 3, author: '김복숭아', content: '친구들에게도 추천하고 싶은 업체입니다.', date: '26.04.04' },
+                        { id: 12, product: '스몰 웨딩', rating: 5, author: '김수박', content: '상담부터 계약까지 과정이 투명했어요.', date: '26.04.03' },
+                        { id: 13, product: '스몰 웨딩', rating: 5, author: '김참외', content: '웨딩홀 연출이 너무 아름다웠습니다.', date: '26.04.08' },
+                        { id: 14, product: '스몰 웨딩', rating: 5, author: '김멜론', content: '가성비 좋은 패키지라 만족해요.', date: '26.04.02' },
+                        { id: 15, product: '스몰 웨딩', rating: 3, author: '김키위', content: '플래너님 응대가 빠르고 정확했습니다.', date: '26.04.01' },
+
+                        // 화려하게 (10개)
+                        { id: 16, product: '화려하게', rating: 3, author: '김미미', content: '메이크업이 자연스럽고 예쁘게 잘 되었어요.', date: '26.04.07' },
+                        { id: 17, product: '화려하게', rating: 5, author: '김sksk', content: '상담부터 진행까지 전반적으로 만족합니다.', date: '26.04.08' },
+                        { id: 18, product: '화려하게', rating: 5, author: '김하늘', content: '예식 당일 진행이 매끄러워서 걱정 없이 진행했어요.', date: '26.04.06' },
+                        { id: 19, product: '화려하게', rating: 3, author: '김바다', content: '플래너님 덕분에 준비 과정이 훨씬 수월했습니다.', date: '26.04.05' },
+                        { id: 20, product: '화려하게', rating: 3, author: '김초코', content: '드레스 종류가 다양해서 선택하기 좋았어요.', date: '26.04.08' },
+                        { id: 21, product: '화려하게', rating: 5, author: '김쿠키', content: '촬영 작가님이 포즈도 잘 잡아주셔서 만족!', date: '26.04.04' },
+                        { id: 22, product: '화려하게', rating: 4, author: '김라떼', content: '웨딩홀 분위기가 정말 고급스러웠습니다.', date: '26.04.08' },
+                        { id: 23, product: '화려하게', rating: 5, author: '김모카', content: '상담이 친절하고 꼼꼼해서 신뢰가 갔어요.', date: '26.04.03' },
+                        { id: 24, product: '화려하게', rating: 5, author: '김코코', content: '헤어 스타일링이 마음에 쏙 들었습니다.', date: '26.04.02' },
+                        { id: 25, product: '화려하게', rating: 5, author: '김치즈', content: '전체 패키지 구성이 합리적이었어요.', date: '26.04.08' },
+
+                        // 동화같은 분위기 (5개)
+                        { id: 26, product: '동화같은 분위기', rating: 5, author: '김파인', content: '드레스 피팅 경험이 정말 좋았어요.', date: '26.04.08' },
+                        { id: 27, product: '동화같은 분위기', rating: 5, author: '김체리', content: '소소한 요청도 잘 반영해주셔서 감사했습니다.', date: '26.04.07' },
+                        { id: 28, product: '동화같은 분위기', rating: 5, author: '김블루베리', content: '전체 일정 관리가 체계적이었어요.', date: '26.04.06' },
+                        { id: 29, product: '동화같은 분위기', rating: 5, author: '김라임', content: '결혼 준비 스트레스가 많이 줄었습니다.', date: '26.04.05' },
+                        { id: 30, product: '동화같은 분위기', rating: 5, author: '김코코넛', content: '인생에 한 번뿐인 날을 잘 만들어주셔서 감사합니다.', date: '26.04.08' }
+                    ],
+                    reservationList: [
+                        { id: 1, product: '드레스 투어', content: '본식 드레스 투어 하고 싶습니다.', resDate: '26.03.01', useDate: '26.04.01 14:00PM', name: '김결혼', contact: '010-1234-5678', price: '50,000원' },
+                        { id: 2, product: '스튜디오 촬영', content: '본식 스튜디오 촬영 하고 싶습니다.', resDate: '26.03.05', useDate: '26.04.05 10:00AM', name: '5월신부', contact: '010-9876-5432', price: '100,000원' },
+                        { id: 3, product: '메이크업 시연', content: '본식 메이크업 시연 받고 싶습니다.', resDate: '26.03.10', useDate: '26.04.10 16:00PM', name: '김tntn', contact: '010-5555-6666', price: '30,000원' }
+                    ],
+                    indexlist2: [1, 2, 3],
+                    weddinglist: [
+                        { name: '스몰 웨딩', reviewcount: 15 },
+                        { name: '화려하게', reviewcount: 10 },
+                        { name: '동화같은 분위기', reviewcount: 5 }
+                    ]
                 };
             },
             methods: {
