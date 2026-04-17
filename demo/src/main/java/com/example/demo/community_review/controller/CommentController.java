@@ -22,7 +22,7 @@ public class CommentController {
 
     // 댓글 등록 API
     @PostMapping("/add")
-    public String addComment(@RequestBody Comment comment) {
+    public String addComment(@RequestBody Comment comment) { 
         return commentService.addComment(comment);
     }
 
