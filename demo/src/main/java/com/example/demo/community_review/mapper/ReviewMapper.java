@@ -11,7 +11,7 @@ import com.example.demo.community_review.model.Review;
 public interface ReviewMapper {
     // XML의 id와 메서드명이 일치해야 합니다.
     int insertReview(Review review);
-    List<Review> selectReviewList();
+    List<Review> selectReviewList(HashMap<String, Object> map);
     
 // --- 좋아요 관련 메서드 추가 ---
     

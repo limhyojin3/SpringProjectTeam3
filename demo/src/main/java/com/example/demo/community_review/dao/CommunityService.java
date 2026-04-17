@@ -52,9 +52,9 @@ public class CommunityService {
     
 
     // 목록 조회
-    public List<Community> getList() {
+    public List<Community> getList(HashMap<String, Object> map) {
     	// 인자 없이 호출해도 매퍼와 XML이 연결됩니다.
-        return communityMapper.selectPostList();
+        return communityMapper.selectPostList(map);
     }
 
     
@@ -119,6 +119,18 @@ public class CommunityService {
              post = communityMapper.selectPostDetail(map); 
         }
         return post;
+    }
+    
+ // 게시글 작성자 ID 조회
+    public String getPostAuthor(HashMap<String, Object> map) {
+        // Mapper를 통해 해당 게시글의 정보를 가져옵니다.
+        // 기존에 만들어둔 getPostDetail과 로직이 거의 비슷합니다.
+        String authorId = communityMapper.selectPostAuthor(map);
+        
+        if (authorId != null) {
+            return authorId; // 작성자 ID만 반환
+        }
+        return null;
     }
     
 }

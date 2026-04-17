@@ -7,6 +7,8 @@ import org.apache.ibatis.annotations.Mapper;
 
 import com.example.demo.community_review.model.Community;
 
+import jakarta.servlet.http.HttpServletRequest;
+
 @Mapper
 public interface CommunityMapper {
     
@@ -28,7 +30,7 @@ public interface CommunityMapper {
     int insertPost(Community post);
 
     // 6. 게시글 리스트 조회 (조건이 없으므로 인자 생략 가능)
-    List<Community> selectPostList();
+    List<Community> selectPostList(HashMap<String, Object> map);
 
     // 7. 게시글 상세 조회 (postNo 필요)
     Community selectPostById(HashMap<String, Object> map);
@@ -44,6 +46,10 @@ public interface CommunityMapper {
     
     // 11. 게시글 수정
     int updatePost(HashMap<String, Object> map);
+
+    // 12. 게시글 권한 설정 (수정, 삭제를 주소 직접 입력해서 이동하는 것을 방지하는 용도)
+	String selectPostAuthor(HashMap<String, Object> map);
+
     
     
 }

@@ -19,7 +19,7 @@ public class Member {
 	String previousPayment; //마지막 결제 수단
 	//
 	// user_detail table에 있는 컬럼들 입니다.
-	String name; //이름
+	String name; //이름 
 	String nickname; //닉네임
 	String gender; //성별
 	String email; //이메일 주소

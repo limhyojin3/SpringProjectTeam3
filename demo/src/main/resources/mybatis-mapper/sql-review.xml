@@ -5,16 +5,42 @@
     <insert id="insertReview" useGeneratedKeys="true" keyProperty="reviewNo">
         INSERT INTO Review (
             user_id, company_no, res_no, rating, title, content, 
-            original_name, stored_name, is_paid, reg_date
+            original_name, stored_name, img_url,is_paid, booking_source, total_cost, reg_date
         ) VALUES (
             #{userId}, #{companyNo}, #{resNo}, #{rating}, #{title}, #{content}, 
-            #{originalName}, #{storedName}, #{isPaid}, CURRENT_TIMESTAMP
+            #{originalName}, #{storedName}, #{imgUrl}, #{isPaid}, 
+            #{bookingSource}, #{totalCost}, CURRENT_TIMESTAMP
         )
     </insert>
 
     <select id="selectReviewList" resultType="com.example.demo.community_review.model.Review">
-        SELECT * FROM Review ORDER BY reg_date DESC
-    </select>
+	   SELECT 
+	        R.review_no,
+	        R.user_id,
+	        R.company_no,
+	        C.com_name as company_name,    R.rating,
+	        R.title,
+	        R.content,
+	        R.booking_source,
+	        R.total_cost,
+	        R.stored_name,
+	        R.reg_date,
+	        R.is_paid,
+	        R.approval_status,
+	        R.view_cnt,
+	        R.like_cnt
+	    FROM Review R
+	    LEFT JOIN Company C ON R.company_no = C.company_no
+	    <where>
+	        <if test="comName != null and comName != ''">
+	           AND C.com_name LIKE CONCAT('%', #{comName}, '%')
+	        </if>
+	        <if test="userId != null and userId != ''">
+	            AND R.user_id LIKE CONCAT('%', #{userId}, '%')
+	        </if>
+	    </where>
+	    ORDER BY reg_date DESC
+	</select>
 
     <select id="checkReviewLike" resultType="int">
         SELECT COUNT(*) FROM Review_Like 
