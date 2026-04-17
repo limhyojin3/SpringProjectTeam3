@@ -76,50 +76,6 @@
             background-color: #fff9f9;
             position: relative;
         }
-
-        /* 인사말 */
-        .greeting {
-            background-color: white;
-            border: 1px solid #ffc7c2;
-            border-radius: 10px;
-            padding: 20px 25px;
-            margin-bottom: 25px;
-            font-size: 14px;
-            line-height: 1.8;
-            color: #555;
-        }
-
-        .greeting strong {
-            color: #f4a096;
-            font-size: 16px;
-        }
-
-        /* 바로가기 버튼 */
-        .shortcut-wrap {
-            display: flex;
-            gap: 15px;
-            margin-bottom: 25px;
-        }
-
-        .shortcut-btn {
-            flex: 1;
-            padding: 20px;
-            background-color: white;
-            border: 1px solid #ffc7c2;
-            border-radius: 10px;
-            text-align: center;
-            cursor: pointer;
-            font-size: 14px;
-            font-weight: 500;
-            transition: 0.2s;
-        }
-
-        .shortcut-btn:hover {
-            background-color: #f4a096;
-            color: white;
-            border-color: #f4a096;
-        }
-
         /* 패스 정보 */
         .pass-box {
             background-color: #ffc7c2;
@@ -130,44 +86,28 @@
         }
 
         .pass-box h3 {
-            font-size: 20px;
+            font-size: 25px;
             color: #333;
             margin-bottom: 10px;
         }
 
         .pass-box p {
-            font-size: 14px;
+            font-size: 20px;
             color: #666;
             margin-bottom: 15px;
         }
 
         .pass-title {
-            font-size: 20px;
+            font-size: 30px;
             font-weight: bold;
             color: #555;
             margin-bottom: 15px;
             position: relative;
         }
-
-        .btn-withdraw {
-            position: absolute;  /* ← 추가 */
-            bottom: 20px;        /* ← 추가 */
-            right: 20px;;         
-            padding: 8px 20px;
-            background-color: white;
-            border: 1px solid #ddd;
-            border-radius: 6px;
-            cursor: pointer;
-            font-size: 13px;
-            color: #666;
-            transition: 0.2s;
+        .sold{
+            background-color: #ccc;
         }
-
-        .btn-withdraw:hover {
-            background-color: #f44336;
-            color: white;
-            border-color: #f44336;
-        }
+    
     </style>
 </head>
 <body>
@@ -177,8 +117,8 @@
             <!-- 사이드바 -->
             <div class="nav">
                 <div class="nav-title">마이페이지</div>
-                <button class="nav-btn active">마이페이지</button>
-                <button class="nav-btn">결제 멤버십 내역</button>
+                <button class="nav-btn">마이페이지</button>
+                <button class="nav-btn active">결제 멤버십 내역</button>
                 <button class="nav-btn">리뷰 조회 내역</button>
                 <button class="nav-btn">내가 쓴 리뷰/댓글</button>
                 <button class="nav-btn">좋아요 목록</button>
@@ -187,27 +127,16 @@
 
             <!-- 메인 -->
             <div class="main">
-                <!-- 인사말 -->
-                <div class="greeting">
-                    안녕하세요, <strong>000님!</strong><br> <!--이름은 user이름으로 변경-->
-                    본식까지 D-100일 남으셨네요!<br> <!--현재 날짜 -유저가 입력한 예식일로 변경/없으면 ..흠 생각안함-->
-                    사회자, 주례는 정하셨나요? 슬슬 신랑 예복을 준비할 시기예요!
+                <!-- 멤버십 내역 -->
+                <p class="pass-title">멤버십 결제 내역</p> 
+                <div class="pass-box"> <!--우선 하드코딩 했어요.-->
+                    <h3>베이직 5회권</h3>
+                    <p>결제 : 25.02.02 ~ 잔여 2회</p>
                 </div>
-
-                <!-- 바로가기 -->
-                <div class="shortcut-wrap">
-                    <div class="shortcut-btn">내 정보 수정</div>
-                    <div class="shortcut-btn">쿠폰</div>
-                    <div class="shortcut-btn">예약 목록</div>
+                <div class="pass-box sold"> <!-- 소진 완료는 #ccc 컬러로-->
+                    <h3>체험 2회권</h3>
+                    <p>결제 : 25.02.02 ~ 소진완료</p>
                 </div>
-
-                <!-- 패스 정보 -->
-                <p class="pass-title">현재 이용 중인 패스</p> 
-                <div class="pass-box">
-                    <h3>베이직 패스 이용 중입니다</h3>
-                    <p>잔여 횟수 2회</p>
-                </div>
-                <button class="btn-withdraw">탈퇴하기</button>
             </div>
         </div>
     </div>

@@ -76,98 +76,116 @@
             background-color: #fff9f9;
             position: relative;
         }
-
-        /* 인사말 */
-        .greeting {
-            background-color: white;
-            border: 1px solid #ffc7c2;
-            border-radius: 10px;
-            padding: 20px 25px;
-            margin-bottom: 25px;
-            font-size: 14px;
-            line-height: 1.8;
-            color: #555;
-        }
-
-        .greeting strong {
-            color: #f4a096;
-            font-size: 16px;
-        }
-
-        /* 바로가기 버튼 */
-        .shortcut-wrap {
+        /* 탭 버튼 */
+        .review-tab-wrap {
             display: flex;
-            gap: 15px;
-            margin-bottom: 25px;
-        }
-
-        .shortcut-btn {
-            flex: 1;
-            padding: 20px;
-            background-color: white;
-            border: 1px solid #ffc7c2;
-            border-radius: 10px;
-            text-align: center;
-            cursor: pointer;
-            font-size: 14px;
-            font-weight: 500;
-            transition: 0.2s;
-        }
-
-        .shortcut-btn:hover {
-            background-color: #f4a096;
-            color: white;
-            border-color: #f4a096;
-        }
-
-        /* 패스 정보 */
-        .pass-box {
-            background-color: #ffc7c2;
-            border-radius: 10px;
-            padding: 25px;
-            text-align: center;
+            gap: 0;
             margin-bottom: 20px;
         }
 
-        .pass-box h3 {
-            font-size: 20px;
-            color: #333;
-            margin-bottom: 10px;
-        }
-
-        .pass-box p {
-            font-size: 14px;
-            color: #666;
-            margin-bottom: 15px;
-        }
-
-        .pass-title {
-            font-size: 20px;
-            font-weight: bold;
-            color: #555;
-            margin-bottom: 15px;
-            position: relative;
-        }
-
-        .btn-withdraw {
-            position: absolute;  /* ← 추가 */
-            bottom: 20px;        /* ← 추가 */
-            right: 20px;;         
-            padding: 8px 20px;
+        .review-tab {
+            flex: 1;
+            padding: 12px 0;
+            border: 2px solid #f4a096;
             background-color: white;
-            border: 1px solid #ddd;
-            border-radius: 6px;
             cursor: pointer;
-            font-size: 13px;
-            color: #666;
+            font-size: 15px;
+            font-weight: bold;
             transition: 0.2s;
         }
 
-        .btn-withdraw:hover {
-            background-color: #f44336;
-            color: white;
-            border-color: #f44336;
+        .review-tab:first-child {
+            border-radius: 8px 0 0 8px;
         }
+
+        .review-tab:last-child {
+            border-radius: 0 8px 8px 0;
+        }
+
+        .review-tab.active-tab {
+            background-color: #f4a096;
+            color: white;
+        }
+
+        /* 카드형 리뷰 목록 */
+        .review-list {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .review-card {
+            border: 1px solid #ffc7c2;
+            border-radius: 8px;
+            overflow: hidden;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .review-card:hover {
+            box-shadow: 0 4px 10px rgba(244, 160, 150, 0.4);
+            transform: translateY(-2px);
+        }
+
+        .review-thumbnail {
+            width: 100%;
+            aspect-ratio: 4/3;
+            background-color: #ffc7c2;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 13px;
+            color: #999;
+        }
+
+        .review-card-title {
+            padding: 10px;
+            font-size: 13px;
+            font-weight: bold;
+            text-align: center;
+            background-color: #ff69b4;
+            color: white;
+        }
+
+        /* 리스트형 리뷰 목록 */
+        .review-list-item {
+            padding: 12px 15px;
+            background-color: #ff69b4;
+            color: white;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-bottom: 8px;
+            transition: 0.2s;
+        }
+
+        .review-list-item:hover {
+            background-color: #f4a096;
+        }
+
+        /* 인덱스 버튼 */
+        .review-index-wrap {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .btn-review-index {
+            padding: 10px 30px;
+            background-color: #9b8fd4;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: 0.2s;
+        }
+
+        .btn-review-index:hover {
+            background-color: #7b6db4;
+        }
+    
     </style>
 </head>
 <body>
@@ -177,37 +195,37 @@
             <!-- 사이드바 -->
             <div class="nav">
                 <div class="nav-title">마이페이지</div>
-                <button class="nav-btn active">마이페이지</button>
+                <button class="nav-btn">마이페이지</button>
                 <button class="nav-btn">결제 멤버십 내역</button>
-                <button class="nav-btn">리뷰 조회 내역</button>
+                <button class="nav-btn active">리뷰 조회 내역</button>
                 <button class="nav-btn">내가 쓴 리뷰/댓글</button>
                 <button class="nav-btn">좋아요 목록</button>
                 <button class="nav-btn">고객센터</button>
             </div>
 
-            <!-- 메인 -->
+            <!-- 리뷰 조회 내역 메인 영역 -->
             <div class="main">
-                <!-- 인사말 -->
-                <div class="greeting">
-                    안녕하세요, <strong>000님!</strong><br> <!--이름은 user이름으로 변경-->
-                    본식까지 D-100일 남으셨네요!<br> <!--현재 날짜 -유저가 입력한 예식일로 변경/없으면 ..흠 생각안함-->
-                    사회자, 주례는 정하셨나요? 슬슬 신랑 예복을 준비할 시기예요!
+
+                <!-- 탭 버튼 -->
+                <div class="review-tab-wrap">
+                    <button class="review-tab active-tab" @click="switchReviewTab('paid')">유료리뷰</button>
+                    <button class="review-tab" @click="switchReviewTab('free')">무료 리뷰</button>
                 </div>
 
-                <!-- 바로가기 -->
-                <div class="shortcut-wrap">
-                    <div class="shortcut-btn">내 정보 수정</div>
-                    <div class="shortcut-btn">쿠폰</div>
-                    <div class="shortcut-btn">예약 목록</div>
+                <!-- 리뷰 목록 -->
+                <div class="review-list">
+                    <!-- 카드형 (왼쪽 디자인) -->
+                    <div class="review-card" v-for="i in 6" :key="i">
+                        <div class="review-thumbnail">썸네일</div>
+                        <div class="review-card-title">리뷰 제목</div>
+                    </div>
                 </div>
 
-                <!-- 패스 정보 -->
-                <p class="pass-title">현재 이용 중인 패스</p> 
-                <div class="pass-box">
-                    <h3>베이직 패스 이용 중입니다</h3>
-                    <p>잔여 횟수 2회</p>
+                <!-- 상세 리뷰 인덱스 버튼 -->
+                <div class="review-index-wrap">
+                    <button class="btn-review-index">상세 리뷰 인덱스</button>
                 </div>
-                <button class="btn-withdraw">탈퇴하기</button>
+
             </div>
         </div>
     </div>
@@ -219,12 +237,7 @@
     const app = Vue.createApp({
         data() {
             return {
-                // 변수 - (key : value)
-                tab : 'user',
-                userId : "",
-                userPwd : "",
-                companyId : "",
-                companyPwd : ""
+                 reviewTab: 'paid'  // 'paid' or 'free'
             };
         },
         methods: {
@@ -258,6 +271,9 @@
                     document.getElementById('userForm').style.display = 'none';
                     document.getElementById('companyForm').style.display = 'block';
                 }
+            },
+            switchReviewTab: function(type) {
+                this.reviewTab = type;
             }
         }, // methods
         mounted() {

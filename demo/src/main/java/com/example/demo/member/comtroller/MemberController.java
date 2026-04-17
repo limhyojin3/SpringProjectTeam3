@@ -98,6 +98,21 @@ public class MemberController {
 	    HashMap<String, Object> resultMap = memberService.checkComName(map);
 	    return new Gson().toJson(resultMap);
 	}
-	
+	// 3.마이페이지
+	// 3-1. 마이페이지 메인
+	@RequestMapping("/userMyPage.do") // 주소 
+	public String userMyPage(Model model) throws Exception{
+		return "/member/user-mypage"; // 파일명
+	}
+	// 3-2. 마이페이지 결제 멤버십 내역
+	@RequestMapping("/userMyPage-pay.do") // 주소 
+	public String userMyPagePay(Model model) throws Exception{
+		return "/member/user-mypage-pay"; // 파일명
+	}
+	// 3-3. 마이페이지 리뷰 조회 내역
+	@RequestMapping("/userMyPage-review.do") // 주소 
+	public String userMyPageReview(Model model) throws Exception{
+		return "/member/user-mypage-review"; // 파일명
+	}
 	
 }
