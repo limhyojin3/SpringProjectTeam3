@@ -15,11 +15,14 @@
 	</select>
 
 	<select id="selectClientsList" parameterType="hashmap"
-		resultType="com.example.demo.admin.model.Admin">
-		select user_id
-		from member
-		where role = "user";
-		
+		resultType="com.example.demo.admin.model.Admin"> SELECT
+		DATE_FORMAT(REG_DATE, '%Y-%m') AS USER_MONTH, Count(*) AS USER_COUNT
+		FROM MEMBER WHERE 1=1
+		<if test="role != null and role != 'ALL'">
+			AND ROLE = #{role}
+		</if>
+		GROUP BY USER_MONTH
+		ORDER BY USER_MONTH;
 	</select>
 
 </mapper>

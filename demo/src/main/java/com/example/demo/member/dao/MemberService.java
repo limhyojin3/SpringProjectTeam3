@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.example.demo.common.Message;
 import com.example.demo.member.mapper.MemberMapper;
@@ -51,7 +52,7 @@ public class MemberService {
 	        
 	        // 4. 비밀번호 비교
 //	        if(passwordEncoder.matches((String)map.get("password"), member.getPassword())) { //암호화 비교 추후 변경
-	        if(map.get("password").equals(member.getPassword())) { // 평문비교
+		    if(passwordEncoder.matches((String)map.get("password"), member.getPassword())) { // 암호화
 	            resultMap.put("loginResult", true);
 	            
 	         // tab은 위에서 이미 선언했으니까 그냥 사용 가능합니다.
@@ -63,11 +64,11 @@ public class MemberService {
 	          }
 	          
 	         // url 분기
-	         if(member.getRole().equals("ADMIN")) {
+	         if(member.getRole().equals("ADMIN")) { // 관리자 role
 	            resultMap.put("url", "/admin/main.do"); 
 	            // 임시페이지 없어서 404 뜨는데 머지->pull 받고 만드신 주소로 수정하겠습니다.
-	         } else if(member.getRole().equals("PARTNER")) {
-	            resultMap.put("url", "/company/main.do"); 
+	         } else if(member.getRole().equals("PARTNER")) { // 업체롤 role
+	            resultMap.put("url", "/company10.do"); 
 	            // 임시페이지 없어서 404 뜨는데 머지->pull 받고 만드신 주소로 수정하겠습니다.
 	         } else {
 	                resultMap.put("url", "/merryViewHome.do"); // 임시로 /home.jsp 생성했습니다.
@@ -100,14 +101,32 @@ public class MemberService {
 	    }
 	    return resultMap;
 	}
-	
-	// * 회원 가입 *
-	public HashMap<String, Object> addMember(HashMap<String, Object> map){
+	// * 이메일 중복체크 *
+	public HashMap<String, Object> getUserEmailCount(HashMap<String, Object> map) {
 		HashMap<String, Object> resultMap = new HashMap<String, Object>();
 		try {
+		     int count = memberMapper.selectUserEmail(map);
+		     resultMap.put("available", count == 0);
+		} catch(Exception e) {
+		     System.out.println(e.getMessage());
+		     resultMap.put("available", false);
+		}
+		return resultMap;
+	}
+	
+	// * 일반 회원 가입 *
+	@Transactional
+	public HashMap<String, Object> addMember(HashMap<String, Object> map){
+		HashMap<String, Object> resultMap = new HashMap<String, Object>();
+		System.out.println("weddingDate 값: " + map.get("weddingDate")); // ← 추가
+		// weddingDate 빈 문자열이면 null로 변환
+	    if(map.get("weddingDate") != null && map.get("weddingDate").toString().isEmpty()) {
+	        map.put("weddingDate", null);
+	    }
+		try {
+			map.put("password", passwordEncoder.encode((String)map.get("password")));
 			// member 테이블 INSERT
 	        memberMapper.insertMember(map);
-	        
 	        // user_detail 테이블 INSERT
 	        memberMapper.insertUserDetail(map);
 			
@@ -121,6 +140,38 @@ public class MemberService {
 		}
 		return resultMap;
 	}
-	
+	// * 업체 회원 가입 *
+	@Transactional
+	public HashMap<String, Object> addCompany(HashMap<String, Object> map) {
+	    HashMap<String, Object> resultMap = new HashMap<String, Object>();
+	    try {
+	    	map.put("password", passwordEncoder.encode((String)map.get("password")));
+	    	// member 테이블 INSERT
+	        memberMapper.insertCompanyMember(map);
+	        System.out.println("member INSERT 성공");
+	        // company 테이블 INSERT
+	        memberMapper.insertCompany(map);
+	        System.out.println("company INSERT 성공");
+	        resultMap.put("result", "success");
+	        resultMap.put("message", Message.MSG_ADD);
+	    } catch (Exception e) {
+	        System.out.println(e.getMessage());
+	        resultMap.put("result", "fail");
+	        resultMap.put("message", Message.MSG_SERVER_ERR);
+	    }
+	    return resultMap;
+	}
+	// 업체명 검색
+	public HashMap<String, Object> checkComName(HashMap<String, Object> map) {
+	    HashMap<String, Object> resultMap = new HashMap<String, Object>();
+	    try {
+	        int count = memberMapper.selectComName(map);
+	        resultMap.put("available", count == 0);
+	    } catch(Exception e) {
+	        System.out.println(e.getMessage());
+	        resultMap.put("available", false);
+	    }
+	    return resultMap;
+	}
 	
 }
