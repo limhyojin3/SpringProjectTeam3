@@ -8,9 +8,7 @@ import org.springframework.stereotype.Service;
 
 import com.example.demo.common.Message;
 import com.example.demo.admin.mapper.AdminMapper;
-import com.example.demo.admin.mapper.DefaultMapper;
 import com.example.demo.admin.model.Admin;
-import com.example.demo.admin.model.User;
 
 @Service
 public class AdminService {
