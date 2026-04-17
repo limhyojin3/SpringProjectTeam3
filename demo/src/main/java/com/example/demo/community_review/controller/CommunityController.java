@@ -53,7 +53,23 @@ public class CommunityController {
     
  // 1. 수정 페이지 화면 매핑
     @RequestMapping("/edit.do")
-    public String editPage(@RequestParam("postNo") String postNo, Model model) {
+    public String editPage(@RequestParam("postNo") String postNo, Model model, HttpServletRequest request) {
+    	// 이 부분은 주소를 직접 치고 들어오는 경우를 대비하기 위한 장치입니다.
+    	// 1. 세션에서 로그인한 아이디 꺼내기
+        HttpSession session = request.getSession();
+        String sessionId = (String) session.getAttribute("userId");
+        
+        // 2. 해당 글의 정보를 가져와서 작성자 확인 (Service에 메서드 하나 추가 필요)
+        HashMap<String, Object> map = new HashMap<>();
+        map.put("postNo", postNo);
+        String authorId = communityService.getPostAuthor(map);
+        
+        // 3. 본인이 아니면 목록으로 튕겨내기(로그인 안 했을 때도 튕겨냄)
+        if (sessionId == null || !sessionId.equals(authorId) || authorId == null) {
+            // 메시지를 띄우고 싶다면 스크립트 처리가 필요하지만, 일단 안전하게 리다이렉트
+            return "redirect:/api/community/list.do"; 
+        }
+    	
         // JSP에서 ${postNo}로 사용할 수 있게 model에 담아 보냄
         model.addAttribute("postNo", postNo);
         
@@ -66,14 +82,14 @@ public class CommunityController {
     // 1. 목록 데이터 조회
     @PostMapping("/list.dox")
     @ResponseBody
-    public String list(HttpServletRequest request) {
+    public String list(@RequestBody HashMap<String, Object> map, HttpServletRequest request) {
         HashMap<String, Object> resultMap = new HashMap<>();
         // 1. 세션에서 아이디 꺼내기
         HttpSession session = request.getSession();
         String sessionId = (String) session.getAttribute("userId");
         
         // 2. 게시글 목록 가져오기
-        List<Community> list = communityService.getList();
+        List<Community> list = communityService.getList(map);
         
         // 3. 응답 봉투에 담기 (이게 빠지면 프론트에서 undefined가 뜹니다)
         resultMap.put("list", list);
@@ -153,9 +169,27 @@ public class CommunityController {
         
         // 2. 작성자와 세션 아이디가 일치하는지 검증 (방어 코드)
         // 프론트에서 넘어온 userId와 세션의 sessionId 비교
-        if (sessionId == null || !sessionId.equals(map.get("userId"))) {
+        String authorId = communityService.getPostAuthor(map);
+        
+        if (sessionId == null || authorId == null ||!sessionId.equals(authorId)) {
             resultMap.put("result", "fail");
             resultMap.put("message", "수정 권한이 없습니다.");
+            return new Gson().toJson(resultMap);
+        }
+        
+        // [추가] 2-1. 데이터 유효성 검사 (Validation)
+        // 제목이나 내용이 공백인 상태로 넘어오는 것을 방지합니다.
+        String title = (String) map.get("title");
+        String content = (String) map.get("content");
+
+        if (title == null || title.trim().isEmpty()) {
+            resultMap.put("result", "fail");
+            resultMap.put("message", "제목을 입력해주세요.");
+            return new Gson().toJson(resultMap);
+        }
+        if (content == null || content.trim().isEmpty()) {
+            resultMap.put("result", "fail");
+            resultMap.put("message", "내용을 입력해주세요.");
             return new Gson().toJson(resultMap);
         }
 
