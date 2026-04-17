@@ -14,11 +14,6 @@ public class Admin {
 	int orderCount;
 	
 	//회원목록
-	String userId;
-	String name;
-	String nickName;
-	String gender;
-	String email;
-	String weddingDate;
-	
+	String userMonth;
+	int userCount;
 }

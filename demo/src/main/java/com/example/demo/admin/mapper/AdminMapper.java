@@ -6,7 +6,6 @@ import java.util.List;
 import org.apache.ibatis.annotations.Mapper;
 
 import com.example.demo.admin.model.Admin;
-import com.example.demo.admin.model.User;
 
 @Mapper
 public interface AdminMapper {

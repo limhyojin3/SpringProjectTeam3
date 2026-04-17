@@ -25,12 +25,12 @@ public class AdminController {
 	
 	@RequestMapping("/adminMain.do")
 	public String main(Model model) throws Exception{
-		return "/adminMain";
+		return "admin/adminMain";
 	}
 	
 	@RequestMapping("/adminStatistics.do")
 	public String Statistics(Model model) throws Exception{
-		return "/adminStatistics";
+		return "admin/adminStatistics";
 	}
 	
 	@RequestMapping(value = "/sales.dox", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
