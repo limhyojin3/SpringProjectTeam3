@@ -22,35 +22,61 @@ public class AdminController {
 
 	@Autowired
 	AdminService adminService;
-	
+
 	@RequestMapping("/adminMain.do")
-	public String main(Model model) throws Exception{
+	public String main(Model model) throws Exception {
 		return "admin/adminMain";
 	}
-	
+
+	@RequestMapping("/adminReviewWait.do")
+	public String Review(Model model) throws Exception {
+		return "admin/adminReviewWait";
+	}
+
 	@RequestMapping("/adminStatistics.do")
-	public String Statistics(Model model) throws Exception{
+	public String Statistics(Model model) throws Exception {
 		return "admin/adminStatistics";
 	}
 	
+	@RequestMapping("/adminReport.do")
+	public String adminReport(Model model) throws Exception {
+		return "admin/adminReport";
+	}
+
+
 	@RequestMapping(value = "/sales.dox", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
 	@ResponseBody
 	public String sales(Model model, @RequestParam HashMap<String, Object> map) throws Exception {
 		HashMap<String, Object> resultMap = new HashMap<String, Object>();
 		resultMap = adminService.getSalesList(map);
-		
-		
-		return new Gson().toJson(resultMap); 
+
+		return new Gson().toJson(resultMap);
 	}
-	
+
 	@RequestMapping(value = "/clients.dox", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
 	@ResponseBody
 	public String clients(Model model, @RequestParam HashMap<String, Object> map) throws Exception {
 		HashMap<String, Object> resultMap = new HashMap<String, Object>();
 		resultMap = adminService.getclientsList(map);
-		
-		
-		return new Gson().toJson(resultMap); 
+
+		return new Gson().toJson(resultMap);
 	}
-	
+
+	@RequestMapping(value = "/viewReview.dox", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
+	@ResponseBody
+	public String viewReview(Model model, @RequestParam HashMap<String, Object> map) throws Exception {
+		HashMap<String, Object> resultMap = new HashMap<String, Object>();
+		resultMap = adminService.getReviewList(map);
+
+		return new Gson().toJson(resultMap);
+	}
+
+	@RequestMapping(value = "/viewReport.dox", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
+	@ResponseBody
+	public String viewReport(Model model, @RequestParam HashMap<String, Object> map) throws Exception {
+		HashMap<String, Object> resultMap = new HashMap<String, Object>();
+		resultMap = adminService.getReportList(map);
+
+		return new Gson().toJson(resultMap);
+	}
 }

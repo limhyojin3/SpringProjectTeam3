@@ -10,84 +10,23 @@
             integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
         <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
         <script src="/js/page-change.js"></script>
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+        <link rel="stylesheet" href="${pageContext.request.contextPath}/css/common.css">
         <style>
-            /* 1. 컨테이너: 높이를 명확히 주고 쉼표를 없앰 */
-            .container {
+            .middle {
                 width: 100%;
                 /* 화면 전체 높이를 사용하되, 헤더/푸터 제외한 나머지는 유연하게(1fr) */
                 display: grid;
                 grid-template-areas:
-                    "header header"
-                    "nav main"
-                    "footer footer";
-                grid-template-rows: 80px auto minmax(80px, auto);
+                    "nav main";
                 /* 높이 고정 (쉼표 없음) */
                 grid-template-columns: 220px 1fr;
                 /* 너비 고정 */
                 gap: 5px;
             }
 
-            /* 2. 각 영역별 테두리 및 색상 */
-            .header {
-                grid-area: header;
-                border: 2px solid red;
-                display: flex;
-                /* 가로 정렬 */
-                align-items: center;
-                /* 세로 중앙 정렬 */
-                justify-content: space-between;
-                /* 양 끝과 사이에 공간 배치 */
-                padding: 0 20px;
-            }
-
-            .logo {
-                width: 100px;
-                height: 60px;
-                background-color: pink;
-                color: white;
-                text-align: center;
-            }
-
-            .menu-group {
-                display: flex;
-                gap: 15px;
-            }
-
-            .menu-group button {
-                padding: 10px 18px;
-                font-weight: bold;
-                cursor: pointer;
-                border: 1px solid #ddd;
-                border-radius: 5px;
-                background-color: white;
-                transition: 0.2s;
-            }
-
-            .menu-group button:hover {
-                background-color: #f8f9fa;
-                border-color: red;
-                /* 강조색 */
-                color: red;
-            }
-
-            .loginbtn {
-                display: flex;
-                flex-direction: row;
-                border: 2px solid gray
-            }
-
-            .serviceBox {
-                width: 50px;
-                height: 50px;
-            }
-
-            .serviceBox img {
-                max-width: 100%;
-                height: auto;
-                display: block;
-            }
-
-            .nav {
+            .navi {
                 grid-area: nav;
                 border: 1px solid blue;
                 padding: 20px 10px;
@@ -97,7 +36,7 @@
                 background-color: #ffc7c2;
             }
 
-            .nav-btn {
+            .navi-btn {
                 width: 100%;
                 padding: 12px 10px;
                 text-align: left;
@@ -110,7 +49,7 @@
                 transition: 0.2s;
             }
 
-            .nav-btn:hover {
+            .navi-btn:hover {
                 background-color: #e3f2fd;
                 border-color: #2196f3;
                 color: #1976d2;
@@ -162,6 +101,52 @@
                 color: #888;
             }
 
+            .reviewTable table {
+                table-layout: fixed;
+                width: 100%;
+            }
+
+            .reviewTable table th:nth-child(2),
+            .reviewTable table th:nth-child(3),
+            .reviewTable table td:nth-child(2),
+            .reviewTable table td:nth-child(3) {
+                max-width: 150px;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+            }
+
+            .reportTable table {
+                table-layout: fixed;
+                width: 100%;
+            }
+
+            .reportTable table th:nth-child(2),
+            .reportTable table th:nth-child(3),
+            .reportTable table td:nth-child(2),
+            .reportTable table td:nth-child(3) {
+                max-width: 150px;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+            }
+
+            .up {
+                color: #e74c3c;
+            }
+
+            .up::before {
+                content: "▲ ";
+            }
+
+            .down {
+                color: #3498db;
+            }
+
+            .down::before {
+                content: "▼ ";
+            }
+
             /* 상세보기 버튼 (적당히 작은 크기) */
             .detail-btn {
                 padding: 6px 12px;
@@ -176,159 +161,212 @@
             .detail-btn:hover {
                 background-color: #333;
             }
-
-            .footer {
-                grid-area: footer;
-                border: 2px solid gray;
-                background-color: #f9f9f9;
-                padding: 20px;
-                font-size: 13px;
-                color: #666;
-                display: flex;
-                flex-direction: column;
-                /* 위아래 섹션 구분 */
-                gap: 10px;
-            }
-
-            .footer-top {
-                display: flex;
-                justify-content: space-between;
-                align-items: center;
-                border-bottom: 1px solid #ddd;
-                padding-bottom: 10px;
-            }
-
-            .footer-bottom {
-                display: flex;
-                flex-wrap: wrap;
-                /* 가로로 쭉 나열되다가 모자라면 다음줄로 */
-                gap: 5px 20px;
-                color: #888;
-            }
-
-            .footer-bottom span::after {
-                content: "|";
-                margin-left: 20px;
-                color: #ccc;
-            }
-
-            .footer-bottom span:last-child::after {
-                content: "";
-                /* 마지막 항목은 선 제거 */
-            }
-
-            .footer-links a {
-                text-decoration: none;
-                color: #666;
-                margin-right: 15px;
-            }
-
-            .footer-links .bold-link {
-                font-weight: bold;
-                color: #333;
-            }
         </style>
     </head>
 
     <body>
-        <div id="app" class="container">
-            <div class="header">
-                <div class="logo">메리뷰
+        <div id="app">
+            <jsp:include page="/WEB-INF/common/header.jsp" />
+            <div class="middle">
+                <div class="navi">
+                    <button @click="fnPage('/adminMain.do')" type="button" class="navi-btn">관리자 메인 페이지</button>
+                    <button @click="fnPage('/')" type="button" class="navi-btn">전체 회원 목록</button>
+                    <button @click="fnPage('/')" type="button" class="navi-btn">전체 업체 목록</button>
+                    <button @click="fnPage('/')" type="button" class="navi-btn">전체 게시판/리뷰 목록</button>
+                    <button @click="fnPage('/adminReviewWait.do')" type="button" class="navi-btn">승인 대기중인 리뷰</button>
+                    <button @click="fnPage('/')" type="button" class="navi-btn">결제 및 상품 관리</button>
+                    <button @click="fnPage('/adminReport.do')" type="button" class="navi-btn">신고 제보 관리</button>
+                    <button @click="fnPage('/adminStatistics.do')" type="button" class="navi-btn">통계</button>
                 </div>
-                <div class="menu-group">
-                    <button type="button">회사소개</button>
-                    <button type="button">제휴업체</button>
-                    <button type="button">커뮤니티</button>
-                    <button type="button">패스구매</button>
-                    <button type="button">리뷰조회</button>
-                </div>
-                <div class="loginbtn">
-                    <div class="serviceBox">
-                        <img src="../img/logoServiceJPG.JPG" alt="">
+                <div class="main">
+                    <!-- 리뷰승인 카드 -->
+                    <div class="dashboard-card">
+                        <h4>리뷰승인</h4>
+                        <div class="data-box">
+                            <div class="reviewTable">
+                                <h3>아직 승인되지 않은 리뷰 : {{reviewWait}}</h3>
+                                <table>
+                                    <tr>
+                                        <th>번호</th>
+                                        <th>제목</th>
+                                        <th>작성자</th>
+                                        <th>대기</th>
+                                        <th>작성일</th>
+                                    </tr>
+                                    <tr v-for="item in reviewList">
+                                        <td>{{item.reviewNo}}</td>
+                                        <td>{{item.title}}</td></a>
+                                        <td>{{item.userId}}</td>
+                                        <td>{{item.approvalStatus}}</td>
+                                        <td>{{item.postDay}}</td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+                        <button @click="fnReview" type="button" class="detail-btn">상세보기</button>
                     </div>
-                    <button type="button">관리자</button>
-                </div>
-            </div>
-            <div class="nav">
-                <button type="button" class="nav-btn">관리자 메인 페이지</button>
-                <button type="button" class="nav-btn">전체 회원 목록</button>
-                <button type="button" class="nav-btn">전체 업체 목록</button>
-                <button type="button" class="nav-btn">전체 게시판/리뷰 목록</button>
-                <button type="button" class="nav-btn">결제 및 상품 관리</button>
-                <button type="button" class="nav-btn">신고 제보 관리</button>
-                <button @click="fnStatistics" type="button" class="nav-btn">통계</button>
-            </div>
-            <div class="main">
-                <!-- 리뷰승인 카드 -->
-                <div class="dashboard-card">
-                    <h4>리뷰승인</h4>
-                    <div class="data-box">내용 영역</div>
-                    <button type="button" class="detail-btn">상세보기</button>
-                </div>
 
-                <!-- 신고제보 카드 -->
-                <div class="dashboard-card">
-                    <h4>신고제보</h4>
-                    <div class="data-box">내용 영역</div>
-                    <button type="button" class="detail-btn">상세보기</button>
-                </div>
-
-                <!-- 통계 카드 -->
-                <div class="dashboard-card">
-                    <h4>통계</h4>
-                    <div class="data-box">
-                        <div>월별 매출 현황 : {{}}</div>
-                        <div>일반 회원 등록수</div>
-                        <div>일반 업체 등록수</div>
-                        <div>제휴업체 등록수</div>
+                    <!-- 신고제보 카드 -->
+                    <div class="dashboard-card">
+                        <h4>신고제보</h4>
+                        <div class="data-box">
+                            <div class="reportTable">
+                                <h3>아직 처리되지 않은 신고 : {{reportWait}}</h3>
+                                <table>
+                                    <tr>
+                                        <th>번호</th>
+                                        <th>제목</th>
+                                        <th>작성자</th>
+                                        <th>신고일</th>
+                                    </tr>
+                                    <tr v-for="item in reportList">
+                                        <td>{{item.reportNo}}</td>
+                                        <td>{{item.reportTitle}}</td>
+                                        <td>{{item.reporterId}}</td>
+                                        <td>{{item.reportDay}}</td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+                        <button @click="fnPage('/adminReport.do')" type="button" class="detail-btn">상세보기</button>
                     </div>
-                    <button @click="fnStatistics" type="button" class="detail-btn">상세보기</button>
-                </div>
-            </div>
-            <div class="footer">
-                <!-- 상단: 로고, 링크, 고객센터 -->
-                <div class="footer-top">
-                    <div style="font-weight: bold; font-size: 16px; color: #333;">MERRYVIEW</div>
-                    <div class="footer-links">
-                        <a href="#">회사소개</a>
-                        <a href="#" class="bold-link">개인정보처리방침</a>
-                        <a href="#">이용약관</a>
-                        <a href="#">파트너 입점문의</a>
+
+                    <!-- 통계 카드 -->
+                    <div class="dashboard-card">
+                        <h4>통계</h4>
+                        <div class="data-box">
+                            <div>
+                                매출 현황<br>{{salesNow.toLocaleString()}} 원<br>
+                                전월대비
+                                <span :class="salesGrowthRate === 0 ? 'same' : (salesGrowthRate < 0 ? 'down' : 'up')">
+                                    {{formatPercent(salesGrowthRate)}}%
+                                </span>
+                            </div>
+                            <div>일반 회원 등록수<br>{{userNow}} 명<br>
+                                전월대비
+                                <span :class="userGrowthRate === 0 ? 'same' : (userGrowthRate < 0 ? 'down' : 'up')">
+                                    {{formatPercent(userGrowthRate)}}%
+                                </span>
+                            </div>
+                            <div>일반 업체 등록수<br>{{nPartnerNow}} 곳<br>
+                                전월대비
+                                <span
+                                    :class="nPartnerGrowthRate === 0 ? 'same' : (nPartnerGrowthRate < 0 ? 'down' : 'up')">
+                                    {{formatPercent(nPartnerGrowthRate)}}%
+                                </span>
+                            </div>
+                            <div>제휴업체 등록수<br>{{partnerNow}} 곳<br>
+                                전월대비
+                                <span
+                                    :class="partnerGrowthRate === 0 ? 'same' : (partnerGrowthRate < 0 ? 'down' : 'up')">
+                                    {{formatPercent(partnerGrowthRate)}}%
+                                </span>
+                            </div>
+                            <div>
+                                전체 신규 등록 수 : {{newCommer}}
+                                <br>
+                                업체 제휴율 : {{affRate}}%
+                            </div>
+                        </div>
+                        <button @click="fnPage('/adminStatistics.do')" type="button" class="detail-btn">상세보기</button>
                     </div>
-                    <div>고객센터 <span style="font-weight: bold; color: #ff6b6b;">1588-0000</span> (평일 10:00~18:00)</div>
-                </div>
-
-                <!-- 하단: 업체 정보 가로 나열 -->
-                <div class="footer-bottom">
-                    <span>(주)메리뷰</span>
-                    <span>대표: 김메리</span>
-                    <span>사업자등록번호: 123-45-67890</span>
-                    <span>통신판매업신고: 제 2026-서울강남-01234호</span>
-                    <span>주소: 서울특별시 강남구 테헤란로 77길 11, 메리타워 15층</span>
-                    <span>이메일: help@merryview.com</span>
-                </div>
-
-                <div style="font-size: 11px; color: #bbb; margin-top: 5px;">
-                    © 2026 MerryView Inc. All Rights Reserved.
                 </div>
             </div>
+            <jsp:include page="/WEB-INF/common/footer.jsp" />
         </div>
         <script>
             const app = Vue.createApp({
                 data() {
                     return {
                         // 변수 - (key : value)
-                        list:[],
+                        list: [],
+                        reviewList: [],
+                        reviewWait: 0,
+                        reviewNo: 0,
+                        userId: "",
+                        approvalStatus: "",
+                        title: "",
+                        postDay: "",
+                        reportWait: 0,
+                        reportList: [],
+                        reportNo: 0,
+                        reporterId: "",
+                        reportTitle: "",
+                        reportContent: "",
+                        reportDay: "",
+                        salesNow: 1,
+                        salesBefore: 1,
+                        salesGrowthRate: 3,
+                        userNow: 1,
+                        userBefore: 1,
+                        userGrowthRate: 0,
+                        nPartnerNow: 0,
+                        nPartnerBefore: 0,
+                        nPartnerGrowthRate: 0,
+                        partnerNow: 1,
+                        partnerBefore: 1,
+                        partnerGrowthRate: 0,
+                        doneCount: 0,
+                        newCommer: 0,
+                        affRate: 0,
                     };
                 },
                 methods: {
                     // 함수(메소드) - (key : function())
-                    fnStatistics:function () {
-                        location.href="adminStatistics.do"
-                    },
-                    fnGetSales: function () {
+                    fnGetReviewList: function () {
                         let self = this;
                         let param = {};
+                        $.ajax({
+                            url: "http://localhost:8080/viewReview.dox",
+                            dataType: "json",
+                            type: "POST",
+                            data: param,
+                            success: function (data) {
+                                console.log(data)
+                                self.reviewList = data.list;
+                                self.reviewWait = self.reviewList.length > 0 ? self.reviewList[0].reviewWait : 0;
+                            }
+                        });
+                    },
+
+                    fnGetReportList: function () {
+                        let self = this;
+                        let param = {
+                            processStatus : "WAIT_ACTION"
+                        };
+                        $.ajax({
+                            url: "http://localhost:8080/viewReport.dox",
+                            dataType: "json",
+                            type: "POST",
+                            data: param,
+                            success: function (data) {
+                                console.log(data)
+                                self.reportList = data.list;
+                                self.reportWait = self.reportList.length > 0 ? self.reportList[0].reportWait : 0;
+                            }
+                        });
+                    },
+
+                    fnAfterAllDone: function () {
+                        let self = this;
+                        self.newCommer = self.userNow + self.nPartnerNow + self.partnerNow;
+                        let total = self.nPartnerNow + self.partnerNow;
+                        self.affRate = total === 0 ? 0 : (self.partnerNow / total) * 100;
+                    },
+
+                    formatPercent(val) {
+                        return Number(Math.abs(val || 0).toFixed(1)).toLocaleString();
+                    },
+
+                    fnPage: function(url){
+                        location.href = url;
+                    },
+
+                    fnGetSales: function () {
+                        let self = this;
+                        let param = {
+                            salesFlg: "salesNow"
+                        };
                         $.ajax({
                             url: "http://localhost:8080/sales.dox",
                             dataType: "json",
@@ -337,13 +375,17 @@
                             success: function (data) {
                                 console.log(data);
                                 self.list = data.list;
+                                self.salesNow = data.list[data.list.length - 1].totalRevenue;
+                                self.salesBefore = data.list[data.list.length - 2].totalRevenue;
+                                self.salesGrowthRate = self.salesBefore === 0
+                                    ? 0
+                                    : ((self.salesNow - self.salesBefore) / self.salesBefore) * 100;
                             }
                         });
                     },
 
                     fnGetUsers: function (role) {
                         let self = this;
-                        self.role = role;
                         let param = {
                             role: role
                         };
@@ -354,7 +396,28 @@
                             data: param,
                             success: function (data) {
                                 console.log(data);
-                                self.list = data.list;
+                                if (role === "USER") {
+                                    self.userNow = data.list[data.list.length - 1].userCount;
+                                    self.userBefore = data.list[data.list.length - 2].userCount;
+                                    self.userGrowthRate = self.userBefore === 0
+                                        ? 0
+                                        : ((self.userNow - self.userBefore) / self.user.Before) * 100;
+                                }
+                                if (role === "NPARTNER") {
+                                    self.nPartnerNow = data.list[data.list.length - 1].userCount;
+                                    self.nPartnerBefore = data.list[data.list.length - 2].userCount;
+                                    self.nPartnerGrowthRate = self.nPartnerBefore === 0
+                                        ? 0
+                                        : ((self.nPartnerNow - self.nPartnerBefore) / self.nPartnerBefore) * 100;
+                                }
+                                if (role === "PARTNER") {
+                                    self.partnerNow = data.list[data.list.length - 1].userCount;
+                                    self.partnerBefore = data.list[data.list.length - 2].userCount;
+                                    self.partnerGrowthRate = self.partnerBefore === 0
+                                        ? 0
+                                        : ((self.partnerNow - self.partnerBefore) / self.partnerBefore) * 100;
+                                }
+                                self.fnAfterAllDone();
                             }
                         });
                     },
@@ -362,7 +425,12 @@
                 mounted() {
                     // 처음 시작할 때 실행되는 부분
                     let self = this;
+                    self.fnGetReviewList();
+                    self.fnGetReportList();
                     self.fnGetSales();
+                    self.fnGetUsers("USER");
+                    self.fnGetUsers("NPARTNER");
+                    self.fnGetUsers("PARTNER");
                 }
             });
 

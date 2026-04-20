@@ -10,6 +10,10 @@ import com.example.demo.admin.model.Admin;
 @Mapper
 public interface AdminMapper {
 	public List<Admin> selectSalesList(HashMap<String, Object> map);
-	
+
 	public List<Admin> selectClientsList(HashMap<String, Object> map);
+
+	public List<Admin> selectReviewList(HashMap<String, Object> map);
+
+	public List<Admin> selectReportList(HashMap<String, Object> map);
 }
