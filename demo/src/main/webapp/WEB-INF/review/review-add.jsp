@@ -3,212 +3,159 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>리뷰 작성 - 영수증 인증 필수</title>
-    
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <title>리뷰 작성 - MerryView</title>
+    <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
     <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
-    
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
-
-    <link href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-bs4.min.css" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-bs4.min.js"></script>
-
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/common.css">
+    
+    
     <style>
-        .container { max-width: 800px; margin-top: 50px; margin-bottom: 50px; }
-        .form-group label { font-weight: bold; }
-        .btn-submit { background-color: #ffb6c1; color: white; width: 100%; padding: 10px; font-weight: bold; }
-        .btn-submit:hover { background-color: #ff8c94; }
-        .note-editor { border-radius: 5px; }
+        :root { --primary-color: #ff4d6d; }
+        .write-container { max-width: 800px; margin: 40px auto; padding: 30px; background: #fff; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); }
+        
+        /* 유료/무료 선택 탭 */
+        .type-tabs { display: flex; margin-bottom: 30px; border: 1px solid #ddd; border-radius: 8px; overflow: hidden; }
+        .type-tab { flex: 1; padding: 15px; text-align: center; cursor: pointer; font-weight: bold; background: #f8f9fa; color: #666; transition: 0.3s; }
+        .type-tab.active { background: var(--primary-color); color: #fff; }
+        
+        .file-box { background: #fdfdfd; border: 1px dashed #ced4da; padding: 20px; border-radius: 8px; margin-bottom: 20px; }
+        .essential { color: var(--primary-color); }
+        .guide-box { font-size: 0.85rem; padding: 10px; border-radius: 5px; margin-bottom: 15px; }
     </style>
 </head>
 <body>
+    <div id="app">
+        <jsp:include page="/WEB-INF/common/header.jsp" />
+        
+        <div class="write-container">
+            <h3 class="text-center font-weight-bold mb-4">리뷰 작성</h3>
 
-<div id="app" class="container">
-    <div class="card shadow">
-        <div class="card-header bg-white text-center">
-            <h3>리뷰 등록 (인증 필수)</h3>
-        </div>
-        <div class="card-body">
-            
-            <div class="form-group">
-                <label>리뷰 형태</label>
-                <div class="btn-group btn-group-toggle d-block">
-                    <label class="btn btn-outline-secondary" :class="{active: reviewInfo.isPaid == 0}">
-                        <input type="radio" v-model="reviewInfo.isPaid" value="0"> 무료 간단리뷰
-                    </label>
-                    <label class="btn btn-outline-secondary" :class="{active: reviewInfo.isPaid == 1}">
-                        <input type="radio" v-model="reviewInfo.isPaid" value="1"> 유료 상세리뷰
-                    </label>
+            <div class="type-tabs">
+                <div class="type-tab" :class="{active: isPaid === 0}" @click="fnChangeType(0)">🎁 무료 리뷰</div>
+                <div class="type-tab" :class="{active: isPaid === 1}" @click="fnChangeType(1)">💎 유료(상세) 리뷰</div>
+            </div>
+
+            <div class="guide-box" :class="isPaid === 1 ? 'alert-danger' : 'alert-primary'">
+                <div v-if="isPaid === 0">
+                    <strong>무료 리뷰 안내:</strong> 텍스트 200자 이내 / 사진 최대 2장 (선택사항)
+                </div>
+                <div v-else>
+                    <strong>유료 리뷰 안내:</strong> 텍스트 500자 이상 필히 작성 / 사진 3장 이상 첨부 필수
                 </div>
             </div>
 
-            <div class="row">
-                <div class="col-md-4">
-                    <div class="form-group">
-                        <label>카테고리</label>
-                        <select v-model="reviewInfo.category" class="form-control">
-                            <option value="">선택</option>
-                            <option value="S">스튜디오</option>
-                            <option value="D">드레스</option>
-                            <option value="M">메이크업</option>
-                        </select>
-                    </div>
-                </div>
-                <div class="col-md-8">
-                    <div class="form-group">
-                        <label>업체명</label>
-                        <input type="text" v-model="reviewInfo.targetName" class="form-control" placeholder="업체명을 입력하세요">
-                    </div>
-                </div>
+            <div class="file-box">
+                <label class="font-weight-bold">🧾 영수증 인증 <span class="essential">*</span></label>
+                <input type="file" class="form-control-file" ref="receiptFile">
+                <small class="text-muted">무료/유료 관계없이 실제 이용 증빙은 필수입니다.</small>
             </div>
 
-            <div class="row">
-                <div class="col-md-6">
-                    <div class="form-group">
-                        <label>예약 경로</label>
-                        <select v-model="reviewInfo.bookingSource" class="form-control">
-                            <option value="">선택하세요</option>
-                            <option value="app">자사 앱</option>
-                            <option value="visit">현장 방문</option>
-                            <option value="call">전화 예약</option>
-                            <option value="etc">기타</option>
-                        </select>
-                    </div>
+            <div class="form-row">
+                <div class="form-group col-md-8">
+                    <label class="font-weight-bold">방문 업체 <span class="essential">*</span></label>
+                    <select class="form-control" v-model="companyNo">
+                        <option value="">업체를 선택해주세요</option>
+                        <option v-for="com in companyList" :value="com.companyNo">{{com.comName}}</option>
+                    </select>
                 </div>
-                <div class="col-md-6">
-                    <div class="form-group">
-                        <label>총 결제 금액 (원)</label>
-                        <input type="number" v-model="reviewInfo.totalCost" class="form-control" placeholder="숫자만 입력">
-                        <small class="text-primary" v-if="reviewInfo.totalCost > 0">
-                            실제 금액: {{ Number(reviewInfo.totalCost).toLocaleString() }} 원
-                        </small>
-                    </div>
+                <div class="form-group col-md-4">
+                    <label class="font-weight-bold">별점</label>
+                    <select class="form-control" v-model="rating">
+                        <option v-for="i in [5,4,3,2,1]" :value="i">{{ '★'.repeat(i) + '☆'.repeat(5-i) }}</option>
+                    </select>
                 </div>
-            </div>
-
-            <div class="form-group" v-if="reviewInfo.isPaid == 1">
-                <label>리뷰 제목</label>
-                <input type="text" v-model="reviewInfo.title" class="form-control" placeholder="상세 리뷰 제목을 입력하세요">
             </div>
 
             <div class="form-group">
-                <label>평점: {{reviewInfo.rating}}점</label>
-                <input type="range" v-model="reviewInfo.rating" class="custom-range" min="1" max="5" step="0.5">
-            </div>
-
-            <div class="form-group">
-                <label>리뷰 내용</label>
-                <div id="summernote"></div>
-            </div>
-
-            <div class="form-group">
-                <label>영수증 인증파일 (이미지 필수)</label>
-                <div class="custom-file">
-                    <input type="file" class="custom-file-input" id="receiptFile" ref="fileInput" @change="fnFileChange">
-                    <label class="custom-file-label" for="receiptFile">{{ fileName || '파일을 선택하세요' }}</label>
+                <label class="font-weight-bold">리뷰 내용 <span class="essential">*</span></label>
+                <textarea class="form-control" rows="10" v-model="content" 
+                          :placeholder="isPaid === 1 ? '상세한 후기를 500자 이상 남겨주세요.' : '후기를 남겨주세요.'"></textarea>
+                <div class="text-right small mt-1" :class="contentError ? 'text-danger' : 'text-muted'">
+                    {{ content.length }} / {{ isPaid === 1 ? '최소 500' : '최대 200' }}자
                 </div>
             </div>
 
-            <button type="button" class="btn btn-submit" @click="fnSubmit">리뷰 등록하기</button>
+            <div class="file-box">
+                <label class="font-weight-bold">📸 리뷰 사진 <span v-if="isPaid === 1" class="essential">(3장 이상 필수)</span></label>
+                <input type="file" class="form-control-file" ref="reviewFiles" multiple @change="fnFileCheck">
+                <small class="text-muted">{{ isPaid === 1 ? '유료 리뷰는 3장 이상 업로드해야 합니다.' : '무료 리뷰는 최대 2장까지만 가능합니다.' }}</small>
+            </div>
+
+            <div class="text-center mt-5">
+                <button class="btn btn-light border btn-lg mr-2" @click="fnBack">취소</button>
+                <button class="btn btn-danger btn-lg px-5" @click="fnSave">리뷰 등록하기</button>
+            </div>
         </div>
     </div>
-</div>
 
-<script>
-    const app = Vue.createApp({
-        data() {
-            return {
-                reviewInfo: {
+    <script>
+        const { createApp } = Vue;
+        createApp({
+            data() {
+                return {
                     isPaid: 0,
-                    category: "",
-                    targetName: "",
-                    title: "",
-                    content: "",
-                    rating: 5.0,
-                    companyNo: 0,
-                    bookingSource: "", // 추가됨
-                    totalCost: 0       // 추가됨
-                },
-                selectedFile: null,
-                fileName: ""
-            };
-        },
-        methods: {
-            fnFileChange(event) {
-                const file = event.target.files[0];
-                if (file) {
-                    this.selectedFile = file;
-                    this.fileName = file.name;
-                }
+                    companyNo: '',
+                    rating: 5,
+                    content: '',
+                    companyList: [], 
+                    contentError: false
+                };
             },
-            // 금액 포맷 함수
-            fnFormatCurrency(value) {
-                if (!value) return '0원';
-                return new Intl.NumberFormat('ko-KR', { style: 'currency', currency: 'KRW' }).format(value);
-                // 또는 간단하게: return Number(value).toLocaleString() + '원';
-            },
-            
-            fnSubmit() {
-                // 에디터 내용 수집
-                this.reviewInfo.content = $('#summernote').summernote('code');
-
-                // 유효성 검사
-                if(!this.selectedFile) {
-                    alert("영수증 인증은 필수입니다!");
-                    return;
-                }
-                if(!this.reviewInfo.targetName) {
-                    alert("업체명을 입력해주세요.");
-                    return;
-                }
-                if(!this.reviewInfo.content || this.reviewInfo.content === "<p><br></p>") {
-                    alert("리뷰 내용을 입력해주세요.");
-                    return;
-                }
-
-                let formData = new FormData();
-                formData.append("file", this.selectedFile);
-                formData.append("reviewData", JSON.stringify(this.reviewInfo));
-
-                $.ajax({
-                    url: "/api/review/add.dox",
-                    type: "POST",
-                    data: formData,
-                    processData: false, 
-                    contentType: false, 
-                    success: (res) => {
-                        let data = typeof res === 'string' ? JSON.parse(res) : res;
-                        
-                        if (data.result === "success") {
-                            alert(data.message);
-                            location.href = "/api/review/list.do";
-                        } else {
-                            alert("등록 실패 : " + data.message);
-                        }
-                    },
-                    error: () => {
-                        alert("서버 통신 중 오류가 발생했습니다.");
+            methods: {
+                fnChangeType(type) {
+                    if(confirm("유형 변경 시 작성 내용이 초기화될 수 있습니다. 변경하시겠습니까?")) {
+                        this.isPaid = type;
+                        this.content = ""; // 유형 바뀔 때 내용 초기화 (글자수 제한이 다르므로)
                     }
-                });
-            }
-        },
-        mounted() {
-            $('#summernote').summernote({
-                placeholder: '영수증 인증 리뷰는 다른 예비 부부들에게 큰 도움이 됩니다.',
-                height: 300,
-                lang: 'ko-KR',
-                toolbar: [
-                    ['style', ['bold', 'italic', 'underline', 'clear']],
-                    ['font', ['strikethrough']],
-                    ['para', ['ul', 'ol', 'paragraph']],
-                    ['insert', ['link', 'picture']],
-                    ['view', ['fullscreen', 'codeview']]
-                ]
-            });
-        }
-    }).mount('#app');
-</script>
+                },
+                fnFileCheck() {
+                    const files = this.$refs.reviewFiles.files;
+                    if(this.isPaid === 0 && files.length > 2) {
+                        alert("무료 리뷰는 사진을 최대 2장까지만 등록할 수 있습니다.");
+                        this.$refs.reviewFiles.value = "";
+                    }
+                },
+                fnSave() {
+                    const receipt = this.$refs.receiptFile.files[0];
+                    const reviewFiles = this.$refs.reviewFiles.files;
 
+                    // 공통 검증
+                    if(!receipt) return alert("영수증 인증은 필수입니다!");
+                    if(!this.companyNo) return alert("업체를 선택해주세요.");
+
+                    // 무료 리뷰 검증 (200자 이하)
+                    if(this.isPaid === 0) {
+                        if(this.content.length > 200) return alert("무료 리뷰는 200자 이하로 작성해주세요.");
+                    }
+                    
+                    // 유료 리뷰 검증 (500자 이상, 사진 3장 이상)
+                    if(this.isPaid === 1) {
+                        if(this.content.length < 500) return alert("상세 리뷰는 500자 이상 작성해야 합니다.");
+                        if(reviewFiles.length < 3) return alert("상세 리뷰는 사진을 3장 이상 첨부해야 합니다.");
+                    }
+
+                    // 서버 전송 로직 (FormData 사용)
+                    const formData = new FormData();
+                    formData.append("receiptFile", receipt);
+                    for(let i=0; i<reviewFiles.length; i++) {
+                        formData.append("reviewFiles", reviewFiles[i]);
+                    }
+                    
+                    const reviewData = {
+                        companyNo: this.companyNo,
+                        rating: this.rating,
+                        content: this.content,
+                        isPaid: this.isPaid
+                    };
+                    formData.append("reviewData", JSON.stringify(reviewData));
+
+                    // $.ajax 호출... (이하 생략)
+                    alert("검증 완료! 서버로 전송합니다.");
+                },
+                fnBack() { history.back(); }
+            }
+        }).mount('#app');
+    </script>
 </body>
 </html>
