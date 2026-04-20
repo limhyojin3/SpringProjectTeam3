@@ -223,18 +223,35 @@
                         @input="formatTel"
                         maxlength="13"
                         placeholder="010 1234 5678">
-                    <button class="btn-check">본인 인증</button>
+                    <button class="btn-check" @click="fnSendSms()">인증 요청</button>
                 </div>
                 <div class="msg-box"></div>
             </div>
+        </div>
+        <!-- 인증번호 입력 -->
+        <div class="form-row">
+            <div class="form-label">인증번호</div>
+            <div class="input-wrap">
+                <div class="form-input">
+                    <input type="number" v-model="info.authCode"
+                        @input="formatTel"
+                        maxlength="6"
+                        placeholder="6자리 숫자를 입력하세요">
+                    <button class="btn-check" @click="fnCheckSms()">인증 확인</button>
+                </div>
+                <div class="msg-box"></div>
+            </div> 
         </div>
 
         <!-- 비밀번호 -->
         <div class="form-row">
             <div class="form-label">비밀번호</div>
             <div class="input-wrap">
-                <div class="form-input">
-                    <input type="password" v-model="info.password" @input="filterPassword">
+                <div class="form-input" :class="{'disabled': !isVerified}">
+                    <input type="password" v-model="info.password" 
+                    @input="filterPassword"
+                    :disabled="!isVerified"
+                    placeholder="영문+숫자 조합으로 8자 이상 입력하세요.">
                 </div>
                 <div class="msg-box" :style="{color: isPwdMatch ? 'green' : 'red'}">
                     {{ pwdMsg }}
@@ -246,8 +263,10 @@
         <div class="form-row">
             <div class="form-label">비밀번호 확인</div>
             <div class="input-wrap">
-                <div class="form-input">
-                    <input type="password" v-model="info.passwordConfirm">
+                <div class="form-input" :class="{'disabled': !isVerified}">
+                    <input type="password" v-model="info.passwordConfirm"
+                    :disabled="!isVerified"
+                    placeholder="비밀번호를 한 번 더 입력하세요.">
                 </div>
                 <div class="msg-box"></div>
             </div>
@@ -284,7 +303,9 @@
                     userName : "",
                     userEmail : "",
                     gender : "M",
-                    weddingDate: ""
+                    weddingDate: "",
+                    // *문자 인증
+                    authCode : "" // 인증번호 입력값
                 },
                 isVerified: false,  // 인증 완료 여부
                 isUserIdAvailable: false,  // 아이디 중복체크 통과 여부 (true  → 사용 가능한 아이디)
@@ -481,6 +502,48 @@
             fnCancelDirectEmail: function() {
                 this.emailDomainDirect = false;
                 this.emailDomain = "naver.com";
+            },
+            // *휴대폰 문자인증*
+            fnSendSms: function() {
+                let self = this;
+                if(!self.info.userTel) {
+                    alert("전화번호를 입력해주세요.");
+                    return;
+                }
+                $.ajax({
+                    url: "http://localhost:8080/sendSms.dox",
+                    dataType: "json",
+                    type: "POST",
+                    data: { tel: self.info.userTel.replace(/-/g, '') },
+                    success: function(data) {
+                        if(data.result === 'success') {
+                            alert("인증번호가 발송되었습니다!");
+                        } else {
+                            alert("발송 실패. 다시 시도해주세요.");
+                        }
+                    }
+                });
+            },
+
+            fnCheckSms: function() {
+                let self = this;
+                $.ajax({
+                    url: "http://localhost:8080/checkSms.dox",
+                    dataType: "json",
+                    type: "POST",
+                    data: { 
+                        tel: self.info.userTel.replace(/-/g, ''),
+                        authCode: self.info.authCode
+                    },
+                    success: function(data) {
+                        if(data.result === 'success') {
+                            alert("인증이 완료되었습니다!");
+                            self.isVerified = true;
+                        } else {
+                            alert("인증번호가 틀렸습니다.");
+                        }
+                    }
+                });
             },
             // 비밀번호 확인
             fnCheckPwd: function() {

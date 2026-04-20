@@ -80,99 +80,112 @@
             padding: 30px;
             background-color: #fff9f9;
             position: relative;
+            /* display: flex 없애기! */
         }
 
-        /* 인사말 */
-        .greeting {
-            background-color: white;
-            border: 1px solid #ffc7c2;
-            border-radius: 10px;
-            padding: 20px 25px;
-            margin-bottom: 25px;
-            font-size: 14px;
-            line-height: 1.8;
-            color: #555;
-        }
-
-        .greeting strong {
-            color: #f4a096;
-            font-size: 16px;
-        }
-
-        /* 바로가기 버튼 */
-        .shortcut-wrap {
-            display: flex;
-            gap: 15px;
-            margin-bottom: 25px;
-        }
-
-        .shortcut-btn {
-            flex: 1;
-            padding: 20px;
-            background-color: white;
-            border: 1px solid #ffc7c2;
-            border-radius: 10px;
-            text-align: center;
-            cursor: pointer;
-            font-size: 14px;
-            font-weight: 500;
-            transition: 0.2s;
-        }
-
-        .shortcut-btn:hover {
-            background-color: #f4a096;
-            color: white;
-            border-color: #f4a096;
-        }
-
-        /* 패스 정보 */
-        .pass-box {
-            background-color: #ffc7c2;
-            border-radius: 10px;
-            padding: 25px;
+        .cs-list-title {
+            font-size: 30px;
+            font-weight: bold;
             text-align: center;
             margin-bottom: 20px;
-        }
-
-        .pass-box h3 {
-            font-size: 20px;
             color: #333;
-            margin-bottom: 10px;
         }
 
-        .pass-box p {
-            font-size: 14px;
-            color: #666;
-            margin-bottom: 15px;
-        }
+        /* 작성자 컬럼 */
+        .col-writer { width: 100px; }
 
-        .pass-title {
-            font-size: 20px;
+        /* 처리 컬럼 */
+        .col-status { width: 80px; }
+
+        /* 처리 상태 - 대기 */
+        .status-wait {
+            color: #f4a096;
             font-weight: bold;
-            color: #555;
-            margin-bottom: 15px;
-            position: relative;
         }
 
-        .btn-withdraw {
-            position: absolute;  /* ← 추가 */
-            bottom: 20px;        /* ← 추가 */
-            right: 20px;;         
-            padding: 8px 20px;
-            background-color: white;
-            border: 1px solid #ddd;
+        /* 처리 상태 - 답변완료 */
+        .status-done {
+            color: #9b8fd4;
+            font-weight: bold;
+        }
+
+        /* 하단 버튼 */
+        .cs-list-bottom {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 20px;
+        }
+        /* 테이블 */
+        .write-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+            font-size: 14px;
+        }
+
+        .write-table th {
+            background-color: #ffc7c2;
+            padding: 10px;
+            text-align: center;
+            border: 1px solid #f4a096;
+            font-weight: bold;
+        }
+
+        .write-table td {
+            padding: 10px;
+            text-align: center;
+            border: 1px solid #eee;
+            color: #555;
+        }
+
+        .write-table tr:hover {
+            background-color: #fff0ef;
+        }
+
+        .write-table td.col-title {
+            text-align: left;
+            cursor: pointer;
+        }
+
+        .write-table td.col-title:hover {
+            color: #f4a096;
+            text-decoration: underline;
+        }
+
+        .col-no     { width: 100px; }
+        .col-writer { width: 100px; }
+        .col-status { width: 80px; }
+
+        /* 문의 작성 버튼 */
+        .btn-cs-write {
+            padding: 10px 25px;
+            background-color: #f0b429;
+            color: white;
+            border: none;
             border-radius: 6px;
             cursor: pointer;
-            font-size: 13px;
-            color: #666;
+            font-size: 14px;
             transition: 0.2s;
         }
-
-        .btn-withdraw:hover {
-            background-color: #f44336;
-            color: white;
-            border-color: #f44336;
+        .btn-cs-write:hover {
+            opacity: 0.85;
         }
+        .btn-review-index {
+            padding: 10px 30px;
+            background-color: #9b8fd4;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: 0.2s;
+        }
+        .btn-review-index:hover {
+            background-color: #7b6db4;
+        }
+
+ 
     </style>
 </head>
 <body>
@@ -182,42 +195,48 @@
             <!-- 사이드바 -->
             <div class="nav">
                 <div class="nav-title">마이페이지</div>
-                <button class="nav-btn active">마이페이지</button>
+                <button class="nav-btn ">마이페이지</button>
                 <button class="nav-btn">결제 멤버십 내역</button>
                 <button class="nav-btn">리뷰 조회 내역</button>
                 <button class="nav-btn">내가 쓴 리뷰/댓글</button>
                 <button class="nav-btn">좋아요 목록</button>
-                <button class="nav-btn">고객센터</button>
+                <button class="nav-btn active">고객센터</button>
             </div>
 
             <!-- 메인 -->
             <div class="main">
-                <!-- 인사말 -->
-                <div class="greeting">
-                    안녕하세요, <strong>000님!</strong><br> <!--이름은 user이름으로 변경-->
-                    본식까지 D-100일 남으셨네요!<br> <!--현재 날짜 -유저가 입력한 예식일로 변경/없으면 ..흠 생각안함-->
-                    사회자, 주례는 정하셨나요? 슬슬 신랑 예복을 준비할 시기예요!
+                <div>
+                    <h3 class="cs-list-title">어떤 도움이 필요하세요?</h3>
                 </div>
-
-                <!-- 바로가기 -->
-                <div class="shortcut-wrap">
-                    <div class="shortcut-btn">내 정보 수정</div>
-                    <div class="shortcut-btn">쿠폰</div>
-                    <div class="shortcut-btn">예약 목록</div>
+                <!-- 문의 목록 테이블 -->
+                <table class="write-table">
+                    <thead>
+                        <tr>
+                            <th class="col-no">게시글 번호</th>
+                            <th class="col-title">제목</th>
+                            <th class="col-writer">작성자</th>
+                            <th class="col-status">처리</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr v-for="i in 6" :key="i">
+                            <td>{{ 155 - i + 1 }}</td>
+                            <td class="col-title">문의 제목</td>
+                            <td>작성자</td>
+                            <td><span class="status-wait">대기</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+                <!-- 하단 버튼 -->
+                <div class="cs-list-bottom">
+                    <button class="btn-review-index">상세 리뷰 인덱스</button>
+                    <button class="btn-cs-write" @click="fnCsWrite()">문의 작성</button>
                 </div>
-
-                <!-- 패스 정보 -->
-                <p class="pass-title">현재 이용 중인 패스</p> 
-                <div class="pass-box">
-                    <h3>베이직 패스 이용 중입니다</h3>
-                    <p>잔여 횟수 2회</p>
-                </div>
-                <button class="btn-withdraw">탈퇴하기</button>
+                
             </div>
         </div>
         <jsp:include page="/WEB-INF/common/footer.jsp" />
     </div>
-    <!-- 푸터 include 예정 -->
 </body>
 </html>
 
@@ -231,7 +250,9 @@
         },
         methods: {
             // 함수(메소드) - (key : function())
-           
+            fnCsWrite :  function(){
+                location.href="/userMyPage-cs-write.do";
+            }
         }, // methods
         mounted() {
             // 처음 시작할 때 실행되는 부분

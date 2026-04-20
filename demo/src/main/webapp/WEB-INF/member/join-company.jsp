@@ -263,11 +263,26 @@
                         @input="formatTel"
                         maxlength="13"
                         placeholder="010 1234 5678">
-                    <button class="btn-check">본인 인증</button>
+                    <button class="btn-check" @click="fnSendSms()">인증 요청</button>
                 </div>
                 <div class="msg-box"></div>
             </div>
         </div>
+        <!-- 인증번호 입력 -->
+        <div class="form-row">
+            <div class="form-label">인증번호</div>
+            <div class="input-wrap">
+                <div class="form-input">
+                    <input type="number" v-model="info.authCode"
+                        @input="formatTel"
+                        maxlength="6"
+                        placeholder="6자리 숫자를 입력하세요">
+                    <button class="btn-check" @click="fnCheckSms()">인증 확인</button>
+                </div>
+                <div class="msg-box"></div>
+            </div> 
+        </div>
+
         <!-- 사업자 번호 인증 -->
         <div class="form-row">
             <div class="form-label">사업자 번호</div>
@@ -276,7 +291,7 @@
                     <input type="text" v-model="info.bizNo"
                         @input="formatBizNo"
                         placeholder="000-00-0000">
-                    <button class="btn-check">번호 인증</button>
+                    <button class="btn-check" @click="fnCheckBizNo()">번호 인증</button>
                 </div>
                 <div class="msg-box"></div>
             </div>
@@ -285,8 +300,11 @@
         <div class="form-row">
             <div class="form-label">비밀번호</div>
             <div class="input-wrap">
-                <div class="form-input">
-                    <input type="password" v-model="info.password" @input="filterPassword">
+                <div class="form-input" :class="{'disabled': !(isVerified && isBizVerified)}">
+                    <input type="password" v-model="info.password" 
+                    @input="filterPassword"
+                    :disabled="!(isVerified && isBizVerified)"
+                    placeholder="영문+숫자 조합으로 8자 이상 입력하세요.">
                 </div>
                 <div class="msg-box" :style="{color: isPwdMatch ? 'green' : 'red'}">
                     {{ pwdMsg }}
@@ -298,8 +316,10 @@
         <div class="form-row">
             <div class="form-label">비밀번호 확인</div>
             <div class="input-wrap">
-                <div class="form-input">
-                    <input type="password" v-model="info.passwordConfirm">
+                <div class="form-input" :class="{'disabled': !(isVerified && isBizVerified)}">
+                    <input type="password" v-model="info.passwordConfirm"
+                    :disabled="!(isVerified && isBizVerified)"
+                    placeholder="비밀번호를 한 번 더 입력하세요.">
                 </div>
                 <div class="msg-box"></div>
             </div>
@@ -344,8 +364,11 @@
                     comEmail : "",
                     bizNo : "",
                     gender : "M",
+                    // *번호 인증
+                    authCode : ""
                 },
                 isVerified: false,  // 인증 완료 여부
+                isBizVerified: false, // 사업자번호 확인 완료
                 isComNameAvailable: false, // 업체명 중복체크 통과 여부 (true  → 사용 가능한 업체명)
                 comNameMsg: "",            // 아이디 중복체크 결과 메시지
                 isUserIdAvailable: false,  // 아이디 중복체크 통과 여부 (true  → 사용 가능한 아이디)
@@ -645,6 +668,62 @@
                     }
                 }).open();
             },
+            // *휴대폰 문자인증*
+            fnSendSms: function() {
+                let self = this;
+                if(!self.info.comTel) {
+                    alert("전화번호를 입력해주세요.");
+                    return;
+                }
+                $.ajax({
+                    url: "http://localhost:8080/sendSms.dox",
+                    dataType: "json",
+                    type: "POST",
+                    data: { tel: self.info.comTel.replace(/-/g, '') },
+                    success: function(data) {
+                        if(data.result === 'success') {
+                            alert("인증번호가 발송되었습니다!");
+                        } else {
+                            alert("발송 실패. 다시 시도해주세요.");
+                        }
+                    }
+                });
+            },
+            fnCheckSms: function() {
+                let self = this;
+                $.ajax({
+                    url: "http://localhost:8080/checkSms.dox",
+                    dataType: "json",
+                    type: "POST",
+                    data: { 
+                        tel: self.info.comTel.replace(/-/g, ''),
+                        authCode: self.info.authCode
+                    },
+                    success: function(data) {
+                        if(data.result === 'success') {
+                            alert("인증이 완료되었습니다!");
+                            self.isVerified = true;
+                        } else {
+                            alert("인증번호가 틀렸습니다.");
+                        }
+                    }
+                });
+            },
+            // *사업자 번호 입력(사업자 번호 api는 실제 사업자가 없어서 이용 불가 \)
+            fnCheckBizNo: function() {
+                let self = this;
+                let bizNo = self.info.bizNo.replace(/-/g, '');
+                
+                // 10자리 숫자인지만 체크
+                if(bizNo.length !== 10) {
+                    alert("사업자번호 10자리를 입력해주세요.");
+                    return;
+                }
+                
+                // 형식만 통과시키기
+                alert("사업자번호 인증이 완료되었습니다.");
+                self.isBizVerified = true;
+            }
         }, // methods
         watch: {
             'info.password': function() {

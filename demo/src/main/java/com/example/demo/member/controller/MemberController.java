@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.example.demo.member.dao.MemberService;
+import com.example.demo.member.dao.SmsService;
 import com.google.gson.Gson;
 
 import ch.qos.logback.core.model.Model;
@@ -20,6 +21,8 @@ public class MemberController {
 
 	@Autowired
 	MemberService memberService; //서비스 객체 선언
+	@Autowired
+	SmsService smsService; //서비스 객체 선언
 	
 	// 0. 메인 홈 *로그인 후 연결하려고 임시로 주소만 생성했어요* 주소 변경 시 수정 예정
 	@RequestMapping("/merryViewHome.do") // 주소 
@@ -40,7 +43,24 @@ public class MemberController {
 		resultMap = memberService.login(map, session);
 		return new Gson().toJson(resultMap); 
 	}
+	// 1-1. 아이디 찾기
+	@RequestMapping("/find-id.do") // 주소 
+	public String findId(Model model) throws Exception{
+		return "/member/find-id"; // 파일명
+	}
+	// 1-2. 비밀번호 찾기
+	@RequestMapping("/find-pwd.do") // 주소 
+	public String findPwd(Model model) throws Exception{
+		return "/member/find-pwd"; // 파일명
+	}
 	//
+	// 1-3. *로그아웃*
+	@RequestMapping("/logout.do")
+	public String logout(HttpSession session) {
+	    session.invalidate();  // 세션 전체 삭제
+	    return "redirect:/login.do";  // 로그인 페이지로 이동
+	}
+	
 	//*2. join (회원가입)*
 	@RequestMapping("/join.do") // 주소 
 	public String join(Model model) throws Exception{
@@ -114,5 +134,53 @@ public class MemberController {
 	public String userMyPageReview(Model model) throws Exception{
 		return "/member/user-mypage-review"; // 파일명
 	}
+	// 3-4. 내가 쓴 리뷰 조회 내역
+	@RequestMapping("/userMyPage-write.do") // 주소 
+	public String userMyPageWrite(Model model) throws Exception{
+		return "/member/user-mypage-write"; // 파일명
+	}
+	// 3-5. 좋아요 목록
+	@RequestMapping("/userMyPage-like.do") // 주소 
+	public String userMyPageLike(Model model) throws Exception{
+		return "/member/user-mypage-like"; // 파일명
+	}
+	// 3-6. 고객 센터 홈
+	@RequestMapping("/userMyPage-cs.do") // 주소 
+	public String userMyPageCs(Model model) throws Exception{
+		return "/member/user-mypage-cs"; // 파일명
+	}
+	// 3-7. 고객 센터-문의 리스트
+	@RequestMapping("/userMyPage-cs-list.do") // 주소 
+	public String userMyPageCsList(Model model) throws Exception{
+		return "/member/user-mypage-cs-list"; // 파일명
+	}
+	// 3-8. 고객 센터-문의 작성
+	@RequestMapping("/userMyPage-cs-write.do") // 주소 
+	public String userMyPageCsWrite(Model model) throws Exception{
+		return "/member/user-mypage-cs-write"; // 파일명
+	}
+	// 3-9. 고객 센터-신고 작성
+	@RequestMapping("/userMyPage-cs-report.do") // 주소 
+	public String userMyPageCsReport(Model model) throws Exception{
+		return "/member/user-mypage-cs-report"; // 파일명
+	}
+	
+	// * 휴대전화 번호 인증 * 
+	// 인증번호 발송
+	@RequestMapping(value = "/sendSms.dox", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
+	@ResponseBody
+	public String sendSms(@RequestParam HashMap<String, Object> map) throws Exception {
+	    HashMap<String, Object> resultMap = smsService.sendSms(map);
+	    return new Gson().toJson(resultMap);
+	}
+
+	// 인증번호 확인
+	@RequestMapping(value = "/checkSms.dox", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
+	@ResponseBody
+	public String checkSms(@RequestParam HashMap<String, Object> map) throws Exception {
+	    HashMap<String, Object> resultMap = smsService.checkSms(map);
+	    return new Gson().toJson(resultMap);
+	}
+	
 	
 }
