@@ -16,6 +16,7 @@ public class Review {
     private int viewCnt;         // 조회수
     private int likeCnt;         // 좋아요 수
     private int isPaid;          // 유료 여부 (0: 무료, 1: 영수증인증)
+    private String receiptName; // 추가된 영수증 파일명
     private String title;        // 제목
     private String content;      // 본문 내용
     private String bookingSource;// 예약 출처 (플랫폼 이름 등)

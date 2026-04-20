@@ -2,50 +2,78 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.example.demo.community_review.mapper.ReviewMapper">
 
-    <insert id="insertReview" useGeneratedKeys="true" keyProperty="reviewNo">
-        INSERT INTO Review (
-            user_id, company_no, res_no, rating, title, content, 
-            original_name, stored_name, img_url,is_paid, booking_source, total_cost, reg_date
-        ) VALUES (
-            #{userId}, #{companyNo}, #{resNo}, #{rating}, #{title}, #{content}, 
-            #{originalName}, #{storedName}, #{imgUrl}, #{isPaid}, 
-            #{bookingSource}, #{totalCost}, CURRENT_TIMESTAMP
-        )
-    </insert>
+    <select id="selectReviewList" parameterType="hashmap" resultType="hashmap">
+        SELECT 
+            r.review_no AS reviewNo,
+            r.user_id AS userId,
+            r.rating AS rating,
+            r.view_cnt AS viewCnt,
+            r.is_paid AS isPaid,
+            r.content AS content,
+            IFNULL(c.com_name, '일반 리뷰') AS comName,
+            CASE 
+                WHEN r.stored_name IS NOT NULL OR (r.img_url IS NOT NULL AND r.img_url != '') THEN 'Y'
+                ELSE 'N'
+            END AS hasImg,
+            DATE_FORMAT(r.reg_date, '%Y-%m-%d') AS regDate
+        FROM Review r
+        LEFT OUTER JOIN Company c ON r.company_no = c.company_no
+        WHERE r.approval_status = 'APPROVED'
+        
+        <if test="isPaid != null and isPaid != '' or isPaid == 0">
+            AND r.is_paid = #{isPaid}
+        </if>
 
-    <select id="selectReviewList" resultType="com.example.demo.community_review.model.Review">
-	   SELECT 
-	        R.review_no,
-	        R.user_id,
-	        R.company_no,
-	        C.com_name as company_name,    R.rating,
-	        R.title,
-	        R.content,
-	        R.booking_source,
-	        R.total_cost,
-	        R.stored_name,
-	        R.reg_date,
-	        R.is_paid,
-	        R.approval_status,
-	        R.view_cnt,
-	        R.like_cnt
-	    FROM Review R
-	    LEFT JOIN Company C ON R.company_no = C.company_no
-	    <where>
-	        <if test="comName != null and comName != ''">
-	           AND C.com_name LIKE CONCAT('%', #{comName}, '%')
-	        </if>
-	        <if test="userId != null and userId != ''">
-	            AND R.user_id LIKE CONCAT('%', #{userId}, '%')
-	        </if>
-	    </where>
-	    ORDER BY reg_date DESC
-	</select>
+        <if test="searchKeyword != null and searchKeyword != ''">
+            <choose>
+                <when test="searchType == 'company'"> AND c.com_name LIKE CONCAT('%', #{searchKeyword}, '%') </when>
+                <when test="searchType == 'content'"> AND r.content LIKE CONCAT('%', #{searchKeyword}, '%') </when>
+                <otherwise>
+                    AND (c.com_name LIKE CONCAT('%', #{searchKeyword}, '%') OR r.content LIKE CONCAT('%', #{searchKeyword}, '%'))
+                </otherwise>
+            </choose>
+        </if>
+        ORDER BY r.reg_date DESC
+    </select>
 
+    <select id="selectCompanyDetail" parameterType="hashmap" resultType="hashmap">
+        SELECT 
+            company_no AS companyNo,
+            com_name AS comName,
+            com_type AS comType,
+            com_address AS comAddress
+        FROM Company
+        WHERE company_no = #{companyNo}
+    </select>
+	
     <select id="checkReviewLike" resultType="int">
         SELECT COUNT(*) FROM Review_Like 
         WHERE review_no = #{reviewNo} AND user_id = #{userId}
     </select>
+    
+    <insert id="insertReview" parameterType="hashmap">
+    INSERT INTO Review (
+        user_id, 
+        company_no, 
+        content, 
+        rating, 
+        is_paid, 
+        receipt_name,   stored_name,    img_url, 
+        reg_date, 
+        approval_status
+    ) VALUES (
+        #{userId}, 
+        #{companyNo}, 
+        #{content}, 
+        #{rating}, 
+        #{isPaid}, 
+        #{receiptName}, 
+        #{storedName}, 
+        #{imgUrl}, 
+        NOW(), 
+        'PENDING'
+    )
+</insert>
 
     <insert id="insertReviewLike">
         INSERT INTO Review_Like (review_no, user_id, reg_date)

@@ -1,137 +1,185 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
-<html lang="ko">
+<html>
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>리얼 웨딩 리뷰 - MerryView</title>
-    
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <title>리뷰 커뮤니티 - MerryView</title>
+    <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
     <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
-    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/common.css">
     
     <style>
-        /* 메인 레이아웃 */
-        main { grid-area: main; padding: 50px 40px; min-height: 800px; }
-        .review-header { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 40px; }
+        :root { --primary-color: #ff4d6d; --dark-color: #1a1a1a; }
+        body { background-color: #f8f9fa; }
+        .main-content { padding: 50px 40px; max-width: 1200px; margin: 0 auto; background: white; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); margin-top: 30px; margin-bottom: 50px; }
         
-        /* 카드 디자인 */
-        .review-card { 
-            transition: all 0.3s ease; border-radius: 15px; border: 1px solid #eee;
-            background: #fff; overflow: hidden; cursor: pointer;
-        }
-        .review-card:hover { transform: translateY(-7px); box-shadow: 0 10px 20px rgba(0,0,0,0.08); }
-        .img-box { height: 200px; background-color: #f8f9fa; display: flex; align-items: center; justify-content: center; }
-        .img-box img { width: 100%; height: 100%; object-fit: cover; }
+        /* 유료/무료 탭 스타일 */
+        .review-tabs { display: flex; gap: 10px; margin-bottom: 25px; border-bottom: 2px solid #eee; }
+        .tab-item { cursor: pointer; padding: 12px 25px; font-weight: bold; color: #999; transition: 0.3s; position: relative; }
+        .tab-item.active { color: var(--primary-color); }
+        .tab-item.active::after { content: ''; position: absolute; bottom: -2px; left: 0; width: 100%; height: 3px; background-color: var(--primary-color); }
         
-        .company-name { font-size: 1.1rem; font-weight: 800; color: var(--dark-color); margin-bottom: 5px; }
-        .review-title { font-size: 0.9rem; color: #777; margin-bottom: 15px; }
+        /* 뱃지 및 테이블 커스텀 */
+        .badge-paid { background: #fff0f3; color: #ff4d6d; border: 1px solid #ffccd5; padding: 5px 10px; }
+        .badge-free { background: #e7f5ff; color: #228be6; border: 1px solid #a5d8ff; padding: 5px 10px; }
         
-        /* 가격 텍스트 강조 */
-        .price-box { background-color: #fff0f3; border-radius: 10px; padding: 12px; }
-        .price-text { font-size: 1.1rem; color: var(--primary-color) !important; font-weight: 800; }
+        .custom-table { width: 100%; border-collapse: separate; border-spacing: 0; }
+        .custom-table th { padding: 15px; border-bottom: 2px solid var(--dark-color); text-align: center; background: #fafafa; }
+        .custom-table td { padding: 18px 15px; border-bottom: 1px solid #eee; text-align: center; vertical-align: middle; }
+        .custom-table tbody tr:hover td { background-color: #fff9fa; cursor: pointer; }
         
-        .search-bar { max-width: 700px; margin: 0 auto 50px; }
-        .btn-dark { background-color: var(--dark-color) !important; border: none; border-radius: 10px; }
-
-        
+        /* 검색창 스타일 */
+        .search-area { background: #f1f3f5; padding: 20px; border-radius: 10px; margin-bottom: 20px; }
     </style>
 </head>
 <body>
+    <div id="app">
+        <jsp:include page="/WEB-INF/common/header.jsp" />
 
-<div id="app" class="container-layout">
-    <jsp:include page="/WEB-INF/common/header.jsp" />
-
-    <main>
-        <div class="review-header">
-            <div>
-                <h1 class="font-weight-bold" style="letter-spacing: -1px;">💍 리얼 웨딩 리뷰</h1>
-                <p class="text-muted mb-0">인증된 신랑 신부님의 솔직한 후기</p>
-            </div>
-            <button class="btn btn-dark px-4 py-2" @click="fnWritePage">리뷰 작성</button>
-        </div>
-
-        <div class="search-bar">
-            <div class="input-group shadow-sm" style="border-radius:12px; overflow:hidden;">
-                <input type="text" v-model="searchMap.userId" class="form-control form-control-lg border-0" 
-                       placeholder="작성자 ID를 입력하세요" @keyup.enter="fnGetList">
-                <div class="input-group-append">
-                    <button class="btn btn-secondary px-4 border-0" @click="fnGetList">검색</button>
+        <main class="main-content">
+            <div class="d-flex justify-content-between align-items-end mb-4">
+                <div>
+                    <h2 class="font-weight-bold" @click="fnReset" style="cursor:pointer">📸 리뷰 커뮤니티</h2>
+                    <p class="text-muted mb-0">생생한 이용 후기를 확인하고 스마트하게 선택하세요.</p>
                 </div>
-            </div>
-        </div>
-
-        <div class="row">
-            <div v-if="list.length == 0" class="col-12 text-center py-5">
-                <p class="text-muted">검색 결과가 없습니다.</p>
+                <button class="btn btn-danger btn-lg" style="background-color: var(--primary-color); border:none;" @click="fnWrite">
+                    <i class="fas fa-pen mr-2"></i>리뷰 작성하기
+                </button>
             </div>
 
-            <div class="col-md-4 mb-4" v-for="item in list" :key="item.reviewNo">
-                <div class="card review-card h-100" @click="fnDetailPage(item.reviewNo)">
-                    <div class="img-box">
-                        <img v-if="item.storedName" :src="'/uploads/' + item.storedName" alt="인증샷">
-                        <div v-else class="text-muted small">MERRY VIEW</div>
-                    </div>
-
-                    <div class="card-body p-4">
-                        <div class="company-name mb-1">{{ item.companyName || '기타 업체' }}</div>
-                        <div class="review-title text-truncate">{{ item.title || '리뷰 제목이 없습니다.' }}</div>
-                        
-                        <div class="d-flex align-items-center mb-3">
-                            <span class="text-warning mr-1">★</span>
-                            <span class="font-weight-bold">{{ item.rating }}</span>
-                            <span class="mx-2 text-light">|</span>
-                            <small class="text-muted">조회 {{ item.viewCnt }}</small>
-                        </div>
-                        
-                        <div class="price-box">
-                            <small class="text-danger font-weight-bold d-block mb-1" style="font-size:0.7rem;">인증된 결제 금액</small>
-                            <div class="price-text">{{ fnFormatPrice(item.totalCost) }}</div>
-                        </div>
-                    </div>
-                    
-                    <div class="card-footer bg-white border-top-0 px-4 pb-4 d-flex justify-content-between align-items-center">
-                        <span class="badge badge-light p-2 text-secondary">@{{ item.userId }}</span>
-                        <small class="text-muted">{{ item.regDate.substring(0, 10) }}</small>
+            <div class="search-area d-flex justify-content-center">
+                <div class="input-group style" style="max-width: 600px;">
+                    <select class="form-control col-3" v-model="searchType">
+                        <option value="all">전체</option>
+                        <option value="company">업체명</option>
+                        <option value="content">내용</option>
+                    </select>
+                    <input type="text" class="form-control col-7" placeholder="검색어를 입력하세요..." v-model="searchKeyword" @keyup.enter="fnList">
+                    <div class="input-group-append col-2 p-0">
+                        <button class="btn btn-dark btn-block" @click="fnList">검색</button>
                     </div>
                 </div>
             </div>
-        </div>
-    </main>
 
-    <jsp:include page="/WEB-INF/common/footer.jsp" />
-</div>
+            <div class="review-tabs">
+                <div class="tab-item" :class="{active: isPaid === null}" @click="fnFilter(null)">전체보기</div>
+                <div class="tab-item" :class="{active: isPaid === 1}" @click="fnFilter(1)">💎 유료 리뷰</div>
+                <div class="tab-item" :class="{active: isPaid === 0}" @click="fnFilter(0)">🎁 무료 리뷰</div>
+            </div>
 
-<script>
-    const app = Vue.createApp({
-        data() {
-            return {
-                list: [],
-                searchMap: { userId: "" }
-            };
-        },
-        methods: {
-            fnGetList() {
-                $.ajax({
-                    url: "/api/review/list.dox",
-                    type: "GET",
-                    data: this.searchMap,
-                    success: (res) => {
-                        this.list = typeof res === 'string' ? JSON.parse(res) : res;
-                    },
-                    error: () => alert("목록을 불러오지 못했습니다.")
-                });
+            <table class="custom-table">
+                <thead>
+                    <tr>
+                        <th style="width: 100px;">구분</th>
+                        <th style="width: 120px;">별점</th>
+                        <th>리뷰 정보</th>
+                        <th style="width: 150px;">작성자</th>
+                        <th style="width: 130px;">날짜</th>
+                        <th style="width: 90px;">조회</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr v-for="item in list" :key="item.reviewNo" @click="fnDetail(item.reviewNo)">
+                        <td>
+                            <span v-if="item.isPaid == 1" class="badge badge-paid">유료</span>
+                            <span v-else class="badge badge-free">무료</span>
+                        </td>
+                        <td class="text-warning font-weight-bold">
+                            <i class="fas fa-star mr-1"></i>{{ parseFloat(item.rating || 0).toFixed(1) }}
+                        </td>
+                        <td class="text-left">
+                            <span class="badge badge-light border text-dark mr-2">{{ item.comName }}</span>
+                            <span class="text-dark">{{ item.content && item.content.length > 50 ? item.content.substring(0, 50) + '...' : item.content }}</span>
+                            <i v-if="item.hasImg === 'Y'" class="far fa-image ml-2 text-primary"></i>
+                        </td>
+                        <td>
+                            <i class="far fa-user-circle mr-1"></i>{{ item.userId }}
+                        </td>
+                        <td class="small text-muted">{{ item.regDate }}</td>
+                        <td class="text-muted">{{ item.viewCnt }}</td>
+                    </tr>
+                    <tr v-if="list.length == 0">
+                        <td colspan="6" class="py-5">
+                            <i class="fas fa-exclamation-circle fa-3x text-light mb-3"></i>
+                            <p class="text-muted">조건에 맞는 리뷰가 아직 없습니다.</p>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </main>
+    </div>
+
+    <script>
+        const { createApp } = Vue;
+        createApp({
+            data() {
+                return {
+                    list: [],
+                    isPaid: null,       // 필터링 (null: 전체, 1: 유료, 0: 무료)
+                    searchKeyword: '',
+                    searchType: 'all',
+                    sessionId: "${sessionId}" // 서버에서 넘겨준 세션 아이디
+                };
             },
-            fnWritePage() { location.href = "/api/review/add.do"; },
-            fnDetailPage(no) { console.log("상세보기 번호: " + no); },
-            fnFormatPrice(val) {
-                return val ? Number(val).toLocaleString() + '원' : '0원';
+            methods: {
+                // 리스트 가져오기
+                fnList() {
+                    const nParam = {
+                        isPaid: this.isPaid,
+                        searchKeyword: this.searchKeyword,
+                        searchType: this.searchType
+                    };
+                    
+                    $.ajax({
+                        url: "/api/review/list.dox",
+                        type: "POST",
+                        data: JSON.stringify(nParam),
+                        contentType: "application/json",
+                        success: (data) => {
+                           // 만약 컨트롤러에서 String이 아니라 Map/List를 바로 리턴한다면 parse가 필요 없음
+                        let result = (typeof data === 'string') ? JSON.parse(data) : data;
+                        
+                        if(result.result === "success") {
+                            this.list = result.list;
+                            console.log("리스트 개수: ", this.list.length); // 콘솔에서 개수 확인!
+                        }
+                        },
+                        error: () => {
+                            console.error("서버 통신 에러");
+                        }
+                    });
+                },
+                // 필터 변경
+                fnFilter(val) {
+                    this.isPaid = val;
+                    this.fnList();
+                },
+                // 초기화
+                fnReset() {
+                    this.isPaid = null;
+                    this.searchKeyword = '';
+                    this.fnList();
+                },
+                // 상세 보기 이동
+                fnDetail(no) {
+                    location.href = "/review/detail.do?reviewNo=" + no;
+                },
+                // 글쓰기 이동
+                fnWrite() {
+                    if(!this.sessionId || this.sessionId === "null" || this.sessionId === "") {
+                        if(confirm("로그인이 필요한 서비스입니다.\n로그인 페이지로 이동하시겠습니까?")) {
+                            location.href = "/login.do";
+                        }
+                        return;
+                    }
+                    location.href = "/api/review/add.do";
+                }
+            },
+            mounted() {
+                this.fnList(); // 페이지 로드 시 즉시 실행
             }
-        },
-        mounted() { this.fnGetList(); }
-    }).mount('#app');
-</script>
+        }).mount('#app');
+    </script>
 </body>
 </html>
