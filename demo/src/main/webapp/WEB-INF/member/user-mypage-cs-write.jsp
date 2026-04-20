@@ -27,6 +27,7 @@
             min-height: calc(100vh - 160px); /* 헤더+푸터 제외 */
             gap: 0;
         }
+
         /* 사이드바 */
         .nav {
             grid-area: nav;
@@ -36,6 +37,7 @@
             flex-direction: column;
             gap: 8px;
         }
+
         .nav-title {
             font-size: 16px;
             font-weight: bold;
@@ -46,6 +48,7 @@
             background-color: #f4a096;
             border-radius: 6px;
         }
+
         .nav-btn {
             width: 100%;
             padding: 12px 10px;
@@ -58,11 +61,13 @@
             font-weight: 500;
             transition: 0.2s;
         }
+
         .nav-btn:hover {
             background-color: #f4a096;
             border-color: #f4a096;
             color: white;
         }
+
         .nav-btn.active {
             background-color: #f4a096;
             border-color: #f4a096;
@@ -75,102 +80,112 @@
             padding: 30px;
             background-color: #fff9f9;
             position: relative;
+            /* display: flex 없애기! */
         }
-        /* 탭 버튼 */
-        .review-tab-wrap {
-            display: flex;
-            gap: 0;
-            margin-bottom: 20px;
-        }
-        .review-tab {
-            flex: 1;
-            padding: 12px 0;
-            border: 2px solid #f4a096;
-            background-color: white;
-            cursor: pointer;
-            font-size: 15px;
-            font-weight: bold;
-            transition: 0.2s;
-        }
-        .review-tab:first-child {
-            border-radius: 8px 0 0 8px;
-        }
-        .review-tab:last-child {
-            border-radius: 0 8px 8px 0;
-        }
-        .review-tab.active-tab {
-            background-color: #f4a096;
-            color: white;
-        }
-        /* 카드형 리뷰 목록 */
-        .review-list {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 15px;
-            margin-bottom: 20px;
-        }
-        .review-card {
-            border: 1px solid #ffc7c2;
-            border-radius: 8px;
-            overflow: hidden;
-            cursor: pointer;
-            transition: 0.2s;
-        }
-        .review-card:hover {
-            box-shadow: 0 4px 10px rgba(244, 160, 150, 0.4);
-            transform: translateY(-2px);
-        }
-        .review-thumbnail {
-            width: 100%;
-            aspect-ratio: 4/3;
-            background-color: #ffc7c2;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 13px;
-            color: #999;
-        }
-        .review-card-title {
-            padding: 10px;
-            font-size: 13px;
+
+        /* 문의 작성 제목 */
+        .cs-write-title {
+            font-size: 30px;
             font-weight: bold;
             text-align: center;
-            background-color: #ff69b4;
-            color: white;
+            margin-bottom: 25px;
+            color: #333;
         }
-        /* 리스트형 리뷰 목록 */
-        .review-list-item {
-            padding: 12px 15px;
-            background-color: #ff69b4;
-            color: white;
-            border-radius: 6px;
+
+        /* 폼 전체 감싸는 박스 */
+        .cs-write-form {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* 각 입력 그룹 */
+        .cs-form-group {
+            margin-bottom: 20px;
+        }
+
+        /* 라벨 */
+        .cs-label {
+            display: block;
             font-size: 14px;
             font-weight: bold;
-            cursor: pointer;
+            color: #333;
             margin-bottom: 8px;
-            transition: 0.2s;
         }
-        .review-list-item:hover {
-            background-color: #f4a096;
+
+        /* 입력 박스 */
+        .cs-input-box {
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            padding: 10px 15px;
+            background-color: white;
+            display: flex;
+            align-items: center;
+            gap: 15px;
         }
-        /* 인덱스 버튼 */
-        .review-index-wrap {
-            text-align: center;
-            margin-top: 20px;
+
+        /* 체크박스 간격 */
+        .cs-input-box input[type="checkbox"] {
+            margin-right: 4px;
+            cursor: pointer;
         }
-        .btn-review-index {
-            padding: 10px 30px;
-            background-color: #9b8fd4;
+
+        /* 제목 input */
+        .cs-input-box input[type="text"] {
+            width: 100%;
+            border: none;
+            outline: none;
+            font-size: 14px;
+        }
+
+        /* 내용 textarea */
+        .cs-input-box textarea {
+            width: 100%;
+            height: 150px;
+            border: none;
+            outline: none;
+            font-size: 14px;
+            resize: none;
+            font-family: 'Noto Sans KR', sans-serif;
+        }
+
+        /* 하단 버튼 영역 */
+        .cs-write-bottom {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 10px;
+        }
+
+        /* 비공개 유무 체크박스 */
+        .cs-checkbox-label {
+            font-size: 14px;
+            color: #555;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            padding: 8px 15px;
+            background-color: white;
+        }
+
+        /* 등록 버튼 */
+        .btn-cs-submit {
+            padding: 10px 40px;
+            background-color: #f0b429;
             color: white;
             border: none;
             border-radius: 6px;
-            cursor: pointer;
             font-size: 14px;
+            font-weight: bold;
+            cursor: pointer;
             transition: 0.2s;
         }
-        .btn-review-index:hover {
-            background-color: #7b6db4;
+        .btn-cs-submit:hover {
+            opacity: 0.85;
         }
+
     </style>
 </head>
 <body>
@@ -180,45 +195,53 @@
             <!-- 사이드바 -->
             <div class="nav">
                 <div class="nav-title">마이페이지</div>
-                <button class="nav-btn">마이페이지</button>
+                <button class="nav-btn ">마이페이지</button>
                 <button class="nav-btn">결제 멤버십 내역</button>
-                <button class="nav-btn active">리뷰 조회 내역</button>
+                <button class="nav-btn">리뷰 조회 내역</button>
                 <button class="nav-btn">내가 쓴 리뷰/댓글</button>
                 <button class="nav-btn">좋아요 목록</button>
-                <button class="nav-btn">고객센터</button>
+                <button class="nav-btn active">고객센터</button>
             </div>
 
-            <!-- 리뷰 조회 내역 메인 영역 -->
+            <!-- 문의 작성 메인 영역 -->
             <div class="main">
-
-                <!-- 탭 버튼 -->
-                <div class="review-tab-wrap">
-                    <button class="review-tab" :class="{'active-tab': reviewTab === 'paid'}" @click="switchReviewTab('paid')">유료리뷰</button>
-                    <button class="review-tab" :class="{'active-tab': reviewTab === 'free'}" @click="switchReviewTab('free')">무료 리뷰</button>
-                </div>
-
-                <!-- 유료 리뷰 목록 -->
-                <div class="review-list" v-show="reviewTab === 'paid'">
-                    <div class="review-card" v-for="i in 6" :key="i">
-                        <div class="review-thumbnail">썸네일</div>
-                        <div class="review-card-title">리뷰 제목</div>
+                <h3 class="cs-write-title">문의 내용을 작성해주세요</h3>
+                <div class="cs-write-form">
+                    <!-- 문의 유형 -->
+                    <div class="cs-form-group">
+                        <label class="cs-label">*문의 유형</label>
+                        <div class="cs-input-box">
+                            <input type="radio" v-model="csType" value="운영" name="cs-type"> 운영
+                            <input type="radio" v-model="csType" value="결제" name="cs-type"> 결제
+                            <input type="radio" v-model="csType" value="기타" name="cs-type"> 기타
+                        </div>
                     </div>
-                </div>
-
-                <!-- 무료 리뷰 목록 -->
-                <div v-show="reviewTab === 'free'">
-                    <div class="review-list-item" v-for="i in 6" :key="i">리뷰 제목</div>
-                </div>
-
-                <!-- 인덱스 버튼 -->
-                <div class="review-index-wrap">
-                    <button class="btn-review-index">상세 리뷰 인덱스</button>
+                    <!-- 제목 -->
+                    <div class="cs-form-group">
+                        <label class="cs-label">*제목</label>
+                        <div class="cs-input-box">
+                            <input type="text" v-model="csTitle" placeholder="">
+                        </div>
+                    </div>
+                    <!-- 내용 -->
+                    <div class="cs-form-group">
+                        <label class="cs-label">*내용</label>
+                        <div class="cs-input-box">
+                            <textarea v-model="csContent"></textarea>
+                        </div>
+                    </div>
+                    <!-- 하단 버튼 -->
+                    <div class="cs-write-bottom">
+                        <label class="cs-checkbox-label">
+                            <input type="checkbox" v-model="csPrivate"> 🔒비공개
+                        </label>
+                        <button class="btn-cs-submit">등록</button>
+                    </div>
                 </div>
             </div>
         </div>
         <jsp:include page="/WEB-INF/common/footer.jsp" />
     </div>
-    <!-- 푸터 include 예정 -->
 </body>
 </html>
 
@@ -226,14 +249,13 @@
     const app = Vue.createApp({
         data() {
             return {
-                 reviewTab: 'paid'  // 'paid' or 'free'
+                // 변수 - (key : value)
+
             };
         },
         methods: {
             // 함수(메소드) - (key : function())
-            switchReviewTab: function(type) {
-                this.reviewTab = type;
-            }
+            
         }, // methods
         mounted() {
             // 처음 시작할 때 실행되는 부분

@@ -68,7 +68,6 @@
             border-color: #f4a096;
             color: white;
         }
-
         /* 메인 영역 */
         .main {
             grid-area: main;
@@ -77,87 +76,82 @@
             position: relative;
         }
         /* 탭 버튼 */
-        .review-tab-wrap {
+        .write-tab-wrap {
             display: flex;
-            gap: 0;
+            gap: 0px;
             margin-bottom: 20px;
         }
-        .review-tab {
+        .write-tab {
             flex: 1;
             padding: 12px 0;
             border: 2px solid #f4a096;
             background-color: white;
             cursor: pointer;
-            font-size: 15px;
-            font-weight: bold;
-            transition: 0.2s;
-        }
-        .review-tab:first-child {
-            border-radius: 8px 0 0 8px;
-        }
-        .review-tab:last-child {
-            border-radius: 0 8px 8px 0;
-        }
-        .review-tab.active-tab {
-            background-color: #f4a096;
-            color: white;
-        }
-        /* 카드형 리뷰 목록 */
-        .review-list {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 15px;
-            margin-bottom: 20px;
-        }
-        .review-card {
-            border: 1px solid #ffc7c2;
-            border-radius: 8px;
-            overflow: hidden;
-            cursor: pointer;
-            transition: 0.2s;
-        }
-        .review-card:hover {
-            box-shadow: 0 4px 10px rgba(244, 160, 150, 0.4);
-            transform: translateY(-2px);
-        }
-        .review-thumbnail {
-            width: 100%;
-            aspect-ratio: 4/3;
-            background-color: #ffc7c2;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 13px;
-            color: #999;
-        }
-        .review-card-title {
-            padding: 10px;
-            font-size: 13px;
-            font-weight: bold;
-            text-align: center;
-            background-color: #ff69b4;
-            color: white;
-        }
-        /* 리스트형 리뷰 목록 */
-        .review-list-item {
-            padding: 12px 15px;
-            background-color: #ff69b4;
-            color: white;
-            border-radius: 6px;
             font-size: 14px;
             font-weight: bold;
-            cursor: pointer;
-            margin-bottom: 8px;
+            border-radius: 6px;
             transition: 0.2s;
         }
-        .review-list-item:hover {
+        .write-tab.active-tab {
             background-color: #f4a096;
+            color: white;
         }
-        /* 인덱스 버튼 */
-        .review-index-wrap {
+        /* 테이블 */
+        .write-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+            font-size: 14px;
+        }
+        .write-table th {
+            background-color: #ffc7c2;
+            padding: 10px;
             text-align: center;
-            margin-top: 20px;
+            border: 1px solid #f4a096;
+            font-weight: bold;
         }
+        .write-table td {
+            padding: 10px;
+            text-align: center;
+            border: 1px solid #eee;
+            color: #555;
+        }
+        .write-table tr:hover {
+            background-color: #fff0ef;
+        }
+        .col-check { width: 40px; }
+        .col-no    { width: 80px; }
+        .col-date  { width: 120px; }
+        .col-view  { width: 60px; }
+        .col-title { text-align: left; }
+        .write-table td:nth-child(3) {
+            text-align: left;
+            cursor: pointer;
+        }
+        .write-table td:nth-child(3):hover {
+            color: #f4a096;
+            text-decoration: underline;
+        }
+        .write-table td.col-title {
+            text-align: left;
+        }
+        .comment-origin {
+            font-size: 12px;
+            color: #999;
+            margin-bottom: 4px;
+        }
+        .comment-content {
+            font-size: 14px;
+            color: #333;
+        }
+        /* 버튼 3개 감싸는 태그 */
+        .review-index-wrap {
+            display: flex;
+            justify-content: space-between; 
+            align-items: center;
+            margin-top: 20px;
+        } 
+        /* 인덱스 버튼 */
         .btn-review-index {
             padding: 10px 30px;
             background-color: #9b8fd4;
@@ -171,6 +165,29 @@
         .btn-review-index:hover {
             background-color: #7b6db4;
         }
+        /* 전체 선택 버튼 */
+        .btn-select-all {
+            padding: 8px 20px;
+            background-color: #f0b429;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 13px;
+        }
+        /* 삭제 버튼 */
+        .btn-delete {
+            padding: 8px 20px;
+            background-color: #f0b429;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 13px;
+        }
+        .btn-select-all:hover, .btn-delete:hover {
+            opacity: 0.85;
+        }
     </style>
 </head>
 <body>
@@ -182,37 +199,68 @@
                 <div class="nav-title">마이페이지</div>
                 <button class="nav-btn">마이페이지</button>
                 <button class="nav-btn">결제 멤버십 내역</button>
-                <button class="nav-btn active">리뷰 조회 내역</button>
-                <button class="nav-btn">내가 쓴 리뷰/댓글</button>
+                <button class="nav-btn">리뷰 조회 내역</button>
+                <button class="nav-btn active">내가 쓴 리뷰/댓글</button>
                 <button class="nav-btn">좋아요 목록</button>
                 <button class="nav-btn">고객센터</button>
             </div>
 
             <!-- 리뷰 조회 내역 메인 영역 -->
             <div class="main">
-
                 <!-- 탭 버튼 -->
-                <div class="review-tab-wrap">
-                    <button class="review-tab" :class="{'active-tab': reviewTab === 'paid'}" @click="switchReviewTab('paid')">유료리뷰</button>
-                    <button class="review-tab" :class="{'active-tab': reviewTab === 'free'}" @click="switchReviewTab('free')">무료 리뷰</button>
+                <div class="write-tab-wrap">
+                    <button class="write-tab" :class="{'active-tab': reviewTab === 'post'}" @click="switchReviewTab('post')">작성 글</button>
+                    <button class="write-tab" :class="{'active-tab': reviewTab === 'review'}" @click="switchReviewTab('review')">작성 리뷰</button>
+                    <button class="write-tab" :class="{'active-tab': reviewTab === 'comment'}" @click="switchReviewTab('comment')">작성 댓글</button>
                 </div>
 
-                <!-- 유료 리뷰 목록 -->
-                <div class="review-list" v-show="reviewTab === 'paid'">
-                    <div class="review-card" v-for="i in 6" :key="i">
-                        <div class="review-thumbnail">썸네일</div>
-                        <div class="review-card-title">리뷰 제목</div>
-                    </div>
-                </div>
+                 <!-- 작성 글 / 작성 리뷰 테이블 -->
+                <table class="write-table" v-if="reviewTab !== 'comment'">
+                    <thead>
+                        <tr>
+                            <th class="col-check"><input type="checkbox"></th>
+                            <th class="col-no">게시글번호</th>
+                            <th class="col-title">제목</th>
+                            <th class="col-date">작성일</th>
+                            <th class="col-view">조회</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr v-for="i in 6" :key="i">
+                            <td><input type="checkbox"></td>
+                            <td>{{ i }}</td>
+                            <td>게시글 제목</td>
+                            <td>2026-01-01</td>
+                            <td>20</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <!-- 작성 댓글 테이블 -->
+                 <table class="write-table" v-if="reviewTab === 'comment'">
+                    <thead>
+                        <tr>
+                            <th class="col-check"><input type="checkbox"></th>
+                            <th class="col-title">제목</th>
+                            <th class="col-date">작성일</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr v-for="i in 4" :key="i">
+                            <td><input type="checkbox"></td>
+                            <td class="col-title">
+                                <div class="comment-origin">ㅇㅇ 업체 스드메 예약 후기[2]</div>
+                                <div class="comment-content">ㅇㅇ 업체 스드메 예약 후기 댓글 내용</div>
+                            </td>
+                            <td>2026-01-01</td>
+                        </tr>
+                    </tbody>
+                </table>
 
-                <!-- 무료 리뷰 목록 -->
-                <div v-show="reviewTab === 'free'">
-                    <div class="review-list-item" v-for="i in 6" :key="i">리뷰 제목</div>
-                </div>
-
-                <!-- 인덱스 버튼 -->
+                <!-- 하단 버튼 -->
                 <div class="review-index-wrap">
+                    <button class="btn-select-all">전체 선택</button>
                     <button class="btn-review-index">상세 리뷰 인덱스</button>
+                    <button class="btn-delete">삭제</button>
                 </div>
             </div>
         </div>
@@ -226,7 +274,7 @@
     const app = Vue.createApp({
         data() {
             return {
-                 reviewTab: 'paid'  // 'paid' or 'free'
+                reviewTab: 'post'  // 'post' or 'review' or 'comment'
             };
         },
         methods: {
@@ -238,6 +286,7 @@
         mounted() {
             // 처음 시작할 때 실행되는 부분
             let self = this;
+
         }
     });
 

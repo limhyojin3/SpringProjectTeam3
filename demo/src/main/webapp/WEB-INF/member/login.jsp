@@ -159,7 +159,7 @@
         <div class="link-wrap">
             <a href="/join.do"><span>회원가입</span></a>
             <span>|</span>
-            <span>아이디/비밀번호 찾기</span>
+            <a href="/find-id.do"><span>아이디/비밀번호 찾기</span></a>
         </div>
 
 

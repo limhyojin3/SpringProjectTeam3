@@ -13,7 +13,7 @@ public class Member {
 	String password; //비밀번호
 	String role; // 권한
 	String status; // 상태
-	String tel; //전화번호
+	String tel; //전화번호(일반회원,업체 둘다)
 	String regDate; //가입 일시
 	String lastLogin; //마지막 로그인 시간
 	String previousPayment; //마지막 결제 수단
