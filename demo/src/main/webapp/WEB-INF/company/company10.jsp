@@ -443,7 +443,7 @@
         <div id="app">
             <!-- html 코드는 id가 app인 태그 안에서 작업 -->
             <header>
-                <div class="logo"><img src="/images/logo.png" alt="메리뷰" height="60"></div>
+                <div class="logo"><img src="/img/merryViewLogo.png" alt="메리뷰" height="60"></div>
                 <div class="nav-top">
                     <button>회사소개</button>
                     <button>제휴업체</button>
@@ -451,14 +451,15 @@
                     <button>패스구매</button>
                     <button>고객센터</button>
                 </div>
-                <div class="user-info">{{ userName }}님</div>
+                <div class="user-info">{{ user.name }}님</div>
             </header>
 
             <div class="container">
                 <aside>
                     <div class="menu-item" v-for="m in menuList" :key="m.id">
                         <button :class="{ active: currentMenu === m.id }"
-                            @click="currentMenu = m.id; productPage = 'list'; page = 1">{{ m.name
+                            @click="currentMenu = m.id; productPage = 'list'; page = 1; page1 = 'main'; reviewTab = 'detail'; ">{{
+                            m.name
                             }}</button>
                         <span class="badge" v-if="m.count > 0">{{ m.count }}</span>
                     </div>
@@ -466,30 +467,38 @@
 
                 <main>
                     <div v-if="currentMenu === 'main'">
-                        <h2>안녕하세요, 'ABC 드레스 샵'님!</h2>
-                        <div class="section-title">제휴업체</div>
+                        <h2>안녕하세요, '{{ user.name }}'님!</h2>
+                        <div class="section-title" v-if="user.grade === '제휴업체'">제휴업체</div>
+                        <div class="section-title" v-else-if="user.grade === '일반업체'">일반업체</div>
                         <div class="content-card">
-                            <h3>제휴업체 이용 기간</h3>
-                            <p style="text-align: right; font-size: 20px;">25.01.01 ~ 26.01.01</p>
+                            <h3><span v-if="user.grade === '제휴업체'">제휴업체</span> 이용 기간</h3>
+                            <p style="text-align: right; font-size: 20px;">{{ user.usePeriod }}</p>
                         </div>
                         <div class="content-card">
                             <h3>마지막 결제 수단</h3>
-                            <p style="text-align: right; font-size: 20px;">신협 ***</p>
+                            <p style="text-align: right; font-size: 20px;">{{ user.lastPayment }}</p>
                         </div>
-                        <button style="float: right;">탈퇴하기</button>
+                        <button style="float: right;" @click="withdraw">탈퇴하기</button>
                     </div>
 
+
+                    <!-- 상품 관리 메뉴 -->
                     <div v-if="currentMenu === 'product'">
 
                         <div v-if="productPage === 'list'">
-                            <h2>등록한 상품(3)</h2>
-                            <div v-for="i in 3" class="content-card"
+                            <h2>등록한 상품({{ productList.length }})</h2>
+                            <div v-for="i in productList" class="content-card"
                                 style="display: flex; align-items: center; padding: 15px;">
                                 <div
                                     style="width: 120px; height: 80px; background: #ffcef0; display: flex; align-items: center; justify-content: center; margin-right: 20px;">
-                                    썸네일</div>
-                                <div style="flex: 1;">상세 내용 및 상품 설명...</div>
-                                <button @click="productPage = 'edit'">수정하기</button>
+                                    <!--{{ i.thumbnail }}-->
+                                    <img :src="i.thumbnail" :alt="i.name" style="max-width: 100%; max-height: 100%">
+                                </div>
+                                <div style="flex: 1;">{{ i.content }}</div>
+                                <div>{{ i.price }}</div>
+                                <button @click="productPage = 'edit'; product = i.name;" style="margin-left: 10px;">수정하기</button>
+                                                                    <!-- 여기 고쳣어( +)-->
+<!--aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa-->
                             </div>
                             <div style="text-align: center;">
                                 <button @click="productPage = 'reg'"
@@ -498,6 +507,7 @@
                             </div>
                         </div>
 
+                        <!-- 상품 등록 폼 -->
                         <div v-else-if="productPage === 'reg'">
                             <div class="product-form-wrapper">
                                 <h2 style="color: #333; margin-bottom: 30px;">상품 등록하기</h2>
@@ -524,13 +534,19 @@
                                         </div>
 
                                         <div class="form-group">
+
+<!--aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa-->                                            
                                             <label class="form-label">상품 설명</label>
-                                            <div class="form-info-box">스드메 모두 제공하는 상품1 입니다.</div>
+                                            <div class="form-info-box">
+                                                <textarea placeholder="상품에 대한 자세한 설명을 입력하세요." style="width: 60%; height: 100px; padding: 10px; border: 1px solid #ddd; border-radius: 4px;"></textarea>
+                                            </div>
                                         </div>
 
                                         <div class="form-group">
                                             <label class="form-label"><span class="form-info-label">예상 견적</span></label>
-                                            <div class="form-info-box">1,700,000원</div>
+                                            <div class="form-info-box">
+                                                <input placeholder="여기에 견적을 적어주세요." type="number" style="width: 200px; padding: 10px; border: 1px solid #ddd; border-radius: 4px;" value="">
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -553,7 +569,7 @@
                             </div>
                         </div>
 
-
+                        <!-- 상품 수정 폼 -->
                         <div v-else-if="productPage === 'edit'">
                             <div class="product-form-wrapper">
                                 <h2 style="color: #333; margin-bottom: 30px;">상품 수정하기</h2>
@@ -564,16 +580,16 @@
                                         <div class="form-group">
                                             <label class="form-label">카테고리</label>
                                             <div class="category-group">
-                                                <div class="category-item">
-                                                    <input type="checkbox" id="1" name="category" value="스튜디오">
-                                                    <label for="1">스튜디오</label>
+                                                <div class="category-item">                                             <!-- 여기임( ) -->
+                                                    <input type="checkbox" id="1" name="category" value="스튜디오" :checked="productList.filter(p => p.name === product)[0].category.includes('스튜디오')">
+                                                    <label for="1">스튜디오</label>                                 <!--:checked="productList.filter(p => p.name === product)[0].category.includes('스튜디오')"-->
                                                 </div>
                                                 <div class="category-item">
-                                                    <input type="checkbox" id="2" name="category" value="드레스">
+                                                    <input type="checkbox" id="2" name="category" value="드레스" :checked="productList.filter(p => p.name === product)[0].category.includes('드레스')">
                                                     <label for="2">드레스</label>
                                                 </div>
                                                 <div class="category-item">
-                                                    <input type="checkbox" id="3" name="category" value="메이크업">
+                                                    <input type="checkbox" id="3" name="category" value="메이크업" :checked="productList.filter(p => p.name === product)[0].category.includes('메이크업')">
                                                     <label for="3">메이크업</label>
                                                 </div>
                                             </div>
@@ -581,12 +597,17 @@
 
                                         <div class="form-group">
                                             <label class="form-label">상품 설명</label>
-                                            <div class="form-info-box">스드메 모두 제공하는 상품1 입니다.</div>
+                                            <div class="form-info-box">                                                                                                                                     <!--여기야(+ )-->                            
+                                                <textarea style="width: 60%; height: 100px; padding: 10px; border: 1px solid #ddd; border-radius: 4px;" placeholder="상품에 대한 자세한 설명을 입력하세요." :value="productList.filter(p => p.name === product)[0].content"></textarea>
+                                            </div>
                                         </div>
 
                                         <div class="form-group">
                                             <label class="form-label"><span class="form-info-label">예상 견적</span></label>
-                                            <div class="form-info-box">1,700,000원</div>
+                                            <div class="form-info-box">
+<!--aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa-->
+                                                <input type="text" style="width: 200px; padding: 10px; border: 1px solid #ddd; border-radius: 4px;" :value="productList.filter(p => p.name === product)[0].price" v-model="productList.filter(p => p.name === product)[0].price">
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -604,7 +625,7 @@
 
                                 <div class="form-button-group">
                                     <button class="btn-cancel" @click="productPage = 'list'">취소(돌아가기)</button>
-                                    <button class="btn-submit">상품 수정</button>
+                                    <button class="btn-submit" @click="updateProduct">상품 수정</button>
                                 </div>
                             </div>
                         </div>
@@ -682,40 +703,76 @@
                     </div>
 
                     <div v-if="currentMenu === 'review'">
-                        
+
+
+                        <!--page1 이 main인경우-->
                         <template v-if="page1 === 'main'">
+
+
                             <div class="tab-menu">
                                 <button :class="{ active: reviewTab === 'detail' }" @click="reviewTab = 'detail'">상세
-                                    리뷰(30)</button>
+                                    리뷰({{reviews.length}})
+                                </button>
+
                                 <button :class="{ active: reviewTab === 'simple' }" @click="reviewTab = 'simple'">한줄
-                                    리뷰(15)</button>
+                                    리뷰({{simpleReviews.length}})
+                                </button>
                             </div>
 
                             <div v-if="reviewTab === 'detail'" class="content-card">
 
-                                <h3>리뷰 내역 : <span style="color: #ff1493;">새 리뷰 10건</span></h3>
+                                <h3>리뷰 내역 : <span style="color: #ff1493;">새 리뷰 {{this.reviews.filter(r => r.updated ===
+                                        'new').length}}건</span></h3>
                                 <template v-for="w in weddinglist" :key="w.name">
                                     <div class="review-header-info" style="margin-bottom: 10px;">
                                         <div class="review-thumb-box">썸네일</div>
                                         <div class="review-product-name">
                                             <a href="javascript:;"
-                                                @click="page1 = w.name"><strong>{{w.name}}</strong></a>
+                                                @click="page1 = w.name; page = 1"><strong>{{w.name}}</strong></a>
+                                        </div>
+                                        <div class="review-count-badge">리뷰 갯수: {{w.reviewcount}}개 </div>
+                                    </div>
+                                </template>
+                            </div>
+
+
+                            <div v-if="reviewTab === 'simple'" class="content-card">
+
+                                <h3>리뷰 내역 : <span style="color: #ff1493;">새 리뷰 {{this.simpleReviews.filter(r =>
+                                        r.updated === 'new').length}}건</span></h3>
+
+                                <template v-for="w in simpleweddinglist" :key="w.name">
+
+                                    <div class="review-header-info" style="margin-bottom: 10px;">
+                                        <div class="review-thumb-box">썸네일</div>
+                                        <div class="review-product-name">
+
+                                            <a href="javascript:;"
+                                                @click="page1 = w.name; page = 1"><strong>{{w.name}}</strong></a>
+
                                         </div>
                                         <div class="review-count-badge">리뷰 갯수: {{w.reviewcount}}개 </div>
                                     </div>
                                 </template>
                             </div>
                         </template>
-                        <template v-else>
-                            <template v-for="rev in reviews" :key="rev.id">
-                                <template v-if="page1 === rev.product" class="detail-review-item">
-                                    <!-- {{rev}} -->
 
+
+
+
+                        <!--page1이 main이 아닌 경우-->
+                        <template v-else> <!--page1 != 'main'-->
+
+
+                            <!-- reviewTab === 'detail' 인 경우-->
+                            <template v-if="reviewTab === 'detail'">
+                                <template v-for="rev in paginatedReviews" :key="rev.id" class="detail-review-item">
+                                    <!-- {{rev}} -->
                                     <div class="star-rating">평점 : {{rev.rating}}/5</div>
-                                    
+
                                     <div style="display: flex; gap: 20px;">
                                         <div style="position: relative;">
-                                            <span class="new-label"
+                                            <span class="new-label" v-if="rev.updated === 'new'"
                                                 style="position: absolute; top: -5px; left: -5px;">NEW
                                             </span>
                                             <div class="review-photo">리뷰 사진</div>
@@ -729,89 +786,65 @@
                                         작성자: <strong>{{rev.author}}</strong> | 작성일자: {{rev.date}}
                                     </div>
                                 </template>
-                            </template>
-                        </template>
-
-
-
-                        <!-- <div class="review-header-info" v-for="(w, idx) in weddinglist" :key="idx"
-                                style="margin-bottom: 10px;">
-                                <div class="review-thumb-box">썸네일</div>
-                                <div class="review-product-name">
-                                    <a href="javascript:;" @click="page1 = w.name"><strong>{{w.name}}</strong></a>
-                                </div>
-                                <div class="review-count-badge">리뷰 갯수: {{w.reviewcount}}개 </div>
-                            </div>
-
-                            <div class="content-card" v-for="w in weddinglist" :key="w.name">
-                                <template
-                                <div v-for="rev in reviews" :key="rev.id">
-                                    <div v-if="page === rev.id" class="detail-review-item">
-                                        <div class="star-rating">평점 : {{rev.rating}}/5</div>
-
-                                        <div style="display: flex; gap: 20px;">
-                                            <div style="position: relative;">
-                                                <span class="new-label"
-                                                    style="position: absolute; top: -5px; left: -5px;">NEW</span>
-                                                <div class="review-photo">리뷰 사진</div>
-                                            </div>
-                                            <div style="flex: 1; line-height: 1.6; color: #444;">
-                                                {{rev.content}}
-                                            </div>
-                                        </div>
-
-                                        <div
-                                            style="text-align: right; font-size: 13px; color: #888; margin-top: 15px; border-top: 1px dashed #eee; padding-top: 10px;">
-                                            작성자: <strong>{{rev.author}}</strong> | 작성일자: {{rev.date}}
-                                        </div>
-                                    </div>
-                                </div> -->
-
-                        <!-- <div class="pagination">
-                                    <span v-for="num in indexlist" :key="num">
+                                <div class="pagination">
+                                    <span v-for="num in totalPages" :key="num">
                                         <a @click="page = num" href="javascript:;"
                                             :style="page === num ? 'color: #ff1493; border: 1px solid #ff1493;' : ''">
                                             {{num}}
                                         </a>
                                     </span>
-                                </div> -->
+                                </div>
+                            </template>
+
+
+
+
+                            <!--reviewTab === 'simple' 인 경우-->
+                            <template v-else-if="reviewTab === 'simple'">
+
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <th>번호</th>
+                                            <th>내용</th>
+                                            <th>작성자</th>
+                                            <th>평점</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+
+
+                                        <template v-for="(rev, idx) in paginatedSimpleReviews" :key="rev.id">
+                                            <!--페이지에 맞는 리뷰 표시-->
+                                            <tr>
+                                                <td>{{ (page - 1) * 5 + idx + 1 }} <span class="new-label"
+                                                        v-if="rev.updated === 'new'">NEW</span></td>
+                                                <td>{{rev.content}}</td>
+                                                <td>{{rev.userid}}</td>
+                                                <td><span style="color: #ff6a00;">{{rev.rating}}</span><span>/5</span>
+                                                </td>
+                                            </tr>
+                                        </template>
+
+                                    </tbody>
+                                </table>
+                                <div class="pagination">
+                                    <span v-for="num in totalSimplePages" :key="num">
+                                        <a @click="page = num" href="javascript:;"
+                                            :style="page === num ? 'color: #ff1493; border: 1px solid #ff1493;' : ''">
+                                            {{num}}
+                                        </a>
+                                    </span> <!-- num 에 해당하는 페이지가 뜨고 그 페이지에 자료가 5개씩 표시되도록( )-->
+                                </div>
+
+                            </template>
+
+
+                        </template>
                     </div>
             </div>
 
-            <div v-if="reviewTab === 'simple'">
-                <h3>리뷰 내역 : <span style="color: #ff1493;">새 리뷰 5건</span></h3>
 
-                <div class="review-header-info" style="margin-bottom: 10px;">
-                    <div class="review-thumb-box">썸네일</div>
-                    <div class="review-product-name"><strong>상품명</strong></div>
-                    <div class="review-count-badge">리뷰 갯수: 5개</div>
-                </div>
-
-                <table>
-                    <thead>
-                        <tr>
-                            <th>번호</th>
-                            <th>내용</th>
-                            <th>작성자</th>
-                            <th>평점</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>3 <span class="new-label">NEW</span></td>
-                            <td>추천합니다. 친절해요.</td>
-                            <td>결혼해듀오</td>
-                            <td style="color: #ffb400;">★★★★★</td>
-                        </tr>
-                        <tr>
-                            <td>2 <span class="new-label">NEW</span></td>
-                            <td>조금 늦었는데 배려해주셔서 감사합니다.</td>
-                            <td>5월신부</td>
-                            <td style="color: #ffb400;">★★★★★</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
         </div>
         </main>
         </div>
@@ -831,70 +864,153 @@
             data() {
                 return {
                     // 변수 - (key : value)
-                    userName: 'ooo',
+                    user: { 
+                        id: 1, name: 'ABC 드레스 샵', usePeriod: '25.01.01 ~ 26.01.01', lastPayment: '신협 ***' ,grade: '제휴업체' /* 일반업체, 제휴업체 구분 변수 */
+                    },
                     currentMenu: 'main', // 초기 화면
                     reviewTab: 'detail',
-                    resCount: 3,
-                    menuList: [
-                        { id: 'main', name: '마이 페이지', count: 0 },
-                        { id: 'product', name: '상품 관리', count: 0 },
-                        { id: 'reservation', name: '예약 관리', count: 3 },
-                        { id: 'inquiry', name: '문의 내역', count: 2 },
-                        { id: 'review', name: '리뷰 내역', count: 10 },
-                        { id: 'customer', name: '고객센터', count: 0 }
-                    ],
+
                     page1: 'main', // 상품별 리뷰 페이지 구분 변수
                     productPage: 'list', //(list: 목록, reg: 등록, edit: 수정)
-                    indexlist: [1, 2, 3, 4, 5],
+
                     page: 1,
+                    product: '스몰 웨딩',
+                    
+                    //product === productList.        v-for = "pro in productList" :key="pro.id"   v-if="product === pro.name" 
+                    productList: [  //상품 리스트
+                        { id: 1, thumbnail: 'https://img1.newsis.com/2021/09/26/NISI20210926_0000834715_web.jpg', name: '스몰 웨딩', content: '스몰 웨딩 상품 설명입니다.', price: '1,700,000원',category: ['스튜디오', '드레스'] },
+                        { id: 2, thumbnail: 'gorgeous.jpg', name: '화려하게', content: '화려하게 상품 설명입니다.', price: '2,500,000원', category: ['스튜디오', '메이크업'] },
+                        { id: 3, thumbnail: 'fairy_tale.jpg', name: '동화같은 분위기', content: '동화같은 분위기 상품 설명입니다.', price: '1,200,000원', category: ['메이크업'] }
+                    ],
+                    
+
+                    simpleReviews: [
+                        // 1~7: 스몰 웨딩 (7개)
+                        { id: 1, product: '스몰 웨딩', content: '드레스 피팅 때 전문가 포스가 느껴져서 안심됐어요.', userid: '예신이1004', rating: 5, updated: 'new' },
+                        { id: 2, product: '스몰 웨딩', content: '지정했던 드레스가 대여 중이라 다른 걸 입어 아쉬워요.', userid: '드레스투어중', rating: 3, updated: 'new' },
+                        { id: 3, product: '스몰 웨딩', content: '메이크업 지속력이 좀 떨어져서 촬영 중간에 수정했어요.', userid: '수정화장필수', rating: 3, updated: 'new' },
+                        { id: 4, product: '스몰 웨딩', content: '대기 공간이 좁아서 부모님 모시고 가기엔 좀 불편해요.', userid: '효도신부', rating: 2, updated: 'old' },
+                        { id: 5, product: '스몰 웨딩', content: '드레스 상태가 조금 사용감이 느껴져서 아쉬웠습니다.', userid: '꼼꼼한체크', rating: 2, updated: 'old' },
+                        { id: 6, product: '스몰 웨딩', content: '가까운 지인들만 모시는 자리에 딱 맞는 심플한 드레스가 많아요.', userid: '심플리즘', rating: 5, updated: 'old' },
+                        { id: 7, product: '스몰 웨딩', content: '소규모 예식이라 걱정했는데 상담 실장님이 동선까지 잘 짜주셨어요.', userid: '미니멀라이프', rating: 4, updated: 'old' },
+
+                        // 8~12: 화려하게 (5개)
+                        { id: 8, product: '화려하게', content: '헬퍼 이모님이 세심하게 챙겨주셔서 공주 된 기분이었어요.', userid: '행복한웨딩', rating: 5, updated: 'new' },
+                        { id: 9, product: '화려하게', content: '수입 드레스 라인이 정말 독보적이네요. 화려함 끝판왕!', userid: '비즈가좋아', rating: 5, updated: 'new' },
+                        { id: 10, product: '화려하게', content: '실장님이 제 체형에 딱 맞는 드레스를 잘 골라주셨어요.', userid: '체형교정마법', rating: 5, updated: 'old' },
+                        { id: 11, product: '화려하게', content: '야간 촬영 추가했는데 분위기가 정말 환상적이에요.', userid: '밤하늘의별', rating: 5, updated: 'old' },
+                        { id: 12, product: '화려하게', content: '조명 아래서 비즈가 반짝이는 게 너무 예뻐서 눈을 뗄 수가 없었네요.', userid: '반짝이덕후', rating: 5, updated: 'old' },
+
+                        // 13~15: 동화같은 분위기 (3개)
+                        { id: 13, product: '동화같은 분위기', content: '스튜디오 채광이 너무 예뻐서 원본도 만족스러워요.', userid: '촬영끝행복시작', rating: 5, updated: 'old' },
+                        { id: 14, product: '동화같은 분위기', content: '작가님이 긴장을 잘 풀어주셔서 자연스럽게 찍었습니다.', userid: '웃는게어색해', rating: 5, updated: 'old' },
+                        { id: 15, product: '동화같은 분위기', content: '스튜디오 배경이 유행을 좀 탈 것 같지만 사진은 예쁩니다.', userid: '감성신부v', rating: 4, updated: 'old' }
+                    ],
                     reviews: [
-                        { id: 1, product: '스몰 웨딩', rating: 5, author: '김결혼', content: '웨딩 플래너님이 정말 세심하게 도와주셔서 만족스러웠어요.', date: '26.04.08' },
-                        { id: 2, product: '스몰 웨딩', rating: 4, author: '김tntn', content: '드레스 퀄리티가 기대 이상이었습니다!', date: '26.04.08' },
-                        { id: 3, product: '스몰 웨딩', rating: 5, author: '김발랄', content: '스튜디오 촬영 분위기가 너무 좋아서 즐겁게 찍었어요.', date: '26.04.08' },
-                        { id: 4, product: '스몰 웨딩', rating: 5, author: '김망고', content: '스냅 사진 퀄리티가 정말 좋아요.', date: '26.04.01' },
-                        { id: 5, product: '스몰 웨딩', rating: 3, author: '김딸기', content: '예식 진행 스태프들이 매우 프로페셔널했습니다.', date: '26.04.08' },
-                        { id: 6, product: '스몰 웨딩', rating: 4, author: '김포도', content: '예약 과정이 간편해서 좋았어요.', date: '26.04.07' },
-                        { id: 7, product: '스몰 웨딩', rating: 3, author: '김사과', content: '디테일까지 신경 써주셔서 감동이었습니다.', date: '26.04.08' },
-                        { id: 8, product: '스몰 웨딩', rating: 3, author: '김오렌지', content: '예산에 맞춰 잘 추천해주셔서 도움이 많이 됐어요.', date: '26.04.06' },
-                        { id: 9, product: '스몰 웨딩', rating: 5, author: '김자몽', content: '웨딩 촬영 결과물이 정말 만족스러웠습니다.', date: '26.04.05' },
-                        { id: 10, product: '스몰 웨딩', rating: 3, author: '김레몬', content: '당일 진행이 체계적이라 믿고 맡길 수 있었어요.', date: '26.04.08' },
-                        { id: 11, product: '스몰 웨딩', rating: 3, author: '김복숭아', content: '친구들에게도 추천하고 싶은 업체입니다.', date: '26.04.04' },
-                        { id: 12, product: '스몰 웨딩', rating: 5, author: '김수박', content: '상담부터 계약까지 과정이 투명했어요.', date: '26.04.03' },
-                        { id: 13, product: '스몰 웨딩', rating: 5, author: '김참외', content: '웨딩홀 연출이 너무 아름다웠습니다.', date: '26.04.08' },
-                        { id: 14, product: '스몰 웨딩', rating: 5, author: '김멜론', content: '가성비 좋은 패키지라 만족해요.', date: '26.04.02' },
-                        { id: 15, product: '스몰 웨딩', rating: 3, author: '김키위', content: '플래너님 응대가 빠르고 정확했습니다.', date: '26.04.01' },
+                        { id: 1, product: '스몰 웨딩', rating: 5, author: '김결혼', content: '웨딩 플래너님이 정말 세심하게 도와주셔서 만족스러웠어요.', date: '26.04.08', updated: 'new' },
+                        { id: 2, product: '스몰 웨딩', rating: 4, author: '김tntn', content: '드레스 퀄리티가 기대 이상이었습니다!', date: '26.04.08', updated: 'new' },
+                        { id: 3, product: '스몰 웨딩', rating: 5, author: '김발랄', content: '스튜디오 촬영 분위기가 너무 좋아서 즐겁게 찍었어요.', date: '26.04.08', updated: 'new' },
+                        { id: 4, product: '스몰 웨딩', rating: 5, author: '김망고', content: '스냅 사진 퀄리티가 정말 좋아요.', date: '26.04.08', updated: 'new' },
+                        { id: 5, product: '스몰 웨딩', rating: 3, author: '김딸기', content: '예식 진행 스태프들이 매우 프로페셔널했습니다.', date: '26.04.07', updated: 'old' },
+                        { id: 6, product: '스몰 웨딩', rating: 4, author: '김포도', content: '예약 과정이 간편해서 좋았어요.', date: '26.04.07', updated: 'old' },
+                        { id: 7, product: '스몰 웨딩', rating: 3, author: '김사과', content: '디테일까지 신경 써주셔서 감동이었습니다.', date: '26.04.07', updated: 'old' },
+                        { id: 8, product: '스몰 웨딩', rating: 3, author: '김오렌지', content: '예산에 맞춰 잘 추천해주셔서 도움이 많이 됐어요.', date: '26.04.06', updated: 'old' },
+                        { id: 9, product: '스몰 웨딩', rating: 5, author: '김자몽', content: '웨딩 촬영 결과물이 정말 만족스러웠습니다.', date: '26.04.05', updated: 'old' },
+                        { id: 10, product: '스몰 웨딩', rating: 3, author: '김레몬', content: '당일 진행이 체계적이라 믿고 맡길 수 있었어요.', date: '26.04.05', updated: 'old' },
+                        { id: 11, product: '스몰 웨딩', rating: 3, author: '김복숭아', content: '친구들에게도 추천하고 싶은 업체입니다.', date: '26.04.02', updated: 'old' },
+                        { id: 12, product: '스몰 웨딩', rating: 5, author: '김수박', content: '상담부터 계약까지 과정이 투명했어요.', date: '26.04.02', updated: 'old' },
+                        { id: 13, product: '스몰 웨딩', rating: 5, author: '김참외', content: '웨딩홀 연출이 너무 아름다웠습니다.', date: '26.04.01', updated: 'old' },
+                        { id: 14, product: '스몰 웨딩', rating: 5, author: '김멜론', content: '가성비 좋은 패키지라 만족해요.', date: '26.04.01', updated: 'old' },
+                        { id: 15, product: '스몰 웨딩', rating: 3, author: '김키위', content: '플래너님 응대가 빠르고 정확했습니다.', date: '26.04.01', updated: 'old' },
 
                         // 화려하게 (10개)
-                        { id: 16, product: '화려하게', rating: 3, author: '김미미', content: '메이크업이 자연스럽고 예쁘게 잘 되었어요.', date: '26.04.07' },
-                        { id: 17, product: '화려하게', rating: 5, author: '김sksk', content: '상담부터 진행까지 전반적으로 만족합니다.', date: '26.04.08' },
-                        { id: 18, product: '화려하게', rating: 5, author: '김하늘', content: '예식 당일 진행이 매끄러워서 걱정 없이 진행했어요.', date: '26.04.06' },
-                        { id: 19, product: '화려하게', rating: 3, author: '김바다', content: '플래너님 덕분에 준비 과정이 훨씬 수월했습니다.', date: '26.04.05' },
-                        { id: 20, product: '화려하게', rating: 3, author: '김초코', content: '드레스 종류가 다양해서 선택하기 좋았어요.', date: '26.04.08' },
-                        { id: 21, product: '화려하게', rating: 5, author: '김쿠키', content: '촬영 작가님이 포즈도 잘 잡아주셔서 만족!', date: '26.04.04' },
-                        { id: 22, product: '화려하게', rating: 4, author: '김라떼', content: '웨딩홀 분위기가 정말 고급스러웠습니다.', date: '26.04.08' },
-                        { id: 23, product: '화려하게', rating: 5, author: '김모카', content: '상담이 친절하고 꼼꼼해서 신뢰가 갔어요.', date: '26.04.03' },
-                        { id: 24, product: '화려하게', rating: 5, author: '김코코', content: '헤어 스타일링이 마음에 쏙 들었습니다.', date: '26.04.02' },
-                        { id: 25, product: '화려하게', rating: 5, author: '김치즈', content: '전체 패키지 구성이 합리적이었어요.', date: '26.04.08' },
+                        { id: 16, product: '화려하게', rating: 3, author: '김미미', content: '메이크업이 자연스럽고 예쁘게 잘 되었어요.', date: '26.04.08', updated: 'new' },
+                        { id: 17, product: '화려하게', rating: 5, author: '김sksk', content: '상담부터 진행까지 전반적으로 만족합니다.', date: '26.04.08', updated: 'new' },
+                        { id: 18, product: '화려하게', rating: 5, author: '김하늘', content: '예식 당일 진행이 매끄러워서 걱정 없이 진행했어요.', date: '26.04.08', updated: 'new' },
+                        { id: 19, product: '화려하게', rating: 3, author: '김바다', content: '플래너님 덕분에 준비 과정이 훨씬 수월했습니다.', date: '26.04.05', updated: 'old' },
+                        { id: 20, product: '화려하게', rating: 3, author: '김초코', content: '드레스 종류가 다양해서 선택하기 좋았어요.', date: '26.04.05', updated: 'old' },
+                        { id: 21, product: '화려하게', rating: 5, author: '김쿠키', content: '촬영 작가님이 포즈도 잘 잡아주셔서 만족!', date: '26.04.04', updated: 'old' },
+                        { id: 22, product: '화려하게', rating: 4, author: '김라떼', content: '웨딩홀 분위기가 정말 고급스러웠습니다.', date: '26.04.04', updated: 'old' },
+                        { id: 23, product: '화려하게', rating: 5, author: '김모카', content: '상담이 친절하고 꼼꼼해서 신뢰가 갔어요.', date: '26.04.03', updated: 'old' },
+                        { id: 24, product: '화려하게', rating: 5, author: '김코코', content: '헤어 스타일링이 마음에 쏙 들었습니다.', date: '26.04.02', updated: 'old' },
+                        { id: 25, product: '화려하게', rating: 5, author: '김치즈', content: '전체 패키지 구성이 합리적이었어요.', date: '26.04.02', updated: 'old' },
 
                         // 동화같은 분위기 (5개)
-                        { id: 26, product: '동화같은 분위기', rating: 5, author: '김파인', content: '드레스 피팅 경험이 정말 좋았어요.', date: '26.04.08' },
-                        { id: 27, product: '동화같은 분위기', rating: 5, author: '김체리', content: '소소한 요청도 잘 반영해주셔서 감사했습니다.', date: '26.04.07' },
-                        { id: 28, product: '동화같은 분위기', rating: 5, author: '김블루베리', content: '전체 일정 관리가 체계적이었어요.', date: '26.04.06' },
-                        { id: 29, product: '동화같은 분위기', rating: 5, author: '김라임', content: '결혼 준비 스트레스가 많이 줄었습니다.', date: '26.04.05' },
-                        { id: 30, product: '동화같은 분위기', rating: 5, author: '김코코넛', content: '인생에 한 번뿐인 날을 잘 만들어주셔서 감사합니다.', date: '26.04.08' }
+                        { id: 26, product: '동화같은 분위기', rating: 5, author: '김파인', content: '드레스 피팅 경험이 정말 좋았어요.', date: '26.04.08', updated: 'new' },
+                        { id: 27, product: '동화같은 분위기', rating: 5, author: '김체리', content: '소소한 요청도 잘 반영해주셔서 감사했습니다.', date: '26.04.08', updated: 'new' },
+                        { id: 28, product: '동화같은 분위기', rating: 5, author: '김블루베리', content: '전체 일정 관리가 체계적이었어요.', date: '26.04.08', updated: 'new' },
+                        { id: 29, product: '동화같은 분위기', rating: 5, author: '김라임', content: '결혼 준비 스트레스가 많이 줄었습니다.', date: '26.04.05', updated: 'old' },
+                        { id: 30, product: '동화같은 분위기', rating: 5, author: '김코코넛', content: '인생에 한 번뿐인 날을 잘 만들어주셔서 감사합니다.', date: '26.04.01', updated: 'old' }
                     ],
                     reservationList: [
                         { id: 1, product: '드레스 투어', content: '본식 드레스 투어 하고 싶습니다.', resDate: '26.03.01', useDate: '26.04.01 14:00PM', name: '김결혼', contact: '010-1234-5678', price: '50,000원' },
                         { id: 2, product: '스튜디오 촬영', content: '본식 스튜디오 촬영 하고 싶습니다.', resDate: '26.03.05', useDate: '26.04.05 10:00AM', name: '5월신부', contact: '010-9876-5432', price: '100,000원' },
                         { id: 3, product: '메이크업 시연', content: '본식 메이크업 시연 받고 싶습니다.', resDate: '26.03.10', useDate: '26.04.10 16:00PM', name: '김tntn', contact: '010-5555-6666', price: '30,000원' }
                     ],
-                    indexlist2: [1, 2, 3],
-                    weddinglist: [
-                        { name: '스몰 웨딩', reviewcount: 15 },
-                        { name: '화려하게', reviewcount: 10 },
-                        { name: '동화같은 분위기', reviewcount: 5 }
-                    ]
-                };
+                    indexlist2: [1, 2, 3]
+                }
+            }, // data
+            computed: {
+                resCount: 3
+                ,
+
+                menuList() {
+                    return [
+                        { id: 'main', name: '마이 페이지', count: 0 },
+                        { id: 'product', name: '상품 관리', count: 0 },
+                        { id: 'reservation', name: '예약 관리', count: 3 },
+                        { id: 'inquiry', name: '문의 내역', count: 2 },
+                        { id: 'review', name: '리뷰 내역', count: this.reviews.filter(r => r.updated === 'new').length + this.simpleReviews.filter(r => r.updated === 'new').length },
+                        { id: 'customer', name: '고객센터', count: 0 }
+                    ];
+                },
+                weddinglist() {
+                    return [
+                        { name: '스몰 웨딩', reviewcount: this.reviews.filter(r => r.product === '스몰 웨딩').length }, //15
+                        { name: '화려하게', reviewcount: this.reviews.filter(r => r.product === '화려하게').length }, //10
+                        { name: '동화같은 분위기', reviewcount: this.reviews.filter(r => r.product === '동화같은 분위기').length }//5
+                    ];
+                },
+                simpleweddinglist() {
+                    return [
+                        { name: '스몰 웨딩', reviewcount: this.simpleReviews.filter(r => r.product === '스몰 웨딩').length }, //7
+                        { name: '화려하게', reviewcount: this.simpleReviews.filter(r => r.product === '화려하게').length }, //5
+                        { name: '동화같은 분위기', reviewcount: this.simpleReviews.filter(r => r.product === '동화같은 분위기').length } //3
+                    ];
+                },
+
+
+
+
+                filteredReviews() {
+                    return this.reviews.filter(rev => rev.product === this.page1); // 현재 선택된 상품(page1)에 해당하는 리뷰만 반환 //[] 리스트..
+                },
+                filteredSimpleReviews() {
+                    return this.simpleReviews.filter(rev => rev.product === this.page1); // 현재 선택된 상품(page1)에 해당하는 리뷰만 반환 //[] 리스트..
+                },
+
+
+
+                paginatedReviews() {
+                    const start = (this.page - 1) * 5;
+                    const end = start + 5;
+                    return this.filteredReviews.slice(start, end); // 페이지에 맞는 리뷰만 반환 (5개씩) (page가 1이면 0~4, page가 2면 5~9) //[] 리스트..
+                },
+                paginatedSimpleReviews() {
+                    const start = (this.page - 1) * 5;
+                    const end = start + 5;
+                    return this.filteredSimpleReviews.slice(start, end); // 페이지에 맞는 리뷰만 반환 (5개씩) (page가 1이면 0~4, page가 2면 5~9) //[] 리스트..
+                },
+
+
+
+                totalPages() {
+                    return Math.ceil(this.filteredReviews.length / 5); // 총 페이지 수 계산 (5개씩 보여줄 때) // 숫자
+                },
+                totalSimplePages() {
+                    return Math.ceil(this.filteredSimpleReviews.length / 5); // 총 페이지 수 계산 (5개씩 보여줄 때) // 숫자
+                }
+
             },
             methods: {
                 // 함수(메소드) - (key : function())
@@ -910,6 +1026,19 @@
 
                         }
                     });
+                },
+                withdraw: function () {
+                    if (confirm("정말 탈퇴하시겠습니까?")) {
+                        alert("탈퇴되었습니다.");
+                    } else {
+                        alert("탈퇴가 취소되었습니다.");
+                    }
+                },
+                updateProduct: function () {
+                    alert("상품이 수정되었습니다.");
+
+                    this.productPage = 'list'; // 수정 후 상품 목록으로 돌아가기
+                    // 여기야!!( )
                 }
             }, // methods
             mounted() {
