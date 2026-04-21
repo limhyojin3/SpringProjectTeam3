@@ -185,12 +185,12 @@
             <!-- 사이드바 -->
             <div class="nav">
                 <div class="nav-title">마이페이지</div>
-                <button class="nav-btn">마이페이지</button>
-                <button class="nav-btn">결제 멤버십 내역</button>
-                <button class="nav-btn">리뷰 조회 내역</button>
-                <button class="nav-btn ">내가 쓴 리뷰/댓글</button>
-                <button class="nav-btn active">좋아요 목록</button>
-                <button class="nav-btn">고객센터</button>
+                <button class="nav-btn" @click="fnMypage()">마이페이지</button>
+                <button class="nav-btn" @click="fnuserMyPagePay()">결제 멤버십 내역</button>
+                <button class="nav-btn" @click="fnuserMyPageReview()">리뷰 조회 내역</button>
+                <button class="nav-btn" @click="fnuserMyPageWrite()">내가 쓴 리뷰/댓글</button>
+                <button class="nav-btn" @click="fnuserMyPageLike()">좋아요 목록</button>
+                <button class="nav-btn" @click="fnuserMyPageCS()">고객센터</button>
             </div>
 
             <!-- 리뷰 조회 내역 메인 영역 -->
@@ -276,7 +276,32 @@
             // 함수(메소드) - (key : function())
             switchReviewTab: function(type) {
                 this.reviewTab = type;
-            }
+            },
+            // *사이드 바*
+            // 마이페이지 메인
+            fnMypage : function(){
+                location.href="/userMyPage.do";
+            },
+            // 결제 멤버십 내역
+            fnuserMyPagePay : function(){
+                location.href="/userMyPage-pay.do";
+            },
+            // 리뷰 조회 내역
+            fnuserMyPageReview : function(){
+                location.href="/userMyPage-review.do";
+            },
+            // 내가 쓴 리뷰 조회 내역
+            fnuserMyPageWrite : function(){
+                location.href="/userMyPage-write.do";
+            },
+            // 좋아요 목록
+            fnuserMyPageLike : function(){
+                location.href="/userMyPage-like.do";
+            },
+            // 고객 센터 홈
+            fnuserMyPageCS : function(){
+                location.href="/userMyPage-cs.do";
+            },
         }, // methods
         mounted() {
             // 처음 시작할 때 실행되는 부분

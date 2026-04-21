@@ -1,10 +1,8 @@
 package com.example.demo.member.dao;
 
 import java.util.HashMap;
-import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -58,25 +56,33 @@ public class MemberService {
 	            resultMap.put("loginResult", true);
 	            
 	         // tab은 위에서 이미 선언했으니까 그냥 사용 가능합니다.
+	         String displayName= ""; // 화면에 표시할 이름을 담을 변수
 	         if(tab.equals("company")) {
-	            String companyName = memberMapper.selectCompany(map);
-	            resultMap.put("message", companyName + "님 환영합니다.");
+//	        	System.out.println("DB에서 가져온 Member ID: " + member.getUserId()); // DB 객체 값
+	        	map.put("userId", member.getUserId());
+//	        	System.out.println(map.get("userId"));
+	        	displayName = memberMapper.selectCompany(map);
+	        	System.out.println("조회된 업체명: " + displayName);
+	            resultMap.put("message", displayName + "님 환영합니다.");
+	    
 	         } else {
-	            resultMap.put("message", member.getName() + "님 환영합니다.");
+	        	displayName = member.getName();
+	            resultMap.put("message", displayName + "님 환영합니다.");
+	            
 	          }
 	          
 	         // url 분기
 	         if(member.getRole().equals("ADMIN")) { // 관리자 role
 	            resultMap.put("url", "/admin/main.do"); 
 	            // 임시페이지 없어서 404 뜨는데 머지->pull 받고 만드신 주소로 수정하겠습니다.
-	         } else if(member.getRole().equals("PARTNER")) { // 업체롤 role
+	         } else if(member.getRole().equals("NPARTNER")) { // 업체롤 role
 	            resultMap.put("url", "/company10.do"); 
 	            // 임시페이지 없어서 404 뜨는데 머지->pull 받고 만드신 주소로 수정하겠습니다.
 	         } else {
 	                resultMap.put("url", "/merryViewHome.do"); // 임시로 /home.jsp 생성했습니다.
 	         }	            
 	            session.setAttribute("sessionId", member.getUserId());
-	            session.setAttribute("sessionName", member.getName());
+	            session.setAttribute("sessionName", displayName);
 	            session.setAttribute("sessionRole", member.getRole());
 	         }else {
 	            resultMap.put("loginResult", false);
@@ -175,6 +181,36 @@ public class MemberService {
 	    }
 	    return resultMap;
 	}
+	// 내 정보 수정 - 비밀번호 확인
+	public HashMap<String, Object> checkPassword(HashMap<String, Object> map) {
+	    HashMap<String, Object> resultMap = new HashMap<String, Object>();
+	    try {
+	        Member member = memberMapper.selectMember(map); 
+	        
+	        if (member != null) {
+	            // 2. 암호화된 비밀번호 비교
+	            boolean isMatch = passwordEncoder.matches((String)map.get("password"), member.getPassword());
+	            resultMap.put("result", isMatch ? "success" : "fail");
+	        } else {
+	            resultMap.put("result", "fail");
+	        }
+	    } catch(Exception e) {
+	        System.out.println("비밀번호 확인 에러: " + e.getMessage());
+	        resultMap.put("result", "error");
+	    }
+	    return resultMap;
+	}
+	// 내 정보 수정 - 상세 정보 가져오기
+	public Member getMemberInfo(String userId) {
+	    try {
+	        // 아까 XML에 만드신 selectMemberInfo를 호출합니다.
+	        return memberMapper.selectMemberInfo(userId);
+	    } catch (Exception e) {
+	        System.out.println("회원정보 조회 에러: " + e.getMessage());
+	        return null;
+	    }
+	}
+	
 	
 	
 	
