@@ -9,6 +9,7 @@
     <script src="https://code.jquery.com/jquery-3.7.1.js" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
     <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
     <script src="/js/page-change.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
@@ -80,112 +81,64 @@
             padding: 30px;
             background-color: #fff9f9;
             position: relative;
-            /* display: flex 없애기! */
         }
-
-        /* 신고 작성 제목 */
-        .cs-write-title {
-            font-size: 30px;
-            font-weight: bold;
+        /* 기존 회원가입 스타일과 통일감을 주기 위한 설정 */
+        .confirm-container {
+            width: 400px;
+            margin: 100px auto;
+            padding: 40px;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
             text-align: center;
-            margin-bottom: 25px;
+        }
+        .confirm-container h2 {
             color: #333;
-        }
-
-        /* 폼 전체 감싸는 박스 */
-        .cs-write-form {
-            max-width: 600px;
-            margin: 0 auto;
-        }
-
-        /* 각 입력 그룹 */
-        .cs-form-group {
             margin-bottom: 20px;
         }
-
-        /* 라벨 */
-        .cs-label {
+        .confirm-container p {
+            color: #666;
+            font-size: 0.9rem;
+            margin-bottom: 30px;
+        }
+        .input-group {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+        .input-group label {
             display: block;
-            font-size: 14px;
-            font-weight: bold;
-            color: #333;
             margin-bottom: 8px;
-        }
-
-        /* 입력 박스 */
-        .cs-input-box {
-            border: 1px solid #ddd;
-            border-radius: 6px;
-            padding: 10px 15px;
-            background-color: white;
-            display: flex;
-            align-items: center;
-            gap: 15px;
-        }
-
-        /* 체크박스 간격 */
-        .cs-input-box input[type="checkbox"] {
-            margin-right: 4px;
-            cursor: pointer;
-        }
-
-        /* 제목 input */
-        .cs-input-box input[type="text"] {
-            width: 100%;
-            border: none;
-            outline: none;
-            font-size: 14px;
-        }
-
-        /* 내용 textarea */
-        .cs-input-box textarea {
-            width: 100%;
-            height: 150px;
-            border: none;
-            outline: none;
-            font-size: 14px;
-            resize: none;
-            font-family: 'Noto Sans KR', sans-serif;
-        }
-
-        /* 하단 버튼 영역 */
-        .cs-write-bottom {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-top: 10px;
-        }
-
-        /* 비공개 유무 체크박스 */
-        .cs-checkbox-label {
-            font-size: 14px;
+            font-weight: bold;
             color: #555;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            border: 1px solid #ddd;
-            border-radius: 6px;
-            padding: 8px 15px;
-            background-color: white;
         }
-
-        /* 등록 버튼 */
-        .btn-cs-submit {
-            padding: 10px 40px;
-            background-color: #f0b429;
+        .input-group input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-sizing: border-box; /* 패딩 포함 너비 계산 */
+        }
+        .input-group input[readonly] {
+            background-color: #f9f9f9;
+            color: #888;
+            cursor: not-allowed;
+        }
+        .btn-confirm {
+            width: 100%;
+            padding: 15px;
+            background-color: #ff4d6d; /* 오전에 사용하신 핑크 포인트 컬러 */
             color: white;
             border: none;
-            border-radius: 6px;
-            font-size: 14px;
+            border-radius: 5px;
+            font-size: 1rem;
             font-weight: bold;
             cursor: pointer;
-            transition: 0.2s;
+            transition: background 0.3s;
         }
-        .btn-cs-submit:hover {
-            opacity: 0.85;
+        .btn-confirm:hover {
+            background-color: #ff1a43;
         }
-
+        
     </style>
 </head>
 <body>
@@ -203,41 +156,25 @@
                 <button class="nav-btn" @click="fnuserMyPageCS()">고객센터</button>
             </div>
 
-            <!-- 신고 작성 메인 영역 -->
+            <!-- 메인 -->
             <div class="main">
-                <h3 class="cs-write-title">신고 내용을 작성해주세요</h3>
-                <div class="cs-write-form">
-                    <!-- 신고 유형 -->
-                    <div class="cs-form-group">
-                        <label class="cs-label">*신고 유형</label>
-                        <div class="cs-input-box">
-                            <input type="radio" v-model="csType" value="COMPANY" name="cs-type"> 불량 업체
-                            <input type="radio" v-model="csType" value="POST" name="cs-type"> 광고글/도배
-                            <input type="radio" v-model="csType" value="MEMBER" name="cs-type"> 회원 신고
-                            <input type="radio" v-model="csType" value="REVIEW" name="cs-type"> 허위 리뷰
+               <div class="confirm-container">
+                    <h2>비밀번호 재확인</h2>
+                    <p>개인정보를 보호하기 위해 비밀번호를 다시 한번 입력해주세요.</p>
+                    
+                    <form id="confirmForm" method="post" @submit.prevent="fnConfirmPw">
+                        <div class="input-group">
+                            <label for="userId">아이디</label>
+                            <input type="text" id="userId" name="userId" value="${sessionScope.sessionId}" readonly> <%--id는 수정 불가 --%>
                         </div>
-                    </div>
-                    <!-- 제목 -->
-                    <div class="cs-form-group">
-                        <label class="cs-label">*제목</label>
-                        <div class="cs-input-box">
-                            <input type="text" v-model="csTitle" placeholder="">
+                        
+                        <div class="input-group">
+                            <label for="password">비밀번호</label>
+                            <input type="password" id="password" name="password" placeholder="비밀번호를 입력하세요" required>
                         </div>
-                    </div>
-                    <!-- 내용 -->
-                    <div class="cs-form-group">
-                        <label class="cs-label">*내용</label>
-                        <div class="cs-input-box">
-                            <textarea v-model="csContent"></textarea>
-                        </div>
-                    </div>
-                    <!-- 하단 버튼 -->
-                    <div class="cs-write-bottom">
-                        <label class="cs-checkbox-label">
-                            <input type="checkbox" v-model="csPrivate"> 🔒비공개
-                        </label>
-                        <button class="btn-cs-submit">등록</button>
-                    </div>
+                        
+                        <button type="submit" class="btn-confirm">확인</button>
+                    </form>
                 </div>
             </div>
         </div>
@@ -256,6 +193,35 @@
         },
         methods: {
             // 함수(메소드) - (key : function())
+            fnConfirmPw : function(event){
+                console.log("1. 함수 시작됨!");
+                // 변수 선언
+                const userId = $("#userId").val();
+                const password = $("#password").val();
+                console.log("2. 데이터 확인: ", userId, password);
+                
+                $.ajax({
+                    url: "/myPage-checkPw.do",
+                    type: "POST",
+                    data: {
+                        userId: userId,
+                        password: password
+                    },
+                    success: function(response) {
+                        console.log("서버 응답값 확인: ", response);
+                        if(response.trim() === "success") {// 비밀번호 일치 시 정보 수정 페이지로 이동
+                            location.href = "/myPage-updateForm.do";
+                        } else {
+                            // 비밀번호 불일치 시
+                            alert("비밀번호가 틀립니다. 다시 입력해주세요.");
+                            $("#password").val("").focus(); // 입력칸 비우고 포커스
+                        }
+                    },
+                    error: function() {
+                        alert("서버 통신 중 오류가 발생했습니다.");
+                    }
+                });
+            },
             // *사이드 바*
             // 마이페이지 메인
             fnMypage : function(){
@@ -280,7 +246,8 @@
             // 고객 센터 홈
             fnuserMyPageCS : function(){
                 location.href="/userMyPage-cs.do";
-            }
+            },
+
         }, // methods
         mounted() {
             // 처음 시작할 때 실행되는 부분

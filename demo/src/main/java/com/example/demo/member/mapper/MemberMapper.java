@@ -19,7 +19,8 @@ public interface MemberMapper {
 	int selectUserId(HashMap<String, Object> map);
 	// 이메일 중복 체크
 	int selectUserEmail(HashMap<String, Object> map);
-	
+	// 유저 상세 정보 조회 (내 정보 수정)
+	Member selectMemberInfo(String userId);
 	// *업체*
 	// 업체 검색
 	public String selectCompany(HashMap<String, Object> map);

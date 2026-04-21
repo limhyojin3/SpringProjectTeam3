@@ -361,7 +361,8 @@
                     comType : "STUDIO",
                     comAddress : "",
                     comAddressDetail: "",
-                    comEmail : "",
+                    comEmail : "", // [저장용] 중복체크 통과 시 합쳐진 전체 이메일 저장
+                    emailId : "", // [입력용] 화면의 input 창과 연결 (v-model)
                     bizNo : "",
                     gender : "M",
                     // *번호 인증
