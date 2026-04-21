@@ -39,5 +39,12 @@ public class Admin {
 	// 회원목록
 	String userMonth;
 	int userCount;
-
+	
+	// 패스목록
+	int passNo;
+	String passName;
+	int price;
+	int reviewCnt;
+	int isActive;
+	
 }
