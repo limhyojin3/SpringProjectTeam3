@@ -1,9 +1,11 @@
 package com.example.demo.member.controller;
 
 import java.util.HashMap;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -11,9 +13,10 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.example.demo.member.dao.MemberService;
 import com.example.demo.member.dao.SmsService;
+import com.example.demo.member.model.Member;
 import com.google.gson.Gson;
 
-import ch.qos.logback.core.model.Model;
+import org.springframework.ui.Model;
 import jakarta.servlet.http.HttpSession;
 
 @Controller
@@ -164,6 +167,41 @@ public class MemberController {
 	public String userMyPageCsReport(Model model) throws Exception{
 		return "/member/user-mypage-cs-report"; // 파일명
 	}
+	// 3-10. 내 정보 수정(수정을 위한 비밀번호 입력)
+	@RequestMapping("/userMyPage-confirmPw.do") // 주소 
+	public String userMyPageConfirmPw(Model model) throws Exception{
+		return "/member/user-mypage-confirmPw"; // 파일명
+	}
+	// 3-11. 내 정보 수정(비밀번호 확인페이지)
+	@PostMapping("/myPage-checkPw.do")
+	@ResponseBody
+	public String checkPassword(@RequestParam Map<String, Object> map) {
+	    HashMap<String, Object> serviceResult = memberService.checkPassword((HashMap<String, Object>) map); 
+	    String result = (String) serviceResult.get("result");
+	 
+	    return result;
+	}
+	// 3-12. 비밀번호 확인 성공 후 이동할 정보 수정 화면
+	@RequestMapping("/myPage-updateForm.do")
+	public String myPageUpdateForm(HttpSession session, Model model) throws Exception {
+		// 1. 세션에서 로그인한 사용자의 아이디를 가져옵니다.
+	    String sessionId = (String) session.getAttribute("sessionId");
+	    System.out.println("세션에서 꺼낸 ID: " + sessionId); // <-- 여기가 null이면 로그인이 안 된 상태입니다.
+	    if (sessionId != null) {
+	        Member member = memberService.getMemberInfo(sessionId); 
+	        
+	        System.out.println("================================");
+	        System.out.println("마이페이지 조회 ID: " + sessionId);
+	        System.out.println("DB 조회 전체 결과: " + member);
+	        System.out.println("================================");
+	        
+	        // 2. JSP로 전달
+	        model.addAttribute("member", member);
+	    }
+	    // 3. 정보를 수정할 수 있는 JSP 파일의 경로를 리턴합니다.
+	    return "/member/user-mypage-update"; // 실제 JSP 파일명이 있는 경로로 적어주세요!
+	}
+
 	
 	// * 휴대전화 번호 인증 * 
 	// 인증번호 발송

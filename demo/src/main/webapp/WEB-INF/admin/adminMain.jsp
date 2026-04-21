@@ -55,6 +55,13 @@
                 color: #1976d2;
             }
 
+            .activebtn {
+                background-color: #ff6b6b;
+                color: white;
+                font-weight: bold;
+                border: 1px solid #ff6b6b;
+            }
+
             .main {
                 grid-area: main;
                 border: 1px solid #ffc7c2;
@@ -169,14 +176,29 @@
             <jsp:include page="/WEB-INF/common/header.jsp" />
             <div class="middle">
                 <div class="navi">
-                    <button @click="fnPage('/adminMain.do')" type="button" class="navi-btn">관리자 메인 페이지</button>
-                    <button @click="fnPage('/')" type="button" class="navi-btn">전체 회원 목록</button>
-                    <button @click="fnPage('/')" type="button" class="navi-btn">전체 업체 목록</button>
-                    <button @click="fnPage('/')" type="button" class="navi-btn">전체 게시판/리뷰 목록</button>
-                    <button @click="fnPage('/adminReviewWait.do')" type="button" class="navi-btn">승인 대기중인 리뷰</button>
-                    <button @click="fnPage('/')" type="button" class="navi-btn">결제 및 상품 관리</button>
-                    <button @click="fnPage('/adminReport.do')" type="button" class="navi-btn">신고 제보 관리</button>
-                    <button @click="fnPage('/adminStatistics.do')" type="button" class="navi-btn">통계</button>
+                    <button :class="['navi-btn', activeMenu === 'main' ? 'activebtn' : '']"
+                        @click="fnPage('/adminMain.do')">관리자 메인 페이지</button>
+
+                    <button :class="['navi-btn', activeMenu === 'user' ? 'activebtn' : '']"
+                        @click="fnPage('/adminUser.do')">전체 회원 목록</button>
+
+                    <button :class="['navi-btn', activeMenu === 'company' ? 'activebtn' : '']"
+                        @click="fnPage('/adminCompany.do')">전체 업체 목록</button>
+
+                    <button :class="['navi-btn', activeMenu === 'board' ? 'activebtn' : '']"
+                        @click="fnPage('/adminBoard.do')">전체 게시판/리뷰 목록</button>
+
+                    <button :class="['navi-btn', activeMenu === 'reviewWait' ? 'activebtn' : '']"
+                        @click="fnPage('/adminReviewWait.do')">승인 대기중인 리뷰</button>
+
+                    <button :class="['navi-btn', activeMenu === 'payment' ? 'activebtn' : '']"
+                        @click="fnPage('/adminPayment.do')">결제 및 상품 관리</button>
+
+                    <button :class="['navi-btn', activeMenu === 'report' ? 'activebtn' : '']"
+                        @click="fnPage('/adminReport.do')">신고 관리</button>
+
+                    <button :class="['navi-btn', activeMenu === 'stats' ? 'activebtn' : '']"
+                        @click="fnPage('/adminStatistics.do')">통계</button>
                 </div>
                 <div class="main">
                     <!-- 리뷰승인 카드 -->
@@ -279,6 +301,8 @@
                 data() {
                     return {
                         // 변수 - (key : value)
+                        activeMenu: "",
+                        currentMenu: "",
                         list: [],
                         reviewList: [],
                         reviewWait: 0,
@@ -332,7 +356,7 @@
                     fnGetReportList: function () {
                         let self = this;
                         let param = {
-                            processStatus : "WAIT_ACTION"
+                            processStatus: "WAIT_ACTION"
                         };
                         $.ajax({
                             url: "http://localhost:8080/viewReport.dox",
@@ -358,7 +382,7 @@
                         return Number(Math.abs(val || 0).toFixed(1)).toLocaleString();
                     },
 
-                    fnPage: function(url){
+                    fnPage: function (url) {
                         location.href = url;
                     },
 
@@ -425,6 +449,18 @@
                 mounted() {
                     // 처음 시작할 때 실행되는 부분
                     let self = this;
+                    const path = location.pathname;
+
+                    this.activeMenu =
+                        path.includes('/adminMain.do') ? 'main' :
+                            path.includes('/adminUser.do') ? 'user' :
+                                path.includes('/adminCompany.do') ? 'company' :
+                                    path.includes('/adminBoard.do') ? 'board' :
+                                        path.includes('/adminReviewWait.do') ? 'reviewWait' :
+                                            path.includes('/adminReport.do') ? 'report' :
+                                                path.includes('/adminStatistics.do') ? 'stats' :
+                                                    '';
+
                     self.fnGetReviewList();
                     self.fnGetReportList();
                     self.fnGetSales();

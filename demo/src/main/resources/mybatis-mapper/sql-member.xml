@@ -53,6 +53,22 @@
 	    WHERE EMAIL = #{email}
 	</select>
 	
+	<!--내 정보 수정을 위한 유저 정보 조회-->
+	<select id="selectMemberInfo" parameterType="String" resultType="com.example.demo.member.model.Member">
+	    SELECT 
+	        M.USER_ID as userId,
+	        M.TEL as tel,
+	        D.NAME as name,
+	        D.EMAIL as email,
+	        /* 닉네임이 null이면 userId를 nickName으로 가져옴 */
+	        IFNULL(D.NICKNAME, M.USER_ID) as nickName,
+	        D.GENDER as gender,
+	        D.WEDDING_DATE as weddingDate
+	    FROM MEMBER M
+	    LEFT OUTER JOIN USER_DETAIL D ON M.USER_ID = D.USER_ID
+	    WHERE M.USER_ID = #{userId}
+	</select>
+	
 	<!-- 구분선  -->
 	
 	<!-- 업체 유저-->

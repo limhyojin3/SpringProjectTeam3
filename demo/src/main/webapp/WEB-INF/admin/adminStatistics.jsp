@@ -8,8 +8,8 @@
         <title>Document</title>
         <script src="https://code.jquery.com/jquery-3.7.1.js"
             integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
+        <script src="../../js/page-change.js"></script>
         <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
-        <script src="/js/page-change.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
@@ -69,6 +69,13 @@
                 color: #1976d2;
             }
 
+            .activebtn {
+                background-color: #ff6b6b;
+                color: white;
+                font-weight: bold;
+                border: 1px solid #ff6b6b;
+            }
+
             .main {
                 grid-area: main;
                 border: 1px solid #ffc7c2;
@@ -118,15 +125,29 @@
             <jsp:include page="/WEB-INF/common/header.jsp" />
             <div class="middle">
                 <div class="navi">
-                    <button @click="fnPage('/adminMain.do')" type="button" class="navi-btn">관리자 메인
-                        페이지</button>
-                    <button @click="fnPage('/')" type="button" class="navi-btn">전체 회원 목록</button>
-                    <button @click="fnPage('/')" type="button" class="navi-btn">전체 업체 목록</button>
-                    <button @click="fnPage('/')" type="button" class="navi-btn">전체 게시판/리뷰 목록</button>
-                    <button @click="fnPage('/adminReviewWait.do')" type="button" class="navi-btn">승인 대기중인 리뷰</button>
-                    <button @click="fnPage('/')" type="button" class="navi-btn">결제 및 상품 관리</button>
-                    <button @click="fnPage('/adminReport.do')" type="button" class="navi-btn">신고 제보 관리</button>
-                    <button @click="fnPage('/adminStatistics.do')" type="button" class="navi-btn">통계</button>
+                    <button :class="['navi-btn', activeMenu === 'main' ? 'activebtn' : '']"
+                        @click="fnPage('/adminMain.do')">관리자 메인 페이지</button>
+
+                    <button :class="['navi-btn', activeMenu === 'user' ? 'activebtn' : '']"
+                        @click="fnPage('/adminUser.do')">전체 회원 목록</button>
+
+                    <button :class="['navi-btn', activeMenu === 'company' ? 'activebtn' : '']"
+                        @click="fnPage('/adminCompany.do')">전체 업체 목록</button>
+
+                    <button :class="['navi-btn', activeMenu === 'board' ? 'activebtn' : '']"
+                        @click="fnPage('/adminBoard.do')">전체 게시판/리뷰 목록</button>
+
+                    <button :class="['navi-btn', activeMenu === 'reviewWait' ? 'activebtn' : '']"
+                        @click="fnPage('/adminReviewWait.do')">승인 대기중인 리뷰</button>
+
+                    <button :class="['navi-btn', activeMenu === 'payment' ? 'activebtn' : '']"
+                        @click="fnPage('/adminPayment.do')">결제 및 상품 관리</button>
+
+                    <button :class="['navi-btn', activeMenu === 'report' ? 'activebtn' : '']"
+                        @click="fnPage('/adminReport.do')">신고 관리</button>
+
+                    <button :class="['navi-btn', activeMenu === 'stats' ? 'activebtn' : '']"
+                        @click="fnPage('/adminStatistics.do')">통계</button>
                 </div>
                 <div class="main">
                     <div class="dashboard-container">
@@ -172,15 +193,14 @@
                         monthList: [],
                         clientList: [],
                         role: "",
+                        activeMenu: "",
+
                     };
                 },
                 methods: {
                     // 함수(메소드) - (key : function())
-                    fnPage:function(url){
+                    fnPage: function (url) {
                         location.href = url;
-                    },
-                    fnMain() {
-                        location.href = 'http://localhost:8080/adminMain.do';
                     },
                     fnSalesChart: function () {
                         let self = this;
@@ -300,6 +320,19 @@
                 mounted() {
                     // 처음 시작할 때 실행되는 부분
                     let self = this;
+                    const path = location.pathname;
+
+                    this.activeMenu =
+                        path.includes('adminMain') ? 'main' :
+                            path.includes('adminUser') ? 'user' :
+                                path.includes('adminCompany') ? 'company' :
+                                    path.includes('adminBoard') ? 'board' :
+                                        path.includes('adminReviewWait') ? 'reviewWait' :
+                                            path.includes('adminPayment') ? 'payment' :
+                                                path.includes('adminReport') ? 'report' :
+                                                    path.includes('adminStatistics') ? 'stats' :
+                                                        '';
+
                     self.fnGetSales();
                 }
             });

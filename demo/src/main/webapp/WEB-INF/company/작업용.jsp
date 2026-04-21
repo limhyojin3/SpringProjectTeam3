@@ -1,0 +1,47 @@
+
+
+fnRemove(item) {
+    // 1. 상품 삭제
+    this.productList = this.productList.filter(p => p.id !== item.id);
+
+    // 2. (선택사항) 해당 상품의 리뷰들도 같이 삭제하고 싶다면?
+    this.reviews = this.reviews.filter(r => r.product !== item.name);
+    this.simpleReviews = this.simpleReviews.filter(r => r.product !== item.name);
+}
+//fnRemove(프로덕트의 요소)
+
+------------------------------------------------------------------
+paginatedSimpleReviews() {
+                    const start = (this.page - 1) * 5;
+                    const end = start + 5;
+                    return this.filteredSimpleReviews.slice(start, end); // 페이지에 맞는 리뷰만 반환 (5개씩) (page가 1이면 0~4, page가 2면 5~9) //[] 리스트..
+                }
+
+                //11개자료 인덱스기준: 0~2(3개), 3~5(3개), 6~8(3개), 9~10(2개)
+                //slice기준 : (0, 3), (3, 6) , (6, 9), (9, 12)
+                //             1,      2,        3,      4
+                start = 3 * (currentPage -1)
+                end = start + 3
+                this.reservationList.slice(start, end)
+
+            
+productList.find(p => p.name === i)
+
+
+inquiryList : [
+    {id: 1, product: '화려하게', title:'투어 일정 변경하고 싶습니다.', userid: '김결혼', content:'04.01일 예약했는데 04.08일로 변경하고 싶어요.'},
+    {id: 2, product: '스몰 웨딩', title:'메이크업 추가되나요?', userid: '아리랑', content:'메이크업 여기서 받고싶어요.'},
+
+    productList: [  //상품 리스트
+                        { id: 1, thumbnail: 'https://img1.newsis.com/2021/09/26/NISI20210926_0000834715_web.jpg', name: '스몰 웨딩', content: '스몰 웨딩 상품 설명입니다.', price: '1,700,000원', category: ['스튜디오', '드레스'] },
+                        { id: 2, thumbnail: 'gorgeous.jpg', name: '화려하게', content: '화려하게 상품 설명입니다.', price: '2,500,000원', category: ['스튜디오', '메이크업'] },
+                        { id: 3, thumbnail: 'fairy_tale.jpg', name: '동화같은 분위기', content: '동화같은 분위기 상품 설명입니다.', price: '1,200,000원', category: ['메이크업'] }
+                    ],
+
+
+
+<div
+                                    style="width: 120px; height: 80px; background: #ffcef0; display: flex; align-items: center; justify-content: center; margin-right: 20px;">
+                                    <!--{{ i.thumbnail }}-->
+                                    <img :src="i.thumbnail" :alt="i.name"  style="max-width: 100%; max-height: 100%">
+                                </div>
