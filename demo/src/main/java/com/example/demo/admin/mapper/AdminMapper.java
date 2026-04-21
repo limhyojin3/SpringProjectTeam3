@@ -16,4 +16,9 @@ public interface AdminMapper {
 	public List<Admin> selectReviewList(HashMap<String, Object> map);
 
 	public List<Admin> selectReportList(HashMap<String, Object> map);
+	
+	public List<Admin> selectPassList(HashMap<String, Object> map);
+	
+	public Admin selectPassInfo(HashMap<String, Object> map);
+
 }

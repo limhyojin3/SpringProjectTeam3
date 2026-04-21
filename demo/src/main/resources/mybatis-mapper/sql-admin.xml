@@ -70,5 +70,25 @@
 	ORDER BY reg_date DESC
 	</select>
 
-
+	<select id="selectPassList" parameterType="hashmap"
+		resultType="com.example.demo.admin.model.Admin">
+		SELECT
+		PASS_NO,
+		PASS_NAME,
+		PRICE,
+		REVIEW_CNT,
+		IS_ACTIVE,
+		REG_DATE
+		FROM PASS_PRODUCT
+		WHERE IS_ACTIVE = 1
+	</select>
+	
+	<select id="selectPassInfo" parameterType="hashmap"
+		resultType="com.example.demo.admin.model.Admin">
+		SELECT *
+        FROM PAYMENT P
+        INNER JOIN PAYMENT_PASS P2 ON P.PAY_NO = P2.PAY_NO
+        WHERE PASS_NO = 1 AND PAY_STATUS = "SUCCESS" AND USER_ID = #{userId};
+	</select>
+	
 </mapper>
