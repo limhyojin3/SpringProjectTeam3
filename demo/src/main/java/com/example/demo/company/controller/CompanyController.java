@@ -25,6 +25,13 @@ public class CompanyController {
 	public String test2(Model model) throws Exception{
 		return "/company/company10";
 	}
+	
+	/* 미완성 */
+	@RequestMapping("/company9.do")
+	public String test99(Model model) throws Exception{
+		return "/company/company10";
+	}
+	
 
 	
 }
