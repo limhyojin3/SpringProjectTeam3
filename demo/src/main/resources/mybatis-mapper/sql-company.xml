@@ -8,7 +8,8 @@
 	</select>
 	
 	<!-- 한개 검색 -->
-	<select id="selectUser" parameterType="hashmap" resultType="com.example.demo.company.model.Company">
+	<select id="selectCompany" parameterType="hashmap" resultType="com.example.demo.company.model.Company">
+		SELECT * FROM merryview.company WHERE USER_ID = #{userid}
 	</select>
 	
 	<!-- 삽입 -->

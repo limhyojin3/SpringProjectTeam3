@@ -32,6 +32,14 @@ public class CompanyController {
 		return "/company/company10";
 	}
 	
+	@RequestMapping(value = "/company.dox", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
+	@ResponseBody
+	public String sendSms(@RequestParam HashMap<String, Object> map) throws Exception {
+	    HashMap<String, Object> resultMap = companyService.getCompany(map);
+	    
+	    return new Gson().toJson(resultMap);
+	}
+	
 
 	
 }

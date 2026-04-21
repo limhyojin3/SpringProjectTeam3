@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import com.example.demo.common.Message;
 import com.example.demo.company.mapper.CompanyMapper;
+import com.example.demo.company.model.Company;
 
 @Service
 public class CompanyService {
@@ -25,7 +26,7 @@ public class CompanyService {
 	// 수정, 삭제, 삽입 -> updateXXX, deleteXXX, insertXXX
 	//	int result = defaultMapper.updateXXX();
 	
-	public HashMap<String, Object> getItem(HashMap<String, Object> map){
+	public HashMap<String, Object> getCompany(HashMap<String, Object> map){
 		HashMap<String, Object> resultMap = new HashMap<String, Object>();
 		try {
 //			List<User> list = defaultMapper.selectUserList(map);
@@ -33,6 +34,10 @@ public class CompanyService {
 //			int result = defaultMapper.updateXXX(map);
 			
 //			resultMap.put("list", list);
+			
+			Company info = companyMapper.selectCompany(map);
+			
+			resultMap.put("info", info);
 			resultMap.put("result", "success");
 			resultMap.put("message", Message.MSG_ADD);
 		} catch (Exception e) {

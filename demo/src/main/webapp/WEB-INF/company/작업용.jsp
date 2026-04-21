@@ -45,3 +45,10 @@ inquiryList : [
                                     <!--{{ i.thumbnail }}-->
                                     <img :src="i.thumbnail" :alt="i.name"  style="max-width: 100%; max-height: 100%">
                                 </div>
+                                user: {
+                        id: 1, name: 'ABC 드레스 샵', usePeriod: '25.01.01 ~ 26.01.01', lastPayment: '신협 ***', grade: '제휴업체' /* 일반업체, 제휴업체 구분 변수 */
+                                }            -> 디비에 이것들이 있는지 확인!
+
+                                페이지에서 필요한 속성 모두 파악 -> 디비에 다 담기 (-> 시간있으면 디비 재설계 )순인거같다?
+                                페이지에서 호출 -> 디비에서 호출, 반환 
+                    usePeriod 디비에 담기(+) ->

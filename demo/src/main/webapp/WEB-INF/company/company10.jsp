@@ -566,7 +566,8 @@
                                     <div class="form-title-box">상품 이미지</div>
                                     <div class="form-content-box">
                                         <div class="form-group">
-                                            <div class="image-editor-box" v-model="productForm.thumbnail">
+                                            <div class="image-editor-box">
+                                                <input type="text"  v-model="productForm.thumbnail">
                                                 📸 이미지 에디터 API 사용
                                             </div>
                                         </div>
@@ -1116,6 +1117,28 @@
                         behavior: 'smooth' // 'smooth'는 부드럽게, 'auto'는 즉시 이동합니다.
                     });
                 },
+                fnCom: function () {
+                    let self = this;
+                    let param = {
+                        userid : 'sunsu09'
+                    };
+                    $.ajax({
+                        url: "http://localhost:8080/company.dox",
+                        dataType: "json",
+                        type: "POST",
+                        data: param,
+                        success: function (data) {
+                            console.log(data); //info,result,message
+
+                            self.user.name = data.info.comName;
+                            self.user.usePeriod = data.info.usePeriod;
+                            self.user.grade = data.info.grade;
+                            self.user.lastPayment = data.info.lastPayment;
+
+                            console.log(self.user);
+                        }
+                    });
+                },
                 fnList: function () {
                     let self = this;
                     let param = {};
@@ -1255,6 +1278,7 @@
             mounted() {
                 // 처음 시작할 때 실행되는 부분
                 let self = this;
+                self.fnCom();
             }
         });
 
