@@ -4,7 +4,7 @@
 
 <nav class="navbar navbar-expand-lg sticky-top bg-white shadow-sm" style="border-bottom: 2px solid #fff0f3 !important;">
     <div class="container">
-        <a class="navbar-brand font-weight-bold" href="/" 
+        <a class="navbar-brand font-weight-bold" href="javascript:;" 
            style="color: #ff4d6d !important; font-size: 1.6rem !important; text-decoration: none !important;">
            MERRY VIEW
         </a>

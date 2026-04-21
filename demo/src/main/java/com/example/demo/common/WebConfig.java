@@ -9,12 +9,15 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 public class WebConfig implements WebMvcConfigurer {
 
     @Value("${file.upload-dir}")
-    private String uploadPath;
+    private String uploadDir;
+    
+    @Value("${file.resource-path}")
+    private String resourcePath;
 
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        // 브라우저에서 /images/** 로 접근하면 로컬 폴더로 연결
-        registry.addResourceHandler("/images/**")
-                .addResourceLocations("file:///" + uploadPath);
+        /// /uploads/** 로 들어오는 요청을 C:/uploads/project/ 폴더로 연결
+        registry.addResourceHandler(resourcePath)
+        .addResourceLocations("file:///" + uploadDir);
     }
 }
