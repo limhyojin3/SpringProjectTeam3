@@ -1,8 +1,9 @@
-package com.example.demo.community_review.dao; // 기존 패키지 유지
+package com.example.demo.community_review.dao;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.StringJoiner; // 합치기용 임포트 추가
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -23,68 +24,126 @@ public class ReviewService {
     @Autowired
     private FileService fileService;
     
-    /**
-     * [통합] 리뷰 리스트 조회 (전체/유료/무료)
-     * 기존 getFreeReviewList를 대체합니다.
-     */
+    private final Gson gson = new Gson();
+
+    // 1. 리뷰 리스트 조회
     public List<HashMap<String, Object>> selectReviewList(HashMap<String, Object> map) {
-        // 검색어 전처리 (기존 로직 유지)
         if(map.get("searchKeyword") != null) {
             String keyword = (String) map.get("searchKeyword");
             map.put("searchKeyword", keyword.trim());
         }
-        
-        // Mapper의 통합 쿼리 호출
         return reviewMapper.selectReviewList(map);
     }
+    
+    // 2. 조회수 증가
+    @Transactional
+    public void plusViewCount(HashMap<String, Object> map) {
+        reviewMapper.updateViewCount(map);
+    }
 
-    /**
-     * 업체 상세 정보 조회 (유지)
-     */
-    public HashMap<String, Object> getCompanyDetail(HashMap<String, Object> map) {
-        return reviewMapper.selectCompanyDetail(map);
+    // 3. 상세 정보 조회
+    public HashMap<String, Object> getReviewDetailInfo(HashMap<String, Object> map) {
+        return reviewMapper.selectReviewDetail(map);
+    }
+
+    // 4. 좋아요 토글
+    @Transactional
+    public HashMap<String, Object> toggleReviewLike(HashMap<String, Object> map) {
+        HashMap<String, Object> resultMap = new HashMap<>();
+        int count = reviewMapper.checkReviewLike(map);
+        
+        if (count > 0) {
+            reviewMapper.deleteReviewLike(map);
+            map.put("amount", -1);
+        } else {
+            reviewMapper.insertReviewLike(map);
+            map.put("amount", 1);
+        }
+        
+        reviewMapper.updateReviewLikeCount(map);
+        
+        HashMap<String, Object> info = reviewMapper.selectReviewDetail(map);
+        resultMap.put("likeCnt", info.get("likeCnt"));
+        resultMap.put("result", "success");
+        return resultMap;
+    }
+
+    // 5. 업체 관련 조회
+    public List<HashMap<String, Object>> selectActiveCompanyList(HashMap<String, Object> map) {
+        return reviewMapper.selectActiveCompanyList(map);
     }
     
     /**
-     * 리뷰 등록 로직 (기존 유지)
+     * 6. 리뷰 등록 로직 (방법 A: 여러 장 합치기 고도화)
+     * - 영수증: 별도 저장
+     * - 리뷰이미지: N장을 쉼표(,)로 구분하여 한 컬럼에 저장
      */
     @Transactional(rollbackFor = Exception.class) 
     public String registerReview(Review review, MultipartFile receipt, List<MultipartFile> reviewFiles) {
-        Gson gson = new Gson();
         
-        // 1. 영수증 검증 (형님 기준: 무료/유료 모두 필수)
         if (receipt == null || receipt.isEmpty()) {
             return gson.toJson(new Message("fail", "영수증 인증은 필수입니다."));
         }
 
         try {
-        	// 2. 영수증 파일 업로드
-            String savedReceiptName = fileService.uploadFile(receipt); 
-            review.setReceiptName(savedReceiptName); // DB의 receipt_name 컬럼에 매핑
+            // [STEP 1] 영수증 파일 처리
+            Map<String, String> receiptInfo = fileService.uploadFile(receipt);
+            if (receiptInfo != null) {
+                review.setReceiptName(receiptInfo.get("storedName")); 
+            }
 
-            // 3. 리뷰 사진 업로드 (선택 사항)
+            // [STEP 2] 리뷰 이미지 처리 (여러 장 합치기)
             if (reviewFiles != null && !reviewFiles.isEmpty()) {
-                // 여러 장 중 첫 번째 사진을 대표 이미지(stored_name)로 저장
-                // (나중에 여러 장 관리가 필요하면 별도 테이블을 파야 하지만, 일단 단일 컬럼 유지)
-                MultipartFile firstImg = reviewFiles.get(0);
-                if(!firstImg.isEmpty()) {
-                    String savedImgName = fileService.uploadFile(firstImg);
-                    review.setStoredName(savedImgName);
-                    review.setImgUrl("/uploads/" + savedImgName);
-                }    
+                // 쉼표(,)를 구분자로 사용하는 조이너 생성
+                StringJoiner originalJoiner = new StringJoiner(",");
+                StringJoiner storedJoiner = new StringJoiner(",");
+                StringJoiner urlJoiner = new StringJoiner(",");
+
+                for (MultipartFile file : reviewFiles) {
+                    if (file != null && !file.isEmpty()) {
+                        Map<String, String> imgInfo = fileService.uploadFile(file);
+                        
+                        if (imgInfo != null) {
+                            originalJoiner.add(imgInfo.get("originalName"));
+                            storedJoiner.add(imgInfo.get("storedName"));
+                            urlJoiner.add(imgInfo.get("imgUrl"));
+                        }
+                    }
+                }
+
+                // 합쳐진 문자열이 있을 때만 객체에 세팅
+                if (storedJoiner.length() > 0) {
+                    review.setOriginalName(originalJoiner.toString());
+                    review.setStoredName(storedJoiner.toString());
+                    review.setImgUrl(urlJoiner.toString());
+                }
             }
             
-         // 4. DB Insert (Review 객체에는 이제 isPaid, receiptName 등이 다 담겨있음)
+            // [STEP 3] DB Insert 실행
             int result = reviewMapper.insertReview(review);
             
-            if (result > 0) {
-                return gson.toJson(Message.SUCCESS_ADD);
-            } else {
-                return gson.toJson(Message.FAIL_SERVER);
-            }
+            return result > 0 ? gson.toJson(Message.SUCCESS_ADD) : gson.toJson(Message.FAIL_SERVER);
 
         } catch (Exception e) {
+            e.printStackTrace();
             throw new RuntimeException(gson.toJson(Message.FAIL_SERVER));
         }
+    }
+    
+ // 7. 댓글 로직 (추가된 부분)
+    public List<HashMap<String, Object>> getCommentList(HashMap<String, Object> map) {
+        return reviewMapper.selectCommentList(map);
+    }
+    
+    @Transactional
+    public String addComment(HashMap<String, Object> map) {
+        int result = reviewMapper.insertComment(map);
+        HashMap<String, Object> resultMap = new HashMap<>();
+        if (result > 0) {
+            resultMap.put("result", "success");
+        } else {
+            resultMap.put("result", "fail");
+        }
+        return gson.toJson(resultMap);
     }
 }

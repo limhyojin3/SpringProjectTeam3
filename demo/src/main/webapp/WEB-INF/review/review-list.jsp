@@ -8,6 +8,7 @@
     <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/common.css"> 
     
     <style>
         :root { --primary-color: #ff4d6d; --dark-color: #1a1a1a; }
@@ -31,6 +32,9 @@
         
         /* 검색창 스타일 */
         .search-area { background: #f1f3f5; padding: 20px; border-radius: 10px; margin-bottom: 20px; }
+        
+        /* 제목 텍스트 강조 */
+        .review-title-text { font-weight: 700; color: #333; font-size: 1.05rem; }
     </style>
 </head>
 <body>
@@ -49,7 +53,7 @@
             </div>
 
             <div class="search-area d-flex justify-content-center">
-                <div class="input-group style" style="max-width: 600px;">
+                <div class="input-group" style="max-width: 600px;">
                     <select class="form-control col-3" v-model="searchType">
                         <option value="all">전체</option>
                         <option value="company">업체명</option>
@@ -71,12 +75,13 @@
             <table class="custom-table">
                 <thead>
                     <tr>
-                        <th style="width: 100px;">구분</th>
-                        <th style="width: 120px;">별점</th>
+                        <th style="width: 80px;">구분</th>
+                        <th style="width: 100px;">별점</th>
                         <th>리뷰 정보</th>
-                        <th style="width: 150px;">작성자</th>
-                        <th style="width: 130px;">날짜</th>
-                        <th style="width: 90px;">조회</th>
+                        <th style="width: 90px;">추천</th>
+                        <th style="width: 130px;">작성자</th>
+                        <th style="width: 120px;">날짜</th>
+                        <th style="width: 80px;">조회</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -89,9 +94,14 @@
                             <i class="fas fa-star mr-1"></i>{{ parseFloat(item.rating || 0).toFixed(1) }}
                         </td>
                         <td class="text-left">
-                            <span class="badge badge-light border text-dark mr-2">{{ item.comName }}</span>
-                            <span class="text-dark">{{ item.content && item.content.length > 50 ? item.content.substring(0, 50) + '...' : item.content }}</span>
+                            <span class="badge badge-light border text-dark mr-2" style="font-size: 0.75rem;">{{ item.comName }}</span>
+                            <span class="review-title-text">{{ item.title }}</span>
                             <i v-if="item.hasImg === 'Y'" class="far fa-image ml-2 text-primary"></i>
+                        </td>
+                        <td>
+                            <span :class="item.likeCnt > 0 ? 'text-danger' : 'text-muted'">
+                                <i class="fas fa-heart mr-1"></i>{{ item.likeCnt || 0 }}
+                            </span>
                         </td>
                         <td>
                             <i class="far fa-user-circle mr-1"></i>{{ item.userId }}
@@ -100,7 +110,7 @@
                         <td class="text-muted">{{ item.viewCnt }}</td>
                     </tr>
                     <tr v-if="list.length == 0">
-                        <td colspan="6" class="py-5">
+                        <td colspan="7" class="py-5">
                             <i class="fas fa-exclamation-circle fa-3x text-light mb-3"></i>
                             <p class="text-muted">조건에 맞는 리뷰가 아직 없습니다.</p>
                         </td>
@@ -108,6 +118,8 @@
                 </tbody>
             </table>
         </main>
+
+        <jsp:include page="/WEB-INF/common/footer.jsp" />
     </div>
 
     <script>
@@ -116,14 +128,13 @@
             data() {
                 return {
                     list: [],
-                    isPaid: null,       // 필터링 (null: 전체, 1: 유료, 0: 무료)
+                    isPaid: null,
                     searchKeyword: '',
                     searchType: 'all',
-                    sessionId: "${sessionId}" // 서버에서 넘겨준 세션 아이디
+                    sessionId: "${sessionId}"
                 };
             },
             methods: {
-                // 리스트 가져오기
                 fnList() {
                     const nParam = {
                         isPaid: this.isPaid,
@@ -137,47 +148,40 @@
                         data: JSON.stringify(nParam),
                         contentType: "application/json",
                         success: (data) => {
-                           // 만약 컨트롤러에서 String이 아니라 Map/List를 바로 리턴한다면 parse가 필요 없음
-                        let result = (typeof data === 'string') ? JSON.parse(data) : data;
-                        
-                        if(result.result === "success") {
-                            this.list = result.list;
-                            console.log("리스트 개수: ", this.list.length); // 콘솔에서 개수 확인!
-                        }
+                            let result = (typeof data === 'string') ? JSON.parse(data) : data;
+                            if(result.result === "success") {
+                                this.list = result.list;
+                            }
                         },
                         error: () => {
                             console.error("서버 통신 에러");
                         }
                     });
                 },
-                // 필터 변경
                 fnFilter(val) {
                     this.isPaid = val;
                     this.fnList();
                 },
-                // 초기화
                 fnReset() {
                     this.isPaid = null;
                     this.searchKeyword = '';
                     this.fnList();
                 },
-                // 상세 보기 이동
                 fnDetail(no) {
-                    location.href = "/review/detail.do?reviewNo=" + no;
+                    location.href = "/api/review/detail.do?reviewNo=" + no;
                 },
-                // 글쓰기 이동
                 fnWrite() {
-                    if(!this.sessionId || this.sessionId === "null" || this.sessionId === "") {
+                  /*  if(!this.sessionId || this.sessionId === "null" || this.sessionId === "") {
                         if(confirm("로그인이 필요한 서비스입니다.\n로그인 페이지로 이동하시겠습니까?")) {
                             location.href = "/login.do";
                         }
                         return;
-                    }
+                    }*/
                     location.href = "/api/review/add.do";
                 }
             },
             mounted() {
-                this.fnList(); // 페이지 로드 시 즉시 실행
+                this.fnList();
             }
         }).mount('#app');
     </script>

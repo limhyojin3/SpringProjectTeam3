@@ -8,6 +8,8 @@
             r.user_id AS userId,
             r.rating AS rating,
             r.view_cnt AS viewCnt,
+            r.like_cnt AS likeCnt,
+            r.title,
             r.is_paid AS isPaid,
             r.content AS content,
             IFNULL(c.com_name, '일반 리뷰') AS comName,
@@ -36,6 +38,40 @@
         ORDER BY r.reg_date DESC
     </select>
 
+    <select id="selectReviewDetail" parameterType="hashmap" resultType="hashmap">
+        SELECT 
+            r.review_no AS reviewNo,
+            r.user_id AS userId,
+            r.company_no AS companyNo,
+            r.res_no AS resNo,
+            r.rating AS rating,
+            r.approval_status AS approvalStatus,
+            r.view_cnt AS viewCnt,
+            r.like_cnt AS likeCnt,
+            r.is_paid AS isPaid,
+            r.receipt_name AS receiptName,
+            r.title AS title,
+            r.content AS content,
+            r.booking_source AS bookingSource,
+            r.original_name AS originalName,
+            r.stored_name AS storedName,
+            r.img_url AS imgUrl,
+            r.img_description AS imgDescription,
+            r.total_cost AS totalCost,
+            DATE_FORMAT(r.reg_date, '%Y-%m-%d %H:%i') AS regDate,
+            c.com_name AS comName,
+            (SELECT COUNT(*) FROM Review_Like WHERE review_no = r.review_no AND user_id = #{userId}) AS isLiked
+        FROM Review r
+        LEFT OUTER JOIN Company c ON r.company_no = c.company_no
+        WHERE r.review_no = #{reviewNo}
+    </select>
+
+    <update id="updateViewCount" parameterType="hashmap">
+        UPDATE Review 
+        SET view_cnt = view_cnt + 1 
+        WHERE review_no = #{reviewNo}
+    </update>
+
     <select id="selectCompanyDetail" parameterType="hashmap" resultType="hashmap">
         SELECT 
             company_no AS companyNo,
@@ -45,35 +81,51 @@
         FROM Company
         WHERE company_no = #{companyNo}
     </select>
-	
+    
+    <select id="selectActiveCompanyList" resultType="hashmap">
+        SELECT 
+            company_no AS companyNo,
+            com_name AS comName,
+            com_type AS comType
+        FROM Company
+        WHERE status = 'ACTIVE' OR status IS NULL  
+        ORDER BY com_type ASC, com_name ASC 
+    </select>
+    
+    <insert id="insertReview" parameterType="com.example.demo.community_review.model.Review">
+        INSERT INTO Review (
+            user_id, 
+            company_no, 
+            title,           content, 
+            rating, 
+            is_paid, 
+            original_name,   stored_name,     img_url, 
+            receipt_name,    booking_source,
+            reg_date, 
+            approval_status,
+            view_cnt,
+            total_cost
+        ) VALUES (
+            #{userId}, 
+            #{companyNo}, 
+            #{title},        #{content}, 
+            #{rating}, 
+            #{isPaid}, 
+            #{originalName}, #{storedName}, 
+            #{imgUrl}, 
+            #{receiptName}, 
+            #{bookingSource},
+            NOW(), 
+            'WAIT',
+            0,
+            #{totalCost}
+        )
+    </insert>
+
     <select id="checkReviewLike" resultType="int">
         SELECT COUNT(*) FROM Review_Like 
         WHERE review_no = #{reviewNo} AND user_id = #{userId}
     </select>
-    
-    <insert id="insertReview" parameterType="hashmap">
-    INSERT INTO Review (
-        user_id, 
-        company_no, 
-        content, 
-        rating, 
-        is_paid, 
-        receipt_name,   stored_name,    img_url, 
-        reg_date, 
-        approval_status
-    ) VALUES (
-        #{userId}, 
-        #{companyNo}, 
-        #{content}, 
-        #{rating}, 
-        #{isPaid}, 
-        #{receiptName}, 
-        #{storedName}, 
-        #{imgUrl}, 
-        NOW(), 
-        'PENDING'
-    )
-</insert>
 
     <insert id="insertReviewLike">
         INSERT INTO Review_Like (review_no, user_id, reg_date)
@@ -89,5 +141,40 @@
         UPDATE Review SET like_cnt = like_cnt + #{amount} 
         WHERE review_no = #{reviewNo}
     </update>
+    
+    <select id="selectCommentList" parameterType="hashmap" resultType="hashmap">
+	    SELECT 
+	        comment_no AS commentNo,
+	        review_no AS reviewNo, 
+	        user_id AS userId,
+	        content,
+	        like_cnt AS likeCnt,
+	        parent_no AS parentNo,
+	        is_deleted AS isDeleted,
+	        DATE_FORMAT(reg_date, '%Y-%m-%d %H:%i') AS regDate
+	    FROM comment
+	    WHERE review_no = #{reviewNo} 
+	      AND is_deleted = 0
+	    ORDER BY reg_date ASC
+	</select>
+	
+	<insert id="insertComment" parameterType="hashmap">
+	    INSERT INTO comment (
+	        review_no, 
+	        user_id,
+	        content,
+	        reg_date,
+	        is_deleted,
+	        like_cnt,
+	        parent_no
+	    ) VALUES (
+	        #{reviewNo},
+	        #{userId},
+	        #{content},
+	        NOW(),
+	        0,
+	        0,
+	        NULL  )
+	</insert>
 
 </mapper>

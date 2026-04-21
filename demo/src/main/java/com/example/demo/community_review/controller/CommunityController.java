@@ -110,7 +110,7 @@ public class CommunityController {
      // [임시 코드] 아직 로그인 기능이 없다면 강제로 세션에 아이디를 심어줍니다.
         // 실제 로그인 기능이 완성되면 이 아랫줄만 지우면 됩니다.
 //        if (session.getAttribute("userId") == null) {
-            session.setAttribute("userId", "happyjiwon"); 
+            session.setAttribute("userId", "th3613"); 
 //        }
         
         String sessionId = (String) session.getAttribute("userId");
