@@ -35,6 +35,7 @@ public class Admin {
 	String saleMonth;
 	Long totalRevenue;
 	int orderCount;
+	int amount;
 
 	// 회원목록
 	String userMonth;

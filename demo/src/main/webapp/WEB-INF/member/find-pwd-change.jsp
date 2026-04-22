@@ -164,14 +164,6 @@
                     <td><input type="text" v-model="authCode"></td>
                     <td class="td-btn"><button class="btn-check">인증 확인</button></td>
                 </tr>
-                <tr>
-                    <th>새 비밀번호</th>
-                    <td><input type="password" v-model="newPw" placeholder="새 비밀번호 입력"></td>
-                </tr>
-                <tr>
-                    <th>비밀번호 확인</th>
-                    <td><input type="password" v-model="confirmPw" placeholder="비밀번호 다시 입력"></td>
-                </tr>
             </table>
 
             <button class="login-btn" @click="fnChangePw()">비밀번호 변경</button>
@@ -192,17 +184,28 @@
                 // 변수 - (key : value)
                 userName: '',
                 userTel: '',
-                authCode: '',
-                newPw : "",
-                confirmPw : ""
+                authCode: ''
 
             };
         },
         methods: {
-            fnChangePw : function(){
-                location.href="";
+            fnChangePw : function() {
+                if(this.newPw !== this.confirmPw) { alert("비번 불일치!"); return; }
+                
+                axios.post("/change-pw.dox", {
+                    userId: this.userId,
+                    userName: this.userName, // 업체는 대표자명 입력
+                    phone: this.phone,
+                    newPw: this.newPw
+                }).then(res => {
+                    if(res.data.result === "success") {
+                        alert("변경 완료! 로그인 페이지로 이동합니다. 😊");
+                        location.href = "/login.do";
+                    } else {
+                        alert("정보를 다시 확인해주세요.");
+                    }
+                });
             }
-            
         }, // methods
         mounted() {
             // 처음 시작할 때 실행되는 부분
