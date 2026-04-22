@@ -68,7 +68,7 @@ product1 : {}
                         { id: 'customer', name: '고객센터', count: 0 }
                     ];
                 },
-
+        product1
                 {productNo: '11', proType:["MAKEUP"], productName: '야외 스냅 기본', productDetails: '야외 스냅 촬영 2시간 + 보정 사진 30장', originalPrice: '400000', imgUrl: '/img/imsi1.PNG'}
 
                 selectedItems: []
@@ -87,3 +87,23 @@ product1 : {}
 
 
                 product1.proType = ["메이크업", "스튜디오"]
+
+
+                previewUrl: null, // 미리보기용 URL
+        uploadFile: null  // 서버로 보낼 실제 파일 객체
+
+
+        <img v-if="previewUrl" :src="previewUrl">
+        <label style="background: #ff1493; color: white; padding: 5px 15px; cursor: pointer; border-radius: 5px;">
+    사진 선택하기
+    <input type="file" @change="fnFileChange" style="display: none;">
+</label>
+
+INSERT INTO PRODUCT 
+SET
+	PRODUCT_NAME = #{productName},
+    PRODUCT_DETAILS = #{productDetails},
+    ORIGINAL_PRICE = #{originalPrice},
+    IMG_URL = #{imgUrl},
+    PRO_TYPE = #{proType}
+WHERE PRODUCT_NO = #{productNo};
