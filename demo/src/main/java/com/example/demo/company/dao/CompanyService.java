@@ -48,7 +48,76 @@ public class CompanyService {
 		}
 		return resultMap;    
 	}
+
+	public HashMap<String, Object> getProductList(HashMap<String, Object> map) {
+		HashMap<String, Object> resultMap = new HashMap<String, Object>();
+		try {
+//			List<User> list = defaultMapper.selectUserList(map);
+//			User info = defaultMapper.selectUser(map);
+//			int result = defaultMapper.updateXXX(map);
+			
+//			resultMap.put("list", list);
+			
+			List<Company> list = companyMapper.selectProductList(map);
+			
+			resultMap.put("list", list);
+			resultMap.put("result", "success");
+			resultMap.put("message", Message.MSG_ADD);
+		} catch (Exception e) {
+			// TODO: handle exception
+			System.out.println(e.getMessage());
+			resultMap.put("result", "fail");
+			resultMap.put("message", Message.MSG_SERVER_ERR);
+		}
+		return resultMap;  
+	}
 	
-	
+	public HashMap<String, Object> getProduct(HashMap<String, Object> map) {
+		HashMap<String, Object> resultMap = new HashMap<String, Object>();
+		try {
+//			List<User> list = defaultMapper.selectUserList(map);
+//			User info = defaultMapper.selectUser(map);
+//			int result = defaultMapper.updateXXX(map);
+			
+//			resultMap.put("list", list);
+			
+			Company info = companyMapper.selectProduct(map);
+			
+			resultMap.put("info", info);
+			resultMap.put("result", "success");
+			resultMap.put("message", Message.MSG_ADD);
+		} catch (Exception e) {
+			// TODO: handle exception
+			System.out.println(e.getMessage());
+			resultMap.put("result", "fail");
+			resultMap.put("message", Message.MSG_SERVER_ERR);
+		}
+		return resultMap;  
+	}
+	//editProduct
+	public HashMap<String, Object> editProduct(Company product) {
+		HashMap<String, Object> resultMap = new HashMap<String, Object>();
+		try {
+//			List<User> list = defaultMapper.selectUserList(map);
+//			User info = defaultMapper.selectUser(map);
+//			int result = defaultMapper.updateXXX(map);
+			
+//			resultMap.put("list", list);
+			
+			int result = companyMapper.updateProduct(product);
+			
+			if(result > 0) {
+				resultMap.put("result", "success");
+				resultMap.put("message", Message.MSG_ADD);
+			}
+			
+		} catch (Exception e) {
+			// TODO: handle exception
+			System.out.println(e.getMessage());
+			resultMap.put("result", "fail");
+			resultMap.put("message", Message.MSG_SERVER_ERR);
+		}
+		return resultMap;  
+	}
 	
 }

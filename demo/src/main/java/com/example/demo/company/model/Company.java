@@ -21,4 +21,12 @@ public class Company {
 	String usePeriod;
 	String grade;
 	String lastPayment;
+	
+	String productNo;
+	String productName;
+	String productDetails;
+	String originalPrice;
+	String isActive;
+	String imgUrl;
+	String proType;
 }

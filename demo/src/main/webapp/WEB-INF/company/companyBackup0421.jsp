@@ -2,6 +2,8 @@
     <!DOCTYPE html>
     <html lang="en">
 
+
+        <!-- 이 파일은 프론트만 구현한 것 입니다~~~~~~~~~~~~~~~~~~~~~~~~~ 26.04.21 백업본 -->
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -1260,3 +1262,4 @@
 
         app.mount('#app');
     </script>
+

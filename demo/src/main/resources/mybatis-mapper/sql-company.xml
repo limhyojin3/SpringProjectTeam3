@@ -1,27 +1,54 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
-	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.example.demo.company.mapper.CompanyMapper">
 	<!-- 여러개 검색 -->
-	<select id="selectUserList" parameterType="hashmap" resultType="com.example.demo.company.model.Company">
+	<select id="selectUserList" parameterType="hashmap"
+		resultType="com.example.demo.company.model.Company">
 	</select>
-	
+
 	<!-- 한개 검색 -->
-	<select id="selectCompany" parameterType="hashmap" resultType="com.example.demo.company.model.Company">
+	<select id="selectCompany" parameterType="hashmap"
+		resultType="com.example.demo.company.model.Company">
 		SELECT * FROM merryview.company WHERE USER_ID = #{userid}
 	</select>
-	
+
+	<select id="selectProduct" parameterType="hashmap"
+		resultType="com.example.demo.company.model.Company">
+		SELECT P.PRODUCT_NO, P.PRODUCT_NAME,P.PRODUCT_DETAILS, P.ORIGINAL_PRICE,
+		P.IMG_URL, P.PRO_TYPE
+		FROM PRODUCT P
+		LEFT JOIN COMPANY C ON P.COMPANY_NO = C.COMPANY_NO
+		WHERE C.USER_ID = #{userid} AND PRODUCT_NO = #{productNo}
+	</select>
+
+	<select id="selectProductList" parameterType="hashmap"
+		resultType="com.example.demo.company.model.Company">
+		SELECT P.PRODUCT_NO, P.PRODUCT_NAME,P.PRODUCT_DETAILS, P.ORIGINAL_PRICE,
+		P.IMG_URL
+		FROM PRODUCT P
+		LEFT JOIN COMPANY C ON P.COMPANY_NO = C.COMPANY_NO
+		WHERE C.USER_ID = #{userid};
+	</select>
 	<!-- 삽입 -->
-	<insert id="insertUser" parameterType="hashmap">
-	</insert>
-	
+	<update id="updateProduct" parameterType="com.example.demo.company.model.Company">
+		UPDATE PRODUCT
+		SET
+			PRODUCT_NAME = #{productName},
+			PRODUCT_DETAILS = #{productDetails},
+			ORIGINAL_PRICE = #{originalPrice},
+			IMG_URL = #{imgUrl},
+			PRO_TYPE = #{proType}
+		WHERE PRODUCT_NO = #{productNo}
+
+	</update>
+
 	<!-- 삭제 -->
 	<delete id="deleteUser" parameterType="hashmap">
 	</delete>
-	
+
 	<!-- 수정 -->
 	<update id="updateUser" parameterType="hashmap">
 	</update>
-	
+
 </mapper>
