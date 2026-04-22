@@ -91,4 +91,38 @@
         WHERE PASS_NO = 1 AND PAY_STATUS = "SUCCESS" AND USER_ID = #{userId};
 	</select>
 	
+	<select id="selectPriceInfo" resultType="int">
+		SELECT price
+		FROM PASS_PRODUCT
+		WHERE PASS_NO = #{passNo}
+	</select>
+	
+	<insert id="insertPayment" parameterType="hashmap" useGeneratedKeys="true"
+        keyProperty="payNo">
+		INSERT INTO payment (
+		user_id,
+		amount,
+		pay_status,
+		pay_date
+		)
+		VALUES (
+		#{userId},
+		#{amount},
+		'SUCCESS',
+		NOW()
+		)
+	</insert>
+	
+	<insert id="insertPaymentPass" parameterType="map">
+		INSERT INTO payment_pass (
+		pay_no,
+		pass_no,
+		item_name
+		)
+		VALUES (
+		#{payNo},
+		#{passNo},
+		#{itemName}
+		)
+	</insert>
 </mapper>

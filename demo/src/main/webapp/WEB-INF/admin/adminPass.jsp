@@ -9,19 +9,20 @@
         <script src="https://code.jquery.com/jquery-3.7.1.js"
             integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
         <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
-        <script src="/js/page-change.js"></script>
+        <script src="../../js/page-change.js"></script>
+        <script src="https://cdn.iamport.kr/v1/iamport.js"></script>
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
         <link rel="stylesheet" href="${pageContext.request.contextPath}/css/common.css">
         <style>
             .middle {
                 width: 100%;
+                /* 화면 전체 높이를 사용하되, 헤더/푸터 제외한 나머지는 유연하게(1fr) */
                 display: grid;
                 grid-template-areas:
                     "nav main";
-                grid-template-columns: 220px 1fr;
+                grid-template-columns: 300px 1fr;
                 /* 너비 고정 */
-                gap: 5px;
             }
 
             .navi {
@@ -31,7 +32,6 @@
                 display: flex;
                 flex-direction: column;
                 gap: 8px;
-                background-color: #ffc7c2;
             }
 
             .navi-btn {
@@ -336,20 +336,43 @@
 
                             <!-- 결제수단 -->
                             <select v-model="paymentMethod">
+                                <option value="">결제방법을 선택하세요</option>
                                 <option value="card">카드</option>
-                                <option value="kakao">카카오페이</option>
-                                <option value="toss">토스</option>
+                                <option value="kakaopay">카카오페이</option>
+                                <option value="naverpay">네이버페이</option>
+                                <option value="tosspay">토스</option>
                             </select>
 
                             <!-- 약관 -->
+                            <!-- 전체 동의 -->
                             <label>
-                                <input type="checkbox" v-model="agree" />
-                                결제 및 약관에 동의합니다
+                                <input type="checkbox" v-model="agreeAll" @change="toggleAll" />
+                                전체 동의
+                            </label>
+
+                            <hr />
+
+                            <!-- 필수 -->
+                            <label>
+                                <input type="checkbox" v-model="agreeRequired1" />
+                                (필수) 결제 및 이용약관 동의
+                            </label>
+
+                            <label>
+                                <input type="checkbox" v-model="agreeRequired2" />
+                                (필수) 개인정보 수집 및 이용 동의
+                            </label>
+
+                            <!-- 선택 -->
+                            <label>
+                                <input type="checkbox" v-model="agreeOptional1" />
+                                (선택) 마케팅 정보 수신 동의
                             </label>
 
                             <div class="buttons">
                                 <button @click="closeModal">취소</button>
-                                <button @click="fnPayment(selectedPass)" :disabled="!agree">
+                                <button @click="fnPayment(selectedPass)"
+                                    :disabled="!(agreeRequired1 && agreeRequired2) || (paymentMethod ==='')">
                                     결제하기
                                 </button>
                             </div>
@@ -361,6 +384,7 @@
             <jsp:include page="/WEB-INF/common/footer.jsp" />
         </div>
         <script>
+            IMP.init("imp48518435");
             const app = Vue.createApp({
                 data() {
                     return {
@@ -368,10 +392,20 @@
                         activeMenu: "",
                         passList: [],
                         //sessionId: "hyunwoo1125",       //체험권 비구매자
-                        sessionId: "junho0324",        //체험권 구매자
-                        //sessionId: "${sessionId}"
+                        //sessionId: "junho0324",        //체험권 구매자
+                        sessionId: "${sessionId}",
                         isModalOpen: false,
                         selectedPass: null,
+                        paymentMethod: "",
+                        //전체 동의
+                        agreeAll: false,
+                        // 필수 동의
+                        agreeRequired1: false,
+                        agreeRequired2: false,
+                        // 선택 동의
+                        agreeOptional1: false,
+                        price: 1,
+
                     };
                 },
                 methods: {
@@ -379,8 +413,60 @@
                     fnPage: function (url) {
                         location.href = url;
                     },
-                    fnPayment: function (passName) {
+                    fnPayment: function (selectedPass) {
+                        let self = this;
+                        if (!(this.agreeRequired1 && this.agreeRequired2)) {
+                            alert("필수 약관에 동의해주세요");
+                            return;
+                        }
+                        IMP.request_pay(
+                            {
+                                channelKey: "channel-key-1ebd3d65-20bd-412e-83f3-b7e0c3b368ff",
+                                pay_method: self.paymentMethod,
+                                merchant_uid: "order_" + new Date().getTime(), // 주문 고유 번호
+                                name: selectedPass.passName,
+                                amount: 1,      //제품 가격
+                            },
+                            function (response) {
+                                // 결제 종료 시 호출되는 콜백 함수
+                                // response.imp_uid 값으로 결제 단건조회 API를 호출하여 결제 결과를 확인하고,
+                                // 결제 결과를 처리하는 로직을 작성합니다.
+                                console.log(response);
+                                if (response.success) {
+                                    alert("결제되었습니다!");
+                                    // 우리쪽 db에 결제정보 저장
+                                    // 페이지 이동 필요하면 페이지 이동 (메인 or 마이)
+                                    // 결제 성공 후 서버 검증
+                                    self.fnVerifyPayment(response.imp_uid, selectedPass);
+                                    pageChange("/adminPayFinish.do", {orderId : response.imp_uid});
+                                } else {
+                                    alert("결제가 취소되었습니다");
+                                }
+                            },
+                        );
+                    },
 
+                    fnVerifyPayment(imp_uid, selectedPass) {
+                        $.ajax({
+                            url: "/verifyPayment.dox",
+                            type: "POST",
+                            data: {
+                                userId: this.sessionId,     // 로그인 아이디
+                                imp_uid: imp_uid,           // 결제 고유 값(중복)
+                                passNo: selectedPass.passNo,
+                                amount: selectedPass.price,
+                                itemName: selectedPass.passName,
+
+                            },
+                            success: function (res) {
+                                if (res.success) {
+                                    alert("결제 완료페이지만드는게나을듯");
+                                    location.href = "/merryViewHome.do";
+                                } else {
+                                    alert("결제 검증 실패");
+                                }
+                            }
+                        });
                     },
 
                     fnGetPassList: function () {
@@ -422,16 +508,30 @@
                                     }
                                     self.selectedPass = pass;
                                     self.isModalOpen = true;
+                                    console.log(self.selectedPass);
                                 }
                             });
                         } else {
                             self.selectedPass = pass;
                             self.isModalOpen = true;
+                             console.log(self.selectedPass);
                         }
                     },
                     openModal: function (pass) {
                         let self = this;
-                        self.fnCheck(pass);
+                        self.paymentMethod = "",
+                            self.agreeAll = false,
+                            self.agreeRequired1 = false,
+                            self.agreeRequired2 = false,
+                            self.agreeOptional1 = false,
+                            self.fnCheck(pass);
+                    },
+
+                    toggleAll() {
+                        const value = this.agreeAll;
+                        this.agreeRequired1 = value;
+                        this.agreeRequired2 = value;
+                        this.agreeOptional1 = value;
                     },
 
                     closeModal: function () {

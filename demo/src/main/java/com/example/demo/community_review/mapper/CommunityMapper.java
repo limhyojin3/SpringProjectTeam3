@@ -2,12 +2,11 @@ package com.example.demo.community_review.mapper;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.ibatis.annotations.Mapper;
 
 import com.example.demo.community_review.model.Community;
-
-import jakarta.servlet.http.HttpServletRequest;
 
 @Mapper
 public interface CommunityMapper {

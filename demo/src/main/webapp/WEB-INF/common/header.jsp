@@ -6,8 +6,9 @@
 
 <nav class="navbar navbar-expand-lg sticky-top bg-white shadow-sm" style="border-bottom: 2px solid #fff0f3 !important;">
     <div class="container">
-        <a class="navbar-brand font-weight-bold" href="javascript:;" 
-           style="color: #ff4d6d !important; font-size: 1.6rem !important; text-decoration: none !important;">
+        <a class="navbar-brand font-weight-bold"
+           style="color: #ff4d6d !important; font-size: 1.6rem !important; text-decoration: none !important;"
+           href="${pageContext.request.contextPath}/merryViewHome.do">
            MERRY VIEW
         </a>
         
@@ -17,10 +18,10 @@
                     <a class="nav-link" href="#" style="color: #ff4d6d !important; font-weight: 700 !important; padding: 0 15px !important;">업체찾기</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#" style="color: #ff4d6d !important; font-weight: 700 !important; padding: 0 15px !important;">커뮤니티</a>
+                    <a class="nav-link" href="${pageContext.request.contextPath}/api/community/list.do" style="color: #ff4d6d !important; font-weight: 700 !important; padding: 0 15px !important;">커뮤니티</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#" style="color: #ff4d6d !important; font-weight: 700 !important; padding: 0 15px !important;">리얼리뷰</a>
+                    <a class="nav-link" href="${pageContext.request.contextPath}/api/review/list.do" style="color: #ff4d6d !important; font-weight: 700 !important; padding: 0 15px !important;">리얼리뷰</a>
                 </li>
 
                 <%-- 2. 마이페이지 분기 처리: 로그인 했을 때만 보여주고 권한별로 주소 다르게 --%>
@@ -53,9 +54,10 @@
                 
                 <li class="nav-item mx-3" style="color: #ffb3c1 !important;">|</li>
                 <%-- 아이콘 메뉴들 --%>
+                <%-- 고객센터 아이콘 --%>
                 <li class="nav-item">
                     <a class="nav-link" href="javascript:;" style="color: #ff4d6d !important; padding: 0 10px !important;">
-                        <i class="fas fa-headset" style="font-size: 1.3rem !important;"></i>
+                        <i class="fas fa-headset" href="#" style="font-size: 1.3rem !important;"></i>
                     </a>
                 </li>
                 <%-- 로그인 시 "OOO님" 문구 표시 --%>

@@ -1,13 +1,13 @@
 package com.example.demo.community_review.dao;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import com.example.demo.common.Message; // [간단주석] 기존에 만드신 Message 클래스를 사용합니다.
 import com.example.demo.community_review.mapper.CommentMapper;
-import com.example.demo.community_review.model.Comment;
 
 @Service
 public class CommentService {
@@ -15,18 +15,59 @@ public class CommentService {
     @Autowired
     private CommentMapper commentMapper;
 
-    // 댓글 작성 로직
-    public String addComment(Comment comment) {
-        return (commentMapper.insertComment(comment) > 0) ? Message.MSG_ADD : Message.MSG_ERR;
+    // 리뷰 댓글 목록
+    public List<Map<String, Object>> getReviewCommentList(Map<String, Object> map) {
+        return commentMapper.selectReviewCommentList(map);
     }
 
-    // 댓글 목록 조회 로직
-    public List<Comment> getComments(Long targetId) {
-        return commentMapper.selectCommentList(targetId);
+    // 리뷰 댓글 등록
+    public int addReviewComment(Map<String, Object> map) {
+        return commentMapper.insertReviewComment(map);
+    }
+    
+    // 커뮤 댓글 목록
+    public List<Map<String, Object>> getCommunityCommentList(Map<String, Object> map) {
+        return commentMapper.selectCommunityCommentList(map);
     }
 
-    // 댓글 삭제 로직
-    public String removeComment(Long commentNo) {
-        return (commentMapper.deleteComment(commentNo) > 0) ? Message.MSG_REMOVE : Message.MSG_ERR;
+    // 커뮤 댓글 등록
+    public int addCommunityComment(Map<String, Object> map) {
+        return commentMapper.insertCommunityComment(map);
+    }
+
+    // 댓글 수정
+    public int editComment(Map<String, Object> map) {
+        return commentMapper.updateComment(map);
+    }
+
+    // 댓글 삭제
+    public int removeComment(Map<String, Object> map) {
+        return commentMapper.deleteComment(map);
+    }
+
+    /**
+     * 댓글 좋아요 토글 로직
+     * 1. 해당 유저가 좋아요를 눌렀는지 확인
+     * 2. 안 눌렀으면 INSERT + 카운트 UP
+     * 3. 눌렀으면 DELETE + 카운트 DOWN
+     */
+    @Transactional
+    public String toggleCommentLike(Map<String, Object> map) {
+        // 1. 좋아요 여부 체크 (0: 없음, 1: 있음)
+        int check = commentMapper.checkCommentLike(map);
+        
+        if (check == 0) {
+            // 2-1. 좋아요 추가
+            commentMapper.insertCommentLike(map);
+            map.put("count", 1);
+            commentMapper.updateCommentLikeCnt(map);
+            return "liked";
+        } else {
+            // 2-2. 좋아요 취소
+            commentMapper.deleteCommentLike(map);
+            map.put("count", -1);
+            commentMapper.updateCommentLikeCnt(map);
+            return "unliked";
+        }
     }
 }

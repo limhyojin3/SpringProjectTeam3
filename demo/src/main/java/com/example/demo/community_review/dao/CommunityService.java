@@ -3,6 +3,7 @@ package com.example.demo.community_review.dao;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -55,6 +56,10 @@ public class CommunityService {
     public List<Community> getList(HashMap<String, Object> map) {
     	// 인자 없이 호출해도 매퍼와 XML이 연결됩니다.
         return communityMapper.selectPostList(map);
+    }
+    
+    public Community getPostDetail(HashMap<String, Object> map) {
+        return communityMapper.selectPostDetail(map);
     }
 
     
