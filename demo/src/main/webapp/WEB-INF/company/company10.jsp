@@ -1404,14 +1404,14 @@
 
                     }
                 },
-                fnUpdateProduct(){
+                fnUpdateProduct() {
                     // 1. 택배 박스(FormData)를 하나 만듭니다.
                     // 파일은 일반 텍스트가 아니라서 반드시 이 'FormData'라는 박스에 담아야 해요.
                     let self = this;
                     let formData = new FormData();
 
                     // 1. 사진 파일 담기(선택했을 때만)
-                    if(this.uploadFile){
+                    if (this.uploadFile) {
                         formData.append("file", this.uploadFile);
                     }
 
@@ -1429,17 +1429,25 @@
                         data: formData,
                         processData: false,
                         contentType: false,
-                        success: function(data){
-                            if(data.result === "success"){
+                        success: function (data) {
+                            console.log("서버가 보낸 데이터:", data); // [체크!] 이 데이터가 어떻게 생겼는지 확인
+
+                            // 만약 data가 JSON 문자열로 넘어왔다면 파싱이 필요할 수도 있어요
+                            let res = (typeof data === 'string') ? JSON.parse(data) : data;
+                                            //data가 string으로 넘어왓다면? 자바스크립트가 읽을수있게 객체로 바꿔주기(parse해주기)
+                            if (res.result === "success") {
                                 alert("상품 정보가 모두 수정되었습니다!");
-                                
                                 window.location.href = "/company9.do";
+                            } else {
+                                alert("서버 응답은 성공했지만, result가 success가 아닙니다.");
                             }
+
+                            
                         }
                     })
                 },
-                fnHome(){
-                    
+                fnHome() {
+
                 }
             }, // methods
 
