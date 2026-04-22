@@ -38,10 +38,52 @@ inquiryList : [
                         { id: 3, thumbnail: 'fairy_tale.jpg', name: '동화같은 분위기', content: '동화같은 분위기 상품 설명입니다.', price: '1,200,000원', category: ['메이크업'] }
                     ],
 
-
-
+list  -> productList 에 담는다.
+: 
+(3) [
+{productNo: '11', productName: '야외 스냅 기본', productDetails: '야외 스냅 촬영 2시간 + 보정 사진 30장', originalPrice: '400000', imgUrl: '/img/imsi1.PNG'}}
+, {…}
+, {…}]
+product1 : {}
 <div
                                     style="width: 120px; height: 80px; background: #ffcef0; display: flex; align-items: center; justify-content: center; margin-right: 20px;">
                                     <!--{{ i.thumbnail }}-->
                                     <img :src="i.thumbnail" :alt="i.name"  style="max-width: 100%; max-height: 100%">
                                 </div>
+                                user: {
+                        id: 1, name: 'ABC 드레스 샵', usePeriod: '25.01.01 ~ 26.01.01', lastPayment: '신협 ***', grade: '제휴업체' /* 일반업체, 제휴업체 구분 변수 */
+                                }            -> 디비에 이것들이 있는지 확인!
+
+                                페이지에서 필요한 속성 모두 파악 -> 디비에 다 담기 (-> 시간있으면 디비 재설계 )순인거같다?
+                                페이지에서 호출 -> 디비에서 호출, 반환 
+                    usePeriod 디비에 담기(+) ->
+
+                    menuList() {
+                    return [
+                        { id: 'main', name: '마이 페이지', count: 0 },
+                        { id: 'product', name: '상품 관리', count: 0 },
+                        { id: 'reservation', name: '예약 관리', count: this.resCount },
+                        { id: 'inquiry', name: '문의 내역', count: 2 },
+                        { id: 'review', name: '리뷰 내역', count: this.revCnt },
+                        { id: 'customer', name: '고객센터', count: 0 }
+                    ];
+                },
+
+                {productNo: '11', proType:["MAKEUP"], productName: '야외 스냅 기본', productDetails: '야외 스냅 촬영 2시간 + 보정 사진 30장', originalPrice: '400000', imgUrl: '/img/imsi1.PNG'}
+
+                selectedItems: []
+
+                product1 : {}
+
+                category : ['스튜디오', '드레스', '메이크업']
+                product1.proType : ["MAKEUP"],
+                string 이면 json 형태로 파싱해라..뭐를. self.product1.proType을
+                let rawArray = ["MAKEUP", "STUDIO"]
+                rawArray.map(val => {
+                    if(val === 'MAKEUP'){
+
+                    }
+                })
+
+
+                product1.proType = ["메이크업", "스튜디오"]

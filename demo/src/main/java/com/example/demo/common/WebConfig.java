@@ -20,6 +20,14 @@ public class WebConfig implements WebMvcConfigurer {
         /// /uploads/** 로 들어오는 요청을 C:/uploads/project/ 폴더로 연결
         registry.addResourceHandler(resourcePath)
         .addResourceLocations("file:///" + uploadDir);
+        
+        //컴퍼니 담당자가 붙임
+        // /img2/** 요청이 오면 사용자의 문서 폴더로 연결한다.
+        registry.addResourceHandler("/img2/**")
+        .addResourceLocations("file:///C:/Users/TJ-BU-708-P03/Documents/fullstack/merryview/uploads/");
+        
+        
+        
     }
    
     // 로그인 세션 체크용 HandlerInterceptor
@@ -43,5 +51,8 @@ public class WebConfig implements WebMvcConfigurer {
                         "/css/**", "/js/**", "/img/**", "/images/**"
                 ); // 제외할 경로
     }
+    
+    
+    
     
 }

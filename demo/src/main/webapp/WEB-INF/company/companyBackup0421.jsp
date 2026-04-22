@@ -2,6 +2,8 @@
     <!DOCTYPE html>
     <html lang="en">
 
+
+        <!-- 이 파일은 프론트만 구현한 것 입니다~~~~~~~~~~~~~~~~~~~~~~~~~ 26.04.21 백업본 -->
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -457,9 +459,10 @@
             <div class="container">
                 <aside>
                     <div class="menu-item" v-for="m in menuList" :key="m.id">
-                        <button :class="{ active: currentMenu === m.id }" @click="handleMenuClick(m.id)">
-                            {{ m.name }}
-                        </button>
+                        <button :class="{ active: currentMenu === m.id }"
+                            @click="currentMenu = m.id; productPage = 'list'; page = 1; page1 = 'main'; reviewTab = 'detail'; currentPage = 1;">{{
+                            m.name
+                            }}</button>
                         <span class="badge" v-if="m.count > 0">{{ m.count }}</span>
                     </div>
                 </aside>
@@ -485,35 +488,13 @@
                     <div v-if="currentMenu === 'product'">
 
                         <div v-if="productPage === 'list'">
-                            <!-- db 랑 연결한 곳 -->
                             <h2>등록한 상품({{ productList.length }})</h2>
                             <div v-for="i in productList" class="content-card"
                                 style="display: flex; align-items: center; padding: 15px;">
                                 <div
                                     style="width: 120px; height: 80px; background: #ffcef0; display: flex; align-items: center; justify-content: center; margin-right: 20px;">
                                     <!--{{ i.thumbnail }}-->
-                                    <img :src="i.imgUrl" :alt="i.productName" style="max-width: 100%; max-height: 100%">
-                                </div>
-                                <div style="flex: 1;">{{ i.productDetails }}</div>
-                                <div>{{ i.originalPrice }}</div>
-                                <button @click="goEditPage(i)" style="margin-left: 10px;">수정하기</button>
-                                <button @click="fnRemove(i)" style="margin-left: 10px;">삭제하기</button>
-                            </div>
-                            <div style="text-align: center;">
-                                <button @click="goRegPage"
-                                    style="background: #ffb400; padding: 15px 40px; border: none; font-weight: bold; cursor: pointer;">상품
-                                    등록</button>
-                            </div>
-
-
-                            <!-- 여기는 프론트만으로 되는 곳-->
-                            <!-- <h2>등록한 상품({{ productList.length }})</h2>
-                            <div v-for="i in productList" class="content-card"
-                                style="display: flex; align-items: center; padding: 15px;">
-                                <div
-                                    style="width: 120px; height: 80px; background: #ffcef0; display: flex; align-items: center; justify-content: center; margin-right: 20px;">
-                                    {{ i.thumbnail }} -->
-                            <!-- <img :src="i.thumbnail" :alt="i.name" style="max-width: 100%; max-height: 100%">
+                                    <img :src="i.thumbnail" :alt="i.name" style="max-width: 100%; max-height: 100%">
                                 </div>
                                 <div style="flex: 1;">{{ i.content }}</div>
                                 <div>{{ i.price }}</div>
@@ -524,7 +505,7 @@
                                 <button @click="goRegPage"
                                     style="background: #ffb400; padding: 15px 40px; border: none; font-weight: bold; cursor: pointer;">상품
                                     등록</button>
-                            </div> -->
+                            </div>
                         </div>
 
                         <!-- 상품 등록 폼 -->
@@ -587,9 +568,8 @@
                                     <div class="form-title-box">상품 이미지</div>
                                     <div class="form-content-box">
                                         <div class="form-group">
-                                            <div class="image-editor-box">
-                                                <input type="text" v-model="productForm.thumbnail">
-
+                                            <div class="image-editor-box" v-model="productForm.thumbnail">
+                                                📸 이미지 에디터 API 사용
                                             </div>
                                         </div>
                                     </div>
@@ -616,7 +596,7 @@
                                             <div class="form-info-box">
                                                 <input type="text"
                                                     style="width: 200px; padding: 10px; border: 1px solid #ddd; border-radius: 4px;"
-                                                    v-model="product1.productName">
+                                                    v-model="editingProduct.name">
                                             </div>
                                         </div>
 
@@ -630,7 +610,7 @@
 
                                                 <div class="category-item" v-for="item in category" :key="item">
                                                     <input type="checkbox" :value="item"
-                                                        v-model="product1.proType">{{item}}
+                                                        v-model="selectedItems">{{item}}
                                                 </div>
                                             </div>
                                         </div>
@@ -642,7 +622,7 @@
                                                 <textarea
                                                     style="width: 60%; height: 100px; padding: 10px; border: 1px solid #ddd; border-radius: 4px;"
                                                     placeholder="상품에 대한 자세한 설명을 입력하세요."
-                                                    v-model="product1.productDetails"></textarea>
+                                                    v-model="editingProduct.content"></textarea>
                                             </div>
                                         </div>
 
@@ -652,7 +632,7 @@
 
                                                 <input type="text"
                                                     style="width: 200px; padding: 10px; border: 1px solid #ddd; border-radius: 4px;"
-                                                    v-model="product1.originalPrice">
+                                                    v-model="editingProduct.price">
                                             </div>
                                         </div>
                                     </div>
@@ -662,35 +642,16 @@
                                     <div class="form-title-box">상품 이미지</div>
                                     <div class="form-content-box">
                                         <div class="form-group">
-                                            <div style="margin-bottom: 10px; font-weight: bold;">기존 이미지 : </div>
                                             <div class="image-editor-box">
-                                                <img :src="product1.imgUrl">
+                                                📸 이미지 에디터 API 사용
                                             </div>
-                                            <br>
-                                            <div style="margin-bottom: 10px; font-weight: bold;">수정할 이미지 : </div>
-                                            <!-- 이미지 첨부 -->
-                                            <label
-                                                style="background: #ff1493; color: white; padding: 5px 15px; cursor: pointer; border-radius: 5px;">
-                                                사진 선택하기
-                                                <input type="file" @change="fnFileChange" ref="fileInput"
-                                                    style="display: none;">
-                                            </label>
-                                            <div class="image-editor-box">
-
-                                                <div v-if="previewUrl" style="margin-top: 10px;">
-                                                    <p>선택된 이미지 미리보기:</p>
-                                                    <img :src="previewUrl"
-                                                        style="max-width: 80%; border: 1px solid #ccc;">
-                                                </div>
-                                            </div>
-
                                         </div>
                                     </div>
                                 </div>
 
                                 <div class="form-button-group">
                                     <button class="btn-cancel" @click="productPage = 'list'">취소(돌아가기)</button>
-                                    <button class="btn-submit" @click="fnUpdateProduct">상품 수정</button>
+                                    <button class="btn-submit" @click="fnSave">상품 수정</button>
                                 </div>
                             </div>
                         </div>
@@ -742,12 +703,11 @@
 
                     <div v-if="currentMenu === 'inquiry'">
                         <h2>문의 관리 : <span style="color: #ff1493;">새 문의 {{inquiryList.length}}건</span></h2>
-                        <div class="content-card" v-for="i in fnPaginatedInquiry" :key="i">
-
+                        <div class="content-card"  v-for="i in fnPaginatedInquiry" :key="i">
+                            
                             <div style="display: flex;">
                                 <div style="width: 120px; height: 80px; background: #ffcef0; margin-right: 20px;">
-                                    <img :src="fnThumbnail(i)" :alt="i.product"
-                                        style="max-width: 100%; max-height: 100%">
+                                    <img :src="fnThumbnail(i)" :alt="i.product" style="max-width: 100%; max-height: 100%">
                                 </div>
                                 <div style="flex: 1;"><strong>상세 내용</strong></div>
                             </div>
@@ -766,11 +726,12 @@
                                     <td>{{i.content}}</td>
                                 </tr>
                             </table>
-
-                            <button style="background: #ffb400; margin-top: 10px; 
+                            
+                            <button
+                                style="background: #ffb400; margin-top: 10px; 
                                 padding: 10px 20px; border: none; display: block; 
                                 margin-left: auto; cursor: pointer;">답변하기</button>
-
+                        
                         </div>
                         <div class="pagination">
                             <span v-for="num in inquiryList.length" :key="num">
@@ -959,8 +920,6 @@
 
                     page: 1,
                     product: '',
-                    product1: {},
-                    proType: [],
 
                     //product === productList.        v-for = "pro in productList" :key="pro.id"   v-if="product === pro.name" 
                     productList: [  //상품 리스트
@@ -1055,11 +1014,8 @@
                         category: []
                     },
                     pageSize: 0,
-                    currentPage: 1,
-                    previewUrl: null, // 미리보기용 URL
-                    uploadFile: null  // 서버로 보낼 실제 파일 객체
+                    currentPage: 1
                 }
-
             }, // data
             computed: {
                 resCount() {
@@ -1129,10 +1085,10 @@
                     return this.reservationList.slice(start, end);
                 },
 
-                fnPaginatedInquiry() {
+                fnPaginatedInquiry(){
                     let start = this.currentPage - 1;
                     let end = start + 1;
-                    return this.inquiryList.slice(start, end);
+                    return this.inquiryList.slice(start,end);   
                     //(0, 1), (1, 2)
                 },
 
@@ -1162,45 +1118,6 @@
                         behavior: 'smooth' // 'smooth'는 부드럽게, 'auto'는 즉시 이동합니다.
                     });
                 },
-                fnCom: function () {
-                    let self = this;
-                    let param = {
-                        userid: 'sunsu09'
-                    };
-                    $.ajax({
-                        url: "http://localhost:8080/company.dox",
-                        dataType: "json",
-                        type: "POST",
-                        data: param,
-                        success: function (data) {
-                            console.log(data); //info,result,message
-
-                            self.user.name = data.info.comName;
-                            self.user.usePeriod = data.info.usePeriod;
-                            self.user.grade = data.info.grade;
-                            self.user.lastPayment = data.info.lastPayment;
-
-                            console.log(self.user);
-                        }
-                    });
-                },
-                fnProductList: function () {
-                    let self = this;
-                    let param = {
-                        userid: 'sunsu09'
-                    };
-                    $.ajax({
-                        url: "http://localhost:8080/productList.dox",
-                        dataType: "json",
-                        type: "POST",
-                        data: param,
-                        success: function (data) {
-                            console.log(data);
-
-                            self.productList = data.list; //덮어씌우기
-                        }
-                    });
-                },
                 fnList: function () {
                     let self = this;
                     let param = {};
@@ -1227,62 +1144,12 @@
                     this.productPage = 'list'; // 수정 후 상품 목록으로 돌아가기
                     // 여기야!!(+)
                 },
-
                 goEditPage(item) {
-                    let self = this;
-                    self.productPage = 'edit';
-
-                    let param = {
-                        userid: 'sunsu09',
-                        productNo: item.productNo //파라미터로 보내주면되는구나~
-                    };
-                    $.ajax({
-                        url: "http://localhost:8080/productDetail.dox",
-                        dataType: "json",
-                        type: "POST",
-                        data: param,
-                        success: function (data) {
-                            console.log(data);
-                            // 1. 일단 전체 데이터를 담습니다.
-                            self.product1 = data.info;//덮어씌우기
-
-                            //
-                            // 2. 문자열로 들어온 proType을 실제 배열로 변환합니다.
-                            // 만약 데이터가 '["MAKEUP"]' 형태라면 JSON.parse를 써서 ["MAKEUP"] 배열로 만듭니다.
-                            if (typeof self.product1.proType === 'string') {
-                                try {
-                                    let rawArray = JSON.parse(self.product1.proType);//["MAKEUP" , "STUDIO"]
-
-                                    self.product1.proType = rawArray.map(val => {
-                                        if (val === 'MAKEUP') {
-                                            return '메이크업';
-                                        } else if (val === 'DRESS') {
-                                            return '드레스';
-                                        } else if (val === 'STUDIO') {
-                                            return '스튜디오';
-                                        } else {
-                                            return val; // 혹시 모르는 값이 들어올 경우 원래 값을 유지
-                                        } //self.product1.proType = ["메이크업", "스튜디오"]
-                                    })
-                                } catch (e) {
-                                    // 혹시 JSON 형식이 아닐 경우를 대비해 빈 배열로 초기화하거나 예외 처리
-                                    self.product1.proType = [];
-                                }
-                            }
-
-
-
-                        }
-                    });
+                    this.productPage = 'edit';
+                    this.product = item.name;
+                    // 중요: [... ]를 써서 원본이 아닌 '복사본'을 바구니에 담습니다.
+                    this.selectedItems = [...item.category];
                 },
-
-                //프론트 만으로 되는거
-                //goEditPage(item) {
-                //    this.productPage = 'edit';
-                //    this.product = item.name;
-                // 중요: [... ]를 써서 원본이 아닌 '복사본'을 바구니에 담습니다.
-                //    this.selectedItems = [...item.category];
-                //},
 
                 // [2] 등록 버튼 누를 때: 바구니 깨끗이 비우기
                 goRegPage() {
@@ -1372,86 +1239,27 @@
                     }
 
                 },
-                fnThumbnail(inquiry) {    //fnThumbnail(개별문의)
-                    return this.productList.find(p => p.name === inquiry.product).thumbnail;
+                fnThumbnail(inquiry){    //fnThumbnail(개별문의)
+                    return this.productList.find(p=> p.name === inquiry.product).thumbnail;
                 }
-                ,
-                handleMenuClick(menuId) {   //main,product,reservation,inquiry,review,customer
-                    this.currentMenu = menuId;
-                    this.productPage = 'list';
-                    this.page = 1;
-                    this.page1 = 'main';
-                    this.reviewTab = 'detail';
-                    this.currentPage = 1;
 
-                    if (menuId === 'main') {
-                        this.fnCom();
-                    }
-                    else if (menuId === 'product') {
-                        this.fnProductList();
-                    }
-                },
-                fnFileChange(event) {
-                    // 1. 이벤트가 일어난 대상(input)에서 선택된 파일들 중 첫 번째[0]를 가져와요.
-                    const file = event.target.files[0];
+                
 
-                    if (file) {
-                        // 2. 진짜 파일 덩어리를 우리 변수에 쏙 넣어둡니다.
-                        this.uploadFile = file;
 
-                        // 3. 브라우저가 "이 파일 내가 잠깐 보여줄 수 있게 가짜 주소 만들어줄게!" 하는 기능이에요.
-                        this.previewUrl = URL.createObjectURL(file);
 
-                    }
-                },
-                fnUpdateProduct(){
-                    // 1. 택배 박스(FormData)를 하나 만듭니다.
-                    // 파일은 일반 텍스트가 아니라서 반드시 이 'FormData'라는 박스에 담아야 해요.
-                    let self = this;
-                    let formData = new FormData();
 
-                    // 1. 사진 파일 담기(선택했을 때만)
-                    if(this.uploadFile){
-                        formData.append("file", this.uploadFile);
-                    }
 
-                    // 2. 다른 모든 정보들 싹 다 담기(자바의 변수명과 똑같이!)
-                    formData.append("productNo", this.product1.productNo);
-                    formData.append("productName", this.product1.productName);
-                    formData.append("productDetails", this.product1.productDetails);
-                    formData.append("originalPrice", this.product1.originalPrice);
 
-                    formData.append("proType", JSON.stringify(this.product1.proType));
 
-                    $.ajax({
-                        url: "/upload.dox",
-                        type: "POST",
-                        data: formData,
-                        processData: false,
-                        contentType: false,
-                        success: function(data){
-                            if(data.result === "success"){
-                                alert("상품 정보가 모두 수정되었습니다!");
-                                
-                                window.location.href = "/company9.do";
-                            }
-                        }
-                    })
-                },
-                fnHome(){
-                    
-                }
             }, // methods
 
 
             mounted() {
                 // 처음 시작할 때 실행되는 부분
                 let self = this;
-                self.fnCom();
             }
-
-
         });
 
         app.mount('#app');
     </script>
+
