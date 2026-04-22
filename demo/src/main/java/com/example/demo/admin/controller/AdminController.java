@@ -5,6 +5,8 @@ import java.util.HashMap;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -37,17 +39,26 @@ public class AdminController {
 	public String Statistics(Model model) throws Exception {
 		return "admin/adminStatistics";
 	}
-	
+
 	@RequestMapping("/adminReport.do")
 	public String adminReport(Model model) throws Exception {
 		return "admin/adminReport";
 	}
 	
+	@RequestMapping("/adminUserList.do")
+	public String adminUserList(Model model) throws Exception {
+		return "admin/adminUserList";
+	}
+
 	@RequestMapping("/adminPass.do")
 	public String adminPass(Model model) throws Exception {
 		return "admin/adminPass";
 	}
-
+	
+	@RequestMapping("/adminPayFinish.do")
+	public String adminPay(Model model) throws Exception {
+		return "admin/adminPayFinish";
+	}
 
 	@RequestMapping(value = "/sales.dox", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
 	@ResponseBody
@@ -84,7 +95,7 @@ public class AdminController {
 
 		return new Gson().toJson(resultMap);
 	}
-	
+
 	@RequestMapping(value = "/pass.dox", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
 	@ResponseBody
 	public String pass(Model model, @RequestParam HashMap<String, Object> map) throws Exception {
@@ -93,7 +104,7 @@ public class AdminController {
 
 		return new Gson().toJson(resultMap);
 	}
-	
+
 	@RequestMapping(value = "/passCheck.dox", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
 	@ResponseBody
 	public String passCheck(Model model, @RequestParam HashMap<String, Object> map) throws Exception {
@@ -102,4 +113,43 @@ public class AdminController {
 
 		return new Gson().toJson(resultMap);
 	}
+
+	@PostMapping("/verifyPayment.dox")
+	@ResponseBody
+	public HashMap<String, Object> verifyPayment(@RequestParam HashMap<String, Object> map) {
+		HashMap<String, Object> result = new HashMap<>();
+		
+		String userId = (String) map.get("userId");
+		String itemName = (String) map.get("itemName");
+		int passNo = Integer.parseInt(map.get("passNo").toString());
+	    int amount = Integer.parseInt(map.get("amount").toString());
+	    
+		boolean isValid = adminService.getPayInfo(map);
+
+		    if (isValid) {
+		    	// 1. payment 테이블 insert
+		        adminService.addPayment(map);
+
+		        // 2. payment_pass 테이블 insert
+		        adminService.addPaymentPass(map);
+		        
+		        result.put("success", true);
+		        result.put("msg", "결제 검증 완료");
+		        
+		    } else {
+		        result.put("success", false);
+		        result.put("msg", "결제 검증 실패");
+		    }
+
+		    return result;
+	}
+	
+	//결제 조회
+	@GetMapping("/api/payment/detail")
+	@ResponseBody
+	public HashMap<String, Object> getPayment(@RequestParam String imp_uid) throws Exception {
+
+	    return adminService.getPaymentByImpUid(imp_uid);
+	}
+	
 }

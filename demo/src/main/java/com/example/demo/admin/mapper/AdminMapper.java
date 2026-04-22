@@ -20,5 +20,11 @@ public interface AdminMapper {
 	public List<Admin> selectPassList(HashMap<String, Object> map);
 	
 	public Admin selectPassInfo(HashMap<String, Object> map);
+	
+	int selectPriceInfo(int passNo);    //결과가 행 전체가 아니라 Admin 아니고 int
+	
+	int insertPayment(HashMap<String, Object> map);
+	
+	int insertPaymentPass(HashMap<String, Object> map);
 
 }
