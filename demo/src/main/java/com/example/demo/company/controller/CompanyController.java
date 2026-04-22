@@ -60,6 +60,7 @@ public class CompanyController {
 		return new Gson().toJson(resultMap);
 	}
 
+	@ResponseBody
 	@PostMapping("/upload.dox")
 	public String uploadFile2(@RequestParam(value = "file", required = false) MultipartFile file, Company product)
 			throws IllegalStateException, IOException {
