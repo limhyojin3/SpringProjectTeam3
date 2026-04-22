@@ -15,13 +15,11 @@
         body { background-color: #f8f9fa; }
         .main-content { padding: 50px 40px; max-width: 1200px; margin: 0 auto; background: white; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); margin-top: 30px; margin-bottom: 50px; }
         
-        /* 유료/무료 탭 스타일 */
         .review-tabs { display: flex; gap: 10px; margin-bottom: 25px; border-bottom: 2px solid #eee; }
         .tab-item { cursor: pointer; padding: 12px 25px; font-weight: bold; color: #999; transition: 0.3s; position: relative; }
         .tab-item.active { color: var(--primary-color); }
         .tab-item.active::after { content: ''; position: absolute; bottom: -2px; left: 0; width: 100%; height: 3px; background-color: var(--primary-color); }
         
-        /* 뱃지 및 테이블 커스텀 */
         .badge-paid { background: #fff0f3; color: #ff4d6d; border: 1px solid #ffccd5; padding: 5px 10px; }
         .badge-free { background: #e7f5ff; color: #228be6; border: 1px solid #a5d8ff; padding: 5px 10px; }
         
@@ -30,11 +28,11 @@
         .custom-table td { padding: 18px 15px; border-bottom: 1px solid #eee; text-align: center; vertical-align: middle; }
         .custom-table tbody tr:hover td { background-color: #fff9fa; cursor: pointer; }
         
-        /* 검색창 스타일 */
         .search-area { background: #f1f3f5; padding: 20px; border-radius: 10px; margin-bottom: 20px; }
-        
-        /* 제목 텍스트 강조 */
         .review-title-text { font-weight: 700; color: #333; font-size: 1.05rem; }
+        
+        /* 댓글 개수 포인트 컬러 */
+        .comment-count { color: var(--primary-color); font-weight: bold; font-size: 0.9rem; margin-left: 4px; }
     </style>
 </head>
 <body>
@@ -72,6 +70,13 @@
                 <div class="tab-item" :class="{active: isPaid === 0}" @click="fnFilter(0)">🎁 무료 리뷰</div>
             </div>
 
+            <div class="category-filter-bar mb-4">
+                <button class="btn btn-sm mr-2" :class="category === 'all' ? 'btn-dark' : 'btn-outline-dark'" @click="fnCategoryFilter('all')">전체</button>
+                <button class="btn btn-sm mr-2" :class="category === 'STUDIO' ? 'btn-danger' : 'btn-outline-danger'" @click="fnCategoryFilter('STUDIO')">📸 스튜디오</button>
+                <button class="btn btn-sm mr-2" :class="category === 'DRESS' ? 'btn-danger' : 'btn-outline-danger'" @click="fnCategoryFilter('DRESS')">👗 드레스</button>
+                <button class="btn btn-sm" :class="category === 'MAKEUP' ? 'btn-danger' : 'btn-outline-danger'" @click="fnCategoryFilter('MAKEUP')">💄 메이크업</button>
+            </div>
+
             <table class="custom-table">
                 <thead>
                     <tr>
@@ -96,6 +101,11 @@
                         <td class="text-left">
                             <span class="badge badge-light border text-dark mr-2" style="font-size: 0.75rem;">{{ item.comName }}</span>
                             <span class="review-title-text">{{ item.title }}</span>
+                            
+                            <span v-if="item.commentCnt > 0" class="comment-count">
+                                [{{ item.commentCnt }}]
+                            </span>
+                            
                             <i v-if="item.hasImg === 'Y'" class="far fa-image ml-2 text-primary"></i>
                         </td>
                         <td>
@@ -131,13 +141,15 @@
                     isPaid: null,
                     searchKeyword: '',
                     searchType: 'all',
-                    sessionId: "${sessionId}"
+                    sessionId: "${sessionId}",
+                    category: 'all',
                 };
             },
             methods: {
                 fnList() {
                     const nParam = {
                         isPaid: this.isPaid,
+                        category: this.category, //  서버로 카테고리 값 전송
                         searchKeyword: this.searchKeyword,
                         searchType: this.searchType
                     };
@@ -148,14 +160,13 @@
                         data: JSON.stringify(nParam),
                         contentType: "application/json",
                         success: (data) => {
+                            console.log(this.list);
                             let result = (typeof data === 'string') ? JSON.parse(data) : data;
                             if(result.result === "success") {
                                 this.list = result.list;
                             }
                         },
-                        error: () => {
-                            console.error("서버 통신 에러");
-                        }
+                        error: () => { console.error("서버 통신 에러"); }
                     });
                 },
                 fnFilter(val) {
@@ -171,13 +182,22 @@
                     location.href = "/api/review/detail.do?reviewNo=" + no;
                 },
                 fnWrite() {
-                  /*  if(!this.sessionId || this.sessionId === "null" || this.sessionId === "") {
-                        if(confirm("로그인이 필요한 서비스입니다.\n로그인 페이지로 이동하시겠습니까?")) {
-                            location.href = "/login.do";
-                        }
-                        return;
-                    }*/
                     location.href = "/api/review/add.do";
+                },
+                //  카테고리 필터 함수 추가
+                fnCategoryFilter(val) {
+                    this.category = val;
+                    this.fnList();
+                },
+                fnFilter(val) {
+                    this.isPaid = val;
+                    this.fnList();
+                },
+                fnReset() {
+                    this.isPaid = null;
+                    this.category = 'all'; // 리셋 시 카테고리도 초기화
+                    this.searchKeyword = '';
+                    this.fnList();
                 }
             },
             mounted() {
@@ -186,4 +206,4 @@
         }).mount('#app');
     </script>
 </body>
-</html>
+</html> 

@@ -2,8 +2,6 @@ package com.example.demo.company.model;
 
 import lombok.Data;
 
-
-//@Data => get set메소드가 포함된거임(lombok)
 @Data
 public class Company {
 	String companyNo;
@@ -17,6 +15,8 @@ public class Company {
 	String ceoName;
 	String comTel;
 	String registrationFee;
+
+
 	String comEmail;
 	String usePeriod;
 	String grade;
@@ -29,4 +29,9 @@ public class Company {
 	String isActive;
 	String imgUrl;
 	String proType;
+
+   
+  // 통계용 필드 (DB 테이블엔 없지만 화면에 뿌릴 때 필요)
+  private Double avgRating;
+  private Integer reviewCount;
 }
