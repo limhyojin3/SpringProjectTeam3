@@ -18,6 +18,12 @@ public interface CompanyMapper {
 	 * insertUser(HashMap<String, Object> map);
 	 */
 	//updateProduct
+	//selectCompanyByUserId
+	
+	Company selectCompanyByUserId(String userId);
+	
+	int insertProduct(Company product);
+	
 	int updateProduct(Company product);
 	
 	Company selectProduct(HashMap<String, Object> map);

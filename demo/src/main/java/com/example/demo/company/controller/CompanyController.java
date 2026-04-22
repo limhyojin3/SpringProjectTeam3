@@ -67,7 +67,10 @@ public class CompanyController {
 		// 1. 파일이 저장될 물리적 경로 설정
 
 		if (file != null && !file.isEmpty()) {
-			String uploadDir = "C:/Users/TJ-BU-708-P03/Documents/fullstack/merryview/uploads/";
+			String projectPath = System.getProperty("user.dir");// 현재 프로젝트 폴더 경로를 가져옴
+			String uploadDir = projectPath + "/src/main/resources/static/uploads/";
+
+			
 			String originalName = file.getOriginalFilename();
 			String uuid = UUID.randomUUID().toString();
 			String savedName = uuid + "_" + originalName;
@@ -86,6 +89,47 @@ public class CompanyController {
 		}
 
 		HashMap<String, Object> resultMap = companyService.editProduct(product);
+
+		return new Gson().toJson(resultMap);
+
+	}
+	
+	@ResponseBody
+	@PostMapping("/upload2.dox")
+	public String uploadFile3(@RequestParam(value = "file", required = false) MultipartFile file, Company product, @RequestParam("userId") String userId)
+			throws IllegalStateException, IOException {
+		
+		Company info = companyService.getCompanyInfo(userId);
+		
+		if(info != null) {
+			product.setCompanyNo(info.getCompanyNo());//9
+		}
+		
+		// 1. 파일이 저장될 물리적 경로 설정
+
+		if (file != null && !file.isEmpty()) {
+			String projectPath = System.getProperty("user.dir");// 현재 프로젝트 폴더 경로를 가져옴
+			String uploadDir = projectPath + "/src/main/resources/static/uploads/";
+
+			
+			String originalName = file.getOriginalFilename();
+			String uuid = UUID.randomUUID().toString();
+			String savedName = uuid + "_" + originalName;
+
+			File folder = new File(uploadDir);
+
+			if (!folder.exists()) {
+				folder.mkdirs();
+			}
+
+			File copyFile = new File(uploadDir + savedName);
+			file.transferTo(copyFile);
+
+			product.setImgUrl("/img2/" + savedName);
+
+		}
+
+		HashMap<String, Object> resultMap = companyService.addProduct(product);
 
 		return new Gson().toJson(resultMap);
 

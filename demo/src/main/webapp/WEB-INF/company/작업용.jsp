@@ -85,7 +85,7 @@ product1 : {}
                     }
                 })
 
-
+        product2 : {companyNo: '', productNo: '',proType: [""], productName: '', productDetails: '', originalPrice: '', imgUrl: ''}
                 product1.proType = ["메이크업", "스튜디오"]
 
 
@@ -107,3 +107,114 @@ SET
     IMG_URL = #{imgUrl},
     PRO_TYPE = #{proType}
 WHERE PRODUCT_NO = #{productNo};
+
+<div v-else-if="productPage === 'edit'">
+                            <div class="product-form-wrapper">
+                                <h2 style="color: #333; margin-bottom: 30px;">상품 수정하기</h2>
+
+                                <div class="product-form-section">
+                                    <div class="form-title-box">상품 기본 정보</div>
+                                    <div class="form-content-box">
+
+                                        <div class="form-group">
+                                            <label class="form-label">상품 이름</label>
+                                            <div class="form-info-box">
+                                                <input type="text"
+                                                    style="width: 200px; padding: 10px; border: 1px solid #ddd; border-radius: 4px;"
+                                                    v-model="product1.productName">
+                                            </div>
+                                        </div>
+
+
+
+
+                                        <div class="form-group">
+                                            <label class="form-label">카테고리</label>
+                                            <div class="category-group">
+
+
+                                                <div class="category-item" v-for="item in category" :key="item">
+                                                    <input type="checkbox" :value="item"
+                                                        v-model="product1.proType">{{item}}
+                                                </div>
+                                            </div>
+                                        </div>
+
+
+                                        <div class="form-group">
+                                            <label class="form-label">상품 설명</label>
+                                            <div class="form-info-box">
+                                                <textarea
+                                                    style="width: 60%; height: 100px; padding: 10px; border: 1px solid #ddd; border-radius: 4px;"
+                                                    placeholder="상품에 대한 자세한 설명을 입력하세요."
+                                                    v-model="product1.productDetails"></textarea>
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label class="form-label"><span class="form-info-label">예상 견적</span></label>
+                                            <div class="form-info-box">
+
+                                                <input type="text"
+                                                    style="width: 200px; padding: 10px; border: 1px solid #ddd; border-radius: 4px;"
+                                                    v-model="product1.originalPrice">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="product-form-section">
+                                    <div class="form-title-box">상품 이미지</div>
+                                    <div class="form-content-box">
+                                        <div class="form-group">
+
+
+                                            <div style="margin-bottom: 10px; font-weight: bold;">기존 이미지 : </div>
+                                            <div class="image-editor-box">
+                                                <img :src="product1.imgUrl">
+                                            </div>
+                                            <br>
+
+
+
+
+
+
+
+
+                                            <div style="margin-bottom: 10px; font-weight: bold;">수정할 이미지 : </div>
+                                            <!-- 이미지 첨부 -->
+                                            <label
+                                                style="background: #ff1493; color: white; padding: 5px 15px; cursor: pointer; border-radius: 5px;">
+                                                사진 선택하기
+                                                <input type="file" @change="fnFileChange" ref="fileInput"
+                                                    style="display: none;">
+                                            </label>
+                                            <div class="image-editor-box">
+
+                                                <div v-if="previewUrl" style="margin-top: 10px;">
+                                                    <p>선택된 이미지 미리보기:</p>
+                                                    <img :src="previewUrl"
+                                                        style="max-width: 80%; border: 1px solid #ccc;">
+                                                </div>
+                                            </div>
+
+
+
+
+
+
+
+
+
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="form-button-group">
+                                    <button class="btn-cancel" @click="productPage = 'list'">취소(돌아가기)</button>
+                                    <button class="btn-submit" @click="fnUpdateProduct">상품 수정</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
