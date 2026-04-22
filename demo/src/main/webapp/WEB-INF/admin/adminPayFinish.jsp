@@ -102,17 +102,39 @@
                         @click="fnPage('/adminStatistics.do')">통계</button>
                 </div>
                 <div class="main">
+                    <div v-if="!paymentInfo">
+                        결제 정보를 불러오는 중...
+                    </div>
+
+                    <div v-else>
+                        <h3>결제가 완료 되었습니다! 🎉</h3>
+
+                        <hr>
+
+                        <p><b>imp_uid:</b> {{ paymentInfo.imp_uid }}</p>
+                        <p><b>주문번호:</b> {{ paymentInfo.merchant_uid }}</p>
+                        <p><b>결제 금액:</b> {{ paymentInfo.amount }}</p>
+                        <p><b>결제 상태:</b> {{ paymentInfo.status }}</p>
+                        <p><b>결제 수단:</b> {{ paymentInfo.pay_method }}</p>
+
+                        <button class="btn btn-primary" @click="fnPage('/adminPayment.do')">
+                            결제 관리로 이동
+                        </button>
+                    </div>
 
                 </div>
             </div>
             <jsp:include page="/WEB-INF/common/footer.jsp" />
         </div>
         <script>
+            const IMP_UID = new URLSearchParams(location.search).get("imp_uid");
             const app = Vue.createApp({
                 data() {
                     return {
                         // 변수 - (key : value)
                         activeMenu: "",
+                        impUid: null,
+                        paymentInfo: null
                     };
                 },
                 methods: {
@@ -120,17 +142,21 @@
                     fnPage: function (url) {
                         location.href = url;
                     },
-                    fnGet: function () {
+                    fnGetPayment: function () {
                         let self = this;
-                        let param = {};
+
                         $.ajax({
-                            url: "http://localhost:8080/.dox",
-                            dataType: "json",
-                            type: "POST",
-                            data: param,
-                            success: function (data) {
-                                console.log(data);
-                                self.list = data.list;
+                            url: "/api/payment/detail",
+                            type: "GET",
+                            data: {
+                                imp_uid: self.impUid
+                            },
+                            success: function (res) {
+                                console.log("결제정보:", res);
+                                self.paymentInfo = res;
+                            },
+                            error: function () {
+                                alert("결제 정보를 불러오지 못했습니다.");
                             }
                         });
                     },
@@ -151,6 +177,13 @@
                                                 path.includes('adminReport') ? 'report' :
                                                     path.includes('adminStatistics') ? 'stats' :
                                                         '';
+                    // imp_uid 받기
+                    this.impUid = new URLSearchParams(location.search).get("imp_uid");
+
+                    // 결제 조회 실행
+                    if (this.impUid) {
+                        this.fnGetPayment();
+                    }
                 }
             });
 
