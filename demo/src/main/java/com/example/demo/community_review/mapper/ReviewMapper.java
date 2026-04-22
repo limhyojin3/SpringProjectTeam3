@@ -54,12 +54,5 @@ public interface ReviewMapper {
     List<HashMap<String, Object>> selectActiveCompanyList(HashMap<String, Object> map);
 
 
-    /**
-     * [4] 댓글(Comment) 관리 - 테이블명: comment
-     */
-    // 특정 게시글(post_no)의 댓글 목록 조회
-    List<HashMap<String, Object>> selectCommentList(HashMap<String, Object> map);
     
-    // 신규 댓글 등록
-    int insertComment(HashMap<String, Object> map);
 }

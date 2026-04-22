@@ -12,34 +12,41 @@
     
 	<!-- 게시글 리스트 -->
    <select id="selectPostList" parameterType="hashmap" resultType="com.example.demo.community_review.model.Community">
-        SELECT 
-            post_no AS postNo,
-            user_id AS userId,
-            category,
-            title,
-            content,
-            reg_date AS regDate,
-            view_cnt AS viewCnt,
-            like_cnt AS likeCnt,
-            is_deleted AS isDeleted
-        FROM Community_Post 
-        WHERE is_deleted = 0
-        <if test="searchKeyword != null and searchKeyword != ''">
-            <choose>
-                <when test="searchType == 'title'">
-                    AND title LIKE CONCAT('%', #{searchKeyword}, '%')
-                </when>
-                <when test="searchType == 'userId'">
-                    AND user_id LIKE CONCAT('%', #{searchKeyword}, '%')
-                </when>
-                <otherwise>
-                    AND (title LIKE CONCAT('%', #{searchKeyword}, '%') 
-                         OR user_id LIKE CONCAT('%', #{searchKeyword}, '%'))
-                </otherwise>
-            </choose>
-        </if>
-        ORDER BY reg_date DESC
-    </select>
+	    SELECT 
+	        p.post_no AS postNo,
+	        p.user_id AS userId,
+	        p.category,
+	        p.title,
+	        p.content,
+	        DATE_FORMAT(p.reg_date, '%Y-%m-%d') AS regDate,
+	        p.view_cnt AS viewCnt,
+	        p.like_cnt AS likeCnt,
+	        p.is_deleted AS isDeleted,
+	        (SELECT COUNT(*) FROM comment c 
+	         WHERE c.post_no = p.post_no AND c.is_deleted = 0) AS commentCnt
+	    FROM Community_Post p
+	    WHERE p.is_deleted = 0
+	    
+	    <if test="category != null and category != '' and category != '전체'">
+	        AND p.category = #{category}
+	    </if>
+	
+	    <if test="searchKeyword != null and searchKeyword != ''">
+	        <choose>
+	            <when test="searchType == 'title'">
+	                AND p.title LIKE CONCAT('%', #{searchKeyword}, '%')
+	            </when>
+	            <when test="searchType == 'userId'">
+	                AND p.user_id LIKE CONCAT('%', #{searchKeyword}, '%')
+	            </when>
+	            <otherwise>
+	                AND (p.title LIKE CONCAT('%', #{searchKeyword}, '%') 
+	                     OR p.user_id LIKE CONCAT('%', #{searchKeyword}, '%'))
+	            </otherwise>
+	        </choose>
+	    </if>
+	    ORDER BY p.reg_date DESC
+	</select>
 	
     <select id="selectPostById" resultType="com.example.demo.community_review.model.Community">
         SELECT * FROM Community_Post WHERE post_no = #{postNo}
@@ -47,19 +54,19 @@
     
 	<!--좋아요 기능-->
     <select id="checkPostLike" resultType="int">
-        SELECT COUNT(*) FROM Post_Like 
+        SELECT COUNT(*) FROM community_Like 
         WHERE post_no = #{postNo} AND user_id = #{userId}
     </select>
     
 	<!--추가 기능-->
     <insert id="insertPostLike">
-        INSERT INTO Post_Like (post_no, user_id, reg_date)
-        VALUES (#{postNo}, #{userId}, CURRENT_TIMESTAMP)
+        INSERT INTO community_Like (post_no, user_id)
+        VALUES (#{postNo}, #{userId})
     </insert>
     
 	<!--삭제 기능-->
     <delete id="deletePostLike">
-        DELETE FROM Post_Like 
+        DELETE FROM community_Like 
         WHERE post_no = #{postNo} AND user_id = #{userId}
     </delete>
     
@@ -93,11 +100,16 @@
 	        post_no AS postNo,
 	        user_id AS userId,
 	        title,
+	        category,
 	        content,
 	        view_cnt AS viewCnt,
 	        like_cnt AS likeCnt,
-	        reg_date AS regDate
-	    FROM Community_Post
+	        reg_date AS regDate,
+	        (SELECT COUNT(*) 
+	         FROM community_like 
+	         WHERE post_no = community_Post.post_no 
+	           AND user_id = #{userId}) AS isLiked
+	    FROM community_Post
 	    WHERE post_no = #{postNo}
 	</select>
 	

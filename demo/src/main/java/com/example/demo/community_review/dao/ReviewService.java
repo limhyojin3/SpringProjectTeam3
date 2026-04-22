@@ -130,20 +130,4 @@ public class ReviewService {
         }
     }
     
- // 7. 댓글 로직 (추가된 부분)
-    public List<HashMap<String, Object>> getCommentList(HashMap<String, Object> map) {
-        return reviewMapper.selectCommentList(map);
-    }
-    
-    @Transactional
-    public String addComment(HashMap<String, Object> map) {
-        int result = reviewMapper.insertComment(map);
-        HashMap<String, Object> resultMap = new HashMap<>();
-        if (result > 0) {
-            resultMap.put("result", "success");
-        } else {
-            resultMap.put("result", "fail");
-        }
-        return gson.toJson(resultMap);
-    }
 }

@@ -9,7 +9,7 @@ public class Review {
     private Long reviewNo;       // 기본키 (Auto Increment)
     private String userId;       // 작성자 ID (Member FK)
     private Long companyNo;      // 업체 번호 (Company FK)
-    private Long comName;
+    private String comName;
     private Long resNo;          // 예약 번호 (Reservation FK)
     private BigDecimal rating;   // 평점 (예: 4.5)
     private String approvalStatus; // 승인 상태 (WAIT, APPROVED, REJECTED)

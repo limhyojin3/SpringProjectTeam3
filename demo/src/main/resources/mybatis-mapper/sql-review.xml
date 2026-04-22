@@ -3,40 +3,50 @@
 <mapper namespace="com.example.demo.community_review.mapper.ReviewMapper">
 
     <select id="selectReviewList" parameterType="hashmap" resultType="hashmap">
-        SELECT 
-            r.review_no AS reviewNo,
-            r.user_id AS userId,
-            r.rating AS rating,
-            r.view_cnt AS viewCnt,
-            r.like_cnt AS likeCnt,
-            r.title,
-            r.is_paid AS isPaid,
-            r.content AS content,
-            IFNULL(c.com_name, '일반 리뷰') AS comName,
-            CASE 
-                WHEN r.stored_name IS NOT NULL OR (r.img_url IS NOT NULL AND r.img_url != '') THEN 'Y'
-                ELSE 'N'
-            END AS hasImg,
-            DATE_FORMAT(r.reg_date, '%Y-%m-%d') AS regDate
-        FROM Review r
-        LEFT OUTER JOIN Company c ON r.company_no = c.company_no
-        WHERE r.approval_status = 'APPROVED'
-        
-        <if test="isPaid != null and isPaid != '' or isPaid == 0">
-            AND r.is_paid = #{isPaid}
-        </if>
-
-        <if test="searchKeyword != null and searchKeyword != ''">
-            <choose>
-                <when test="searchType == 'company'"> AND c.com_name LIKE CONCAT('%', #{searchKeyword}, '%') </when>
-                <when test="searchType == 'content'"> AND r.content LIKE CONCAT('%', #{searchKeyword}, '%') </when>
-                <otherwise>
-                    AND (c.com_name LIKE CONCAT('%', #{searchKeyword}, '%') OR r.content LIKE CONCAT('%', #{searchKeyword}, '%'))
-                </otherwise>
-            </choose>
-        </if>
-        ORDER BY r.reg_date DESC
-    </select>
+	    SELECT 
+	        r.review_no AS reviewNo,
+	        r.user_id AS userId,
+	        r.rating AS rating,
+	        r.view_cnt AS viewCnt,
+	        r.like_cnt AS likeCnt,
+	        r.title,
+	        r.is_paid AS isPaid,
+	        r.content AS content,
+	        IFNULL(c.com_name, '일반 리뷰') AS comName,
+	        c.com_type AS comType, 
+	        (SELECT COUNT(*) FROM comment com WHERE com.review_no = r.review_no AND com.is_deleted = 0) AS commentCnt,
+	        CASE 
+	            WHEN r.stored_name IS NOT NULL OR (r.img_url IS NOT NULL AND r.img_url != '') THEN 'Y'
+	            ELSE 'N'
+	        END AS hasImg,
+	        DATE_FORMAT(r.reg_date, '%Y-%m-%d') AS regDate
+	    FROM Review r
+	    LEFT OUTER JOIN Company c ON r.company_no = c.company_no
+	    WHERE r.approval_status = 'APPROVED'
+	    
+	    <if test="isPaid != null and isPaid != '' or isPaid == 0">
+	        AND r.is_paid = #{isPaid}
+	    </if>
+	
+	    <if test="category != null and category != '' and category != 'all'">
+	        AND JSON_CONTAINS(c.com_type, JSON_QUOTE(#{category}))
+	    </if>
+	
+	    <if test="searchKeyword != null and searchKeyword != ''">
+	        <choose>
+	            <when test="searchType == 'company'"> 
+	                AND c.com_name LIKE CONCAT('%', #{searchKeyword}, '%') 
+	            </when>
+	            <when test="searchType == 'content'"> 
+	                AND r.content LIKE CONCAT('%', #{searchKeyword}, '%') 
+	            </when>
+	            <otherwise>
+	                AND (c.com_name LIKE CONCAT('%', #{searchKeyword}, '%') OR r.content LIKE CONCAT('%', #{searchKeyword}, '%'))
+	            </otherwise>
+	        </choose>
+	    </if>
+	    ORDER BY r.reg_date DESC
+	</select>
 
     <select id="selectReviewDetail" parameterType="hashmap" resultType="hashmap">
         SELECT 
@@ -142,39 +152,6 @@
         WHERE review_no = #{reviewNo}
     </update>
     
-    <select id="selectCommentList" parameterType="hashmap" resultType="hashmap">
-	    SELECT 
-	        comment_no AS commentNo,
-	        review_no AS reviewNo, 
-	        user_id AS userId,
-	        content,
-	        like_cnt AS likeCnt,
-	        parent_no AS parentNo,
-	        is_deleted AS isDeleted,
-	        DATE_FORMAT(reg_date, '%Y-%m-%d %H:%i') AS regDate
-	    FROM comment
-	    WHERE review_no = #{reviewNo} 
-	      AND is_deleted = 0
-	    ORDER BY reg_date ASC
-	</select>
-	
-	<insert id="insertComment" parameterType="hashmap">
-	    INSERT INTO comment (
-	        review_no, 
-	        user_id,
-	        content,
-	        reg_date,
-	        is_deleted,
-	        like_cnt,
-	        parent_no
-	    ) VALUES (
-	        #{reviewNo},
-	        #{userId},
-	        #{content},
-	        NOW(),
-	        0,
-	        0,
-	        NULL  )
-	</insert>
+    
 
 </mapper>
