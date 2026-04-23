@@ -26,6 +26,7 @@ public class CompanyController {
 	@Autowired
 	CompanyService companyService;
 
+	/* 사용가능 */
 	@RequestMapping("/company10.do")
 	public String test2(Model model) throws Exception {
 		return "/company/company10";
@@ -36,13 +37,13 @@ public class CompanyController {
 	public String test99(Model model) throws Exception {
 		return "/company/company10";
 	}
-	
+	/* 상품목록조회(카테고리 / 태그 필터)*/
 	@RequestMapping("/company1.do")
 	public String te2(Model model) throws Exception {
 		return "/company/company1";
 	}
 	
-	
+	/* 백업본 */
 	@RequestMapping("/company8.do")
 	public String te(Model model) throws Exception {
 		return "/company/companyBackup0421";
