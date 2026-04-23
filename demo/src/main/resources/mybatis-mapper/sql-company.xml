@@ -7,6 +7,7 @@
 		resultType="com.example.demo.company.model.Company">
 	</select>
 
+
 	<!-- 한개 검색 -->
 	<select id="selectCompany" parameterType="hashmap"
 		resultType="com.example.demo.company.model.Company">
@@ -31,34 +32,42 @@
 		WHERE C.USER_ID = #{userid};
 	</select>
 	<!-- 삽입 -->
-	<update id="updateProduct" parameterType="com.example.demo.company.model.Company">
+	<update id="updateProduct"
+		parameterType="com.example.demo.company.model.Company">
 		UPDATE PRODUCT
 		SET
-			PRODUCT_NAME = #{productName},
-			PRODUCT_DETAILS = #{productDetails},
-			ORIGINAL_PRICE = #{originalPrice},
-			IMG_URL = #{imgUrl},
-			PRO_TYPE = #{proType}
+		PRODUCT_NAME = #{productName},
+		PRODUCT_DETAILS = #{productDetails},
+		ORIGINAL_PRICE = #{originalPrice},
+		IMG_URL = #{imgUrl},
+		PRO_TYPE = #{proType}
 		WHERE PRODUCT_NO = #{productNo}
 
 	</update>
 
 	<!-- 삭제 -->
-	<delete id="deleteUser" parameterType="hashmap">
+	<delete id="deleteProduct" parameterType="hashmap">
+		DELETE FROM PRODUCT WHERE PRODUCT_NO = #{productNo}
+
 	</delete>
-	
+
+
 	<select id="selectCompanyByUserId" parameterType="String"
 		resultType="com.example.demo.company.model.Company">
 		SELECT COMPANY_NO AS companyNo
 		FROM COMPANY
 		WHERE USER_ID = #{userId}
 	</select>
-	
+
 	<!-- 수정 -->
-	<insert id="insertProduct" parameterType="com.example.demo.company.model.Company">
-		INSERT INTO PRODUCT(PRODUCT_NAME, PRODUCT_DETAILS, ORIGINAL_PRICE, IMG_URL, PRO_TYPE, COMPANY_NO)
-		VALUES(#{productName}, #{productDetails}, #{originalPrice}, #{imgUrl}, #{proType}, #{companyNo})
-		
+	<insert id="insertProduct"
+		parameterType="com.example.demo.company.model.Company">
+		INSERT INTO PRODUCT(PRODUCT_NAME, PRODUCT_DETAILS, ORIGINAL_PRICE,
+		IMG_URL, PRO_TYPE, COMPANY_NO)
+		VALUES(#{productName}, #{productDetails}, #{originalPrice}, #{imgUrl},
+		#{proType}, #{companyNo})
+
 	</insert>
+
 
 </mapper>

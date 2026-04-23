@@ -35,6 +35,10 @@ public class CompanyController {
 	public String test99(Model model) throws Exception {
 		return "/company/company10";
 	}
+	@RequestMapping("/company8.do")
+	public String te(Model model) throws Exception {
+		return "/company/companyBackup0421";
+	}
 
 	@RequestMapping(value = "/company.dox", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
 	@ResponseBody
@@ -43,7 +47,7 @@ public class CompanyController {
 
 		return new Gson().toJson(resultMap);
 	}
-
+	
 	@RequestMapping(value = "/productList.dox", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
 	@ResponseBody
 	public String test2(@RequestParam HashMap<String, Object> map) throws Exception {
@@ -134,5 +138,14 @@ public class CompanyController {
 		return new Gson().toJson(resultMap);
 
 	}
+	//productRemove.dox
+	@ResponseBody
+	@PostMapping("/productRemove.dox")
+	public String removeProduct(@RequestParam HashMap<String, Object> map) throws Exception {
+		HashMap<String, Object> resultMap = companyService.removeProduct(map);
+
+		return new Gson().toJson(resultMap);
+	}
+	
 
 }

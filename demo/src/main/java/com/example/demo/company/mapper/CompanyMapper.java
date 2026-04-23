@@ -6,6 +6,7 @@ import java.util.List;
 import org.apache.ibatis.annotations.Mapper;
 
 import com.example.demo.company.model.Company;
+import com.example.demo.company.model.Review;
 
 @Mapper
 public interface CompanyMapper {
@@ -19,6 +20,13 @@ public interface CompanyMapper {
 	 */
 	//updateProduct
 	//selectCompanyByUserId
+	
+	//int result = companyMapper.deleteProduct(map);
+	
+	
+	List<Review> selectPaidReviewList(HashMap<String, Object> map); //이부분 //#{companyNo}
+	
+	int deleteProduct(HashMap<String, Object> map);
 	
 	Company selectCompanyByUserId(String userId);
 	

@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import com.example.demo.common.Message;
 import com.example.demo.company.mapper.CompanyMapper;
 import com.example.demo.company.model.Company;
+import com.example.demo.company.model.Review;
 
 @Service
 public class CompanyService {
@@ -163,4 +164,25 @@ public class CompanyService {
 		return null;
 		
 	}
+	public HashMap<String, Object> removeProduct(HashMap<String, Object> map) {
+		HashMap<String, Object> resultMap = new HashMap<String, Object>();
+		try {
+//			List<User> list = defaultMapper.selectUserList(map);
+//			User info = defaultMapper.selectUser(map);
+			int result = companyMapper.deleteProduct(map);
+			
+			if(result > 0) {
+				resultMap.put("result", "success");
+				resultMap.put("message", Message.MSG_REMOVE);
+			}
+			
+		} catch (Exception e) {
+			// TODO: handle exception
+			System.out.println(e.getMessage());
+			resultMap.put("result", "fail");
+			resultMap.put("message", Message.MSG_SERVER_ERR);
+		}
+		return resultMap;  
+	}
+	
 }
