@@ -440,7 +440,7 @@
 
                     // company 테이블
                     comName: self.info.comName,
-                    comType: self.info.comType,
+                    comType: JSON.stringify([self.info.comType]),
                     comAddress: self.info.comAddress + ' ' + self.info.comAddressDetail,
                     bizNo: self.info.bizNo.replace(/-/g, ''),  // 하이픈 제거
                     ceoName: self.info.ceoName,

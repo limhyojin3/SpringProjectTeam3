@@ -9,6 +9,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.interceptor.TransactionAspectSupport;
 
 import com.example.demo.common.Message;
 import com.example.demo.member.mapper.MemberMapper;
@@ -48,7 +49,7 @@ public class MemberService {
 	            return resultMap;
 	        }
 		     // 3. role 체크 (비밀번호 비교 전에!)
-		        String tab = (String) map.get("tab");
+		    String tab = (String) map.get("tab");
 		    if(tab.equals("user")) {
 		        if(!member.getRole().equals("USER") && !member.getRole().equals("ADMIN")) {
 		          resultMap.put("loginResult", false);
@@ -187,6 +188,7 @@ public class MemberService {
 	        System.out.println(e.getMessage());
 	        resultMap.put("result", "fail");
 	        resultMap.put("message", Message.MSG_SERVER_ERR);
+	        TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
 	    }
 	    return resultMap;
 	}
@@ -332,21 +334,105 @@ public class MemberService {
 	        memberMapper.insertUserCoupon(couponMap);
 	    }
 	}
-	
-	// *아이디/비밀번호 찾기*
-	// 비밀 번호 변경
-	@Transactional
-	public int changePassword(HashMap<String, Object> map) {
-	    // 1. 본인 확인 (유저+업체 통합 쿼리)
-	    int count = memberMapper.checkUserForPw(map);
-	    if (count > 0) {
-	        // 2. 일치하면 비밀번호 암호화 후 업데이트
-	        String encodedPw = passwordEncoder.encode((String) map.get("newPw"));
-	        map.put("newPw", encodedPw);
-	        return memberMapper.updatePassword(map);
-	    }
-	    return 0; // 정보 불일치
+	// 열람권 잔회 횟수 조회
+	public Member getPassWallet(String userId) {
+	    return memberMapper.selectPassWallet(userId);
+	}
+	// 멤버십 결제 내역 조회
+	public List<Member> getPassWalletList(String userId) {
+		return memberMapper.selectPassWalletList(userId);
+	}
+	// 내 예약 목록 조회
+	public List<Member> getMyReservationList(String userId) {
+	    return memberMapper.selectMyReservationList(userId);
+	}
+	// 내가 산 리뷰 (구매 : 유료/무료) 조회 
+	// 유료
+	public List<Member> getMyPaidReviewList(String userId) {
+	    return memberMapper.selectMyPaidReviewList(userId);
+	}
+	// 무료
+	public List<Member> getMyFreeReviewList(String userId) {
+	    return memberMapper.selectMyFreeReviewList(userId);
+	}
+	// 내가 쓴 글 조회
+	public List<Member> getMyPostList(String userId) {
+	    return memberMapper.selectMyPostList(userId);
+	}
+	// 내가 쓴 리뷰 조회
+	public List<Member> getMyReviewList(String userId) {
+	    return memberMapper.selectMyReviewList(userId);
+	}
+	// 내가 쓴 댓글 조회
+	public List<Member> getMyCommentList(String userId) {
+	    return memberMapper.selectMyCommentList(userId);
+	}
+	// 업체 좋아요 조회
+	public List<Member> getMyCompanyLikeList(String userId) {
+	    return memberMapper.selectMyCompanyLikeList(userId);
+	}
+	// 글 좋아요 조회
+	public List<Member> getMyPostLikeList(String userId) {
+	    return memberMapper.selectMyPostLikeList(userId);
+	}
+	// 리뷰 좋아요 조회
+	public List<Member> getMyReviewLikeList(String userId) {
+	    return memberMapper.selectMyReviewLikeList(userId);
+	}
+	// 내 문의 내역 조회
+	public List<Member> getMyInquiryList(String userId) {
+	    return memberMapper.selectMyInquiryList(userId);
+	}
+	// 내 신고 내역 조회
+	public List<Member> getMyReportList(String userId) {
+	    return memberMapper.selectMyReportList(userId);
 	}
 	
+	// * 유료 리뷰 열람 시 열람권 차감 *
+	@Transactional
+	public HashMap<String, Object> decreasePass(HashMap<String, Object> map) {
+	    HashMap<String, Object> resultMap = new HashMap<>();
+	    try {
+	        // 1. 재열람 확인
+	        int logCount = memberMapper.selectUsageLog(map);
+	        if (logCount > 0) {
+	            resultMap.put("result", "success");
+	            resultMap.put("message", "재열람입니다.");
+	            return resultMap;
+	        }
+	        // 2. 잔여 횟수 확인 후 차감
+	        int updateResult = memberMapper.updateRemainingCount((String) map.get("userId"));
+	        if (updateResult == 0) {
+	            resultMap.put("result", "fail");
+	            resultMap.put("message", "잔여 열람권이 없습니다.");
+	            return resultMap;
+	        }
+	        // 3. 로그 INSERT
+	        memberMapper.insertUsageLog(map);
+	        resultMap.put("result", "success");
+	        resultMap.put("message", "열람권이 사용되었습니다.");
+	    } catch (Exception e) {
+	        System.out.println(e.getMessage());
+	        TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+	        resultMap.put("result", "fail");
+	        resultMap.put("message", "서버 오류가 발생했습니다.");
+	    }
+	    return resultMap;
+	}
 	
+	// *아이디/비밀번호 찾기*
+	// 아이디 찾기
+	public String findUserId(Map<String, Object> map) {
+        return memberMapper.findUserId(map);
+    }
+	public int checkUser(Map<String, Object> map) {
+	    return memberMapper.checkUserForPw(map);
+	}
+	// 비밀 번호 변경
+	@Transactional
+	public int changePassword(Map<String, Object> map) {
+	    String encodedPw = passwordEncoder.encode((String) map.get("newPw"));
+	    map.put("newPw", encodedPw);
+	    return memberMapper.updatePassword(map);
+	}
 }
