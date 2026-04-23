@@ -1,6 +1,7 @@
 package com.example.demo.admin.controller;
 
 import java.util.HashMap;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -56,8 +57,16 @@ public class AdminController {
 	}
 	
 	@RequestMapping("/adminPayFinish.do")
-	public String adminPay(Model model) throws Exception {
-		return "admin/adminPayFinish";
+	public String adminPayFinish(@RequestParam("orderId") String orderId) {
+
+	    System.out.println("orderId: " + orderId);
+
+	    return "admin/adminPayFinish";
+	}
+	
+	@RequestMapping("/adminInquiry.do")
+	public String adminInquiry(Model model) {
+	    return "admin/adminInquiry";
 	}
 
 	@RequestMapping(value = "/sales.dox", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
@@ -91,6 +100,7 @@ public class AdminController {
 	@ResponseBody
 	public String viewReport(Model model, @RequestParam HashMap<String, Object> map) throws Exception {
 		HashMap<String, Object> resultMap = new HashMap<String, Object>();
+		System.out.println("param: " + map.get("processStatus"));
 		resultMap = adminService.getReportList(map);
 
 		return new Gson().toJson(resultMap);
@@ -118,11 +128,6 @@ public class AdminController {
 	@ResponseBody
 	public HashMap<String, Object> verifyPayment(@RequestParam HashMap<String, Object> map) {
 		HashMap<String, Object> result = new HashMap<>();
-		
-		String userId = (String) map.get("userId");
-		String itemName = (String) map.get("itemName");
-		int passNo = Integer.parseInt(map.get("passNo").toString());
-	    int amount = Integer.parseInt(map.get("amount").toString());
 	    
 		boolean isValid = adminService.getPayInfo(map);
 
@@ -132,6 +137,8 @@ public class AdminController {
 
 		        // 2. payment_pass 테이블 insert
 		        adminService.addPaymentPass(map);
+		        
+		        result = map;
 		        
 		        result.put("success", true);
 		        result.put("msg", "결제 검증 완료");
@@ -144,12 +151,22 @@ public class AdminController {
 		    return result;
 	}
 	
-	//결제 조회
-	@GetMapping("/api/payment/detail")
+	@RequestMapping(value = "/inquiry.dox", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
 	@ResponseBody
-	public HashMap<String, Object> getPayment(@RequestParam String imp_uid) throws Exception {
+	public String inquiry(Model model, @RequestParam HashMap<String, Object> map) throws Exception {
+		HashMap<String, Object> resultMap = new HashMap<String, Object>();
+		resultMap = adminService.getInquiryList(map);
 
-	    return adminService.getPaymentByImpUid(imp_uid);
+		return new Gson().toJson(resultMap);
+	}
+	
+	@RequestMapping(value = "/inquiryAnswer.dox", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
+	@ResponseBody
+	public String inquiryAnswer(Model model, @RequestParam HashMap<String, Object> map) throws Exception {
+		HashMap<String, Object> resultMap = new HashMap<String, Object>();
+		resultMap = adminService.addAnswer(map);
+
+		return new Gson().toJson(resultMap);
 	}
 	
 }

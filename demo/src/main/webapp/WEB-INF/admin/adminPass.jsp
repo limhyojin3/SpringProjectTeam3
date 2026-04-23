@@ -9,7 +9,7 @@
         <script src="https://code.jquery.com/jquery-3.7.1.js"
             integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
         <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
-        <script src="../../js/page-change.js"></script>
+        <script src="${pageContext.request.contextPath}/js/page-change.js"></script>
         <script src="https://cdn.iamport.kr/v1/iamport.js"></script>
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
@@ -334,15 +334,6 @@
 
                             <hr />
 
-                            <!-- 결제수단 -->
-                            <select v-model="paymentMethod">
-                                <option value="">결제방법을 선택하세요</option>
-                                <option value="card">카드</option>
-                                <option value="kakaopay">카카오페이</option>
-                                <option value="naverpay">네이버페이</option>
-                                <option value="tosspay">토스</option>
-                            </select>
-
                             <!-- 약관 -->
                             <!-- 전체 동의 -->
                             <label>
@@ -354,25 +345,25 @@
 
                             <!-- 필수 -->
                             <label>
-                                <input type="checkbox" v-model="agreeRequired1" />
+                                <input type="checkbox" v-model="agreeRequired1" @change="updateAll" />
                                 (필수) 결제 및 이용약관 동의
                             </label>
 
                             <label>
-                                <input type="checkbox" v-model="agreeRequired2" />
+                                <input type="checkbox" v-model="agreeRequired2" @change="updateAll" />
                                 (필수) 개인정보 수집 및 이용 동의
                             </label>
 
                             <!-- 선택 -->
                             <label>
-                                <input type="checkbox" v-model="agreeOptional1" />
+                                <input type="checkbox" v-model="agreeOptional1" @change="updateAll" />
                                 (선택) 마케팅 정보 수신 동의
                             </label>
 
                             <div class="buttons">
                                 <button @click="closeModal">취소</button>
                                 <button @click="fnPayment(selectedPass)"
-                                    :disabled="!(agreeRequired1 && agreeRequired2) || (paymentMethod ==='')">
+                                    :disabled="!(agreeRequired1 && agreeRequired2)">
                                     결제하기
                                 </button>
                             </div>
@@ -404,7 +395,6 @@
                         agreeRequired2: false,
                         // 선택 동의
                         agreeOptional1: false,
-                        price: 1,
 
                     };
                 },
@@ -422,142 +412,160 @@
                         IMP.request_pay(
                             {
                                 channelKey: "channel-key-1ebd3d65-20bd-412e-83f3-b7e0c3b368ff",
-                                pay_method: self.paymentMethod,
-                                merchant_uid: "order_" + new Date().getTime(), // 주문 고유 번호
+                                pay_method: "card",
+                                merchant_uid: "order_" + self.sessionId + "_" + new Date().getTime(), // 주문 고유 번호
                                 name: selectedPass.passName,
-                                amount: 1,      //제품 가격
+                                amount: selectedPass.price,      //제품 가격
                             },
                             function (response) {
                                 // 결제 종료 시 호출되는 콜백 함수
                                 // response.imp_uid 값으로 결제 단건조회 API를 호출하여 결제 결과를 확인하고,
                                 // 결제 결과를 처리하는 로직을 작성합니다.
                                 console.log(response);
+                                console.log("전체 response:", response);
+                                console.log("success:", response.success);
+                                console.log("imp_uid:", response.imp_uid);
+                                console.log("status:", response.status);
+                                console.log("paid_amount:", response.paid_amount);
                                 if (response.success) {
-                                    alert("결제되었습니다!");
+                                    console.log("포트원 번호: " + response.imp_uid);
                                     // 우리쪽 db에 결제정보 저장
                                     // 페이지 이동 필요하면 페이지 이동 (메인 or 마이)
                                     // 결제 성공 후 서버 검증
-                                    self.fnVerifyPayment(response.imp_uid, selectedPass);
-                                    pageChange("/adminPayFinish.do", {orderId : response.imp_uid});
+                                    console.log("imp_uid:", response.imp_uid);
+                                    setTimeout(() => {
+                                        self.fnVerifyPayment(response.imp_uid, selectedPass);
+                                    }, 5000);
                                 } else {
+                                    console.log("에러내용: " + response.error_msg);
                                     alert("결제가 취소되었습니다");
                                 }
                             },
                         );
                     },
 
-                    fnVerifyPayment(imp_uid, selectedPass) {
-                        $.ajax({
-                            url: "/verifyPayment.dox",
-                            type: "POST",
-                            data: {
-                                userId: this.sessionId,     // 로그인 아이디
-                                imp_uid: imp_uid,           // 결제 고유 값(중복)
-                                passNo: selectedPass.passNo,
-                                amount: selectedPass.price,
-                                itemName: selectedPass.passName,
-
-                            },
-                            success: function (res) {
-                                if (res.success) {
-                                    alert("결제 완료페이지만드는게나을듯");
-                                    location.href = "/merryViewHome.do";
-                                } else {
-                                    alert("결제 검증 실패");
-                                }
-                            }
-                        });
-                    },
-
-                    fnGetPassList: function () {
-                        let self = this;
-                        let param = {};
-                        $.ajax({
-                            url: "http://localhost:8080/pass.dox",
-                            dataType: "json",
-                            type: "POST",
-                            data: param,
-                            success: function (data) {
-                                console.log(data);
-                                self.passList = data.list;
-                            }
-                        });
-                    },
-                    fnCheck: function (pass) {
-                        let self = this;
-                        if (!self.sessionId || self.sessionId === "null" || self.sessionId === "") {
-                            if (confirm("로그인이 필요한 서비스입니다.\n로그인 페이지로 이동하시겠습니까?")) {
-                                location.href = "/login.do";
-                            }
-                            return;
-                        }
-                        if (pass.passName === "체험용 패스") {
-                            let param = {
-                                userId: self.sessionId
-                            };
+                        fnVerifyPayment(imp_uid, selectedPass) {
+                            let self = this
+                            console.log("서버로 보내는 imp_uid:", imp_uid);
                             $.ajax({
-                                url: "http://localhost:8080/passCheck.dox",
+                                url: "/verifyPayment.dox",
+                                type: "POST",
+                                data: {
+                                    userId: this.sessionId,     // 로그인 아이디
+                                    imp_uid: imp_uid,           // 결제 고유 값(중복)
+                                    passNo: selectedPass.passNo,
+                                    amount: selectedPass.price,
+                                    itemName: selectedPass.passName,
+
+                                },
+                                success: function (res) {
+                                    console.log(res);
+                                    if (res.success) {
+                                        console.log("포트원 번호: " + res.imp_uid);
+                                        alert("결제가완료되었어요~~~~~");
+                                        self.isModalOpen = false;
+                                        location.href = "/adminPayFinish.do?orderId=" + res.imp_uid;
+                                    } else {
+                                        console.log("에러내용: " + res.error_msg);
+                                        alert("결제 검증 실패");
+                                    }
+                                }
+                            });
+                        },
+
+                        fnGetPassList: function () {
+                            let self = this;
+                            let param = {};
+                            $.ajax({
+                                url: "http://localhost:8080/pass.dox",
                                 dataType: "json",
                                 type: "POST",
                                 data: param,
                                 success: function (data) {
                                     console.log(data);
-                                    if (data.info != null) {
-                                        alert("이미 체험용 패스권을 구매하셨어요");
-                                        return;
-                                    }
-                                    self.selectedPass = pass;
-                                    self.isModalOpen = true;
-                                    console.log(self.selectedPass);
+                                    self.passList = data.list;
                                 }
                             });
-                        } else {
-                            self.selectedPass = pass;
-                            self.isModalOpen = true;
-                             console.log(self.selectedPass);
-                        }
-                    },
-                    openModal: function (pass) {
-                        let self = this;
-                        self.paymentMethod = "",
-                            self.agreeAll = false,
-                            self.agreeRequired1 = false,
-                            self.agreeRequired2 = false,
-                            self.agreeOptional1 = false,
+                        },
+                        fnCheck: function (pass) {
+                            let self = this;
+                            if (!self.sessionId || self.sessionId === "null" || self.sessionId === "") {
+                                if (confirm("로그인이 필요한 서비스입니다.\n로그인 페이지로 이동하시겠습니까?")) {
+                                    location.href = "/login.do";
+                                }
+                                return;
+                            }
+                            if (pass.passName === "체험용 패스") {
+                                let param = {
+                                    userId: self.sessionId
+                                };
+                                $.ajax({
+                                    url: "http://localhost:8080/passCheck.dox",
+                                    dataType: "json",
+                                    type: "POST",
+                                    data: param,
+                                    success: function (data) {
+                                        console.log(data);
+                                        if (data.info != null) {
+                                            alert("이미 체험용 패스권을 구매하셨어요");
+                                            return;
+                                        }
+                                        self.selectedPass = pass;
+                                        self.isModalOpen = true;
+                                        console.log(self.selectedPass);
+                                    }
+                                });
+                            } else {
+                                self.selectedPass = pass;
+                                self.isModalOpen = true;
+                                console.log(self.selectedPass);
+                            }
+                        },
+                        openModal: function (pass) {
+                            let self = this;
+                            self.paymentMethod = "";
+                            self.agreeAll = false;
+                            self.agreeRequired1 = false;
+                            self.agreeRequired2 = false;
+                            self.agreeOptional1 = false;
                             self.fnCheck(pass);
-                    },
+                        },
 
-                    toggleAll() {
-                        const value = this.agreeAll;
-                        this.agreeRequired1 = value;
-                        this.agreeRequired2 = value;
-                        this.agreeOptional1 = value;
-                    },
+                        toggleAll() {
+                            const value = this.agreeAll;
+                            this.agreeRequired1 = value;
+                            this.agreeRequired2 = value;
+                            this.agreeOptional1 = value;
+                        },
 
-                    closeModal: function () {
-                        this.isModalOpen = false;
-                        this.selectedPass = null;
+                        updateAll() {
+                            this.agreeAll = this.agreeRequired1 && this.agreeRequired2 && this.agreeOptional1;
+                        },
+
+                        closeModal: function () {
+                            this.isModalOpen = false;
+                            this.selectedPass = null;
+                        }
+
+                    }, // methods
+                    mounted() {
+                        // 처음 시작할 때 실행되는 부분
+                        let self = this;
+                        const path = location.pathname;
+
+                        this.activeMenu =
+                            path.includes('adminMain') ? 'main' :
+                                path.includes('adminUser') ? 'user' :
+                                    path.includes('adminCompany') ? 'company' :
+                                        path.includes('adminBoard') ? 'board' :
+                                            path.includes('adminReviewWait') ? 'reviewWait' :
+                                                path.includes('adminPayment') ? 'payment' :
+                                                    path.includes('adminReport') ? 'report' :
+                                                        path.includes('adminStatistics') ? 'stats' :
+                                                            '';
+                        self.fnGetPassList();
                     }
-
-                }, // methods
-                mounted() {
-                    // 처음 시작할 때 실행되는 부분
-                    let self = this;
-                    const path = location.pathname;
-
-                    this.activeMenu =
-                        path.includes('adminMain') ? 'main' :
-                            path.includes('adminUser') ? 'user' :
-                                path.includes('adminCompany') ? 'company' :
-                                    path.includes('adminBoard') ? 'board' :
-                                        path.includes('adminReviewWait') ? 'reviewWait' :
-                                            path.includes('adminPayment') ? 'payment' :
-                                                path.includes('adminReport') ? 'report' :
-                                                    path.includes('adminStatistics') ? 'stats' :
-                                                        '';
-                    self.fnGetPassList();
-                }
-            });
+                });
 
             app.mount('#app');
         </script>
