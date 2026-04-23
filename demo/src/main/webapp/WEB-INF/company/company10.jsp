@@ -759,7 +759,7 @@
                         <div class="content-card" v-for="i in fnPaginatedInquiry" :key="i">
 
                             <div style="display: flex;">
-                                <div style="width: 120px; height: 80px; background: #ffcef0; margin-right: 20px;">
+                                <div style="width: 120px; height: 80px; background: #ffcef0; margin-right: 20px; text-align: center;" >
                                     <img :src="fnThumbnail(i)" :alt="i.product"
                                         style="max-width: 100%; max-height: 100%">
                                 </div>
@@ -819,7 +819,9 @@
                                         'new').length}}건</span></h3>
                                 <template v-for="w in weddinglist" :key="w.name">
                                     <div class="review-header-info" style="margin-bottom: 10px;">
-                                        <div class="review-thumb-box">썸네일</div>
+                                        <div class="review-thumb-box">
+                                            <img :src="w.thumbnail" style="max-width: 100%; max-height: 100%;">
+                                        </div>
                                         <div class="review-product-name">
                                             <a href="javascript:;"
                                                 @click="page1 = w.name; page = 1"><strong>{{w.name}}</strong></a>
@@ -838,7 +840,9 @@
                                 <template v-for="w in simpleweddinglist" :key="w.name">
 
                                     <div class="review-header-info" style="margin-bottom: 10px;">
-                                        <div class="review-thumb-box">썸네일</div>
+                                        <div class="review-thumb-box">
+                                            <img :src="w.thumbnail" style="max-width: 100%; max-height: 100%;">
+                                        </div>
                                         <div class="review-product-name">
 
                                             <a href="javascript:;"
@@ -976,9 +980,9 @@
 
                     //product === productList.        v-for = "pro in productList" :key="pro.id"   v-if="product === pro.name" 
                     productList: [  //상품 리스트
-                        { id: 1, thumbnail: 'https://img1.newsis.com/2021/09/26/NISI20210926_0000834715_web.jpg', name: '스몰 웨딩', content: '스몰 웨딩 상품 설명입니다.', price: '1,700,000원', category: ['스튜디오', '드레스'] },
-                        { id: 2, thumbnail: 'gorgeous.jpg', name: '화려하게', content: '화려하게 상품 설명입니다.', price: '2,500,000원', category: ['스튜디오', '메이크업'] },
-                        { id: 3, thumbnail: 'fairy_tale.jpg', name: '동화같은 분위기', content: '동화같은 분위기 상품 설명입니다.', price: '1,200,000원', category: ['메이크업'] }
+                        { id: 1, thumbnail: 'https://i.imgur.com/RwwCSsD.jpeg', name: '스몰 웨딩', content: '스몰 웨딩 상품 설명입니다.', price: '1,700,000원', category: ['스튜디오', '드레스'] },
+                        { id: 2, thumbnail: 'https://i.imgur.com/zKxXEJ1.jpeg', name: '화려하게', content: '화려하게 상품 설명입니다.', price: '2,500,000원', category: ['스튜디오', '메이크업'] },
+                        { id: 3, thumbnail: 'https://i.imgur.com/JyVciZk.jpeg', name: '동화같은 분위기', content: '동화같은 분위기 상품 설명입니다.', price: '1,200,000원', category: ['메이크업'] }
                     ],
 
 
@@ -1110,7 +1114,8 @@
                     return this.productList.map(product => {
                         return {
                             name: product.name,
-                            reviewcount: this.reviews.filter(r => r.product === product.name).length
+                            reviewcount: this.reviews.filter(r => r.product === product.name).length,
+                            thumbnail: product.thumbnail
                         }
                     })
                 },
@@ -1118,7 +1123,8 @@
                     return this.productList.map(product => {
                         return {
                             name: product.name,
-                            reviewcount: this.simpleReviews.filter(r => r.product === product.name).length
+                            reviewcount: this.simpleReviews.filter(r => r.product === product.name).length,
+                            thumbnail: product.thumbnail
                         }
                     })
                 },
