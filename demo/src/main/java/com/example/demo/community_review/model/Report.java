@@ -15,4 +15,5 @@ public class Report {
     private int answerStatus;   // answer_status (답변 여부)
     private int actionStatus;   // action_status (조치 여부)
     private Timestamp regDate;  // reg_date (신고일)
+    private String targetTitle;
 }

@@ -11,4 +11,6 @@ public class Inquiry {
     private String content;     // content
     private String answerContent; // answer_content (답변 내용)
     private String status;      // status (WAIT, DONE)
+    private String regDate;     
+    private String answerDate;
 }

@@ -30,19 +30,24 @@
         
         .search-area { background: #f1f3f5; padding: 20px; border-radius: 10px; margin-bottom: 20px; }
         .review-title-text { font-weight: 700; color: #333; font-size: 1.05rem; }
-        
-        /* 댓글 개수 포인트 컬러 */
         .comment-count { color: var(--primary-color); font-weight: bold; font-size: 0.9rem; margin-left: 4px; }
+        .page-item.disabled .page-link { pointer-events: auto !important; cursor: not-allowed !important; }
+        .page-link { cursor: pointer !important; }
+        .page-item.active .page-link { background-color: #007bff !important; border-color: #007bff !important; color: white !important; }
     </style>
 </head>
 <body>
     <div id="app">
         <jsp:include page="/WEB-INF/common/header.jsp" />
 
+
         <main class="main-content">
             <div class="d-flex justify-content-between align-items-end mb-4">
                 <div>
                     <h2 class="font-weight-bold" @click="fnReset" style="cursor:pointer">📸 리뷰 커뮤니티</h2>
+                    <span v-if="sessionId" class="badge badge-info ml-2" style="background-color: #4dabf7;">
+                        내 열람권: {{ userRemainingCount }}개
+                    </span>
                     <p class="text-muted mb-0">생생한 이용 후기를 확인하고 스마트하게 선택하세요.</p>
                 </div>
                 <button class="btn btn-danger btn-lg" style="background-color: var(--primary-color); border:none;" @click="fnWrite">
@@ -90,7 +95,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr v-for="item in list" :key="item.reviewNo" @click="fnDetail(item.reviewNo)">
+                    <tr v-for="item in list" :key="item.reviewNo" @click="fnDetail(item)">
                         <td>
                             <span v-if="item.isPaid == 1" class="badge badge-paid">유료</span>
                             <span v-else class="badge badge-free">무료</span>
@@ -101,11 +106,7 @@
                         <td class="text-left">
                             <span class="badge badge-light border text-dark mr-2" style="font-size: 0.75rem;">{{ item.comName }}</span>
                             <span class="review-title-text">{{ item.title }}</span>
-                            
-                            <span v-if="item.commentCnt > 0" class="comment-count">
-                                [{{ item.commentCnt }}]
-                            </span>
-                            
+                            <span v-if="item.commentCnt > 0" class="comment-count">[{{ item.commentCnt }}]</span>
                             <i v-if="item.hasImg === 'Y'" class="far fa-image ml-2 text-primary"></i>
                         </td>
                         <td>
@@ -113,20 +114,40 @@
                                 <i class="fas fa-heart mr-1"></i>{{ item.likeCnt || 0 }}
                             </span>
                         </td>
-                        <td>
-                            <i class="far fa-user-circle mr-1"></i>{{ item.userId }}
-                        </td>
+                        <td><i class="far fa-user-circle mr-1"></i>{{ item.userId }}</td>
                         <td class="small text-muted">{{ item.regDate }}</td>
                         <td class="text-muted">{{ item.viewCnt }}</td>
                     </tr>
                     <tr v-if="list.length == 0">
-                        <td colspan="7" class="py-5">
-                            <i class="fas fa-exclamation-circle fa-3x text-light mb-3"></i>
+                        <td colspan="7" class="py-5 text-center">
                             <p class="text-muted">조건에 맞는 리뷰가 아직 없습니다.</p>
                         </td>
                     </tr>
                 </tbody>
             </table>
+            <div class="d-flex justify-content-center mt-4">
+                <nav class="mt-4">
+                    <ul class="pagination justify-content-center">
+                        <li class="page-item" :class="{disabled: currentPage === 1}">
+                            <a class="page-link" href="javascript:;" @click.prevent="fnPageChange(1)">&laquo;</a>
+                        </li>
+                        <li class="page-item" :class="{disabled: currentPage === 1}">
+                            <a class="page-link" href="javascript:;" @click.prevent="currentPage > 1 && fnPageChange(currentPage - 1)">이전</a>
+                        </li>
+                        <li class="page-item" v-for="page in pageNumbers" :key="page" :class="{active: currentPage === page}">
+                            <a class="page-link" href="javascript:;" @click.prevent="fnPageChange(page)">{{ page }}</a>
+                        </li>
+                        <li class="page-item" :class="{disabled: currentPage === totalPageCount}">
+                            <a class="page-link" href="javascript:;" @click.prevent="currentPage < totalPageCount && fnPageChange(currentPage + 1)">다음</a>
+                        </li>
+                        <li class="page-item" :class="{disabled: currentPage === totalPageCount}">
+                            <a class="page-link" href="javascript:;" @click.prevent="fnPageChange(totalPageCount)">&raquo;</a>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+
+            
         </main>
 
         <jsp:include page="/WEB-INF/common/footer.jsp" />
@@ -143,67 +164,152 @@
                     searchType: 'all',
                     sessionId: "${sessionId}",
                     category: 'all',
+                    currentPage: 1,
+                    pageSize: 10,
+                    totalCount: 0,
+                    pageBlockSize: 5,
+                    userRemainingCount: 0, // 사용자의 보유 열람권 개수
                 };
             },
+            computed: {
+                pageNumbers() {
+                    const totalPages = Math.ceil(this.totalCount / this.pageSize);
+                    const startPage = Math.floor((this.currentPage - 1) / this.pageBlockSize) * this.pageBlockSize + 1;
+                    let endPage = startPage + this.pageBlockSize - 1;
+                    if (endPage > totalPages) endPage = totalPages;
+                    const pages = [];
+                    for (let i = startPage; i <= endPage; i++) { pages.push(i); }
+                    return pages;
+                },
+                totalPageCount() { return Math.ceil(this.totalCount / this.pageSize); }
+            },
             methods: {
+                fnGetUserTicket() {
+                    if(!this.sessionId) return; // 로그인 안 되어 있으면 중단
+
+                    $.ajax({
+                        url: "/api/review/getUserAccessCount.dox", // 아래에서 컨트롤러에 추가할 주소
+                        type: "POST",
+                        data: JSON.stringify({ userId: this.sessionId }),
+                        contentType: "application/json",
+                        success: (data) => {
+                            let result = (typeof data === 'string') ? JSON.parse(data) : data;
+                            this.userRemainingCount = result.count;
+                        }
+                    });
+                },
                 fnList() {
                     const nParam = {
                         isPaid: this.isPaid,
-                        category: this.category, //  서버로 카테고리 값 전송
+                        category: this.category,
                         searchKeyword: this.searchKeyword,
-                        searchType: this.searchType
+                        searchType: this.searchType,
+                        startIndex: (this.currentPage - 1) * this.pageSize,
+                        pageSize: this.pageSize
                     };
-                    
                     $.ajax({
                         url: "/api/review/list.dox",
                         type: "POST",
                         data: JSON.stringify(nParam),
                         contentType: "application/json",
                         success: (data) => {
-                            console.log(this.list);
                             let result = (typeof data === 'string') ? JSON.parse(data) : data;
                             if(result.result === "success") {
                                 this.list = result.list;
+                                this.totalCount = result.count;
                             }
-                        },
-                        error: () => { console.error("서버 통신 에러"); }
+                        }
                     });
+                },
+                // 핵심: 중복 알림 방지 로직이 적용된 fnDetail
+                fnDetail(item) {
+                    if(!this.sessionId) {
+                        alert("로그인 후 이용 가능합니다.");
+                        location.href = "/api/member/login.do";
+                        return;
+                    }
+
+                    if(item.isPaid == 1) {
+                        // 1. 먼저 서버에 "차감 없이 확인만" 하거나 "이미 본 글인지" 체크 요청
+                        // 여기서는 useTicket API가 ALREADY_VIEWED를 먼저 뱉는 성질을 이용합니다.
+                        $.ajax({
+                            url: "/api/review/useTicket.dox",
+                            type: "POST",
+                            data: JSON.stringify({ reviewNo: item.reviewNo, checkOnly: "Y" }), // 백엔드에서 checkOnly 처리 가능 시
+                            contentType: "application/json",
+                            success: (data) => {
+                                let result = (typeof data === 'string') ? JSON.parse(data) : data;
+
+                                if(result.result === "ALREADY_VIEWED") {
+                                    // 이미 결제한 글이면 질문 없이 바로 이동
+                                    location.href = "/api/review/detail.do?reviewNo=" + item.reviewNo;
+                                } else {
+                                    // 처음 보는 글일 때만 confirm 창 출력
+                                    const confirmMsg = "유료 리뷰입니다. 열람권을 사용하여 확인하시겠습니까?\n" +
+                                                     "------------------------------------------\n" +
+                                                     "현재 보유 열람권: " + this.userRemainingCount + "개\n" +
+                                                     "------------------------------------------";
+
+                                    if(confirm(confirmMsg)) {
+                                        this.fnExecuteUsage(item);
+                                    }
+                                }
+                            }
+                        });
+                    } else {
+                        location.href = "/api/review/detail.do?reviewNo=" + item.reviewNo;
+                    }
+                },
+                // 실제 차감을 수행하는 메서드
+                fnExecuteUsage(item) {
+                    $.ajax({
+                        url: "/api/review/useTicket.dox",
+                        type: "POST",
+                        data: JSON.stringify({ reviewNo: item.reviewNo }),
+                        contentType: "application/json",
+                        success: (data) => {
+                            let result = (typeof data === 'string') ? JSON.parse(data) : data;
+                            if(result.result === "SUCCESS") {
+                                this.userRemainingCount--; 
+                                alert("열람권 1개가 차감되었습니다.\n남은 열람권: " + this.userRemainingCount + "개");
+                                location.href = "/api/review/detail.do?reviewNo=" + item.reviewNo;
+                            } else if(result.result === "NO_TICKET") {
+                                alert("열람권이 부족합니다. (현재: " + this.userRemainingCount + "개)");
+                            } else {
+                                alert("처리 중 오류가 발생했습니다.");
+                            }
+                        }
+                    });
+                },
+                fnCategoryFilter(val) {
+                    this.category = val;
+                    this.currentPage = 1;
+                    this.fnList();
                 },
                 fnFilter(val) {
                     this.isPaid = val;
+                    this.currentPage = 1;
                     this.fnList();
                 },
                 fnReset() {
                     this.isPaid = null;
+                    this.category = 'all';
                     this.searchKeyword = '';
                     this.fnList();
                 },
-                fnDetail(no) {
-                    location.href = "/api/review/detail.do?reviewNo=" + no;
+                fnPageChange(page) {
+                    this.currentPage = page;
+                    this.fnList();
                 },
                 fnWrite() {
                     location.href = "/api/review/add.do";
-                },
-                //  카테고리 필터 함수 추가
-                fnCategoryFilter(val) {
-                    this.category = val;
-                    this.fnList();
-                },
-                fnFilter(val) {
-                    this.isPaid = val;
-                    this.fnList();
-                },
-                fnReset() {
-                    this.isPaid = null;
-                    this.category = 'all'; // 리셋 시 카테고리도 초기화
-                    this.searchKeyword = '';
-                    this.fnList();
                 }
             },
             mounted() {
                 this.fnList();
+                this.fnGetUserTicket(); // 페이지 로드 시 잔액 조회
             }
         }).mount('#app');
     </script>
 </body>
-</html> 
+</html>

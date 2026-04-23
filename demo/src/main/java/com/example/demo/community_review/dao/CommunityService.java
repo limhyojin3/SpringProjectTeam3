@@ -41,6 +41,12 @@ public class CommunityService {
         return communityMapper.deletePost(map);
     }
     
+    // 페이지네이션
+    public int getPostCount(HashMap<String, Object> map) {
+        
+        return communityMapper.selectPostCount(map);
+    }
+    
     // 게시글 수정
     public int editPost(HashMap<String, Object> map) {
         try {
