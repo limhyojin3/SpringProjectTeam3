@@ -68,6 +68,8 @@
 		#{proType}, #{companyNo})
 
 	</insert>
+	
+	
 
 
 </mapper>

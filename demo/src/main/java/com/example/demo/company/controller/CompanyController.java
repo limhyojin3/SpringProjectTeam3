@@ -3,6 +3,7 @@ package com.example.demo.company.controller;
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,6 +36,13 @@ public class CompanyController {
 	public String test99(Model model) throws Exception {
 		return "/company/company10";
 	}
+	
+	@RequestMapping("/company1.do")
+	public String te2(Model model) throws Exception {
+		return "/company/company1";
+	}
+	
+	
 	@RequestMapping("/company8.do")
 	public String te(Model model) throws Exception {
 		return "/company/companyBackup0421";
@@ -146,6 +154,5 @@ public class CompanyController {
 
 		return new Gson().toJson(resultMap);
 	}
-	
 
 }

@@ -931,11 +931,12 @@
                                     </span> <!-- num 에 해당하는 페이지가 뜨고 그 페이지에 자료가 5개씩 표시되도록( )-->
                                 </div>
 
-                            </template> 
+                            </template>
 
 
-                        </template>                 
+                        </template>
                     </div>
+                </main>
             </div>
         </div>
 
@@ -1069,13 +1070,13 @@
                     currentPage: 1,
                     previewUrl: null, // 미리보기용 URL
                     uploadFile: null,  // 서버로 보낼 실제 파일 객체
-                    product2 : {
+                    product2: {
                         companyNo: '',
                         productNo: '',
                         proType: [""],
                         productName: '',
-                        productDetails: '', 
-                        originalPrice: '', 
+                        productDetails: '',
+                        originalPrice: '',
                         imgUrl: ''
                     }
                 }
@@ -1221,7 +1222,7 @@
                         }
                     });
                 },
-                
+
                 withdraw: function () {
                     if (confirm("정말 탈퇴하시겠습니까?")) {
                         alert("탈퇴되었습니다.");
@@ -1342,11 +1343,11 @@
 
 
                 },
-                goRegPage2(){
+                goRegPage2() {
                     this.product1 = {
-                        productNo : '',
-                        proType : [],
-                        productName : '',
+                        productNo: '',
+                        proType: [],
+                        productName: '',
                         productDetails: '',
                         originalPrice: '',
                         imgUrl: ''
@@ -1455,7 +1456,7 @@
                             // 만약 data가 JSON 문자열로 넘어왔다면 파싱이 필요할 수도 있어요
                             let res = (typeof data === 'string') ? JSON.parse(data) : data;
                             //data가 string으로 넘어왓다면? 자바스크립트가 읽을수있게 객체로 바꿔주기(parse해주기)
-                            
+
 
                             if (res.result === "success") {
                                 alert("상품 정보가 모두 수정되었습니다!");
@@ -1501,7 +1502,7 @@
                             // 만약 data가 JSON 문자열로 넘어왔다면 파싱이 필요할 수도 있어요
                             let res = (typeof data === 'string') ? JSON.parse(data) : data;
                             //data가 string으로 넘어왓다면? 자바스크립트가 읽을수있게 객체로 바꿔주기(parse해주기)
-                            
+
 
                             if (res.result === "success") {
                                 alert("상품 정보가 모두 수정되었습니다!");
@@ -1513,12 +1514,12 @@
                         }
                     })
                 },
-                fnRemove2(item){  //item in productList
+                fnRemove2(item) {  //item in productList
                     if (confirm("정말 삭제하시겠습니까?")) {
 
                         let self = this;
                         let param = {
-                            productNo : item.productNo
+                            productNo: item.productNo
                         };
                         console.log(item);
                         $.ajax({
@@ -1528,13 +1529,13 @@
                             data: param,
                             success: function (data) {
 
-                                alert(data.message);    
-                                location.href="/company9.do"
+                                alert(data.message);
+                                location.href = "/company9.do"
                             }
                         });
 
 
-                        
+
                     } else {
                         alert("삭제가 취소되었습니다.");
                     }

@@ -36,7 +36,10 @@ public class CompanyService {
 			
 //			resultMap.put("list", list);
 			
+			
+			
 			Company info = companyMapper.selectCompany(map);
+			
 			
 			resultMap.put("info", info);
 			resultMap.put("result", "success");
@@ -184,5 +187,4 @@ public class CompanyService {
 		}
 		return resultMap;  
 	} 
-	
 }
