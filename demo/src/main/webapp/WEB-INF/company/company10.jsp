@@ -486,8 +486,8 @@
 
                         <div v-if="productPage === 'list'">
                             <!-- db 랑 연결한 곳 -->
-                            <h2>등록한 상품({{ productList.length }})</h2>
-                            <div v-for="i in productList" class="content-card"
+                            <h2>등록한 상품({{ productList3.length }})</h2>
+                            <div v-for="i in productList3" class="content-card"
                                 style="display: flex; align-items: center; padding: 15px;">
                                 <div
                                     style="width: 120px; height: 80px; background: #ffcef0; display: flex; align-items: center; justify-content: center; margin-right: 20px;">
@@ -497,10 +497,10 @@
                                 <div style="flex: 1;">{{ i.productDetails }}</div>
                                 <div>{{ i.originalPrice }}</div>
                                 <button @click="goEditPage(i)" style="margin-left: 10px;">수정하기</button>
-                                <button @click="fnRemove(i)" style="margin-left: 10px;">삭제하기</button>
+                                <button @click="fnRemove2(i)" style="margin-left: 10px;">삭제하기</button>
                             </div>
                             <div style="text-align: center;">
-                                <button @click="goRegPage"
+                                <button @click="goRegPage2"
                                     style="background: #ffb400; padding: 15px 40px; border: none; font-weight: bold; cursor: pointer;">상품
                                     등록</button>
                             </div>
@@ -542,7 +542,7 @@
                                             <div class="form-info-box">
                                                 <input type="text" placeholder="여기에 상품 이름을 적어주세요."
                                                     style="width: 200px; padding: 10px; border: 1px solid #ddd; border-radius: 4px;"
-                                                    v-model="productForm.name">
+                                                    v-model="product2.productName">
                                             </div>
                                         </div>
 
@@ -555,7 +555,7 @@
                                                 <div class="category-item" v-for="item in category" :key="item">
                                                     <label>
                                                         <input type="checkbox" :value="item"
-                                                            v-model="selectedItems">{{item}}
+                                                            v-model="product2.proType">{{item}}
                                                     </label>
                                                 </div>
                                             </div>
@@ -567,7 +567,7 @@
                                             <label class="form-label">상품 설명</label>
                                             <div class="form-info-box">
                                                 <textarea placeholder="상품에 대한 자세한 설명을 입력하세요."
-                                                    v-model="productForm.content"
+                                                    v-model="product2.productDetails"
                                                     style="width: 60%; height: 100px; padding: 10px; border: 1px solid #ddd; border-radius: 4px;"></textarea>
                                             </div>
                                         </div>
@@ -577,7 +577,7 @@
                                             <div class="form-info-box">
                                                 <input placeholder="여기에 견적을 적어주세요." type="text"
                                                     style="width: 200px; padding: 10px; border: 1px solid #ddd; border-radius: 4px;"
-                                                    v-model="productForm.price">
+                                                    v-model="product2.originalPrice">
                                             </div>
                                         </div>
                                     </div>
@@ -587,9 +587,23 @@
                                     <div class="form-title-box">상품 이미지</div>
                                     <div class="form-content-box">
                                         <div class="form-group">
-                                            <div class="image-editor-box">
-                                                <input type="text" v-model="productForm.thumbnail">
 
+
+                                            <div style="margin-bottom: 10px; font-weight: bold;">등록할 이미지 : </div>
+
+                                            <label
+                                                style="background: #ff1493; color: white; padding: 5px 15px; cursor: pointer; border-radius: 5px;">
+                                                사진 선택하기
+                                                <input type="file" @change="fnFileChange" ref="fileInput"
+                                                    style="display: none;">
+                                            </label>
+                                            <div class="image-editor-box">
+
+                                                <div v-if="previewUrl" style="margin-top: 10px;">
+                                                    <p>선택된 이미지 미리보기:</p>
+                                                    <img :src="previewUrl"
+                                                        style="max-width: 80%; border: 1px solid #ccc;">
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
@@ -597,7 +611,7 @@
 
                                 <div class="form-button-group">
                                     <button class="btn-cancel" @click="productPage = 'list'">취소(돌아가기)</button>
-                                    <button class="btn-submit" @click="fnAdd">상품 등록</button>
+                                    <button class="btn-submit" @click="fnInsertProduct()">상품 등록</button>
                                 </div>
                             </div>
                         </div>
@@ -922,11 +936,8 @@
 
                         </template>
                     </div>
+                </main>
             </div>
-
-
-        </div>
-        </main>
         </div>
 
         <footer>
@@ -944,6 +955,7 @@
             data() {
                 return {
                     // 변수 - (key : value)
+                    productList3: [],
                     inquiryList: [
                         { id: 1, product: '화려하게', title: '투어 일정 변경하고 싶습니다.', userid: '김결혼', content: '04.01일 예약했는데 04.08일로 변경하고 싶어요.' },
                         { id: 2, product: '스몰 웨딩', title: '메이크업 추가되나요?', userid: '아리랑', content: '메이크업 여기서 받고싶어요.' },
@@ -1057,7 +1069,16 @@
                     pageSize: 0,
                     currentPage: 1,
                     previewUrl: null, // 미리보기용 URL
-                    uploadFile: null  // 서버로 보낼 실제 파일 객체
+                    uploadFile: null,  // 서버로 보낼 실제 파일 객체
+                    product2: {
+                        companyNo: '',
+                        productNo: '',
+                        proType: [""],
+                        productName: '',
+                        productDetails: '',
+                        originalPrice: '',
+                        imgUrl: ''
+                    }
                 }
 
             }, // data
@@ -1173,14 +1194,14 @@
                         type: "POST",
                         data: param,
                         success: function (data) {
-                            console.log(data); //info,result,message
+                            //console.log(data); //info,result,message
 
                             self.user.name = data.info.comName;
                             self.user.usePeriod = data.info.usePeriod;
                             self.user.grade = data.info.grade;
                             self.user.lastPayment = data.info.lastPayment;
 
-                            console.log(self.user);
+                            //console.log(self.user);
                         }
                     });
                 },
@@ -1195,25 +1216,13 @@
                         type: "POST",
                         data: param,
                         success: function (data) {
-                            console.log(data);
+                            //console.log(data);
 
-                            self.productList = data.list; //덮어씌우기
+                            self.productList3 = data.list; //덮어씌우기
                         }
                     });
                 },
-                fnList: function () {
-                    let self = this;
-                    let param = {};
-                    $.ajax({
-                        url: "http://localhost:8080/",
-                        dataType: "json",
-                        type: "POST",
-                        data: param,
-                        success: function (data) {
 
-                        }
-                    });
-                },
                 withdraw: function () {
                     if (confirm("정말 탈퇴하시겠습니까?")) {
                         alert("탈퇴되었습니다.");
@@ -1334,6 +1343,18 @@
 
 
                 },
+                goRegPage2() {
+                    this.product1 = {
+                        productNo: '',
+                        proType: [],
+                        productName: '',
+                        productDetails: '',
+                        originalPrice: '',
+                        imgUrl: ''
+                    }
+                    this.productPage = 'reg';
+
+                },
                 resetForm() {
                     this.productForm = {
                         id: "",
@@ -1404,14 +1425,14 @@
 
                     }
                 },
-                fnUpdateProduct(){
+                fnUpdateProduct() {
                     // 1. 택배 박스(FormData)를 하나 만듭니다.
                     // 파일은 일반 텍스트가 아니라서 반드시 이 'FormData'라는 박스에 담아야 해요.
                     let self = this;
                     let formData = new FormData();
 
                     // 1. 사진 파일 담기(선택했을 때만)
-                    if(this.uploadFile){
+                    if (this.uploadFile) {
                         formData.append("file", this.uploadFile);
                     }
 
@@ -1429,17 +1450,108 @@
                         data: formData,
                         processData: false,
                         contentType: false,
-                        success: function(data){
-                            if(data.result === "success"){
+                        success: function (data) {
+                            console.log("서버가 보낸 데이터:", data); // [체크!] 이 데이터가 어떻게 생겼는지 확인
+
+                            // 만약 data가 JSON 문자열로 넘어왔다면 파싱이 필요할 수도 있어요
+                            let res = (typeof data === 'string') ? JSON.parse(data) : data;
+                            //data가 string으로 넘어왓다면? 자바스크립트가 읽을수있게 객체로 바꿔주기(parse해주기)
+
+
+                            if (res.result === "success") {
                                 alert("상품 정보가 모두 수정되었습니다!");
-                                
                                 window.location.href = "/company9.do";
+                            } else {
+                                alert("서버 응답은 성공했지만, result가 success가 아닙니다.");
                             }
+
                         }
                     })
                 },
-                fnHome(){
-                    
+                fnInsertProduct() {
+                    // 1. 택배 박스(FormData)를 하나 만듭니다.
+                    // 파일은 일반 텍스트가 아니라서 반드시 이 'FormData'라는 박스에 담아야 해요.
+                    let self = this;
+                    let formData = new FormData();
+
+                    // 1. 사진 파일 담기(선택했을 때만)
+                    if (this.uploadFile) {
+                        formData.append("file", this.uploadFile);
+                    }
+
+                    // 2. 다른 모든 정보들 싹 다 담기(자바의 변수명과 똑같이!)
+                    //formData.append("companyNo", this.product2.companyNo);
+                    formData.append("productNo", this.product2.productNo);
+                    formData.append("productName", this.product2.productName);
+                    formData.append("productDetails", this.product2.productDetails);
+                    formData.append("originalPrice", this.product2.originalPrice);
+
+
+                    formData.append("proType", JSON.stringify(this.product2.proType));
+                    formData.append("userId", 'sunsu09');
+
+                    $.ajax({
+                        url: "/upload2.dox",
+                        type: "POST",
+                        data: formData,
+                        processData: false,
+                        contentType: false,
+                        success: function (data) {
+                            console.log("서버가 보낸 데이터:", data); // [체크!] 이 데이터가 어떻게 생겼는지 확인
+
+                            // 만약 data가 JSON 문자열로 넘어왔다면 파싱이 필요할 수도 있어요
+                            let res = (typeof data === 'string') ? JSON.parse(data) : data;
+                            //data가 string으로 넘어왓다면? 자바스크립트가 읽을수있게 객체로 바꿔주기(parse해주기)
+
+
+                            if (res.result === "success") {
+                                alert("상품 정보가 모두 수정되었습니다!");
+                                window.location.href = "/company9.do";
+                            } else {
+                                alert("서버 응답은 성공했지만, result가 success가 아닙니다.");
+                            }
+
+                        }
+                    })
+                },
+                fnRemove2(item) {  //item in productList
+                    if (confirm("정말 삭제하시겠습니까?")) {
+
+                        let self = this;
+                        let param = {
+                            productNo: item.productNo
+                        };
+                        console.log(item);
+                        $.ajax({
+                            url: "/productRemove.dox",
+                            dataType: "json",
+                            type: "POST",
+                            data: param,
+                            success: function (data) {
+
+                                alert(data.message);
+                                location.href = "/company9.do"
+                            }
+                        });
+
+
+
+                    } else {
+                        alert("삭제가 취소되었습니다.");
+                    }
+                },
+                fnList: function () {
+                    let self = this;
+                    let param = {};
+                    $.ajax({
+                        url: "http://localhost:8080/",
+                        dataType: "json",
+                        type: "POST",
+                        data: param,
+                        success: function (data) {
+
+                        }
+                    });
                 }
             }, // methods
 
