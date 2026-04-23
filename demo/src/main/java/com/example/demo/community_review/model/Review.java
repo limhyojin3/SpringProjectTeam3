@@ -26,4 +26,7 @@ public class Review {
     private String imgDescription; // 이미지 설명
     private Long totalCost;      // 결제 금액
     private Timestamp regDate;   // 등록일시
+    private Integer remainingCount; // user_pass_wallet의 잔액
+    private Timestamp usedAt;       // pass_usage_log의 사용 시간
+    private int isViewed;           // 0: 안봄, 1: 봄 (조인 쿼리 결과용)
 }

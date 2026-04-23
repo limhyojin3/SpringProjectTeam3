@@ -2,20 +2,40 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.example.demo.community_review.mapper.InquiryMapper">
 
-    <insert id="insertInquiry" useGeneratedKeys="true" keyProperty="inquiryNo">
+    <insert id="insertInquiry" parameterType="map">
         INSERT INTO Inquiry (
-            user_id, title, content, reg_date
+            user_id, inquiry_type, title, content
         ) VALUES (
-            #{userId}, #{title}, #{content}, CURRENT_TIMESTAMP
+            #{userId}, #{inquiryType}, #{title}, #{content}
         )
     </insert>
 
-    <select id="selectInquiryList" resultType="com.example.demo.community_review.model.Inquiry">
-        SELECT * FROM Inquiry 
-        WHERE user_id = #{userId} AND is_deleted = 0
-        ORDER BY reg_date DESC
+    <select id="selectMyInquiryList" parameterType="map" resultType="com.example.demo.community_review.model.Inquiry">
+        SELECT 
+            inquiry_no AS inquiryNo,
+            inquiry_type AS inquiryType,
+            title,
+            status,
+            DATE_FORMAT(reg_date, '%Y-%m-%d') AS regDate
+        FROM Inquiry
+        WHERE user_id = #{userId}
+        ORDER BY inquiry_no DESC
     </select>
 
+    <select id="selectInquiryDetail" parameterType="map" resultType="com.example.demo.community_review.model.Inquiry">
+        SELECT 
+            inquiry_no AS inquiryNo,
+            inquiry_type AS inquiryType,
+            title,
+            content,
+            answer_content AS answerContent,
+            status,
+            DATE_FORMAT(reg_date, '%Y-%m-%d %H:%i') AS regDate,
+            DATE_FORMAT(answer_date, '%Y-%m-%d %H:%i') AS answerDate
+        FROM Inquiry
+        WHERE inquiry_no = #{inquiryNo}
+    </select>
+    
     <update id="deleteInquiry">
         UPDATE Inquiry SET is_deleted = 1 WHERE inquiry_no = #{inquiryNo}
     </update>

@@ -48,6 +48,9 @@ public interface CommunityMapper {
 
     // 12. 게시글 권한 설정 (수정, 삭제를 주소 직접 입력해서 이동하는 것을 방지하는 용도)
 	String selectPostAuthor(HashMap<String, Object> map);
+	
+	// 13. 페이지네이션
+	int selectPostCount(HashMap<String, Object> map);
 
     
     

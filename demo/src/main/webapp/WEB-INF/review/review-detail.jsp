@@ -7,8 +7,8 @@
     <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
     <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
-    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/common.css">
     <style>
         .detail-container { max-width: 800px; margin: 30px auto; padding: 30px; background: #fff; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
         .info-card { background: #fff9fa; border: 1px solid #ffccd5; border-radius: 10px; padding: 15px; display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px; color: #555; }
@@ -18,7 +18,6 @@
         .multi-img { max-width: calc(50% - 10px); }
         .review-content { font-size: 1.1rem; line-height: 1.8; white-space: pre-wrap; margin-bottom: 30px; color: #333; }
         
-        /* 댓글 섹션 */
         .comment-section { margin-top: 50px; border-top: 2px solid #fff0f3; padding-top: 30px; }
         .comment-count { color: #ff4d6d; font-weight: bold; }
         .comment-item { padding: 20px 10px; border-bottom: 1px solid #fff0f3; transition: 0.2s; }
@@ -27,13 +26,11 @@
         .comment-date { font-size: 0.8rem; color: #bbb; margin-left: 10px; }
         .comment-content { margin-top: 10px; font-size: 0.95rem; color: #555; line-height: 1.5; }
         
-        /* 대댓글(답글) 스타일 */
         .reply-item { margin-left: 40px; background-color: #fcfcfc; border-left: 3px solid #ffccd5; }
         .reply-mark { color: #ff4d6d; font-weight: bold; margin-right: 5px; }
         
         .comment-input-box { background: #fff9fa; border: 1px solid #ffccd5; padding: 20px; border-radius: 15px; margin-top: 30px; }
         .comment-input-box textarea { border: 1px solid #ffccd5; border-radius: 10px; resize: none; }
-        .comment-input-box textarea:focus { border-color: #ff4d6d; box-shadow: 0 0 0 0.2rem rgba(255, 77, 109, 0.1); }
         .btn-comment { background-color: #ff4d6d; border: none; color: white; border-radius: 8px; font-weight: bold; }
         .btn-comment:hover { background-color: #ff3355; }
         
@@ -41,16 +38,13 @@
         .comment-action-btns span { cursor: pointer; margin-left: 10px; }
         .comment-action-btns span:hover { color: #ff4d6d; text-decoration: underline; }
         
-        /* 댓글 좋아요 스타일 */
-        .comment-like-btn {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px !important;  
-            cursor: pointer;
-            margin-left: 15px;
-        }
-        .comment-like-btn:hover { transform: scale(1.1); }
+        .comment-like-btn { display: inline-flex; align-items: center; gap: 8px !important; cursor: pointer; margin-left: 15px; }
         .like-active { color: #ff4d6d !important; font-weight: bold; }
+
+        /* 신고 모달 스타일 */
+        .modal-header { background-color: #ff4d6d; color: white; }
+        .btn-report-submit { background-color: #ff4d6d; color: white; border: none; }
+        .btn-report-submit:hover { background-color: #ff3355; color: white; }
     </style>
 </head>
 <body>
@@ -64,7 +58,7 @@
                         {{ info.isPaid == 1 ? '유료리뷰' : '무료리뷰' }}
                     </span>
                     <div v-if="info.userId !== sessionId">
-                        <button class="btn btn-sm btn-outline-secondary border-0" @click="fnReportReview">
+                        <button class="btn btn-sm btn-outline-secondary border-0" @click="openReportModal('REVIEW', reviewNo, info.userId)">
                             <i class="fas fa-bullhorn text-danger mr-1"></i> <span class="small text-muted">신고</span>
                         </button>
                     </div>
@@ -98,7 +92,6 @@
 
             <div class="comment-section">
                 <h5 class="mb-4">댓글 <span class="comment-count">{{ commentList.length }}</span></h5>
-                
                 <div class="comment-list">
                     <div v-for="item in commentList" :key="item.commentNo" :class="['comment-item', item.parentNo ? 'reply-item' : '']">
                         <div class="d-flex justify-content-between align-items-center">
@@ -106,7 +99,6 @@
                                 <span v-if="item.parentNo" class="reply-mark">ㄴ</span>
                                 <span class="comment-user">{{ item.userId }}</span>
                                 <span class="comment-date">{{ item.regDate }}</span>
-                                
                                 <span class="comment-like-btn ml-3" @click="fnCommentLike(item)">
                                     <i :class="item.isLiked > 0 ? 'fas fa-heart text-danger' : 'far fa-heart text-muted'"></i>
                                     <small :class="{'like-active': item.isLiked > 0}">{{ item.likeCnt }}</small>
@@ -116,19 +108,17 @@
                                 <span v-if="!item.parentNo" @click="fnShowReply(item.commentNo)">
                                     <i class="far fa-comment-dots"></i> {{ replyTo === item.commentNo ? '취소' : '답글' }}
                                 </span>
-                                
                                 <template v-if="item.userId === sessionId && !item.isEdit">
                                     <span @click="fnEditMode(item)"><i class="far fa-edit"></i> 수정</span>
                                     <span @click="fnDeleteComment(item.commentNo)"><i class="far fa-trash-alt"></i> 삭제</span>
                                 </template>
                                 <template v-else-if="item.userId !== sessionId">
-                                    <span @click="fnReportComment(item)" class="report-link text-danger">
+                                    <span @click="openReportModal('COMMENT', item.commentNo, item.userId)" class="report-link text-danger">
                                         <i class="fas fa-exclamation-triangle"></i> 신고
                                     </span>
                                 </template>
                             </div>
                         </div>
-
                         <div v-if="!item.isEdit" class="comment-content">{{ item.content }}</div>
                         <div v-else class="mt-2">
                             <textarea class="form-control edit-textarea" v-model="item.content" rows="2"></textarea>
@@ -137,7 +127,6 @@
                                 <button class="btn btn-sm btn-comment" @click="fnUpdateComment(item)">수정완료</button>
                             </div>
                         </div>
-
                         <div v-if="replyTo === item.commentNo" class="mt-3 p-3 bg-white border rounded shadow-sm">
                             <textarea class="form-control" v-model="replyContent" rows="2" :placeholder="item.userId + '님께 답글 남기기...'"></textarea>
                             <div class="text-right mt-2">
@@ -145,10 +134,7 @@
                             </div>
                         </div>
                     </div>
-                    
-                    <div v-if="commentList.length == 0" class="text-center py-5 text-muted">아직 댓글이 없습니다. 따뜻한 댓글 한마디를 남겨주세요! 🌸</div>
                 </div>
-
                 <div class="comment-input-box shadow-sm">
                     <textarea class="form-control mb-2" v-model="newComment" rows="3" placeholder="댓글을 입력해 주세요."></textarea>
                     <div class="text-right">
@@ -157,13 +143,35 @@
                 </div>
             </div>
         </div>
-        
-        <div v-else class="text-center py-5">
-            <div class="spinner-border text-danger" role="status"></div>
-            <p class="mt-3">정보를 불러오고 있습니다...</p>
-        </div>
 
-        <jsp:include page="/WEB-INF/common/footer.jsp" />
+        <div class="modal fade" id="reportModal" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">🚨 신고하기</h5>
+                        <button type="button" class="close text-white" data-dismiss="modal"><span>&times;</span></button>
+                    </div>
+                    <div class="modal-body">
+                        <p class="small text-muted">허위 신고 시 서비스 이용에 제한을 받을 수 있습니다.</p>
+                        <div class="form-group">
+                            <label><b>신고 사유 선택</b></label>
+                            <select class="form-control" v-model="reportData.reason">
+                                <option value="">사유를 선택해 주세요</option>
+                                <option v-for="opt in reportOptions" :key="opt" :value="opt">{{ opt }}</option>
+                                <option value="직접 입력">직접 입력</option>
+                            </select>
+                        </div>
+                        <div class="form-group" v-if="reportData.reason === '직접 입력'">
+                            <textarea class="form-control" v-model="reportData.customReason" rows="3" placeholder="상세 사유를 입력해 주세요."></textarea>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-light border" data-dismiss="modal">취소</button>
+                        <button type="button" class="btn btn-report-submit" @click="fnSubmitReport">신고 제출</button>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 
     <script>
@@ -177,8 +185,23 @@
                     imgList: [],
                     commentList: [],
                     newComment: "",
-                    replyTo : null,
-                    replyContent : "",
+                    replyTo: null,
+                    replyContent: "",
+                    // 신고 관련 데이터
+                    reportData: {
+                        type: '', // REVIEW or COMMENT
+                        targetId: '',
+                        targetUserId: '',
+                        reason: '',
+                        customReason: ''
+                    },
+                    reportOptions: [
+                        "부적절한 홍보 게시물",
+                        "허위 사실 유포",
+                        "욕설 및 비하 발언",
+                        "개인정보 노출",
+                        "기타 부적절한 내용"
+                    ]
                 };
             },
             methods: {
@@ -204,11 +227,7 @@
                     $.ajax({
                         url: "/api/comment/Review-list.dox",
                         type: "POST",
-                        // 내 좋아요 여부를 알기 위해 sessionId도 같이 보냄
-                        data: JSON.stringify({ 
-                            reviewNo: this.reviewNo, 
-                            userId: this.sessionId 
-                        }),
+                        data: JSON.stringify({ reviewNo: this.reviewNo, userId: this.sessionId }),
                         contentType: "application/json",
                         success: (res) => {
                             const data = (typeof res === 'string') ? JSON.parse(res) : res;
@@ -222,43 +241,93 @@
                         }
                     });
                 },
-                //  댓글 좋아요 함수 추가
-                fnCommentLike(item) {
-
-                    console.log("클릭됨!", item);
-                    if (!this.sessionId || this.sessionId === 'null') return alert("로그인이 필요합니다.");
+                // --- 신고 로직 시작 ---
+                openReportModal(type, targetId, targetUserId) {
+                    if (!this.sessionId || this.sessionId === 'null') return alert("로그인 후 이용 가능합니다.");
                     
+                    // 데이터 초기화
+                    this.reportData.type = type;
+                    this.reportData.targetId = targetId;
+                    this.reportData.targetUserId = targetUserId;
+                    this.reportData.reason = "";
+                    this.reportData.customReason = "";
+                    
+                    $('#reportModal').modal('show');
+                },
+                fnSubmitReport() {
+                    const finalReason = this.reportData.reason === "직접 입력" ? this.reportData.customReason : this.reportData.reason;
+                    
+                    if (!finalReason.trim()) return alert("신고 사유를 선택하거나 입력해 주세요.");
+
+                    // 1. 중복 신고 방지 로직 (Ajax로 먼저 체크하거나, 서버에서 체크 후 결과 리턴)
                     $.ajax({
-                        url: "/api/comment/like.dox",
+                        url: "/api/report/check-duplicate.dox", // 중복 체크 API (없을 경우 바로 add 실행 후 서버에서 결과 처리 가능)
                         type: "POST",
-                        data: JSON.stringify({ 
-                            commentNo: item.commentNo, 
-                            userId: this.sessionId 
+                        data: JSON.stringify({
+                            reporterId: this.sessionId,
+                            targetType: this.reportData.type,
+                            targetId: this.reportData.targetId
                         }),
                         contentType: "application/json",
                         success: (res) => {
-                            console.log("서버 응답:", res); // 👈 응답이 오는지 확인
-                this.fnGetComments(); // 👈 목록 갱신
-                            /*const data = (typeof res === 'string') ? JSON.parse(res) : res;
-                            if (data.result === "success") {
-                                // 로컬에서만 살짝 바꿔도 되지만 정확성을 위해 다시 불러옴
-                                this.fnGetComments();
-                            }*/
+                            const data = (typeof res === 'string') ? JSON.parse(res) : res;
+                            if (data.isDuplicate) {
+                                alert("이미 신고하신 게시물/댓글입니다.");
+                                $('#reportModal').modal('hide');
+                            } else {
+                                // 2. 실제 신고 접수
+                                this.fnSendReport(finalReason);
+                            }
+                        },
+                        error: () => {
+                            // 중복 체크 API가 아직 없다면 바로 전송하고 서버의 'fail' 응답을 기다림
+                            this.fnSendReport(finalReason);
                         }
+                    });
+                },
+                fnSendReport(reason) {
+                    $.ajax({
+                        url: "/api/report/add.dox",
+                        type: "POST",
+                        data: JSON.stringify({
+                            reporterId: this.sessionId,
+                            targetType: this.reportData.type,
+                            targetId: this.reportData.targetId,
+                            targetUserId: this.reportData.targetUserId,
+                            reportTitle: this.reportData.type === 'REVIEW' ? '리뷰 게시물 신고' : '댓글 신고',
+                            reportContent: reason
+                        }),
+                        contentType: "application/json",
+                        success: (res) => {
+                            const data = (typeof res === 'string') ? JSON.parse(res) : res;
+                            if(data.result === "success") {
+                                alert("신고가 정상적으로 접수되었습니다.");
+                            } else {
+                                alert(data.message || "이미 신고 처리되었거나 오류가 발생했습니다.");
+                            }
+                            $('#reportModal').modal('hide');
+                        }
+                    });
+                },
+                // --- 신고 로직 끝 ---
+                
+                fnCommentLike(item) {
+                    if (!this.sessionId || this.sessionId === 'null') return alert("로그인이 필요합니다.");
+                    $.ajax({
+                        url: "/api/comment/like.dox",
+                        type: "POST",
+                        data: JSON.stringify({ commentNo: item.commentNo, userId: this.sessionId }),
+                        contentType: "application/json",
+                        success: () => { this.fnGetComments(); }
                     });
                 },
                 fnAddComment() {
                     if (!this.newComment.trim()) return alert("내용을 입력해주세요.");
                     if (!this.sessionId || this.sessionId === 'null') return alert("로그인이 필요합니다.");
-
                     $.ajax({
                         url: "/api/comment/Review-add.dox",
                         type: "POST",
-                        data: JSON.stringify({ 
-                            reviewNo: this.reviewNo, 
-                            userId: this.sessionId, 
-                            content: this.newComment 
-                        }),
+                        data: JSON.stringify({ reviewNo: this.reviewNo, userId: this.sessionId, content: this.newComment }),
                         contentType: "application/json",
                         success: (res) => {
                             const data = (typeof res === 'string') ? JSON.parse(res) : res;
@@ -269,77 +338,26 @@
                         }
                     });
                 },
-                fnEditMode(item) {
-                    item.isEdit = true;
-                    item.oldContent = item.content;
-                },
-                fnCancelEdit(item) {
-                    item.isEdit = false;
-                    item.content = item.oldContent;
-                },
+                fnEditMode(item) { item.isEdit = true; item.oldContent = item.content; },
+                fnCancelEdit(item) { item.isEdit = false; item.content = item.oldContent; },
                 fnUpdateComment(item) {
                     if(!item.content.trim()) return alert("내용을 입력하세요.");
                     $.ajax({
                         url: "/api/comment/update.dox",
                         type: "POST",
-                        data: JSON.stringify({ 
-                            commentNo: item.commentNo, 
-                            content: item.content,
-                            userId: this.sessionId 
-                        }),
+                        data: JSON.stringify({ commentNo: item.commentNo, content: item.content, userId: this.sessionId }),
                         contentType: "application/json",
-                        success: (res) => {
-                            item.isEdit = false;
-                            alert("댓글이 수정되었습니다.");
-                        }
+                        success: () => { item.isEdit = false; alert("수정되었습니다."); }
                     });
                 },
                 fnDeleteComment(commentNo) {
-                    if(!confirm("댓글을 삭제하시겠습니까?")) return;
+                    if(!confirm("삭제하시겠습니까?")) return;
                     $.ajax({
                         url: "/api/comment/remove.dox",
                         type: "POST",
-                        data: JSON.stringify({ 
-                            commentNo: commentNo, 
-                            userId: this.sessionId 
-                        }),
+                        data: JSON.stringify({ commentNo: commentNo, userId: this.sessionId }),
                         contentType: "application/json",
-                        success: (res) => {
-                            alert("삭제되었습니다.");
-                            this.fnGetComments();
-                        }
-                    });
-                },
-                fnReportReview() {
-                    if (!this.sessionId || this.sessionId === 'null') return alert("로그인 후 이용 가능합니다.");
-                    const reason = prompt("이 리뷰 게시글을 신고하시겠습니까?\n사유를 입력해 주세요.");
-                    if (reason === null) return;
-                    if (!reason.trim()) return alert("신고 사유는 필수입니다.");
-                    this.fnSendReport('REVIEW', this.reviewNo, this.info.userId, '리뷰 게시물 신고', reason);
-                },
-                fnReportComment(item) {
-                    if (!this.sessionId || this.sessionId === 'null') return alert("로그인 후 이용 가능합니다.");
-                    const reason = prompt(`'${item.userId}'님의 댓글을 신고하시겠습니까?\n사유를 입력해 주세요.`);
-                    if (reason === null) return;
-                    if (!reason.trim()) return alert("신고 사유는 필수입니다.");
-                    this.fnSendReport('REVIEW', item.commentNo, item.userId, '댓글 신고', reason);
-                },
-                fnSendReport(type, id, targetUserId, title, content) {
-                    $.ajax({
-                        url: "/api/report/add.dox",
-                        type: "POST",
-                        data: JSON.stringify({
-                            reporterId: this.sessionId,
-                            targetType: type,
-                            targetId: id,
-                            targetUserId: targetUserId,
-                            reportTitle: title,
-                            reportContent: content
-                        }),
-                        contentType: "application/json",
-                        success: (res) => {
-                            alert("신고가 정상적으로 접수되었습니다.");
-                        }
+                        success: () => { alert("삭제되었습니다."); this.fnGetComments(); }
                     });
                 },
                 fnLike() {
@@ -357,33 +375,19 @@
                         }
                     });
                 },
-                fnBack() { 
-                    location.href = "/api/review/list.do"; 
-                },
+                fnBack() { location.href = "/api/review/list.do"; },
                 fnShowReply(commentNo) {
                     this.replyTo = (this.replyTo === commentNo) ? null : commentNo;
                     this.replyContent = ""; 
                 },
                 fnSaveReply(parentNo) {
-                    if(this.replyContent.trim() === "") {
-                        alert("답글 내용을 입력해주세요.");
-                        return;
-                    }
-                    const nParam = {
-                        reviewNo: this.reviewNo,
-                        content: this.replyContent,
-                        parentNo: parentNo,
-                        userId: this.sessionId
-                    };
+                    if(this.replyContent.trim() === "") return alert("답글 내용을 입력해주세요.");
                     $.ajax({
                         url: "/api/comment/Review-add.dox",
                         type: "POST",
-                        data: JSON.stringify(nParam),
+                        data: JSON.stringify({ reviewNo: this.reviewNo, content: this.replyContent, parentNo: parentNo, userId: this.sessionId }),
                         contentType: "application/json",
-                        success: (data) => {
-                            this.replyTo = null;
-                            this.fnGetComments();
-                        }
+                        success: () => { this.replyTo = null; this.fnGetComments(); }
                     });
                 }
             },
