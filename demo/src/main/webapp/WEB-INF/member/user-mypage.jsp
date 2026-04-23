@@ -11,6 +11,7 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/common.css">
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 
     <%-- ✅ 마이페이지 공용 CSS --%>
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/mypage.css">
@@ -122,43 +123,35 @@
                         본식까지 D-100일 남으셨네요!<br>
                         사회자, 주례는 정하셨나요? 슬슬 신랑 예복을 준비할 시기예요!
                     </div>
-
                     <div class="shortcut-wrap">
                         <div class="shortcut-btn" @click="fnEdit()">내 정보 수정</div>
                         <div class="shortcut-btn" @click="fnCoupon()">쿠폰</div>
-                        <div class="shortcut-btn">예약 목록</div>
+                        <div class="shortcut-btn" @click="fnReservation()">예약 목록</div>
                     </div>
-
                     <p class="pass-title">현재 이용 중인 패스</p>
-                    <div class="pass-box">
-                        <h3>베이직 패스 이용 중입니다</h3>
-                        <p>잔여 횟수 2회</p>
+                    <div class="pass-box" v-if="passWallet">
+                        <h3>{{ passWallet.passName }} 이용 중입니다</h3>
+                        <p>잔여 횟수 {{ passWallet.remainingCount }}회</p>
                     </div>
+                    <div class="pass-box" v-else>
+                        <h3>현재 이용 중인 패스가 없습니다.</h3>
                     <button class="btn-withdraw" @click="fnWithdraw()">탈퇴하기</button>
+                    </div>
                 </div>
-
             </div>
-        </div>
         <jsp:include page="/WEB-INF/common/footer.jsp" />
+        </div>
     </div>
-
+</body>
 <script>
     const app = Vue.createApp({
         data() {
             return {
-                info: {
+                 info: {
                     userId: "",
-                    password: "",
-                    passwordConfirm: "",
-                    userTel: "",
                     name: "",
-                    userEmail: "",
-                    emailId: "",
-                    gender: "M",
-                    weddingDate: "",
-                    nickName: "",
-                    authCode: ""
                 },
+                passWallet: null
             };
         },
         methods: {
@@ -167,6 +160,9 @@
             },
             fnCoupon: function() {
                 location.href = "/myCouponPage.do";
+            },
+            fnReservation: function() {
+                location.href = "/myReservation.do";
             },
             fnWithdraw: function() {
                 if (!confirm("정말 탈퇴하시겠습니까?")) return;
@@ -191,31 +187,19 @@
         },
         mounted() {
             let self = this;
-            let fullEmail = "${member.email}";
-
-            if (fullEmail && fullEmail.includes('@')) {
-                let parts = fullEmail.split('@');
-                this.info.emailId = parts[0];
-                this.emailDomain = parts[1];
-                const defaultDomains = ['naver.com', 'gmail.com', 'nate.com', 'kakao.com', 'daum.net'];
-                if (!defaultDomains.includes(this.emailDomain)) {
-                    this.emailDomainDirect = true;
-                }
-            }
-
+        
             this.info.userId = "${member.userId}";
             this.info.name = "${member.name}";
-            this.info.userEmail = "${member.email}";
-            this.info.userTel = "${member.tel}";
-            this.info.nickName = "${member.nickname}";
-            this.info.gender = "${member.gender}";
-            this.info.weddingDate = "${member.weddingDate}";
-
-            this.originFullEmail = "${member.email}";
-            this.originTel = "${member.tel}";
-
-            this.isEmailAvailable = true;
-            this.isSmsVerified = true;
+            
+            // 잔여 횟수 조회
+            axios.get("/myPassWallet.dox")
+                .then(res => {
+                    console.log("패스 지갑:", res.data);
+                    self.passWallet = res.data;
+                })
+                .catch(err => {
+                    console.error(err);
+                });
         }
     });
 

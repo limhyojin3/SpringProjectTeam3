@@ -11,6 +11,7 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/common.css">
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 
     <%-- ✅ 마이페이지 공용 CSS --%>
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/mypage.css">
@@ -132,8 +133,8 @@
 
                 <%-- ✅ 사이드바 공용 include --%>
                 <jsp:include page="/WEB-INF/common/mypage-nav.jsp" />
-
                 <div class="right-sections">
+                    <h4>리뷰 열람 내역</h4>
                     <!-- 탭 버튼 -->
                     <div class="review-tab-wrap">
                         <button class="review-tab" :class="{'active-tab': reviewTab === 'paid'}" @click="switchReviewTab('paid')">유료리뷰</button>
@@ -142,15 +143,25 @@
 
                     <!-- 유료 리뷰 목록 -->
                     <div class="review-list" v-show="reviewTab === 'paid'">
-                        <div class="review-card" v-for="i in 6" :key="i">
-                            <div class="review-thumbnail">썸네일</div>
-                            <div class="review-card-title">리뷰 제목</div>
+                        <div class="review-card" v-for="review in paidReviewList" :key="review.reviewNo"
+                            @click="fnGoReview(review.reviewNo)">
+                            <div class="review-thumbnail">
+                                <img v-if="review.imgUrl" 
+                                    :src="review.imgUrl" 
+                                    style="width:100%; height:100%; object-fit:cover;">
+                                <span v-else>썸네일</span>
+                            </div>
+                            <div class="review-card-title">{{ review.title }}</div> <!--제목-->
+                            <div class="review-card-title">{{ review.comName }}</div> <!--업체 명-->
                         </div>
                     </div>
 
                     <!-- 무료 리뷰 목록 -->
                     <div v-show="reviewTab === 'free'">
-                        <div class="review-list-item" v-for="i in 6" :key="i">리뷰 제목</div>
+                        <div class="review-list-item" v-for="review in freeReviewList" :key="review.reviewNo"
+                            @click="fnGoReview(review.reviewNo)">
+                            {{ review.title }} - {{ review.comName }}
+                        </div>
                     </div>
 
                     <!-- 인덱스 버튼 -->
@@ -168,7 +179,9 @@
     const app = Vue.createApp({
         data() {
             return {
-                reviewTab: 'paid'  // 'paid' or 'free'
+                reviewTab: 'paid',  // 'paid' or 'free'
+                paidReviewList: [],
+                freeReviewList: []
             };
         },
         methods: {
@@ -176,10 +189,24 @@
             switchReviewTab: function(type) {
                 this.reviewTab = type;
             },
+            fnGoReview: function(reviewNo) {
+                location.href = '/api/review/detail.do?reviewNo=' + reviewNo;
+            }
+            
         }, // methods
         mounted() {
             // 처음 시작할 때 실행되는 부분
             let self = this;
+            // 유료 리뷰 조회
+            axios.get("/myPaidReviewList.dox")
+                .then(res => {
+                    self.paidReviewList = res.data;
+                });
+            // 무료 리뷰 조회
+            axios.get("/myFreeReviewList.dox")
+                .then(res => {
+                    self.freeReviewList = res.data;
+                });
         }
     });
 

@@ -110,6 +110,9 @@
             font-size: 15px;
             cursor: pointer;
         }
+        .logo {
+            cursor: pointer;
+        }
     </style>
 </head>
 <body>
@@ -117,7 +120,7 @@
         <!-- html 코드는 id가 app인 태그 안에서 작업 -->
         <!-- 로고 -->
         <div class="logo">
-            로고 이미지 자리
+            <img src="/img/merryview-logo-text.svg" alt="메리뷰 로고" @click="fnMain()">
         </div>
 
         <!-- 탭 버튼 -->
@@ -135,7 +138,7 @@
                 </tr>
                 <tr>
                     <th>비밀번호</th>
-                    <td><input type="password" v-model="userPwd" placeholder="비밀번호"></td>
+                    <td><input type="password" v-model="userPwd" @keyup.enter="fnLogin()" placeholder="비밀번호"></td>
                 </tr>
             </table>
         </div>
@@ -149,7 +152,7 @@
                 </tr>
                 <tr>
                     <th>비밀번호</th>
-                    <td><input type="password" v-model="companyPwd" placeholder="비밀번호"></td>
+                    <td><input type="password" v-model="companyPwd" @keyup.enter="fnLogin()" placeholder="비밀번호"></td>
                 </tr>
             </table>
         </div>
@@ -159,7 +162,7 @@
         <div class="link-wrap">
             <a href="/join.do"><span>회원가입</span></a>
             <span>|</span>
-            <a href="/find-id.do"><span>아이디/비밀번호 찾기</span></a>
+            <a href="/find-id.do"><span>아이디 찾기/비밀번호 변경</span></a>
         </div>
 
 
@@ -180,7 +183,9 @@
             };
         },
         methods: {
-            // 함수(메소드) - (key : function())
+            fnMain : function(){
+                location.href="/merryViewHome.do";
+            },
             fnLogin: function () {
                 let self = this;
                 let param = {

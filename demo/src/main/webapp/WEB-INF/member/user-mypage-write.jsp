@@ -11,6 +11,7 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/common.css">
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 
     <%-- ✅ 마이페이지 공용 CSS --%>
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/mypage.css">
@@ -142,6 +143,10 @@
         .btn-select-all:hover, .btn-delete:hover {
             opacity: 0.85;
         }
+
+        .write-table tbody tr {
+            cursor: pointer;
+        }
     </style>
 </head>
 <body>
@@ -149,11 +154,11 @@
         <jsp:include page="/WEB-INF/common/header.jsp" />
         <div id="wrapper">
             <div class="main-content">
-
                 <%-- ✅ 사이드바 공용 include --%>
                 <jsp:include page="/WEB-INF/common/mypage-nav.jsp" />
 
                 <div class="right-sections">
+                    <h4>내가 쓴 글/리뷰/댓글 목록</h4>
                     <!-- 탭 버튼 -->
                     <div class="write-tab-wrap">
                         <button class="write-tab" :class="{'active-tab': reviewTab === 'post'}" @click="switchReviewTab('post')">작성 글</button>
@@ -161,24 +166,54 @@
                         <button class="write-tab" :class="{'active-tab': reviewTab === 'comment'}" @click="switchReviewTab('comment')">작성 댓글</button>
                     </div>
 
-                    <!-- 작성 글 / 작성 리뷰 테이블 -->
-                    <table class="write-table" v-if="reviewTab !== 'comment'">
+                    <!-- 작성 글 리뷰 테이블 -->
+                    <table class="write-table" v-if="reviewTab === 'post'">
                         <thead>
                             <tr>
-                                <th class="col-check"><input type="checkbox"></th>
-                                <th class="col-no">게시글번호</th>
+                                <th class="col-no">번호</th>
                                 <th class="col-title">제목</th>
-                                <th class="col-date">작성일</th>
+                                <th>카테고리</th>
                                 <th class="col-view">조회</th>
+                                <th class="col-date">작성일</th>
                             </tr>
                         </thead>
                         <tbody>
-                            <tr v-for="i in 6" :key="i">
-                                <td><input type="checkbox"></td>
-                                <td>{{ i }}</td>
-                                <td>게시글 제목</td>
-                                <td>2026-01-01</td>
-                                <td>20</td>
+                            <tr v-if="postList.length === 0">
+                                <td colspan="5">작성한 글이 없습니다.</td>
+                            </tr>
+                            <tr v-for="post in postList" :key="post.postNo"
+                                @click="fnGoPost(post.postNo)">
+                                <td>{{ post.postNo }}</td>
+                                <td class="col-title">{{ post.title }}</td>
+                                <td>{{ post.category }}</td>
+                                <td>{{ post.viewCnt }}</td>
+                                <td>{{ post.regDate }}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <!-- 작성 리뷰 테이블 -->
+                    <table class="write-table" v-if="reviewTab === 'review'">
+                        <thead>
+                            <tr>
+                                <th class="col-no">번호</th>
+                                <th class="col-title">제목</th>
+                                <th>평점</th>
+                                <th>승인상태</th>
+                                <th class="col-date">작성일</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr v-if="reviewList.length === 0">
+                                <td colspan="5">작성한 리뷰가 없습니다.</td>
+                            </tr>
+                            <tr v-for="review in reviewList" :key="review.reviewNo"
+                                @click="fnGoReview(review.reviewNo)">
+                                <td>{{ review.reviewNo }}</td>
+                                <td class="col-title">{{ review.title }}</td>
+                                <td>{{ review.rating }}</td>
+                                <td>{{ review.approvalStatus }}</td>
+                                <td>{{ review.regDate }}</td>
                             </tr>
                         </tbody>
                     </table>
@@ -187,27 +222,29 @@
                     <table class="write-table" v-if="reviewTab === 'comment'">
                         <thead>
                             <tr>
-                                <th class="col-check"><input type="checkbox"></th>
-                                <th class="col-title">제목</th>
+                                <th class="col-no">번호</th>
+                                <th class="col-title">내용</th>
                                 <th class="col-date">작성일</th>
                             </tr>
                         </thead>
                         <tbody>
-                            <tr v-for="i in 4" :key="i">
-                                <td><input type="checkbox"></td>
+                            <tr v-if="commentList.length === 0">
+                                <td colspan="3">작성한 댓글이 없습니다.</td>
+                            </tr>
+                            <tr v-for="comment in commentList" :key="comment.commentNo"
+                                @click="comment.postNo ? fnGoPost(comment.postNo) : fnGoReview(comment.reviewNo)">
+                                <td>{{ comment.commentNo }}</td>
                                 <td class="col-title">
-                                    <div class="comment-origin">ㅇㅇ 업체 스드메 예약 후기[2]</div>
-                                    <div class="comment-content">ㅇㅇ 업체 스드메 예약 후기 댓글 내용</div>
+                                    <div class="comment-content">{{ comment.content }}</div>
                                 </td>
-                                <td>2026-01-01</td>
+                                <td>{{ comment.regDate }}</td>
                             </tr>
                         </tbody>
                     </table>
 
                     <!-- 하단 버튼 -->
-                    <div class="review-index-wrap">
+                     <div class="review-index-wrap">
                         <button class="btn-select-all">전체 선택</button>
-                        <button class="btn-review-index">상세 리뷰 인덱스</button>
                         <button class="btn-delete">삭제</button>
                     </div>
                 </div>
@@ -221,7 +258,10 @@
     const app = Vue.createApp({
         data() {
             return {
-                reviewTab: 'post'  // 'post' or 'review' or 'comment'
+                reviewTab: 'post',  // 'post' or 'review' or 'comment'
+                postList: [],
+                reviewList: [],
+                commentList: []
             };
         },
         methods: {
@@ -229,10 +269,22 @@
             switchReviewTab: function(type) {
                 this.reviewTab = type;
             },
+            fnGoPost: function(postNo) {
+                location.href = '/api/community/detail.do?postNo=' + postNo;
+            },
+            fnGoReview: function(reviewNo) {
+                location.href = '/api/review/detail.do?reviewNo=' + reviewNo;
+            },
         }, // methods
         mounted() {
             // 처음 시작할 때 실행되는 부분
             let self = this;
+            axios.get("/myPostList.dox")
+                .then(res => { self.postList = res.data; });
+            axios.get("/myReviewList.dox")
+                .then(res => { self.reviewList = res.data; });
+            axios.get("/myCommentList.dox")
+                .then(res => { self.commentList = res.data; });
         }
     });
 
