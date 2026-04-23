@@ -11,6 +11,14 @@
             #{reportTitle}, #{reportContent}, CURRENT_TIMESTAMP
         )
     </insert>
+    
+    <select id="checkDuplicateReport" parameterType="map" resultType="int">
+        SELECT COUNT(*)
+        FROM Report
+        WHERE reporter_id = #{reporterId}
+          AND target_type = #{targetType}
+          AND target_id = #{targetId} 
+    </select>
 
     <select id="selectMyReports" resultType="com.example.demo.community_review.model.Report">
         SELECT 

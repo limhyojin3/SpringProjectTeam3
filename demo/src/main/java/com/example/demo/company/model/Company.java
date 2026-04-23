@@ -29,6 +29,7 @@ public class Company {
 	String isActive;
 	String imgUrl;
 	String proType;
+	
 
    
   // 통계용 필드 (DB 테이블엔 없지만 화면에 뿌릴 때 필요)

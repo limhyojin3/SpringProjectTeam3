@@ -29,7 +29,7 @@ public interface ReviewMapper {
      * [2] 상호작용 (좋아요 & 조회수)
      */
     // 조회수 증가
-    int updateViewCount(Map<String, Object> map);
+    int updateViewCount(HashMap<String, Object> map);
     
     // 좋아요 여부 확인 (1: 이미 누름, 0: 안 누름)
     int checkReviewLike(HashMap<String, Object> map);
@@ -42,6 +42,9 @@ public interface ReviewMapper {
     
     // 리뷰 본문 테이블의 like_cnt 증감
     void updateReviewLikeCount(HashMap<String, Object> map);
+    
+    // 페이지네이션
+    int selectReviewCount(HashMap<String, Object> map);
 
 
     /**
@@ -53,6 +56,8 @@ public interface ReviewMapper {
     // 활성화된 업체 목록 조회 (리뷰 등록 시 선택용)
     List<HashMap<String, Object>> selectActiveCompanyList(HashMap<String, Object> map);
 
-
-    
+    int checkViewLog(HashMap<String, Object> map); // 중복차감 방지
+    Integer getUserAccessCount(String userId); // 지갑이 없을 수 있으므로 Integer 권장
+    int deductTicket(String userId); // 티켓 사용
+    int insertViewLog(HashMap<String, Object> map); // 차감
 }

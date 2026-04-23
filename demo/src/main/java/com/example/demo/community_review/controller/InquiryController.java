@@ -1,9 +1,9 @@
 package com.example.demo.community_review.controller;
 
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.demo.community_review.dao.InquiryService;
-import com.example.demo.community_review.model.Inquiry;
 
 @RestController
 @RequestMapping("/api/inquiry")
@@ -20,16 +19,22 @@ public class InquiryController {
     @Autowired
     private InquiryService inquiryService;
 
-    // 문의 작성 API
-    @PostMapping("/add")
-    public String addInquiry(@RequestBody Inquiry inquiry) {
-        return inquiryService.addInquiry(inquiry);
+ // 문의 저장
+    @PostMapping("/add.dox")
+    public Map<String, Object> addInquiry(@RequestBody HashMap<String, Object> map) {
+        return inquiryService.addInquiry(map);
     }
 
-    // 내 문의 내역 API
-    @GetMapping("/list")
-    public List<Inquiry> getInquiries(@RequestParam String userId) {
-        return inquiryService.getMyInquiries(userId);
+    // 내 문의 목록 불러오기
+    @PostMapping("/list.dox")
+    public Map<String, Object> getMyInquiryList(@RequestBody HashMap<String, Object> map) {
+        return inquiryService.getMyInquiryList(map);
+    }
+
+    // 문의 상세 내용 불러오기
+    @PostMapping("/detail.dox")
+    public Map<String, Object> getInquiryDetail(@RequestBody HashMap<String, Object> map) {
+        return inquiryService.getInquiryDetail(map);
     }
 
     // 문의 삭제 API

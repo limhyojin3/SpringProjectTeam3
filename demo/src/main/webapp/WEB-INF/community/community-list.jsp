@@ -75,8 +75,8 @@
                     <option value="title">제목</option>
                     <option value="userId">작성자</option>
                 </select>
-                <input type="text" v-model="searchKeyword" @keyup.enter="fnList" placeholder="궁금한 것을 검색해보세요">
-                <button @click="fnList" class="btn-pink" style="padding: 10px 20px;">검색</button>
+                <input type="text" v-model="searchKeyword" @keyup.enter="fnSearch" placeholder="궁금한 것을 검색해보세요">
+                <button @click="fnSearch" class="btn-pink" style="padding: 10px 20px;">검색</button>
             </div>
 
             <table class="custom-table">
@@ -112,6 +112,34 @@
                     </tr>
                 </tbody>
             </table>
+
+            <div class="d-flex justify-content-center mt-4">
+                <nav class="mt-4">
+                    <ul class="pagination justify-content-center">
+                        <li class="page-item" :class="{disabled: currentPage === 1}">
+                            <a class="page-link" href="javascript:;" @click.prevent="fnPageChange(1)">&laquo;</a>
+                        </li>
+                        
+                        <li class="page-item" :class="{disabled: currentPage === 1}">
+                            <a class="page-link" href="javascript:;" 
+                            @click.prevent="currentPage > 1 && fnPageChange(currentPage - 1)">이전</a>
+                        </li>
+
+                        <li class="page-item" v-for="page in pageNumbers" :key="page" :class="{active: currentPage === page}">
+                            <a class="page-link" href="javascript:;" @click.prevent="fnPageChange(page)">{{ page }}</a>
+                        </li>
+
+                        <li class="page-item" :class="{disabled: currentPage === totalPageCount}">
+                            <a class="page-link" href="javascript:;" 
+                            @click.prevent="currentPage < totalPageCount && fnPageChange(currentPage + 1)">다음</a>
+                        </li>
+
+                        <li class="page-item" :class="{disabled: currentPage === totalPageCount}">
+                            <a class="page-link" href="javascript:;" @click.prevent="fnPageChange(totalPageCount)">&raquo;</a>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
         </main>
 
         <jsp:include page="/WEB-INF/common/footer.jsp" />
@@ -127,16 +155,52 @@
                     searchType: "all",
                     //  3. 카테고리 관련 데이터 추가
                     searchCategory: "전체",
-                    categories: ["전체", "자유", "질문", "정보공유", ]
+                    categories: ["전체", "자유", "질문", "정보공유", ],
+                    //  페이지네이션 추가 변수
+                    currentPage: 1,      // 현재 페이지 번호
+                    pageSize: 10,        // 한 페이지당 보여줄 게시글 수
+                    totalCount: 0,        // 전체 게시글 수 (서버에서 받아옴)
+                    pageBlockSize: 5,
                 };
             },
+            computed: {
+                //  현재 내 위치에 맞는 페이지 번호들을 배열로 리턴
+                pageNumbers() {
+                    const totalPages = Math.ceil(this.totalCount / this.pageSize);
+                    const startPage = Math.floor((this.currentPage - 1) / this.pageBlockSize) * this.pageBlockSize + 1;
+                    let endPage = startPage + this.pageBlockSize - 1;
+                    
+                    if (endPage > totalPages) endPage = totalPages;
+                    
+                    const pages = [];
+                    for (let i = startPage; i <= endPage; i++) {
+                        pages.push(i);
+                    }
+                    return pages;
+                },
+                // 전체 페이지 수 계산
+                totalPageCount() {
+                    return Math.ceil(this.totalCount / this.pageSize);
+                }
+            },
             methods: {
+                fnSearch() {
+                    this.currentPage = 1; // 검색할 때만 1로 초기화
+                    this.fnList();        // 그다음 리스트 호출
+                },
+
                 fnList() {
+                    if (!this.currentPage || this.currentPage < 1) {
+                        this.currentPage = 1;
+                    }
+                    
                     const nParam = {
                         searchKeyword: this.searchKeyword,
                         searchType: this.searchType,
                         //  4. 파라미터에 카테고리 추가
-                        category: this.searchCategory 
+                        category: this.searchCategory,
+                        startIndex: (this.currentPage - 1) * this.pageSize,
+                        pageSize: this.pageSize
                     };
                     $.ajax({
                         url: "/api/community/list.dox",
@@ -146,7 +210,8 @@
                         data: JSON.stringify(nParam),
                         success: (data) => {
                             this.list = data.list; 
-                            this.sessionId = data.sessionId; 
+                            this.sessionId = data.sessionId;
+                            this.totalCount = data.count; 
                         },
                         error: (xhr) => console.error("데이터 로드 실패!")
                     });
@@ -154,6 +219,7 @@
                 //  5. 카테고리 변경 시 리스트 다시 호출
                 fnChangeCategory(cate) {
                     this.searchCategory = cate;
+                    this.currentPage = 1;
                     this.fnList();
                 },
                 fnDetail(postNo) {
@@ -167,7 +233,11 @@
                     } else {
                         location.href = "/api/community/add.do";
                     }
-                }
+                },
+                fnPageChange(page) {
+                    this.currentPage = page;
+                    this.fnList();
+                },
             },
             mounted() {
                 this.fnList();

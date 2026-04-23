@@ -10,6 +10,31 @@
         )
     </insert>
     
+    <select id="selectPostCount" parameterType="hashmap" resultType="int">
+	    SELECT COUNT(*)
+	    FROM Community_Post p
+	    WHERE p.is_deleted = 0
+	    
+	    <if test="category != null and category != '' and category != '전체'">
+	        AND p.category = #{category}
+	    </if>
+	
+	    <if test="searchKeyword != null and searchKeyword != ''">
+	        <choose>
+	            <when test="searchType == 'title'">
+	                AND p.title LIKE CONCAT('%', #{searchKeyword}, '%')
+	            </when>
+	            <when test="searchType == 'userId'">
+	                AND p.user_id LIKE CONCAT('%', #{searchKeyword}, '%')
+	            </when>
+	            <otherwise>
+	                AND (p.title LIKE CONCAT('%', #{searchKeyword}, '%') 
+	                     OR p.user_id LIKE CONCAT('%', #{searchKeyword}, '%'))
+	            </otherwise>
+	        </choose>
+	    </if>
+	</select>
+    
 	<!-- 게시글 리스트 -->
    <select id="selectPostList" parameterType="hashmap" resultType="com.example.demo.community_review.model.Community">
 	    SELECT 
@@ -46,6 +71,7 @@
 	        </choose>
 	    </if>
 	    ORDER BY p.reg_date DESC
+	    LIMIT #{startIndex}, #{pageSize}
 	</select>
 	
     <select id="selectPostById" resultType="com.example.demo.community_review.model.Community">

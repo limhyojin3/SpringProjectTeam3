@@ -45,6 +45,12 @@ public class ReviewService {
     public HashMap<String, Object> getReviewDetailInfo(HashMap<String, Object> map) {
         return reviewMapper.selectReviewDetail(map);
     }
+    
+    // 페이지네이션
+    
+    public int getReviewCount(HashMap<String, Object> map) {
+        return reviewMapper.selectReviewCount(map);
+    }
 
     // 4. 좋아요 토글
     @Transactional
@@ -128,6 +134,50 @@ public class ReviewService {
             e.printStackTrace();
             throw new RuntimeException(gson.toJson(Message.FAIL_SERVER));
         }
+    }
+    
+    @Transactional(rollbackFor = Exception.class)
+    public HashMap<String, Object> useAccessTicket(HashMap<String, Object> map) throws Exception {
+        HashMap<String, Object> resultMap = new HashMap<>();
+        
+        // [추가] 프론트에서 보낸 checkOnly 값 확인 ("Y"면 확인만 함)
+        String checkOnly = (String) map.get("checkOnly");
+
+        // 1. 이미 본 기록이 있는지 확인 (공통)
+        if (reviewMapper.checkViewLog(map) > 0) {
+            resultMap.put("result", "ALREADY_VIEWED");
+            return resultMap;
+        }
+
+        // 2. 만약 "단순 확인용" 호출이었다면 여기서 멈춤
+        // 이미 본 기록이 없으므로 "처음 보는 글"이라는 신호를 보냄
+        if ("Y".equals(checkOnly)) {
+            resultMap.put("result", "NOT_VIEWED_YET");
+            return resultMap;
+        }
+
+        // 3. 열람권 잔액 확인 (여기서부터는 실제 차감 모드)
+        String userId = (String) map.get("userId");
+        Integer count = reviewMapper.getUserAccessCount(userId);
+        
+        if (count == null || count <= 0) {
+            resultMap.put("result", "NO_TICKET");
+            return resultMap;
+        }
+
+        // 4. 실제 차감 및 로그 작성
+        reviewMapper.deductTicket(userId);
+        reviewMapper.insertViewLog(map);
+        
+        resultMap.put("result", "SUCCESS");
+        return resultMap;
+    }
+ 
+    // 1. 단순 잔액 조회 (비즈니스 로직이 따로 없으므로 매퍼 호출 후 리턴)
+    public Integer getUserAccessCount(String userId) {
+        // 매퍼에서 가져온 값이 null이면 0을 반환하도록 처리
+        Integer count = reviewMapper.getUserAccessCount(userId);
+        return (count != null) ? count : 0;
     }
     
 }

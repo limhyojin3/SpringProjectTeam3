@@ -23,8 +23,10 @@ public class WebConfig implements WebMvcConfigurer {
         
         //컴퍼니 담당자가 붙임
         // /img2/** 요청이 오면 사용자의 문서 폴더로 연결한다.
+        String projectPath = System.getProperty("user.dir");
+        
         registry.addResourceHandler("/img2/**")
-        .addResourceLocations("file:///C:/Users/TJ-BU-708-P03/Documents/fullstack/merryview/uploads/");
+        .addResourceLocations("file:///" + projectPath + "/src/main/resources/static/uploads/");
         
         
         

@@ -2,6 +2,32 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.example.demo.community_review.mapper.ReviewMapper">
 
+
+	<select id="selectReviewCount" parameterType="hashmap" resultType="int">
+	    SELECT COUNT(*)
+	    FROM Review r
+	    LEFT OUTER JOIN Company c ON r.company_no = c.company_no
+	    WHERE r.approval_status = 'APPROVED'
+	    
+	    <if test="isPaid != null and isPaid != '' or isPaid == 0">
+	        AND r.is_paid = #{isPaid}
+	    </if>
+	
+	    <if test="category != null and category != '' and category != 'all'">
+	        AND JSON_CONTAINS(c.com_type, JSON_QUOTE(#{category}))
+	    </if>
+	
+	    <if test="searchKeyword != null and searchKeyword != ''">
+	        <choose>
+	            <when test="searchType == 'company'"> AND c.com_name LIKE CONCAT('%', #{searchKeyword}, '%') </when>
+	            <when test="searchType == 'content'"> AND r.content LIKE CONCAT('%', #{searchKeyword}, '%') </when>
+	            <otherwise>
+	                AND (c.com_name LIKE CONCAT('%', #{searchKeyword}, '%') OR r.content LIKE CONCAT('%', #{searchKeyword}, '%'))
+	            </otherwise>
+	        </choose>
+	    </if>
+	</select>
+	
     <select id="selectReviewList" parameterType="hashmap" resultType="hashmap">
 	    SELECT 
 	        r.review_no AS reviewNo,
@@ -46,6 +72,7 @@
 	        </choose>
 	    </if>
 	    ORDER BY r.reg_date DESC
+	    LIMIT #{startIndex}, #{pageSize}
 	</select>
 
     <select id="selectReviewDetail" parameterType="hashmap" resultType="hashmap">
@@ -151,6 +178,29 @@
         UPDATE Review SET like_cnt = like_cnt + #{amount} 
         WHERE review_no = #{reviewNo}
     </update>
+    
+    <select id="checkViewLog" parameterType="hashmap" resultType="int">
+	    SELECT COUNT(*) 
+	    FROM Pass_Usage_Log 
+	    WHERE user_id = #{userId} AND review_no = #{reviewNo}
+	</select>
+	
+	<select id="getUserAccessCount" parameterType="string" resultType="int">
+	    SELECT IFNULL(remaining_count, 0)
+	    FROM User_Pass_Wallet 
+	    WHERE user_id = #{userId}
+	</select>
+	
+	<update id="deductTicket" parameterType="string">
+	    UPDATE User_Pass_Wallet 
+	    SET remaining_count = remaining_count - 1 
+	    WHERE user_id = #{userId} AND remaining_count > 0
+	</update>
+	
+	<insert id="insertViewLog" parameterType="hashmap">
+	    INSERT INTO Pass_Usage_Log (user_id, review_no, used_at)
+	    VALUES (#{userId}, #{reviewNo}, NOW())
+	</insert>
     
     
 
