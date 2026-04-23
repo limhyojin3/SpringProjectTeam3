@@ -486,8 +486,8 @@
 
                         <div v-if="productPage === 'list'">
                             <!-- db 랑 연결한 곳 -->
-                            <h2>등록한 상품({{ productList3.length }})</h2>
-                            <div v-for="i in productList3" class="content-card"
+                            <h2>등록한 상품({{ productList.length }})</h2>
+                            <div v-for="i in productList" class="content-card"
                                 style="display: flex; align-items: center; padding: 15px;">
                                 <div
                                     style="width: 120px; height: 80px; background: #ffcef0; display: flex; align-items: center; justify-content: center; margin-right: 20px;">
@@ -497,7 +497,7 @@
                                 <div style="flex: 1;">{{ i.productDetails }}</div>
                                 <div>{{ i.originalPrice }}</div>
                                 <button @click="goEditPage(i)" style="margin-left: 10px;">수정하기</button>
-                                <button @click="fnRemove2(i)" style="margin-left: 10px;">삭제하기</button>
+                                <button @click="fnRemove(i)" style="margin-left: 10px;">삭제하기</button>
                             </div>
                             <div style="text-align: center;">
                                 <button @click="goRegPage2"
@@ -931,12 +931,16 @@
                                     </span> <!-- num 에 해당하는 페이지가 뜨고 그 페이지에 자료가 5개씩 표시되도록( )-->
                                 </div>
 
-                            </template> 
+                            </template>
 
 
-                        </template>                 
+                        </template>
                     </div>
             </div>
+
+
+        </div>
+        </main>
         </div>
 
         <footer>
@@ -954,7 +958,6 @@
             data() {
                 return {
                     // 변수 - (key : value)
-                    productList3: [],
                     inquiryList: [
                         { id: 1, product: '화려하게', title: '투어 일정 변경하고 싶습니다.', userid: '김결혼', content: '04.01일 예약했는데 04.08일로 변경하고 싶어요.' },
                         { id: 2, product: '스몰 웨딩', title: '메이크업 추가되나요?', userid: '아리랑', content: '메이크업 여기서 받고싶어요.' },
@@ -1193,14 +1196,14 @@
                         type: "POST",
                         data: param,
                         success: function (data) {
-                            //console.log(data); //info,result,message
+                            console.log(data); //info,result,message
 
                             self.user.name = data.info.comName;
                             self.user.usePeriod = data.info.usePeriod;
                             self.user.grade = data.info.grade;
                             self.user.lastPayment = data.info.lastPayment;
 
-                            //console.log(self.user);
+                            console.log(self.user);
                         }
                     });
                 },
@@ -1215,13 +1218,25 @@
                         type: "POST",
                         data: param,
                         success: function (data) {
-                            //console.log(data);
+                            console.log(data);
 
-                            self.productList3 = data.list; //덮어씌우기
+                            self.productList = data.list; //덮어씌우기
                         }
                     });
                 },
-                
+                fnList: function () {
+                    let self = this;
+                    let param = {};
+                    $.ajax({
+                        url: "http://localhost:8080/",
+                        dataType: "json",
+                        type: "POST",
+                        data: param,
+                        success: function (data) {
+
+                        }
+                    });
+                },
                 withdraw: function () {
                     if (confirm("정말 탈퇴하시겠습니까?")) {
                         alert("탈퇴되었습니다.");
@@ -1512,45 +1527,6 @@
 
                         }
                     })
-                },
-                fnRemove2(item){  //item in productList
-                    if (confirm("정말 삭제하시겠습니까?")) {
-
-                        let self = this;
-                        let param = {
-                            productNo : item.productNo
-                        };
-                        console.log(item);
-                        $.ajax({
-                            url: "/productRemove.dox",
-                            dataType: "json",
-                            type: "POST",
-                            data: param,
-                            success: function (data) {
-
-                                alert(data.message);    
-                                location.href="/company9.do"
-                            }
-                        });
-
-
-                        
-                    } else {
-                        alert("삭제가 취소되었습니다.");
-                    }
-                },
-                fnList: function () {
-                    let self = this;
-                    let param = {};
-                    $.ajax({
-                        url: "http://localhost:8080/",
-                        dataType: "json",
-                        type: "POST",
-                        data: param,
-                        success: function (data) {
-
-                        }
-                    });
                 }
             }, // methods
 
