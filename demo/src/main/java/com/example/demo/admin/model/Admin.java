@@ -31,11 +31,15 @@ public class Admin {
 	String reportDay;
 	int reportWait;
 
+	// 문의목록
+	int inquiryNo; 			//문의 번호
+	
 	// 결제목록
 	String saleMonth;
 	Long totalRevenue;
 	int orderCount;
-	int amount;
+	int amount;           	//결제 금액
+	String status;			//결제 상태
 
 	// 회원목록
 	String userMonth;

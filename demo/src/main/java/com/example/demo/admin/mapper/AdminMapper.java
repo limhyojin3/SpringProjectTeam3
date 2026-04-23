@@ -6,6 +6,7 @@ import java.util.List;
 import org.apache.ibatis.annotations.Mapper;
 
 import com.example.demo.admin.model.Admin;
+import java.util.Map;
 
 @Mapper
 public interface AdminMapper {
@@ -23,8 +24,20 @@ public interface AdminMapper {
 	
 	int selectPriceInfo(int passNo);    //결과가 행 전체가 아니라 Admin 아니고 int
 	
-	int insertPayment(HashMap<String, Object> map);
+	int insertPayment2(HashMap<String, Object> map);
 	
 	int insertPaymentPass(HashMap<String, Object> map);
+
+	int insertPayment(Map<String, Object> map);
+	
+	public List<Admin> selectInquiryList(Map<String, Object> map);
+	
+	int checkAnswer(Map<String, Object> map);
+
+	int insertAnswer(Map<String, Object> map);
+
+	void updateAnswer(Map<String, Object> map);
+
+	void updateInquiryStatus(Map<String, Object> map);
 
 }

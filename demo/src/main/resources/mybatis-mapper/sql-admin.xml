@@ -125,4 +125,44 @@
 		#{itemName}
 		)
 	</insert>
+	
+	<select id="selectInquiryList" parameterType="hashmap" resultType="com.example.demo.admin.model.Admin">
+    SELECT *
+    FROM inquiry
+    WHERE 1=1
+    <if test="status != null and status != ''">
+        AND status = #{status}
+    </if>
+    ORDER BY reg_date DESC
+	</select>
+	
+	<!--답변여부확인-->
+	<select id="checkAnswer" resultType="int">
+		SELECT COUNT(*)
+		FROM inquiry_answer
+		WHERE inquiry_no = #{inquiryNo}
+	</select>
+	
+	<insert id="insertAnswer">
+    INSERT INTO inquiry_answer (
+        inquiry_no,
+        content
+    ) VALUES (
+        #{inquiryNo},
+        #{answer}
+    )
+	</insert>
+	
+	<update id="updateAnswer">
+    UPDATE inquiry_answer
+    SET content = #{answer}
+    WHERE inquiry_no = #{inquiryNo}
+	</update>
+	
+	<update id="updateInquiryStatus">
+    UPDATE inquiry
+    SET status = 'DONE'
+    WHERE inquiry_no = #{inquiryNo}
+	</update>
+	
 </mapper>

@@ -13,6 +13,7 @@
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
         <link rel="stylesheet" href="${pageContext.request.contextPath}/css/common.css">
+        <link rel="stylesheet" href="${pageContext.request.contextPath}/css/adminNavi.css">
         <style>
             .middle {
                 width: 100%;
@@ -22,41 +23,6 @@
                     "nav main";
                 grid-template-columns: 300px 1fr;
                 /* 너비 고정 */
-            }
-
-            .navi {
-                grid-area: nav;
-                border: 1px solid blue;
-                padding: 20px 10px;
-                display: flex;
-                flex-direction: column;
-                gap: 8px;
-            }
-
-            .navi-btn {
-                width: 100%;
-                padding: 12px 10px;
-                text-align: left;
-                background-color: white;
-                border: 1px solid #ddd;
-                border-radius: 4px;
-                cursor: pointer;
-                font-size: 14px;
-                font-weight: 500;
-                transition: 0.2s;
-            }
-
-            .navi-btn:hover {
-                background-color: #e3f2fd;
-                border-color: #2196f3;
-                color: #1976d2;
-            }
-
-            .activebtn {
-                background-color: #ff6b6b;
-                color: white;
-                font-weight: bold;
-                border: 1px solid #ff6b6b;
             }
 
             .main {
@@ -171,31 +137,7 @@
         <div id="app">
             <jsp:include page="/WEB-INF/common/header.jsp" />
             <div class="middle">
-                <div class="navi">
-                    <button :class="['navi-btn', activeMenu === 'main' ? 'activebtn' : '']"
-                        @click="fnPage('/adminMain.do')">관리자 메인 페이지</button>
-
-                    <button :class="['navi-btn', activeMenu === 'user' ? 'activebtn' : '']"
-                        @click="fnPage('/adminUser.do')">전체 회원 목록</button>
-
-                    <button :class="['navi-btn', activeMenu === 'company' ? 'activebtn' : '']"
-                        @click="fnPage('/adminCompany.do')">전체 업체 목록</button>
-
-                    <button :class="['navi-btn', activeMenu === 'board' ? 'activebtn' : '']"
-                        @click="fnPage('/adminBoard.do')">전체 게시판/리뷰 목록</button>
-
-                    <button :class="['navi-btn', activeMenu === 'reviewWait' ? 'activebtn' : '']"
-                        @click="fnPage('/adminReviewWait.do')">승인 대기중인 리뷰</button>
-
-                    <button :class="['navi-btn', activeMenu === 'payment' ? 'activebtn' : '']"
-                        @click="fnPage('/adminPayment.do')">결제 및 상품 관리</button>
-
-                    <button :class="['navi-btn', activeMenu === 'report' ? 'activebtn' : '']"
-                        @click="fnPage('/adminReport.do')">신고 관리</button>
-
-                    <button :class="['navi-btn', activeMenu === 'stats' ? 'activebtn' : '']"
-                        @click="fnPage('/adminStatistics.do')">통계</button>
-                </div>
+                <jsp:include page="/WEB-INF/admin/adminNavi.jsp" />
                 <div class="main">
                     <!-- 리뷰승인 카드 -->
                     <div class="dashboard-card">
@@ -329,6 +271,7 @@
                         doneCount: 0,
                         newCommer: 0,
                         affRate: 0,
+                        processStatus: "WAIT_ACTION"
                     };
                 },
                 methods: {
@@ -352,7 +295,7 @@
                     fnGetReportList: function () {
                         let self = this;
                         let param = {
-                            processStatus: "WAIT_ACTION"
+                            processStatus: self.processStatus
                         };
                         $.ajax({
                             url: "http://localhost:8080/viewReport.dox",
@@ -447,15 +390,17 @@
                     let self = this;
                     const path = location.pathname;
 
-                    this.activeMenu =
-                        path.includes('/adminMain.do') ? 'main' :
-                            path.includes('/adminUser.do') ? 'user' :
-                                path.includes('/adminCompany.do') ? 'company' :
-                                    path.includes('/adminBoard.do') ? 'board' :
-                                        path.includes('/adminReviewWait.do') ? 'reviewWait' :
-                                            path.includes('/adminReport.do') ? 'report' :
-                                                path.includes('/adminStatistics.do') ? 'stats' :
-                                                    '';
+                     this.activeMenu =
+                        path.includes('adminMain') ? 'main' :
+                            path.includes('adminUser') ? 'user' :
+                                path.includes('adminCompany') ? 'company' :
+                                    path.includes('adminBoard') ? 'board' :
+                                        path.includes('adminReviewWait') ? 'reviewWait' :
+                                            path.includes('adminPayment') ? 'payment' :
+                                                path.includes('adminReport') ? 'report' :
+                                                    path.includes('adminInquiry') ? 'inquiry' :
+                                                        path.includes('adminStatistics') ? 'stats' :
+                                                            '';
 
                     self.fnGetReviewList();
                     self.fnGetReportList();
