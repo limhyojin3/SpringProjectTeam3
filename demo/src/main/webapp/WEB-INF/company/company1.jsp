@@ -436,6 +436,119 @@
                 background: #e8e8e8;
                 border-color: #999;
             }
+
+            /* --- 기존 레이아웃 유지 및 보강 --- */
+
+            /* 상품 리스트 개별 아이템 카드 */
+            .product-item {
+                display: flex;
+                align-items: flex-start;
+                /* 상단 정렬 */
+                gap: 20px;
+                background: white;
+                padding: 20px;
+                border-radius: 12px;
+                margin-bottom: 20px;
+                border: 1px solid #eee;
+                transition: all 0.3s ease;
+                box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            }
+
+            .product-item:hover {
+                transform: translateY(-3px);
+                box-shadow: 0 6px 15px rgba(255, 127, 159, 0.2);
+                border-color: #ff7f9f;
+            }
+
+            /* 이미지 박스 */
+            .product-img-box {
+                box-sizing: border-box;
+                flex-shrink: 0;
+                /* 이미지 크기 고정 */
+                height: 140px;
+                width: 140px;
+                border-radius: 10px;
+                overflow: hidden;
+                border: 1px solid #f0f0f0;
+            }
+
+            .product-img-box img {
+                height: 100%;
+                width: 100%;
+                object-fit: cover;
+                /* 이미지 비율 유지 */
+            }
+
+            /* 텍스트 정보 영역 */
+            .product-info {
+                flex: 1;
+                display: flex;
+                flex-direction: column;
+                gap: 8px;
+            }
+
+            .product-info h4 {
+                margin: 0;
+                font-size: 1.2rem;
+                color: #333;
+                font-weight: 700;
+            }
+
+            .product-info .product-content {
+                margin: 0;
+                color: #777;
+                font-size: 0.95rem;
+                line-height: 1.5;
+            }
+
+            .product-info .product-price {
+                margin-top: auto;
+                /* 하단 배치 */
+                font-weight: bold;
+                color: #ff1493;
+                font-size: 1.1rem;
+            }
+
+            /* 카테고리 & 태그 필터 영역 */
+            .filter-section {
+                background: #fff;
+                padding: 20px;
+                border-radius: 10px;
+                border: 1px solid #ff7f9f;
+                margin-bottom: 30px;
+            }
+
+            .filter-section h2,
+            .filter-section h4 {
+                margin-top: 0;
+                color: #333;
+            }
+
+            .tag-filter {
+                margin-top: 15px;
+                padding-top: 15px;
+                border-top: 1px dashed #ddd;
+                display: flex;
+                flex-wrap: wrap;
+                gap: 10px;
+            }
+
+            .tag-filter label,
+            .filter-section label {
+                cursor: pointer;
+                background: #fff0f3;
+                padding: 5px 12px;
+                border-radius: 20px;
+                font-size: 0.9rem;
+                color: #d6336c;
+                border: 1px solid #ffe0e6;
+                transition: 0.2s;
+            }
+
+            .tag-filter label:hover {
+                background: #ff7f9f;
+                color: white;
+            }
         </style>
     </head>
 
@@ -459,15 +572,37 @@
 
                 <main>
                     <div v-if="currentMenu === 'main'">
-                        <h2>카테고리</h2>
-                        <label><input type="checkbox" v-model="selectCategory" value="스튜디오">스튜디오</label>
-                        <label><input type="checkbox" v-model="selectCategory" value="드레스">드레스</label>
-                        <label><input type="checkbox" v-model="selectCategory" value="메이크업">메이크업</label>
 
-                        <p>선택한 카테고리: {{ selectCategory }}</p>
+                        <div class="filter-section">
+                            <div class="section-title">조회 필터</div>
+                            <h2>카테고리</h2>
+                            <label><input type="checkbox" v-model="selectCategory" value="스튜디오"> 스튜디오</label>
+                            <label><input type="checkbox" v-model="selectCategory" value="드레스"> 드레스</label>
+                            <label><input type="checkbox" v-model="selectCategory" value="메이크업"> 메이크업</label>
 
-                        <button @click="fnSearch()">버튼</button>
-                         
+                            <div class="tag-filter">
+                                <h4 style="width: 100%;">분위기 선택</h4>
+                                <label v-for="tag in productTag" :key="tag">
+                                    <input type="checkbox" :value="tag" v-model="selectTags">
+                                    {{ tag }}
+                                </label>
+                            </div>
+                        </div>
+
+                        <div v-for="i in filteredList" class="product-item">
+                            <div class="product-img-box">
+                                <img :src="i.thumbnail" :alt="i.name">
+                            </div>
+                            <div class="product-info">
+                                <h4>{{i.name}}</h4>
+                                <p class="product-content">{{i.content}}</p>
+                                <div v-if="i.tag" style="display: flex; gap: 5px;">
+                                    <span v-for="t in i.tag" style="font-size: 11px; color: #ff7f9f;">{{t}}</span>
+                                </div>
+                                <p class="product-price">{{i.price}}</p>
+                            </div>
+                        </div>
+
                     </div>
                 </main>
             </div>
@@ -488,6 +623,15 @@
             data() {
                 return {
                     // 변수 - (key : value)
+                    selectTags: [],
+                    productTag: [
+                        '인물 중심', '배경 중심', '화려한', '심플한', '단아한',
+                        '내추럴한', '클래식한', '빈티지한', '러블리한', '우아한',
+                        '세련된', '모던한', '몽환적인', '그리너리', '야외 스냅',
+                        '본식 스냅', '가성비', '프리미엄', '비즈 맛집', '실크 드레스',
+                        '레이스 드레스', '과즙 메이크업', '음영 메이크업', '윤광 메이크업', '대형 스튜디오',
+                        '단독 홀', '커스터마이징', '토탈 샵', '야간 촬영', '제주 스냅'
+                    ],
                     selectCategory: [],
                     productList3: [],
                     inquiryList: [
@@ -509,10 +653,142 @@
                     proType: [],
 
                     //product === productList.        v-for = "pro in productList" :key="pro.id"   v-if="product === pro.name" 
-                    productList: [  //상품 리스트
-                        { id: 1, thumbnail: 'https://img1.newsis.com/2021/09/26/NISI20210926_0000834715_web.jpg', name: '스몰 웨딩', content: '스몰 웨딩 상품 설명입니다.', price: '1,700,000원', category: ['스튜디오', '드레스'] },
-                        { id: 2, thumbnail: 'gorgeous.jpg', name: '화려하게', content: '화려하게 상품 설명입니다.', price: '2,500,000원', category: ['스튜디오', '메이크업'] },
-                        { id: 3, thumbnail: 'fairy_tale.jpg', name: '동화같은 분위기', content: '동화같은 분위기 상품 설명입니다.', price: '1,200,000원', category: ['메이크업'] }
+                    productList: [
+                        {
+                            id: 1,
+                            thumbnail: 'https://img1.newsis.com/2021/09/26/NISI20210926_0000834715_web.jpg',
+                            name: '내추럴 스몰 웨딩',
+                            content: '자연스러운 채광과 함께하는 소규모 웨딩 패키지입니다.',
+                            price: '1,700,000원',
+                            category: ['스튜디오', '드레스'],
+                            tag: ['내추럴한', '인물 중심', '가성비']
+                        },
+                        {
+                            id: 2,
+                            thumbnail: 'https://i.imgur.com/RwwCSsD.jpeg',
+                            name: '럭셔리 비즈 패키지',
+                            content: '화려한 호텔 예식에 어울리는 프리미엄 비즈 드레스와 메이크업.',
+                            price: '3,500,000원',
+                            category: ['드레스', '메이크업'],
+                            tag: ['화려한', '비즈 맛집', '프리미엄']
+                        },
+                        {
+                            id: 3,
+                            thumbnail: 'https://i.imgur.com/vVJ0lAD.jpeg',
+                            name: '동화같은 가든 스냅',
+                            content: '야외 정원에서 펼쳐지는 몽환적인 분위기의 촬영 세트입니다.',
+                            price: '1,200,000원',
+                            category: ['스튜디오'],
+                            tag: ['몽환적인', '야외 스냅', '그리너리']
+                        },
+                        {
+                            id: 4,
+                            thumbnail: 'https://i.imgur.com/OOOUXX2.jpeg',
+                            name: '클래식 단아 화보',
+                            content: '시간이 흘러도 변치 않는 단아하고 클래식한 인물 중심 촬영.',
+                            price: '2,100,000원',
+                            category: ['스튜디오'],
+                            tag: ['클래식한', '단아한', '인물 중심']
+                        },
+                        {
+                            id: 5,
+                            thumbnail: 'https://i.imgur.com/13Pd2g0.jpeg',
+                            name: '제주 푸른 바다 스냅',
+                            content: '제주도의 푸른 바다와 숲을 배경으로 하는 감성 스냅 여행.',
+                            price: '1,500,000원',
+                            category: ['스튜디오'],
+                            tag: ['제주 스냅', '야외 스냅', '빈티지한']
+                        },
+                        {
+                            id: 6,
+                            thumbnail: 'https://i.imgur.com/5NZ6N6J.jpeg',
+                            name: '심플 실크 패키지',
+                            content: '깔끔한 실크 드레스와 깨끗한 윤광 메이크업의 조화.',
+                            price: '1,800,000원',
+                            category: ['드레스', '메이크업'],
+                            tag: ['실크 드레스', '심플한', '윤광 메이크업']
+                        },
+                        {
+                            id: 7,
+                            thumbnail: 'https://i.imgur.com/unGGPeY.jpeg',
+                            name: '빈티지 레트로 웨딩',
+                            content: '유니크한 소품과 빈티지한 색감이 매력적인 스튜디오 상품.',
+                            price: '1,400,000원',
+                            category: ['스튜디오'],
+                            tag: ['빈티지한', '세련된', '커스터마이징']
+                        },
+                        {
+                            id: 8,
+                            thumbnail: 'https://i.imgur.com/HH39Q7x.jpeg',
+                            name: '프리미엄 토탈 샵',
+                            content: '스튜디오, 드레스, 메이크업을 한 번에 해결하는 올인원 패키지.',
+                            price: '4,200,000원',
+                            category: ['스튜디오', '드레스', '메이크업'],
+                            tag: ['토탈 샵', '프리미엄', '우아한']
+                        },
+                        {
+                            id: 9,
+                            thumbnail: 'https://i.imgur.com/dfAstzQ.jpeg',
+                            name: '로맨틱 야간 촬영',
+                            content: '도시의 야경과 전구 조명이 어우러진 로맨틱한 분위기.',
+                            price: '1,100,000원',
+                            category: ['스튜디오'],
+                            tag: ['야간 촬영', '몽환적인', '감성적인']
+                        },
+                        {
+                            id: 10,
+                            thumbnail: 'https://i.imgur.com/zE63IB8.jpeg',
+                            name: '모던 시크 스튜디오',
+                            content: '심플한 배경에서 인물에만 집중하는 세련된 화보 스타일.',
+                            price: '1,600,000원',
+                            category: ['스튜디오'],
+                            tag: ['모던한', '세련된', '인물 중심']
+                        },
+                        {
+                            id: 11,
+                            thumbnail: 'https://i.imgur.com/x08AwJc.jpeg',
+                            name: '러블리 과즙 팡팡',
+                            content: '사랑스러운 신부를 위한 화사한 과즙 메이크업과 레이스 드레스.',
+                            price: '2,300,000원',
+                            category: ['드레스', '메이크업'],
+                            tag: ['러블리한', '과즙 메이크업', '레이스 드레스']
+                        },
+                        {
+                            id: 12,
+                            thumbnail: 'https://i.imgur.com/BF7go1g.jpeg',
+                            name: '그리너리 본식 스냅',
+                            content: '식장 분위기를 그대로 담아내는 생생한 현장 본식 스냅.',
+                            price: '900,000원',
+                            category: ['스튜디오'],
+                            tag: ['본식 스냅', '그리너리', '가성비']
+                        },
+                        {
+                            id: 13,
+                            thumbnail: 'https://i.imgur.com/zKxXEJ1.jpeg',
+                            name: '동양적 우아함 패키지',
+                            content: '전통의 미와 현대적 감각이 어우러진 우아한 스타일링.',
+                            price: '2,500,000원',
+                            category: ['드레스', '메이크업'],
+                            tag: ['우아한', '단아한', '음영 메이크업']
+                        },
+                        {
+                            id: 14,
+                            thumbnail: 'https://i.imgur.com/jCdqTnb.jpeg',
+                            name: '나만의 커스터마이징',
+                            content: '신랑 신부가 원하는 컨셉을 그대로 구현하는 맞춤 상품.',
+                            price: '3,000,000원',
+                            category: ['스튜디오', '드레스', '메이크업'],
+                            tag: ['커스터마이징', '세련된', '단독 홀']
+                        },
+                        {
+                            id: 15,
+                            thumbnail: 'https://i.imgur.com/vWUgcRD.jpeg',
+                            name: '실속 알뜰 패키지',
+                            content: '필요한 것만 쏙쏙 담은 거품 없는 실속형 웨딩 상품.',
+                            price: '800,000원',
+                            category: ['메이크업', '드레스'],
+                            tag: ['가성비', '심플한', '단아한']
+                        }
                     ],
 
 
@@ -617,6 +893,21 @@
 
             }, // data
             computed: {
+                filteredList() {
+                    return this.productList.filter(product => {
+                        // 카테고리 조건 (선택 안 했으면 pass, 선택했으면 포함 여부 확인)
+                        const matchCategory = this.selectCategory.length === 0 ||
+                            this.selectCategory.some(cat => product.category.includes(cat));
+
+                        // 태그 조건
+                        const matchTag = this.selectTags.length === 0 ||
+                            this.selectTags.some(tag => product.tag.includes(tag));
+
+                        // 둘 다 만족하는 것만 리턴 (AND 조건)
+                        return matchCategory && matchTag;
+                    });
+                }
+                ,
                 resCount() {
                     return this.reservationList.length;
                 }
@@ -1087,16 +1378,7 @@
                         }
                     });
                 },
-                fnSearch() {
-                    let self = this;
 
-                    
-                    
-                    //만약 selectCategory에 '스튜디오'를 포함하고 있고 and productList.category에 '스튜디오' 를 포함하고 있다면
-                    //productList의 해당 상품을 보여준다.
-
-                
-                }
             }, // methods
 
 

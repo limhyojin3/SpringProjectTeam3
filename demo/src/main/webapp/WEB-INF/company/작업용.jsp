@@ -95,3 +95,73 @@ paidReviewList :[],
 
                     fnProductList에
                     productList3 해주기
+
+                    selectCategory: [],
+                     productList: [  //상품 리스트
+                        { id: 1, thumbnail: 'https://img1.newsis.com/2021/09/26/NISI20210926_0000834715_web.jpg', name: '스몰 웨딩', content: '스몰 웨딩 상품 설명입니다.', price: '1,700,000원', category: ['스튜디오', '드레스'] },
+                        { id: 2, thumbnail: 'gorgeous.jpg', name: '화려하게', content: '화려하게 상품 설명입니다.', price: '2,500,000원', category: ['스튜디오', '메이크업'] },
+                        { id: 3, thumbnail: 'fairy_tale.jpg', name: '동화같은 분위기', content: '동화같은 분위기 상품 설명입니다.', price: '1,200,000원', category: ['메이크업'] }
+                    ]
+
+                    selectTags: [],
+
+filteredList() {
+
+
+                    if (this.selectCategory.length === 0) {
+                        return this.productList;
+                    }
+                    if (this.selectTags.length === 0) {
+                        return this.productList;
+                    }
+
+                    // 선택된 카테고리가 있다면 필터링 시작!
+                    return this.productList.filter(product => {
+                        // product.category 배열 안에 selectCategory에 담긴 값이 하나라도 있는지 확인
+                        // some() 함수는 "하나라도 포함되면 true"를 반환합니다.
+                        return this.selectCategory.some(cat => product.category.includes(cat));
+                    });
+
+                    // 2. 필터링 시작
+                    return this.productList.filter(product => {
+                        // product.tag 배열 안에 사용자가 선택한 selectTags 중 하나라도 들어있는가?
+                        return this.selectTags.some(tag => product.tag.includes(tag));
+                    });
+
+                    //만약 selectCategory에 '스튜디오'를 포함하고 있고 and productList.category에 '스튜디오' 를 포함하고 있다면
+                    //productList의 해당 상품을 보여준다.
+
+
+                }
+
+
+                <div v-if="currentMenu === 'main'">
+
+                        <h2>카테고리</h2>
+                        <label><input type="checkbox" v-model="selectCategory" value="스튜디오">스튜디오</label>
+                        <label><input type="checkbox" v-model="selectCategory" value="드레스">드레스</label>
+                        <label><input type="checkbox" v-model="selectCategory" value="메이크업">메이크업</label>
+
+                        <div class="tag-filter">
+                            <h4>분위기 선택</h4>
+                            <label v-for="tag in productTag" :key="tag">
+                                <input type="checkbox" :value="tag" v-model="selectTags">
+                                {{ tag }}
+                            </label>
+                        </div>
+
+                        <!-- <p>선택한 카테고리: {{ selectCategory }}</p> -->
+                        <!-- {{filteredList}} -->
+                        <div v-for="i in filteredList" style="display: flex;">
+                            <div
+                                style="box-sizing: border-box; display: inline-block;height: 100px; width: 100px; border: 1px solid black;">
+                                <img :src="i.thumbnail" alt="i.name" style="height: 100%; width: 100%;">
+                            </div>
+                            <h4>{{i.name}}</h4>
+                            <p>{{i.content}}</p>
+                            <p>{{i.price}}</p>
+                        </div>
+
+
+
+                    </div>

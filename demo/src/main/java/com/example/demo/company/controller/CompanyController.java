@@ -37,7 +37,7 @@ public class CompanyController {
 	public String test99(Model model) throws Exception {
 		return "/company/company10";
 	}
-	/* 상품목록조회(카테고리 / 태그 필터)*/
+	/* 상품목록조회(카테고리 / 태그 필터) */
 	@RequestMapping("/company1.do")
 	public String te2(Model model) throws Exception {
 		return "/company/company1";
