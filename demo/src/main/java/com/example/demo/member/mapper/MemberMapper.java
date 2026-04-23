@@ -37,6 +37,40 @@ public interface MemberMapper {
 	int checkDuplicateCoupon(HashMap<String, Object> map);
 	// 쿠폰 등록
 	int insertUserCoupon(HashMap<String, Object> map);
+	// 열람권 잔여 횟수 조회
+	Member selectPassWallet(String userId);
+	// 멤버십 결제 내역 조회
+	List<Member> selectPassWalletList(String userId);
+	// 내 예약 목록 조회
+	List<Member> selectMyReservationList(String userId);
+	// 유료 리뷰 조회
+	List<Member> selectMyPaidReviewList(String userId);
+	// 무료 리뷰 조회
+	List<Member> selectMyFreeReviewList(String userId);
+	// 내가 쓴 글 조회
+	List<Member> selectMyPostList(String userId);
+	// 내가 쓴 리뷰 조회
+	List<Member> selectMyReviewList(String userId);
+	// 내가 쓴 댓글 조회
+	List<Member> selectMyCommentList(String userId);
+	// 업체 좋아요 조회
+	List<Member> selectMyCompanyLikeList(String userId);
+	// 글 좋아요 조회
+	List<Member> selectMyPostLikeList(String userId);
+	// 리뷰 좋아요 조회
+	List<Member> selectMyReviewLikeList(String userId);
+	// 내 문의 내역 조회
+	List<Member> selectMyInquiryList(String userId);
+	// 내 신고 내역 조회
+	List<Member> selectMyReportList(String userId);
+			
+	// * 유료리뷰 열람 시 *
+	// 열람 기록 확인
+	int selectUsageLog(HashMap<String, Object> map);
+	// 열람권 차감
+	int updateRemainingCount(String userId);
+	// 열람 로그 INSERT
+	int insertUsageLog(HashMap<String, Object> map);
 	
 	// *업체*
 	// 업체 검색
@@ -50,10 +84,10 @@ public interface MemberMapper {
 	
 	// *아이디/비밀번호 찾기*
 	// 이름+번호 인증을 통해 해당 id가 있는 지 조회
-	String findUserId(HashMap<String, Object> map);
+	String findUserId(Map<String, Object> map);
 	// 아이디+번호 인증을 통해 해당 pwd가 있는 지 조회
-	int checkUserForPw(HashMap<String, Object> map);
+	int checkUserForPw(Map<String, Object> map);
 	// 비밀 번호 업데이트
-	int updatePassword(HashMap<String, Object> map);
+	int updatePassword(Map<String, Object> map);
 	
 }

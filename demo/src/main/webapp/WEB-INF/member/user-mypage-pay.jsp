@@ -11,6 +11,7 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/common.css">
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 
     <%-- ✅ 마이페이지 공용 CSS --%>
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/mypage.css">
@@ -37,15 +38,27 @@
             margin-bottom: 15px;
         }
 
+        .pay-section {
+            background-color: #fff;
+            padding: 40px;
+            border-radius: 12px;
+            border: 1px solid #eee;
+            width: 100%;
+            max-width: 800px;
+            height: fit-content;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.03);
+        }
+
         .pass-title {
-            font-size: 30px;
+            font-size: 20px;
             font-weight: bold;
-            color: #555;
-            margin-bottom: 15px;
+            color: #333;
+            margin-bottom: 20px;
         }
 
         .sold {
             background-color: #ccc;
+            color: #888;
         }
     </style>
 </head>
@@ -59,40 +72,48 @@
                 <jsp:include page="/WEB-INF/common/mypage-nav.jsp" />
 
                 <div class="right-sections">
-                    <p class="pass-title">멤버십 결제 내역</p>
-                    <div class="pass-box">
-                        <h3>베이직 5회권</h3>
-                        <p>결제 : 25.02.02 ~ 잔여 2회</p>
-                    </div>
-                    <div class="pass-box sold">
-                        <h3>체험 2회권</h3>
-                        <p>결제 : 25.02.02 ~ 소진완료</p>
-                    </div>
+                    <section class="pay-section">
+                        <p class="pass-title">멤버십 결제 내역</p>
+                        <div v-if="passList.length > 0">
+                            <div v-for="pass in passList" :key="pass.passNo"
+                                :class="pass.remainingCount === 0 ? 'pass-box sold' : 'pass-box'">
+                                <h3>{{ pass.itemName }}</h3>
+                                <p>결제 : {{ pass.payDate }} ~ 잔여 {{ pass.remainingCount }}회
+                                    <span v-if="pass.remainingCount === 0">~ 소진완료</span>
+                                </p>
+                            </div>
+                        </div>
+                        <div class="pass-box" v-else>
+                            <h3>구매한 패스가 없습니다.</h3>
+                        </div>
+                    </section>
                 </div>
-
             </div>
-        </div>
         <jsp:include page="/WEB-INF/common/footer.jsp" />
+        </div>
     </div>
-
+</body>
 <script>
     const app = Vue.createApp({
         data() {
             return {
-                // 변수 - (key : value)
-
+                passList: []
             };
         },
         methods: {
-            // 함수(메소드) - (key : function())
 
         }, // methods
         mounted() {
-            // 처음 시작할 때 실행되는 부분
             let self = this;
-        }
-    });
-
+            axios.get("/myPassWalletList.dox")
+                .then(res => {
+                    self.passList = res.data;
+                })
+                .catch(err => {
+                    console.error(err);
+                });
+                }
+            });
     app.mount('#app');
 </script>
 </body>

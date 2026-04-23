@@ -49,27 +49,79 @@ public class MemberController {
 		resultMap = memberService.login(map, session);
 		return new Gson().toJson(resultMap); 
 	}
-	// * 아이디/비밀번호 변경 *
-	// 1-1. 아이디 찾기
+	// * 아이디/비밀번호 변경 * 
+	// 아이디 찾기
 	@RequestMapping("/find-id.do") // 주소 
-	public String findId(Model model) throws Exception{
+	public String FindId(Model model) throws Exception{
 		return "/member/find-id"; // 파일명
 	}
-	// 1-2. 비밀번호 찾기
-	@RequestMapping("/find-pwd.do") // 주소 
-	public String findPwd(Model model) throws Exception{
-		return "/member/find-pwd"; // 파일명
-	}
-	
-	@PostMapping("/change-pw.dox")
+	@PostMapping("/find-id-result.dox")
 	@ResponseBody
-	public HashMap<String, Object> changePw(@RequestBody HashMap<String, Object> map) {
-	    HashMap<String, Object> resultMap = new HashMap<>();
-	    int result = memberService.changePassword(map);  
-	    resultMap.put("result", result > 0 ? "success" : "fail");
+	public Map<String, Object> findIdResult(@RequestBody Map<String, Object> map) {
+		System.out.println("userName: " + map.get("userName"));
+	    System.out.println("userTel: " + map.get("userTel"));
+	    Map<String, Object> resultMap = new HashMap<>();
+	    String userId = memberService.findUserId(map);
+	    if (userId != null) {
+	        resultMap.put("result", "success");
+	        resultMap.put("userId", userId);
+	    } else {
+	        resultMap.put("result", "fail");
+	    }
 	    return resultMap;
 	}
 	
+	// 비밀 번호 변경
+	@RequestMapping("/find-pwd.do") // 주소 
+	public String changePwd(Model model) throws Exception{
+		return "/member/find-pwd"; // 파일명
+	}
+	// 1. 본인 확인 및 비밀번호 변경 권한 부여
+	@PostMapping("/check-user.dox")
+	@ResponseBody
+	public Map<String, Object> checkUser(@RequestBody Map<String, Object> map, HttpSession session) {
+	    Map<String, Object> resultMap = new HashMap<>();
+	    int count = memberService.checkUser(map);
+	    resultMap.put("count", count);
+	    if (count > 0) {
+	       // 인증 성공 시 세션에 저장 (change-pw.dox에서 검증용)
+	       session.setAttribute("authUserId", map.get("userId"));
+	       session.setAttribute("isVerified", true);
+	    }    
+	    return resultMap;
+	}
+
+    // 2. 실제 비밀번호 업데이트
+    @PostMapping("/change-pw.dox")
+    @ResponseBody
+    public Map<String, Object> changePw(@RequestBody Map<String, Object> map, HttpSession session) {
+        Map<String, Object> resultMap = new HashMap<>();
+        
+        // 세션에서 인증 정보 확인 (접근 제어)
+        String authUserId = (String) session.getAttribute("authUserId");
+        Boolean isVerified = (Boolean) session.getAttribute("isVerified");
+
+        System.out.println("세션 authUserId: " + authUserId);
+        System.out.println("세션 isVerified: " + isVerified);
+        System.out.println("요청 userId: " + map.get("userId"));
+        
+        // 세션에 저장된 ID와 요청온 ID가 일치하고, 인증된 상태여야 함
+        if (isVerified != null && isVerified && authUserId.equals(map.get("userId"))) {
+            // XML의 updatePassword 호출
+            int result = memberService.changePassword(map);
+            
+            if(result > 0) {
+                session.invalidate(); // 변경 완료 후 세션 초기화 (보안)
+                resultMap.put("result", "success");
+            } else {
+                resultMap.put("result", "fail");
+            }
+        } else {
+            resultMap.put("result", "fail");
+            resultMap.put("message", "비정상적인 접근입니다.");
+        }
+        return resultMap;
+    }
 	//
 	// 1-3. *로그아웃*
 	@RequestMapping("/logout.do")
@@ -306,9 +358,106 @@ public class MemberController {
 	        }
 	        return resultMap;
 	    }
-
-
-	    
+	// 3-17. 열람권 잔여 횟수 조회
+	@GetMapping("/myPassWallet.dox")
+	@ResponseBody
+	public Member getPassWallet(HttpSession session) {
+	    String userId = (String) session.getAttribute("sessionId");
+	    return memberService.getPassWallet(userId);
+	}
+	// 3-18. 멤버십 결제 내역 조회
+	@GetMapping("/myPassWalletList.dox")
+	@ResponseBody
+	public List<Member> getPassWalletList(HttpSession session) {
+		String userId = (String) session.getAttribute("sessionId");
+		return memberService.getPassWalletList(userId);
+	}
+	// 3-19. 내 예약 목록 조회
+	@GetMapping("/myReservation.do")
+	public String myReservation(HttpSession session) {
+	    String userId = (String) session.getAttribute("sessionId");
+	    if(userId == null) return "redirect:/login.do";
+	    return "/member/user-mypage-res-list";
+	}
+	@GetMapping("/myReservationList.dox")
+	@ResponseBody
+	public List<Member> getMyReservationList(HttpSession session) {
+	    String userId = (String) session.getAttribute("sessionId");
+	    return memberService.getMyReservationList(userId);
+	}
+	// 3-20. 내가 구매한 리뷰 목록 조회(유료/무료)
+	@GetMapping("/myPaidReviewList.dox")
+	@ResponseBody
+	public List<Member> getMyPaidReviewList(HttpSession session) {
+	    String userId = (String) session.getAttribute("sessionId");
+	    return memberService.getMyPaidReviewList(userId);
+	}
+	// 무료
+	@GetMapping("/myFreeReviewList.dox")
+	@ResponseBody
+	public List<Member> getMyFreeReviewList(HttpSession session) {
+	    String userId = (String) session.getAttribute("sessionId");
+	    return memberService.getMyFreeReviewList(userId);
+	}
+	// 내가 쓴 글 조회
+	@GetMapping("/myPostList.dox")
+	@ResponseBody
+	public List<Member> getMyPostList(HttpSession session) {
+	    String userId = (String) session.getAttribute("sessionId");
+	    return memberService.getMyPostList(userId);
+	}
+	// 내가 쓴 글 리뷰
+	@GetMapping("/myReviewList.dox")
+	@ResponseBody
+	public List<Member> getMyReviewList(HttpSession session) {
+	    String userId = (String) session.getAttribute("sessionId");
+	    return memberService.getMyReviewList(userId);
+	}
+	// 내가 쓴 댓글 조회
+	@GetMapping("/myCommentList.dox")
+	@ResponseBody
+	public List<Member> getMyCommentList(HttpSession session) {
+	    String userId = (String) session.getAttribute("sessionId");
+	    return memberService.getMyCommentList(userId);
+	}
+	// 업체 좋아요 조회
+	@GetMapping("/myCompanyLikeList.dox")
+	@ResponseBody
+	public List<Member> getMyCompanyLikeList(HttpSession session) {
+	    String userId = (String) session.getAttribute("sessionId");
+	    return memberService.getMyCompanyLikeList(userId);
+	}
+	// 글 좋아요 조회
+	@GetMapping("/myPostLikeList.dox")
+	@ResponseBody
+	public List<Member> getMyPostLikeList(HttpSession session) {
+	    String userId = (String) session.getAttribute("sessionId");
+	    return memberService.getMyPostLikeList(userId);
+	}
+	// 리뷰 좋아요 조회
+	@GetMapping("/myReviewLikeList.dox")
+	@ResponseBody
+	public List<Member> getMyReviewLikeList(HttpSession session) {
+	    String userId = (String) session.getAttribute("sessionId");
+	    return memberService.getMyReviewLikeList(userId);
+	}
+	// 내 문의 내역 조회
+	@GetMapping("/myInquiryList.dox")
+	@ResponseBody
+	public List<Member> getMyInquiryList(HttpSession session) {
+	    String userId = (String) session.getAttribute("sessionId");
+	    return memberService.getMyInquiryList(userId);
+	}
+	// 내 신고 내역 조회
+	@GetMapping("/myReportList.dox")
+	@ResponseBody
+	public List<Member> getMyReportList(HttpSession session) {
+	    String userId = (String) session.getAttribute("sessionId");
+	    return memberService.getMyReportList(userId);
+	}
+	
+	
+	
 	// * 휴대전화 번호 인증 * 
 	// 인증번호 발송
 	@RequestMapping(value = "/sendSms.dox", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
@@ -321,10 +470,24 @@ public class MemberController {
 	// 인증번호 확인
 	@RequestMapping(value = "/checkSms.dox", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
 	@ResponseBody
-	public String checkSms(@RequestParam HashMap<String, Object> map) throws Exception {
+	public String checkSms(@RequestParam HashMap<String, Object> map, HttpSession session) throws Exception {
 	    HashMap<String, Object> resultMap = smsService.checkSms(map);
+	    // userId가 있을 때만 세션 저장 (비밀번호 찾기 용도)
+	    if ("success".equals(resultMap.get("result")) && map.get("userId") != null) {
+	        session.setAttribute("authUserId", map.get("userId"));
+	        session.setAttribute("isVerified", true);
+	    }
 	    return new Gson().toJson(resultMap);
 	}
+	
+	// * 유료 리뷰 열람 시 열람 권 차감 * -> 태화님이 새로 만든다고 해서 안쓸 듯.
+		@PostMapping("/usePass.dox")
+		@ResponseBody
+		public HashMap<String, Object> usePass(@RequestBody HashMap<String, Object> map, HttpSession session) {
+		    String userId = (String) session.getAttribute("sessionId");
+		    map.put("userId", userId);
+		    return memberService.decreasePass(map);
+		}
 	
 	
 }

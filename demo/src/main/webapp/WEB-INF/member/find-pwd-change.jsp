@@ -189,20 +189,30 @@
             };
         },
         methods: {
-            fnChangePw : function() {
-                if(this.newPw !== this.confirmPw) { alert("비번 불일치!"); return; }
+            // 1단계: 정보 일치 확인
+            fnCheckUser: function() {
+                if(!this.userId || !this.userName || !this.phone) return alert("입력란을 채워주세요.");
+                
+                axios.post("/check-user.dox", { 
+                    userId: this.userId, userName: this.userName, phone: this.phone 
+                }).then(res => {
+                    if(res.data.count > 0) {
+                        this.isVerified = true; // 확인되면 화면 교체!
+                    } else {
+                        alert("정보가 일치하지 않습니다.");
+                    }
+                });
+            },
+            // 2단계: 실제 변경
+            fnChangePw: function() {
+                if(this.newPw !== this.confirmPw) return alert("비밀번호 불일치!");
                 
                 axios.post("/change-pw.dox", {
-                    userId: this.userId,
-                    userName: this.userName, // 업체는 대표자명 입력
-                    phone: this.phone,
-                    newPw: this.newPw
+                    userId: this.userId, newPw: this.newPw
                 }).then(res => {
                     if(res.data.result === "success") {
-                        alert("변경 완료! 로그인 페이지로 이동합니다. 😊");
+                        alert("변경 완료! 로그인하러 가요~");
                         location.href = "/login.do";
-                    } else {
-                        alert("정보를 다시 확인해주세요.");
                     }
                 });
             }
