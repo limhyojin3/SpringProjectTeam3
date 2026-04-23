@@ -183,6 +183,6 @@ public class CompanyService {
 			resultMap.put("message", Message.MSG_SERVER_ERR);
 		}
 		return resultMap;  
-	}
+	} 
 	
 }

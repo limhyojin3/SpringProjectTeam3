@@ -92,3 +92,6 @@ paidReviewList :[],
                     handleMenuClick
 
                     {{w.name}} <- 이거 하다말았음..
+
+                    fnProductList에
+                    productList3 해주기
