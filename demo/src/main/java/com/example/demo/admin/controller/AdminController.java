@@ -68,6 +68,11 @@ public class AdminController {
 	public String adminInquiry(Model model) {
 	    return "admin/adminInquiry";
 	}
+	
+	@RequestMapping("/adminCompany.do")
+	public String adminCompany(Model model) {
+	    return "admin/adminCompany";
+	}
 
 	@RequestMapping(value = "/sales.dox", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
 	@ResponseBody
@@ -128,26 +133,22 @@ public class AdminController {
 	@ResponseBody
 	public HashMap<String, Object> verifyPayment(@RequestParam HashMap<String, Object> map) {
 		HashMap<String, Object> result = new HashMap<>();
-	    
 		boolean isValid = adminService.getPayInfo(map);
 
 		    if (isValid) {
-		    	// 1. payment 테이블 insert
-		        adminService.addPayment(map);
-
-		        // 2. payment_pass 테이블 insert
-		        adminService.addPaymentPass(map);
-		        
-		        result = map;
+		    	// 성공 시 저장
+				System.out.println("========= [테스트 결과] =========");
+		        System.out.println("결제 검증 성공: 실제 금액과 일치합니다.");
+		        System.out.println("결제 번호(imp_uid): " + map.get("imp_uid"));
+		        System.out.println("================================");
 		        
 		        result.put("success", true);
-		        result.put("msg", "결제 검증 완료");
+		        result.put("msg", "결제 검증 완료!");
 		        
 		    } else {
 		        result.put("success", false);
 		        result.put("msg", "결제 검증 실패");
 		    }
-
 		    return result;
 	}
 	
@@ -178,7 +179,17 @@ public class AdminController {
 
 		return resultMap;
 	}
+	
+	// 관리자 전체 업체목록 페이지
+	@RequestMapping("/companyList.dox")
+	@ResponseBody
+	public HashMap<String, Object> companyList(@RequestParam HashMap<String, Object> map) {
+		HashMap<String, Object> resultMap = new HashMap<>();
+		resultMap = adminService.getCompanyList(map);
 
+		return resultMap;
+	}
+	
 	// 관리자 전체 회원목록 페이지
 	@RequestMapping(value = "/editMemberBan.dox", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
 	@ResponseBody
@@ -186,6 +197,17 @@ public class AdminController {
 	    HashMap<String, Object> resultMap = new HashMap<>();
 
 	    resultMap = adminService.editMemberBan(map);
+
+	    return new Gson().toJson(resultMap);
+	}
+	
+	// 정지 이력 조회
+	@RequestMapping("/banHistory.dox")
+	@ResponseBody
+	public String banHistory(@RequestParam HashMap<String, Object> map) {
+	    HashMap<String, Object> resultMap = new HashMap<>();
+
+	    resultMap = adminService.getBanHistory(map);
 
 	    return new Gson().toJson(resultMap);
 	}
