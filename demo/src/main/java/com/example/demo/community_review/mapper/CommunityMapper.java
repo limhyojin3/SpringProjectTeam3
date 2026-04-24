@@ -51,6 +51,9 @@ public interface CommunityMapper {
 	
 	// 13. 페이지네이션
 	int selectPostCount(HashMap<String, Object> map);
+	
+	// 커뮤니티 게시글 제목 가져오기
+    String getPostTitle(String targetId);
 
     
     
