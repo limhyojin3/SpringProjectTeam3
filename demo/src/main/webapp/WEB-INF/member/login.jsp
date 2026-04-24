@@ -15,10 +15,7 @@
 
         #container {
             width: 380px;
-            border: 2px solid #f4a096;
-            border-radius: 12px;
             padding: 30px;
-            background: white;
             text-align: center;
         }
 
@@ -112,60 +109,61 @@
         }
         .logo {
             cursor: pointer;
+            margin-left: -30px;
         }
     </style>
 </head>
 <body>
     <div id="app">
-        <!-- html 코드는 id가 app인 태그 안에서 작업 -->
-        <!-- 로고 -->
-        <div class="logo">
-            <img src="/img/merryview-logo-text.svg" alt="메리뷰 로고" @click="fnMain()">
+        <div id="container">
+            <!-- 로고 -->
+            <div class="logo">
+                <img src="/img/merryview-logo-text.svg" alt="메리뷰 로고" @click="fnMain()">
+            </div>
+
+            <!-- 탭 버튼 -->
+            <div class="tab-wrap">
+                <button :class="{'active-user': tab === 'user'}" @click="FnswitchTab('user')">일반 로그인</button>
+                <button :class="{'active-company': tab === 'company'}" @click="FnswitchTab('company')">업체 로그인</button>
+            </div>
+
+            <!-- 일반 로그인 폼 -->
+            <div id="userForm" v-show="tab === 'user'" :class="{'user-form': tab === 'user'}">
+                <table>
+                    <tr>
+                        <th>아이디</th>
+                        <td><input type="text" v-model="userId" placeholder="아이디"></td>
+                    </tr>
+                    <tr>
+                        <th>비밀번호</th>
+                        <td><input type="password" v-model="userPwd" @keyup.enter="fnLogin()" placeholder="비밀번호"></td>
+                    </tr>
+                </table>
+            </div>
+
+            <!-- 업체 로그인 폼 -->
+            <div id="companyForm" v-show="tab === 'company'" :class="{'company-form': tab === 'company'}">
+                <table>
+                    <tr>
+                        <th>기업 아이디</th>
+                        <td><input type="text" v-model="companyId" placeholder="아이디"></td>
+                    </tr>
+                    <tr>
+                        <th>비밀번호</th>
+                        <td><input type="password" v-model="companyPwd" @keyup.enter="fnLogin()" placeholder="비밀번호"></td>
+                    </tr>
+                </table>
+            </div>
+
+            <button class="login-btn" @click="fnLogin()">로그인</button>
+
+            <div class="link-wrap">
+                <a href="/join.do"><span>회원가입</span></a>
+                <span>|</span>
+                <a href="/find-id.do"><span>아이디 찾기/비밀번호 변경</span></a>
+            </div>
+
         </div>
-
-        <!-- 탭 버튼 -->
-        <div class="tab-wrap">
-            <button :class="{'active-user': tab === 'user'}" @click="FnswitchTab('user')">일반 로그인</button>
-            <button :class="{'active-company': tab === 'company'}" @click="FnswitchTab('company')">업체 로그인</button>
-        </div>
-
-        <!-- 일반 로그인 폼 -->
-        <div id="userForm" v-show="tab === 'user'" :class="{'user-form': tab === 'user'}">
-            <table>
-                <tr>
-                    <th>아이디</th>
-                    <td><input type="text" v-model="userId" placeholder="아이디"></td>
-                </tr>
-                <tr>
-                    <th>비밀번호</th>
-                    <td><input type="password" v-model="userPwd" @keyup.enter="fnLogin()" placeholder="비밀번호"></td>
-                </tr>
-            </table>
-        </div>
-
-        <!-- 업체 로그인 폼 -->
-        <div id="companyForm" v-show="tab === 'company'" :class="{'company-form': tab === 'company'}">
-            <table>
-                <tr>
-                    <th>기업 아이디</th>
-                    <td><input type="text" v-model="companyId" placeholder="아이디"></td>
-                </tr>
-                <tr>
-                    <th>비밀번호</th>
-                    <td><input type="password" v-model="companyPwd" @keyup.enter="fnLogin()" placeholder="비밀번호"></td>
-                </tr>
-            </table>
-        </div>
-
-        <button class="login-btn" @click="fnLogin()">로그인</button>
-
-        <div class="link-wrap">
-            <a href="/join.do"><span>회원가입</span></a>
-            <span>|</span>
-            <a href="/find-id.do"><span>아이디 찾기/비밀번호 변경</span></a>
-        </div>
-
-
     </div>
 </body>
 </html>

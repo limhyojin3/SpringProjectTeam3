@@ -183,5 +183,22 @@ public class CompanyController {
 
 		return new Gson().toJson(resultMap);
 	}
+	
+	//public HashMap<String, Object> getReviewCnt(HashMap<String, Object> map)
+	@RequestMapping(value = "/getReviewCnt.dox", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
+	@ResponseBody
+	public String test3(@RequestParam HashMap<String, Object> map) throws Exception {
+		HashMap<String, Object> resultMap = companyService.getReviewCnt(map);
+
+		return new Gson().toJson(resultMap);
+	}
+	
+	@RequestMapping(value = "/getSimpleReviewCnt.dox", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
+	@ResponseBody
+	public String tet3(@RequestParam HashMap<String, Object> map) throws Exception {
+		HashMap<String, Object> resultMap = companyService.getSimpleReviewCnt(map);
+
+		return new Gson().toJson(resultMap);
+	}
 
 }

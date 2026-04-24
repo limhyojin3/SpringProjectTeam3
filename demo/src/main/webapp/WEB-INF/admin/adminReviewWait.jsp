@@ -22,45 +22,9 @@
                 grid-template-areas:
                     "nav main";
                 /* 높이 고정 (쉼표 없음) */
-                grid-template-columns: 220px 1fr;
+                grid-template-columns: 300px 1fr;
                 /* 너비 고정 */
                 gap: 5px;
-            }
-
-            .navi {
-                grid-area: nav;
-                border: 1px solid blue;
-                padding: 20px 10px;
-                display: flex;
-                flex-direction: column;
-                gap: 8px;
-                background-color: #ffc7c2;
-            }
-
-            .navi-btn {
-                width: 100%;
-                padding: 12px 10px;
-                text-align: left;
-                background-color: white;
-                border: 1px solid #ddd;
-                border-radius: 4px;
-                cursor: pointer;
-                font-size: 14px;
-                font-weight: 500;
-                transition: 0.2s;
-            }
-
-            .navi-btn:hover {
-                background-color: #e3f2fd;
-                border-color: #2196f3;
-                color: #1976d2;
-            }
-
-            .activebtn {
-                background-color: #ff6b6b;
-                color: white;
-                font-weight: bold;
-                border: 1px solid #ff6b6b;
             }
 
             .main {

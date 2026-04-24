@@ -49,6 +49,13 @@ public class Admin {
 	String name;            // 전체 회원목록. 멤버테이블 컬럼명
 	String role;
 	
+	// 업체 목록
+	String companyName;
+	String companyEmail;
+	String memberStatus;
+	String companyStatus;
+	String grade;			// 제휴업체인지 일반업체인지 나눔
+	
 	// 패스목록
 	int passNo;
 	String passName;
@@ -62,5 +69,7 @@ public class Admin {
 	String reason;       // 정지 사유
 	String adminId;      // 관리자 아이디
 	String banRegDate;   // 이력 날짜
+	String ceoName;
+	String bizName;
 
 }

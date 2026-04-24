@@ -14,7 +14,9 @@
         
         <div class="collapse navbar-collapse">
             <ul class="navbar-nav ml-auto align-items-center">
-                <!-- 업체 찾기 url 연결 필요 -->
+                <li class="nav-item">
+                    <a class="nav-link" href="/about.do" style="color: #ff4d6d !important; font-weight: 700 !important; padding: 0 15px !important;">회사소개</a>
+                </li>
                 <li class="nav-item">
                     <a class="nav-link" href="#" style="color: #ff4d6d !important; font-weight: 700 !important; padding: 0 15px !important;">업체찾기</a>
                 </li>
@@ -24,7 +26,6 @@
                 <li class="nav-item">
                     <a class="nav-link" href="${pageContext.request.contextPath}/api/review/list.do" style="color: #ff4d6d !important; font-weight: 700 !important; padding: 0 15px !important;">리얼리뷰</a>
                 </li>
-                <!-- 패스권 구매 url 연결 필요 -->
                 <li class="nav-item">
                     <a class="nav-link" href="#" style="color: #ff4d6d !important; font-weight: 700 !important; padding: 0 15px !important;">패스구매</a>
                 </li>
@@ -39,6 +40,7 @@
                                     <c:when test="${sessionScope.sessionRole == 'USER'}">
                                         <a class="nav-link" href="${pageContext.request.contextPath}/userMyPage.do" style="color: #ff4d6d !important; font-weight: 700 !important; padding: 0 15px !important;">마이페이지</a>
                                     </c:when>
+                                    <%-- 업체 상품관리 페이지 주소 변경 필요--%>
                                     <%-- 2. 업체(PARTNER 또는 NPARTNER)인 경우 --%>
                                     <c:when test="${sessionScope.sessionRole == 'PARTNER' or sessionScope.sessionRole == 'NPARTNER'}">
                                         <a class="nav-link" href="${pageContext.request.contextPath}/company10.do" style="color: #ff4d6d !important; font-weight: 700 !important; padding: 0 15px !important;">업체페이지</a>

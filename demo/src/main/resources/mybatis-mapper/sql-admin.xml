@@ -14,6 +14,7 @@
 		ORDER BY sale_month;
 	</select>
 
+	<!--adminMain에 쓰일 요약 용도-->
 	<select id="selectClientsList" parameterType="hashmap"
 		resultType="com.example.demo.admin.model.Admin"> SELECT
 		DATE_FORMAT(REG_DATE, '%Y-%m') AS USER_MONTH, Count(*) AS USER_COUNT
@@ -177,10 +178,34 @@
 		FROM MEMBER M
 		LEFT JOIN USER_DETAIL U
 			ON M.USER_ID = U.USER_ID
+			WHERE M.ROLE = 'USER'
 	</select>
 
-	<select id="selectBanHistory"
+	<!-- 전체 업체목록 페이지 -->
+	<select id="selectCompanyList" parameterType="hashmap"
 		resultType="com.example.demo.admin.model.Admin">
+		SELECT
+		M.USER_ID AS userId,
+		C.COM_NAME AS name,
+		C.COM_EMAIL AS companyEmail,
+		M.STATUS AS status,
+		C.STATUS AS companyStatus,
+		M.REG_DATE AS regDate,
+		C.CEO_NAME AS ceoName,
+		C.BIZ_NO AS bizName,
+		C.GRADE AS grade,
+		CASE
+		WHEN M.ROLE = 'USER' THEN 'USER'
+		WHEN M.ROLE IN ('PARTNER', 'NPARTNER') THEN 'COMPANY'
+		END AS targetType
+		FROM MEMBER M
+		LEFT JOIN COMPANY C
+		ON M.USER_ID = C.USER_ID
+		WHERE M.ROLE IN ('PARTNER', 'NPARTNER')
+	</select>
+	
+	<!-- 정지 이력 조회 -->
+	<select id="selectBanHistory" parameterType="hashmap" resultType="com.example.demo.admin.model.Admin">
 		SELECT
 		target_id AS targetId,
 		target_type AS targetType,
@@ -194,35 +219,14 @@
 		ORDER BY reg_date DESC
 	</select>
 
-	<!-- MEMBER 정지 -->
-	<update id="updateMemberStop">
+	<!-- 정지/해제 (회원/업체 공통) -->
+	<update id="updateMemberStatus">
 		UPDATE member
-		SET status = 'STOP'
+		SET status = #{status}
 		WHERE user_id = #{target_id}
 	</update>
 
-	<!-- MEMBER 해제 -->
-	<update id="updateMemberActive">
-		UPDATE member
-		SET status = 'ACTIVE'
-		WHERE user_id = #{target_id}
-	</update>
-
-	<!-- COMPANY 정지 -->
-	<update id="updateCompanyStop">
-		UPDATE company
-		SET status = 'STOP'
-		WHERE company_id = #{target_id}
-	</update>
-
-	<!-- COMPANY 해제 -->
-	<update id="updateCompanyActive">
-		UPDATE company
-		SET status = 'ACTIVE'
-		WHERE company_id = #{target_id}
-	</update>
-
-	<!-- 이력 저장 -->
+	<!-- 정지 이력 저장 -->
 	<insert id="insertBanHistory">
 		INSERT INTO ban_history (
 		target_id,
