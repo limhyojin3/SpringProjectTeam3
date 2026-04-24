@@ -257,3 +257,36 @@ filteredList() {
                                 </label>
                             </div>
                         </div>
+
+
+                        /getReviewCnt.dox
+//이렇게하자
+        self.productList3 = data.list;
+        
+
+        weddinglist() {
+                    return this.productList.map(product => {
+                        return {
+                            name: product.productName,
+                            reviewcount: product.reviewCount,
+                            thumbnail: product.imgUrl
+                        }
+                    })
+                },
+                simpleweddinglist() {
+                    return this.productList.map(product => {
+                        return {
+                            name: product.name,
+                            reviewcount: this.simpleReviews.filter(r => r.product === product.name).length,
+                            thumbnail: product.thumbnail
+                        }
+                    })
+                },
+                productList3 : [{productNo: , productName: , imgUrl, reviewCount: },..]
+                p.product_no, p.product_name, p.img_url, count(review_no)
+		reviewCount
+fnReview  reviewTab = 'detail'
+        reviewTab = 'simple'
+        fnSimple()
+
+        totalReviewCnt

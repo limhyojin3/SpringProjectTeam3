@@ -22,8 +22,11 @@ public interface CompanyMapper {
 	//selectCompanyByUserId
 	
 	//int result = companyMapper.deleteProduct(map);
+	//selectSimpleReviewCnt
 	
+	List<Company> selectSimpleReviewCnt(HashMap<String, Object> map);
 	
+	List<Company> selectReviewCnt(HashMap<String, Object> map);
 	
 	List<Company> selectReservation(HashMap<String, Object> map);
 	

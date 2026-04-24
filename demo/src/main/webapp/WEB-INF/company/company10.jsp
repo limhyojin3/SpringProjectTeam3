@@ -804,29 +804,28 @@
 
 
                             <div class="tab-menu">
-                                <button :class="{ active: reviewTab === 'detail' }" @click="reviewTab = 'detail'">상세
-                                    리뷰({{reviews.length}})
+                                <button :class="{ active: reviewTab === 'detail' }" @click="fnReview()">상세
+                                    리뷰({{totalReviewCnt}})
                                 </button>
 
-                                <button :class="{ active: reviewTab === 'simple' }" @click="reviewTab = 'simple'">한줄
-                                    리뷰({{simpleReviews.length}})
+                                <button :class="{ active: reviewTab === 'simple' }" @click="fnSimple()">한줄
+                                    리뷰({{totalSimpleReviewCnt}})
                                 </button>
                             </div>
 
                             <div v-if="reviewTab === 'detail'" class="content-card">
 
-                                <h3>리뷰 내역 : <span style="color: #ff1493;">새 리뷰 {{this.reviews.filter(r => r.updated ===
-                                        'new').length}}건</span></h3>
-                                <template v-for="w in weddinglist" :key="w.name">
+                                <h3>리뷰 내역 : <span style="color: #ff1493;">새 리뷰 0건</span></h3>
+                                <template v-for="w in productList3" :key="w.productName">
                                     <div class="review-header-info" style="margin-bottom: 10px;">
                                         <div class="review-thumb-box">
-                                            <img :src="w.thumbnail" style="max-width: 100%; max-height: 100%;">
+                                            <img :src="w.imgUrl" style="max-width: 100%; max-height: 100%;">
                                         </div>
                                         <div class="review-product-name">
                                             <a href="javascript:;"
-                                                @click="page1 = w.name; page = 1"><strong>{{w.name}}</strong></a>
+                                                @click="page1 = 1; page = 1"><strong>{{w.productName}}</strong></a>
                                         </div>
-                                        <div class="review-count-badge">리뷰 갯수: {{w.reviewcount}}개 </div>
+                                        <div class="review-count-badge">리뷰 갯수: {{w.reviewCount}}개 </div>
                                     </div>
                                 </template>
                             </div>
@@ -834,22 +833,21 @@
 
                             <div v-if="reviewTab === 'simple'" class="content-card">
 
-                                <h3>리뷰 내역 : <span style="color: #ff1493;">새 리뷰 {{this.simpleReviews.filter(r =>
-                                        r.updated === 'new').length}}건</span></h3>
+                                <h3>리뷰 내역 : <span style="color: #ff1493;">새 리뷰 0건</span></h3>
 
-                                <template v-for="w in simpleweddinglist" :key="w.name">
+                                <template v-for="w in productList3" :key="w.productName">
 
                                     <div class="review-header-info" style="margin-bottom: 10px;">
                                         <div class="review-thumb-box">
-                                            <img :src="w.thumbnail" style="max-width: 100%; max-height: 100%;">
+                                            <img :src="w.imgUrl" style="max-width: 100%; max-height: 100%;">
                                         </div>
                                         <div class="review-product-name">
 
                                             <a href="javascript:;"
-                                                @click="page1 = w.name; page = 1"><strong>{{w.name}}</strong></a>
+                                                @click="page1 = 1; page = 1"><strong>{{w.productName}}</strong></a>
 
                                         </div>
-                                        <div class="review-count-badge">리뷰 갯수: {{w.reviewcount}}개 </div>
+                                        <div class="review-count-badge">리뷰 갯수: {{w.reviewCount}}개 </div>
                                     </div>
                                 </template>
                             </div>
@@ -958,7 +956,10 @@
         const app = Vue.createApp({
             data() {
                 return {
+                    productNo : '',
+                    totalSimpleReviewCnt : 0,
                     // 변수 - (key : value)
+                    totalReviewCnt : 0,
                     productList3: [],
                     inquiryList: [
                         { id: 1, product: '화려하게', title: '투어 일정 변경하고 싶습니다.', userid: '김결혼', content: '04.01일 예약했는데 04.08일로 변경하고 싶어요.' },
@@ -1100,14 +1101,16 @@
                     // productList에서 이름이 일치하는 녀석을 찾고, 없으면 빈 객체{}를 반환
                     return this.productList.find(p => p.name === this.product) || {};
                 },
+
+                
                 menuList() {
                     return [
                         { id: 'main', name: '마이 페이지', count: 0 },
                         { id: 'product', name: '상품 관리', count: 0 },
                         { id: 'reservation', name: '예약 관리', count: this.resCount },
                         { id: 'inquiry', name: '문의 내역', count: 2 },
-                        { id: 'review', name: '리뷰 내역', count: this.revCnt },
-                        { id: 'customer', name: '고객센터', count: 0 }
+                        { id: 'review', name: '리뷰 내역', count: 1 },
+                        { id: 'customer', name: '고객센터', count: 1 }
                     ];
                 },
                 weddinglist() {
@@ -1225,6 +1228,8 @@
                             //console.log(data);
 
                             self.productList3 = data.list; //덮어씌우기
+
+                            
                         }
                     });
                 },
@@ -1418,8 +1423,16 @@
                         this.fnProductList();
                     } else if(menuId === 'reservation'){
                         this.fnReservationList();
+                    } else if(menuId === 'review'){
+                        
+                        this.fnSimple();
+                        this.fnReview();
                     }
                 },
+
+
+
+
                 fnFileChange(event) {
                     // 1. 이벤트가 일어난 대상(input)에서 선택된 파일들 중 첫 번째[0]를 가져와요.
                     const file = event.target.files[0];
@@ -1572,8 +1585,63 @@
                         type: "POST",
                         data: param,
                         success: function (data) {
-                            console.log(data);
+                            //console.log(data);
                             self.reservationList = data.list;
+                        }
+                    });
+                },
+                fnReview(){
+                    this.reviewTab = 'detail'
+
+                    let self = this;
+                    let param = {
+                        userId : 'sunsu09'
+                    };
+                    $.ajax({
+                        url: "/getReviewCnt.dox",
+                        dataType: "json",
+                        type: "POST",
+                        data: param,
+                        success: function (data) {
+                            console.log(data);
+                            self.productList3 = data.list;
+
+                            let reviewCntList = self.productList3.map(p => p.reviewCount); //[3,0,1..];
+
+                            let sum = 0;
+                            for(let i = 0; i < reviewCntList.length; i++){
+                                sum += reviewCntList[i];
+                            }
+
+                            self.totalReviewCnt = sum;
+                        }
+                    });
+                },
+                fnSimple(){
+                    this.reviewTab = 'simple'
+
+                    let self = this;
+                    let param = {
+                        userId : 'sunsu09'
+                    };
+                    $.ajax({
+                        url: "/getSimpleReviewCnt.dox",
+                        dataType: "json",
+                        type: "POST",
+                        data: param,
+                        success: function (data) {
+                            //console.log(data);
+                            self.productList3 = data.list;
+
+                            let reviewCntList = self.productList3.map(p => p.reviewCount); //[3,0,1..];
+
+                            let sum = 0;
+                            for(let i = 0; i < reviewCntList.length; i++){
+                                sum += reviewCntList[i];
+                            }
+
+                            self.totalSimpleReviewCnt = sum;
+                            
                         }
                     });
                 }
