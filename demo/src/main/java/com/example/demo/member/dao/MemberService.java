@@ -336,7 +336,9 @@ public class MemberService {
 	}
 	// 열람권 잔회 횟수 조회
 	public Member getPassWallet(String userId) {
-	    return memberMapper.selectPassWallet(userId);
+		Member result = memberMapper.selectPassWallet(userId);
+//	    System.out.println("getPassWallet result: " + result);  // ✅ 추가
+	    return result;
 	}
 	// 멤버십 결제 내역 조회
 	public List<Member> getPassWalletList(String userId) {
