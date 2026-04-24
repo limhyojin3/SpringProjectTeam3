@@ -203,7 +203,7 @@ filteredList() {
             <div class="detail-left">
                 <img :src="product1.thumbnail" class="detail-main-img">
                 <div class="detail-company-name">
-                    {{ product1.name }} </div>
+                    {{ product1.company }} </div>
                 <div class="detail-description-card">
                     <h3 style="margin-top:0;">{{ product1.name }}</h3>
                     <p>{{ product1.content }}</p>
@@ -240,3 +240,20 @@ filteredList() {
         </div>
     </div>
 </main>
+
+
+<div class="filter-section">
+                            <div class="section-title">조회 필터</div>
+                            <h2>카테고리</h2>
+                            <label><input type="checkbox" v-model="selectCategory" value="스튜디오"> 스튜디오</label>
+                            <label><input type="checkbox" v-model="selectCategory" value="드레스"> 드레스</label>
+                            <label><input type="checkbox" v-model="selectCategory" value="메이크업"> 메이크업</label>
+
+                            <div class="tag-filter">
+                                <h4 style="width: 100%;">분위기 선택</h4>
+                                <label v-for="tag in productTag" :key="tag">
+                                    <input type="checkbox" :value="tag" v-model="selectTags">
+                                    {{ tag }}
+                                </label>
+                            </div>
+                        </div>

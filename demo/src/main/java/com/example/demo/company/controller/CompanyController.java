@@ -175,5 +175,13 @@ public class CompanyController {
 
 		return new Gson().toJson(resultMap);
 	}
+	
+	@RequestMapping(value = "/ReservationList.dox", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
+	@ResponseBody
+	public String test23(@RequestParam HashMap<String, Object> map) throws Exception {
+		HashMap<String, Object> resultMap = companyService.getReservation(map);
+
+		return new Gson().toJson(resultMap);
+	}
 
 }
