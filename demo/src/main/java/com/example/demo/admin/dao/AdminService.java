@@ -196,5 +196,61 @@ public boolean getPayInfo(HashMap<String, Object> map) {
 		return resultMap;
 	}
 	
-	
+	// 관리자 전체 회원목록 페이지
+	public HashMap<String, Object> getUserList(HashMap<String, Object> map) {
+		HashMap<String, Object> resultMap = new HashMap<String, Object>();
+		try {
+			List<Admin> list = adminMapper.selectUserList(map);
+			resultMap.put("list", list);
+			resultMap.put("result", "success");
+			resultMap.put("message", Message.MSG_SEARCH);
+		} catch (Exception e) {
+			// TODO: handle exception
+			System.out.println(e.getMessage());
+			resultMap.put("result", "fail");
+			resultMap.put("message", Message.MSG_SERVER_ERR);
+		}
+		return resultMap;
+	}
+
+	// 관리자 전체 회원목록 페이지 밴/해제 기능
+	@Transactional
+	public HashMap<String, Object> editMemberBan(HashMap<String, Object> map) {
+	    HashMap<String, Object> resultMap = new HashMap<>();
+
+	    try {
+	        String action = (String) map.get("action_type");   // BAN / UNBAN
+	        String type = (String) map.get("target_type");     // USER / COMPANY
+
+	        // 1. 대상별 처리
+	        if ("USER".equals(type)) {
+
+	            if ("BAN".equals(action)) {
+	                adminMapper.updateMemberStop(map);
+	            } else if ("UNBAN".equals(action)) {
+	                adminMapper.updateMemberActive(map);
+	            }
+
+	        } else if ("COMPANY".equals(type)) {
+
+	            if ("BAN".equals(action)) {
+	                adminMapper.updateCompanyStop(map);
+	            } else if ("UNBAN".equals(action)) {
+	                adminMapper.updateCompanyActive(map);
+	            }
+	        }
+
+	        // 2. 이력 저장 (공통)
+	        adminMapper.insertBanHistory(map);
+
+	        resultMap.put("result", Message.MSG_ADD);
+
+	    } catch (Exception e) {
+	        System.out.println(e.getMessage());
+	        resultMap.put("result", Message.MSG_SERVER_ERR);
+	        throw e; // 트랜잭션 롤백
+	    }
+
+	    return resultMap;
+	}
 }

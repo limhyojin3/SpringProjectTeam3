@@ -40,4 +40,20 @@ public interface AdminMapper {
 
 	void updateInquiryStatus(Map<String, Object> map);
 
+	// 관리자 전체 회원목록 페이지
+	public List<Admin> selectUserList(HashMap<String, Object> map);
+	
+	// ====== 관리자 전체 회원목록 페이지 정지/해제 기능 ======
+
+	// MEMBER
+	public int updateMemberStop(HashMap<String, Object> map);
+	public int updateMemberActive(HashMap<String, Object> map);
+
+	// COMPANY
+	public int updateCompanyStop(HashMap<String, Object> map);
+	public int updateCompanyActive(HashMap<String, Object> map);
+
+	// 이력
+	public int insertBanHistory(HashMap<String, Object> map);
+	
 }

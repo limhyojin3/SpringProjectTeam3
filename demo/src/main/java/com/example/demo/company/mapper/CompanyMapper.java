@@ -23,6 +23,11 @@ public interface CompanyMapper {
 	
 	//int result = companyMapper.deleteProduct(map);
 	
+	
+	
+	List<Company> selectReservation(HashMap<String, Object> map);
+	
+	
 	List<Review> selectPaidReviewList(HashMap<String, Object> map); //이부분 //#{companyNo}
 	
 	int deleteProduct(HashMap<String, Object> map);

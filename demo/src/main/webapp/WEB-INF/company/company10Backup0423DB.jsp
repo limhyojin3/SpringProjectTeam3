@@ -2,6 +2,8 @@
     <!DOCTYPE html>
     <html lang="en">
 
+
+    <!-- 프론트 + 백단 26.04.26 백업본  -->
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -716,11 +718,11 @@
                             <table style="margin-bottom: 30px;">
                                 <tr>
                                     <th>예약 상품</th>
-                                    <td>{{ res.productName }}</td>
+                                    <td>{{ res.product }}</td>
                                 </tr>
                                 <tr>
                                     <th>예약 내용</th>
-                                    <td>{{ res.resContent }}</td>
+                                    <td>{{ res.content }}</td>
                                 </tr>
                                 <tr>
                                     <th>예약 일자</th>
@@ -728,19 +730,19 @@
                                 </tr>
                                 <tr>
                                     <th>이용 일자</th>
-                                    <td>{{ res.useDatetime }}</td>
+                                    <td>{{ res.useDate }}</td>
                                 </tr>
                                 <tr>
                                     <th>예약자명</th>
-                                    <td>{{ res.resUserId }}</td>
+                                    <td>{{ res.name }}</td>
                                 </tr>
                                 <tr>
                                     <th>연락처</th>
-                                    <td>{{ res.tel }}</td>
+                                    <td>{{ res.contact }}</td>
                                 </tr>
                                 <tr>
                                     <th>결제 금액</th>
-                                    <td>(예약금) {{ res.deposit }}</td>
+                                    <td>(예약금) {{ res.price }}</td>
                                 </tr>
                             </table>
                         </template>
@@ -1416,8 +1418,6 @@
                     }
                     else if (menuId === 'product') {
                         this.fnProductList();
-                    } else if(menuId === 'reservation'){
-                        this.fnReservationList();
                     }
                 },
                 fnFileChange(event) {
@@ -1558,22 +1558,6 @@
                         data: param,
                         success: function (data) {
 
-                        }
-                    });
-                },
-                fnReservationList: function () {
-                    let self = this;
-                    let param = {
-                        userId : 'sunsu09'
-                    };
-                    $.ajax({
-                        url: "/ReservationList.dox",
-                        dataType: "json",
-                        type: "POST",
-                        data: param,
-                        success: function (data) {
-                            console.log(data);
-                            self.reservationList = data.list;
                         }
                     });
                 }
