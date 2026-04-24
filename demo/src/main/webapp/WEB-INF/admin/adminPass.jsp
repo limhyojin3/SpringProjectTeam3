@@ -15,51 +15,6 @@
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
         <link rel="stylesheet" href="${pageContext.request.contextPath}/css/common.css">
         <style>
-            .middle {
-                width: 100%;
-                /* 화면 전체 높이를 사용하되, 헤더/푸터 제외한 나머지는 유연하게(1fr) */
-                display: grid;
-                grid-template-areas:
-                    "nav main";
-                grid-template-columns: 300px 1fr;
-                /* 너비 고정 */
-            }
-
-            .navi {
-                grid-area: nav;
-                border: 1px solid blue;
-                padding: 20px 10px;
-                display: flex;
-                flex-direction: column;
-                gap: 8px;
-            }
-
-            .navi-btn {
-                width: 100%;
-                padding: 12px 10px;
-                text-align: left;
-                background-color: white;
-                border: 1px solid #ddd;
-                border-radius: 4px;
-                cursor: pointer;
-                font-size: 14px;
-                font-weight: 500;
-                transition: 0.2s;
-            }
-
-            .navi-btn:hover {
-                background-color: #e3f2fd;
-                border-color: #2196f3;
-                color: #1976d2;
-            }
-
-            .activebtn {
-                background-color: #ff6b6b;
-                color: white;
-                font-weight: bold;
-                border: 1px solid #ff6b6b;
-            }
-
             .main {
                 grid-area: main;
                 border: 1px solid #ffc7c2;
@@ -272,28 +227,6 @@
         <div id="app">
             <jsp:include page="/WEB-INF/common/header.jsp" />
             <div class="middle">
-                <div class="navi">
-                    <button :class="['navi-btn', activeMenu === 'user' ? 'activebtn' : '']"
-                        @click="goPage('/adminUser.do', 'user')">회원 목록</button>
-
-                    <button :class="['navi-btn', activeMenu === 'company' ? 'activebtn' : '']"
-                        @click="goPage('/adminCompany.do', 'company')">업체 목록</button>
-
-                    <button :class="['navi-btn', activeMenu === 'board' ? 'activebtn' : '']"
-                        @click="goPage('/adminBoard.do', 'board')">게시판</button>
-
-                    <button :class="['navi-btn', activeMenu === 'reviewWait' ? 'activebtn' : '']"
-                        @click="goPage('/adminReviewWait.do', 'reviewWait')">리뷰 대기</button>
-
-                    <button :class="['navi-btn', activeMenu === 'payment' ? 'activebtn' : '']"
-                        @click="goPage('/adminPayment.do', 'payment')">결제/상품</button>
-
-                    <button :class="['navi-btn', activeMenu === 'report' ? 'activebtn' : '']"
-                        @click="goPage('/adminReport.do', 'report')">신고</button>
-
-                    <button :class="['navi-btn', activeMenu === 'stats' ? 'activebtn' : '']"
-                        @click="goPage('/adminStatistics.do', 'stats')">통계</button>
-                </div>
                 <div class="main">
                     <div class="pass-container">
                         <div class="pass-header">
@@ -417,155 +350,165 @@
                                 name: selectedPass.passName,
                                 amount: selectedPass.price,      //제품 가격
                             },
-                            function (response) {
-                                // 결제 종료 시 호출되는 콜백 함수
-                                // response.imp_uid 값으로 결제 단건조회 API를 호출하여 결제 결과를 확인하고,
-                                // 결제 결과를 처리하는 로직을 작성합니다.
-                                console.log(response);
-                                console.log("전체 response:", response);
-                                console.log("success:", response.success);
-                                console.log("imp_uid:", response.imp_uid);
-                                console.log("status:", response.status);
-                                console.log("paid_amount:", response.paid_amount);
-                                if (response.success) {
-                                    console.log("포트원 번호: " + response.imp_uid);
-                                    // 우리쪽 db에 결제정보 저장
-                                    // 페이지 이동 필요하면 페이지 이동 (메인 or 마이)
-                                    // 결제 성공 후 서버 검증
-                                    console.log("imp_uid:", response.imp_uid);
-                                    setTimeout(() => {
-                                        self.fnVerifyPayment(response.imp_uid, selectedPass);
-                                    }, 5000);
+                            function (rsp) { // 로그에 찍히던 그 Object가 바로 이 'rsp'입니다.
+                                console.log("전체 response:", rsp);
+                                console.log("success:", rsp.success);
+                                console.log("imp_uid:", rsp.imp_uid);
+
+                                if (rsp.success) {
+                                    // 1. @RequestParam 형식을 맞추기 위해 URLSearchParams 사용
+                                    var params = new URLSearchParams();
+                                    params.append('imp_uid', rsp.imp_uid);
+                                    params.append('amount', rsp.paid_amount);
+                                    // 이전에 보내주신 코드 흐름상 item이나 self.selectedPass를 활용하세요
+                                    params.append('passNo', self.selectedPass.passNo);
+                                    params.append('userId', 'test_user');
+
+                                    console.log("서버로 보내는 데이터:", params.toString());
+
+                                    // 2. 서버 검증 요청
+                                    axios.post('/verifyPayment.dox', params)
+                                        .then(function (res) {
+                                            if (res.data.success) {
+                                                alert("검증 성공: " + res.data.msg);
+                                            } else {
+                                                // 서버 콘솔 로그를 확인해야 하는 시점
+                                                alert("검증 실패: " + res.data.msg);
+                                                console.log("실패 상세:", res.data);
+                                            }
+                                        })
+                                        .catch(function (err) {
+                                            console.error("통신 에러 발생", err);
+                                        });
                                 } else {
-                                    console.log("에러내용: " + response.error_msg);
-                                    alert("결제가 취소되었습니다");
+                                    alert("결제에 실패하였습니다. 에러 내용: " + rsp.error_msg);
                                 }
                             },
                         );
                     },
 
-                        fnVerifyPayment(imp_uid, selectedPass) {
-                            let self = this
-                            console.log("서버로 보내는 imp_uid:", imp_uid);
-                            $.ajax({
-                                url: "/verifyPayment.dox",
-                                type: "POST",
-                                data: {
-                                    userId: this.sessionId,     // 로그인 아이디
-                                    imp_uid: imp_uid,           // 결제 고유 값(중복)
-                                    passNo: selectedPass.passNo,
-                                    amount: selectedPass.price,
-                                    itemName: selectedPass.passName,
+                    fnVerifyPayment(imp_uid, selectedPass) {
+                        let self = this
+                        console.log("서버로 보내는 imp_uid:", imp_uid);
+                        $.ajax({
+                            url: "/verifyPayment.dox",
+                            type: "POST",
+                            data: {
+                                userId: this.sessionId,     // 로그인 아이디
+                                imp_uid: imp_uid,           // 결제 고유 값(중복)
+                                passNo: selectedPass.passNo,
+                                amount: selectedPass.price,
+                                itemName: selectedPass.passName,
 
-                                },
-                                success: function (res) {
-                                    console.log(res);
-                                    if (res.success) {
-                                        console.log("포트원 번호: " + res.imp_uid);
-                                        alert("결제가완료되었어요~~~~~");
-                                        self.isModalOpen = false;
-                                        location.href = "/adminPayFinish.do?orderId=" + res.imp_uid;
-                                    } else {
-                                        console.log("에러내용: " + res.error_msg);
-                                        alert("결제 검증 실패");
-                                    }
+                            },
+                            success: function (res) {
+                                console.log(res);
+                                if (res.success) {
+                                    console.log("포트원 번호: " + res.imp_uid);
+                                    alert("결제가완료되었어요~~~~~");
+                                    self.isModalOpen = false;
+                                    location.href = "/adminPayFinish.do?orderId=" + res.imp_uid;
+                                } else {
+                                    console.log("에러내용: " + res.error_msg);
+                                    alert("결제 검증 실패");
                                 }
-                            });
-                        },
+                            }
+                        });
+                    },
 
-                        fnGetPassList: function () {
-                            let self = this;
-                            let param = {};
+                    fnGetPassList: function () {
+                        let self = this;
+                        let param = {};
+                        $.ajax({
+                            url: "http://localhost:8080/pass.dox",
+                            dataType: "json",
+                            type: "POST",
+                            data: param,
+                            success: function (data) {
+                                console.log(data);
+                                self.passList = data.list;
+                            }
+                        });
+                    },
+                    fnCheck: function (pass) {
+                        let self = this;
+                        if (!self.sessionId || self.sessionId === "null" || self.sessionId === "") {
+                            if (confirm("로그인이 필요한 서비스입니다.\n로그인 페이지로 이동하시겠습니까?")) {
+                                location.href = "/login.do";
+                            }
+                            return;
+                        }
+                        if (pass.passName === "체험용 패스") {
+                            let param = {
+                                userId: self.sessionId
+                            };
                             $.ajax({
-                                url: "http://localhost:8080/pass.dox",
+                                url: "http://localhost:8080/passCheck.dox",
                                 dataType: "json",
                                 type: "POST",
                                 data: param,
                                 success: function (data) {
                                     console.log(data);
-                                    self.passList = data.list;
+                                    if (data.info != null) {
+                                        alert("이미 체험용 패스권을 구매하셨어요");
+                                        return;
+                                    }
+                                    self.selectedPass = pass;
+                                    self.isModalOpen = true;
+                                    console.log(self.selectedPass);
                                 }
                             });
-                        },
-                        fnCheck: function (pass) {
-                            let self = this;
-                            if (!self.sessionId || self.sessionId === "null" || self.sessionId === "") {
-                                if (confirm("로그인이 필요한 서비스입니다.\n로그인 페이지로 이동하시겠습니까?")) {
-                                    location.href = "/login.do";
-                                }
-                                return;
-                            }
-                            if (pass.passName === "체험용 패스") {
-                                let param = {
-                                    userId: self.sessionId
-                                };
-                                $.ajax({
-                                    url: "http://localhost:8080/passCheck.dox",
-                                    dataType: "json",
-                                    type: "POST",
-                                    data: param,
-                                    success: function (data) {
-                                        console.log(data);
-                                        if (data.info != null) {
-                                            alert("이미 체험용 패스권을 구매하셨어요");
-                                            return;
-                                        }
-                                        self.selectedPass = pass;
-                                        self.isModalOpen = true;
-                                        console.log(self.selectedPass);
-                                    }
-                                });
-                            } else {
-                                self.selectedPass = pass;
-                                self.isModalOpen = true;
-                                console.log(self.selectedPass);
-                            }
-                        },
-                        openModal: function (pass) {
-                            let self = this;
-                            self.paymentMethod = "";
-                            self.agreeAll = false;
-                            self.agreeRequired1 = false;
-                            self.agreeRequired2 = false;
-                            self.agreeOptional1 = false;
-                            self.fnCheck(pass);
-                        },
-
-                        toggleAll() {
-                            const value = this.agreeAll;
-                            this.agreeRequired1 = value;
-                            this.agreeRequired2 = value;
-                            this.agreeOptional1 = value;
-                        },
-
-                        updateAll() {
-                            this.agreeAll = this.agreeRequired1 && this.agreeRequired2 && this.agreeOptional1;
-                        },
-
-                        closeModal: function () {
-                            this.isModalOpen = false;
-                            this.selectedPass = null;
+                        } else {
+                            self.selectedPass = pass;
+                            self.isModalOpen = true;
+                            console.log(self.selectedPass);
                         }
-
-                    }, // methods
-                    mounted() {
-                        // 처음 시작할 때 실행되는 부분
+                    },
+                    openModal: function (pass) {
                         let self = this;
-                        const path = location.pathname;
+                        self.paymentMethod = "";
+                        self.agreeAll = false;
+                        self.agreeRequired1 = false;
+                        self.agreeRequired2 = false;
+                        self.agreeOptional1 = false;
+                        self.fnCheck(pass);
+                    },
 
-                        this.activeMenu =
-                            path.includes('adminMain') ? 'main' :
-                                path.includes('adminUser') ? 'user' :
-                                    path.includes('adminCompany') ? 'company' :
-                                        path.includes('adminBoard') ? 'board' :
-                                            path.includes('adminReviewWait') ? 'reviewWait' :
-                                                path.includes('adminPayment') ? 'payment' :
-                                                    path.includes('adminReport') ? 'report' :
-                                                        path.includes('adminStatistics') ? 'stats' :
-                                                            '';
-                        self.fnGetPassList();
+                    toggleAll() {
+                        const value = this.agreeAll;
+                        this.agreeRequired1 = value;
+                        this.agreeRequired2 = value;
+                        this.agreeOptional1 = value;
+                    },
+
+                    updateAll() {
+                        this.agreeAll = this.agreeRequired1 && this.agreeRequired2 && this.agreeOptional1;
+                    },
+
+                    closeModal: function () {
+                        this.isModalOpen = false;
+                        this.selectedPass = null;
                     }
-                });
+
+                }, // methods
+                mounted() {
+                    // 처음 시작할 때 실행되는 부분
+                    let self = this;
+                    const path = location.pathname;
+
+                    this.activeMenu =
+                        path.includes('adminMain') ? 'main' :
+                            path.includes('adminUser') ? 'user' :
+                                path.includes('adminCompany') ? 'company' :
+                                    path.includes('adminBoard') ? 'board' :
+                                        path.includes('adminReviewWait') ? 'reviewWait' :
+                                            path.includes('adminPayment') ? 'payment' :
+                                                path.includes('adminReport') ? 'report' :
+                                                    path.includes('adminStatistics') ? 'stats' :
+                                                        '';
+                    self.fnGetPassList();
+                }
+            });
 
             app.mount('#app');
         </script>

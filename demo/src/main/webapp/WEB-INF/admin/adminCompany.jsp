@@ -97,18 +97,22 @@
 
                         <!-- 오른쪽: 상세 + 정지 -->
                         <div class="right" v-if="selectedUser">
-                                <h3>회원 상세</h3>
-                                <p>ID: {{ selectedUser.userId }}</p>
-                                <p>이름: {{ selectedUser.name }}</p>
-                                <p>회원 상태:
-                                    <span :style="{color: selectedUser.status === 'STOP' ? 'red' : 'green'}">
-                                        {{ selectedUser.status === 'STOP' ? '정지됨' : '정상' }}
-                                    </span>
-                                </p>
-                                <p>
-                                    유형:
-                                    {{ selectedUser.role === 'USER' ? '일반회원' : '업체회원' }}
-                                </p>
+                            <h3>업체 상세</h3>
+                            <p>ID: {{ selectedUser.userId }}</p>
+                            <p>업체명: {{ selectedUser.name }}</p>
+                            <p>대표자: {{ selectedUser.ceoName }}</p>
+                            <p>사업자번호: {{ selectedUser.bizNo }}</p>
+                            <p>제휴 등급: {{ selectedUser.grade }}</p>
+                            <p>회원 상태:
+                                <span :style="{color: selectedUser.status === 'STOP' ? 'red' : 'green'}">
+                                    {{ selectedUser.status === 'STOP' ? '정지됨' : '정상' }}
+                                </span>
+                            </p>
+                            <p>휴무 상태:
+                                <span :style="{color: selectedUser.status === 'STOP' ? 'red' : 'green'}">
+                                    {{ selectedUser.companyStatus === 'STOP' ? '휴무' : '영업' }}
+                                </span>
+                            </p>
                             <h4>정지 이력</h4>
                             <table class="table table-sm table-bordered">
                                 <thead>
@@ -160,6 +164,7 @@
                             </div>
                         </div>
                     </div>
+
                 </div>
             </div>
             <jsp:include page="/WEB-INF/common/footer.jsp" />
@@ -178,7 +183,6 @@
                         banHistoryList: [],
                         sessionId: "${sessionScope.sessionId}",
                         sessionRole: "${sessionScope.sessionRole}",
-
                     };
                 },
                 methods: {
@@ -186,17 +190,18 @@
                     fnPage: function (url) {
                         location.href = url;
                     },
+
                     fnGetUserList: function () {
                         let self = this;
                         let param = {};
                         $.ajax({
-                            url: "http://localhost:8080/userList.dox",
+                            url: "http://localhost:8080/companyList.dox",
                             dataType: "json",
                             type: "POST",
                             data: param,
                             success: function (data) {
                                 console.log(data);
-                                self.userList = data.list || [];
+                                self.userList = data.list;
                                 console.log(self.userList);
                                 console.log(self.userList[0]);
                             }
@@ -320,6 +325,7 @@
                     // 처음 시작할 때 실행되는 부분
                     let self = this;
                     const path = location.pathname;
+
                     this.activeMenu =
                         path.includes('adminMain') ? 'main' :
                             path.includes('adminUser') ? 'user' :
@@ -328,11 +334,9 @@
                                         path.includes('adminReviewWait') ? 'reviewWait' :
                                             path.includes('adminPayment') ? 'payment' :
                                                 path.includes('adminReport') ? 'report' :
-                                                    path.includes('adminInquiry') ? 'inquiry' :
-                                                        path.includes('adminStatistics') ? 'stats' :
-                                                            '';
+                                                    path.includes('adminStatistics') ? 'stats' :
+                                                        '';
                     self.fnGetUserList();
-                    console.log("sessionId:", "${sessionScope.sessionId}");
                 }
             });
 
