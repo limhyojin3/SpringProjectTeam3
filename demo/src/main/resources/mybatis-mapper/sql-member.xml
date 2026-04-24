@@ -212,9 +212,9 @@
 	
 	<!-- 내 리뷰 조회 내역 -->
 	<!-- 유료 리뷰 열람 내역 -->
-	<select id="selectMyPaidReviewList" parameterType="String"
+	<select id="selectMyPaidReviewList" parameterType="hashmap"
 	    resultType="com.example.demo.member.model.Member">
-	    SELECT 
+	    SELECT
 	        R.review_no,
 	        R.title,
 	        R.rating,
@@ -227,12 +227,23 @@
 	    AND R.is_paid = 1
 	    AND R.user_id != #{userId}
 	    ORDER BY PUL.used_at DESC
+	    LIMIT #{pageSize} OFFSET #{offset}
+	</select>
+	
+	<!-- 유료 리뷰 전체 개수 -->
+	<select id="selectMyPaidReviewCount" parameterType="String" resultType="int">
+	    SELECT COUNT(*)
+	    FROM pass_usage_log PUL
+	    JOIN review R ON PUL.review_no = R.review_no
+	    WHERE PUL.user_id = #{userId}
+	    AND R.is_paid = 1
+	    AND R.user_id != #{userId}
 	</select>
 	
 	<!-- 무료 리뷰 열람 내역 -->
-	<select id="selectMyFreeReviewList" parameterType="String"
+	<select id="selectMyFreeReviewList" parameterType="hashmap"
 	    resultType="com.example.demo.member.model.Member">
-	    SELECT 
+	    SELECT
 	        R.review_no,
 	        R.title,
 	        R.rating,
@@ -245,6 +256,16 @@
 	    AND R.is_paid = 0
 	    AND R.user_id != #{userId}
 	    ORDER BY PUL.used_at DESC
+	    LIMIT #{pageSize} OFFSET #{offset}
+	</select>
+	<!-- 무료 리뷰 전체 개수 -->
+	<select id="selectMyFreeReviewCount" parameterType="String" resultType="int">
+	    SELECT COUNT(*)
+	    FROM pass_usage_log PUL
+	    JOIN review R ON PUL.review_no = R.review_no
+	    WHERE PUL.user_id = #{userId}
+	    AND R.is_paid = 0
+	    AND R.user_id != #{userId}
 	</select>
 	
 	<!-- 내가 쓴 글 조회 -->
@@ -262,6 +283,14 @@
 	    AND is_deleted = 0
 	    ORDER BY reg_date DESC
 	</select>
+	<!-- 페이지 -->
+	<select id="selectMyPostCount" parameterType="String" resultType="int">
+	    SELECT COUNT(*)
+	    FROM community_post
+	    WHERE user_id = #{userId}
+	    AND is_deleted = 0
+	</select>
+	
 	<!-- 내가 쓴 리뷰 조회 -->
 	<select id="selectMyReviewList" parameterType="String"
 	    resultType="com.example.demo.member.model.Member">
@@ -274,6 +303,12 @@
 	    FROM review
 	    WHERE user_id = #{userId}
 	    ORDER BY reg_date DESC
+	</select>
+	<!-- 페이지 -->
+	<select id="selectMyReviewCount" parameterType="String" resultType="int">
+	    SELECT COUNT(*)
+	    FROM review
+	    WHERE user_id = #{userId}
 	</select>
 	
 	<!-- 내가 쓴 댓글 조회 -->
@@ -290,9 +325,16 @@
 	    AND is_deleted = 0
 	    ORDER BY reg_date DESC
 	</select>
+	<!-- 페이지 -->
+	<select id="selectMyCommentCount" parameterType="String" resultType="int">
+	    SELECT COUNT(*)
+	    FROM comment
+	    WHERE user_id = #{userId}
+	    AND is_deleted = 0
+	</select>
 	
 	<!-- 업체 좋아요 조회 -->
-	<select id="selectMyCompanyLikeList" parameterType="String"
+	<select id="selectMyCompanyLikeList" parameterType="hashmap"
 	    resultType="com.example.demo.member.model.Member">
 	    SELECT 
 	        CL.like_no,
@@ -302,10 +344,17 @@
 	    FROM company_like CL
 	    JOIN company C ON CL.company_no = C.company_no
 	    WHERE CL.user_id = #{userId}
+	    LIMIT #{pageSize} OFFSET #{offset}
+	</select>
+	<!-- 페이지 -->
+	<select id="selectMyCompanyLikeCount" parameterType="String" resultType="int">
+	    SELECT COUNT(*)
+	    FROM company_like
+	    WHERE user_id = #{userId}
 	</select>
 	
 	<!-- 글 좋아요 조회 -->
-	<select id="selectMyPostLikeList" parameterType="String"
+	<select id="selectMyPostLikeList" parameterType="hashmap"
 	    resultType="com.example.demo.member.model.Member">
 	    SELECT 
 	        PL.like_no,
@@ -317,10 +366,20 @@
 	    FROM post_like PL
 	    JOIN community_post CP ON PL.post_no = CP.post_no
 	    WHERE PL.user_id = #{userId}
+	    AND CP.user_id != #{userId}  <!-- 본인 글 제외 -->
+	    LIMIT #{pageSize} OFFSET #{offset}
+	</select>
+	<!-- 페이지 -->
+	<select id="selectMyPostLikeCount" parameterType="String" resultType="int">
+	    SELECT COUNT(*)
+	    FROM post_like PL
+	    JOIN community_post CP ON PL.post_no = CP.post_no
+	    WHERE PL.user_id = #{userId}
+	    AND CP.user_id != #{userId}
 	</select>
 	
 	<!-- 리뷰 좋아요 조회 -->
-	<select id="selectMyReviewLikeList" parameterType="String"
+	<select id="selectMyReviewLikeList" parameterType="hashmap"
 	    resultType="com.example.demo.member.model.Member">
 	    SELECT 
 	        RL.like_no,
@@ -331,7 +390,62 @@
 	    FROM review_like RL
 	    JOIN review R ON RL.review_no = R.review_no
 	    WHERE RL.user_id = #{userId}
+	    AND R.user_id != #{userId} <!-- 본인 리뷰 제외 -->
+	    LIMIT #{pageSize} OFFSET #{offset}
 	</select>
+	<!-- 페이지 -->
+	<select id="selectMyReviewLikeCount" parameterType="String" resultType="int">
+	    SELECT COUNT(*)
+	    FROM review_like RL
+	    JOIN review R ON RL.review_no = R.review_no
+	    WHERE RL.user_id = #{userId}
+	    AND R.user_id != #{userId}
+	</select>
+	
+	<!-- 마이페이지 - 내가 쓴 글 삭제 (is_deleted = 1) -->
+	<update id="deleteMyPost" parameterType="hashmap">
+	    UPDATE community_post
+	    SET is_deleted = 1
+	    WHERE post_no = #{postNo}
+	    AND user_id = #{userId}
+	</update>
+	
+	<!-- 내가 쓴 리뷰 삭제 (DELETE) -->
+	<delete id="deleteMyReview" parameterType="hashmap">
+	    DELETE FROM review
+	    WHERE review_no = #{reviewNo}
+	    AND user_id = #{userId}
+	</delete>
+	
+	<!-- 내가 쓴 댓글 삭제 (is_deleted = 1) -->
+	<update id="deleteMyComment" parameterType="hashmap">
+	    UPDATE comment
+	    SET is_deleted = 1
+	    WHERE comment_no = #{commentNo}
+	    AND user_id = #{userId}
+	</update>
+	
+	<!-- 업체 좋아요 삭제 -->
+	<delete id="deleteMyCompanyLike" parameterType="hashmap">
+	    DELETE FROM company_like
+	    WHERE like_no = #{likeNo}
+	    AND user_id = #{userId}
+	</delete>
+	
+	<!-- 글 좋아요 삭제 -->
+	<delete id="deleteMyPostLike" parameterType="hashmap">
+	    DELETE FROM post_like
+	    WHERE like_no = #{likeNo}
+	    AND user_id = #{userId}
+	</delete>
+	
+	<!-- 리뷰 좋아요 삭제 -->
+	<delete id="deleteMyReviewLike" parameterType="hashmap">
+	    DELETE FROM review_like
+	    WHERE like_no = #{likeNo}
+	    AND user_id = #{userId}
+	</delete>
+	
 	
 	<!-- 내 문의 내역 조회 -->
 	<select id="selectMyInquiryList" parameterType="String"
@@ -360,7 +474,6 @@
 	    WHERE reporter_id = #{userId}
 	    ORDER BY reg_date DESC
 	</select>
-	
 	
 	<!-- 구분선  -->
 	
@@ -449,5 +562,34 @@
 	    SET password = #{newPw} 
 	    WHERE user_id = #{userId}
 	</update>
+	
+	<!-- 메인 홈 출력 -->
+	<!-- 메인 최근 리뷰 4개 -->
+	<select id="selectMainReviewList" resultType="com.example.demo.member.model.Member">
+	    SELECT 
+	        review_no,
+	        title,
+	        img_url,
+	        reg_date
+	    FROM review
+	    WHERE approval_status = 'APPROVED'
+	    ORDER BY reg_date DESC
+	    LIMIT 4
+	</select>
+	
+	<!-- 메인 커뮤니티 인기글 3개 -->
+	<select id="selectMainPostList" resultType="com.example.demo.member.model.Member">
+	    SELECT 
+	        post_no,
+	        title,
+	        like_cnt,
+	        view_cnt,
+	        reg_date
+	    FROM community_post
+	    WHERE is_deleted = 0
+	    ORDER BY like_cnt DESC
+	    LIMIT 3
+	</select>
+	
 	
 </mapper>

@@ -67,8 +67,7 @@
 				</when>
 			</choose>
 		</if>
-	ORDER BY reg_date DESC
-	</select>
+		ORDER BY reg_date DESC </select>
 
 	<select id="selectPassList" parameterType="hashmap"
 		resultType="com.example.demo.admin.model.Admin">
@@ -82,23 +81,23 @@
 		FROM PASS_PRODUCT
 		WHERE IS_ACTIVE = 1
 	</select>
-	
+
 	<select id="selectPassInfo" parameterType="hashmap"
 		resultType="com.example.demo.admin.model.Admin">
 		SELECT *
-        FROM PAYMENT P
-        INNER JOIN PAYMENT_PASS P2 ON P.PAY_NO = P2.PAY_NO
-        WHERE PASS_NO = 1 AND PAY_STATUS = "SUCCESS" AND USER_ID = #{userId};
+		FROM PAYMENT P
+		INNER JOIN PAYMENT_PASS P2 ON P.PAY_NO = P2.PAY_NO
+		WHERE PASS_NO = 1 AND PAY_STATUS = "SUCCESS" AND USER_ID = #{userId};
 	</select>
-	
+
 	<select id="selectPriceInfo" resultType="int">
 		SELECT price
 		FROM PASS_PRODUCT
 		WHERE PASS_NO = #{passNo}
 	</select>
-	
+
 	<insert id="insertPayment" parameterType="hashmap" useGeneratedKeys="true"
-        keyProperty="payNo">
+		keyProperty="payNo">
 		INSERT INTO payment (
 		user_id,
 		amount,
@@ -112,7 +111,7 @@
 		NOW()
 		)
 	</insert>
-	
+
 	<insert id="insertPaymentPass" parameterType="map">
 		INSERT INTO payment_pass (
 		pay_no,
@@ -125,44 +124,119 @@
 		#{itemName}
 		)
 	</insert>
-	
-	<select id="selectInquiryList" parameterType="hashmap" resultType="com.example.demo.admin.model.Admin">
-    SELECT *
-    FROM inquiry
-    WHERE 1=1
-    <if test="status != null and status != ''">
-        AND status = #{status}
-    </if>
-    ORDER BY reg_date DESC
-	</select>
-	
+
+	<select id="selectInquiryList" parameterType="hashmap"
+		resultType="com.example.demo.admin.model.Admin"> SELECT * FROM inquiry
+		WHERE 1=1 <if test="status != null and status != ''">
+			AND status = #{status}
+		</if> ORDER BY reg_date DESC </select>
+
 	<!--답변여부확인-->
 	<select id="checkAnswer" resultType="int">
 		SELECT COUNT(*)
 		FROM inquiry_answer
 		WHERE inquiry_no = #{inquiryNo}
 	</select>
-	
+
 	<insert id="insertAnswer">
-    INSERT INTO inquiry_answer (
-        inquiry_no,
-        content
-    ) VALUES (
-        #{inquiryNo},
-        #{answer}
-    )
+		INSERT INTO inquiry_answer (
+		inquiry_no,
+		content
+		) VALUES (
+		#{inquiryNo},
+		#{answer}
+		)
 	</insert>
-	
+
 	<update id="updateAnswer">
-    UPDATE inquiry_answer
-    SET content = #{answer}
-    WHERE inquiry_no = #{inquiryNo}
+		UPDATE inquiry_answer
+		SET content = #{answer}
+		WHERE inquiry_no = #{inquiryNo}
 	</update>
-	
+
 	<update id="updateInquiryStatus">
-    UPDATE inquiry
-    SET status = 'DONE'
-    WHERE inquiry_no = #{inquiryNo}
+		UPDATE inquiry
+		SET status = 'DONE'
+		WHERE inquiry_no = #{inquiryNo}
 	</update>
-	
+
+	<!--  전체 회원목록 페이지 -->
+	<select id="selectUserList" parameterType="hashmap"
+		resultType="com.example.demo.admin.model.Admin">
+		SELECT
+			M.USER_ID AS userId,
+			U.NAME AS name,
+			U.EMAIL AS userEmail,
+			M.STATUS AS status,
+			M.REG_DATE AS regDate,
+			M.ROLE AS role,
+			CASE
+				WHEN M.ROLE = 'USER' THEN 'USER'
+				WHEN M.ROLE IN ('PARTNER', 'NPARTNER') THEN 'COMPANY'
+			END AS targetType
+		FROM MEMBER M
+		LEFT JOIN USER_DETAIL U
+			ON M.USER_ID = U.USER_ID
+	</select>
+
+	<select id="selectBanHistory"
+		resultType="com.example.demo.admin.model.Admin">
+		SELECT
+		target_id AS targetId,
+		target_type AS targetType,
+		action_type AS actionType,
+		reason,
+		admin_id AS adminId,
+		reg_date AS banRegDate
+		FROM ban_history
+		WHERE target_id = #{target_id}
+		AND target_type = #{target_type}
+		ORDER BY reg_date DESC
+	</select>
+
+	<!-- MEMBER 정지 -->
+	<update id="updateMemberStop">
+		UPDATE member
+		SET status = 'STOP'
+		WHERE user_id = #{target_id}
+	</update>
+
+	<!-- MEMBER 해제 -->
+	<update id="updateMemberActive">
+		UPDATE member
+		SET status = 'ACTIVE'
+		WHERE user_id = #{target_id}
+	</update>
+
+	<!-- COMPANY 정지 -->
+	<update id="updateCompanyStop">
+		UPDATE company
+		SET status = 'STOP'
+		WHERE company_id = #{target_id}
+	</update>
+
+	<!-- COMPANY 해제 -->
+	<update id="updateCompanyActive">
+		UPDATE company
+		SET status = 'ACTIVE'
+		WHERE company_id = #{target_id}
+	</update>
+
+	<!-- 이력 저장 -->
+	<insert id="insertBanHistory">
+		INSERT INTO ban_history (
+		target_id,
+		target_type,
+		action_type,
+		reason,
+		admin_id
+		) VALUES (
+		#{target_id},
+		#{target_type},
+		#{action_type},
+		#{reason},
+		#{admin_id}
+		)
+	</insert>
+
 </mapper>

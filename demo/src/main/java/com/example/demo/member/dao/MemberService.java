@@ -348,37 +348,145 @@ public class MemberService {
 	}
 	// 내가 산 리뷰 (구매 : 유료/무료) 조회 
 	// 유료
-	public List<Member> getMyPaidReviewList(String userId) {
-	    return memberMapper.selectMyPaidReviewList(userId);
+	public List<Member> getMyPaidReviewList(String userId, int page) {
+		HashMap<String, Object> map = new HashMap<>();
+	    map.put("userId", userId);
+	    map.put("pageSize", 6);
+	    map.put("offset", (page - 1) * 6);
+	    return memberMapper.selectMyPaidReviewList(map);
+	}
+	// 페이지 사이징
+	public int getMyPaidReviewCount(String userId) {
+	    return memberMapper.selectMyPaidReviewCount(userId);
 	}
 	// 무료
-	public List<Member> getMyFreeReviewList(String userId) {
-	    return memberMapper.selectMyFreeReviewList(userId);
+	public List<Member> getMyFreeReviewList(String userId, int page) {
+		HashMap<String, Object> map = new HashMap<>();
+	    map.put("userId", userId);
+	    map.put("pageSize", 6);
+	    map.put("offset", (page - 1) * 6);
+	    return memberMapper.selectMyFreeReviewList(map);
+	}
+	// 페이지 사이징
+	public int getMyFreeReviewCount(String userId) {
+	    return memberMapper.selectMyFreeReviewCount(userId);
 	}
 	// 내가 쓴 글 조회
-	public List<Member> getMyPostList(String userId) {
-	    return memberMapper.selectMyPostList(userId);
+	public List<Member> getMyPostList(String userId, int page) {
+		 HashMap<String, Object> map = new HashMap<>();
+		 map.put("userId", userId);
+		 map.put("pageSize", 5);
+		 map.put("offset", (page - 1) * 5);
+	    return memberMapper.selectMyPostList(map);
+	}
+	// 페이지 사이징
+	public int getMyPostCount(String userId) {
+	    return memberMapper.selectMyPostCount(userId);
 	}
 	// 내가 쓴 리뷰 조회
-	public List<Member> getMyReviewList(String userId) {
-	    return memberMapper.selectMyReviewList(userId);
+	public List<Member> getMyReviewList(String userId, int page) {
+		HashMap<String, Object> map = new HashMap<>();
+		map.put("userId", userId);
+		map.put("pageSize", 5);
+		map.put("offset", (page - 1) * 5);
+	    return memberMapper.selectMyReviewList(map);
+	}
+	// 페이지 사이징
+	public int getMyReviewCount(String userId) {
+	    return memberMapper.selectMyReviewCount(userId);
 	}
 	// 내가 쓴 댓글 조회
-	public List<Member> getMyCommentList(String userId) {
-	    return memberMapper.selectMyCommentList(userId);
+	public List<Member> getMyCommentList(String userId, int page) {
+		HashMap<String, Object> map = new HashMap<>();
+		map.put("userId", userId);
+		map.put("pageSize", 5);
+		map.put("offset", (page - 1) * 5);
+	    return memberMapper.selectMyCommentList(map);
 	}
+	// 페이지 사이징
+	public int getMyCommentCount(String userId) {
+	    return memberMapper.selectMyCommentCount(userId);
+	}
+	
 	// 업체 좋아요 조회
-	public List<Member> getMyCompanyLikeList(String userId) {
-	    return memberMapper.selectMyCompanyLikeList(userId);
+	public List<Member> getMyCompanyLikeList(String userId, int page) {
+		HashMap<String, Object> map = new HashMap<>();
+	    map.put("userId", userId);
+	    map.put("pageSize", 5);
+	    map.put("offset", (page - 1) * 5);
+	    return memberMapper.selectMyCompanyLikeList(map);
+	}
+	// 페이지 사이징
+	public int getMyCompanyLikeCount(String userId) {
+	    return memberMapper.selectMyCompanyLikeCount(userId);
 	}
 	// 글 좋아요 조회
-	public List<Member> getMyPostLikeList(String userId) {
-	    return memberMapper.selectMyPostLikeList(userId);
+	public List<Member> getMyPostLikeList(String userId, int page) {
+		HashMap<String, Object> map = new HashMap<>();
+	    map.put("userId", userId);
+	    map.put("pageSize", 5);
+	    map.put("offset", (page - 1) * 5);
+	    return memberMapper.selectMyPostLikeList(map);
+	}
+	// 페이지 사이징
+	public int getMyPostLikeCount(String userId) {
+	    return memberMapper.selectMyPostLikeCount(userId);
 	}
 	// 리뷰 좋아요 조회
-	public List<Member> getMyReviewLikeList(String userId) {
-	    return memberMapper.selectMyReviewLikeList(userId);
+	public List<Member> getMyReviewLikeList(String userId, int page) {
+		HashMap<String, Object> map = new HashMap<>();
+	    map.put("userId", userId);
+	    map.put("pageSize", 5);
+	    map.put("offset", (page - 1) * 5);
+	    return memberMapper.selectMyReviewLikeList(map);
+	}// 페이지 사이징
+	public int getMyReviewLikeCount(String userId) {
+	    return memberMapper.selectMyReviewLikeCount(userId);
 	}
+	// 내가 쓴 글 삭제
+	public int removeMyPost(String userId, String postNo) {
+	    HashMap<String, Object> map = new HashMap<>();
+	    map.put("userId", userId);
+	    map.put("postNo", postNo);
+	    return memberMapper.deleteMyPost(map);
+	}
+	// 내가 쓴 리뷰 삭제
+	public int removeMyReview(String userId, String reviewNo) {
+	    HashMap<String, Object> map = new HashMap<>();
+	    map.put("userId", userId);
+	    map.put("reviewNo", reviewNo);
+	    return memberMapper.deleteMyReview(map);
+	}
+	// 내가 쓴 댓글 삭제
+	public int removeMyComment(String userId, String commentNo) {
+	    HashMap<String, Object> map = new HashMap<>();
+	    map.put("userId", userId);
+	    map.put("commentNo", commentNo);
+	    return memberMapper.deleteMyComment(map);
+	}
+	// 업체 좋아요 취소
+	public int deleteMyCompanyLike(String userId, String likeNo) {
+	    HashMap<String, Object> map = new HashMap<>();
+	    map.put("userId", userId);
+	    map.put("likeNo", likeNo);
+	    return memberMapper.deleteMyCompanyLike(map);
+	}
+	// 글 좋아요 취소
+	public int deleteMyPostLike(String userId, String likeNo) {
+	    HashMap<String, Object> map = new HashMap<>();
+	    map.put("userId", userId);
+	    map.put("likeNo", likeNo);
+	    return memberMapper.deleteMyPostLike(map);
+	}
+	// 리뷰 좋아요 취소
+	public int deleteMyReviewLike(String userId, String likeNo) {
+	    HashMap<String, Object> map = new HashMap<>();
+	    map.put("userId", userId);
+	    map.put("likeNo", likeNo);
+	    return memberMapper.deleteMyReviewLike(map);
+	}
+	
+	
 	// 내 문의 내역 조회
 	public List<Member> getMyInquiryList(String userId) {
 	    return memberMapper.selectMyInquiryList(userId);
@@ -434,5 +542,15 @@ public class MemberService {
 	    String encodedPw = passwordEncoder.encode((String) map.get("newPw"));
 	    map.put("newPw", encodedPw);
 	    return memberMapper.updatePassword(map);
+	}
+	
+	// *메인 홈 출력* 
+	// 최근 리뷰
+	public List<Member> getMainReviewList() {
+	    return memberMapper.selectMainReviewList();
+	}
+	// 인기 글
+	public List<Member> getMainPostList() {
+	    return memberMapper.selectMainPostList();
 	}
 }

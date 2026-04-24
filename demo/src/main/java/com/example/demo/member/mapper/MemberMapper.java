@@ -44,21 +44,41 @@ public interface MemberMapper {
 	// 내 예약 목록 조회
 	List<Member> selectMyReservationList(String userId);
 	// 유료 리뷰 조회
-	List<Member> selectMyPaidReviewList(String userId);
+	List<Member> selectMyPaidReviewList(HashMap<String, Object> map);
+	int selectMyPaidReviewCount(String userId);
 	// 무료 리뷰 조회
-	List<Member> selectMyFreeReviewList(String userId);
+	List<Member> selectMyFreeReviewList(HashMap<String, Object> map);
+	int selectMyFreeReviewCount(String userId);
 	// 내가 쓴 글 조회
-	List<Member> selectMyPostList(String userId);
+	List<Member> selectMyPostList(HashMap<String, Object> map);
+	int selectMyPostCount(String userId);
 	// 내가 쓴 리뷰 조회
-	List<Member> selectMyReviewList(String userId);
+	List<Member> selectMyReviewList(HashMap<String, Object> map);
+	int selectMyReviewCount(String userId);
 	// 내가 쓴 댓글 조회
-	List<Member> selectMyCommentList(String userId);
+	List<Member> selectMyCommentList(HashMap<String, Object> map);
+	int selectMyCommentCount(String userId);
 	// 업체 좋아요 조회
-	List<Member> selectMyCompanyLikeList(String userId);
+	List<Member> selectMyCompanyLikeList(HashMap<String, Object> map);
+	int selectMyCompanyLikeCount(String userId);
 	// 글 좋아요 조회
-	List<Member> selectMyPostLikeList(String userId);
+	List<Member> selectMyPostLikeList(HashMap<String, Object> map);
+	int selectMyPostLikeCount(String userId);
 	// 리뷰 좋아요 조회
-	List<Member> selectMyReviewLikeList(String userId);
+	List<Member> selectMyReviewLikeList(HashMap<String, Object> map);
+	int selectMyReviewLikeCount(String userId);
+	// 내가 쓴 글 삭제
+	int deleteMyPost(HashMap<String, Object> map);
+	// 내가 쓴 리뷰 삭제
+	int deleteMyReview(HashMap<String, Object> map);
+	// 내가 쓴 댓글 삭제
+	int deleteMyComment(HashMap<String, Object> map);
+	// 업체 좋아요 취소
+	int deleteMyCompanyLike(HashMap<String, Object> map);
+	// 글 좋아요 취소
+	int deleteMyPostLike(HashMap<String, Object> map);
+	// 리뷰 좋아요 취소
+	int deleteMyReviewLike(HashMap<String, Object> map);
 	// 내 문의 내역 조회
 	List<Member> selectMyInquiryList(String userId);
 	// 내 신고 내역 조회
@@ -89,5 +109,11 @@ public interface MemberMapper {
 	int checkUserForPw(Map<String, Object> map);
 	// 비밀 번호 업데이트
 	int updatePassword(Map<String, Object> map);
+	
+	// *메인 홈 출력* 
+	// 최근 리뷰 4개
+	List<Member> selectMainReviewList();
+	// 인기글 3개
+	List<Member> selectMainPostList();
 	
 }

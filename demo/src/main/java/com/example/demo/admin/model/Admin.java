@@ -44,6 +44,10 @@ public class Admin {
 	// 회원목록
 	String userMonth;
 	int userCount;
+	String userName;		
+	String userEmail;
+	String name;            // 전체 회원목록. 멤버테이블 컬럼명
+	String role;
 	
 	// 패스목록
 	int passNo;
@@ -52,4 +56,11 @@ public class Admin {
 	int reviewCnt;
 	int isActive;
 	
+	// ===== 정지/해제 관련 =====
+	String targetId;     // user_id or company_id
+	String actionType;   // BAN / UNBAN
+	String reason;       // 정지 사유
+	String adminId;      // 관리자 아이디
+	String banRegDate;   // 이력 날짜
+
 }
