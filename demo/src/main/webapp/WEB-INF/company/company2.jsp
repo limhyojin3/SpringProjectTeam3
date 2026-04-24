@@ -549,6 +549,171 @@
                 background: #ff7f9f;
                 color: white;
             }
+
+            /* 추가된 부분 10:00  am */
+            /* 상품 상세 페이지 레이아웃 */
+            .detail-container {
+                display: flex;
+                gap: 30px;
+                padding: 20px;
+            }
+
+            /* 왼쪽 컨텐츠 (이미지, 이름, 상세정보) */
+            .detail-left {
+                flex: 7;
+                display: flex;
+                flex-direction: column;
+                gap: 20px;
+            }
+
+            .detail-main-img {
+                width: 100%;
+                height: 400px;
+                object-fit: cover;
+                border-radius: 10px;
+                border: 1px solid #ddd;
+            }
+
+            .detail-company-name {
+                font-size: 24px;
+                font-weight: bold;
+                padding: 15px;
+                border: 2px solid #333;
+                background: #fff;
+                display: inline-block;
+            }
+
+            .detail-description-card {
+                background: #ffe0e6;
+                /* 이미지의 핑크색 배경 부분 */
+                min-height: 300px;
+                padding: 30px;
+                border-radius: 10px;
+                border: 2px solid #ff7f9f;
+                font-size: 16px;
+                line-height: 1.8;
+            }
+
+            /* 오른쪽 사이드바 (예약하기) */
+            .detail-right {
+                flex: 3;
+                display: flex;
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            .reservation-box {
+                border: 2px solid #333;
+                padding: 20px;
+                border-radius: 10px;
+                background: #fff;
+            }
+
+            .calendar-placeholder {
+                width: 100%;
+                height: 100px;
+                background: #f0f0f0;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                border: 1px dashed #ccc;
+                margin-top: 10px;
+            }
+
+            .price-info-box {
+                padding: 15px;
+                border: 2px solid #333;
+                background: #fff;
+                font-weight: bold;
+            }
+
+            .price-row {
+                display: flex;
+                justify-content: space-between;
+                margin-bottom: 5px;
+            }
+
+            /* 버튼 스타일 */
+            .btn-reserve {
+                background: #ff4da6;
+                color: white;
+                padding: 15px;
+                border: none;
+                border-radius: 8px;
+                font-weight: bold;
+                font-size: 18px;
+                cursor: pointer;
+            }
+
+            .btn-inquiry {
+                background: #ff7f9f;
+                color: white;
+                padding: 15px;
+                border: none;
+                border-radius: 8px;
+                font-weight: bold;
+                font-size: 18px;
+                cursor: pointer;
+            }
+
+            .btn-reserve:hover,
+            .btn-inquiry:hover {
+                opacity: 0.9;
+            }
+
+
+            /* 결제 확인 화면 스타일 */
+            .payment-container {
+                padding: 50px;
+                max-width: 800px;
+                margin: 0 auto;
+                line-height: 2;
+            }
+
+            .payment-container h2 {
+                font-size: 32px;
+                margin-bottom: 40px;
+            }
+
+            .payment-info-row {
+                font-size: 24px;
+                font-weight: bold;
+                margin-bottom: 15px;
+            }
+
+            .total-payment-amount {
+                text-align: right;
+                font-size: 28px;
+                font-weight: bold;
+                margin: 40px 0;
+            }
+
+            .payment-btn-group {
+                display: flex;
+                justify-content: center;
+                gap: 20px;
+            }
+
+            .btn-final-reserve {
+                background-color: #ffc107;
+                /* 노란색 */
+                border: 1px solid #ddd;
+                padding: 15px 60px;
+                font-size: 20px;
+                font-weight: bold;
+                cursor: pointer;
+                border-radius: 5px;
+            }
+
+            .btn-cancel-pay {
+                background-color: white;
+                border: 1px solid #333;
+                padding: 15px 60px;
+                font-size: 20px;
+                font-weight: bold;
+                cursor: pointer;
+                border-radius: 5px;
+            }
         </style>
     </head>
 
@@ -571,10 +736,112 @@
 
 
                 <main>
-                    <div v-if="currentMenu === 'main'">
-                        <!-- productNo 을 갖고옴..-->
-                        
-                    </div>
+                    <main>
+                        <div v-if="currentMenu === 'main' && productPage === 'list'">
+                            <div class="filter-section">
+                                <!-- <div class="section-title">조회 필터</div> -->
+                                <h2>카테고리</h2>
+                                <label><input type="checkbox" v-model="selectCategory" value="스튜디오"> 스튜디오</label>
+                                <label><input type="checkbox" v-model="selectCategory" value="드레스"> 드레스</label>
+                                <label><input type="checkbox" v-model="selectCategory" value="메이크업"> 메이크업</label>
+
+                                <div class="tag-filter">
+                                    <h4 style="width: 100%;">분위기 선택</h4>
+                                    <label v-for="tag in productTag" :key="tag">
+                                        <input type="checkbox" :value="tag" v-model="selectTags">
+                                        {{ tag }}
+                                    </label>
+                                </div>
+                            </div>
+
+                            <div v-for="item in filteredList" :key="item.id" class="product-item"
+                                @click="goDetailPage(item)" style="cursor:pointer;">
+                                <div class="product-img-box">
+                                    <img :src="item.thumbnail" alt="item.name">
+                                </div>
+                                <div class="product-info">
+                                    <h4>{{item.name}}</h4>
+                                    <p class="product-content">{{item.content}}</p>
+                                    <div v-if="item.tag" style="display: flex; gap: 5px;">
+                                        <span v-for="t in item.tag"
+                                            style="font-size: 11px; color: #ff7f9f;">{{t}}</span>
+                                    </div>
+                                    <p class="product-price">{{item.price}}</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div v-if="currentMenu === 'main' && productPage === 'detail'">
+                            <button @click="productPage = 'list'" style="margin-bottom:10px;">← 뒤로가기</button>
+
+                            <div class="detail-container">
+                                <div class="detail-left">
+                                    <img :src="product1.thumbnail" class="detail-main-img">
+                                    <div class="detail-company-name">
+                                        {{ product1.company }} </div>
+                                    <div class="detail-description-card">
+                                        <h3 style="margin-top:0;">{{ product1.name }}</h3>
+                                        <p>{{ product1.content }}</p>
+                                        <hr>
+                                        <p>※ 상세 옵션 안내 및 유의사항이 여기에 들어갑니다.</p>
+                                    </div>
+                                </div>
+
+                                <div class="detail-right">
+                                    <div class="reservation-box">
+                                        <div
+                                            style="font-weight:bold; border-bottom:1px solid #ddd; padding-bottom:10px;">
+                                            예약하기</div>
+                                        <div class="calendar-placeholder"
+                                            style="background: white; flex-direction: column;">
+                                            <label for="res-date"
+                                                style="font-size: 14px; margin-bottom: 10px; color: #666;">방문 예정일을
+                                                선택해주세요</label>
+                                            <input type="date" id="res-date" v-model="selectedDate"
+                                                style="padding: 10px; border: 1px solid #ff7f9f; border-radius: 5px; width: 80%;">
+                                        </div>
+                                    </div>
+
+                                    <div class="price-info-box">
+                                        <div class="price-row">
+                                            <span>예상 견적 :</span>
+                                            <span>{{ product1.price }}</span>
+                                        </div>
+                                    </div>
+
+                                    <div class="price-info-box">
+                                        <div class="price-row">
+                                            <span>예약금 :</span>
+                                            <span>100,000원</span>
+                                        </div>
+                                    </div>
+
+                                    <button class="btn-reserve" @click="fnReserve">예약하기</button>
+                                    <button class="btn-inquiry" @click="currentMenu = 'inquiry'">상품 문의하기</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div v-if="currentMenu === 'main' && productPage === 'payment'" class="payment-container">
+
+                            <div class="payment-info-row">결제 상품 : {{ product1.name }}</div>
+                            <div class="payment-info-row">예약일자 : {{ selectedDate }}</div>
+                            <div class="payment-info-row">예약자명 : {{ user.name }}</div>
+                            <div class="payment-info-row">휴대폰번호 : {{ user.contact}}</div>
+                            <div class="payment-info-row">예약금 : 100,000원</div>
+                            <div class="payment-info-row">필수항목동의 : 노쇼관련</div>
+
+                            <div class="total-payment-amount">
+                                결제 금액 : 100,000 원
+                            </div>
+
+                            <div class="payment-btn-group">
+                                <button class="btn-final-reserve" @click="fnFinalOrder(user)">예약하기</button>
+                                <button class="btn-cancel-pay" @click="productPage = 'detail'">취소</button>
+                            </div>
+
+                        </div>
+                    </main>
                 </main>
             </div>
         </div>
@@ -594,6 +861,7 @@
             data() {
                 return {
                     // 변수 - (key : value)
+                    selectedDate: '',
                     selectTags: [],
                     productTag: [
                         '인물 중심', '배경 중심', '화려한', '심플한', '단아한',
@@ -610,7 +878,7 @@
                         { id: 2, product: '스몰 웨딩', title: '메이크업 추가되나요?', userid: '아리랑', content: '메이크업 여기서 받고싶어요.' },
                     ],
                     user: {
-                        id: 1, name: 'ABC 드레스 샵', usePeriod: '25.01.01 ~ 26.01.01', lastPayment: '신협 ***', grade: '제휴업체' /* 일반업체, 제휴업체 구분 변수 */
+                        id: 1, name: 'ABC 드레스 샵', usePeriod: '25.01.01 ~ 26.01.01', contact: '010-1111-2222', lastPayment: '신협 ***', grade: '제휴업체' /* 일반업체, 제휴업체 구분 변수 */
                     },
                     currentMenu: 'main', // 초기 화면
                     reviewTab: 'detail',
@@ -629,6 +897,7 @@
                             id: 1,
                             thumbnail: 'https://img1.newsis.com/2021/09/26/NISI20210926_0000834715_web.jpg',
                             name: '내추럴 스몰 웨딩',
+                            company: '아름 스튜디오',
                             content: '자연스러운 채광과 함께하는 소규모 웨딩 패키지입니다.',
                             price: '1,700,000원',
                             category: ['스튜디오', '드레스'],
@@ -638,6 +907,7 @@
                             id: 2,
                             thumbnail: 'https://i.imgur.com/RwwCSsD.jpeg',
                             name: '럭셔리 비즈 패키지',
+                            company: '엘레강스 웨딩',
                             content: '화려한 호텔 예식에 어울리는 프리미엄 비즈 드레스와 메이크업.',
                             price: '3,500,000원',
                             category: ['드레스', '메이크업'],
@@ -647,6 +917,7 @@
                             id: 3,
                             thumbnail: 'https://i.imgur.com/vVJ0lAD.jpeg',
                             name: '동화같은 가든 스냅',
+                            company: '포레스트 필름',
                             content: '야외 정원에서 펼쳐지는 몽환적인 분위기의 촬영 세트입니다.',
                             price: '1,200,000원',
                             category: ['스튜디오'],
@@ -656,6 +927,7 @@
                             id: 4,
                             thumbnail: 'https://i.imgur.com/OOOUXX2.jpeg',
                             name: '클래식 단아 화보',
+                            company: '고은 사진관',
                             content: '시간이 흘러도 변치 않는 단아하고 클래식한 인물 중심 촬영.',
                             price: '2,100,000원',
                             category: ['스튜디오'],
@@ -665,6 +937,7 @@
                             id: 5,
                             thumbnail: 'https://i.imgur.com/13Pd2g0.jpeg',
                             name: '제주 푸른 바다 스냅',
+                            company: '아일랜드 스냅',
                             content: '제주도의 푸른 바다와 숲을 배경으로 하는 감성 스냅 여행.',
                             price: '1,500,000원',
                             category: ['스튜디오'],
@@ -674,6 +947,7 @@
                             id: 6,
                             thumbnail: 'https://i.imgur.com/5NZ6N6J.jpeg',
                             name: '심플 실크 패키지',
+                            company: '실크로드 웨딩',
                             content: '깔끔한 실크 드레스와 깨끗한 윤광 메이크업의 조화.',
                             price: '1,800,000원',
                             category: ['드레스', '메이크업'],
@@ -683,6 +957,7 @@
                             id: 7,
                             thumbnail: 'https://i.imgur.com/unGGPeY.jpeg',
                             name: '빈티지 레트로 웨딩',
+                            company: '기억 저장소',
                             content: '유니크한 소품과 빈티지한 색감이 매력적인 스튜디오 상품.',
                             price: '1,400,000원',
                             category: ['스튜디오'],
@@ -692,6 +967,7 @@
                             id: 8,
                             thumbnail: 'https://i.imgur.com/HH39Q7x.jpeg',
                             name: '프리미엄 토탈 샵',
+                            company: '골든 라벨',
                             content: '스튜디오, 드레스, 메이크업을 한 번에 해결하는 올인원 패키지.',
                             price: '4,200,000원',
                             category: ['스튜디오', '드레스', '메이크업'],
@@ -701,6 +977,7 @@
                             id: 9,
                             thumbnail: 'https://i.imgur.com/dfAstzQ.jpeg',
                             name: '로맨틱 야간 촬영',
+                            company: '미드나잇 스튜디오',
                             content: '도시의 야경과 전구 조명이 어우러진 로맨틱한 분위기.',
                             price: '1,100,000원',
                             category: ['스튜디오'],
@@ -710,6 +987,7 @@
                             id: 10,
                             thumbnail: 'https://i.imgur.com/zE63IB8.jpeg',
                             name: '모던 시크 스튜디오',
+                            company: '블랙 앤 화이트',
                             content: '심플한 배경에서 인물에만 집중하는 세련된 화보 스타일.',
                             price: '1,600,000원',
                             category: ['스튜디오'],
@@ -719,6 +997,7 @@
                             id: 11,
                             thumbnail: 'https://i.imgur.com/x08AwJc.jpeg',
                             name: '러블리 과즙 팡팡',
+                            company: '베리 메이크업',
                             content: '사랑스러운 신부를 위한 화사한 과즙 메이크업과 레이스 드레스.',
                             price: '2,300,000원',
                             category: ['드레스', '메이크업'],
@@ -728,6 +1007,7 @@
                             id: 12,
                             thumbnail: 'https://i.imgur.com/BF7go1g.jpeg',
                             name: '그리너리 본식 스냅',
+                            company: '모먼트 픽',
                             content: '식장 분위기를 그대로 담아내는 생생한 현장 본식 스냅.',
                             price: '900,000원',
                             category: ['스튜디오'],
@@ -737,6 +1017,7 @@
                             id: 13,
                             thumbnail: 'https://i.imgur.com/zKxXEJ1.jpeg',
                             name: '동양적 우아함 패키지',
+                            company: '연정 메이크업',
                             content: '전통의 미와 현대적 감각이 어우러진 우아한 스타일링.',
                             price: '2,500,000원',
                             category: ['드레스', '메이크업'],
@@ -746,6 +1027,7 @@
                             id: 14,
                             thumbnail: 'https://i.imgur.com/jCdqTnb.jpeg',
                             name: '나만의 커스터마이징',
+                            company: '더 원 웨딩',
                             content: '신랑 신부가 원하는 컨셉을 그대로 구현하는 맞춤 상품.',
                             price: '3,000,000원',
                             category: ['스튜디오', '드레스', '메이크업'],
@@ -755,6 +1037,7 @@
                             id: 15,
                             thumbnail: 'https://i.imgur.com/vWUgcRD.jpeg',
                             name: '실속 알뜰 패키지',
+                            company: '굿데이 웨딩',
                             content: '필요한 것만 쏙쏙 담은 거품 없는 실속형 웨딩 상품.',
                             price: '800,000원',
                             category: ['메이크업', '드레스'],
@@ -859,7 +1142,8 @@
                         productDetails: '',
                         originalPrice: '',
                         imgUrl: ''
-                    }
+                    },
+                    userReservationList: []
                 }
 
             }, // data
@@ -1349,6 +1633,38 @@
                         }
                     });
                 },
+                goDetailPage(item) {
+                    this.productPage = 'detail';
+                    // 선택한 상품 정보를 product1(상세보기 바구니)에 담기
+                    this.product1 = { ...item };
+
+                    window.scrollTo(0, 0); // 화면 상단으로 이동
+                },
+
+                // 예약하기 버튼 클릭
+                fnReserve() {
+                    // 실제로는 여기서 날짜 선택 여부를 체크하면 좋아요!
+                    if (!this.selectedDate) {
+                        alert("예약 날짜를 선택해주세요!");
+                        return;
+                    }
+                    this.productPage = 'payment'; // 결제 화면으로 렌더링 상태 변경
+                    window.scrollTo(0, 0);
+                },
+                fnFinalOrder(user) {  //user
+                    alert("최종 예약 및 결제가 완료되었습니다!");
+
+                    let maxId = this.userReservationList.length > 0
+                        ? Math.max(...this.userReservationList.map(item => item.id)) : 1;
+
+                    this.userReservationList.push(
+                        { id: maxId + 1, productName: this.product1.name, resDate: this.selectedDate, resName: this.user.name, phoneNo: this.user.contact, deposit: 100000 }
+                    )
+                    this.productPage = 'list';   // 다시 목록으로 보내거나
+                    console.log(this.userReservationList);
+
+                    //this.currentMenu = 'reservation'; // 예약 내역 페이지로 보냅니다.
+                }
 
             }, // methods
 
@@ -1356,7 +1672,7 @@
             mounted() {
                 // 처음 시작할 때 실행되는 부분
                 let self = this;
-                self.fnCom();
+                //self.fnCom();
             }
 
 

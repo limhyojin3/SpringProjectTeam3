@@ -26,33 +26,48 @@ public class CompanyController {
 	@Autowired
 	CompanyService companyService;
 
-	/* 사용가능, 다른 페이지와 연결가능. */
+	/* 사용가능 */
 	@RequestMapping("/company10.do")
 	public String test2(Model model) throws Exception {
 		return "/company/company10";
 	}
-
-	/* 로그인 없이 입장용, 다른곳과 연결 지양 */
-	@RequestMapping("/company9.do")
-	public String test99(Model model) throws Exception {
-		return "/company/company10";
-	}
-	/* 사용가능 but 미완성, 상품목록조회(카테고리 / 태그 필터) 일단 프론트 완성 */
-	@RequestMapping("/company1.do")
-	public String te2(Model model) throws Exception {
-		return "/company/company1";
-	}
-	/* 상품 상세페이지 프론트 진행중 */
+	
+	/* 상품목록조회(카테고리 / 태그 필터) 프론트 + 상품 상세페이지 프론트 */
 	@RequestMapping("/company2.do")
 	public String te4(Model model) throws Exception {
 		return "/company/company2";
 	}
 	
-	/* 프론트 백업본 */
-	@RequestMapping("/company8.do")
-	public String te(Model model) throws Exception {
-		return "/company/companyBackup0421";
+	
+	
+	
+	
+	
+	
+	
+	
+	/* 로그인 없이 입장용 */
+	@RequestMapping("/company9.do")
+	public String test99(Model model) throws Exception {
+		return "/company/company10";
 	}
+	/* 사용 ㄴㄴ 백업용 */
+	@RequestMapping("/company99.do")
+	public String te24(Model model) throws Exception {
+		return "/company/company10Backup0423DB";
+	}
+	/* 사용 ㄴㄴ 백업용 */
+	@RequestMapping("/company98.do")
+	public String te124(Model model) throws Exception {
+		return "/company/company10Backup0421FRONT";
+	}
+	/* 사용 ㄴㄴ 백업용 */
+	@RequestMapping("/company97.do")
+	public String te54(Model model) throws Exception {
+		return "/company/company2Backup0424FRONT";
+	}
+	
+	
 
 	@RequestMapping(value = "/company.dox", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
 	@ResponseBody

@@ -165,3 +165,78 @@ filteredList() {
 
 
                     </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+                    <main>
+    <div v-if="currentMenu === 'main' && productPage === 'list'">
+        <div class="filter-section">
+            <div class="section-title">조회 필터</div>
+            </div>
+
+        <div v-for="item in filteredList" :key="item.id" class="product-item" @click="goDetailPage(item)" style="cursor:pointer;">
+            <div class="product-img-box">
+                <img :src="item.thumbnail" alt="item.name">
+            </div>
+            <div class="product-info">
+                <h4>{{item.name}}</h4>
+                <p class="product-content">{{item.content}}</p>
+                <p class="product-price">{{item.price}}</p>
+            </div>
+        </div>
+    </div>
+
+    <div v-if="currentMenu === 'main' && productPage === 'detail'">
+        <button @click="productPage = 'list'" style="margin-bottom:10px;">← 뒤로가기</button>
+        
+        <div class="detail-container">
+            <div class="detail-left">
+                <img :src="product1.thumbnail" class="detail-main-img">
+                <div class="detail-company-name">
+                    {{ product1.name }} </div>
+                <div class="detail-description-card">
+                    <h3 style="margin-top:0;">{{ product1.name }}</h3>
+                    <p>{{ product1.content }}</p>
+                    <hr>
+                    <p>※ 상세 옵션 안내 및 유의사항이 여기에 들어갑니다.</p>
+                </div>
+            </div>
+
+            <div class="detail-right">
+                <div class="reservation-box">
+                    <div style="font-weight:bold; border-bottom:1px solid #ddd; padding-bottom:10px;">예약하기</div>
+                    <div class="calendar-placeholder">
+                        날짜 선택 캘린더 API 영역<br>(FullCalendar 등)
+                    </div>
+                </div>
+
+                <div class="price-info-box">
+                    <div class="price-row">
+                        <span>예상 견적 :</span>
+                        <span>{{ product1.price }}</span>
+                    </div>
+                </div>
+
+                <div class="price-info-box">
+                    <div class="price-row">
+                        <span>예약금 :</span>
+                        <span>100,000원</span>
+                    </div>
+                </div>
+
+                <button class="btn-reserve" @click="fnReserve">예약하기</button>
+                <button class="btn-inquiry" @click="currentMenu = 'inquiry'">상품 문의하기</button>
+            </div>
+        </div>
+    </div>
+</main>
