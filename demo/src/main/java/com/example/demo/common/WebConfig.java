@@ -15,7 +15,7 @@ public class WebConfig implements WebMvcConfigurer {
     @Value("${file.resource-path}")
     private String resourcePath;
 
-    @Override
+    @Override 
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
         /// /uploads/** 로 들어오는 요청을 C:/uploads/project/ 폴더로 연결
         registry.addResourceHandler(resourcePath)
@@ -48,7 +48,6 @@ public class WebConfig implements WebMvcConfigurer {
                         "/login.do",
                         "/join*.do",    // join.do, join-user.do 등 제외
                         "/find-*.do",   // find-id.do, find-pwd.do 제외
-                        
                         "/css/**", "/js/**", "/img/**", "/images/**"
                 ); // 제외할 경로
     }
