@@ -30,6 +30,10 @@
                 <div class="left-banner">
                     <div class="main-banner-img">
                         <span class="img-placeholder"></span>
+                        <div class="banner-overlay">
+                            <h2>당신의 특별한 날,<br>메리뷰와 함께</h2>
+                            <p>솔직한 웨딩 리뷰로<br>현명한 선택을 하세요</p>
+                        </div>
                     </div>
                 </div>
                 <div class="right-sections">
@@ -50,8 +54,14 @@
                             <div class="review-card" v-for="review in reviewList" :key="review.reviewNo"
                                 @click="fnGoReview(review.reviewNo)">
                                 <div class="review-img-thumb">
-                                    <img v-if="review.imgUrl" :src="review.imgUrl" 
-                                        style="width:100%; height:100%; object-fit:cover;">
+                                    <img v-if="review.imgUrl && !review.imgUrl.endsWith('.zip')" 
+                                        :src="review.imgUrl" 
+                                        style="width:100%; height:100%; object-fit:cover;"
+                                        @error="event => { event.target.style.display='none'; event.target.parentElement.style.backgroundColor='#ffc7c2'; }">
+                                    <div v-else class="thumb-placeholder">
+                                        <span>🌸</span>
+                                        <p>{{ review.title }}</p>
+                                    </div>
                                 </div>
                                 <p class="review-title">{{ review.title }}</p>
                             </div>
@@ -97,6 +107,10 @@
             },
             fnGoReview: function(reviewNo) {
                 location.href = '/api/review/detail.do?reviewNo=' + reviewNo;
+            },
+            handleImgError: function(event) {
+                event.target.style.display = 'none';
+                event.target.nextElementSibling.style.display = 'flex';
             },
         }, // methods
         mounted() {

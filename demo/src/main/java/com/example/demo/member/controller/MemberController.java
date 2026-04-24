@@ -363,6 +363,7 @@ public class MemberController {
 	@ResponseBody
 	public Member getPassWallet(HttpSession session) {
 	    String userId = (String) session.getAttribute("sessionId");
+//	    System.out.println("세션 userId: " + userId);
 	    return memberService.getPassWallet(userId);
 	}
 	// 3-18. 멤버십 결제 내역 조회
@@ -611,6 +612,11 @@ public class MemberController {
 		@ResponseBody
 		public List<Member> getMainPostList() {
 		    return memberService.getMainPostList();
+		}
+	// 회사 소개 페이지
+		@GetMapping("/about.do")
+		public String about() {
+		    return "/common/home-about";
 		}
 	// 최근 리뷰
 		@GetMapping("/mainReviewList.dox")
