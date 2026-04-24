@@ -91,5 +91,23 @@
 		WHERE c.user_id = 'sunsu09'
 	</select>
 
+	<select id="selectReviewCnt" parameterType="map"
+		resultType="com.example.demo.company.model.Company">
+		select p.product_no, p.product_name, p.img_url, count(review_no)
+		reviewCount from product p
+		left join review r on p.product_no = r.product_no and r.is_paid = 1
+		where p.company_no = (
+		select company_no cmpNo from company c where c.user_id = 'sunsu09')
+		group by p.product_no, p.product_name, p.img_url;
+	</select>
 
+	<select id="selectSimpleReviewCnt" parameterType="map"
+		resultType="com.example.demo.company.model.Company">
+		select p.product_no, p.product_name, p.img_url, count(review_no)
+		reviewCount from product p
+		left join review r on p.product_no = r.product_no and r.is_paid = 0
+		where p.company_no = (
+		select company_no cmpNo from company c where c.user_id = 'sunsu09')
+		group by p.product_no, p.product_name, p.img_url;
+	</select>
 </mapper>
