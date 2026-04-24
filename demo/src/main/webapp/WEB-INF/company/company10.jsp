@@ -1572,7 +1572,7 @@
                         type: "POST",
                         data: param,
                         success: function (data) {
-                            console.log(data);
+                            //console.log(data);
                             self.reservationList = data.list;
                         }
                     });
