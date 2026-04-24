@@ -125,7 +125,6 @@
                             <!-- 상태 -->
                             <select class="form-control" v-model="selected.status">
                                 <option value="WAIT">WAIT</option>
-                                <option value="PROCESSING">PROCESSING</option>
                                 <option value="DONE">DONE</option>
                             </select>
 
@@ -140,7 +139,7 @@
 
                         <!-- 선택 안했을 때 -->
                         <div class="right" v-else>
-                            <p>문의 선택하세요</p>
+                            <p>문의를 선택하세요</p>
                         </div>
 
                     </div>

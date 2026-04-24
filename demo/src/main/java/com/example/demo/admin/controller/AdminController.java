@@ -17,7 +17,7 @@ import com.example.demo.admin.dao.AdminService;
 import com.google.gson.Gson;
 
 import jakarta.servlet.http.HttpServletRequest;
-
+import jakarta.servlet.http.HttpSession;
 import jakarta.servlet.http.HttpServletRequest;
 
 @Controller
@@ -46,9 +46,9 @@ public class AdminController {
 		return "admin/adminReport";
 	}
 	
-	@RequestMapping("/adminUserList.do")
+	@RequestMapping("/adminUser.do")
 	public String adminUserList(Model model) throws Exception {
-		return "admin/adminUserList";
+		return "admin/adminUser";
 	}
 
 	@RequestMapping("/adminPass.do")
@@ -169,4 +169,24 @@ public class AdminController {
 		return new Gson().toJson(resultMap);
 	}
 	
+	// 관리자 전체 회원목록 페이지
+	@RequestMapping("/userList.dox")
+	@ResponseBody
+	public HashMap<String, Object> userList(@RequestParam HashMap<String, Object> map) {
+		HashMap<String, Object> resultMap = new HashMap<>();
+		resultMap = adminService.getUserList(map);
+
+		return resultMap;
+	}
+
+	// 관리자 전체 회원목록 페이지
+	@RequestMapping(value = "/editMemberBan.dox", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
+	@ResponseBody
+	public String editMemberBan(HttpSession session, @RequestParam HashMap<String, Object> map) throws Exception {
+	    HashMap<String, Object> resultMap = new HashMap<>();
+
+	    resultMap = adminService.editMemberBan(map);
+
+	    return new Gson().toJson(resultMap);
+	}
 }
