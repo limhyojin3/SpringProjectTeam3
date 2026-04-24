@@ -1,0 +1,212 @@
+/* 기본 스타일 리셋 */
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Noto Sans KR', sans-serif; background-color: #f9f9f9; color: #333; }
+
+/* 전체 페이지 레이아웃 */
+#wrapper {
+    max-width: 1300px;
+    margin: 50px auto;
+    padding: 0 20px;
+    position: relative;
+}
+
+.main-content {
+    display: flex;
+	width: 100%;
+	align-items: flex-start;
+    gap: 30px;
+}
+
+/* 왼쪽 배너 영역 */
+.left-banner {
+    width: 320px;
+    flex-shrink: 0;
+}
+
+.main-banner-img {
+    width: 100%;
+    height: 700px;
+	background-image: url("../img/left-banner.jpg");
+	background-position: center;
+    background-color: #eaeaea; /* 이미지 없을 때 배경색 */
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+}
+
+.main-banner-img img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.img-placeholder {
+    color: #999;
+    font-size: 1.5rem;
+    font-weight: bold;
+}
+
+/* 오른쪽 콘텐츠 영역 */
+.right-sections {
+    flex: 1; /* 남는 공간을 모두 차지하도록 설정 */
+	min-width: 0;        /* flex 자식 요소의 최소 넓이 제한 해제 (중요) */
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
+}
+
+h2 { font-size: 24px; font-weight: 700; margin-bottom: 20px; }
+
+/* 리얼후기 섹션 */
+.review-section {
+    background-color: #fff;
+    padding: 40px;
+    border-radius: 12px;
+    border: 1px solid #eee;
+    text-align: center;
+}
+
+.section-title-wrap {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.hash-tag-wrap {
+    font-size: 14px;
+    color: #555;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 5px;
+}
+
+.review-tag {
+    background-color: #ff6b6b; /* 리얼후기 빨간 배경색 */
+    color: #fff;
+    padding: 2px 8px;
+    border-radius: 15px;
+    font-size: 12px;
+}
+
+.section-desc {
+    font-size: 13px;
+    color: #888;
+    margin-bottom: 30px;
+}
+
+.review-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 15px;
+}
+
+.review-card {
+    text-align: left;
+}
+
+.review-img-thumb {
+    width: 100%;
+    height: 150px;
+    background-color: #f2f2f2;
+    border: 1px solid #eee;
+    border-radius: 6px;
+    margin-bottom: 10px;
+    overflow: hidden;
+}
+
+.review-img-thumb img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.review-title {
+    font-size: 13px;
+    color: #444;
+    line-height: 1.4;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 2; /* 두 줄까지 표시 후 말줄임 */
+    -webkit-box-orient: vertical;
+}
+
+/* 커뮤니티 섹션 (점선 박스) */
+.community-section {
+    border: 2px dashed #f4a096; /* 점선 테두리 */
+    padding: 30px;
+    border-radius: 12px;
+}
+
+.section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.section-header h2 { margin-bottom: 0; }
+
+.more-link {
+    font-size: 12px;
+    color: #888;
+    text-decoration: none;
+}
+
+.post-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 15px;
+}
+
+.post-card {
+    background-color: #fff;
+    padding: 20px;
+    border: 1px solid #eee;
+    border-radius: 8px;
+}
+
+.post-text {
+    font-size: 13px;
+    color: #666;
+    line-height: 1.6;
+    margin-bottom: 3px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+.post-info {
+    font-size: 12px;
+    color: #888;
+    margin-top: 15px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.post-info i {
+    font-style: normal;
+    margin-right: 2px;
+}
+
+.post-views {
+    margin-left: auto; /* 조회수를 오른쪽으로 */
+}
+
+/* 하단 로고 */
+.footer-logo {
+    position: absolute;
+    bottom: -60px;
+    left: 20px;
+    font-family: 'Georgia', serif; /* 예쁜 서체 사용 */
+    font-style: italic;
+    font-size: 40px;
+    color: #f4a096;
+}

@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.demo.community_review.mapper.CommentMapper">
+
+	<select id="getCommentContent" resultType="string">
+        SELECT content 
+        FROM Comment 
+        WHERE comment_no = #{targetId}
+    </select>
+
+	
+
+   <select id="selectReviewCommentList" parameterType="hashmap" resultType="hashmap">
+	    SELECT 
+	        comment_no AS commentNo,
+	        review_no AS reviewNo, 
+	        user_id AS userId,
+	        content,
+	        like_cnt AS likeCnt,
+	        parent_no AS parentNo,
+	        is_deleted AS isDeleted,
+	        DATE_FORMAT(reg_date, '%Y-%m-%d %H:%i') AS regDate,
+	        (SELECT COUNT(*) 
+	         FROM comment_like cl 
+	         WHERE cl.comment_no = c.comment_no AND cl.user_id = #{userId}) AS isLiked
+	    FROM comment c
+	    WHERE review_no = #{reviewNo} 
+	      AND is_deleted = 0
+	    ORDER BY 
+	        CASE WHEN parent_no IS NULL THEN comment_no ELSE parent_no END ASC,
+	        CASE WHEN parent_no IS NULL THEN 0 ELSE 1 END ASC,
+	        reg_date ASC
+	</select>
+	
+	<insert id="insertReviewComment" parameterType="hashmap">
+	    INSERT INTO comment (
+	        review_no, 
+	        user_id,
+	        content,
+	        reg_date,
+	        is_deleted,
+	        like_cnt,
+	        parent_no
+	    ) VALUES (
+	        #{reviewNo},
+	        #{userId},
+	        #{content},
+	        NOW(),
+	        0,
+	        0,
+	        #{parentNo}  
+	        )
+	</insert>
+	
+	   <select id="selectCommunityCommentList" parameterType="hashmap" resultType="hashmap">
+	    SELECT 
+	        comment_no AS commentNo,
+	        post_no AS postNo, 
+	        user_id AS userId,
+	        content,
+	        like_cnt AS likeCnt,
+	        parent_no AS parentNo,
+	        is_deleted AS isDeleted,
+	        DATE_FORMAT(reg_date, '%Y-%m-%d %H:%i') AS regDate,
+	        (SELECT COUNT(*) 
+	         FROM comment_like cl 
+	         WHERE cl.comment_no = c.comment_no AND cl.user_id = #{userId}) AS isLiked
+	    FROM comment c
+	    WHERE post_no = #{postNo} 
+	      AND is_deleted = 0
+	    ORDER BY 
+	        CASE WHEN parent_no IS NULL THEN comment_no ELSE parent_no END ASC,
+	        CASE WHEN parent_no IS NULL THEN 0 ELSE 1 END ASC,
+	        reg_date ASC
+	</select>
+	
+	<insert id="insertCommunityComment" parameterType="hashmap">
+	    INSERT INTO comment (
+	        post_no, 
+	        user_id,
+	        content,
+	        reg_date,
+	        is_deleted,
+	        like_cnt,
+	        parent_no
+	    ) VALUES (
+	        #{postNo},
+	        #{userId},
+	        #{content},
+	        NOW(),
+	        0,
+	        0,
+	        #{parentNo}  
+	        )
+	</insert>
+
+    <update id="deleteComment">
+        UPDATE Comment 
+        SET is_deleted = 1 
+        WHERE comment_no = #{commentNo}
+        	OR parent_no = #{commentNo}
+    </update>
+    
+    <update id="updateComment" parameterType="hashmap">
+        UPDATE comment 
+        SET content = #{content}
+        WHERE comment_no = #{commentNo} 
+          AND user_id = #{userId}
+    </update>
+    
+    <select id="checkCommentLike" parameterType="hashmap" resultType="int">
+	    SELECT COUNT(*) 
+	    FROM comment_like 
+	    WHERE comment_no = #{commentNo} 
+	      AND user_id = #{userId}
+	</select>
+    
+    <insert id="insertCommentLike" parameterType="hashmap">
+	    INSERT INTO comment_like (comment_no, user_id) 
+	    VALUES (#{commentNo}, #{userId})
+	</insert>
+	
+	<delete id="deleteCommentLike" parameterType="hashmap">
+	    DELETE FROM comment_like 
+	    WHERE comment_no = #{commentNo} AND user_id = #{userId}
+	</delete>
+	
+	<update id="updateCommentLikeCnt" parameterType="hashmap">
+	    UPDATE comment 
+	    SET like_cnt = like_cnt + #{count} 
+	    WHERE comment_no = #{commentNo}
+	</update>
+ 
+</mapper>

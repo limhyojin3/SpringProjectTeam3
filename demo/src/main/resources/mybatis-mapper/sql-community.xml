@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.demo.community_review.mapper.CommunityMapper">
+	
+	<select id="getPostTitle" resultType="string">
+        SELECT title 
+        FROM Community_Post 
+        WHERE post_no = #{targetId}
+    </select>
+	
+	<!--게시글 추가-->
+    <insert id="insertPost" useGeneratedKeys="true" keyProperty="postNo">
+        INSERT INTO Community_Post (
+            user_id, category, title, content, reg_date
+        ) VALUES (
+            #{userId}, #{category}, #{title}, #{content}, CURRENT_TIMESTAMP
+        )
+    </insert>
+    
+    <select id="selectPostCount" parameterType="hashmap" resultType="int">
+	    SELECT COUNT(*)
+	    FROM Community_Post p
+	    WHERE p.is_deleted = 0
+	    
+	    <if test="category != null and category != '' and category != '전체'">
+	        AND p.category = #{category}
+	    </if>
+	
+	    <if test="searchKeyword != null and searchKeyword != ''">
+	        <choose>
+	            <when test="searchType == 'title'">
+	                AND p.title LIKE CONCAT('%', #{searchKeyword}, '%')
+	            </when>
+	            <when test="searchType == 'userId'">
+	                AND p.user_id LIKE CONCAT('%', #{searchKeyword}, '%')
+	            </when>
+	            <otherwise>
+	                AND (p.title LIKE CONCAT('%', #{searchKeyword}, '%') 
+	                     OR p.user_id LIKE CONCAT('%', #{searchKeyword}, '%'))
+	            </otherwise>
+	        </choose>
+	    </if>
+	</select>
+    
+	<!-- 게시글 리스트 -->
+   <select id="selectPostList" parameterType="hashmap" resultType="com.example.demo.community_review.model.Community">
+	    SELECT 
+	        p.post_no AS postNo,
+	        p.user_id AS userId,
+	        p.category,
+	        p.title,
+	        p.content,
+	        DATE_FORMAT(p.reg_date, '%Y-%m-%d') AS regDate,
+	        p.view_cnt AS viewCnt,
+	        p.like_cnt AS likeCnt,
+	        p.is_deleted AS isDeleted,
+	        (SELECT COUNT(*) FROM comment c 
+	         WHERE c.post_no = p.post_no AND c.is_deleted = 0) AS commentCnt
+	    FROM Community_Post p
+	    WHERE p.is_deleted = 0
+	    
+	    <if test="category != null and category != '' and category != '전체'">
+	        AND p.category = #{category}
+	    </if>
+	
+	    <if test="searchKeyword != null and searchKeyword != ''">
+	        <choose>
+	            <when test="searchType == 'title'">
+	                AND p.title LIKE CONCAT('%', #{searchKeyword}, '%')
+	            </when>
+	            <when test="searchType == 'userId'">
+	                AND p.user_id LIKE CONCAT('%', #{searchKeyword}, '%')
+	            </when>
+	            <otherwise>
+	                AND (p.title LIKE CONCAT('%', #{searchKeyword}, '%') 
+	                     OR p.user_id LIKE CONCAT('%', #{searchKeyword}, '%'))
+	            </otherwise>
+	        </choose>
+	    </if>
+	    ORDER BY p.reg_date DESC
+	    LIMIT #{startIndex}, #{pageSize}
+	</select>
+	
+    <select id="selectPostById" resultType="com.example.demo.community_review.model.Community">
+        SELECT * FROM Community_Post WHERE post_no = #{postNo}
+    </select>
+    
+	<!--좋아요 기능-->
+    <select id="checkPostLike" resultType="int">
+        SELECT COUNT(*) FROM community_Like 
+        WHERE post_no = #{postNo} AND user_id = #{userId}
+    </select>
+    
+	<!--추가 기능-->
+    <insert id="insertPostLike">
+        INSERT INTO community_Like (post_no, user_id)
+        VALUES (#{postNo}, #{userId})
+    </insert>
+    
+	<!--삭제 기능-->
+    <delete id="deletePostLike">
+        DELETE FROM community_Like 
+        WHERE post_no = #{postNo} AND user_id = #{userId}
+    </delete>
+    
+    <delete id="deletePost" parameterType="hashmap">
+	    DELETE FROM Community_Post 
+	    WHERE post_no = #{postNo}
+	</delete>
+
+	<!--수정 기능-->
+    <update id="updatePostLikeCount">
+        UPDATE Community_Post SET like_cnt = like_cnt + #{amount} 
+        WHERE post_no = #{postNo}
+    </update>
+    
+    <update id="updatePost" parameterType="hashmap">
+	    UPDATE Community_Post 
+	    SET title = #{title}, 
+	        content = #{content},
+	        update_date = NOW()
+	    WHERE post_no = #{postNo}
+	</update>
+     
+    <!--조회 수 기능-->
+    <update id="updateViewCount" parameterType="hashmap">
+	    UPDATE Community_Post 
+	    SET view_cnt = view_cnt + 1
+	    WHERE post_no = #{postNo}
+	</update>
+	<select id="selectPostDetail" parameterType="hashmap" resultType="com.example.demo.community_review.model.Community">
+	    SELECT 
+	        post_no AS postNo,
+	        user_id AS userId,
+	        title,
+	        category,
+	        content,
+	        view_cnt AS viewCnt,
+	        like_cnt AS likeCnt,
+	        reg_date AS regDate,
+	        (SELECT COUNT(*) 
+	         FROM community_like 
+	         WHERE post_no = community_Post.post_no 
+	           AND user_id = #{userId}) AS isLiked
+	    FROM community_Post
+	    WHERE post_no = #{postNo}
+	</select>
+	
+	<!---->
+	<select id="selectPostAuthor" parameterType="hashmap" resultType="String">
+    	SELECT user_id FROM Community_Post WHERE post_no = #{postNo}
+	</select>
+	
+</mapper>
