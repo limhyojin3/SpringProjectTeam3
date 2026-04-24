@@ -68,8 +68,28 @@
 		#{proType}, #{companyNo})
 
 	</insert>
-	
-	
+
+
+	<select id="selectReservation" parameterType="map"
+		resultType="com.example.demo.company.model.Company">
+		SELECT
+		r.user_id AS res_user_id, -- 실제 예약한 유저의 아이디
+		r.product_no,
+		p.product_name,
+		r.res_date,
+		r.res_content,
+		r.use_datetime,
+		r.deposit,
+		m.tel
+		FROM company c
+		-- 1. 업체 테이블과 상품 테이블 연결 (이 업체가 가진 상품들)
+		JOIN product p ON c.company_no = p.company_no
+		-- 2. 상품 테이블과 예약 테이블 연결 (그 상품들에 들어온 예약들)
+		JOIN reservation r ON p.product_no = r.product_no
+		-- 3. 조건: 업체 테이블의 로그인 아이디가 'sunsu09'인 경우
+		left join member m on m.user_id = r.user_id --
+		WHERE c.user_id = 'sunsu09'
+	</select>
 
 
 </mapper>

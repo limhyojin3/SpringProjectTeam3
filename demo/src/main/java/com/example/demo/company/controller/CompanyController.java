@@ -26,27 +26,48 @@ public class CompanyController {
 	@Autowired
 	CompanyService companyService;
 
+	/* 사용가능 */
 	@RequestMapping("/company10.do")
 	public String test2(Model model) throws Exception {
 		return "/company/company10";
 	}
-
-	/* 미완성 */
+	
+	/* 상품목록조회(카테고리 / 태그 필터) 프론트 + 상품 상세페이지 프론트 */
+	@RequestMapping("/company2.do")
+	public String te4(Model model) throws Exception {
+		return "/company/company2";
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	/* 로그인 없이 입장용 */
 	@RequestMapping("/company9.do")
 	public String test99(Model model) throws Exception {
 		return "/company/company10";
 	}
-	
-	@RequestMapping("/company1.do")
-	public String te2(Model model) throws Exception {
-		return "/company/company1";
+	/* 사용 ㄴㄴ 백업용 */
+	@RequestMapping("/company99.do")
+	public String te24(Model model) throws Exception {
+		return "/company/company10Backup0423DB";
+	}
+	/* 사용 ㄴㄴ 백업용 */
+	@RequestMapping("/company98.do")
+	public String te124(Model model) throws Exception {
+		return "/company/company10Backup0421FRONT";
+	}
+	/* 사용 ㄴㄴ 백업용 */
+	@RequestMapping("/company97.do")
+	public String te54(Model model) throws Exception {
+		return "/company/company2Backup0424FRONT";
 	}
 	
 	
-	@RequestMapping("/company8.do")
-	public String te(Model model) throws Exception {
-		return "/company/companyBackup0421";
-	}
 
 	@RequestMapping(value = "/company.dox", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
 	@ResponseBody
@@ -151,6 +172,14 @@ public class CompanyController {
 	@PostMapping("/productRemove.dox")
 	public String removeProduct(@RequestParam HashMap<String, Object> map) throws Exception {
 		HashMap<String, Object> resultMap = companyService.removeProduct(map);
+
+		return new Gson().toJson(resultMap);
+	}
+	
+	@RequestMapping(value = "/ReservationList.dox", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
+	@ResponseBody
+	public String test23(@RequestParam HashMap<String, Object> map) throws Exception {
+		HashMap<String, Object> resultMap = companyService.getReservation(map);
 
 		return new Gson().toJson(resultMap);
 	}
