@@ -210,15 +210,16 @@ public class CompanyService {
 		return resultMap;  
 	} 
 	
-	
+	//Company selectNewReviewCnt(HashMap<String, Object> map);
 	public HashMap<String, Object> getReviewCnt(HashMap<String, Object> map) {
 		HashMap<String, Object> resultMap = new HashMap<String, Object>();
 		try {
 //			List<User> list = defaultMapper.selectUserList(map);
 //			User info = defaultMapper.selectUser(map);
 			List<Company> list = companyMapper.selectReviewCnt(map);
-			
+			Company info = companyMapper.selectNewReviewCnt(map);
 			resultMap.put("list", list);
+			resultMap.put("info", info);
 			resultMap.put("result", "success");
 			resultMap.put("message", Message.MSG_REMOVE);
 			
@@ -238,6 +239,28 @@ public class CompanyService {
 //			List<User> list = defaultMapper.selectUserList(map);
 //			User info = defaultMapper.selectUser(map);
 			List<Company> list = companyMapper.selectSimpleReviewCnt(map);
+			Company info = companyMapper.selectNewSimpleReviewCnt(map);
+			resultMap.put("list", list);
+			resultMap.put("info", info);
+			resultMap.put("result", "success");
+			resultMap.put("message", Message.MSG_REMOVE);
+			
+			
+		} catch (Exception e) {
+			// TODO: handle exception
+			System.out.println(e.getMessage());
+			resultMap.put("result", "fail");
+			resultMap.put("message", Message.MSG_SERVER_ERR);
+		}
+		return resultMap;  
+	} 
+	//Review selectReviewDetails3(HashMap<String, Object> map);
+	public HashMap<String, Object> getReviewDetails3(HashMap<String, Object> map) {
+		HashMap<String, Object> resultMap = new HashMap<String, Object>();
+		try {
+//			List<User> list = defaultMapper.selectUserList(map);
+//			User info = defaultMapper.selectUser(map);
+			List<Review> list = companyMapper.selectReviewDetails3(map);
 			
 			resultMap.put("list", list);
 			resultMap.put("result", "success");
@@ -252,4 +275,26 @@ public class CompanyService {
 		}
 		return resultMap;  
 	} 
+	//List<Review> selectSimpleReviewDetails3(HashMap<String, Object> map);
+	public HashMap<String, Object> getSimpleReviewDetails3(HashMap<String, Object> map) {
+		HashMap<String, Object> resultMap = new HashMap<String, Object>();
+		try {
+//			List<User> list = defaultMapper.selectUserList(map);
+//			User info = defaultMapper.selectUser(map);
+			List<Review> list = companyMapper.selectSimpleReviewDetails3(map);
+			
+			resultMap.put("list", list);
+			resultMap.put("result", "success");
+			resultMap.put("message", Message.MSG_REMOVE);
+			
+			
+		} catch (Exception e) {
+			// TODO: handle exception
+			System.out.println(e.getMessage());
+			resultMap.put("result", "fail");
+			resultMap.put("message", Message.MSG_SERVER_ERR);
+		}
+		return resultMap;  
+	} 
+	
 }

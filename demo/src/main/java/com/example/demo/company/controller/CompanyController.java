@@ -62,6 +62,12 @@ public class CompanyController {
 		return "/company/company10Backup0421FRONT";
 	}
 	/* 사용 ㄴㄴ 백업용 */
+	@RequestMapping("/company999.do")
+	public String te2st99(Model model) throws Exception {
+		return "/company/company10Backup0424-2DB";
+	}
+	
+	/* 사용 ㄴㄴ 백업용 */
 	@RequestMapping("/company97.do")
 	public String te54(Model model) throws Exception {
 		return "/company/company2Backup0424FRONT";
@@ -200,5 +206,21 @@ public class CompanyController {
 
 		return new Gson().toJson(resultMap);
 	}
+	//public HashMap<String, Object> getReviewDetails3(HashMap<String, Object> map) {
+		
+	@RequestMapping(value = "/ReviewDetails3.dox", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
+	@ResponseBody
+	public String tet33(@RequestParam HashMap<String, Object> map) throws Exception {
+		HashMap<String, Object> resultMap = companyService.getReviewDetails3(map);
 
+		return new Gson().toJson(resultMap);
+	}
+	//public HashMap<String, Object> getSimpleReviewDetails3(HashMap<String, Object> map)
+	@RequestMapping(value = "/SimpleReviewDetails3.dox", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
+	@ResponseBody
+	public String te2t33(@RequestParam HashMap<String, Object> map) throws Exception {
+		HashMap<String, Object> resultMap = companyService.getSimpleReviewDetails3(map);
+
+		return new Gson().toJson(resultMap);
+	}
 }

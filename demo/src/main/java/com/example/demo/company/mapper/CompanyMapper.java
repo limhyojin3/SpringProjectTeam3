@@ -24,6 +24,17 @@ public interface CompanyMapper {
 	//int result = companyMapper.deleteProduct(map);
 	//selectSimpleReviewCnt
 	
+	//selectNewReviewCnt
+	
+	
+	List<Review> selectSimpleReviewDetails3(HashMap<String, Object> map);
+	
+	List<Review> selectReviewDetails3(HashMap<String, Object> map);
+	
+	Company selectNewSimpleReviewCnt(HashMap<String, Object> map);
+	
+	Company selectNewReviewCnt(HashMap<String, Object> map);
+	
 	List<Company> selectSimpleReviewCnt(HashMap<String, Object> map);
 	
 	List<Company> selectReviewCnt(HashMap<String, Object> map);

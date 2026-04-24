@@ -167,126 +167,16 @@ filteredList() {
                     </div>
 
 
+                    weddinglist
 
-
-
-
-
-
-
-
-
-
-
-                    <main>
-    <div v-if="currentMenu === 'main' && productPage === 'list'">
-        <div class="filter-section">
-            <div class="section-title">조회 필터</div>
-            </div>
-
-        <div v-for="item in filteredList" :key="item.id" class="product-item" @click="goDetailPage(item)" style="cursor:pointer;">
-            <div class="product-img-box">
-                <img :src="item.thumbnail" alt="item.name">
-            </div>
-            <div class="product-info">
-                <h4>{{item.name}}</h4>
-                <p class="product-content">{{item.content}}</p>
-                <p class="product-price">{{item.price}}</p>
-            </div>
-        </div>
-    </div>
-
-    <div v-if="currentMenu === 'main' && productPage === 'detail'">
-        <button @click="productPage = 'list'" style="margin-bottom:10px;">← 뒤로가기</button>
-        
-        <div class="detail-container">
-            <div class="detail-left">
-                <img :src="product1.thumbnail" class="detail-main-img">
-                <div class="detail-company-name">
-                    {{ product1.company }} </div>
-                <div class="detail-description-card">
-                    <h3 style="margin-top:0;">{{ product1.name }}</h3>
-                    <p>{{ product1.content }}</p>
-                    <hr>
-                    <p>※ 상세 옵션 안내 및 유의사항이 여기에 들어갑니다.</p>
-                </div>
-            </div>
-
-            <div class="detail-right">
-                <div class="reservation-box">
-                    <div style="font-weight:bold; border-bottom:1px solid #ddd; padding-bottom:10px;">예약하기</div>
-                    <div class="calendar-placeholder">
-                        날짜 선택 캘린더 API 영역<br>(FullCalendar 등)
-                    </div>
-                </div>
-
-                <div class="price-info-box">
-                    <div class="price-row">
-                        <span>예상 견적 :</span>
-                        <span>{{ product1.price }}</span>
-                    </div>
-                </div>
-
-                <div class="price-info-box">
-                    <div class="price-row">
-                        <span>예약금 :</span>
-                        <span>100,000원</span>
-                    </div>
-                </div>
-
-                <button class="btn-reserve" @click="fnReserve">예약하기</button>
-                <button class="btn-inquiry" @click="currentMenu = 'inquiry'">상품 문의하기</button>
-            </div>
-        </div>
-    </div>
-</main>
-
-
-<div class="filter-section">
-                            <div class="section-title">조회 필터</div>
-                            <h2>카테고리</h2>
-                            <label><input type="checkbox" v-model="selectCategory" value="스튜디오"> 스튜디오</label>
-                            <label><input type="checkbox" v-model="selectCategory" value="드레스"> 드레스</label>
-                            <label><input type="checkbox" v-model="selectCategory" value="메이크업"> 메이크업</label>
-
-                            <div class="tag-filter">
-                                <h4 style="width: 100%;">분위기 선택</h4>
-                                <label v-for="tag in productTag" :key="tag">
-                                    <input type="checkbox" :value="tag" v-model="selectTags">
-                                    {{ tag }}
-                                </label>
-                            </div>
-                        </div>
-
-
-                        /getReviewCnt.dox
-//이렇게하자
-        self.productList3 = data.list;
-        
-
-        weddinglist() {
-                    return this.productList.map(product => {
-                        return {
-                            name: product.productName,
-                            reviewcount: product.reviewCount,
-                            thumbnail: product.imgUrl
-                        }
-                    })
-                },
-                simpleweddinglist() {
-                    return this.productList.map(product => {
-                        return {
-                            name: product.name,
-                            reviewcount: this.simpleReviews.filter(r => r.product === product.name).length,
-                            thumbnail: product.thumbnail
-                        }
-                    })
-                },
-                productList3 : [{productNo: , productName: , imgUrl, reviewCount: },..]
-                p.product_no, p.product_name, p.img_url, count(review_no)
-		reviewCount
-fnReview  reviewTab = 'detail'
-        reviewTab = 'simple'
-        fnSimple()
-
-        totalReviewCnt
+                    productList: [  //상품 리스트
+                        { id: 1, thumbnail: 'https://img1.newsis.com/2021/09/26/NISI20210926_0000834715_web.jpg', name: '스몰 웨딩', content: '스몰 웨딩 상품 설명입니다.', price: '1,700,000원', category: ['스튜디오', '드레스'] },
+                        { id: 2, thumbnail: 'gorgeous.jpg', name: '화려하게', content: '화려하게 상품 설명입니다.', price: '2,500,000원', category: ['스튜디오', '메이크업'] },
+                        { id: 3, thumbnail: 'fairy_tale.jpg', name: '동화같은 분위기', content: '동화같은 분위기 상품 설명입니다.', price: '1,200,000원', category: ['메이크업'] }
+                    ]
+                    productList: [  //상품 리스트
+                        { id: 1, thumbnail: 'https://i.imgur.com/JyVciZk.jpeg', name: '스몰 웨딩', content: '스몰 웨딩 상품 설명입니다.', price: '1,700,000원', category: ['스튜디오', '드레스'] },
+                        { id: 2, thumbnail: 'gorgeous.jpg', name: '화려하게', content: '화려하게 상품 설명입니다.', price: '2,500,000원', category: ['스튜디오', '메이크업'] },
+                        { id: 3, thumbnail: 'fairy_tale.jpg', name: '동화같은 분위기', content: '동화같은 분위기 상품 설명입니다.', price: '1,200,000원', category: ['메이크업'] }
+                    ]
+                    <img :src="w.thumbnail">
