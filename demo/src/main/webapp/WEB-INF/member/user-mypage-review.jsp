@@ -110,7 +110,7 @@
         }
 
         .btn-review-index {
-            padding: 10px 30px;
+            padding: 6px 12px;
             background-color: #9b8fd4;
             color: white;
             border: none;
@@ -118,11 +118,17 @@
             cursor: pointer;
             font-size: 14px;
             transition: 0.2s;
+            margin: 0 3px;  /* 버튼 간격 */
         }
 
         .btn-review-index:hover {
             background-color: #7b6db4;
         }
+        /* 활성 페이지 버튼 스타일 */
+        .btn-review-index.active-page {
+            background-color: #7b6db4;
+        }
+
     </style>
 </head>
 <body>
@@ -142,31 +148,46 @@
                     </div>
 
                     <!-- 유료 리뷰 목록 -->
-                    <div class="review-list" v-show="reviewTab === 'paid'">
-                        <div class="review-card" v-for="review in paidReviewList" :key="review.reviewNo"
-                            @click="fnGoReview(review.reviewNo)">
-                            <div class="review-thumbnail">
-                                <img v-if="review.imgUrl" 
-                                    :src="review.imgUrl" 
-                                    style="width:100%; height:100%; object-fit:cover;">
-                                <span v-else>썸네일</span>
+                    <div v-if="reviewTab === 'paid'">
+                        <div class="review-list" >
+                            <div class="review-card" v-for="review in paidReviewList" :key="review.reviewNo"
+                                @click="fnGoReview(review.reviewNo)">
+                                <div class="review-thumbnail">
+                                    <img v-if="review.imgUrl" 
+                                        :src="review.imgUrl" 
+                                        style="width:100%; height:100%; object-fit:cover;">
+                                    <span v-else>썸네일</span>
+                                </div>
+                                <div class="review-card-title">{{ review.title }}</div> <!--제목-->
+                                <div class="review-card-title">{{ review.comName }}</div> <!--업체 명-->
                             </div>
-                            <div class="review-card-title">{{ review.title }}</div> <!--제목-->
-                            <div class="review-card-title">{{ review.comName }}</div> <!--업체 명-->
+                        </div>
+                         <!-- 페이지 인덱스 -->
+                        <div class="review-index-wrap">
+                            <button class="btn-review-index"
+                                v-for="p in Math.ceil(paidTotalCount / pageSize)" :key="p"
+                                :class="p === paidCurrentPage ? 'active-page' : ''"
+                                @click="fetchPaidReviews(p)">
+                            {{ p }}
+                            </button>
                         </div>
                     </div>
-
+                    
                     <!-- 무료 리뷰 목록 -->
-                    <div v-show="reviewTab === 'free'">
+                    <div v-if="reviewTab === 'free'">
                         <div class="review-list-item" v-for="review in freeReviewList" :key="review.reviewNo"
                             @click="fnGoReview(review.reviewNo)">
                             {{ review.title }} - {{ review.comName }}
                         </div>
-                    </div>
-
-                    <!-- 인덱스 버튼 -->
-                    <div class="review-index-wrap">
-                        <button class="btn-review-index">상세 리뷰 인덱스</button>
+                        <!-- 페이지 -->
+                        <div class="review-index-wrap">
+                            <button class="btn-review-index"
+                                    v-for="p in Math.ceil(freeTotalCount / pageSize)" :key="p"
+                                    :class="p === freeCurrentPage ? 'active-page' : ''"
+                                    @click="fetchFreeReviews(p)">
+                                {{ p }}
+                            </button>
+                        </div>
                     </div>
                 </div>
 
@@ -181,7 +202,13 @@
             return {
                 reviewTab: 'paid',  // 'paid' or 'free'
                 paidReviewList: [],
-                freeReviewList: []
+                freeReviewList: [],
+                // 페이지 사이징
+                paidCurrentPage: 1,
+                freeCurrentPage: 1,
+                paidTotalCount: 0,
+                freeTotalCount: 0,
+                pageSize: 6
             };
         },
         methods: {
@@ -189,24 +216,37 @@
             switchReviewTab: function(type) {
                 this.reviewTab = type;
             },
+            // 리뷰 클릭 시 해당 리뷰 상세 보기로 이동
             fnGoReview: function(reviewNo) {
                 location.href = '/api/review/detail.do?reviewNo=' + reviewNo;
-            }
-            
+            },
+            // 페이지 로드
+            fetchPaidReviews: function(page) {
+                let self = this;
+                axios.get("/myPaidReviewList.dox?page=" + page)
+                    .then(res => {
+                        self.paidReviewList = res.data.list;
+                        self.paidTotalCount = res.data.totalCount;
+                        self.paidCurrentPage = res.data.currentPage;
+                    });
+            },
+            fetchFreeReviews: function(page) {
+                let self = this;
+                axios.get("/myFreeReviewList.dox?page=" + page)
+                    .then(res => {
+                        self.freeReviewList = res.data.list;
+                        self.freeTotalCount = res.data.totalCount;
+                        self.freeCurrentPage = res.data.currentPage;
+                    });
+            },
         }, // methods
         mounted() {
             // 처음 시작할 때 실행되는 부분
             let self = this;
             // 유료 리뷰 조회
-            axios.get("/myPaidReviewList.dox")
-                .then(res => {
-                    self.paidReviewList = res.data;
-                });
+            this.fetchPaidReviews(1);
             // 무료 리뷰 조회
-            axios.get("/myFreeReviewList.dox")
-                .then(res => {
-                    self.freeReviewList = res.data;
-                });
+            this.fetchFreeReviews(1);
         }
     });
 

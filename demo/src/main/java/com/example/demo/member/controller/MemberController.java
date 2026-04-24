@@ -388,58 +388,175 @@ public class MemberController {
 	// 3-20. 내가 구매한 리뷰 목록 조회(유료/무료)
 	@GetMapping("/myPaidReviewList.dox")
 	@ResponseBody
-	public List<Member> getMyPaidReviewList(HttpSession session) {
+	public Map<String, Object> getMyPaidReviewList(
+	        @RequestParam(defaultValue = "1") int page,
+	        HttpSession session) {
 	    String userId = (String) session.getAttribute("sessionId");
-	    return memberService.getMyPaidReviewList(userId);
+	    Map<String, Object> result = new HashMap<>();
+	    result.put("list", memberService.getMyPaidReviewList(userId, page));
+	    result.put("totalCount", memberService.getMyPaidReviewCount(userId));
+	    result.put("pageSize", 6);
+	    result.put("currentPage", page);
+	    return result;
 	}
 	// 무료
 	@GetMapping("/myFreeReviewList.dox")
 	@ResponseBody
-	public List<Member> getMyFreeReviewList(HttpSession session) {
+	public Map<String, Object> getMyFreeReviewList(
+	        @RequestParam(defaultValue = "1") int page,
+	        HttpSession session) {
 	    String userId = (String) session.getAttribute("sessionId");
-	    return memberService.getMyFreeReviewList(userId);
+	    Map<String, Object> result = new HashMap<>();
+	    result.put("list", memberService.getMyFreeReviewList(userId, page));
+	    result.put("totalCount", memberService.getMyFreeReviewCount(userId));
+	    result.put("pageSize", 6);
+	    result.put("currentPage", page);
+	    return result;
 	}
 	// 내가 쓴 글 조회
 	@GetMapping("/myPostList.dox")
 	@ResponseBody
-	public List<Member> getMyPostList(HttpSession session) {
+	public Map<String, Object> getMyPostList(
+	        @RequestParam(defaultValue = "1") int page,
+	        HttpSession session) {
 	    String userId = (String) session.getAttribute("sessionId");
-	    return memberService.getMyPostList(userId);
+	    Map<String, Object> result = new HashMap<>();
+	    result.put("list", memberService.getMyPostList(userId, page));
+	    result.put("totalCount", memberService.getMyPostCount(userId));
+	    result.put("pageSize", 5);
+	    result.put("currentPage", page);
+	    return result;
 	}
 	// 내가 쓴 글 리뷰
 	@GetMapping("/myReviewList.dox")
 	@ResponseBody
-	public List<Member> getMyReviewList(HttpSession session) {
+	public Map<String, Object> getMyReviewList(
+	        @RequestParam(defaultValue = "1") int page,
+	        HttpSession session) {
 	    String userId = (String) session.getAttribute("sessionId");
-	    return memberService.getMyReviewList(userId);
+	    Map<String, Object> result = new HashMap<>();
+	    result.put("list", memberService.getMyReviewList(userId, page));
+	    result.put("totalCount", memberService.getMyReviewCount(userId));
+	    result.put("pageSize", 5);
+	    result.put("currentPage", page);
+	    return result;
 	}
 	// 내가 쓴 댓글 조회
 	@GetMapping("/myCommentList.dox")
 	@ResponseBody
-	public List<Member> getMyCommentList(HttpSession session) {
+	public Map<String, Object> getMyCommentList(
+	        @RequestParam(defaultValue = "1") int page,
+	        HttpSession session) {
 	    String userId = (String) session.getAttribute("sessionId");
-	    return memberService.getMyCommentList(userId);
+	    Map<String, Object> result = new HashMap<>();
+	    result.put("list", memberService.getMyCommentList(userId, page));
+	    result.put("totalCount", memberService.getMyCommentCount(userId));
+	    result.put("pageSize", 5);
+	    result.put("currentPage", page);
+	    return result;
 	}
 	// 업체 좋아요 조회
 	@GetMapping("/myCompanyLikeList.dox")
 	@ResponseBody
-	public List<Member> getMyCompanyLikeList(HttpSession session) {
+	public Map<String, Object> getMyCompanyLikeList(
+	        @RequestParam(defaultValue = "1") int page,
+	        HttpSession session) {
 	    String userId = (String) session.getAttribute("sessionId");
-	    return memberService.getMyCompanyLikeList(userId);
+	    Map<String, Object> result = new HashMap<>();
+	    result.put("list", memberService.getMyCompanyLikeList(userId, page));
+	    result.put("totalCount", memberService.getMyCompanyLikeCount(userId));
+	    result.put("pageSize", 5);
+	    result.put("currentPage", page);
+	    return result;
 	}
 	// 글 좋아요 조회
 	@GetMapping("/myPostLikeList.dox")
 	@ResponseBody
-	public List<Member> getMyPostLikeList(HttpSession session) {
+	public Map<String, Object> getMyPostLikeList(
+	        @RequestParam(defaultValue = "1") int page,
+	        HttpSession session) {
 	    String userId = (String) session.getAttribute("sessionId");
-	    return memberService.getMyPostLikeList(userId);
+	    Map<String, Object> result = new HashMap<>();
+	    result.put("list", memberService.getMyPostLikeList(userId, page));
+	    result.put("totalCount", memberService.getMyPostLikeCount(userId));
+	    result.put("pageSize", 5);
+	    result.put("currentPage", page);
+	    return result;
 	}
 	// 리뷰 좋아요 조회
 	@GetMapping("/myReviewLikeList.dox")
 	@ResponseBody
-	public List<Member> getMyReviewLikeList(HttpSession session) {
+	public Map<String, Object> getMyReviewLikeList(
+	        @RequestParam(defaultValue = "1") int page,
+	        HttpSession session) {
 	    String userId = (String) session.getAttribute("sessionId");
-	    return memberService.getMyReviewLikeList(userId);
+	    Map<String, Object> result = new HashMap<>();
+	    result.put("list", memberService.getMyReviewLikeList(userId, page));
+	    result.put("totalCount", memberService.getMyReviewLikeCount(userId));
+	    result.put("pageSize", 5);
+	    result.put("currentPage", page);
+	    return result;
+	}
+	// 내가 쓴 글 삭제
+	@PostMapping("/deleteMyPost.dox")
+	@ResponseBody
+	public Map<String, Object> deleteMyPost(@RequestBody Map<String, Object> map, HttpSession session) {
+	    Map<String, Object> result = new HashMap<>();
+	    String userId = (String) session.getAttribute("sessionId");
+	    map.put("userId", userId);
+	    int res = memberService.removeMyPost(userId, (String) map.get("postNo"));
+	    result.put("result", res > 0 ? "success" : "fail");
+	    return result;
+	}
+	// 내가 쓴 리뷰 삭제
+	@PostMapping("/deleteMyReview.dox")
+	@ResponseBody
+	public Map<String, Object> deleteMyReview(@RequestBody Map<String, Object> map, HttpSession session) {
+	    Map<String, Object> result = new HashMap<>();
+	    String userId = (String) session.getAttribute("sessionId");
+	    int res = memberService.removeMyReview(userId, (String) map.get("reviewNo"));
+	    result.put("result", res > 0 ? "success" : "fail");
+	    return result;
+	}
+	// 내가 쓴 댓글 삭제
+	@PostMapping("/deleteMyComment.dox")
+	@ResponseBody
+	public Map<String, Object> deleteMyComment(@RequestBody Map<String, Object> map, HttpSession session) {
+	    Map<String, Object> result = new HashMap<>();
+	    String userId = (String) session.getAttribute("sessionId");
+	    int res = memberService.removeMyComment(userId, (String) map.get("commentNo"));
+	    result.put("result", res > 0 ? "success" : "fail");
+	    return result;
+	}
+	// 업체 좋아요 취소
+	@PostMapping("/deleteMyCompanyLike.dox")
+	@ResponseBody
+	public Map<String, Object> deleteMyCompanyLike(@RequestBody Map<String, Object> map, HttpSession session) {
+	    Map<String, Object> result = new HashMap<>();
+	    String userId = (String) session.getAttribute("sessionId");
+	    int res = memberService.deleteMyCompanyLike(userId, (String) map.get("likeNo"));
+	    result.put("result", res > 0 ? "success" : "fail");
+	    return result;
+	}
+	// 글 좋아요 취소
+	@PostMapping("/deleteMyPostLike.dox")
+	@ResponseBody
+	public Map<String, Object> deleteMyPostLike(@RequestBody Map<String, Object> map, HttpSession session) {
+	    Map<String, Object> result = new HashMap<>();
+	    String userId = (String) session.getAttribute("sessionId");
+	    int res = memberService.deleteMyPostLike(userId, (String) map.get("likeNo"));
+	    result.put("result", res > 0 ? "success" : "fail");
+	    return result;
+	}
+	// 리뷰 좋아요 취소
+	@PostMapping("/deleteMyReviewLike.dox")
+	@ResponseBody
+	public Map<String, Object> deleteMyReviewLike(@RequestBody Map<String, Object> map, HttpSession session) {
+	    Map<String, Object> result = new HashMap<>();
+	    String userId = (String) session.getAttribute("sessionId");
+	    int res = memberService.deleteMyReviewLike(userId, (String) map.get("likeNo"));
+	    result.put("result", res > 0 ? "success" : "fail");
+	    return result;
 	}
 	// 내 문의 내역 조회
 	@GetMapping("/myInquiryList.dox")
@@ -489,5 +606,17 @@ public class MemberController {
 		    return memberService.decreasePass(map);
 		}
 	
-	
+	// *메인 홈 출력* 
+		@GetMapping("/mainPostList.dox")
+		@ResponseBody
+		public List<Member> getMainPostList() {
+		    return memberService.getMainPostList();
+		}
+	// 최근 리뷰
+		@GetMapping("/mainReviewList.dox")
+		@ResponseBody
+		public List<Member> getMainReviewList() {
+		    return memberService.getMainReviewList();
+		}	
+	// 인기 글
 }

@@ -8,6 +8,5 @@
         <button class="nav-btn" onclick="location.href='${pageContext.request.contextPath}/userMyPage-write.do'">내가 쓴 글/리뷰/댓글</button>
         <button class="nav-btn" onclick="location.href='${pageContext.request.contextPath}/userMyPage-like.do'">좋아요 목록</button>
         <button class="nav-btn" onclick="location.href='${pageContext.request.contextPath}/userMyPage-cs.do'">내 문의/신고 내역</button> 
-        <!-- 내 문의 내역은 주소 수정할거에요 -->
     </div>
 </div>
