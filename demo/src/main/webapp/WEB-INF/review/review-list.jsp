@@ -225,7 +225,14 @@
                 fnDetail(item) {
                     if(!this.sessionId) {
                         alert("로그인 후 이용 가능합니다.");
-                        location.href = "/api/member/login.do";
+                        location.href = "/member/login.do";
+                        return;
+                    }
+
+                    // 1. 본인 글인지 먼저 확인
+                    if (this.sessionId === item.userId) {
+                        // 본인 글이면 유료/무료 상관없이 바로 이동
+                        location.href = "/api/review/detail.do?reviewNo=" + item.reviewNo;
                         return;
                     }
 
@@ -302,7 +309,14 @@
                     this.fnList();
                 },
                 fnWrite() {
-                    location.href = "/api/review/add.do";
+                    if(!this.sessionId) {
+                        alert("로그인 후 이용 가능합니다.");
+                        location.href = "/login.do";
+                        return;
+                    }else{
+                        location.href = "/api/review/add.do";
+                    }
+                    
                 }
             },
             mounted() {

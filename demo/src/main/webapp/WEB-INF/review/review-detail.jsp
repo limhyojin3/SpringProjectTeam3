@@ -81,7 +81,7 @@
                 <img v-for="(src, index) in imgList" :key="index" :src="src" :class="['review-img', imgList.length > 1 ? 'multi-img' : 'single-img']">
             </div>
 
-            <div class="review-content">{{ info.content }}</div>
+            <div class="review-content" v-html="info.content"></div>
 
             <div class="text-center border-bottom pb-5">
                 <button class="btn btn-light border mr-2 px-4" @click="fnBack">목록으로</button>
@@ -153,16 +153,26 @@
                     </div>
                     <div class="modal-body">
                         <p class="small text-muted">허위 신고 시 서비스 이용에 제한을 받을 수 있습니다.</p>
+                        
+                        <div class="form-group">
+                            <label><b>신고 제목</b></label>
+                            <input type="text" class="form-control" v-model="reportData.title" placeholder="신고 제목을 입력해 주세요.">
+                        </div>
+
                         <div class="form-group">
                             <label><b>신고 사유 선택</b></label>
-                            <select class="form-control" v-model="reportData.reason">
+                            <select class="form-control" v-model="reportData.reason" @change="fnHandleReasonChange">
                                 <option value="">사유를 선택해 주세요</option>
                                 <option v-for="opt in reportOptions" :key="opt" :value="opt">{{ opt }}</option>
                                 <option value="직접 입력">직접 입력</option>
                             </select>
                         </div>
-                        <div class="form-group" v-if="reportData.reason === '직접 입력'">
-                            <textarea class="form-control" v-model="reportData.customReason" rows="3" placeholder="상세 사유를 입력해 주세요."></textarea>
+
+                        <div class="form-group">
+                            <label><b>상세 신고 내용</b></label>
+                            <textarea class="form-control" v-model="reportData.customReason" rows="3" 
+                                      :disabled="reportData.reason === ''" 
+                                      placeholder="상세 사유를 입력해 주세요."></textarea>
                         </div>
                     </div>
                     <div class="modal-footer">
@@ -187,13 +197,14 @@
                     newComment: "",
                     replyTo: null,
                     replyContent: "",
-                    // 신고 관련 데이터
+                    // 신고 관련 데이터 수정
                     reportData: {
                         type: '', // REVIEW or COMMENT
                         targetId: '',
                         targetUserId: '',
-                        reason: '',
-                        customReason: ''
+                        title: '',        // 추가된 신고 제목
+                        reason: '',       // 셀렉트박스 선택값
+                        customReason: ''  // 실제 상세 내용
                     },
                     reportOptions: [
                         "부적절한 홍보 게시물",
@@ -241,7 +252,18 @@
                         }
                     });
                 },
+                
                 // --- 신고 로직 시작 ---
+                
+                // 셀렉트박스 변경 시 상세내용 텍스트 처리
+                fnHandleReasonChange() {
+                    if (this.reportData.reason === "직접 입력") {
+                        this.reportData.customReason = ""; // 직접 입력 시 비워줌
+                    } else {
+                        this.reportData.customReason = this.reportData.reason; // 고정 텍스트 입력
+                    }
+                },
+
                 openReportModal(type, targetId, targetUserId) {
                     if (!this.sessionId || this.sessionId === 'null') return alert("로그인 후 이용 가능합니다.");
                     
@@ -249,19 +271,21 @@
                     this.reportData.type = type;
                     this.reportData.targetId = targetId;
                     this.reportData.targetUserId = targetUserId;
+                    this.reportData.title = ""; 
                     this.reportData.reason = "";
                     this.reportData.customReason = "";
                     
                     $('#reportModal').modal('show');
                 },
-                fnSubmitReport() {
-                    const finalReason = this.reportData.reason === "직접 입력" ? this.reportData.customReason : this.reportData.reason;
-                    
-                    if (!finalReason.trim()) return alert("신고 사유를 선택하거나 입력해 주세요.");
 
-                    // 1. 중복 신고 방지 로직 (Ajax로 먼저 체크하거나, 서버에서 체크 후 결과 리턴)
+                fnSubmitReport() {
+                    // 유효성 검사
+                    if (!this.reportData.title.trim()) return alert("신고 제목을 입력해 주세요.");
+                    if (!this.reportData.customReason.trim()) return alert("신고 상세 내용을 입력하거나 선택해 주세요.");
+
+                    // 중복 신고 체크 (생략 가능하나 기존 로직 유지)
                     $.ajax({
-                        url: "/api/report/check-duplicate.dox", // 중복 체크 API (없을 경우 바로 add 실행 후 서버에서 결과 처리 가능)
+                        url: "/api/report/check-duplicate.dox", 
                         type: "POST",
                         data: JSON.stringify({
                             reporterId: this.sessionId,
@@ -275,16 +299,15 @@
                                 alert("이미 신고하신 게시물/댓글입니다.");
                                 $('#reportModal').modal('hide');
                             } else {
-                                // 2. 실제 신고 접수
-                                this.fnSendReport(finalReason);
+                                this.fnSendReport(this.reportData.customReason);
                             }
                         },
                         error: () => {
-                            // 중복 체크 API가 아직 없다면 바로 전송하고 서버의 'fail' 응답을 기다림
-                            this.fnSendReport(finalReason);
+                            this.fnSendReport(this.reportData.customReason);
                         }
                     });
                 },
+
                 fnSendReport(reason) {
                     $.ajax({
                         url: "/api/report/add.dox",
@@ -294,7 +317,7 @@
                             targetType: this.reportData.type,
                             targetId: this.reportData.targetId,
                             targetUserId: this.reportData.targetUserId,
-                            reportTitle: this.reportData.type === 'REVIEW' ? '리뷰 게시물 신고' : '댓글 신고',
+                            reportTitle: this.reportData.title, // 입력받은 제목 전송
                             reportContent: reason
                         }),
                         contentType: "application/json",

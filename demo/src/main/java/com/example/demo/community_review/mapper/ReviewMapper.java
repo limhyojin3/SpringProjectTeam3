@@ -60,4 +60,7 @@ public interface ReviewMapper {
     Integer getUserAccessCount(String userId); // 지갑이 없을 수 있으므로 Integer 권장
     int deductTicket(String userId); // 티켓 사용
     int insertViewLog(HashMap<String, Object> map); // 차감
+    
+    // 리뷰 제목 가져오기
+    String getReviewTitle(String targetId);
 }

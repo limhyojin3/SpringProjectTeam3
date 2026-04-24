@@ -2,6 +2,14 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.example.demo.community_review.mapper.CommentMapper">
 
+	<select id="getCommentContent" resultType="string">
+        SELECT content 
+        FROM Comment 
+        WHERE comment_no = #{targetId}
+    </select>
+
+	
+
    <select id="selectReviewCommentList" parameterType="hashmap" resultType="hashmap">
 	    SELECT 
 	        comment_no AS commentNo,

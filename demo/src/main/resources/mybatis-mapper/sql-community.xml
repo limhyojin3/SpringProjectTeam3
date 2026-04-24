@@ -1,6 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.example.demo.community_review.mapper.CommunityMapper">
+	
+	<select id="getPostTitle" resultType="string">
+        SELECT title 
+        FROM Community_Post 
+        WHERE post_no = #{targetId}
+    </select>
+	
 	<!--게시글 추가-->
     <insert id="insertPost" useGeneratedKeys="true" keyProperty="postNo">
         INSERT INTO Community_Post (

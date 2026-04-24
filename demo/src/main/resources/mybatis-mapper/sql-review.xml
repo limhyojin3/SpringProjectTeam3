@@ -3,6 +3,12 @@
 <mapper namespace="com.example.demo.community_review.mapper.ReviewMapper">
 
 
+	<select id="getReviewTitle" resultType="string">
+        SELECT title 
+        FROM Review 
+        WHERE review_no = #{targetId}
+    </select>
+
 	<select id="selectReviewCount" parameterType="hashmap" resultType="int">
 	    SELECT COUNT(*)
 	    FROM Review r

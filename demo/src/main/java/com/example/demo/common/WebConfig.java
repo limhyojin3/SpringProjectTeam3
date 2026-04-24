@@ -28,8 +28,6 @@ public class WebConfig implements WebMvcConfigurer {
         registry.addResourceHandler("/img2/**")
         .addResourceLocations("file:///" + projectPath + "/src/main/resources/static/uploads/");
         
-        
-        
     }
    
     // 로그인 세션 체크용 HandlerInterceptor
@@ -50,6 +48,7 @@ public class WebConfig implements WebMvcConfigurer {
                         "/login.do",
                         "/join*.do",    // join.do, join-user.do 등 제외
                         "/find-*.do",   // find-id.do, find-pwd.do 제외
+                        
                         "/css/**", "/js/**", "/img/**", "/images/**"
                 ); // 제외할 경로
     }

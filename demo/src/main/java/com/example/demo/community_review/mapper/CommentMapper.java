@@ -40,4 +40,7 @@ public interface CommentMapper {
     
     // 댓글 개수 갱신
     void updateCommentLikeCnt(Map<String, Object> map);  
+    
+    // 댓글 내용 가져오기
+    String getCommentContent(String targetId);
 }

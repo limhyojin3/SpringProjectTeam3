@@ -5,10 +5,10 @@
     <insert id="insertReport" useGeneratedKeys="true" keyProperty="reportNo">
         INSERT INTO Report (
             reporter_id, target_type, target_id, target_user_id, 
-            report_title, report_content, reg_date
+            report_title, report_content, target_title, reg_date 
         ) VALUES (
             #{reporterId}, #{targetType}, #{targetId}, #{targetUserId}, 
-            #{reportTitle}, #{reportContent}, CURRENT_TIMESTAMP
+            #{reportTitle}, #{reportContent}, #{targetTitle}, CURRENT_TIMESTAMP
         )
     </insert>
     
@@ -31,7 +31,8 @@
             report_content AS reportContent,
             answer_status AS answerStatus,
             action_status AS actionStatus,
-            reg_date AS regDate
+            reg_date AS regDate,
+            target_title AS targetTitle
         FROM Report 
         WHERE reporter_id = #{reporterId} 
         ORDER BY reg_date DESC

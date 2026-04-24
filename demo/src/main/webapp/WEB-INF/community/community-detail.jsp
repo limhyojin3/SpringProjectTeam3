@@ -40,6 +40,13 @@
         /* 신고 버튼 스타일 */
         .btn-report { background-color: #fff; color: #dc3545; border: 1px solid #dc3545; padding: 5px 12px; font-size: 13px; margin-left: 10px; }
         .btn-report:hover { background-color: #dc3545; color: #fff; }
+
+        .post-content img {
+            max-width: 100%; /* 이미지가 본문 폭을 넘지 않도록 */
+            height: auto;
+            display: block;
+            margin: 10px 0;
+        }
     </style>
 </head>
 <body>
@@ -65,7 +72,7 @@
                     </div>
                 </div>
 
-                <div class="post-content">{{ post.content }}</div>
+                <div class="post-content" v-html="post.content"></div>
 
                 <div class="bottom-area">
                     <button class="btn-like" @click="fnPostLike">
@@ -110,7 +117,7 @@
                                 </span>
                                 <span class="action-link" v-if="!item.parentNo && sessionId" @click="item.showReply = !item.showReply">답글</span>
                                 <span class="action-link" v-if="item.userId === sessionId" @click="fnRemoveComment(item.commentNo)">삭제</span>
-                                <span class="action-link text-danger" v-if="sessionId && item.userId !== sessionId" @click="fnOpenReportModal('MEMBER', item.commentNo, item.userId)">신고</span>
+                                <span class="action-link text-danger" v-if="sessionId && item.userId !== sessionId" @click="fnOpenReportModal('COMMENT', item.commentNo, item.userId)">신고</span>
                             </div>
 
                             <div class="mt-3" v-if="item.showReply">
@@ -137,11 +144,11 @@
                     </div>
                     <div class="modal-body" style="padding: 20px 30px;">
                         <div class="form-group">
-                            <label class="small font-weight-bold">신고 제목</label>
+                            <label class="small font-weight-bold">신고 제목 (나의 신고내역에 표시될 제목)</label>
                             <input type="text" v-model="reportInfo.report_title" class="form-control" placeholder="사유를 간단히 입력하세요.">
                         </div>
                         <div class="form-group">
-                            <label class="small font-weight-bold">신고 내용</label>
+                            <label class="small font-weight-bold">상세 신고 내용</label>
                             <textarea v-model="reportInfo.report_content" class="form-control" rows="5" placeholder="상세 내용을 입력하세요."></textarea>
                         </div>
                     </div>
@@ -162,11 +169,9 @@
                 return {
                     postNo: "${postNo}", 
                     post: {}, 
-                    sessionId: "" ,
                     commentList: [],
                     newComment: "",
-                    sessionId: "${sessionId}", // JSP 세션값이 잘 들어오는지 확인
-                    // 신고 관련 데이터
+                    sessionId: "${sessionId}",
                     reportInfo: {
                         target_type: '',
                         target_id: '',
@@ -185,10 +190,8 @@
                         contentType: "application/json",
                         data: JSON.stringify({ postNo : this.postNo }),
                         success: (res) => {
-                            const data = (typeof res === "string") ? JSON.parse(res) : res;
-                            if(data.post) {
-                                this.post = data.post;
-                                this.sessionId = data.sessionId;
+                            if(res.post) {
+                                this.post = res.post;
                                 this.fnGetComments();
                             }
                         }
@@ -209,21 +212,20 @@
                         return alert("제목과 내용을 모두 입력해주세요.");
                     }
 
-                    // 전송할 데이터 객체 생성 (기존 데이터 + 신고자 ID)
                     const sendData = {
-                        reporterId: this.sessionId,                   // 신고자 ID
-                        targetType: this.reportInfo.target_type,      // target_type -> targetType
-                        targetId: this.reportInfo.target_id,          // target_id -> targetId
-                        targetUserId: this.reportInfo.target_user_id, // target_user_id -> targetUserId
-                        reportTitle: this.reportInfo.report_title,    // report_title -> reportTitle (중요!)
-                        reportContent: this.reportInfo.report_content // report_content -> reportContent (중요!)
+                        reporterId: this.sessionId,
+                        targetType: this.reportInfo.target_type,
+                        targetId: this.reportInfo.target_id,
+                        targetUserId: this.reportInfo.target_user_id,
+                        reportTitle: this.reportInfo.report_title, // 사용자가 입력한 제목
+                        reportContent: this.reportInfo.report_content
                     };
 
                     $.ajax({
                         url: "/api/report/add.dox",
                         type: "POST",
                         contentType: "application/json",
-                        data: JSON.stringify(sendData), // reporterId가 포함된 데이터를 보냄
+                        data: JSON.stringify(sendData),
                         success: (res) => {
                             if(res.result === "success") {
                                 alert("신고가 정상 접수되었습니다.");
@@ -241,7 +243,7 @@
                         contentType: "application/json",
                         data: JSON.stringify({ postNo: this.postNo, userId: this.sessionId }),
                         success: (res) => {
-                            const data = JSON.parse(res);
+                            const data = (typeof res === "string") ? JSON.parse(res) : res;
                             this.commentList = data.list.map(c => ({...c, showReply: false, replyContent: ""}));
                         }
                     });
@@ -293,8 +295,7 @@
                         contentType: "application/json",
                         data: JSON.stringify({ postNo : this.postNo }),
                         success: (res) => {
-                            const data = (typeof res === "string") ? JSON.parse(res) : res;
-                            if(data.result === "success") this.fnGetDetail();
+                            if(res.result === "success") this.fnGetDetail();
                         }
                     });
                 },
