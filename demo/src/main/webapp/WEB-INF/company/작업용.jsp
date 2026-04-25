@@ -180,3 +180,24 @@ filteredList() {
                         { id: 3, thumbnail: 'fairy_tale.jpg', name: '동화같은 분위기', content: '동화같은 분위기 상품 설명입니다.', price: '1,200,000원', category: ['메이크업'] }
                     ]
                     <img :src="w.thumbnail">
+
+
+
+                    fnPageChange(num) {
+                    this.currentPage = num;
+
+                    window.scrollTo({
+                        top: 0,
+                        behavior: 'smooth' // 'smooth'는 부드럽게, 'auto'는 즉시 이동합니다.
+                    });
+                }
+
+
+                fnPageChange2(num) {
+                    this.page = num;
+
+                    window.scrollTo({
+                        top: 0,
+                        behavior: 'smooth' // 'smooth'는 부드럽게, 'auto'는 즉시 이동합니다.
+                    });
+                }

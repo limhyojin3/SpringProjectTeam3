@@ -896,7 +896,7 @@
                                 </template>
                                 <div class="pagination">
                                     <span v-for="num in totalPages" :key="num">
-                                        <a @click="page = num" href="javascript:;"
+                                        <a @click="fnPageChange2(num)" href="javascript:;"
                                             :style="page === num ? 'color: #ff1493; border: 1px solid #ff1493;' : ''">
                                             {{num}}
                                         </a>
@@ -1712,6 +1712,14 @@
                             self.simpleReviews = data.list;
                             //reviews, simpleReviews
                         }
+                    });
+                },
+                fnPageChange2(num) {
+                    this.page = num;
+
+                    window.scrollTo({
+                        top: 0,
+                        behavior: 'smooth' // 'smooth'는 부드럽게, 'auto'는 즉시 이동합니다.
                     });
                 }
 
