@@ -963,6 +963,7 @@
         const app = Vue.createApp({
             data() {
                 return {
+                    
                     newReviewCnt: 0,
                     newUnpaidReviewCnt: 0,
                     productNo: '',

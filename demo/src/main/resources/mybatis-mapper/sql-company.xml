@@ -73,14 +73,16 @@
 	<select id="selectReservation" parameterType="map"
 		resultType="com.example.demo.company.model.Company">
 		SELECT
-		r.user_id AS res_user_id, -- 실제 예약한 유저의 아이디
+		r.res_no,
+        r.user_id AS res_user_id, -- 실제 예약한 유저의 아이디
 		r.product_no,
 		p.product_name,
 		r.res_date,
+        r.res_time,
 		r.res_content,
 		r.use_date,
 		r.use_time,
-		r.deposit,
+		p.deposit,
 		m.tel
 		FROM company c
 		-- 1. 업체 테이블과 상품 테이블 연결 (이 업체가 가진 상품들)

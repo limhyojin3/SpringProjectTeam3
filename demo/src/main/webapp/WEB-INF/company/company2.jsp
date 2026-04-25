@@ -119,13 +119,94 @@
                 position: relative;
             }
 
-            .section-title {
+            /* .section-title {
                 background: #ffb400;
                 display: inline-block;
                 padding: 5px 15px;
                 color: white;
                 font-weight: bold;
                 margin-bottom: 15px;
+            } */
+            /* 전체 컨테이너 */
+            .booking-time-container {
+                margin-top: 30px;
+                padding: 20px;
+                background-color: #fff;
+                border-radius: 10px;
+                /* [디자인 팁] 두 번째 이미지의 깔끔한 그림자 효과 참고 */
+                box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            }
+
+            /* 제목 스타일 */
+            .section-title {
+                font-size: 1.2rem;
+                font-weight: 700;
+                margin-bottom: 25px;
+                color: #333;
+            }
+
+            /* 오전/오후 그룹 스타일 */
+            .time-slot-group {
+                margin-bottom: 25px;
+            }
+
+            .time-ampm {
+                font-size: 0.95rem;
+                color: #888;
+                margin-bottom: 10px;
+                font-weight: 600;
+            }
+
+            /* 버튼들을 나열하는 그리드 */
+            .time-slots {
+                display: grid;
+                grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+                gap: 10px;
+                /* 버튼 사이 간격 */
+            }
+
+            /* 1. [기본 상태] 버튼 스타일 */
+            .time-btn {
+                padding: 15px;
+                border-radius: 8px;
+                border: 1px solid #ddd;
+                /* [디자인 팁] 두 번째 이미지의 깔끔한 테두리 참고 */
+                background-color: #fff;
+                font-size: 1rem;
+                font-weight: 500;
+                color: #555;
+                cursor: pointer;
+                transition: all 0.2s ease-in-out;
+                /* 부드러운 변화 효과 */
+            }
+
+            /* 호버 효과 (마우스 올렸을 때) */
+            .time-btn:not(:disabled):hover {
+                background-color: #f0f0f0;
+                border-color: #bbb;
+            }
+
+            /* 2. [예약 불가 상태] (disabled/booked) 회색 처리 */
+            .time-btn.booked:disabled {
+                background-color: #f7f7f7;
+                color: #ccc;
+                border-color: #eee;
+                cursor: not-allowed;
+                /* 클릭 안 됨 마우스 모양 */
+                text-decoration: line-through;
+                /* [디자인 팁] 직관성을 위해 줄 긋기 */
+            }
+
+            /* 3. [내가 선택한 상태] (active) 색깔로 강조 */
+            .time-btn.active {
+                /* [디자인 팁] 사용자 프로젝트의 메인 컬러를 여기 적용하세요! */
+                background-color: #ffb6c1;
+                /* 예시: 연한 핑크색 */
+                color: #fff;
+                border-color: #ffb6c1;
+                font-weight: 700;
+                box-shadow: 0 4px 6px rgba(255, 182, 193, 0.4);
+                /* 버튼에도 살짝 그림자 */
             }
 
             /* 테이블 및 리스트 스타일 */
@@ -800,6 +881,34 @@
                                                 선택해주세요</label>
                                             <input type="date" id="res-date" v-model="selectedDate"
                                                 style="padding: 10px; border: 1px solid #ff7f9f; border-radius: 5px; width: 80%;">
+
+
+
+                                        </div>
+                                        <div class="booking-time-container">
+                                            <h3 class="section-title">방문 희망 시간을 선택해 주세요</h3>
+
+                                            <div class="time-slot-group">
+                                                <h4 class="time-ampm">오전</h4>
+                                                <div class="time-slots">
+                                                    <button v-for="t in amTimes" :key="t" class="time-btn"
+                                                        :class="{ 'active': selectedTime === t, 'booked': bookedTimes.includes(t) }"
+                                                        :disabled="bookedTimes.includes(t)" @click="fnSelectTime(t)">
+                                                        {{ t }}
+                                                    </button>
+                                                </div>
+                                            </div>
+
+                                            <div class="time-slot-group">
+                                                <h4 class="time-ampm">오후</h4>
+                                                <div class="time-slots">
+                                                    <button v-for="t in pmTimes" :key="t" class="time-btn"
+                                                        :class="{ 'active': selectedTime === t, 'booked': bookedTimes.includes(t) }"
+                                                        :disabled="bookedTimes.includes(t)" @click="fnSelectTime(t)">
+                                                        {{ t }}
+                                                    </button>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
 
@@ -824,7 +933,9 @@
                         </div>
 
                         <div v-if="currentMenu === 'main' && productPage === 'payment'" class="payment-container">
-
+                            {{product1}}
+                            {{selectedDate}}
+                            {{selectedTime}}
                             <div class="payment-info-row">결제 상품 : {{ product1.name }}</div>
                             <div class="payment-info-row">예약일자 : {{ selectedDate }}</div>
                             <div class="payment-info-row">예약자명 : {{ user.name }}</div>
@@ -862,6 +973,14 @@
             data() {
                 return {
                     // 변수 - (key : value)
+                    amTimes: ['10:00', '11:00'],
+                    pmTimes: ['13:00', '14:00', '15:00', '16:00', '17:00'],
+
+                    bookedTimes: [], // 서버에서 받아온 시간들 (HH:mm:ss 형태)
+                    selectedTime: '', // 사용자가 클릭한 시간 (HH:mm 형태)
+
+
+
                     selectedDate: '',
                     selectTags: [],
                     productTag: [],
@@ -1659,7 +1778,7 @@
 
                     //this.currentMenu = 'reservation'; // 예약 내역 페이지로 보냅니다.
                 },
-                fnGetTagAndProductList(){
+                fnGetTagAndProductList() {
                     let self = this;
                     let param = {};
                     $.ajax({
@@ -1676,6 +1795,7 @@
                             let productList1 = data.productListForTag.map(p => {
                                 return {
                                     id: p.productNo,
+                                    companyNo : p.companyNo,
                                     thumbnail: p.imgUrl,
                                     name: p.productName,
                                     company: p.comName,
@@ -1690,10 +1810,14 @@
                             self.productList = productList1;
                         }
                     });
+                },
+                // 시간 버튼 클릭 시 호출
+                fnSelectTime(time) {
+                    this.selectedTime = time;
                 }
 
             }, // methods
-//productTag
+            //productTag
 
             mounted() {
                 // 처음 시작할 때 실행되는 부분
