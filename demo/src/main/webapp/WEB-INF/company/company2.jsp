@@ -775,18 +775,18 @@
                 gap: 20px;
             }
 
-            .btn-final-reserve {
+            /* .btn-final-reserve {
                 background-color: #ffc107;
                 /* 노란색 */
-                border: 1px solid #ddd;
+                /* border: 1px solid #ddd;
                 padding: 15px 60px;
                 font-size: 20px;
                 font-weight: bold;
                 cursor: pointer;
-                border-radius: 5px;
-            }
+                border-radius: 5px; */
+            /* } */ 
 
-            .btn-cancel-pay {
+            /* .btn-cancel-pay {
                 background-color: white;
                 border: 1px solid #333;
                 padding: 15px 60px;
@@ -794,6 +794,165 @@
                 font-weight: bold;
                 cursor: pointer;
                 border-radius: 5px;
+            } */
+
+            /* 티켓 전체 컨테이너 */
+            .payment-container {
+                padding: 50px 20px;
+                display: flex;
+                justify-content: center;
+                background-color: #f9f9f9;
+            }
+
+            /* 🎟️ 티켓 카드 스타일 */
+            .reservation-ticket {
+                width: 100%;
+                max-width: 700px;
+                background: #fff;
+                border-radius: 15px;
+                position: relative;
+                box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+                transition: transform 0.3s ease, box-shadow 0.3s ease;
+                /* 둥실 떠오르는 애니메이션 */
+                overflow: hidden;
+                border: 1px solid #eee;
+            }
+
+            /* [핵심] 마우스 호버 효과 */
+            .reservation-ticket:hover {
+                transform: translateY(-10px);
+                /* 위로 살짝 올라감 */
+                box-shadow: 0 20px 40px rgba(255, 127, 159, 0.15);
+                /* 강조 색상으로 그림자 */
+            }
+
+            /* 티켓 헤더 (분홍색 포인트) */
+            .ticket-header {
+                background-color: #ff7f9f;
+                padding: 12px 25px;
+                display: flex;
+                justify-content: space-between;
+                color: #fff;
+                font-size: 0.8rem;
+                letter-spacing: 2px;
+                font-weight: bold;
+            }
+
+            /* 티켓 바디 */
+            .ticket-body {
+                display: flex;
+                padding: 30px;
+                border-bottom: 2px dashed #eee;
+                /* 티켓 절취선 느낌 */
+            }
+
+            .ticket-info {
+                flex: 2;
+                border-right: 2px dashed #eee;
+                padding-right: 20px;
+            }
+
+            .ticket-side {
+                flex: 1;
+                padding-left: 20px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                text-align: center;
+            }
+
+            /* 정보 텍스트 스타일 */
+            .info-row {
+                margin-bottom: 20px;
+            }
+
+            .info-row label {
+                display: block;
+                font-size: 0.85rem;
+                color: #999;
+                margin-bottom: 5px;
+            }
+
+            .info-row .value {
+                font-size: 1.1rem;
+                font-weight: 600;
+                color: #333;
+            }
+
+            .product-name .value {
+                color: #ff7f9f;
+                font-size: 1.3rem;
+            }
+
+            .date-time {
+                color: #333;
+            }
+
+            .time-tag {
+                background: #fff0f3;
+                color: #ff7f9f;
+                padding: 2px 8px;
+                border-radius: 4px;
+                font-size: 0.9rem;
+            }
+
+            /* 금액 및 바코드 */
+            .amount-label {
+                font-size: 0.8rem;
+                color: #999;
+            }
+
+            .amount-value {
+                font-size: 1.5rem;
+                font-weight: 800;
+                color: #333;
+                margin: 10px 0;
+            }
+
+            .agreement-text {
+                font-size: 0.75rem;
+                color: #bbb;
+                margin-bottom: 15px;
+            }
+
+            .ticket-barcode {
+                font-family: 'Libre Barcode 39', cursive;
+                font-size: 2rem;
+                color: #ddd;
+                letter-spacing: 2px;
+            }
+
+            /* 버튼 그룹 */
+            .payment-btn-group {
+                padding: 25px;
+                display: flex;
+                gap: 15px;
+            }
+
+            .btn-final-reserve {
+                flex: 2;
+                background: #ff7f9f;
+                color: white;
+                border: none;
+                padding: 15px;
+                border-radius: 8px;
+                font-weight: bold;
+                cursor: pointer;
+                transition: 0.3s;
+            }
+
+            .btn-final-reserve:hover {
+                background: #ff5c85;
+            }
+
+            .btn-cancel-pay {
+                flex: 1;
+                background: #fff;
+                color: #999;
+                border: 1px solid #ddd;
+                padding: 15px;
+                border-radius: 8px;
+                cursor: pointer;
             }
         </style>
     </head>
@@ -854,8 +1013,8 @@
 
                         <div v-if="currentMenu === 'main' && productPage === 'detail'">
                             {{product1}}
-                            <button @click="productPage = 'list'" style="margin-bottom:10px;">← 뒤로가기</button>
-
+                            <button @click="fnBack()" style="margin-bottom:10px;">← 뒤로가기</button>
+                                
                             <div class="detail-container">
                                 <div class="detail-left">
                                     <img :src="product1.thumbnail" class="detail-main-img">
@@ -933,29 +1092,85 @@
                         </div>
 
                         <div v-if="currentMenu === 'main' && productPage === 'payment'" class="payment-container">
-                            {{product1}}
-                            {{selectedDate}}
-                            {{selectedTime}}
-                            <div class="payment-info-row">결제 상품 : {{ product1.name }}</div>
-                            <div class="payment-info-row">예약일자 : {{ selectedDate }}</div>
-                            <div class="payment-info-row">예약자명 : {{ user.name }}</div>
-                            <div class="payment-info-row">휴대폰번호 : {{ user.contact}}</div>
-                            <div class="payment-info-row">예약금 : {{ product1.deposit }}</div>
-                            <div class="payment-info-row">필수항목동의 : 노쇼관련</div>
+                            
+                            <div class="reservation-ticket">
+                                <div class="ticket-header">
+                                    <span class="ticket-brand">MERRY VIEW RESERVATION</span>
+                                    <span class="ticket-type">OFFICIAL TICKET</span>
+                                </div>
+                                <!-- {{product1}}
+                                {{selectedDate}}
+                                {{selectedTime}} -->
+                                <!-- <div style="text-align: right;">
+                                    <img :src="product1.thumbnail" style="max-height: 200px; margin-top: 10px; margin-right: 20px;">
+                                </div> -->
+                                
+                                <div class="ticket-body">
+                                    <div class="ticket-info">
+                                        <div class="info-row product-name">
+                                            <label>결제 상품</label>
+                                            <div class="value">{{ product1.name }} <small>({{ product1.company
+                                                    }})</small></div>
+                                        </div>
 
-                            <div class="total-payment-amount">
-                                결제 금액 : {{ product1.deposit }}
+                                        <div class="info-grid">
+                                            <div class="info-row">
+                                                <label>예약 일시</label>
+                                                <div class="value date-time">{{ selectedDate }} <span
+                                                        class="time-tag">{{ selectedTime }}</span></div>
+                                            </div>
+                                            <div class="info-row">
+                                                <label>예약자명</label>
+                                                <div class="value">{{ user.name }}님</div>
+                                            </div>
+                                        </div>
+
+
+                                        <div class="info-row">
+                                            <label>휴대폰 번호</label>
+                                            <div class="value">{{ user.contact }}</div>
+                                        </div>
+
+                                    </div>
+
+                                    <div class="ticket-side">
+                                        <div class="side-content">
+                                            <img :src="product1.thumbnail" style="max-height: 200px;">
+                                            <div class="amount-label">TOTAL DEPOSIT</div>
+                                            <div class="amount-value">{{ product1.deposit }}</div>
+                                            <div class="agreement-text">필수 항목 동의 : 노쇼관련</div>
+                                            <!-- <div class="ticket-barcode">|| ||| || |||| | ||</div> -->
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="payment-btn-group">
+                                    <button class="btn-cancel-pay" @click="productPage = 'detail'">뒤로가기</button>
+                                    <button class="btn-final-reserve" @click="fnFinalOrder(user)">결제 및 예약 확정</button>
+                                </div>
                             </div>
-
-                            <div class="payment-btn-group">
-                                <button class="btn-final-reserve" @click="fnFinalOrder(user)">예약하기</button>
-                                <button class="btn-cancel-pay" @click="productPage = 'detail'">취소</button>
-                            </div>
-
                         </div>
-                    </main>
-                </main>
+
+
+                        <!-- <div class="payment-info-row">결제 상품 : {{ product1.name }}({{product1.company}})</div>
+                        <div class="payment-info-row">예약일자 및 시간 : {{ selectedDate }} {{ selectedTime }}</div>
+                        <div class="payment-info-row">예약자명 : {{ user.name }}</div>
+                        <div class="payment-info-row">휴대폰번호 : {{ user.contact}}</div>
+                        <div class="payment-info-row">예약금 : {{ product1.deposit }}</div>
+                        <div class="payment-info-row">필수항목동의 : 노쇼관련</div>
+
+                        <div class="total-payment-amount">
+                            결제 금액 : {{ product1.deposit }}
+                        </div>
+
+                        <div class="payment-btn-group">
+                            <button class="btn-final-reserve" @click="fnFinalOrder(user)">예약하기</button>
+                            <button class="btn-cancel-pay" @click="productPage = 'detail'">취소</button>
+                        </div> -->
             </div>
+
+            </main>
+            </main>
+        </div>
         </div>
 
         <footer>
@@ -1795,7 +2010,7 @@
                             let productList1 = data.productListForTag.map(p => {
                                 return {
                                     id: p.productNo,
-                                    companyNo : p.companyNo,
+                                    companyNo: p.companyNo,
                                     thumbnail: p.imgUrl,
                                     name: p.productName,
                                     company: p.comName,
@@ -1814,7 +2029,12 @@
                 // 시간 버튼 클릭 시 호출
                 fnSelectTime(time) {
                     this.selectedTime = time;
-                }
+                },
+                fnBack() {
+                    this.productPage = 'list';
+                    this.selectedDate = '';
+                    this.selectedTime = '';
+                } 
 
             }, // methods
             //productTag
