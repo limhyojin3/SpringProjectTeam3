@@ -169,5 +169,12 @@
 		PRODUCT P
 		LEFT JOIN COMPANY C ON P.COMPANY_NO = C.COMPANY_NO;
 	</select>
+	
+	<select id="selectBookedTimes" parameterType="map"
+		resultType="String">
+		SELECT r.use_time FROM reservation r
+		where r.product_no = #{productNo} and r.res_status = 'WAIT' and r.use_date =
+		#{useDate};
+	</select>
 
 </mapper>

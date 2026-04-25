@@ -1064,7 +1064,7 @@
                                                 선택해주세요</label>
                                             <input type="date" id="res-date" v-model="selectedDate"
                                                 style="padding: 10px; border: 1px solid #ff7f9f; border-radius: 5px; width: 80%;">
-
+                                            <!-- {{selectedDate}} -->
 
 
                                         </div>
@@ -1612,6 +1612,13 @@
 
 
             },
+            watch: {
+                selectedDate(newVal){
+                    if(newVal){
+                        this.fnGetBookedTimes();
+                    }
+                }
+            },
             methods: {
                 // 함수(메소드) - (key : function())
                 fnPageChange(num) {
@@ -1998,6 +2005,9 @@
                     this.product1 = { ...item };
 
                     window.scrollTo(0, 0); // 화면 상단으로 이동
+                    
+                    //this.fnGetBookedTimes();
+
                 },
 
                 // 예약하기 버튼 클릭
@@ -2016,6 +2026,9 @@
                 },
                 fnFinalOrder(user) {  //user
                     alert("최종 예약 및 결제가 완료되었습니다!");
+
+
+
 
                     this.fnBack();
 
@@ -2071,7 +2084,32 @@
                     this.productPage = 'list';
                     this.selectedDate = '';
                     this.selectedTime = '';
-                } 
+                    this.bookedTimes = [];
+                },
+                fnGetBookedTimes(){
+                    let self = this;
+                    let param = {
+                        productNo: self.product1.id,
+                        useDate: self.selectedDate
+                    };
+                    console.log(self.selectedDate);
+
+
+
+
+                    $.ajax({
+                        url: "/getBookedTimes.dox",
+                        dataType: "json",
+                        type: "POST",
+                        data: param,
+                        success: function (data) {
+                            console.log(data); //list ['10:00:00', '13:00:00', '17:00:00']
+                            let newList = data.list.map(p => p.slice(0,5)); //['10:00', '13:00', '17:00']
+
+                            self.bookedTimes = newList;
+                        }
+                    });
+                }
 
             }, // methods
             //productTag

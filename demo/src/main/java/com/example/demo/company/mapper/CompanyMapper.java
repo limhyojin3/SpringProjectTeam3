@@ -25,6 +25,10 @@ public interface CompanyMapper {
 	//selectSimpleReviewCnt
 	
 	//selectNewReviewCnt
+	
+	
+	List<String> selectBookedTimes(HashMap<String, Object> map);
+	
 	String selectNewResCnt(HashMap<String, Object> map);
 	
 	List<Company> selectProductListForTag(HashMap<String, Object> map);

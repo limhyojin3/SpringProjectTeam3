@@ -324,4 +324,28 @@ public class CompanyService {
 		}
 		return resultMap;  
 	} 
+	
+	//List<String> selectBookedTimes(HashMap<String, Object> map);
+	public HashMap<String, Object> getBookedTimes(HashMap<String, Object> map) {
+		HashMap<String, Object> resultMap = new HashMap<String, Object>();
+		try {
+//			List<User> list = defaultMapper.selectUserList(map);
+//			User info = defaultMapper.selectUser(map);
+			List<String> list = companyMapper.selectBookedTimes(map);
+			
+			
+			resultMap.put("list", list);
+			resultMap.put("result", "success");
+			resultMap.put("message", Message.MSG_REMOVE);
+			
+			
+		} catch (Exception e) {
+			// TODO: handle exception
+			System.out.println(e.getMessage());
+			resultMap.put("result", "fail");
+			resultMap.put("message", Message.MSG_SERVER_ERR);
+		}
+		return resultMap;  
+	} 
+	
 }
