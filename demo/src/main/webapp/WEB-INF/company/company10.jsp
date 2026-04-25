@@ -761,11 +761,13 @@
 
                             <div style="display: flex;">
                                 <div
-                                    style="width: 200px; height: 200px; background: #ffcef0; margin-right: 20px; text-align: center;">
+                                    style="width: 100px; height: 100px; background: #ffcef0; margin-right: 20px; text-align: center;">
                                     <img :src="fnThumbnail(i)" :alt="i.product"
                                         style="max-width: 100%; max-height: 100%">
+                                    
                                 </div>
-                                <div style="flex: 1;"><strong>상세 내용</strong></div>
+                                <h3>상품명 : <span style="color: #d6336c;">{{i.product}}</span> </h3>
+                                
                             </div>
 
                             <table>
@@ -970,8 +972,8 @@
                     productList3: [],
                     productList4:[],
                     inquiryList: [
-                        { id: 1, product: '화려하게', title: '투어 일정 변경하고 싶습니다.', userid: '김결혼', content: '04.01일 예약했는데 04.08일로 변경하고 싶어요.' },
-                        { id: 2, product: '스몰 웨딩', title: '메이크업 추가되나요?', userid: '아리랑', content: '메이크업 여기서 받고싶어요.' },
+                        { id: 1, product: '야외 스냅 기본', title: '투어 일정 변경하고 싶습니다.', userid: '김결혼', content: '04.01일 예약했는데 04.08일로 변경하고 싶어요.' },
+                        { id: 2, product: '해변스냅', title: '메이크업 추가되나요?', userid: '아리랑', content: '메이크업 여기서 받고싶어요.' },
                     ],
                     user: {
                         id: 1, name: 'ABC 드레스 샵', usePeriod: '25.01.01 ~ 26.01.01', lastPayment: '신협 ***', grade: '제휴업체' /* 일반업체, 제휴업체 구분 변수 */
@@ -1414,7 +1416,7 @@
 
                 },
                 fnThumbnail(inquiry) {    //fnThumbnail(개별문의)
-                    return this.productList.find(p => p.name === inquiry.product).thumbnail;
+                    return this.productList3.find(p => p.productName === inquiry.product).imgUrl;
                 }
                 ,
                 handleMenuClick(menuId) {   //main,product,reservation,inquiry,review,customer
