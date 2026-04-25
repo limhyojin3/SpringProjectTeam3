@@ -490,12 +490,12 @@
                             <div v-for="i in productList3" class="content-card"
                                 style="display: flex; align-items: center; padding: 15px;">
                                 <div
-                                    style="width: 120px; height: 80px; background: #ffcef0; display: flex; align-items: center; justify-content: center; margin-right: 20px;">
+                                    style="width: 150px; height: 130px; background: #ffcef0; display: flex; align-items: center; justify-content: center; margin-right: 20px;">
                                     <!--{{ i.thumbnail }}-->
                                     <img :src="i.imgUrl" :alt="i.productName" style="max-width: 100%; max-height: 100%">
                                 </div>
                                 <div style="flex: 1;">{{ i.productDetails }}</div>
-                                <div>{{ i.originalPrice }}</div>
+                                <div>{{ Number(i.originalPrice).toLocaleString() }}원</div>
                                 <button @click="goEditPage(i)" style="margin-left: 10px;">수정하기</button>
                                 <button @click="fnRemove2(i)" style="margin-left: 10px;">삭제하기</button>
                             </div>
@@ -678,7 +678,7 @@
                                         <div class="form-group">
                                             <div style="margin-bottom: 10px; font-weight: bold;">기존 이미지 : </div>
                                             <div class="image-editor-box">
-                                                <img :src="product1.imgUrl">
+                                                <img :src="product1.imgUrl" style="max-width: 500px; max-height: 500px;">
                                             </div>
                                             <br>
                                             <div style="margin-bottom: 10px; font-weight: bold;">수정할 이미지 : </div>
@@ -688,6 +688,7 @@
                                                 사진 선택하기
                                                 <input type="file" @change="fnFileChange" ref="fileInput"
                                                     style="display: none;">
+                                                    
                                             </label>
                                             <div class="image-editor-box">
 
@@ -740,7 +741,7 @@
                                 </tr>
                                 <tr>
                                     <th>결제 금액</th>
-                                    <td>(예약금) {{ res.deposit }}</td>
+                                    <td>(예약금) {{ Number(res.deposit).toLocaleString() }}원</td>
                                 </tr>
                             </table>
                         </template>
@@ -760,7 +761,7 @@
 
                             <div style="display: flex;">
                                 <div
-                                    style="width: 120px; height: 80px; background: #ffcef0; margin-right: 20px; text-align: center;">
+                                    style="width: 200px; height: 200px; background: #ffcef0; margin-right: 20px; text-align: center;">
                                     <img :src="fnThumbnail(i)" :alt="i.product"
                                         style="max-width: 100%; max-height: 100%">
                                 </div>
