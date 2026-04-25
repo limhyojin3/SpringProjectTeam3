@@ -26,6 +26,9 @@ public interface CompanyMapper {
 	
 	//selectNewReviewCnt
 	
+	List<Company> selectProductListForTag(HashMap<String, Object> map);
+	
+	List<String> selectTagList(HashMap<String, Object> map);
 	
 	List<Review> selectSimpleReviewDetails3(HashMap<String, Object> map);
 	

@@ -138,6 +138,18 @@
 		SELECT r.review_no, r.content, r.user_id, r.rating, r.updated
 		FROM REVIEW r WHERE IS_PAID = 0 AND PRODUCT_NO = #{productNo};
 	</select>
+	<select id="selectTagList" parameterType="map"
+		resultType="string">
+		SELECT tag FROM product_tag;
 
+	</select>
+
+	<select id="selectProductListForTag" parameterType="map"
+		resultType="com.example.demo.company.model.Company">
+		SELECT P.PRODUCT_NO, P.COMPANY_NO, P.IMG_URL, P.PRODUCT_NAME,
+		C.COM_NAME, P.PRODUCT_DETAILS, P.ORIGINAL_PRICE, P.PRO_TYPE, P.TAG FROM
+		PRODUCT P
+		LEFT JOIN COMPANY C ON P.COMPANY_NO = C.COMPANY_NO;
+	</select>
 
 </mapper>

@@ -29,6 +29,7 @@ public class Company {
 	String isActive;
 	String imgUrl;
 	String proType;
+	String tag;
 	
 	String resNo;
 	String resDate;

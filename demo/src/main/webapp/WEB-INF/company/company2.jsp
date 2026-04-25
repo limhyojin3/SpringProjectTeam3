@@ -863,14 +863,7 @@
                     // 변수 - (key : value)
                     selectedDate: '',
                     selectTags: [],
-                    productTag: [
-                        '인물 중심', '배경 중심', '화려한', '심플한', '단아한',
-                        '내추럴한', '클래식한', '빈티지한', '러블리한', '우아한',
-                        '세련된', '모던한', '몽환적인', '그리너리', '야외 스냅',
-                        '본식 스냅', '가성비', '프리미엄', '비즈 맛집', '실크 드레스',
-                        '레이스 드레스', '과즙 메이크업', '음영 메이크업', '윤광 메이크업', '대형 스튜디오',
-                        '단독 홀', '커스터마이징', '토탈 샵', '야간 촬영', '제주 스냅'
-                    ],
+                    productTag: [],
                     selectCategory: [],
                     productList3: [],
                     inquiryList: [
@@ -878,7 +871,7 @@
                         { id: 2, product: '스몰 웨딩', title: '메이크업 추가되나요?', userid: '아리랑', content: '메이크업 여기서 받고싶어요.' },
                     ],
                     user: {
-                        id: 1, name: 'ABC 드레스 샵', usePeriod: '25.01.01 ~ 26.01.01', contact: '010-1111-2222', lastPayment: '신협 ***', grade: '제휴업체' /* 일반업체, 제휴업체 구분 변수 */
+                        id: 1, name: 'maygirl05'
                     },
                     currentMenu: 'main', // 초기 화면
                     reviewTab: 'detail',
@@ -1664,15 +1657,47 @@
                     console.log(this.userReservationList);
 
                     //this.currentMenu = 'reservation'; // 예약 내역 페이지로 보냅니다.
+                },
+                fnGetTagAndProductList(){
+                    let self = this;
+                    let param = {};
+                    $.ajax({
+                        url: "/getTagAndProductList.dox",
+                        dataType: "json",
+                        type: "POST",
+                        data: param,
+                        success: function (data) {
+                            console.log(data);
+
+                            self.productTag = data.taglist;
+
+                            //한번 해보는거
+                            let productList1 = data.productListForTag.map(p => {
+                                return {
+                                    id: p.productNo,
+                                    thumbnail: p.imgUrl,
+                                    name: p.productName,
+                                    company: p.comName,
+                                    content: p.productDetails,
+                                    price: Number(p.originalPrice).toLocaleString() + '원',
+                                    category: JSON.parse(p.proType),
+                                    tag: JSON.parse(p.tag)
+                                }
+                            });
+                            console.log(productList1);
+                            self.productList = productList1;
+                        }
+                    });
                 }
 
             }, // methods
-
+//productTag
 
             mounted() {
                 // 처음 시작할 때 실행되는 부분
                 let self = this;
                 //self.fnCom();
+                self.fnGetTagAndProductList();
             }
 
 

@@ -296,5 +296,29 @@ public class CompanyService {
 		}
 		return resultMap;  
 	} 
-	
+	//List<String> selectTagList(HashMap<String, Object> map);
+	public HashMap<String, Object> getTagAndProductList(HashMap<String, Object> map) {
+		HashMap<String, Object> resultMap = new HashMap<String, Object>();
+		try {
+//			List<User> list = defaultMapper.selectUserList(map);
+//			User info = defaultMapper.selectUser(map);
+			List<String> taglist = companyMapper.selectTagList(map);
+			
+			//List<Company> selectProductListForTag(HashMap<String, Object> map);
+			List<Company> productListForTag = companyMapper.selectProductListForTag(map);
+			
+			resultMap.put("productListForTag", productListForTag);
+			resultMap.put("taglist", taglist);
+			resultMap.put("result", "success");
+			resultMap.put("message", Message.MSG_REMOVE);
+			
+			
+		} catch (Exception e) {
+			// TODO: handle exception
+			System.out.println(e.getMessage());
+			resultMap.put("result", "fail");
+			resultMap.put("message", Message.MSG_SERVER_ERR);
+		}
+		return resultMap;  
+	} 
 }
