@@ -490,11 +490,11 @@
                             <div v-for="i in productList3" class="content-card"
                                 style="display: flex; align-items: center; padding: 15px;">
                                 <div
-                                    style="width: 150px; height: 130px; background: #ffcef0; display: flex; align-items: center; justify-content: center; margin-right: 20px;">
+                                    style="width: 100px; height: 100px; background: #ffcef0; display: flex; align-items: center; justify-content: center; margin-right: 20px;">
                                     <!--{{ i.thumbnail }}-->
                                     <img :src="i.imgUrl" :alt="i.productName" style="max-width: 100%; max-height: 100%">
                                 </div>
-                                <div style="flex: 1;">{{ i.productDetails }}</div>
+                                <div style="flex: 1; font-weight: bold;">{{ i.productDetails }}</div>
                                 <div>{{ Number(i.originalPrice).toLocaleString() }}원</div>
                                 <button @click="goEditPage(i)" style="margin-left: 10px;">수정하기</button>
                                 <button @click="fnRemove2(i)" style="margin-left: 10px;">삭제하기</button>
@@ -729,7 +729,7 @@
                                 </tr>
                                 <tr>
                                     <th>이용 일자</th>
-                                    <td>{{ res.useDatetime }}</td>
+                                    <td>{{ res.useDate }} {{ res.useTime }}</td>
                                 </tr>
                                 <tr>
                                     <th>예약자명</th>
@@ -1596,7 +1596,7 @@
                         type: "POST",
                         data: param,
                         success: function (data) {
-                            //console.log(data);
+                            console.log(data);
                             self.reservationList = data.list;
                         }
                     });

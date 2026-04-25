@@ -772,6 +772,7 @@
                         </div>
 
                         <div v-if="currentMenu === 'main' && productPage === 'detail'">
+                            {{product1}}
                             <button @click="productPage = 'list'" style="margin-bottom:10px;">← 뒤로가기</button>
 
                             <div class="detail-container">
@@ -812,7 +813,7 @@
                                     <div class="price-info-box">
                                         <div class="price-row">
                                             <span>예약금 :</span>
-                                            <span>100,000원</span>
+                                            <span>{{ product1.deposit }}</span>
                                         </div>
                                     </div>
 
@@ -828,11 +829,11 @@
                             <div class="payment-info-row">예약일자 : {{ selectedDate }}</div>
                             <div class="payment-info-row">예약자명 : {{ user.name }}</div>
                             <div class="payment-info-row">휴대폰번호 : {{ user.contact}}</div>
-                            <div class="payment-info-row">예약금 : 100,000원</div>
+                            <div class="payment-info-row">예약금 : {{ product1.deposit }}</div>
                             <div class="payment-info-row">필수항목동의 : 노쇼관련</div>
 
                             <div class="total-payment-amount">
-                                결제 금액 : 100,000 원
+                                결제 금액 : {{ product1.deposit }}
                             </div>
 
                             <div class="payment-btn-group">
@@ -871,7 +872,7 @@
                         { id: 2, product: '스몰 웨딩', title: '메이크업 추가되나요?', userid: '아리랑', content: '메이크업 여기서 받고싶어요.' },
                     ],
                     user: {
-                        id: 1, name: 'maygirl05'
+                        id: 1, name: 'maygirl05', contact: '010-xxxx-xxxx'
                     },
                     currentMenu: 'main', // 초기 화면
                     reviewTab: 'detail',
@@ -1681,7 +1682,8 @@
                                     content: p.productDetails,
                                     price: Number(p.originalPrice).toLocaleString() + '원',
                                     category: JSON.parse(p.proType),
-                                    tag: JSON.parse(p.tag)
+                                    tag: JSON.parse(p.tag),
+                                    deposit: Number(p.deposit).toLocaleString() + '원'
                                 }
                             });
                             console.log(productList1);

@@ -36,7 +36,8 @@ public class Company {
 	String resTime;
 	String resStatus;
 	String resContent;
-	String useDatetime;
+	String useDate;
+	String useTime;
 	String deposit;
 	
 	String resUserId;  //실제 예약한 유저의 아이디
