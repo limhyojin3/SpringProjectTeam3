@@ -195,7 +195,10 @@ public class CompanyService {
 //			List<User> list = defaultMapper.selectUserList(map);
 //			User info = defaultMapper.selectUser(map);
 			List<Company> list = companyMapper.selectReservation(map);
+			//String selectNewResCnt(HashMap<String, Object> map);
+			String newResCnt = companyMapper.selectNewResCnt(map);
 			
+			resultMap.put("newResCnt", newResCnt);
 			resultMap.put("list", list);
 			resultMap.put("result", "success");
 			resultMap.put("message", Message.MSG_REMOVE);

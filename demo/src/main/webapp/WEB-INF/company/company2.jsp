@@ -674,6 +674,16 @@
                 font-size: 16px;
                 line-height: 1.8;
             }
+            .detail-description-card2 {
+                background: #ffe0e6;
+                /* 이미지의 핑크색 배경 부분 */
+                min-height: 100px;
+                padding: 30px;
+                border-radius: 10px;
+                border: 2px solid #ff7f9f;
+                font-size: 16px;
+                line-height: 1.8;
+            }
 
             /* 오른쪽 사이드바 (예약하기) */
             .detail-right {
@@ -1024,7 +1034,21 @@
                                         <h3 style="margin-top:0;">{{ product1.name }}</h3>
                                         <p>{{ product1.content }}</p>
                                         <hr>
-                                        <p>※ 상세 옵션 안내 및 유의사항이 여기에 들어갑니다.</p>
+                                        <p>※ 상세 옵션 안내 및 유의사항 :</p>
+                                            <p>메리뷰는 웨딩업체의 상품을 중개합니다. 
+                                            상품 예약 후 날짜와 시간을 꼭 유의하여 주시기 바랍니다.
+                                            노쇼인 경우 예약금 환불은 원칙적으로 불가하며 
+                                            피치못한 사정으로 노쇼하실 경우, 불참 사유를 증명할 서류를 지참하시면
+                                             소비자보호원의 소비자 권익에 대한 법적 사항을 준수하며 
+                                             업체 내 환불규정에 따라 검토후 예약금 환불이 가능합니다.
+                                             </p>
+                                        </p>
+                                    </div>
+                                    <div class="detail-description-card2">
+                                        <h3>요청 사항</h3>
+                                        <textarea v-model="res_content" style="min-width: 500px; max-width: 500px; min-height: 200px;" placeholder="예약시 요청 사항을 여기에 작성해주세요.">
+
+                                        </textarea>
                                     </div>
                                 </div>
 
@@ -1131,6 +1155,13 @@
                                             <div class="value">{{ user.contact }}</div>
                                         </div>
 
+                                        <div class="info-row">
+                                            <label>요청 사항</label>
+                                            <div class="value">{{res_content}}</div>
+                                        </div>
+
+                                        
+
                                     </div>
 
                                     <div class="ticket-side">
@@ -1194,7 +1225,7 @@
                     bookedTimes: [], // 서버에서 받아온 시간들 (HH:mm:ss 형태)
                     selectedTime: '', // 사용자가 클릭한 시간 (HH:mm 형태)
 
-
+                    res_content: '',
 
                     selectedDate: '',
                     selectTags: [],
@@ -1976,22 +2007,28 @@
                         alert("예약 날짜를 선택해주세요!");
                         return;
                     }
+                    if (!this.selectedTime){
+                        alert("예약 시간을 선택해주세요!");
+                        return;
+                    }
                     this.productPage = 'payment'; // 결제 화면으로 렌더링 상태 변경
                     window.scrollTo(0, 0);
                 },
                 fnFinalOrder(user) {  //user
                     alert("최종 예약 및 결제가 완료되었습니다!");
 
-                    let maxId = this.userReservationList.length > 0
-                        ? Math.max(...this.userReservationList.map(item => item.id)) : 1;
+                    this.fnBack();
 
-                    this.userReservationList.push(
-                        { id: maxId + 1, productName: this.product1.name, resDate: this.selectedDate, resName: this.user.name, phoneNo: this.user.contact, deposit: 100000 }
-                    )
-                    this.productPage = 'list';   // 다시 목록으로 보내거나
-                    console.log(this.userReservationList);
+                    // let maxId = this.userReservationList.length > 0
+                    //     ? Math.max(...this.userReservationList.map(item => item.id)) : 1;
 
-                    //this.currentMenu = 'reservation'; // 예약 내역 페이지로 보냅니다.
+                    // this.userReservationList.push(
+                    //     { id: maxId + 1, productName: this.product1.name, resDate: this.selectedDate, resName: this.user.name, phoneNo: this.user.contact, deposit: 100000 }
+                    // )
+                    // this.productPage = 'list';   // 다시 목록으로 보내거나
+                    // console.log(this.userReservationList);
+
+                    ////this.currentMenu = 'reservation'; // 예약 내역 페이지로 보냅니다. ( )
                 },
                 fnGetTagAndProductList() {
                     let self = this;

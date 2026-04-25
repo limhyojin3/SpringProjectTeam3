@@ -724,11 +724,11 @@
                                     <td>{{ res.resContent }}</td>
                                 </tr>
                                 <tr>
-                                    <th>예약 일자</th>
-                                    <td>{{ res.resDate }}</td>
+                                    <th>예약결제 일자</th>
+                                    <td>{{ res.resDate }} {{ res.resTime }}</td>
                                 </tr>
                                 <tr>
-                                    <th>이용 일자</th>
+                                    <th>예약이용 일자</th>
                                     <td>{{ res.useDate }} {{ res.useTime }}</td>
                                 </tr>
                                 <tr>
@@ -742,6 +742,11 @@
                                 <tr>
                                     <th>결제 금액</th>
                                     <td>(예약금) {{ Number(res.deposit).toLocaleString() }}원</td>
+                                </tr>
+                                <tr>
+                                    <th>예약 처리 상태</th>
+                                    <td v-if="res.resStatus === 'WAIT'" style="color: #3714ff;">{{ res.resStatus }}</td>
+                                    <td v-else>{{ res.resStatus }}</td>
                                 </tr>
                             </table>
                         </template>
@@ -963,7 +968,7 @@
         const app = Vue.createApp({
             data() {
                 return {
-                    
+                    resCount: '',
                     newReviewCnt: 0,
                     newUnpaidReviewCnt: 0,
                     productNo: '',
@@ -1099,10 +1104,10 @@
 
             }, // data
             computed: {
-                resCount() {
-                    return this.reservationList.length;
-                }
-                ,
+                // resCount() {
+                //     return this.reservationList.length;
+                // }
+                //,
                 revCnt() {
                     return this.reviews.filter(r => r.updated === 'new').length
                         + this.simpleReviews.filter(r => r.updated === 'new').length;
@@ -1599,6 +1604,7 @@
                         success: function (data) {
                             console.log(data);
                             self.reservationList = data.list;
+                            self.resCount = data.newResCnt;
                         }
                     });
                 },
