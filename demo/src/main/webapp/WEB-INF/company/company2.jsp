@@ -952,7 +952,13 @@
                 transition: 0.3s;
             }
 
-            .btn-final-reserve:hover {
+            .btn-final-reserve:disabled {
+                background-color: #ccc;
+                color: #fff;
+                cursor: not-allowed;
+            }
+
+            .btn-final-reserve:not(:disabled):hover {
                 background: #ff5c85;
             }
 
@@ -964,6 +970,122 @@
                 padding: 15px;
                 border-radius: 8px;
                 cursor: pointer;
+            }
+
+            .my-res-container {
+                padding: 40px 20px;
+                max-width: 600px;
+                margin: 0 auto;
+            }
+
+            .list-title {
+                margin-bottom: 25px;
+                font-weight: bold;
+                color: #333;
+            }
+
+            /* 간략 티켓 스타일 */
+            .mini-ticket {
+                display: flex;
+                background: #fff;
+                border-radius: 12px;
+                margin-bottom: 20px;
+                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+                cursor: pointer;
+                transition: transform 0.2s, box-shadow 0.2s;
+                overflow: hidden;
+                border: 1px solid #eee;
+            }
+
+            .mini-ticket:hover {
+                transform: translateY(-5px);
+                box-shadow: 0 8px 20px rgba(255, 127, 159, 0.15);
+            }
+
+            .ticket-img {
+                width: 120px;
+                height: 140px;
+                overflow: hidden;
+            }
+
+            .ticket-img img {
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+            }
+
+            .ticket-brief-info {
+                flex: 1;
+                padding: 15px;
+                position: relative;
+            }
+
+            .info-top {
+                /*display: flex;*/
+                /*justify-content: space-between;*/
+                margin-bottom: 8px;
+            }
+
+            .product-tag {
+                font-size: 0.7rem;
+                color: #ff7f9f;
+                background: #fff0f3;
+                padding: 2px 6px;
+                border-radius: 4px;
+            }
+
+            .res-no {
+                font-size: 0.7rem;
+                color: #ccc;
+            }
+
+            .product-name {
+                font-size: 1.05rem;
+                font-weight: bold;
+                margin-bottom: 5px;
+                color: #333;
+            }
+
+            .res-date-time {
+                font-size: 0.9rem;
+                color: #777;
+                margin-bottom: 10px;
+            }
+
+            /* 📢 상태별 텍스트 색상 */
+            .status-message {
+                font-size: 0.8rem;
+                font-weight: 600;
+            }
+
+            .status-message.WAIT {
+                color: #ff9800;
+            }
+
+            .status-message.CONFIRM {
+                color: #4caf50;
+            }
+
+            .status-message.DONE {
+                color: #9e9e9e;
+            }
+
+            .status-message.CANCEL {
+                color: #f44336;
+            }
+
+            /* 티켓 오른쪽 절취선 느낌 데코 */
+            .ticket-edge {
+                width: 30px;
+                background: #fdfdfd;
+                border-left: 2px dashed #eee;
+                writing-mode: vertical-rl;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 0.6rem;
+                color: #ddd;
+                letter-spacing: 2px;
             }
         </style>
     </head>
@@ -1023,7 +1145,7 @@
                                         <span v-for="t in item.tag"
                                             style="font-size: 11px; color: #ff7f9f;">{{t}}</span>
                                     </div>
-                                    <p class="product-price">{{item.price}}</p>
+                                    <p class="product-price">{{Number(item.price).toLocaleString()}}원</p>
                                 </div>
                             </div>
                         </div>
@@ -1107,14 +1229,14 @@
                                     <div class="price-info-box">
                                         <div class="price-row">
                                             <span>예상 견적 :</span>
-                                            <span>{{ product1.price }}</span>
+                                            <span>{{ Number(product1.price).toLocaleString() }}원</span>
                                         </div>
                                     </div>
 
                                     <div class="price-info-box">
                                         <div class="price-row">
                                             <span>예약금 :</span>
-                                            <span>{{ product1.deposit }}</span>
+                                            <span>{{ Number(product1.deposit).toLocaleString() }}원</span>
                                         </div>
                                     </div>
 
@@ -1141,7 +1263,7 @@
                                 <div class="ticket-body">
                                     <div class="ticket-info">
                                         <div class="info-row product-name">
-                                            <label>결제 상품</label>
+                                            <label>예약 상품</label>
                                             <div class="value">{{ product1.name }} <small>({{ product1.company
                                                     }})</small></div>
                                         </div>
@@ -1166,7 +1288,7 @@
 
                                         <div class="info-row">
                                             <label>요청 사항</label>
-                                            <div class="value">{{res_content}}</div>
+                                            <div class="value">{{res_content ? res_content : "요청사항 없음"}}</div>
                                         </div>
 
 
@@ -1177,25 +1299,26 @@
                                         <div class="side-content">
                                             <img :src="product1.thumbnail" style="max-height: 200px;">
                                             <div class="amount-label">TOTAL DEPOSIT</div>
-                                            <div class="amount-value">{{ product1.deposit }}</div>
+                                            <div class="amount-value">{{ Number(product1.deposit).toLocaleString() }}원
+                                            </div>
                                             <div class="agreement-text">필수 항목 동의 : 노쇼관련</div>
                                             <!-- <div class="ticket-barcode">|| ||| || |||| | ||</div> -->
                                         </div>
                                     </div>
                                 </div>
 
-                                {{user.name}}
+                                <!-- {{user.name}}
                                 {{product1.id}}
                                 {{product1.companyNo}}
                                 {{res_content}}
                                 {{selectedDate}}
-                                {{selectedTime}}
+                                {{selectedTime}} -->
 
 
 
                                 <div class="payment-btn-group">
                                     <button class="btn-cancel-pay" @click="productPage = 'detail'">뒤로가기</button>
-                                    <button class="btn-final-reserve" @click="fnFinalOrder(user)">결제 및 예약 확정</button>
+                                    <button class="btn-final-reserve" @click="fnSaveReservation(user)">예약 저장하기</button>
                                 </div>
                             </div>
                         </div>
@@ -1216,15 +1339,153 @@
                             <button class="btn-final-reserve" @click="fnFinalOrder(user)">예약하기</button>
                             <button class="btn-cancel-pay" @click="productPage = 'detail'">취소</button>
                         </div> -->
-                        <div v-if="currentMenu === 'main' && productPage === 'resultOfReservation'">
+                        <div v-if="currentMenu === 'main' && productPage === 'resultOfReservation'"
+                            class="my-res-container">
+                            <button @click="fnBack()" style="margin-bottom:10px;">← 뒤로가기</button>
+
+                            <h2 class="list-title">나의 예약 내역</h2>
+
+
+                            <div v-for="(r, index) in myReservationList" :key="index" class="mini-ticket"
+                                @click="fnGoDetail(r)">
+
+                                <!-- {{r}} -->
+                                <div class="ticket-img">
+                                    <img :src="r.imgUrl" :alt="r.productName">
+                                </div>
+
+
+                                <div class="ticket-brief-info">
+
+
+                                    <div class="info-top">
+                                        <span class="res-no">No. {{ r.resNo }}</span>
+                                    </div>
+
+                                    <h3 class="product-name">{{ r.productName }}</h3>
+                                    <p class="res-date-time">예약 날짜/시간 : {{ r.useDate }} {{ r.useTime.slice(0, 5) +
+                                        ':00'}}</p>
+
+                                    <div class="status-message" :class="r.resStatus">
+                                        <span v-if="r.resStatus === 'WAIT'">⚠️ 30분 이내에 결제하지 않으면 취소됩니다.</span>
+                                        <span v-else-if="r.resStatus === 'CONFIRM'">✅ 예약이 확정되었습니다.</span>
+                                        <span v-else-if="r.resStatus === 'DONE'">⏳ 만료된 예약입니다.</span>
+                                        <span v-else-if="r.resStatus === 'CANCEL'">❌ 취소된 예약입니다.</span>
+                                    </div>
+                                </div>
+
+                                <div class="ticket-edge">
+                                    <span>DETAIL</span>
+                                </div>
+
+                            </div>
+
+
+                        </div>
+                        <div v-if="currentMenu === 'main' && productPage === 'reservaionPaymentDetails'"
+                            class="payment-container">
+                            <!-- {{myReservation1}} -->
+
+                            <div class="reservation-ticket">
+                                <div class="ticket-header">
+                                    <span class="ticket-brand">MERRY VIEW RESERVATION</span>
+                                    <span class="ticket-type">OFFICIAL TICKET</span>
+                                </div>
+                                <!-- {{product1}}
+                                {{selectedDate}}
+                                {{selectedTime}} -->
+                                <!-- <div style="text-align: right;">
+                                    <img :src="product1.thumbnail" style="max-height: 200px; margin-top: 10px; margin-right: 20px;">
+                                </div> -->
+
+                                <div class="ticket-body">
+                                    <div class="ticket-info">
+                                        <div class="info-row product-name">
+                                            <label>예약 상품</label>
+                                            <div class="value">{{ myReservation1.productName }} <small>({{
+                                                    myReservation1.comName
+                                                    }})</small></div>
+                                        </div>
+
+                                        <div class="info-grid">
+                                            <div class="info-row">
+                                                <label>예약 사용일시</label>
+                                                <div class="value date-time">{{ myReservation1.useDate }} <span
+                                                        class="time-tag">{{ myReservation1.useTime }}</span></div>
+                                            </div>
+                                            <div class="info-row">
+                                                <label>예약자명</label>
+                                                <div class="value">{{ myReservation1.userId }}님</div>
+                                            </div>
+                                        </div>
+                                        <div class="info-row">
+                                            <label>예약 저장</label>
+                                            <div class="value">{{ myReservation1.resDate }} {{ myReservation1.resTime}}</div>
+                                        </div>
+
+
+
+
+                                        <div class="info-row">
+                                            <label>휴대폰 번호</label>
+                                            <div class="value">{{ myReservation1.tel }}</div>
+                                        </div>
+
+                                        <div class="info-row">
+                                            <label>요청 사항</label>
+                                            <div class="value">{{myReservation1.resContent}}</div>
+                                        </div>
+
+
+
+                                    </div>
+
+                                    <div class="ticket-side">
+                                        <div class="side-content">
+                                            <img :src="myReservation1.imgUrl" style="max-height: 200px;">
+                                            <div class="amount-label">TOTAL DEPOSIT</div>
+                                            <div class="amount-value">{{ Number(myReservation1.deposit).toLocaleString()
+                                                }}원</div>
+                                            <div class="agreement-text">필수 항목 동의 : 노쇼관련</div>
+                                            <!-- <div class="ticket-barcode">|| ||| || |||| | ||</div> -->
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- {{user.name}}
+                                {{product1.id}}
+                                {{product1.companyNo}}
+                                {{res_content}}
+                                {{selectedDate}}
+                                {{selectedTime}} -->
+
+
+
+                                <div class="payment-btn-group">
+                                    <button class="btn-cancel-pay"
+                                        @click="productPage='resultOfReservation'">뒤로가기</button>
+                                    <button class="btn-final-reserve" @click="fnPaymentFinal()"
+                                        :disabled="myReservation1.resStatus !== 'WAIT'">
+                                        {{fnButtonName}}</button>
+
+                                </div>
+                            </div>
+                        </div>
+                        <div v-if="currentMenu === 'main' && productPage === 'paymentFinal'">
+                            예약금 결제 :
+                            <input v-model="myReservation1.amount">
+
+
 
 
 
                         </div>
-            </div>
 
-            </main>
-            </main>
+            </div>
+        </div>
+
+        </main>
+        </main>
         </div>
         </div>
 
@@ -1243,6 +1504,8 @@
             data() {
                 return {
                     // 변수 - (key : value)
+                    myReservation1: {},
+                    myReservationList: [],
                     amTimes: ['10:00', '11:00'],
                     pmTimes: ['13:00', '14:00', '15:00', '16:00', '17:00'],
 
@@ -1531,6 +1794,18 @@
 
             }, // data
             computed: {
+                fnButtonName() {
+                    if (this.myReservation1.resStatus === 'WAIT') {
+                        return '결제 및 예약 확정하기';
+                    } else if (this.myReservation1.resStatus === 'CANCEL') {
+                        return '취소된 예약';
+                    } else if (this.myReservation1.resStatus === 'CONFIRM') {
+                        return '확정된 예약';
+                    } else {
+                        return '만료된 예약';
+                    }
+                }
+                ,
                 filteredList() {
                     return this.productList.filter(product => {
                         // 카테고리 조건 (선택 안 했으면 pass, 선택했으면 포함 여부 확인)
@@ -2048,7 +2323,7 @@
                     this.productPage = 'payment'; // 결제 화면으로 렌더링 상태 변경
                     window.scrollTo(0, 0);
                 },
-                fnFinalOrder(user) {  //user
+                fnSaveReservation(user) {  //user
 
 
                     if (confirm("예약사항을 모두 확인하셨습니까?")) {
@@ -2070,7 +2345,7 @@
                             success: function (data) {
                                 console.log(data);
 
-                                if(data.result == 'success'){
+                                if (data.result == 'success') {
                                     alert("예약이 저장되었습니다.");
                                     self.fnBack2();
                                 }
@@ -2103,7 +2378,7 @@
 
 
 
-                    
+
 
 
 
@@ -2143,10 +2418,10 @@
                                     name: p.productName,
                                     company: p.comName,
                                     content: p.productDetails,
-                                    price: Number(p.originalPrice).toLocaleString() + '원',
+                                    price: p.originalPrice,
                                     category: JSON.parse(p.proType),
                                     tag: JSON.parse(p.tag),
-                                    deposit: Number(p.deposit).toLocaleString() + '원'
+                                    deposit: p.deposit
                                 }
                             });
                             console.log(productList1);
@@ -2193,6 +2468,65 @@
                             self.bookedTimes = newList;
                         }
                     });
+                },
+                goMyResPage() {
+                    this.productPage = 'resultOfReservation';
+
+                    let self = this;
+                    let param = {
+                        userId: self.user.name
+                    };
+
+                    //myReservation1: {},
+
+
+                    $.ajax({
+                        url: "/getMyReservationList.dox",
+                        dataType: "json",
+                        type: "POST",
+                        data: param,
+                        success: function (data) {
+                            //console.log(data);
+                            //myReservation1: {},
+                            //myReservationList: [],
+
+                            self.myReservationList = data.list.map(p => {
+                                return {
+                                    companyNo: p.companyNo,
+                                    deposit: p.deposit,       //Number(p.deposit).toLocaleString() + '원'
+                                    imgUrl: p.imgUrl,
+                                    isActive: p.isActive,
+                                    originalPrice: p.originalPrice,
+                                    payDate: p.payDate,
+                                    payNo: p.payNo,
+                                    proType: JSON.parse(p.proType),
+                                    productDetails: p.productDetails,
+                                    productName: p.productName,
+                                    resContent: p.resContent != "" ? p.resContent : "요청사항 없음",
+                                    resNo: p.resNo,
+                                    resStatus: p.resStatus,
+                                    resDate: p.resDate,
+                                    resTime: p.resTime,
+                                    tag: JSON.parse(p.tag),
+                                    useDate: p.useDate,
+                                    useTime: p.useTime,
+                                    userId: p.userId,
+                                    amount: p.amount,
+                                    payStatus: p.payStatus,
+                                    refund: p.refund,
+                                    refundDate: p.refundDate,
+                                    comName: p.comName,
+                                    tel: p.tel
+
+                                }
+                            })
+                            console.log(self.myReservationList);
+                        }
+                    });
+                },
+                fnGoDetail(r) {
+                    this.productPage = "reservaionPaymentDetails";
+                    this.myReservation1 = r;
                 }
 
             }, // methods

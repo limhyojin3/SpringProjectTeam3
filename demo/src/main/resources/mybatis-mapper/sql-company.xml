@@ -74,12 +74,12 @@
 		resultType="com.example.demo.company.model.Company">
 		SELECT
 		r.res_no,
-        r.res_status,
-        r.user_id AS res_user_id, -- 실제 예약한 유저의 아이디
+		r.res_status,
+		r.user_id AS res_user_id, -- 실제 예약한 유저의 아이디
 		r.product_no,
 		p.product_name,
 		r.res_date,
-        r.res_time,
+		r.res_time,
 		r.res_content,
 		r.use_date,
 		r.use_time,
@@ -106,7 +106,7 @@
 		-- 3. 조건: 업체 테이블의 로그인 아이디가 'sunsu09'인 경우
 		left join member m on m.user_id = r.user_id --
 		WHERE c.user_id = 'sunsu09' AND R.RES_STATUS = 'WAIT'
-		
+
 	</select>
 
 	<select id="selectReviewCnt" parameterType="map"
@@ -165,25 +165,63 @@
 	<select id="selectProductListForTag" parameterType="map"
 		resultType="com.example.demo.company.model.Company">
 		SELECT P.PRODUCT_NO, P.COMPANY_NO, P.IMG_URL, P.PRODUCT_NAME,
-		C.COM_NAME, P.PRODUCT_DETAILS, P.ORIGINAL_PRICE, P.PRO_TYPE, P.TAG, P.DEPOSIT FROM
+		C.COM_NAME, P.PRODUCT_DETAILS, P.ORIGINAL_PRICE, P.PRO_TYPE, P.TAG,
+		P.DEPOSIT FROM
 		PRODUCT P
 		LEFT JOIN COMPANY C ON P.COMPANY_NO = C.COMPANY_NO;
 	</select>
-	
+
 	<select id="selectBookedTimes" parameterType="map"
 		resultType="String">
 		SELECT r.use_time FROM reservation r
-		where r.product_no = #{productNo} and r.res_status = 'WAIT' and r.use_date =
+		where r.product_no = #{productNo} and r.res_status = 'WAIT' and
+		r.use_date =
 		#{useDate};
 	</select>
-	<insert id="insertReservation" 
+	<insert id="insertReservation"
 		parameterType="map">
-		
+
 		insert into reservation values(
 		null, #{userId}, #{productNo}, #{companyNo},
-		 now(), now(), 'WAIT', #{resContent}, #{useDate}, #{useTime});
-		
-		
+		now(), now(), 'WAIT', #{resContent}, #{useDate}, #{useTime}, null, null);
+
+
 	</insert>
+
+	<select id="selectMyReservationList" parameterType="map"
+		resultType="com.example.demo.company.model.Company">
+		select r.res_no,
+		r.user_id,
+		m.tel,
+		r.product_no,
+		r.company_no,
+		c.com_name,
+		r.res_date,
+		r.res_time,
+		r.res_status,
+		r.res_content,
+		r.use_date,
+		r.use_time,
+		r.pay_date,
+		r.pay_no,
+		p.product_name,
+		p.product_details,
+		p.original_price,
+		p.is_active,
+		p.img_url,
+		p.pro_type,
+		p.tag,
+		p.deposit,
+		pr.amount,
+		pr.pay_status,
+		pr.refund,
+		pr.refund_date
+		from reservation r
+		left join product p on p.product_no = r.product_no
+		left join payment_reservation pr on r.res_no = pr.res_no
+		inner join company c on c.company_no = r.company_no
+		inner join member m on m.user_id = r.user_id
+		where r.user_id = 'maygirl05'
+	</select>
 
 </mapper>

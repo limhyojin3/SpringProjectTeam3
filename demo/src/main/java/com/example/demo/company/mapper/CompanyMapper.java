@@ -26,6 +26,9 @@ public interface CompanyMapper {
 	
 	//selectNewReviewCnt
 	
+	
+	List<Company> selectMyReservationList(HashMap<String, Object> map);
+	
 	int insertReservation(HashMap<String, Object> map);
 	
 	List<String> selectBookedTimes(HashMap<String, Object> map);
