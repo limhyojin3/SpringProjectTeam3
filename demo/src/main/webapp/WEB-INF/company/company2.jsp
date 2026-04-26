@@ -1420,7 +1420,8 @@
                                         </div>
                                         <div class="info-row">
                                             <label>예약 저장</label>
-                                            <div class="value">{{ myReservation1.resDate }} {{ myReservation1.resTime}}</div>
+                                            <div class="value">{{ myReservation1.resDate }} {{ myReservation1.resTime}}
+                                            </div>
                                         </div>
 
 
@@ -1459,6 +1460,7 @@
                                 {{selectedDate}}
                                 {{selectedTime}} -->
 
+                                {{myReservation1}}
 
 
                                 <div class="payment-btn-group">
@@ -1473,12 +1475,11 @@
                         </div>
                         <div v-if="currentMenu === 'main' && productPage === 'paymentFinal'">
                             예약금 결제 :
-                            <input v-model="myReservation1.amount">
-
-
-
-
-
+                            <input v-model="payAmount">
+                            <button @click="fnPaymentFinal2()">
+                                결제하기
+                            </button>
+                            <button @click="productPage='reservaionPaymentDetails'">뒤로가기</button>
                         </div>
 
             </div>
@@ -1504,6 +1505,7 @@
             data() {
                 return {
                     // 변수 - (key : value)
+                    payAmount: '',
                     myReservation1: {},
                     myReservationList: [],
                     amTimes: ['10:00', '11:00'],
@@ -2358,32 +2360,7 @@
                         alert("취소되었습니다.");
                     }
 
-
-
-
-
-
-
-
-
-
                     //alert("최종 예약 및 결제가 완료되었습니다!");
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
                     // let maxId = this.userReservationList.length > 0
                     //     ? Math.max(...this.userReservationList.map(item => item.id)) : 1;
@@ -2527,6 +2504,62 @@
                 fnGoDetail(r) {
                     this.productPage = "reservaionPaymentDetails";
                     this.myReservation1 = r;
+                },
+                fnPaymentFinal() {
+                    if (confirm("예약사항을 모두 확인하셨습니까?")) {
+
+                        let self = this;
+                        let param = {
+                            
+                        };
+
+                        self.productPage = 'paymentFinal';
+                        // $.ajax({
+                        //     url: "/.dox",
+                        //     dataType: "json",
+                        //     type: "POST",
+                        //     data: param,
+                        //     success: function (data) {
+                        //         console.log(data);
+
+                                
+                        //     }
+                        // });
+
+
+
+                    } else {
+                        alert("취소되었습니다.");
+                    }
+                },
+                fnPaymentFinal2(){
+                    if(this.payAmount == this.myReservation1.deposit){
+                        //alert('결제진행!');
+
+                        let self = this;
+                        let param = {
+                            userId : self.myReservation1.userId,
+                            amount: self.payAmount,
+                            resNo: self.myReservation1.resNo
+                        };
+
+                        console.log(param);
+                        // $.ajax({
+                        //     url: "/.dox",
+                        //     dataType: "json",
+                        //     type: "POST",
+                        //     data: param,
+                        //     success: function (data) {
+                        //         console.log(data);
+
+                                
+                        //     }
+                        // });
+
+
+                    } else{
+                        alert("금액이 맞지않습니다.")
+                    }
                 }
 
             }, // methods

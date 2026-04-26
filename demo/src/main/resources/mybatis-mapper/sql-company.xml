@@ -236,6 +236,27 @@
 		and timestampdiff(minute, addtime(res_date, res_time), now()) >= 30
 		and user_id = 'maygirl05'
 	</update>
+	
+	<insert id="insertPaymentFinal" parameterType="map">
+		insert into payment_reservation 
+		values(null, #{userId}, #{amount}, 'SUCCESS', NOW(), #{resNo}, 0, null)
+		
+		<selectKey keyProperty="payDate,payNo" resultType="map" order="AFTER">
+			SELECT
+				pay_date AS payDate,
+				pay_no AS payNo
+			FROM payment_reservation
+			WHERE pay_no = LAST_INSERT_ID()
+		</selectKey>
+	</insert>
+	<update id="updatePaymentFinal" parameterType="map">
+		update reservation 
+		set 
+			res_status = 'CONFIRM', 
+			pay_date = #{payDate}, 
+			pay_no = #{payNo} 
+		where res_no = #{resNo}
+	</update>
 
 
 </mapper>

@@ -389,11 +389,16 @@ public class CompanyService {
 			
 			//int checkOver30minute(HashMap<String, Object> map);
 			//resultMap.put("list", list);
-			int result30 = companyMapper.checkOver30minute(map);
+			
+			
+			
+			
+			/* 잠시 막아둠. 조회시 30분 지났는지 확인해서 CANCEL 로 바꿔주는거 */
+			//int result30 = companyMapper.checkOver30minute(map);
 			
 			List<Company> list = companyMapper.selectMyReservationList(map);
 			
-			resultMap.put("result30", result30);
+			//resultMap.put("result30", result30);
 			resultMap.put("list", list);
 			resultMap.put("result", "success");
 			resultMap.put("message", Message.MSG_REMOVE);
