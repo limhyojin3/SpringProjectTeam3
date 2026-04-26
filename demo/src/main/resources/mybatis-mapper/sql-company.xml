@@ -84,7 +84,8 @@
 		r.use_date,
 		r.use_time,
 		p.deposit,
-		m.tel
+		m.tel,
+        r.pay_date
 		FROM company c
 		-- 1. 업체 테이블과 상품 테이블 연결 (이 업체가 가진 상품들)
 		JOIN product p ON c.company_no = p.company_no

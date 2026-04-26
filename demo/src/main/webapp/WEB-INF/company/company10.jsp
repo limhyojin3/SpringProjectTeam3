@@ -724,13 +724,19 @@
                                     <td>{{ res.resContent }}</td>
                                 </tr>
                                 <tr>
-                                    <th>예약결제 일자</th>
+                                    <th>예약저장</th>
                                     <td>{{ res.resDate }} {{ res.resTime }}</td>
                                 </tr>
                                 <tr>
-                                    <th>예약이용 일자</th>
+                                    <th>예약결제</th>
+                                    <td>{{ res.payDate === '0000-00-00 00:00:00' ? '(미결제)' : '(결제완료)' + res.payDate }}</td>
+                                </tr>
+
+                                <tr>
+                                    <th>예약 날짜/시간</th>
                                     <td>{{ res.useDate }} {{ res.useTime }}</td>
                                 </tr>
+
                                 <tr>
                                     <th>예약자명</th>
                                     <td>{{ res.resUserId }}</td>
@@ -745,7 +751,12 @@
                                 </tr>
                                 <tr>
                                     <th>예약 처리 상태</th>
-                                    <td v-if="res.resStatus === 'WAIT'" style="color: #3714ff;">{{ res.resStatus }}</td>
+                                    <td v-if="res.resStatus === 'WAIT'" style="color: #3714ff;">
+                                        {{ res.resStatus }}
+                                    </td>
+                                    <td v-else-if="res.resStatus === 'CANCEL'" style="color: red;">
+                                        {{ res.resStatus }}
+                                    </td>
                                     <td v-else>{{ res.resStatus }}</td>
                                 </tr>
                             </table>
