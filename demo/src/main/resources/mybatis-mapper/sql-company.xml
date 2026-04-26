@@ -85,7 +85,7 @@
 		r.use_time,
 		p.deposit,
 		m.tel,
-        r.pay_date
+		r.pay_date
 		FROM company c
 		-- 1. 업체 테이블과 상품 테이블 연결 (이 업체가 가진 상품들)
 		JOIN product p ON c.company_no = p.company_no
@@ -184,7 +184,8 @@
 
 		insert into reservation values(
 		null, #{userId}, #{productNo}, #{companyNo},
-		now(), now(), 'WAIT', #{resContent}, #{useDate}, #{useTime}, null, null);
+		now(), now(), 'WAIT', #{resContent}, #{useDate}, #{useTime}, null,
+		null);
 
 
 	</insert>
@@ -224,5 +225,17 @@
 		inner join member m on m.user_id = r.user_id
 		where r.user_id = 'maygirl05'
 	</select>
+
+	<!--int result = companyMapper.checkOver30minute(map);-->
+	<update id="checkOver30minute" parameterType="map">
+		update reservation
+		set res_status = 'CANCEL'
+		where res_status = 'WAIT'
+		and res_date is not null
+		and res_time is not null
+		and timestampdiff(minute, addtime(res_date, res_time), now()) >= 30
+		and user_id = 'maygirl05'
+	</update>
+
 
 </mapper>

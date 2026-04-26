@@ -387,11 +387,13 @@ public class CompanyService {
 //			User info = defaultMapper.selectUser(map);
 //			List<String> list = companyMapper.selectBookedTimes(map);
 			
-			
+			//int checkOver30minute(HashMap<String, Object> map);
 			//resultMap.put("list", list);
+			int result30 = companyMapper.checkOver30minute(map);
 			
 			List<Company> list = companyMapper.selectMyReservationList(map);
 			
+			resultMap.put("result30", result30);
 			resultMap.put("list", list);
 			resultMap.put("result", "success");
 			resultMap.put("message", Message.MSG_REMOVE);

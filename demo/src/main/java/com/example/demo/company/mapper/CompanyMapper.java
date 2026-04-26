@@ -26,6 +26,8 @@ public interface CompanyMapper {
 	
 	//selectNewReviewCnt
 	
+	//<update id="checkOver30minute" parameterType="map">
+	int checkOver30minute(HashMap<String, Object> map);
 	
 	List<Company> selectMyReservationList(HashMap<String, Object> map);
 	
