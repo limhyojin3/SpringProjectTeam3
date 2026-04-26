@@ -1087,6 +1087,121 @@
                 color: #ddd;
                 letter-spacing: 2px;
             }
+
+            /* 전체 컨테이너: 중앙 정렬 */
+            .payment-container {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                padding: 60px 20px;
+                background-color: #fffafb;
+                /* 연한 핑크빛 배경 */
+                min-height: 50vh;
+            }
+
+            /* 결제 카드 박스 */
+            .payment-card {
+                background: #ffffff;
+                padding: 40px;
+                border-radius: 20px;
+                box-shadow: 0 10px 30px rgba(255, 20, 147, 0.1);
+                width: 100%;
+                max-width: 450px;
+                text-align: center;
+            }
+
+            .payment-title {
+                color: #ff1493;
+                font-size: 1.8rem;
+                font-weight: bold;
+                margin-bottom: 10px;
+            }
+
+            .payment-subtitle {
+                color: #888;
+                font-size: 0.9rem;
+                margin-bottom: 30px;
+            }
+
+            /* 입력 영역 스타일 */
+            .payment-form {
+                text-align: left;
+                margin-bottom: 30px;
+            }
+
+            .payment-form label {
+                display: block;
+                font-weight: bold;
+                margin-bottom: 10px;
+                color: #444;
+                font-size: 0.95rem;
+            }
+
+            .input-group {
+                position: relative;
+                display: flex;
+                align-items: center;
+            }
+
+            .input-group input {
+                width: 100%;
+                padding: 15px;
+                border: 2px solid #ffebee;
+                border-radius: 12px;
+                font-size: 1.1rem;
+                font-weight: bold;
+                outline: none;
+                transition: border-color 0.3s;
+            }
+
+            .input-group input:focus {
+                border-color: #ff7f9f;
+            }
+
+            .unit {
+                position: absolute;
+                right: 15px;
+                color: #ff7f9f;
+                font-weight: bold;
+                font-size: 0.8rem;
+            }
+
+            /* 버튼 스타일 */
+            .payment-buttons {
+                display: flex;
+                flex-direction: column;
+                gap: 12px;
+            }
+
+            .btn-pay {
+                background-color: #ff1493;
+                color: white;
+                border: none;
+                padding: 16px;
+                border-radius: 12px;
+                font-size: 1.1rem;
+                font-weight: bold;
+                cursor: pointer;
+                transition: background 0.3s, transform 0.2s;
+            }
+
+            .btn-pay:hover {
+                background-color: #e01283;
+                transform: translateY(-2px);
+            }
+
+            .btn-back {
+                background-color: transparent;
+                color: #aaa;
+                border: none;
+                font-size: 0.9rem;
+                text-decoration: underline;
+                cursor: pointer;
+            }
+
+            .btn-back:hover {
+                color: #666;
+            }
         </style>
     </head>
 
@@ -1473,13 +1588,27 @@
                                 </div>
                             </div>
                         </div>
-                        <div v-if="currentMenu === 'main' && productPage === 'paymentFinal'">
-                            예약금 결제 :
-                            <input v-model="payAmount">
-                            <button @click="fnPaymentFinal2()">
-                                결제하기
-                            </button>
-                            <button @click="productPage='reservaionPaymentDetails'">뒤로가기</button>
+                        <div v-if="currentMenu === 'main' && productPage === 'paymentFinal'" class="payment-container">
+
+
+                            <div class="payment-card">
+                                <h2 class="payment-title">Final Payment</h2>
+                                <p class="payment-subtitle">예약을 확정하기 위해 결제 금액을 확인해 주세요.</p>
+
+                                <div class="payment-form">
+                                    <label for="payAmount">예약금 결제</label>
+                                    <div class="input-group">
+                                        <input id="payAmount" v-model="payAmount" type="text" placeholder="금액을 입력하세요">
+                                        <span class="unit">KRW</span>
+                                    </div>
+                                </div>
+
+                                <div class="payment-buttons">
+                                    <button class="btn-pay" @click="fnPaymentFinal2()">결제하기</button>
+                                    <button class="btn-back"
+                                        @click="productPage='reservaionPaymentDetails'; payAmount='';">뒤로가기</button>
+                                </div>
+                            </div>
                         </div>
 
             </div>
@@ -2510,7 +2639,7 @@
 
                         let self = this;
                         let param = {
-                            
+
                         };
 
                         self.productPage = 'paymentFinal';
@@ -2522,7 +2651,7 @@
                         //     success: function (data) {
                         //         console.log(data);
 
-                                
+
                         //     }
                         // });
 
@@ -2532,33 +2661,37 @@
                         alert("취소되었습니다.");
                     }
                 },
-                fnPaymentFinal2(){
-                    if(this.payAmount == this.myReservation1.deposit){
+                fnPaymentFinal2() {
+                    if (this.payAmount == this.myReservation1.deposit) {
                         //alert('결제진행!');
 
                         let self = this;
                         let param = {
-                            userId : self.myReservation1.userId,
+                            userId: self.myReservation1.userId,
                             amount: self.payAmount,
                             resNo: self.myReservation1.resNo
                         };
 
                         console.log(param);
-                        // $.ajax({
-                        //     url: "/.dox",
-                        //     dataType: "json",
-                        //     type: "POST",
-                        //     data: param,
-                        //     success: function (data) {
-                        //         console.log(data);
+                        $.ajax({
+                            url: "/addAndEditPaymentFinal.dox",
+                            dataType: "json",
+                            type: "POST",
+                            data: param,
+                            success: function (data) {
+                                console.log(data);
+                                alert('결제 완료되었습니다! 예약이 확정되었습니다!');
 
-                                
-                        //     }
-                        // });
+                                self.productPage = 'list';
+                                self.payAmount = '';
+                                //payAmount='';
+
+                            }
+                        });
 
 
-                    } else{
-                        alert("금액이 맞지않습니다.")
+                    } else {
+                        alert("금액이 맞지않습니다.");
                     }
                 }
 

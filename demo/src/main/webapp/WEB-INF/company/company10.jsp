@@ -216,7 +216,7 @@
             .review-thumb-box {
                 width: 80px;
                 height: 80px;
-                background: #ffcef0;
+                /*background: #ffcef0;*/
                 display: flex;
                 align-items: center;
                 justify-content: center;
@@ -436,6 +436,69 @@
                 background: #e8e8e8;
                 border-color: #999;
             }
+
+            /* 테이블 전체 컨테이너 */
+            table {
+                width: 100%;
+                border-collapse: separate;
+                /* 테두리 둥글게 하기 위해 분리 */
+                border-spacing: 0;
+                margin-bottom: 40px;
+                /* 테이블 간 간격 확보 */
+                background-color: #fff;
+                border-radius: 12px;
+                overflow: hidden;
+                box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+                /* 은은한 그림자 */
+                border: 1px solid #edf2f7;
+            }
+
+            /* 왼쪽 헤더 (th) */
+            th {
+                width: 180px;
+                /* 일정한 너비 유지 */
+                background-color: #f9fafb;
+                /* 은은한 회색 배경 */
+                color: #4a5568;
+                font-weight: 600;
+                text-align: left;
+                padding: 14px 20px;
+                border-bottom: 1px solid #edf2f7;
+                border-right: 1px solid #edf2f7;
+                font-size: 14px;
+            }
+
+            /* 오른쪽 내용 (td) */
+            td {
+                padding: 14px 20px;
+                color: #2d3748;
+                border-bottom: 1px solid #edf2f7;
+                font-size: 15px;
+            }
+
+            /* 마지막 행은 테두리 제거 */
+            tr:last-child th,
+            tr:last-child td {
+                border-bottom: none;
+            }
+
+            /* 테이블 제목 부분 강조 */
+            h2 {
+                font-size: 1.5rem;
+                margin-bottom: 25px;
+                padding-left: 10px;
+                border-left: 5px solid #ff1493;
+                /* 메인 컬러 포인트 */
+            }
+
+            /* 삼항 연산자로 들어간 텍스트 강조 (결제완료/미결제 등) */
+            td {
+                line-height: 1.6;
+            }
+
+            /* 상태별 배지 스타일 (선택사항) */
+            /* td 내부에 span 등으로 감싸져 있다면 더 좋지만, 
+   현재 구조에서 글자색만으로도 충분히 세련되어 보일 거예요. */
         </style>
     </head>
 
@@ -490,9 +553,10 @@
                             <div v-for="i in productList3" class="content-card"
                                 style="display: flex; align-items: center; padding: 15px;">
                                 <div
-                                    style="width: 100px; height: 100px; background: #ffcef0; display: flex; align-items: center; justify-content: center; margin-right: 20px;">
+                                    style="width: 100px; height: 100px;  display: flex; align-items: center; justify-content: center; margin-right: 20px;">
                                     <!--{{ i.thumbnail }}-->
-                                    <img :src="i.imgUrl" :alt="i.productName" style="max-width: 100%; max-height: 100%">
+                                    <img :src="i.imgUrl" :alt="i.productName"
+                                        style="max-width: 100%; border-radius: 5px; max-height: 100%">
                                 </div>
                                 <div style="flex: 1; font-weight: bold;">{{ i.productDetails }}</div>
                                 <div>{{ Number(i.originalPrice).toLocaleString() }}원</div>
@@ -678,7 +742,8 @@
                                         <div class="form-group">
                                             <div style="margin-bottom: 10px; font-weight: bold;">기존 이미지 : </div>
                                             <div class="image-editor-box">
-                                                <img :src="product1.imgUrl" style="max-width: 500px; max-height: 500px;">
+                                                <img :src="product1.imgUrl"
+                                                    style="max-width: 500px; max-height: 500px;">
                                             </div>
                                             <br>
                                             <div style="margin-bottom: 10px; font-weight: bold;">수정할 이미지 : </div>
@@ -688,7 +753,7 @@
                                                 사진 선택하기
                                                 <input type="file" @change="fnFileChange" ref="fileInput"
                                                     style="display: none;">
-                                                    
+
                                             </label>
                                             <div class="image-editor-box">
 
@@ -720,8 +785,8 @@
                                     <td>{{ res.productName }}</td>
                                 </tr>
                                 <tr>
-                                    <th>예약 내용</th>
-                                    <td>{{ res.resContent }}</td>
+                                    <th>예약 내용/ 요청 사항</th>
+                                    <td>{{ res.resContent === '' ? '요청사항 없음' : res.resContent }}</td>
                                 </tr>
                                 <tr>
                                     <th>예약저장</th>
@@ -729,7 +794,7 @@
                                 </tr>
                                 <tr>
                                     <th>예약결제</th>
-                                    <td>{{ res.payDate === '0000-00-00 00:00:00' ? '(미결제)' : '(결제완료)' + res.payDate }}</td>
+                                    <td>{{ res.payDate === undefined ? '(미결제)' : '(결제완료)' + res.payDate }}</td>
                                 </tr>
 
                                 <tr>
@@ -746,11 +811,11 @@
                                     <td>{{ res.tel }}</td>
                                 </tr>
                                 <tr>
-                                    <th>결제 금액</th>
-                                    <td>(예약금) {{ Number(res.deposit).toLocaleString() }}원</td>
+                                    <th>예약금</th>
+                                    <td>{{ Number(res.deposit).toLocaleString() }}원</td>
                                 </tr>
                                 <tr>
-                                    <th>예약 처리 상태</th>
+                                    <th>예약 처리상태</th>
                                     <td v-if="res.resStatus === 'WAIT'" style="color: #3714ff;">
                                         {{ res.resStatus }}
                                     </td>
@@ -776,14 +841,13 @@
                         <div class="content-card" v-for="i in fnPaginatedInquiry" :key="i">
 
                             <div style="display: flex;">
-                                <div
-                                    style="width: 100px; height: 100px; background: #ffcef0; margin-right: 20px; text-align: center;">
+                                <div style="width: 100px; height: 100px;  margin-right: 20px; text-align: center;">
                                     <img :src="fnThumbnail(i)" :alt="i.product"
-                                        style="max-width: 100%; max-height: 100%">
-                                    
+                                        style="max-width: 100%; max-height: 100%; border-radius: 5px;">
+
                                 </div>
                                 <h3>상품명 : <span style="color: #d6336c;">{{i.product}}</span> </h3>
-                                
+
                             </div>
 
                             <table>
@@ -839,10 +903,11 @@
                                 <template v-for="w in productList3" :key="w.productName">
                                     <div class="review-header-info" style="margin-bottom: 10px;">
                                         <div class="review-thumb-box">
-                                            <img :src="w.imgUrl" style="max-width: 100%; max-height: 100%;">
+                                            <img :src="w.imgUrl"
+                                                style="max-width: 100%; max-height: 100%; border-radius: 5px;">
                                         </div>
                                         <div class="review-product-name">
-                                            <a href="javascript:;"
+                                            <a href="javascript:;" style="text-decoration: none; color:#0b3f8e;"
                                                 @click="fnReviewDetails3(w)"><strong>{{w.productName}}</strong></a>
                                         </div>
                                         <div class="review-count-badge">리뷰 갯수: {{w.reviewCount}}개 </div>
@@ -858,11 +923,12 @@
 
                                     <div class="review-header-info" style="margin-bottom: 10px;">
                                         <div class="review-thumb-box">
-                                            <img :src="w.imgUrl" style="max-width: 100%; max-height: 100%;">
+                                            <img :src="w.imgUrl"
+                                                style="max-width: 100%; max-height: 100%; border-radius: 5px;">
                                         </div>
                                         <div class="review-product-name">
 
-                                            <a href="javascript:;"
+                                            <a href="javascript:;" style="text-decoration: none; color:#0b3f8e;"
                                                 @click="fnSimpleReviewDetails3(w)"><strong>{{w.productName}}</strong></a>
 
                                         </div>
@@ -885,7 +951,8 @@
                             <template v-if="reviewTab === 'detail'">
                                 <template v-for="rev in paginatedReviews" :key="rev" class="detail-review-item">
                                     <!-- {{rev}} -->
-                                    <div class="star-rating">평점 : {{rev.rating}}/5</div>
+                                    <div class="star-rating">평점 : {{rating2(rev)}}</div>
+                                        <!-- {{rev.rating}}/5 -->
 
                                     <div style="display: flex; gap: 20px;">
                                         <div style="position: relative;">
@@ -904,6 +971,7 @@
                                         style="text-align: right; font-size: 13px; color: #888; margin-top: 15px; border-top: 1px dashed #eee; padding-top: 10px;">
                                         작성자: <strong>{{rev.userId}}</strong> | 작성일자: {{rev.regDate}}
                                     </div>
+                                    <hr>
                                 </template>
                                 <div class="pagination">
                                     <span v-for="num in totalPages" :key="num">
@@ -987,7 +1055,7 @@
                     // 변수 - (key : value)
                     totalReviewCnt: 0,
                     productList3: [],
-                    productList4:[],
+                    productList4: [],
                     inquiryList: [
                         { id: 1, product: '야외 스냅 기본', title: '투어 일정 변경하고 싶습니다.', userid: '김결혼', content: '04.01일 예약했는데 04.08일로 변경하고 싶어요.' },
                         { id: 2, product: '해변스냅', title: '메이크업 추가되나요?', userid: '아리랑', content: '메이크업 여기서 받고싶어요.' },
@@ -1732,6 +1800,19 @@
                         top: 0,
                         behavior: 'smooth' // 'smooth'는 부드럽게, 'auto'는 즉시 이동합니다.
                     });
+                },
+                rating2(rev) {
+                    if (rev.rating.slice(0, 1) == 5) {
+                        return '★★★★★';
+                    } else if (rev.rating.slice(0, 1) == 4) {
+                        return '★★★★☆';
+                    } else if (rev.rating.slice(0, 1) == 3) {
+                        return '★★★☆☆';
+                    } else if (rev.rating.slice(0, 1) == 2) {
+                        return '★★☆☆☆';
+                    } else {
+                        return '★☆☆☆☆';
+                    }
                 }
 
 

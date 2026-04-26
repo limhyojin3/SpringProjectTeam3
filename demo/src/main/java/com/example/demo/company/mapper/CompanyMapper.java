@@ -26,6 +26,14 @@ public interface CompanyMapper {
 	
 	//selectNewReviewCnt
 	
+	//<insert id="insertPaymentFinal" parameterType="map">
+//	<update id="updatePaymentFinal" parameterType="map">
+	int insertPaymentFinal(HashMap<String, Object> map);
+	
+	int updatePaymentFinal(HashMap<String, Object> map);
+	
+	
+	
 	//<update id="checkOver30minute" parameterType="map">
 	int checkOver30minute(HashMap<String, Object> map);
 	

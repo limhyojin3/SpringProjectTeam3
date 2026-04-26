@@ -259,4 +259,13 @@ public class CompanyController {
 
 		return new Gson().toJson(resultMap);
 	}
+	
+	//addAndEditPaymentFinal
+	@RequestMapping(value = "/addAndEditPaymentFinal.dox", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
+	@ResponseBody
+	public String test89(@RequestParam HashMap<String, Object> map) throws Exception {
+		HashMap<String, Object> resultMap = companyService.addAndEditPaymentFinal(map);
+
+		return new Gson().toJson(resultMap);
+	}
 }
