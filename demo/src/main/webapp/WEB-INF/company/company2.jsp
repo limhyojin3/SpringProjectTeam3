@@ -674,6 +674,7 @@
                 font-size: 16px;
                 line-height: 1.8;
             }
+
             .detail-description-card2 {
                 background: #ffe0e6;
                 /* 이미지의 핑크색 배경 부분 */
@@ -788,13 +789,13 @@
             /* .btn-final-reserve {
                 background-color: #ffc107;
                 /* 노란색 */
-                /* border: 1px solid #ddd;
+            /* border: 1px solid #ddd;
                 padding: 15px 60px;
                 font-size: 20px;
                 font-weight: bold;
                 cursor: pointer;
                 border-radius: 5px; */
-            /* } */ 
+            /* } */
 
             /* .btn-cancel-pay {
                 background-color: white;
@@ -988,6 +989,12 @@
                 <main>
                     <main>
                         <div v-if="currentMenu === 'main' && productPage === 'list'">
+                            <div style="text-align: right;">
+                                <button @click="goMyResPage">나의 예약 보러가기</button>
+
+                            </div>
+
+
                             <div class="filter-section">
                                 <!-- <div class="section-title">조회 필터</div> -->
                                 <h2>카테고리</h2>
@@ -1024,7 +1031,7 @@
                         <div v-if="currentMenu === 'main' && productPage === 'detail'">
                             {{product1}}
                             <button @click="fnBack()" style="margin-bottom:10px;">← 뒤로가기</button>
-                                
+
                             <div class="detail-container">
                                 <div class="detail-left">
                                     <img :src="product1.thumbnail" class="detail-main-img">
@@ -1035,18 +1042,20 @@
                                         <p>{{ product1.content }}</p>
                                         <hr>
                                         <p>※ 상세 옵션 안내 및 유의사항 :</p>
-                                            <p>메리뷰는 웨딩업체의 상품을 중개합니다. 
+                                        <p>메리뷰는 웨딩업체의 상품을 중개합니다.
                                             상품 예약 후 날짜와 시간을 꼭 유의하여 주시기 바랍니다.
-                                            노쇼인 경우 예약금 환불은 원칙적으로 불가하며 
+                                            노쇼인 경우 예약금 환불은 원칙적으로 불가하며
                                             피치못한 사정으로 노쇼하실 경우, 불참 사유를 증명할 서류를 지참하시면
-                                             소비자보호원의 소비자 권익에 대한 법적 사항을 준수하며 
-                                             업체 내 환불규정에 따라 검토후 예약금 환불이 가능합니다.
-                                             </p>
+                                            소비자보호원의 소비자 권익에 대한 법적 사항을 준수하며
+                                            업체 내 환불규정에 따라 검토후 예약금 환불이 가능합니다.
+                                        </p>
                                         </p>
                                     </div>
                                     <div class="detail-description-card2">
                                         <h3>요청 사항</h3>
-                                        <textarea v-model="res_content" style="min-width: 500px; max-width: 500px; min-height: 200px;" placeholder="예약시 요청 사항을 여기에 작성해주세요.">
+                                        <textarea v-model="res_content"
+                                            style="min-width: 500px; max-width: 500px; min-height: 200px;"
+                                            placeholder="예약시 요청 사항을 여기에 작성해주세요.">
 
                                         </textarea>
                                     </div>
@@ -1116,7 +1125,7 @@
                         </div>
 
                         <div v-if="currentMenu === 'main' && productPage === 'payment'" class="payment-container">
-                            
+
                             <div class="reservation-ticket">
                                 <div class="ticket-header">
                                     <span class="ticket-brand">MERRY VIEW RESERVATION</span>
@@ -1128,7 +1137,7 @@
                                 <!-- <div style="text-align: right;">
                                     <img :src="product1.thumbnail" style="max-height: 200px; margin-top: 10px; margin-right: 20px;">
                                 </div> -->
-                                
+
                                 <div class="ticket-body">
                                     <div class="ticket-info">
                                         <div class="info-row product-name">
@@ -1160,7 +1169,7 @@
                                             <div class="value">{{res_content}}</div>
                                         </div>
 
-                                        
+
 
                                     </div>
 
@@ -1174,6 +1183,16 @@
                                         </div>
                                     </div>
                                 </div>
+
+                                {{user.name}}
+                                {{product1.id}}
+                                {{product1.companyNo}}
+                                {{res_content}}
+                                {{selectedDate}}
+                                {{selectedTime}}
+
+
+
                                 <div class="payment-btn-group">
                                     <button class="btn-cancel-pay" @click="productPage = 'detail'">뒤로가기</button>
                                     <button class="btn-final-reserve" @click="fnFinalOrder(user)">결제 및 예약 확정</button>
@@ -1197,6 +1216,11 @@
                             <button class="btn-final-reserve" @click="fnFinalOrder(user)">예약하기</button>
                             <button class="btn-cancel-pay" @click="productPage = 'detail'">취소</button>
                         </div> -->
+                        <div v-if="currentMenu === 'main' && productPage === 'resultOfReservation'">
+
+
+
+                        </div>
             </div>
 
             </main>
@@ -1237,7 +1261,7 @@
                         { id: 2, product: '스몰 웨딩', title: '메이크업 추가되나요?', userid: '아리랑', content: '메이크업 여기서 받고싶어요.' },
                     ],
                     user: {
-                        id: 1, name: 'maygirl05', contact: '010-xxxx-xxxx'
+                        name: 'maygirl05', contact: '010-5555-1111'
                     },
                     currentMenu: 'main', // 초기 화면
                     reviewTab: 'detail',
@@ -1613,8 +1637,8 @@
 
             },
             watch: {
-                selectedDate(newVal){
-                    if(newVal){
+                selectedDate(newVal) {
+                    if (newVal) {
                         this.fnGetBookedTimes();
                     }
                 }
@@ -2005,7 +2029,7 @@
                     this.product1 = { ...item };
 
                     window.scrollTo(0, 0); // 화면 상단으로 이동
-                    
+
                     //this.fnGetBookedTimes();
 
                 },
@@ -2017,7 +2041,7 @@
                         alert("예약 날짜를 선택해주세요!");
                         return;
                     }
-                    if (!this.selectedTime){
+                    if (!this.selectedTime) {
                         alert("예약 시간을 선택해주세요!");
                         return;
                     }
@@ -2025,12 +2049,66 @@
                     window.scrollTo(0, 0);
                 },
                 fnFinalOrder(user) {  //user
-                    alert("최종 예약 및 결제가 완료되었습니다!");
+
+
+                    if (confirm("예약사항을 모두 확인하셨습니까?")) {
+
+                        let self = this;
+                        let param = {
+                            userId: self.user.name,
+                            productNo: self.product1.id,
+                            companyNo: self.product1.companyNo,
+                            resContent: self.res_content,
+                            useDate: self.selectedDate,
+                            useTime: self.selectedTime
+                        };
+                        $.ajax({
+                            url: "/addReservation.dox",
+                            dataType: "json",
+                            type: "POST",
+                            data: param,
+                            success: function (data) {
+                                console.log(data);
+
+                                if(data.result == 'success'){
+                                    alert("예약이 저장되었습니다.");
+                                    self.fnBack2();
+                                }
+                            }
+                        });
+
+
+
+                    } else {
+                        alert("취소되었습니다.");
+                    }
 
 
 
 
-                    this.fnBack();
+
+
+
+
+
+
+                    //alert("최종 예약 및 결제가 완료되었습니다!");
+
+
+
+
+
+
+
+
+
+
+                    
+
+
+
+
+
 
                     // let maxId = this.userReservationList.length > 0
                     //     ? Math.max(...this.userReservationList.map(item => item.id)) : 1;
@@ -2086,7 +2164,13 @@
                     this.selectedTime = '';
                     this.bookedTimes = [];
                 },
-                fnGetBookedTimes(){
+                fnBack2() {
+                    this.productPage = 'list';
+                    this.selectedDate = '';
+                    this.selectedTime = '';
+                    this.bookedTimes = [];
+                },
+                fnGetBookedTimes() {
                     let self = this;
                     let param = {
                         productNo: self.product1.id,
@@ -2104,7 +2188,7 @@
                         data: param,
                         success: function (data) {
                             console.log(data); //list ['10:00:00', '13:00:00', '17:00:00']
-                            let newList = data.list.map(p => p.slice(0,5)); //['10:00', '13:00', '17:00']
+                            let newList = data.list.map(p => p.slice(0, 5)); //['10:00', '13:00', '17:00']
 
                             self.bookedTimes = newList;
                         }

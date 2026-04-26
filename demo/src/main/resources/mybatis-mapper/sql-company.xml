@@ -176,5 +176,14 @@
 		where r.product_no = #{productNo} and r.res_status = 'WAIT' and r.use_date =
 		#{useDate};
 	</select>
+	<insert id="insertReservation" 
+		parameterType="map">
+		
+		insert into reservation values(
+		null, #{userId}, #{productNo}, #{companyNo},
+		 now(), now(), 'WAIT', #{resContent}, #{useDate}, #{useTime});
+		
+		
+	</insert>
 
 </mapper>
