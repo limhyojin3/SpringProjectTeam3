@@ -201,3 +201,83 @@ filteredList() {
                         behavior: 'smooth' // 'smooth'는 부드럽게, 'auto'는 즉시 이동합니다.
                     });
                 }
+
+userId : self.myReservation1.userId,
+                            amount: self.payAmount,
+                            resNo: self.myReservation1.resNo
+
+                <div v-if="currentMenu === 'main' && productPage === 'payment'" class="payment-container">
+
+                            <div class="reservation-ticket">
+                                <div class="ticket-header">
+                                    <span class="ticket-brand">MERRY VIEW RESERVATION</span>
+                                    <span class="ticket-type">OFFICIAL TICKET</span>
+                                </div>
+                                <!-- {{product1}}
+                                {{selectedDate}}
+                                {{selectedTime}} -->
+                                <!-- <div style="text-align: right;">
+                                    <img :src="product1.thumbnail" style="max-height: 200px; margin-top: 10px; margin-right: 20px;">
+                                </div> -->
+Number(p.deposit).toLocaleString() + '원'
+                                <div class="ticket-body">
+                                    <div class="ticket-info">
+                                        <div class="info-row product-name">
+                                            <label>예약 상품</label>
+                                            <div class="value">{{ product1.name }} <small>({{ product1.company
+                                                    }})</small></div>
+                                        </div>
+
+                                        <div class="info-grid">
+                                            <div class="info-row">
+                                                <label>예약 일시</label>
+                                                <div class="value date-time">{{ selectedDate }} <span
+                                                        class="time-tag">{{ selectedTime }}</span></div>
+                                            </div>
+                                            <div class="info-row">
+                                                <label>예약자명</label>
+                                                <div class="value">{{ user.name }}님</div>
+                                            </div>
+                                        </div>
+
+
+                                        <div class="info-row">
+                                            <label>휴대폰 번호</label>
+                                            <div class="value">{{ user.contact }}</div>
+                                        </div>
+
+                                        <div class="info-row">
+                                            <label>요청 사항</label>
+                                            <div class="value">{{res_content}}</div>
+                                        </div>
+
+
+
+                                    </div>
+
+                                    <div class="ticket-side">
+                                        <div class="side-content">
+                                            <img :src="product1.thumbnail" style="max-height: 200px;">
+                                            <div class="amount-label">TOTAL DEPOSIT</div>
+                                            <div class="amount-value">{{ product1.deposit }}</div>
+                                            <div class="agreement-text">필수 항목 동의 : 노쇼관련</div>
+                                            <!-- <div class="ticket-barcode">|| ||| || |||| | ||</div> -->
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- {{user.name}}
+                                {{product1.id}}
+                                {{product1.companyNo}}
+                                {{res_content}}
+                                {{selectedDate}}
+                                {{selectedTime}} -->
+
+
+
+                                <div class="payment-btn-group">
+                                    <button class="btn-cancel-pay" @click="productPage = 'detail'">뒤로가기</button>
+                                    <button class="btn-final-reserve" @click="fnFinalOrder(user)">결제 및 예약 확정</button>
+                                </div>
+                            </div>
+                        </div>
