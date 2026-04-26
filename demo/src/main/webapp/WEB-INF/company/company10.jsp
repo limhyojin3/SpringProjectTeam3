@@ -556,7 +556,7 @@
                                     style="width: 100px; height: 100px;  display: flex; align-items: center; justify-content: center; margin-right: 20px;">
                                     <!--{{ i.thumbnail }}-->
                                     <img :src="i.imgUrl" :alt="i.productName"
-                                        style="max-width: 100%; border-radius: 5px; max-height: 100%">
+                                        style="width: 100%; height: 100%; object-fit: cover;">
                                 </div>
                                 <div style="flex: 1; font-weight: bold;">{{ i.productDetails }}</div>
                                 <div>{{ Number(i.originalPrice).toLocaleString() }}원</div>
@@ -843,7 +843,7 @@
                             <div style="display: flex;">
                                 <div style="width: 100px; height: 100px;  margin-right: 20px; text-align: center;">
                                     <img :src="fnThumbnail(i)" :alt="i.product"
-                                        style="max-width: 100%; max-height: 100%; border-radius: 5px;">
+                                        style="width: 100%; height: 100%; object-fit: cover;">
 
                                 </div>
                                 <h3>상품명 : <span style="color: #d6336c;">{{i.product}}</span> </h3>
@@ -904,7 +904,7 @@
                                     <div class="review-header-info" style="margin-bottom: 10px;">
                                         <div class="review-thumb-box">
                                             <img :src="w.imgUrl"
-                                                style="max-width: 100%; max-height: 100%; border-radius: 5px;">
+                                                style="width: 100%; height: 100%; object-fit: cover;">
                                         </div>
                                         <div class="review-product-name">
                                             <a href="javascript:;" style="text-decoration: none; color:#0b3f8e;"
@@ -924,7 +924,7 @@
                                     <div class="review-header-info" style="margin-bottom: 10px;">
                                         <div class="review-thumb-box">
                                             <img :src="w.imgUrl"
-                                                style="max-width: 100%; max-height: 100%; border-radius: 5px;">
+                                                style="width: 100%; height: 100%; object-fit: cover;">
                                         </div>
                                         <div class="review-product-name">
 
@@ -960,7 +960,7 @@
                                                 style="position: absolute; top: -5px; left: -5px;">NEW
                                             </span>
                                             <div class="review-photo">
-                                                <img :src="rev.imgUrl" :alt="rev.imgDescription">
+                                                <img :src="rev.imgUrl" :alt="rev.imgDescription" style="width: 100%; height: 100%; object-fit: cover;">
                                             </div>
                                         </div>
                                         <div style="flex: 1; line-height: 1.6; color: #444;">

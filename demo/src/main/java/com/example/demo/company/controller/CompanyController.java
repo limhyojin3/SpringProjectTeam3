@@ -32,7 +32,7 @@ public class CompanyController {
 		return "/company/company10";
 	}
 	
-	/* 상품목록조회(카테고리 / 태그 필터) 프론트 + 상품 상세페이지 프론트 */
+	/* 상품목록조회(카테고리 / 태그 필터)  + 상품 상세페이지  */
 	@RequestMapping("/company2.do")
 	public String te4(Model model) throws Exception {
 		return "/company/company2";
@@ -50,27 +50,6 @@ public class CompanyController {
 	@RequestMapping("/company9.do")
 	public String test99(Model model) throws Exception {
 		return "/company/company10";
-	}
-	/* 사용 ㄴㄴ 백업용 */
-	@RequestMapping("/company99.do")
-	public String te24(Model model) throws Exception {
-		return "/company/company10Backup0423DB";
-	}
-	/* 사용 ㄴㄴ 백업용 */
-	@RequestMapping("/company98.do")
-	public String te124(Model model) throws Exception {
-		return "/company/company10Backup0421FRONT";
-	}
-	/* 사용 ㄴㄴ 백업용 */
-	@RequestMapping("/company999.do")
-	public String te2st99(Model model) throws Exception {
-		return "/company/company10Backup0424-2DB";
-	}
-	
-	/* 사용 ㄴㄴ 백업용 */
-	@RequestMapping("/company97.do")
-	public String te54(Model model) throws Exception {
-		return "/company/company2Backup0424FRONT";
 	}
 	
 	
