@@ -61,6 +61,8 @@
             overflow: hidden;
             cursor: pointer;
             transition: 0.2s;
+            display: flex;          
+            flex-direction: column; 
         }
 
         .review-card:hover {
@@ -86,6 +88,11 @@
             text-align: center;
             background-color: #ff69b4;
             color: white;
+            min-height: 50px;          /* 추가 */
+            flex: 1;     
+            display: flex;             /* 추가 */
+            align-items: center;       /* 추가 */
+            justify-content: center;   /* 추가 */
         }
 
         .review-list-item {

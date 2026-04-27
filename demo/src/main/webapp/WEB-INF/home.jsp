@@ -20,7 +20,11 @@
 <style>
     .review-card, .post-card {
     cursor: pointer;
-}
+    }
+    .tag-pink   { background-color: #f4a096; }
+    .tag-purple { background-color: #9b8fd4; }
+    .tag-yellow { background-color: #f0b429; }
+    .tag-red    { background-color: #ff6b6b; }
 </style>
 <body>
     <div id="app">
@@ -43,10 +47,10 @@
                         </div>
 
                         <div class="hash-tag-wrap">
-                            <span>#감동</span> <span>#행복</span> <span>#결혼준비</span>
-                            <div class="review-tag">
-                                <span>리얼후기</span>
-                            </div>
+                            <div class="review-tag tag-pink"><span>#감동</span></div>
+                            <div class="review-tag tag-purple"><span>#행복</span></div>
+                            <div class="review-tag tag-yellow"><span>#결혼준비</span></div>
+                            <div class="review-tag tag-red"><span>#리얼후기</span></div>
                         </div>
 
                         <p class="section-desc">메리뷰를 선택한 소중한 신랑, 신부님들의 리얼한 후기를 확인하세요.</p>
@@ -54,9 +58,10 @@
                             <div class="review-card" v-for="review in reviewList" :key="review.reviewNo"
                                 @click="fnGoReview(review.reviewNo)">
                                 <div class="review-img-thumb">
-                                    <img v-if="review.imgUrl" 
-                                        :src="review.imgUrl" 
-                                        @error="handleImgError">
+                                    <img v-if="review.imgUrl && !review.imgUrl.endsWith('.zip')"
+                                        :src="review.imgUrl.split(',')[0]"
+                                        style="width:100%; height:100%; object-fit:cover;"
+                                        @error="event => { event.target.style.display='none'; event.target.parentElement.style.backgroundColor='#ffc7c2'; }">
                                     <div v-else class="thumb-placeholder">
                                         <span>🌸</span>
                                         <p>{{ review.title }}</p>
@@ -65,11 +70,14 @@
                                 <p class="review-title">{{ review.title }}</p>
                             </div>
                         </div>
+                        <div class="review-more-wrap">
+                            <a href="/api/review/list.do" class="more-link">더보기 ></a>
+                        </div>
                     </section>
 
                     <section class="community-section">
                         <div class="section-header">
-                            <h2>커뮤니티 인기글</h2>
+                            <h2>⭐커뮤니티 인기글⭐</h2>
                             <a href="/api/community/list.do" class="more-link">더보기 ></a>
                         </div>
 
@@ -87,25 +95,33 @@
                 </div>
             </div>
             <div class="chat-btn" @click="isChatOpen = !isChatOpen">
-                <span v-if="!isChatOpen">💬</span> <span v-else>✖</span>
+                <span v-if="!isChatOpen">💬</span> 
+                <span v-else>✖</span>
             </div>
-            <div class="chat-container" v-show="isChatOpen" style="display: none;">
-                <div class="chat-header">메리뷰 AI 가이드</div>
-                <div class="chat-box" ref="chatBox">
-                    <div class="message bot">
-                        안녕하세요! 메리뷰 AI 가이드입니다. <br>
-                        아래 버튼을 눌러보시거나 궁금한 점을 입력해주세요!
-                        
-                        <div class="quick-questions">
-                            <div @click="askQuickQuestion('메리뷰는 어떤 서비스인가요?')" class="q-btn">서비스 소개</div>
-                            <div @click="askQuickQuestion('인기 있는 웨딩홀 추천해줘')" class="q-btn">웨딩홀 추천</div>
-                            <div @click="askQuickQuestion('리뷰 작성은 어떻게 하나요?')" class="q-btn">리뷰 작성법</div>
+            <div class="chatbot-container" v-show="isChatOpen">
+                <div class="chat-header">
+                    <h3>🌸 메리뷰 AI 가이드</h3>
+                </div>
+                <div class="chat-messages" id="chatMessages">
+                    <div v-for="(msg, index) in messages" :key="index" :class="['message', msg.type]">
+                        <div class="message-content">
+                            {{ msg.text }}
                         </div>
                     </div>
+                    <div class="quick-questions">
+                    <button v-for="q in quickQuestions" 
+                            :key="q.label" 
+                            @click="askQuickQuestion(q.text)" 
+                            class="q-btn">
+                        {{ q.label }}
+                    </button>
                 </div>
-                <div class="chat-input">
-                    <textarea v-model="userInput" @keydown.enter.prevent="sendMessage" placeholder="질문을 입력하세요..."></textarea>
-                    <button @click="sendMessage" :disabled="isLoading">전송</button>
+                </div>
+                <div class="chat-input-area">
+                    <input v-model="userInput" 
+                           @keyup.enter="sendMessage" 
+                           placeholder="궁금한 점을 입력하세요..." />
+                    <button @click="sendMessage">전송</button>
                 </div>
             </div>
         </div>
@@ -116,23 +132,34 @@
 
 <script>
     const app = Vue.createApp({
+        el: '#chatbot-app',
         data() {
             return {
                 reviewList: [],
                 postList: [],
                 isChatOpen: false, 
                 userInput: "",
-                messages: [],
-                isLoading: false
+                messages: [
+                    { type: 'bot', text: '안녕하세요! 메리뷰 AI 가이드입니다. 무엇을 도와드릴까요?' }
+                ],
+                isLoading: false,
+                // 화면에 보여줄 버튼 이름과 실제 서버로 보낼 질문 텍스트 분리
+                quickQuestions: [
+                    { label: '서비스 소개', text: '메리뷰는 어떤 서비스인가요?' },
+                    { label: '웨딩홀 추천', text: '인기 있는 웨딩홀 추천해줘' },
+                    { label: '리뷰 작성법', text: '리뷰 작성은 어떻게 하나요?' },
+                    { label: '이벤트 혜택', text: '베스트 리뷰 혜택이 뭐야?' },
+                    { label: '준비 순서', text: '결혼 준비 순서 알려줘' }
+                ]
             };
         },
         methods: {
-            // --- 기존 홈 기능 ---
-            fnGoPost: function(postNo) {
-                location.href = '/api/community/detail.do?postNo=' + postNo;
+            // --- 기존 홈 기능 생략 ---
+            fnGoPost: function(postNo) { 
+                location.href = '/api/community/detail.do?postNo=' + postNo; 
             },
-            fnGoReview: function(reviewNo) {
-                location.href = '/api/review/detail.do?reviewNo=' + reviewNo;
+            fnGoReview: function(reviewNo) { 
+                location.href = '/api/review/detail.do?reviewNo=' + reviewNo; 
             },
             handleImgError: function(event) {
                 // 이미지가 없으면 해당 이미지만 숨깁니다.
@@ -146,80 +173,96 @@
                     }
                 }
             },
-            // 1. 추천 질문 클릭 시 실행되는 함수
+            // 1. 추천 질문 클릭 시 실행되는 함수 (오타 수정됨!)
             askQuickQuestion(questionText) {
-                /// 1. 사용자 질문을 화면에 표시
-                this.messages.push({ text: questionText, type: 'user' });
-                this.scrollToBottom();
-
-                // 2. 질문 내용에 따라 고정 답변 매칭
-                let fixedReply = "";
-
-                if (questionText === '메리뷰는 어떤 서비스인가요?') {
-                    fixedReply = "🌸 메리뷰는 신랑, 신부님들의 리얼한 웨딩 후기를 공유하고, 투명한 웨딩 문화를 만들어가는 커뮤니티 플랫폼입니다!";
-                } 
-                else if (questionText === '인기 있는 웨딩홀 추천해줘') {
-                    fixedReply = "🏰 현재 우리 사이트에서 가장 조회수가 높은 곳은 '루클라비'와 '빌라드지디'입니다. 리뷰 게시판에서 더 자세한 후기를 확인해보세요!";
-                } 
-                else if (questionText === '리뷰 작성은 어떻게 하나요?') {
-                    fixedReply = "✍️ 로그인 후 '리얼후기' 게시판 하단의 글쓰기 버튼을 눌러 작성하실 수 있습니다. 사진을 첨부하면 베스트 리뷰 확률이 높아져요!";
-                }
-
-                // 3. 고정 답변이 있다면 서버에 묻지 않고 바로 출력
-                if (fixedReply !== "") {
-                    this.isLoading = true;
-                    setTimeout(() => { // 실제 대화하는 느낌을 주기 위해 0.5초 뒤에 출력
-                        this.messages.push({ text: fixedReply, type: 'bot' });
-                        this.isLoading = false;
-                        this.scrollToBottom();
-                    }, 500);
-                } 
-                else {
-                    // 4. 고정 답변이 없는 일반 질문만 서버(AI)로 전송
-                    this.userInput = questionText;
-                    this.sendMessage();
-                }
+                // 기존: this.userInput = text; -> 수정: questionText 사용
+                this.userInput = questionText; 
+                this.sendMessage();
             },
             // 2. 챗봇 기능 
-            sendMessage() {
-                if (this.userInput.trim() === "" || this.isLoading) return;
-                
-                // 사용자 메시지 화면에 추가
-                this.messages.push({ text: this.userInput, type: 'user' });
-                let inputText = this.userInput;
-                this.userInput = ""; // 입력창 비우기
-                this.isLoading = true;
+            async sendMessage() {
+                if (!this.userInput.trim() || this.isLoading) return;
+
+                const userMsg = this.userInput;
+                this.messages.push({ type: 'user', text: userMsg });
+                this.userInput = '';
+                this.isLoading = true; // 로딩 시작
+
+                // 화면 하단으로 즉시 이동
                 this.scrollToBottom();
-                
-                // Spring 컨트롤러와 통신
-                $.ajax({
-                    url: "/gemini/chat",
-                    type: "GET",
-                    data: { input: inputText },
-                    success: (response) => {
-                        // 서버에서 온 답변을 채팅창에 추가
-                        this.messages.push({ text: response, type: 'bot' });
-                    },
-                    error: (xhr) => {
-                        this.messages.push({ text: "잠시 후 다시 시도해주세요", type: 'bot' });
-                    },
-                    complete: () => {
+
+                // 1. 고정 답변(Fixed Reply) 체크
+                let reply = this.checkFixedReply(userMsg);
+
+                if (reply) {
+                    // 고정 답변 처리
+                    setTimeout(() => {
+                        this.messages.push({ type: 'bot', text: reply });
                         this.isLoading = false;
                         this.scrollToBottom();
+                        this.saveToDB(userMsg, reply, 'FIXED');
+                    }, 500); // 자연스러운 지연 시간
+                } else {
+                    // 2. AI 서버에 요청
+                    try {
+                        const response = await axios.post('/ask', {
+                            // 복잡한 contents/parts 구조 대신, 
+                            // 서버의 ChatRequest 생성자가 받기 쉬운 단순 구조로 보냅니다.
+                            prompt: userMsg 
+                        });
+                        
+                        // 서버가 응답하는 ChatResponse 구조에 맞춰 답변 추출
+                        const aiAnswer = response.data.answer; 
+                        this.messages.push({ type: 'bot', text: aiAnswer });
+                    } catch (error) {
+                        console.error("AI 요청 에러:", error);
+                        this.messages.push({ type: 'bot', text: '죄송합니다. AI 연결에 실패했어요. 😢' });
                     }
-                });
+                }
+            },
+            checkFixedReply(question) {
+                // 정확한 문구 비교를 위해 trim() 사용
+                const q = question.trim();
+                if (q === '메리뷰는 어떤 서비스인가요?') {
+                    return "🌸 메리뷰는 신랑, 신부님들의 리얼한 웨딩 후기를 공유하는 플랫폼입니다!";
+                } else if (q === '인기 있는 웨딩홀 추천해줘') {
+                    return "현재 가장 인기 있는 곳은 '강남 메리웨딩홀'과 '잠실 루프탑 가든'입니다! 더 자세한 리뷰를 확인해 보세요.";
+                }
+                else if (q === '리뷰 작성은 어떻게 하나요?') {
+                    return "마이페이지 > 내가 다녀온 웨딩홀 선택 > '리뷰 쓰기' 버튼을 눌러주세요! 사진을 3장 이상 첨부하면 베스트 리뷰 확률이 높아져요. 📸";
+                } 
+                else if (q === '베스트 리뷰 혜택이 뭐야?') {
+                    return "매달 5분을 선정하여 스타벅스 기프티콘과 메리뷰 공식 파트너사 할인권을 드리고 있습니다! 많은 참여 부탁드려요. 🎁";
+                } 
+                else if (q === '결혼 준비 순서 알려줘') {
+                    return "일반적으로 [상견례 > 홀 투어/계약 > 스드메 예약 > 신혼여행지 선정] 순으로 진행됩니다. 메리뷰의 '준비 가이드' 게시판을 참고해 보세요! 👰🤵";
+                }
+
+                return null; // 고정 답변이 없으면 AI 서버로 전달됩니다.
+            },
+            async saveToDB(q, a, type) {
+                try {
+                    await axios.post('/saveLog', { question: q, answer: a, type: type });
+                } catch(e) { console.log("DB 저장 실패"); }
             },
             // 하단 자동 스크롤
             scrollToBottom() {
-                this.$nextTick(() => {
-                    const chatBox = this.$refs.chatBox;
-                    if (chatBox) {
-                        chatBox.scrollTop = chatBox.scrollHeight;
-                    }
-                });
+                setTimeout(() => {
+                    const container = document.getElementById("chatMessages");
+                    container.scrollTop = container.scrollHeight;
+                }, 100);
             },
-            
+            endChat() {
+                // 1. 종료 메시지 표시
+                this.messages.push({ text: "🌸 대화를 종료합니다. 이용해 주셔서 감사합니다!", type: 'bot' });
+                this.scrollToBottom();
 
+                // 1초 뒤에 창을 닫고, 대화 내역을 초기화해서 다음번엔 깨끗하게 보이게 함
+                setTimeout(() => {
+                    this.isChatOpen = false; 
+                    this.messages = []; // 대화 내역 초기화 (다시 열 때 첫 인사만 나오게)
+                }, 1000);
+            }
         },
         mounted() {
             let self = this;

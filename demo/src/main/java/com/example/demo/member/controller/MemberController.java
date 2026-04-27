@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,8 +16,11 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.example.demo.member.dao.GeminiService;
 import com.example.demo.member.dao.MemberService;
 import com.example.demo.member.dao.SmsService;
+import com.example.demo.member.model.ChatRequest;
+import com.example.demo.member.model.ChatResponse;
 import com.example.demo.member.model.Member;
 import com.google.gson.Gson;
 
@@ -29,6 +33,8 @@ public class MemberController {
 	MemberService memberService; //서비스 객체 선언
 	@Autowired
 	SmsService smsService; //서비스 객체 선언
+	@Autowired
+    private GeminiService geminiService;
 	
 	// 0. 메인 홈 *로그인 후 연결하려고 임시로 주소만 생성했어요* 주소 변경 시 수정 예정
 	@RequestMapping("/merryViewHome.do") // 주소 
@@ -624,5 +630,47 @@ public class MemberController {
 		public List<Member> getMainReviewList() {
 		    return memberService.getMainReviewList();
 		}	
-	// 인기 글
+		
+	// 챗봇 로그 저장
+		@PostMapping("/ask")
+		public ResponseEntity<?> askChatbot(@RequestBody Map<String, String> params, HttpSession session) {
+			// 구조를 따라가서 실제 질문 텍스트를 추출합니다.
+			String question = params.get("prompt");
+		    if (question == null || question.isEmpty()) {
+		        return ResponseEntity.badRequest().body("질문이 비어있습니다.");
+		    }
+		    // 2. 실제 AI 응답 가져오기 (가짜 텍스트 대신 실제 서비스 호출)
+		    String answer;
+	        try {
+	            answer = geminiService.getContents(question); // 2. 여기서 AI 답변을 받아옵니다.
+	        } catch (Exception e) {
+	            e.printStackTrace();
+	            answer = "죄송합니다. 제미나이 AI와 연결하는 중 오류가 발생했습니다. 😢";
+	        }
+		    
+		    // DB 저장 로직 (userId가 세션에 있으면 저장)
+		    String userId = (String) session.getAttribute("userId");
+		    memberService.saveChatLog(userId, question, answer, "AI");
+
+		 // 4. Vue가 받기 편하게 단순한 Map 구조로 응답합니다.
+		    Map<String, String> result = new HashMap<>();
+		    result.put("answer", answer);
+		    return ResponseEntity.ok(result);
+		}
+		@PostMapping("/saveLog")
+		@ResponseBody
+		public String saveLog(@RequestBody Map<String, Object> params, HttpSession session) {
+			// 1. 프론트엔드(JS)에서 보낸 데이터 꺼내기
+		    String question = (String) params.get("question");
+		    String answer = (String) params.get("answer");
+		    String type = (String) params.get("type");
+		    
+		    // 2. 세션에서 로그인한 사용자 아이디 가져오기
+		    String userId = (String) session.getAttribute("sessionId");
+
+		    // 3. 서비스 호출 (이게 있어야 DB에 들어갑니다!)
+		    memberService.saveChatLog(userId, question, answer, type);
+
+		    return "success";
+		}
 }

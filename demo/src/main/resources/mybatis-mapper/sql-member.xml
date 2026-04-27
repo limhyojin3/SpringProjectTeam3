@@ -591,5 +591,22 @@
 	    LIMIT 3
 	</select>
 	
+	<!-- 챗봇 로그 -->
+	<insert id="insertChatLog" parameterType="com.example.demo.member.model.ChatLog">
+	    INSERT INTO tbl_chat_log (
+	        user_id,
+	        question,
+        	answer,
+        	chat_type,
+        	created_at
+        ) VALUES (
+	        #{userId},
+			#{question},
+	        #{answer},
+	        #{chatType},
+	        NOW()
+        )
+	</insert>
+	
 	
 </mapper>

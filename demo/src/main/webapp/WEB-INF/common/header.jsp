@@ -27,7 +27,7 @@
                     <a class="nav-link" href="${pageContext.request.contextPath}/api/review/list.do" style="color: #ff4d6d !important; font-weight: 700 !important; padding: 0 15px !important;">리얼리뷰</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#" style="color: #ff4d6d !important; font-weight: 700 !important; padding: 0 15px !important;">패스구매</a>
+                    <a class="nav-link" href="${pageContext.request.contextPath}/adminPass.do" style="color: #ff4d6d !important; font-weight: 700 !important; padding: 0 15px !important;">패스구매</a>
                 </li>
 
                 <%-- 2. 마이페이지 분기 처리: 로그인 했을 때만 보여주고 권한별로 주소 다르게 --%>
