@@ -38,14 +38,14 @@
                 align-items: flex-start;
             }
 
-            .user-container {
+            .board-container {
                 padding: 20px;
                 background: #fff;
                 border-radius: 10px;
                 box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
             }
 
-            .user-header {
+            .board-header {
                 display: flex;
                 justify-content: space-between;
                 align-items: center;
@@ -53,8 +53,8 @@
                 gap: 10px;
             }
 
-            .user-header input,
-            .user-header select {
+            .board-header input,
+            .board-header select {
                 border: 1px solid #ddd;
                 padding: 6px 10px;
                 border-radius: 6px;
@@ -85,28 +85,28 @@
             }
 
             /* 테이블 */
-            .user-table {
+            .board-table {
                 width: 1000px;
                 border-collapse: collapse;
             }
 
-            .user-table tr {
+            .board-table tr {
                 cursor: pointer;
             }
 
-            .user-table th {
+            .board-table th {
                 background: #f1f3f5;
                 padding: 10px;
                 font-size: 13px;
             }
 
-            .user-table td {
+            .board-table td {
                 padding: 10px;
                 font-size: 13px;
                 border-bottom: 1px solid #eee;
             }
 
-            .user-table tr:hover {
+            .board-table tr:hover {
                 background: #f8f9fa;
             }
 
@@ -183,73 +183,63 @@
             <div class="middle">
                 <jsp:include page="/WEB-INF/admin/adminNavi.jsp" />
                 <div class="main">
-                    <div class="user-container">
+                    <div class="board-container">
 
-                        <h2>회원 관리</h2>
+                        <h2>게시판 관리</h2>
 
                         <!-- 필터 영역 -->
-                        <div class="user-header">
+                        <div class="board-header">
                             <div class="keyword-group">
                                 <select v-model="searchType">
                                     <option value="all">전체</option>
-                                    <option value="userId">아이디</option>
-                                    <option value="name">이름</option>
-                                    <option value="nickName">닉네임</option>
+                                    <option value="userId">ID</option>
+                                    <option value="title">제목</option>
+                                    <option value="content">내용</option>
                                 </select>
 
-                                <input v-model="keyword" placeholder="검색어 입력" @keyup.enter="fnGetUserList">
-                                <button @click="fnGetUserList">검색</button>
+                                <input v-model="keyword" placeholder="검색어 입력" @keyup.enter="fnGetBoardList">
+                                <button @click="fnGetBoardList">검색</button>
                             </div>
                             <div class="filter-group">
-                                <select v-model="statusFilter" @change="fnGetUserList">
-                                    <option value="ALL">상태 전체</option>
-                                    <option value="ACTIVE">활동</option>
-                                    <option value="STOP">정지</option>
-                                    <option value="DORMANT">휴면</option>
-                                    <option value="WITHDRAWN">탈퇴</option>
+                                <select v-model="category" @change="fnGetBoardList">
+                                    <option value="ALL">분류 전체</option>
+                                    <option value="자유">자유</option>
+                                    <option value="질문">질문</option>
+                                    <option value="정보">정보</option>
                                 </select>
+                                <div>
+                                    정렬
+                                    <select v-model="sortType" @change="fnGetBoardList">
+                                        <option value="latest">최신순</option>
+                                        <option value="old">오래된순</option>
+                                    </select>
+                                </div>
                                 <button @click="fnResetSearch">초기화</button>
                             </div>
                         </div>
 
                         <!-- 테이블 -->
-                        <table class="user-table">
+                        <table class="board-table">
                             <thead>
                                 <tr>
+                                    <th>번호</th>
+                                    <th>분류</th>
+                                    <th>제목</th>
                                     <th>ID</th>
-                                    <th>이름</th>
-                                    <th>닉네임</th>
-                                    <th>상태</th>
-                                    <th>신고</th>
-                                    <th>마지막 로그인</th>
-                                    <th>가입일</th>
+                                    <th>작성일</th>
                                 </tr>
                             </thead>
 
                             <tbody>
-                                <tr v-for="user in userList"
-                                    :class="{ 'active-row': selectedUser && selectedUser.userId === user.userId }"
-                                    @click="selectUser(user)">
+                                <tr v-for="board in boardList"
+                                    :class="{ 'active-row': selectedBoard && selectedBoard.userId === board.userId }"
+                                    @click="fnSelectBoard(board)">
 
-                                    <td>{{user.userId}}</td>
-                                    <td>{{user.name}}</td>
-                                    <td>{{user.nickName || '-'}}</td>
-
-                                    <td>
-                                        <span class="status-badge" :class="getStatusClass(user.status)">
-                                            {{ getStatusInfo(user.status).text }}
-                                        </span>
-                                    </td>
-
-                                    <td>
-                                        <span v-if="user.reportCount > 0" class="count-badge">
-                                            {{ user.reportCount }}
-                                        </span>
-                                        <span v-else>-</span>
-                                    </td>
-
-                                    <td>{{ formatDate(user.lastLogin) }}</td>
-                                    <td>{{ formatDate(user.regDate) }}</td>
+                                    <td>{{board.postNo}}</td>
+                                    <td>{{board.category}}</td>
+                                    <td>{{board.title}}</td>
+                                    <td>{{board.userId}}</td>
+                                    <td>{{ formatDate(board.regDate) }}</td>
                                 </tr>
                             </tbody>
                         </table>
@@ -274,13 +264,14 @@
                     return {
                         // 변수 - (key : value)
                         activeMenu: "",
-                        userList: [],
+                        board: [],
                         sessionId: "${sessionScope.sessionId}",
                         sessionRole: "${sessionScope.sessionRole}",
                         searchType: "all",
+                        category: "ALL",
                         keyword: "",
-                        statusFilter: "ALL",
-                        selectedUser: null,
+                        sortType:"latest",
+                        selectedBoard: null,
                         pageSize: 10,
                         index: 1,
                         currentPage: 1,
@@ -295,37 +286,45 @@
                     fnPageMove(p) {
                         if (p < 1 || p > this.index) return;
                         this.currentPage = p;
-                        this.fnGetUserList();
+                        this.fnGetBoardList();
                     },
 
                     formatDate(date) {
                         return date ? date.substring(0, 10) : '-';
                     },
 
-                    fnGetUserList: function () {
+                    fnGetBoardList: function () {
                         let self = this;
                         let param = {
                             searchType: self.searchType,
+                            sortType: self.sortType,
                             keyword: self.keyword,
-                            status: self.statusFilter,
+                            category: self.category,
                             pageSize: self.pageSize,
                             offSet: self.pageSize * (self.currentPage - 1),
                         };
+                        console.log(param);
+                        console.log("category:", "[" + self.category + "]");
                         $.ajax({
-                            url: "http://localhost:8080/userList.dox",
+                            url: "http://localhost:8080/boardList.dox",
                             dataType: "json",
                             type: "POST",
                             data: param,
                             success: function (data) {
                                 console.log(data);
-                                self.userList = data.list || [];
+                                console.log(data.list);
+                                self.boardList = data.list || [];
                                 self.index = Math.ceil(data.totalCount / self.pageSize);
                             }
                         });
                     },
 
-                    selectUser(user) {
-                        location.href = "/adminUserDetail.do?userId=" + user.userId;
+                    selectBoard(board) {
+                        location.href = "/adminBoardDetail.do?postNo=" + board.postNo;
+                    },
+
+                    fnSelectBoard(board) {
+                        window.open('http://localhost:8080/api/community/detail.do?postNo=' + board.postNo, '_blank', 'width=1000, height=1000');
                     },
 
                     getStatusInfo(status) {
@@ -351,10 +350,11 @@
 
                     fnResetSearch() {
                         this.keyword = "";
-                        this.page = 1;
+                        this.currentPage = 1;
+                        this.sortType = "latest";
                         this.searchType = "all";
-                        this.statusFilter = "ALL";
-                        this.fnGetUserList();
+                        this.category = "ALL"
+                        this.fnGetBoardList();
                     },
 
                 }, // methods
@@ -373,7 +373,7 @@
                                                     path.includes('adminInquiry') ? 'inquiry' :
                                                         path.includes('adminStatistics') ? 'stats' :
                                                             '';
-                    self.fnGetUserList();
+                    self.fnGetBoardList();
                 }
             });
 

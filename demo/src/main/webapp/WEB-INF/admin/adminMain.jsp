@@ -161,9 +161,20 @@
                                         <td>{{item.postDay}}</td>
                                     </tr>
                                 </table>
+                                <div class="pagination-wrap">
+                                    <button @click="fnReviewPageMove(reviewCurrentPage-1)" :disabled="reviewCurrentPage===1">‹</button>
+
+                                    <button v-for="p in index" :key="p" @click="fnReviewPageMove(p)"
+                                        :class="{active: reviewCurrentPage === p}">
+                                        {{ p }}
+                                    </button>
+
+                                    <button @click="fnReviewPageMove(reviewCurrentPage+1)"
+                                        :disabled="reviewCurrentPage===index">›</button>
+                                </div>
                             </div>
                         </div>
-                        <button @click="fnReview" type="button" class="detail-btn">상세보기</button>
+                        <button @click="fnPage('/adminReview.do')" type="button" class="detail-btn">상세보기</button>
                     </div>
 
                     <!-- 신고제보 카드 -->
@@ -186,6 +197,16 @@
                                         <td>{{item.reportDay}}</td>
                                     </tr>
                                 </table>
+                            </div>
+                            <div class="pagination-wrap">
+                                <button @click="fnPageMove(currentPage-1)" :disabled="currentPage===1">‹</button>
+
+                                <button v-for="p in index" :key="p" @click="fnPageMove(p)"
+                                    :class="{active: currentPage === p}">
+                                    {{ p }}
+                                </button>
+
+                                <button @click="fnPageMove(currentPage+1)" :disabled="currentPage===index">›</button>
                             </div>
                         </div>
                         <button @click="fnPage('/adminReport.do')" type="button" class="detail-btn">상세보기</button>
@@ -271,14 +292,24 @@
                         doneCount: 0,
                         newCommer: 0,
                         affRate: 0,
-                        processStatus: "WAIT_ACTION"
+                        processStatus: "WAIT_ACTION",
+                        pageSize: 10,
+                        index: 1,
+                        currentPage: 1,
+                        reviewPageSize: 10,
+                        reviewIndex: 1,
+                        reviewCurrentPage: 1,
                     };
                 },
                 methods: {
                     // 함수(메소드) - (key : function())
                     fnGetReviewList: function () {
                         let self = this;
-                        let param = {};
+                        let param = {
+                            approvalStatus:"WAIT",
+                            pageSize: self.reviewPageSize,
+                            offSet: self.reviewPageSize * (self.reviewCurrentPage - 1)
+                        };
                         $.ajax({
                             url: "http://localhost:8080/viewReview.dox",
                             dataType: "json",
@@ -288,6 +319,7 @@
                                 console.log(data)
                                 self.reviewList = data.list;
                                 self.reviewWait = self.reviewList.length > 0 ? self.reviewList[0].reviewWait : 0;
+                                self.reviewIndex = Math.ceil(data.totalCount / self.reviewPageSize);
                             }
                         });
                     },
@@ -295,7 +327,9 @@
                     fnGetReportList: function () {
                         let self = this;
                         let param = {
-                            processStatus: self.processStatus
+                            processStatus: self.processStatus,
+                            pageSize: self.pageSize,
+                            offSet: self.pageSize * (self.currentPage - 1)
                         };
                         $.ajax({
                             url: "http://localhost:8080/viewReport.dox",
@@ -306,8 +340,20 @@
                                 console.log(data)
                                 self.reportList = data.list;
                                 self.reportWait = self.reportList.length > 0 ? self.reportList[0].reportWait : 0;
+                                self.index = Math.ceil(data.totalCount / self.pageSize);
                             }
                         });
+                    },
+
+                    fnPageMove(p) {
+                        if (p < 1 || p > this.index) return;
+                        this.currentPage = p;
+                        this.fnGetReportList();
+                    },
+                    fnReviewPageMove(p) {
+                        if (p < 1 || p > this.index) return;
+                        this.reviewCurrentPage = p;
+                        this.fnGetReviewList();
                     },
 
                     fnAfterAllDone: function () {
@@ -390,12 +436,12 @@
                     let self = this;
                     const path = location.pathname;
 
-                     this.activeMenu =
+                    this.activeMenu =
                         path.includes('adminMain') ? 'main' :
                             path.includes('adminUser') ? 'user' :
                                 path.includes('adminCompany') ? 'company' :
                                     path.includes('adminBoard') ? 'board' :
-                                        path.includes('adminReviewWait') ? 'reviewWait' :
+                                        path.includes('adminReview') ? 'review' :
                                             path.includes('adminPayment') ? 'payment' :
                                                 path.includes('adminReport') ? 'report' :
                                                     path.includes('adminInquiry') ? 'inquiry' :

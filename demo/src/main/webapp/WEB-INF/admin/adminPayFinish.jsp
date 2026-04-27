@@ -24,41 +24,6 @@
                 /* 너비 고정 */
             }
 
-            .navi {
-                grid-area: nav;
-                border: 1px solid blue;
-                padding: 20px 10px;
-                display: flex;
-                flex-direction: column;
-                gap: 8px;
-            }
-
-            .navi-btn {
-                width: 100%;
-                padding: 12px 10px;
-                text-align: left;
-                background-color: white;
-                border: 1px solid #ddd;
-                border-radius: 4px;
-                cursor: pointer;
-                font-size: 14px;
-                font-weight: 500;
-                transition: 0.2s;
-            }
-
-            .navi-btn:hover {
-                background-color: #e3f2fd;
-                border-color: #2196f3;
-                color: #1976d2;
-            }
-
-            .activebtn {
-                background-color: #ff6b6b;
-                color: white;
-                font-weight: bold;
-                border: 1px solid #ff6b6b;
-            }
-
             .main {
                 grid-area: main;
                 border: 1px solid #ffc7c2;
@@ -76,49 +41,26 @@
         <div id="app">
             <jsp:include page="/WEB-INF/common/header.jsp" />
             <div class="middle">
-                <div class="navi">
-                    <button :class="['navi-btn', activeMenu === 'main' ? 'activebtn' : '']"
-                        @click="fnPage('/adminMain.do')">관리자 메인 페이지</button>
-
-                    <button :class="['navi-btn', activeMenu === 'user' ? 'activebtn' : '']"
-                        @click="fnPage('/adminUser.do')">전체 회원 목록</button>
-
-                    <button :class="['navi-btn', activeMenu === 'company' ? 'activebtn' : '']"
-                        @click="fnPage('/adminCompany.do')">전체 업체 목록</button>
-
-                    <button :class="['navi-btn', activeMenu === 'board' ? 'activebtn' : '']"
-                        @click="fnPage('/adminBoard.do')">전체 게시판/리뷰 목록</button>
-
-                    <button :class="['navi-btn', activeMenu === 'reviewWait' ? 'activebtn' : '']"
-                        @click="fnPage('/adminReviewWait.do')">승인 대기중인 리뷰</button>
-
-                    <button :class="['navi-btn', activeMenu === 'payment' ? 'activebtn' : '']"
-                        @click="fnPage('/adminPayment.do')">결제 및 상품 관리</button>
-
-                    <button :class="['navi-btn', activeMenu === 'report' ? 'activebtn' : '']"
-                        @click="fnPage('/adminReport.do')">신고 관리</button>
-
-                    <button :class="['navi-btn', activeMenu === 'stats' ? 'activebtn' : '']"
-                        @click="fnPage('/adminStatistics.do')">통계</button>
-                </div>
                 <div class="main">
                     <div v-if="!paymentInfo">
-                        결제 정보를 불러오는 중...
+                        결제가 완료 되었습니다!
+                        <br>
+                        이용해 주셔서 감사합니다!
+
                     </div>
 
                     <div v-else>
-                        <h3>결제가 완료 되었습니다! 🎉</h3>
+                        <h3>결제가 완료 되었습니다!</h3>
 
                         <hr>
 
-                        <p><b>imp_uid:</b> {{ paymentInfo.imp_uid }}</p>
-                        <p><b>주문번호:</b> {{ paymentInfo.merchant_uid }}</p>
-                        <p><b>결제 금액:</b> {{ paymentInfo.amount }}</p>
-                        <p><b>결제 상태:</b> {{ paymentInfo.status }}</p>
-                        <p><b>결제 수단:</b> {{ paymentInfo.pay_method }}</p>
+                        <p><b>결제번호:</b> ${payment.pay_no}</p>
+                        <p><b>상품명:</b> ${payment.item_name}</p>
+                        <p><b>결제 금액:</b> ${payment.amount}</p>
+                        <p><b>결제일:</b> ${payment.pay_date}</p>
 
-                        <button class="btn btn-primary" @click="fnPage('/adminPayment.do')">
-                            결제 관리로 이동
+                        <button class="btn btn-primary" onclick="location.href='/merryViewHome.do'">
+                            홈으로 이동
                         </button>
                     </div>
 
@@ -134,31 +76,12 @@
                         // 변수 - (key : value)
                         activeMenu: "",
                         impUid: null,
-                        paymentInfo: null
                     };
                 },
                 methods: {
                     // 함수(메소드) - (key : function())
                     fnPage: function (url) {
                         location.href = url;
-                    },
-                    fnGetPayment: function () {
-                        let self = this;
-
-                        $.ajax({
-                            url: "/api/payment/detail",
-                            type: "GET",
-                            data: {
-                                imp_uid: self.impUid
-                            },
-                            success: function (res) {
-                                console.log("결제정보:", res);
-                                self.paymentInfo = res;
-                            },
-                            error: function () {
-                                alert("결제 정보를 불러오지 못했습니다.");
-                            }
-                        });
                     },
 
                 }, // methods
@@ -177,13 +100,6 @@
                                                 path.includes('adminReport') ? 'report' :
                                                     path.includes('adminStatistics') ? 'stats' :
                                                         '';
-                    // imp_uid 받기
-                    this.impUid = new URLSearchParams(location.search).get("imp_uid");
-
-                    // 결제 조회 실행
-                    if (this.impUid) {
-                        this.fnGetPayment();
-                    }
                 }
             });
 

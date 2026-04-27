@@ -6,7 +6,15 @@ import lombok.Data;
 
 @Data
 public class Admin {
-
+	
+	// 게시글목록
+	int postNo;
+	String category;
+	int viewCnt;
+	int likeCnt;
+	int isDeleted;
+	int commentCnt;
+	
 	// 리뷰목록
 	int reviewNo;
 	String userId;
@@ -30,7 +38,10 @@ public class Admin {
 	String reg_date;
 	String reportDay;
 	int reportWait;
-
+	int reportCount;
+	String targetUserId; 			//신고테이블. 회원 상세 신고 이력
+	
+	
 	// 문의목록
 	int inquiryNo; 			//문의 번호
 	
@@ -40,36 +51,86 @@ public class Admin {
 	int orderCount;
 	int amount;           	//결제 금액
 	String status;			//결제 상태
+	int payNo;
+	String payStatus;
+	String payDate;
+	int productNo;
+	String productName;
+	int originalPrice;
+
+	String couponCode;
+	String couponName;
+	int discountRate;
+
+	int resNo;
+	String refund;
+	String refundDate;
+
+	int companyNo;
+	
 
 	// 회원목록
 	String userMonth;
 	int userCount;
 	String userName;		
+	String nickName;
 	String userEmail;
 	String name;            // 전체 회원목록. 멤버테이블 컬럼명
 	String role;
+	String tel;
+	String lastLogin;
+	String weddingDate;
+	String gender;
+	int count;						//전체 회원목록 페이지 + 신고수  member, user_detail테이블 조인
+	
 	
 	// 업체 목록
 	String companyName;
 	String companyEmail;
+	String comType;
+	String comTel;
+	String comAdress;
 	String memberStatus;
 	String companyStatus;
 	String grade;			// 제휴업체인지 일반업체인지 나눔
+	String ceoName;
+	String bizNo;
+	String registrationFee;
+	String comName;
 	
+	// 상품 목록
+//	int productNo;
+//	int companyNo;
+//	String productName;
+	String productDetails;
+//	int originalPrice;
+	String isActive;
+	String imgUrl;
+	String proType;
+	String tag;
+	int deposit;
+
+	// 쿠폰
+//	String couponCode;
+//	String couponName;
+//	int discountRate;
+	String issueType;
+	int maxIssueCnt;
+
+	// 패스
+
 	// 패스목록
 	int passNo;
 	String passName;
 	int price;
 	int reviewCnt;
-	int isActive;
-	
+//	int isActive;
+
 	// ===== 정지/해제 관련 =====
 	String targetId;     // user_id or company_id
 	String actionType;   // BAN / UNBAN
 	String reason;       // 정지 사유
 	String adminId;      // 관리자 아이디
 	String banRegDate;   // 이력 날짜
-	String ceoName;
-	String bizName;
 
 }

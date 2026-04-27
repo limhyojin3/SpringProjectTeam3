@@ -15,8 +15,20 @@ public interface AdminMapper {
 	public List<Admin> selectClientsList(HashMap<String, Object> map);
 
 	public List<Admin> selectReviewList(HashMap<String, Object> map);
+	
+	public List<Admin> selectBoardList(HashMap<String, Object> map);
+	
+	public Admin selectPostDetail(HashMap<String, Object> map);
 
+	// 신고 게시판 검색어 필터
 	public List<Admin> selectReportList(HashMap<String, Object> map);
+	
+	// 페이지네이션
+	int selectReportCount(HashMap<String, Object> map);
+	int selectReviewCount(HashMap<String, Object> map);
+	int selectUserCount(HashMap<String, Object> map);
+	int selectCompanyCount(HashMap<String, Object> map);
+	int selectBoardCount(HashMap<String, Object> map);
 	
 	public List<Admin> selectPassList(HashMap<String, Object> map);
 	
@@ -43,8 +55,17 @@ public interface AdminMapper {
 	// 관리자 전체 회원목록 페이지
 	public List<Admin> selectUserList(HashMap<String, Object> map);
 	
+	// 회원 상세조회
+	public Admin selectUserDetail(HashMap<String, Object> map);
+	
+	// 회원 상세조회 신고이력
+	public List<Admin> selectReportInfoList(HashMap<String, Object> map);
+	
 	// 관리자 전체 업체목록 페이지
 	public List<Admin> selectCompanyList(HashMap<String, Object> map);
+	
+	// 업체 상세조회
+	public Admin selectCompanyDetail(HashMap<String, Object> map);
 	
 	// ====== 관리자 전체 회원/업체 정지/해제 기능 ======
 
@@ -56,4 +77,42 @@ public interface AdminMapper {
 	// 정지 이력 조회
 	public List<Admin> selectBanHistory(HashMap<String, Object> map);
 	
+	// 일괄 신고
+	public void batchApproveReport(HashMap<String, Object> map);
+	
+	// 단일 신고
+	public void updateReportApprove(HashMap<String, Object> map);
+	
+	// 신고 상세 조회
+	public Admin selectReportDetail(HashMap<String, Object> map);
+	
+	// 신고 반려
+	public int updateReportReject(HashMap<String, Object> map);
+	
+	// 신고 누적 횟수
+	public int selectReportHistory(HashMap<String, Object> map);
+
+	
+	// 결제 관리
+	public List<Admin> selectPaymentList(HashMap<String, Object> map);
+	public List<Admin> selectPassPaymentList(HashMap<String, Object> map);
+	public List<Admin> selectReservationPaymentList(HashMap<String, Object> map);
+	public List<Admin> selectRegistrationPaymentList(HashMap<String, Object> map);
+	int selectPaymentCount(HashMap<String, Object> map);
+	int selectPassPaymentCount(HashMap<String, Object> map);
+	int selectReservationPaymentCount(HashMap<String, Object> map);
+	int selectRegistrationPaymentCount(HashMap<String, Object> map);
+	
+	// 상품관리
+	// 상품
+	public List<Admin> selectProductList(HashMap<String, Object> map);
+    int selectProductCount(HashMap<String, Object> map);
+
+    // 쿠폰
+    public List<Admin> selectCouponList(HashMap<String, Object> map);
+    int selectCouponCount(HashMap<String, Object> map);
+
+    // 패스
+    public List<Admin> selectAllPassList(HashMap<String, Object> map);
+    int selectPassCount(HashMap<String, Object> map);
 }

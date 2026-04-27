@@ -40,7 +40,7 @@
                 align-items: flex-start;
             }
 
-            .report-container {
+            .review-container {
                 padding: 20px;
                 font-family: sans-serif;
                 background: #fff;
@@ -48,7 +48,7 @@
                 box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
             }
 
-            .report-header {
+            .review-header {
                 display: flex;
                 justify-content: space-between;
                 align-items: center;
@@ -80,14 +80,14 @@
                 border-radius: 6px;
             }
 
-            .report-table {
+            .review-table {
                 width: 1000px;
                 border-collapse: collapse;
                 background: #fff;
                 box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
             }
 
-            .report-table th {
+            .review-table th {
                 background: #f1f3f5;
                 font-weight: 600;
                 font-size: 13px;
@@ -96,14 +96,14 @@
                 padding: 10px;
             }
 
-            .report-table td {
+            .review-table td {
                 padding: 10px;
                 border-bottom: 1px solid #f1f1f1;
                 font-size: 13px;
                 color: #333;
             }
 
-            .report-table tr:hover {
+            .review-table tr:hover {
                 background: #f8f9fa;
             }
 
@@ -316,105 +316,50 @@
             <div class="middle">
                 <jsp:include page="/WEB-INF/admin/adminNavi.jsp" />
                 <div class="main">
-                    <div class="report-container">
+                    <div class="review-container">
                         <!-- 상단 필터 영역 -->
-                        <h2>신고 관리</h2>
-                        <div class="report-header">
-
+                        <h2>리뷰 관리</h2>
+                        <div class="review-header">
                             <div class="keyword-group">
                                 <select v-model="searchType">
                                     <option value="all">전체</option>
-                                    <option value="reporter">신고자</option>
-                                    <option value="uniTargetId">대상 번호 OR ID</option>
+                                    <option value="userId">작성자</option>
                                     <option value="title">제목</option>
                                     <option value="content">내용</option>
                                 </select>
-                                <input v-model="keyword" placeholder="검색어 입력" @keyup.enter="fnGetReportList">
-                                <button @click="fnGetReportList">검색</button>
-                            </div>
-                            <div class="filter-group">
-                                <div>
-                                    신고대상
-                                    <select v-model="targetType" @change="fnGetReportList">
-                                        <option value="ALL">전체</option>
-                                        <option value="MEMBER">회원</option>
-                                        <option value="POST">게시글</option>
-                                        <option value="REVIEW">리뷰</option>
-                                        <option value="COMPANY">업체</option>
-                                    </select>
-                                </div>
-                                <div>
-                                    처리상태
-                                    <select v-model="processStatus" @change="fnGetReportList">
-                                        <option value="ALL">전체</option>
-                                        <option value="WAIT_ACTION">처리대기</option> <!-- action_status = 0 -->
-                                        <option value="WAIT_ANSWER">답변대기</option>
-                                        <!-- action_status = 1 AND answer_status = 0 -->
-                                        <option value="COMPLETED">처리완료</option>
-                                        <!-- action_status = 1 AND answer_status = 1 -->
-                                        <option value="REJECTED">반려</option>
-                                    </select>
-                                </div>
-                                <div>
-                                    정렬
-                                    <select v-model="sortType" @change="fnGetReportList">
-                                        <option value="latest">최신순</option>
-                                        <option value="old">오래된순</option>
-                                    </select>
-                                </div>
+                                <input v-model="keyword" placeholder="검색어 입력" @keyup.enter="fnGetReviewList">
+                                <button @click="fnGetReviewList">검색</button>
                                 <button @click="fnResetSearch">초기화</button>
                             </div>
                         </div>
-
                         <!-- 리스트 바디 -->
-                        <table class="report-table">
+                        <table class="review-table">
                             <thead>
                                 <tr>
-                                    <th><input type="checkbox" v-model="isAllChecked" @change="toggleAll"></th>
                                     <th>번호</th>
-                                    <th>신고자</th>
-                                    <th>신고 대상(유형)</th>
-                                    <th>번호 OR ID</th>
-                                    <th>신고 사유</th>
-                                    <th>일시</th>
-                                    <th>처리/통보</th>
+                                    <th>작성자</th>
+                                    <th>제목</th>
+                                    <th>작성일</th>
                                     <th>관리</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr v-for="r in reportList" :key="r.reportNo">
-
-                                    <td><input type="checkbox" :value="r" v-model="selectedReports"></td>
-                                    <td>{{ r.reportNo }}</td>
-                                    <td>{{ r.reporterId }}</td>
-                                    <td>
-                                        <span class="type-tag" :class="'tag-' + r.targetType.toLowerCase()">
-                                            {{ r.targetType }}
-                                        </span>
-                                    </td>
-                                    <td>{{ r.uniTargetId }}</td>
-                                    <td class="text-left" :title="r.reportContent">
-                                        {{ r.reportContent }}
+                                <tr v-for="r in reviewList" :key="r.reviewNo">
+                                    <td>{{ r.reviewNo }}</td>
+                                    <td>{{ r.userId }}</td>
+                                    <td class="text-left" :title="r.reviewContent">
+                                        {{ r.title }}
                                     </td>
                                     <td>{{ formatDate(r.regDate) }}</td>
                                     <td>
-                                        <span class="status-badge" :class="getStatusClass(r)">
-                                            {{ getStatusText(r) }}
-                                        </span>
-                                    </td>
-                                    <td>
-                                        <button @click="fnSelectReport(r.reportNo)">보기</button>
+                                        <button @click="fnSelectReview(r.reviewNo)">보기</button>
                                         <button @click="fnApprove(r)">승인</button>
                                         <button @click="fnReject(r)">반려</button>
                                     </td>
                                 </tr>
-                                <tr v-if="reportList.length === 0">
-                                    <td colspan="9">신고 내역 없음</td>
-                                </tr>
                             </tbody>
                         </table>
-                        <div class="BatchPaging">
-                            <button @click="fnBatchApprove">일괄 승인</button>
+                        <div class="Paging">
                             <div class="pagination-wrap">
                                 <button @click="fnPageMove(currentPage-1)" :disabled="currentPage===1">‹</button>
 
@@ -424,44 +369,6 @@
                                 </button>
 
                                 <button @click="fnPageMove(currentPage+1)" :disabled="currentPage===index">›</button>
-                            </div>
-                        </div>
-                        <div class="modal fade" id="reportModal" tabindex="-1">
-                            <div class="modal-dialog">
-                                <div class="modal-content">
-
-                                    <div class="modal-header">
-                                        <h5 class="modal-title">신고 상세</h5>
-                                        <button type="button" class="close" data-dismiss="modal">&times;</button>
-                                    </div>
-
-                                    <div class="modal-body" v-if="selectedReport">
-                                        <p><b>신고자:</b> {{ selectedReport.reporterId }}</p>
-                                        <p><b>대상:</b> {{ selectedReport.uniTargetId }}</p>
-                                        <p><b>제목:</b> {{ selectedReport.reportTitle }}</p>
-                                        <p><b>내용:</b> {{ selectedReport.reportContent }}</p>
-                                        <!-- 반려 사유 -->
-                                        <div class="reject-box">
-                                            <label>반려 사유</label>
-                                            <textarea v-model="rejectReason" placeholder="반려 사유를 입력하세요"
-                                                class="form-control"></textarea>
-                                        </div>
-                                    </div>
-                                    <!-- 버튼 -->
-                                    <div class="modal-footer">
-                                        <button class="btn btn-success" @click="fnApprove(selectedReport)">
-                                            승인
-                                        </button>
-
-                                        <button class="btn btn-danger" @click="fnReject(selectedReport)">
-                                            반려
-                                        </button>
-
-                                        <button class="btn btn-secondary" data-dismiss="modal">
-                                            닫기
-                                        </button>
-                                    </div>
-                                </div>
                             </div>
                         </div>
                     </div>
@@ -475,12 +382,12 @@
                     return {
                         // 변수 - (key : value)
                         activeMenu: "",
-                        reportList: [],
-                        selectedReport: null,
-                        selectedReports: [],
+                        reviewList: [],
+                        selectedReview: null,
+                        selectedReviews: [],
                         isAllChecked: false,
                         answerContent: "",
-                        reportNo: 0,
+                        reviewNo: 0,
                         reporterId: "",
                         keyword: "",
                         sortType: "latest",
@@ -488,14 +395,12 @@
                         targetType: "ALL",
                         processStatus: "ALL",
                         uniTargetId: "",
-                        reportTitle: "",
-                        reportContent: "",
-                        actionStatus: "",
-                        answerStatus: "",
+                        reviewTitle: "",
+                        reviewContent: "",
                         regDate: "",
                         sessionId: "${sessionScope.sessionId}",
                         rejectReason: "",
-                        pageSize: 5,
+                        pageSize: 10,
                         index: 1,
                         currentPage: 1,
 
@@ -507,11 +412,15 @@
                         location.href = url;
                     },
 
+                    fnSelectReview(reviewNo) {
+                        window.open('http://localhost:8080/api/review/detail.do?reviewNo=' + reviewNo, '_blank', 'width=1000, height=1000');
+                    },
+
                     toggleAll() {
                         if (this.isAllChecked) {
-                            this.selectedReports = this.reportList;
+                            this.selectedReviews = this.reviewList;
                         } else {
-                            this.selectedReports = [];
+                            this.selectedReviews = [];
                         }
                     },
 
@@ -532,33 +441,17 @@
                         return date ? date.substring(0, 10) : '-';
                     },
 
-                    fnSelectReport(reportNo) {
-                        let self = this;
-
-                        $.ajax({
-                            url: "http://localhost:8080/reportDetail.dox",
-                            type: "POST",
-                            dataType: "json",
-                            data: { reportNo: reportNo },
-                            success: function (res) {
-                                self.selectedReport = res.info;
-                                self.rejectReason = "";
-                                $("#reportModal").modal("show");
-                            }
-                        });
-                    },
-
                     fnResetSearch() {
                         this.keyword = "";
-                        this.currentPage = 1;
+                        this.page = 1;
                         this.searchType = "all";
                         this.targetType = "ALL"
                         this.processStatus = "ALL";
                         this.sortType = "latest"
-                        this.fnGetReportList();
+                        this.fnGetReviewList();
                     },
 
-                    fnGetReportList: function () {
+                    fnGetReviewList: function () {
                         let self = this;
                         let param = {
                             targetType: self.targetType,
@@ -571,13 +464,13 @@
                             offSet: self.pageSize * (self.currentPage - 1)
                         };
                         $.ajax({
-                            url: "http://localhost:8080/viewReport.dox",
+                            url: "http://localhost:8080/viewReview.dox",
                             dataType: "json",
                             type: "POST",
                             data: param,
                             success: function (data) {
                                 console.log(data);
-                                self.reportList = data.list || [];
+                                self.reviewList = data.list || [];
                                 self.index = Math.ceil(data.totalCount / self.pageSize);
                             }
                         });
@@ -586,40 +479,7 @@
                     fnPageMove(p) {
                         if (p < 1 || p > this.index) return;
                         this.currentPage = p;
-                        this.fnGetReportList();
-                    },
-
-                    fnBatchApprove() {
-                        let self = this;
-
-                        if (self.selectedReports.length === 0) {
-                            alert("선택된 신고 없음");
-                            return;
-                        }
-
-                        if (!confirm("일괄 승인하시겠습니까?")) {
-                            return
-                        };
-
-
-                        let ids = [];
-                        for (let i = 0; i < self.selectedReports.length; i++) {
-                            ids.push(self.selectedReports[i].reportNo);
-                        }
-
-                        $.ajax({
-                            url: "http://localhost:8080/reportBatchApprove.dox",
-                            type: "POST",
-                            traditional: true, // 배열 보낼 때 필요
-                            data: {
-                                reportNos: ids,
-                                admin_id: self.sessionId
-                            },
-                            success: function (res) {
-                                alert("일괄 처리 완료");
-                                self.fnGetReportList();
-                            }
-                        });
+                        this.fnGetReviewList();
                     },
 
                     fnApprove(r) {
@@ -630,18 +490,17 @@
                         };
 
                         $.ajax({
-                            url: "http://localhost:8080/reportApprove.dox",
+                            url: "http://localhost:8080/reviewApprove.dox",
                             type: "POST",
                             data: {
-                                reportNo: r.reportNo,
+                                reviewNo: r.reviewNo,
                                 target_id: r.uniTargetId,
                                 target_type: r.targetType,
                                 admin_id: self.sessionId
                             },
                             success: function () {
                                 alert("승인 완료");
-                                self.fnGetReportList();
-                                $("#reportModal").modal("hide");
+                                self.fnGetReviewList();
                             }
                         });
                     },
@@ -654,19 +513,26 @@
                         };
 
                         $.ajax({
-                            url: "http://localhost:8080/reportReject.dox",
+                            url: "http://localhost:8080/reviewReject.dox",
                             type: "POST",
                             data: {
-                                reportNo: r.reportNo,
+                                reviewNo: r.reviewNo,
                                 rejectReason: self.rejectReason
                             },
                             success: function () {
                                 alert("반려 완료");
-                                self.fnGetReportList();
+                                self.fnGetReviewList();
                                 self.rejectReason = "";
-                                $("#reportModal").modal("hide");
                             }
                         });
+                    },
+
+                    fnResetSearch() {
+                        this.keyword = "";
+                        this.currentPage = 1;
+                        this.searchType = "all";
+                        this.category = "ALL"
+                        this.fnGetReviewList();
                     },
                 }, // methods
                 mounted() {
@@ -685,7 +551,7 @@
                                                     path.includes('adminInquiry') ? 'inquiry' :
                                                         path.includes('adminStatistics') ? 'stats' :
                                                             '';
-                    self.fnGetReportList();
+                    self.fnGetReviewList();
                 }
             });
 
