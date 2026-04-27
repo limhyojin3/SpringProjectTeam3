@@ -274,12 +274,12 @@
             }
 
             /* 페이징 */
-            .pagination {
+            .pagination1 {
                 text-align: center;
                 margin-top: 25px;
             }
 
-            .pagination a {
+            .pagination1 a {
                 display: inline-block;
                 padding: 8px 12px;
                 margin: 0 4px;
@@ -292,14 +292,14 @@
                 font-weight: 500;
             }
 
-            .pagination a:hover {
+            .pagination1 a:hover {
                 background: #ff7f9f;
                 color: white;
                 transform: translateY(-2px);
                 box-shadow: 0 4px 12px rgba(255, 124, 159, 0.3);
             }
 
-            .pagination a:active {
+            .pagination1 a:active {
                 transform: translateY(0px);
             }
 
@@ -825,7 +825,7 @@
                                 </tr>
                             </table>
                         </template>
-                        <div class="pagination">
+                        <div class="pagination1">
                             <span v-for="num in totalPageReservation" :key="num">
                                 <a @click="fnPageChange(num)" href="javascript:;"
                                     :style="currentPage === num ? 'color: #ff1493; border: 1px solid #ff1493;' : ''">
@@ -869,7 +869,7 @@
                                 margin-left: auto; cursor: pointer;">답변하기</button>
 
                         </div>
-                        <div class="pagination">
+                        <div class="pagination1">
                             <span v-for="num in inquiryList.length" :key="num">
                                 <a @click="currentPage = num" href="javascript:;"
                                     :style="currentPage === num ? 'color: #ff1493; border: 1px solid #ff1493;' : ''">
@@ -972,7 +972,7 @@
                                     </div>
                                     <hr>
                                 </template>
-                                <div class="pagination">
+                                <div class="pagination1">
                                     <span v-for="num in totalPages" :key="num">
                                         <a @click="fnPageChange2(num)" href="javascript:;"
                                             :style="page === num ? 'color: #ff1493; border: 1px solid #ff1493;' : ''">
@@ -1014,7 +1014,7 @@
 
                                     </tbody>
                                 </table>
-                                <div class="pagination">
+                                <div class="pagination1">
                                     <span v-for="num in totalSimplePages" :key="num">
                                         <a @click="page = num" href="javascript:;"
                                             :style="page === num ? 'color: #ff1493; border: 1px solid #ff1493;' : ''">
