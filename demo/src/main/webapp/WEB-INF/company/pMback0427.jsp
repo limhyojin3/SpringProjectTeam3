@@ -1,7 +1,4 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
-
-<!-- <%-- 1. JSTL 코어 태그 라이브러리를 사용하겠다고 선언합니다 --%>
-<%@ taglib prefix="c" uri="jakarta.tags.core" %> -->
     <!DOCTYPE html>
     <html lang="en">
 
@@ -13,19 +10,14 @@
             integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
         <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
         <script src="/js/page-change.js"></script>
-        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
-    
-        <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
-        <script src="https://cdn.quilljs.com/1.3.6/quill.min.js"></script>
-        <link rel="stylesheet" href="${pageContext.request.contextPath}/css/common.css">
         <style>
             /* 기본 레이아웃 */
-            /*body {
+            body {
                 font-family: 'Malgun Gothic', sans-serif;
                 margin: 0;
                 padding: 0;
                 background-color: #f9f9f9;
-            }*/
+            }
 
             #app {
                 max-width: 1200px;
@@ -38,15 +30,15 @@
             }
 
             /* 헤더 영역 */
-            /* header {
+            header {
                 display: flex;
                 justify-content: space-between;
                 align-items: center;
                 padding: 20px;
                 border-bottom: 2px solid #333;
-            }*/
+            }
 
-            /*.nav-top button {
+            .nav-top button {
                 padding: 8px 15px;
                 margin-right: 5px;
                 border: 1px solid #ff7f9f;
@@ -54,17 +46,17 @@
                 color: #ff7f9f;
                 cursor: pointer;
                 border-radius: 5px;
-            }*/
+            }
 
-            /*.user-info {
+            .user-info {
                 background: #ff7f9f;
                 color: white;
                 padding: 10px 20px;
                 border-radius: 5px;
-            }*/
+            }
 
             /* 메인 바디 레이아웃 */
-            .container1 {
+            .container {
                 display: flex;
                 flex: 1;
             }
@@ -184,13 +176,13 @@
             }
 
             /* 푸터 */
-            /* footer {
+            footer {
                 background: #ffc1cc;
                 padding: 20px;
                 text-align: center;
                 font-size: 14px;
                 border-top: 1px solid #ddd;
-            }*/
+            }
 
             /* 플로팅 버튼 */
             .ai-chatbot {
@@ -274,12 +266,12 @@
             }
 
             /* 페이징 */
-            .pagination1 {
+            .pagination {
                 text-align: center;
                 margin-top: 25px;
             }
 
-            .pagination1 a {
+            .pagination a {
                 display: inline-block;
                 padding: 8px 12px;
                 margin: 0 4px;
@@ -292,14 +284,14 @@
                 font-weight: 500;
             }
 
-            .pagination1 a:hover {
+            .pagination a:hover {
                 background: #ff7f9f;
                 color: white;
                 transform: translateY(-2px);
                 box-shadow: 0 4px 12px rgba(255, 124, 159, 0.3);
             }
 
-            .pagination1 a:active {
+            .pagination a:active {
                 transform: translateY(0px);
             }
 
@@ -511,12 +503,21 @@
     </head>
 
     <body>
-        <jsp:include page="/WEB-INF/common/header.jsp" />
         <div id="app">
             <!-- html 코드는 id가 app인 태그 안에서 작업 -->
-            
+            <header>
+                <div class="logo"><img src="/img/merryViewLogo.png" alt="메리뷰" height="60"></div>
+                <div class="nav-top">
+                    <button>회사소개</button>
+                    <button>제휴업체</button>
+                    <button>커뮤니티</button>
+                    <button>패스구매</button>
+                    <button>고객센터</button>
+                </div>
+                <div class="user-info">{{ user.name }}님</div>
+            </header>
 
-            <div class="container1">
+            <div class="container">
                 <aside>
                     <div class="menu-item" v-for="m in menuList" :key="m.id">
                         <button :class="{ active: currentMenu === m.id }" @click="handleMenuClick(m.id)">
@@ -825,7 +826,7 @@
                                 </tr>
                             </table>
                         </template>
-                        <div class="pagination1">
+                        <div class="pagination">
                             <span v-for="num in totalPageReservation" :key="num">
                                 <a @click="fnPageChange(num)" href="javascript:;"
                                     :style="currentPage === num ? 'color: #ff1493; border: 1px solid #ff1493;' : ''">
@@ -869,7 +870,7 @@
                                 margin-left: auto; cursor: pointer;">답변하기</button>
 
                         </div>
-                        <div class="pagination1">
+                        <div class="pagination">
                             <span v-for="num in inquiryList.length" :key="num">
                                 <a @click="currentPage = num" href="javascript:;"
                                     :style="currentPage === num ? 'color: #ff1493; border: 1px solid #ff1493;' : ''">
@@ -926,7 +927,7 @@
                                                 style="width: 100%; height: 100%; object-fit: cover;">
                                         </div>
                                         <div class="review-product-name">
-<!--totalSimpleReviewCnt-->
+
                                             <a href="javascript:;" style="text-decoration: none; color:#0b3f8e;"
                                                 @click="fnSimpleReviewDetails3(w)"><strong>{{w.productName}}</strong></a>
 
@@ -972,7 +973,7 @@
                                     </div>
                                     <hr>
                                 </template>
-                                <div class="pagination1">
+                                <div class="pagination">
                                     <span v-for="num in totalPages" :key="num">
                                         <a @click="fnPageChange2(num)" href="javascript:;"
                                             :style="page === num ? 'color: #ff1493; border: 1px solid #ff1493;' : ''">
@@ -1014,7 +1015,7 @@
 
                                     </tbody>
                                 </table>
-                                <div class="pagination1">
+                                <div class="pagination">
                                     <span v-for="num in totalSimplePages" :key="num">
                                         <a @click="page = num" href="javascript:;"
                                             :style="page === num ? 'color: #ff1493; border: 1px solid #ff1493;' : ''">
@@ -1032,9 +1033,9 @@
             </div>
         </div>
 
-        <jsp:include page="/WEB-INF/common/footer.jsp" />
-
-        
+        <footer>
+            푸터 → 업체 정보 | 사업자번호: 000-00-00000 | 고객센터: 1588-0000
+        </footer>
 
         <div class="ai-chatbot">ai 챗봇</div>
         </div>
@@ -1056,8 +1057,8 @@
                     productList3: [],
                     productList4: [],
                     inquiryList: [
-                        { id: 1, product: '야외 스냅 기본', title: '투어 일정 변경하고 싶습니다.', userid: '김결혼', content: '04.01일 예약했는데 04.08일로 변경하고 싶어요.', imgUrl: "https://i.imgur.com/P4PQtwM.jpeg"},
-                        { id: 2, product: '해변스냅', title: '메이크업 추가되나요?', userid: '아리랑', content: '메이크업 여기서 받고싶어요.', imgUrl: "https://i.imgur.com/rFfGfor.jpeg"},
+                        { id: 1, product: '야외 스냅 기본', title: '투어 일정 변경하고 싶습니다.', userid: '김결혼', content: '04.01일 예약했는데 04.08일로 변경하고 싶어요.' },
+                        { id: 2, product: '해변스냅', title: '메이크업 추가되나요?', userid: '아리랑', content: '메이크업 여기서 받고싶어요.' },
                     ],
                     user: {
                         id: 1, name: 'ABC 드레스 샵', usePeriod: '25.01.01 ~ 26.01.01', lastPayment: '신협 ***', grade: '제휴업체' /* 일반업체, 제휴업체 구분 변수 */
@@ -1291,7 +1292,7 @@
                 fnCom: function () {
                     let self = this;
                     let param = {
-                        userid: "${sessionScope.sessionId}" //이거 맞다
+                        userid: 'sunsu09'
                     };
                     $.ajax({
                         url: "http://localhost:8080/company.dox",
@@ -1299,7 +1300,7 @@
                         type: "POST",
                         data: param,
                         success: function (data) {
-                            console.log(data); //info,result,message
+                            //console.log(data); //info,result,message
 
                             self.user.name = data.info.comName;
                             self.user.usePeriod = data.info.usePeriod;
@@ -1313,7 +1314,7 @@
                 fnProductList: function () {
                     let self = this;
                     let param = {
-                        userid: "${sessionScope.sessionId}"
+                        userid: 'sunsu09'
                     };
                     $.ajax({
                         url: "http://localhost:8080/productList.dox",
@@ -1349,7 +1350,7 @@
                     self.productPage = 'edit';
 
                     let param = {
-                        userid: "${sessionScope.sessionId}",
+                        userid: 'sunsu09',
                         productNo: item.productNo //파라미터로 보내주면되는구나~
                     };
                     $.ajax({
@@ -1499,9 +1500,8 @@
                     }
 
                 },
-                fnThumbnail(i) {    //fnThumbnail(개별문의) 해변스냅
-                    return this.inquiryList.find(p=> p.product === i.product).imgUrl;
-                    //return this.productList3.find(p => p.productName === inquiry.product).imgUrl;
+                fnThumbnail(inquiry) {    //fnThumbnail(개별문의)
+                    return this.productList3.find(p => p.productName === inquiry.product).imgUrl;
                 }
                 ,
                 handleMenuClick(menuId) {   //main,product,reservation,inquiry,review,customer
@@ -1577,7 +1577,7 @@
 
                             if (res.result === "success") {
                                 alert("상품 정보가 모두 수정되었습니다!");
-                                window.location.href = "/partnerManagement.do";  //
+                                window.location.href = "/company9.do";
                             } else {
                                 alert("서버 응답은 성공했지만, result가 success가 아닙니다.");
                             }
@@ -1605,7 +1605,7 @@
 
 
                     formData.append("proType", JSON.stringify(this.product2.proType));
-                    formData.append("userId", "${sessionScope.sessionId}");
+                    formData.append("userId", 'sunsu09');
 
                     $.ajax({
                         url: "/upload2.dox",
@@ -1623,7 +1623,7 @@
 
                             if (res.result === "success") {
                                 alert("상품 정보가 모두 수정되었습니다!");
-                                window.location.href = "/partnerManagement.do"; //
+                                window.location.href = "/company9.do";
                             } else {
                                 alert("서버 응답은 성공했지만, result가 success가 아닙니다.");
                             }
@@ -1647,7 +1647,7 @@
                             success: function (data) {
 
                                 alert(data.message);
-                                location.href = "/partnerManagement.do"
+                                location.href = "/company9.do"
                             }
                         });
 
@@ -1673,7 +1673,7 @@
                 fnReservationList: function () {
                     let self = this;
                     let param = {
-                        userId: "${sessionScope.sessionId}"
+                        userId: 'sunsu09'
                     };
                     $.ajax({
                         url: "/ReservationList.dox",
@@ -1692,7 +1692,7 @@
 
                     let self = this;
                     let param = {
-                        userId: "${sessionScope.sessionId}"
+                        userId: 'sunsu09'
                     };
                     $.ajax({
                         url: "/getReviewCnt.dox",
@@ -1700,7 +1700,7 @@
                         type: "POST",
                         data: param,
                         success: function (data) {
-                            console.log(data);
+                            //console.log(data);
                             self.productList3 = data.list;
                             self.newReviewCnt = data.info.reviewCount;
 
@@ -1720,7 +1720,7 @@
 
                     let self = this;
                     let param = {
-                        userId: "${sessionScope.sessionId}"
+                        userId: 'sunsu09'
                     };
                     $.ajax({
                         url: "/getSimpleReviewCnt.dox",
@@ -1750,7 +1750,7 @@
 
                     let self = this;
                     let param = {
-                        userId: "${sessionScope.sessionId}", //${sessionScope.sessionId}
+                        userId: 'sunsu09', //${sessionScope.sessionId}
                         productNo: w.productNo
                     };
                     console.log(param.productNo);
@@ -1776,7 +1776,7 @@
 
                     let self = this;
                     let param = {
-                        userId: "${sessionScope.sessionId}",
+                        userId: 'sunsu09',
                         productNo: w.productNo
                     };
 

@@ -33,7 +33,7 @@ public class CompanyController {
 	}
 	
 	/* 상품목록조회(카테고리 / 태그 필터)  + 상품 상세페이지  */
-	/* 이름변경: company2.do -> productCategoryTag.do */
+	/* 이름변경: company2.do -> productCategoryTag.do (4/27~)*/
 	@RequestMapping("/productCategoryTag.do")
 	public String te4(Model model) throws Exception {
 		return "/company/productCategoryTag";
