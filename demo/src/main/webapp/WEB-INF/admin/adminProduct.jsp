@@ -15,34 +15,177 @@
         <link rel="stylesheet" href="${pageContext.request.contextPath}/css/common.css">
         <link rel="stylesheet" href="${pageContext.request.contextPath}/css/adminNavi.css">
         <style>
+            /* 전체 레이아웃 */
             .middle {
                 width: 100%;
-                /* 화면 전체 높이를 사용하되, 헤더/푸터 제외한 나머지는 유연하게(1fr) */
                 display: grid;
-                grid-template-areas:
-                    "nav main";
+                grid-template-areas: "nav main";
                 grid-template-columns: 300px 1fr;
-                /* 너비 고정 */
-            }
-
-            .navi {
-                grid-area: nav;
-                border: 1px solid blue;
-                padding: 20px 10px;
-                display: flex;
-                flex-direction: column;
-                gap: 8px;
+                min-height: calc(100vh - 160px);
+                background: #f8f9fc;
             }
 
             .main {
                 grid-area: main;
-                border: 1px solid #ffc7c2;
-                padding: 20px;
+                padding: 35px;
+            }
+
+            /* 카드 박스 */
+            .content-box {
+                background: #fff;
+                border-radius: 18px;
+                box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
+                padding: 30px;
+            }
+
+            /* 상단 타이틀 */
+            .page-title {
+                font-size: 26px;
+                font-weight: 700;
+                color: #222;
+                margin-bottom: 25px;
+            }
+
+            /* 탭 메뉴 */
+            .tab-menu {
                 display: flex;
-                gap: 20px;
-                /* 카드 사이 간격 */
-                align-items: flex-start;
-                /* 카드들이 위쪽에 고정되도록 */
+                gap: 12px;
+                margin-bottom: 25px;
+                flex-wrap: wrap;
+            }
+
+            .tab-menu button {
+                border: none;
+                background: #eef1f6;
+                color: #555;
+                padding: 12px 24px;
+                border-radius: 12px;
+                font-size: 15px;
+                font-weight: 600;
+                transition: all 0.25s ease;
+                cursor: pointer;
+            }
+
+            .tab-menu button:hover {
+                background: #dbe7ff;
+                color: #2b62ff;
+                transform: translateY(-2px);
+            }
+
+            .tab-menu button.active {
+                background: linear-gradient(135deg, #4a7dff, #275df7);
+                color: #fff;
+                box-shadow: 0 6px 14px rgba(39, 93, 247, 0.25);
+            }
+
+            /* 테이블 */
+            .report-table {
+                width: 100%;
+                border-collapse: collapse;
+                overflow: hidden;
+                border-radius: 14px;
+            }
+
+            .report-table thead {
+                background: #f4f6fa;
+            }
+
+            .report-table th {
+                padding: 16px;
+                text-align: center;
+                font-size: 14px;
+                font-weight: 700;
+                color: #444;
+                border-bottom: 1px solid #e6eaf0;
+            }
+
+            .report-table td {
+                padding: 15px;
+                text-align: center;
+                font-size: 14px;
+                color: #555;
+                border-bottom: 1px solid #f0f2f5;
+            }
+
+            .report-table tbody tr {
+                transition: 0.2s;
+            }
+
+            .report-table tbody tr:hover {
+                background: #f8fbff;
+            }
+
+            /* 상태 뱃지 */
+            .badge-on {
+                display: inline-block;
+                background: #e7f8ee;
+                color: #1c9b52;
+                padding: 5px 12px;
+                border-radius: 20px;
+                font-size: 13px;
+                font-weight: 600;
+            }
+
+            .badge-off {
+                display: inline-block;
+                background: #fff0f0;
+                color: #e04a4a;
+                padding: 5px 12px;
+                border-radius: 20px;
+                font-size: 13px;
+                font-weight: 600;
+            }
+
+            /* 반응형 */
+            @media (max-width: 1200px) {
+                .middle {
+                    grid-template-columns: 220px 1fr;
+                }
+            }
+
+            @media (max-width: 900px) {
+                .middle {
+                    grid-template-columns: 1fr;
+                }
+
+                .main {
+                    padding: 20px;
+                }
+            }
+
+            .page-box {
+                margin-top: 25px;
+                display: flex;
+                justify-content: center;
+                gap: 8px;
+                flex-wrap: wrap;
+            }
+
+            .page-box button {
+                border: none;
+                background: #eef1f6;
+                padding: 10px 14px;
+                min-width: 42px;
+                border-radius: 10px;
+                font-weight: 600;
+                color: #555;
+                cursor: pointer;
+                transition: .2s;
+            }
+
+            .page-box button:hover {
+                background: #dbe7ff;
+                color: #2b62ff;
+            }
+
+            .page-box button.active {
+                background: #275df7;
+                color: white;
+            }
+
+            .page-box button:disabled {
+                opacity: .4;
+                cursor: not-allowed;
             }
         </style>
     </head>
@@ -53,75 +196,275 @@
             <div class="middle">
                 <jsp:include page="/WEB-INF/admin/adminNavi.jsp" />
                 <div class="main">
-                    <div class="tab-menu">
-                        <button :class="{active: activeTab === 'product'}" @click="fnChangeTab('product')">상품관리</button>
-                        <button :class="{active: activeTab === 'coupon'}" @click="fnChangeTab('coupon')">쿠폰관리</button>
-                        <button :class="{active: activeTab === 'pass'}" @click="fnChangeTab('pass')">패스관리</button>
+                    <div class="content-box">
+                        <div class="page-title">상품 / 쿠폰 / 패스 관리</div>
+                        <div class="tab-menu">
+                            <button :class="{active: activeTab === 'product'}"
+                                @click="fnChangeTab('product')">상품관리</button>
+                            <button :class="{active: activeTab === 'coupon'}"
+                                @click="fnChangeTab('coupon')">쿠폰관리</button>
+                            <button :class="{active: activeTab === 'pass'}" @click="fnChangeTab('pass')">패스관리</button>
+                        </div>
+
+                        <!-- 상품 -->
+                        <div v-if="activeTab === 'product'" style="margin-bottom:15px; display:flex; gap:10px;">
+
+                            <input type="text" v-model="keyword" placeholder="상품명 / 업체명 검색" class="form-control"
+                                style="width:250px;">
+
+                            <select v-model="status" class="form-control" style="width:140px;">
+                                <option value="">전체상태</option>
+                                <option value="1">판매중</option>
+                                <option value="0">중지</option>
+                            </select>
+
+                            <button class="btn btn-primary" @click="fnSearch()">검색</button>
+
+                        </div>
+                        <table v-if="activeTab === 'product'" class="report-table">
+                            <thead>
+                                <tr>
+                                    <th>상품번호</th>
+                                    <th>업체명</th>
+                                    <th>상품명</th>
+                                    <th>가격</th>
+                                    <th>상태</th>
+                                    <th>관리</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr v-for="p in list" :key="p.productNo">
+                                    <td>{{ p.productNo }}</td>
+                                    <td>{{ p.comName}}</td>
+                                    <td>{{ p.productName }}</td>
+                                    <td>{{ p.originalPrice }}</td>
+                                    <td>
+                                        <span :class="p.isActive === '1' ? 'badge-on' : 'badge-off'">
+                                            {{ p.isActive === '1' ? '판매중' : '중지' }}
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <!-- <button class="btn btn-sm btn-info" @click="fnView(p.productNo)">상세</button> -->
+
+                                        <button v-if="p.isActive == 1" class="btn btn-sm btn-warning"
+                                            @click="fnStatus(p.productNo,0)">중지</button>
+
+                                        <button v-else class="btn btn-sm btn-success"
+                                            @click="fnStatus(p.productNo,1)">재판매</button>
+
+                                        <!-- <button class="btn btn-sm btn-danger" @click="fnDelete(p.productNo)">삭제</button> -->
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <div v-if="activeTab === 'product'" class="page-box">
+
+                            <button @click="fnPageMove(currentPage - 1)" :disabled="currentPage == 1">
+                                < </button>
+
+                                    <button v-for="n in index" :key="n" @click="fnPageMove(n)"
+                                        :class="{active : currentPage == n}">
+                                        {{n}}
+                                    </button>
+
+                                    <button @click="fnPageMove(currentPage + 1)" :disabled="currentPage == index">
+                                        >
+                                    </button>
+
+                        </div>
+                        <!-- 쿠폰 -->
+                        <div v-if="activeTab === 'coupon'" style="margin-bottom:15px; display:flex; gap:10px;">
+
+                            <input type="text" v-model="keyword" placeholder="쿠폰코드 / 쿠폰명 검색" class="form-control"
+                                style="width:250px;">
+
+                            <button class="btn btn-primary" @click="fnSearch()">검색</button>
+
+                            <button class="btn btn-success" @click="fnCouponModal()">
+                                쿠폰등록
+                            </button>
+
+                        </div>
+                        <table v-if="activeTab === 'coupon'" class="report-table">
+                            <thead>
+                                <tr>
+                                    <th>코드</th>
+                                    <th>쿠폰명</th>
+                                    <th>할인율</th>
+                                    <th>발급방식</th>
+                                    <th>최대수량</th>
+                                    <th>관리</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr v-for="c in list" :key="c.couponCode">
+                                    <td>{{ c.couponCode }}</td>
+                                    <td>{{ c.couponName }}</td>
+                                    <td>{{ c.discountRate }}%</td>
+                                    <td>{{ c.issueType }}</td>
+                                    <td>{{ c.maxIssueCnt }}</td>
+                                    <td>
+                                        <button class="btn btn-sm btn-danger" @click="fnCouponDelete(c.couponCode)">
+                                            삭제
+                                        </button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <!-- 패스 -->
+                        <div v-if="activeTab === 'pass'" style="margin-bottom:15px; display:flex; gap:10px;">
+                            <input type="text" v-model="keyword" placeholder="패스명 검색" class="form-control"
+                                style="width:220px;">
+
+                            <select v-model="status" class="form-control" style="width:140px;">
+                                <option value="">전체상태</option>
+                                <option value="1">사용중</option>
+                                <option value="0">중지</option>
+                            </select>
+
+                            <button class="btn btn-primary" @click="fnSearch()">검색</button>
+
+                            <button class="btn btn-success" @click="fnOpenPassModal()">패스등록</button>
+                        </div>
+                        <table v-if="activeTab === 'pass'" class="report-table">
+                            <thead>
+                                <tr>
+                                    <th>번호</th>
+                                    <th>이름</th>
+                                    <th>가격</th>
+                                    <th>리뷰수</th>
+                                    <th>상태</th>
+                                    <th>관리</th>
+
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr v-for="p in list" :key="p.passNo">
+                                    <td>{{ p.passNo }}</td>
+                                    <td>{{ p.passName }}</td>
+                                    <td>{{ p.price }}</td>
+                                    <td>{{ p.reviewCnt }}</td>
+                                    <td>
+                                        <span :class="p.isActive === '1' ? 'badge-on' : 'badge-off'">
+                                            {{ p.isActive === '1' ? '사용중' : '중지' }}
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <button v-if="p.isActive == 1" class="btn btn-sm btn-warning"
+                                            @click="fnPassStatus(p.passNo,0)">
+                                            중지
+                                        </button>
+
+                                        <button v-else class="btn btn-sm btn-success" @click="fnPassStatus(p.passNo,1)">
+                                            재사용
+                                        </button>
+
+                                        <button class="btn btn-sm btn-danger" @click="fnDeletePass(p.passNo)">
+                                            삭제
+                                        </button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <!-- ========================= -->
+                        <!-- 쿠폰 등록 모달 -->
+                        <!-- ========================= -->
+                        <div class="modal fade" id="couponModal">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+
+                                    <div class="modal-header">
+                                        <h5 class="modal-title">쿠폰 등록</h5>
+                                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                    </div>
+
+                                    <div class="modal-body">
+
+                                        <input class="form-control mb-2" v-model="coupon.couponCode" placeholder="쿠폰코드">
+
+                                        <input class="form-control mb-2" v-model="coupon.couponName" placeholder="쿠폰명">
+
+                                        <input class="form-control mb-2" v-model="coupon.discountRate"
+                                            placeholder="할인율">
+
+                                        <select class="form-control mb-2" v-model="coupon.issueType">
+
+                                            <option value="AUTO">AUTO</option>
+                                            <option value="CODE">CODE</option>
+
+                                        </select>
+
+                                        <input class="form-control" v-model="coupon.maxIssueCnt" placeholder="최대 발급 수량">
+
+                                    </div>
+
+                                    <div class="modal-footer">
+                                        <button class="btn btn-primary" @click="fnCouponSave()">
+                                            저장
+                                        </button>
+
+                                        <button class="btn btn-secondary" data-dismiss="modal">
+                                            닫기
+                                        </button>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                        <!-- 패스 등록 모달 -->
+                        <div class="modal fade" id="passModal">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+
+                                    <div class="modal-header">
+                                        <h5 class="modal-title">패스 등록</h5>
+                                        <button type="button" class="close" data-dismiss="modal">
+                                            &times;
+                                        </button>
+                                    </div>
+
+                                    <div class="modal-body">
+
+                                        <div class="form-group">
+                                            <label>패스명</label>
+                                            <input type="text" v-model="passForm.passName" class="form-control">
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label>가격</label>
+                                            <input type="number" v-model="passForm.price" class="form-control">
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label>리뷰수</label>
+                                            <input type="number" v-model="passForm.reviewCnt" class="form-control">
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label>상태</label>
+                                            <select v-model="passForm.isActive" class="form-control">
+                                                <option value="1">사용중</option>
+                                                <option value="0">중지</option>
+                                            </select>
+                                        </div>
+
+                                    </div>
+
+                                    <div class="modal-footer">
+                                        <button class="btn btn-primary" @click="fnSavePass()">
+                                            저장
+                                        </button>
+
+                                        <button class="btn btn-secondary" data-dismiss="modal">
+                                            닫기
+                                        </button>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
                     </div>
-
-                    <!-- 상품 -->
-                    <table v-if="activeTab === 'product'" class="report-table">
-                        <thead>
-                            <tr>
-                                <th>상품번호</th>
-                                <th>업체명</th>
-                                <th>상품명</th>
-                                <th>가격</th>
-                                <th>상태</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr v-for="p in list" :key="p.productNo">
-                                <td>{{ p.productNo }}</td>
-                                <td>{{ p.comName}}</td>
-                                <td>{{ p.productName }}</td>
-                                <td>{{ p.originalPrice }}</td>
-                                <td>{{ p.isActive === 1 ? '판매중' : '중지' }}</td>
-                            </tr>
-                        </tbody>
-                    </table>
-
-                    <!-- 쿠폰 -->
-                    <table v-if="activeTab === 'coupon'" class="report-table">
-                        <thead>
-                            <tr>
-                                <th>코드</th>
-                                <th>쿠폰명</th>
-                                <th>할인율</th>
-                                <th>발급방식</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr v-for="c in list" :key="c.couponCode">
-                                <td>{{ c.couponCode }}</td>
-                                <td>{{ c.couponName }}</td>
-                                <td>{{ c.discountRate }}%</td>
-                                <td>{{ c.issueType }}</td>
-                            </tr>
-                        </tbody>
-                    </table>
-
-                    <!-- 패스 -->
-                    <table v-if="activeTab === 'pass'" class="report-table">
-                        <thead>
-                            <tr>
-                                <th>패스번호</th>
-                                <th>이름</th>
-                                <th>가격</th>
-                                <th>리뷰수</th>
-                                <th>상태</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr v-for="p in list" :key="p.passNo">
-                                <td>{{ p.passNo }}</td>
-                                <td>{{ p.passName }}</td>
-                                <td>{{ p.price }}</td>
-                                <td>{{ p.reviewCnt }}</td>
-                                <td>{{ p.isActive === 'Y' ? '사용중' : '중지' }}</td>
-                            </tr>
-                        </tbody>
-                    </table>
                 </div>
             </div>
             <jsp:include page="/WEB-INF/common/footer.jsp" />
@@ -134,9 +477,25 @@
                         activeMenu: "",
                         activeTab: "product",
                         list: [],
+                        info: {},
+                        keyword: "",
+                        status: "",
                         pageSize: 10,
                         currentPage: 1,
-                        index: 1
+                        index: 1,
+                        coupon: {
+                            couponCode: "",
+                            couponName: "",
+                            discountRate: "",
+                            issueType: "AUTO",
+                            maxIssueCnt: ""
+                        },
+                        passForm: {
+                            passName: "",
+                            price: 0,
+                            reviewCnt: 0,
+                            isActive: "1"
+                        },
                     };
                 },
                 methods: {
@@ -144,9 +503,17 @@
                     fnPage: function (url) {
                         location.href = url;
                     },
+
                     fnChangeTab(tab) {
+                        console.log(tab);
                         this.activeTab = tab;
                         this.currentPage = 1;
+                        this.fnGetList();
+                    },
+
+                    fnPageMove(p) {
+                        if (p < 1 || p > this.index) return;
+                        this.currentPage = p;
                         this.fnGetList();
                     },
 
@@ -155,7 +522,7 @@
                         let url = "";
 
                         if (self.activeTab === 'product') {
-                            url = "/productList.dox";
+                            url = "/productAdminList.dox";
                         } else if (self.activeTab === 'coupon') {
                             url = "/couponList.dox";
                         } else if (self.activeTab === 'pass') {
@@ -168,37 +535,241 @@
                             dataType: "json",
                             data: {
                                 pageSize: self.pageSize,
-                                offSet: self.pageSize * (self.currentPage - 1)
+                                offSet: self.pageSize * (self.currentPage - 1),
+                                keyword: self.keyword,
+                                status: self.status
                             },
                             success: function (res) {
-                                console.log("🔥 응답:", res);
-                                self.list = res.list;
-                                self.index = Math.ceil(res.totalCount / self.pageSize);
+                                console.log("응답:", res);
+                                console.log("응답 전체 =", JSON.stringify(res));
+                                console.log("list =", res.list);
+                                self.list = res.list || [];
+                                self.index = Math.ceil((res.totalCount || 0) / self.pageSize);
+                            },
+                        });
+                    },
+
+                    fnSearch() {
+                        this.currentPage = 1;
+                        this.fnGetList();
+                    },
+
+                    fnView(no) {
+                        let self = this;
+
+                        $.ajax({
+                            url: "/productView.dox",
+                            type: "POST",
+                            dataType: "json",
+                            data: {
+                                productNo: no
+                            },
+                            success: function (res) {
+                                console.log(res);
+
+                                if (res.result == "success") {
+                                    self.info = res.info;
+
+                                    $("#productModal").modal("show");
+                                } else {
+                                    alert("조회 실패");
+                                }
                             }
                         });
-                    }
+                    },
 
+                    fnStatus(no, status) {
+                        let self = this;
+
+                        let msg = status == 1 ? "재판매 하시겠습니까?" : "판매중지 하시겠습니까?";
+
+                        if (!confirm(msg)) {
+                            return;
+                        }
+
+                        $.ajax({
+                            url: "/productStatusUpdate.dox",
+                            type: "POST",
+                            dataType: "json",
+                            data: {
+                                productNo: no,
+                                isActive: status
+                            },
+                            success: function (res) {
+                                alert(res.message);
+                                self.fnGetList();
+                            }
+                        });
+                    },
+
+                    fnDelete(no) {
+                        let self = this;
+
+                        if (!confirm("정말 삭제하시겠습니까?")) {
+                            return;
+                        }
+
+                        $.ajax({
+                            url: "/productDelete.dox",
+                            type: "POST",
+                            dataType: "json",
+                            data: {
+                                productNo: no
+                            },
+                            success: function (res) {
+                                alert(res.message);
+                                self.fnGetList();
+                            }
+                        });
+                    },
+
+                    fnCouponModal() {
+
+                        this.coupon = {
+                            couponCode: "",
+                            couponName: "",
+                            discountRate: 1,
+                            issueType: "AUTO",
+                            maxIssueCnt: 1
+                        };
+
+                        $("#couponModal").modal("show");
+                    },
+
+
+                    // 쿠폰 저장
+                    fnCouponSave() {
+
+                        let self = this;
+
+                        $.ajax({
+                            url: "http://localhost:8080/couponInsert.dox",
+                            type: "POST",
+                            dataType: "json",
+                            data: self.coupon,
+                            success: function (res) {
+                                alert(res.message);
+                                if (res.result == "success") {
+                                    $("#couponModal").modal("hide");
+                                    self.fnGetList();
+                                }
+                            },
+                            error: function (err) {
+                                console.log(err);
+                            }
+                        });
+                    },
+
+
+                    // 쿠폰 삭제
+                    fnCouponDelete(code) {
+
+                        let self = this;
+
+                        if (!confirm("삭제하시겠습니까?")) {
+                            return;
+                        }
+
+                        $.ajax({
+                            url: "/couponDelete.dox",
+                            type: "POST",
+                            dataType: "json",
+                            data: { couponCode: code },
+                            success: function (res) {
+
+                                alert(res.message);
+                                self.fnGetList();
+
+                            }
+                        });
+                    },
+                    fnOpenPassModal() {
+
+                        this.passForm = {
+                            passName: "",
+                            price: 0,
+                            reviewCnt: 0,
+                            isActive: "1"
+                        };
+
+                        $("#passModal").modal("show");
+                    },
+
+                    fnSavePass() {
+
+                        let self = this;
+
+                        $.ajax({
+                            url: "http://localhost:8080/passAdd.dox",
+                            type: "POST",
+                            dataType: "json",
+                            data: self.passForm,
+                            success: function (res) {
+                                alert(res.message);
+
+                                if (res.result == "success") {
+                                    $("#passModal").modal("hide");
+                                    self.fnGetList();
+                                }
+                            }
+                        });
+                    },
+
+                    fnDeletePass(no) {
+
+                        let self = this;
+
+                        if (!confirm("삭제하시겠습니까?")) return;
+
+                        $.ajax({
+                            url: "/passDelete.dox",
+                            type: "POST",
+                            dataType: "json",
+                            data: { passNo: no },
+                            success: function (res) {
+                                alert(res.message);
+                                self.fnGetList();
+                            }
+                        });
+                    },
+
+                    fnPassStatus(no, status) {
+
+                        let self = this;
+                        let msg = status == 1 ? "재사용 하시겠습니까?" : "중지 하시겠습니까?";
+                        if (!confirm(msg)) {
+                            return;
+                        }
+                        $.ajax({
+                            url: "/passStatusUpdate.dox",
+                            type: "POST",
+                            dataType: "json",
+                            data: {
+                                passNo: no,
+                                isActive: status
+                            },
+                            success: function (res) {
+                                alert(res.message);
+                                self.fnGetList();
+                            }
+                        });
+                    },
                 }, // methods
                 mounted() {
                     // 처음 시작할 때 실행되는 부분
                     let self = this;
                     const path = location.pathname;
                     this.activeMenu =
-                        path.includes('adminMain') ? 'main' :
-                            path.includes('adminUser') ? 'user' :
-                                path.includes('adminCompany') ? 'company' :
-                                    path.includes('adminBoard') ? 'board' :
-                                        path.includes('adminReviewWait') ? 'reviewWait' :
-                                            path.includes('adminPayment') ? 'payment' :
-                                                path.includes('adminReport') ? 'report' :
-                                                    path.includes('adminStatistics') ? 'stats' :
-                                                        '';
-                    self.fnGetList();                                    
+                        path.includes('adminProduct') ? 'product' : '';
+                    console.log("mounted 실행");
+                    self.fnGetList();
                 }
             });
 
             app.mount('#app');
         </script>
+        <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.min.js"></script>
     </body>
 
     </html>
