@@ -32,11 +32,12 @@ public class FileService {
     // 2. 빈(Bean)이 생성된 후 설정값들을 가지고 Cloudinary 객체 초기화
     @PostConstruct
     public void init() {
-        this.cloudinary = new Cloudinary(ObjectUtils.asMap(
-            "cloud_name", cloudName,
-            "api_key", apiKey,
-            "api_secret", apiSecret
-        ));
+    	this.cloudinary = new Cloudinary(ObjectUtils.asMap(
+                "cloud_name", "drs9up8om",
+                "api_key", "622697756414154",
+                "api_secret", "9PXw753Ff1PzeFv98TlxlrYC0Pg",
+                "secure", true 
+            ));
     }
 
     /**
