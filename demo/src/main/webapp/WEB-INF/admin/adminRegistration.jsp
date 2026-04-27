@@ -224,21 +224,15 @@
                         </div>
 
                         <!-- 카드 -->
-                        <div class="regi-card highlight" v-if="info">
+                        <div class="regi-card highlight">
 
                             <!-- 예약 정보 -->
                             <div class="regi-name">결제 정보</div>
 
-                            <div class="order-info">
-                                <p><strong>상품번호</strong> {{info.product_no}}</p>
-                                <p><strong>업체번호</strong> {{info.company_no}}</p>
-                                <p><strong>이용 날짜</strong> {{info.use_date}}</p>
-                                <p><strong>이용 시간</strong> {{info.use_time}}</p>
-                            </div>
-
+                            
                             <!-- 금액 -->
                             <div class="regi-price">
-                                {{info.amount}} <span>원</span>
+                               <span>1000원</span>
                             </div>
 
                             <!-- 약관 -->
@@ -269,7 +263,7 @@
                             <div class="mt-4">
                                 <button class="btn btn-secondary mr-2" onclick="history.back()">취소</button>
 
-                                <button class="btn btn-primary" @click="fnPayment(info)"
+                                <button class="btn btn-primary" @click="fnPayment"
                                     :disabled="!(agreeRequired1 && agreeRequired2)">
                                     결제하기
                                 </button>
@@ -289,15 +283,6 @@
                 data() {
                     return {
                         // 변수 - (key : value)
-                        info: {
-                            res_no: 101,
-                            user_id: "test_user",
-                            product_no: 2001,
-                            company_no: 3001,
-                            use_date: "2026-05-01",
-                            use_time: "14:00",
-                            amount: 1000
-                        },
                         activeMenu: "",
                         sessionId: "${sessionId}",
                         isModalOpen: false,
@@ -317,7 +302,7 @@
                     fnPage: function (url) {
                         location.href = url;
                     },
-                    fnPayment: function (info) {
+                    fnPayment: function () {
                         let self = this;
                         if (!(this.agreeRequired1 && this.agreeRequired2)) {
                             alert("필수 약관에 동의해주세요");
@@ -328,58 +313,46 @@
                                 channelKey: "channel-key-1ebd3d65-20bd-412e-83f3-b7e0c3b368ff",
                                 pay_method: "card",
                                 merchant_uid: "order_" + self.sessionId + "_" + new Date().getTime(), // 주문 고유 번호
-                                name: "예약",
-                                amount: info.amount,      //제품 가격
+                                name: "등록비",
+                                amount: 1000,      //제품 가격
                             },
-                            function (rsp) { 
-                                console.log("전체 response:", rsp);
-                                console.log("success:", rsp.success);
-                                console.log("imp_uid:", rsp.imp_uid);
-
-                                if (rsp.success) {
-                                    // 1. @RequestParam 형식을 맞추기 위해 URLSearchParams 사용
-                                    var params = new URLSearchParams();
-                                    params.append('imp_uid', rsp.imp_uid);
-                                    params.append('amount', rsp.paid_amount);
-                                    // 이전에 보내주신 코드 흐름상 item이나 self.selectedPass를 활용하세요
-                                    params.append('passNo', self.selectedPass.passNo);
-                                    params.append('userId', 'test_user');
-
-                                    console.log("서버로 보내는 데이터:", params.toString());
-
-                                    // 2. 서버 검증 요청
-                                    axios.post('/verifyPayment.dox', params)
-                                        .then(function (res) {
-                                            if (res.data.success) {
-                                                alert("검증 성공: " + res.data.msg);
-                                            } else {
-                                                // 서버 콘솔 로그를 확인해야 하는 시점
-                                                alert("검증 실패: " + res.data.msg);
-                                                console.log("실패 상세:", res.data);
-                                            }
-                                        })
-                                        .catch(function (err) {
-                                            console.error("통신 에러 발생", err);
-                                        });
+                            function (response) { 
+                                console.log(response);
+                                console.log("전체 response:", response);
+                                console.log("success:", response.success);
+                                console.log("imp_uid:", response.imp_uid);
+                                console.log("status:", response.status);
+                                console.log("paid_amount:", response.paid_amount);
+                                if (response.success) {
+                                    console.log("포트원 번호: " + response.imp_uid);
+                                    // 우리쪽 db에 결제정보 저장
+                                    // 페이지 이동 필요하면 페이지 이동 (메인 or 마이)
+                                    // 결제 성공 후 서버 검증
+                                    console.log("imp_uid:", response.imp_uid);
+                                    setTimeout(() => {
+                                        self.fnVerifyPayment(response.imp_uid);
+                                    }, 5000);
                                 } else {
-                                    alert("결제에 실패하였습니다. 에러 내용: " + rsp.error_msg);
+                                    console.log("에러내용: " + response.error_msg);
+                                    alert("결제가 취소되었습니다");
                                 }
                             },
                         );
                     },
 
-                    fnVerifyPayment(imp_uid, selectedPass) {
+                    fnVerifyPayment(imp_uid) {
                         let self = this
                         console.log("서버로 보내는 imp_uid:", imp_uid);
                         $.ajax({
-                            url: "/verifyPayment.dox",
+                            url: "http://localhost:8080/verifyPayment.dox",
                             type: "POST",
                             data: {
                                 userId: this.sessionId,     // 로그인 아이디
                                 imp_uid: imp_uid,           // 결제 고유 값(중복)
-                                passNo: selectedPass.passNo,
-                                amount: selectedPass.price,
-                                itemName: selectedPass.passName,
+                                amount: 1000,
+                                itemName: "등록비",
+                                type:"REG"
+
 
                             },
                             success: function (res) {
@@ -388,7 +361,7 @@
                                     console.log("포트원 번호: " + res.imp_uid);
                                     alert("결제가완료되었어요~~~~~");
                                     self.isModalOpen = false;
-                                    location.href = "/adminPayFinish.do?orderId=" + res.imp_uid;
+                                    location.href = "/adminPayFinish.do?payNo=" + res.pay_no + "&type=REG";
                                 } else {
                                     console.log("에러내용: " + res.error_msg);
                                     alert("결제 검증 실패");

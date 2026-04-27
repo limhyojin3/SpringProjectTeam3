@@ -20,7 +20,14 @@
         }
         .logo { font-size: 24px; font-weight: 900; color: var(--primary-color); text-decoration: none; }
         .nav-links a { margin-left: 30px; text-decoration: none; color: #333; font-weight: 600; }
-
+		
+		/* ✅ 헤더 nav-link 호버 효과 */
+		.navbar .nav-link {
+		    transition: text-shadow 0.2s ease;
+		}
+		.navbar .nav-link:hover {
+		    text-shadow: 0 0 8px rgba(255, 77, 109, 0.5) !important;
+		}
 
 /* 4. 푸터 영역 */
         .footer {

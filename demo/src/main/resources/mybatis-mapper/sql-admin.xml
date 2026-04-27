@@ -327,7 +327,7 @@
 	</select>
 
 	<insert id="insertPayment" parameterType="hashmap" useGeneratedKeys="true"
-		keyProperty="payNo">
+		keyProperty="pay_no">
 		INSERT INTO payment (
 		user_id,
 		amount,
@@ -349,11 +349,27 @@
 		item_name
 		)
 		VALUES (
-		#{payNo},
+		#{pay_no},
 		#{passNo},
 		#{itemName}
 		)
 	</insert>
+	
+	<!--결제완료페이지에서조회-->
+	<select id="selectPaymentByPayNo" parameterType="int" resultType="hashmap">
+	    SELECT 
+	        P.pay_no,
+	        P.user_id,
+	        P.amount,
+	        P.pay_status,
+	        P.pay_date,
+	        PP.pass_no,
+	        PP.item_name
+	    FROM payment P
+	    LEFT JOIN payment_pass PP 
+	        ON P.pay_no = PP.pay_no
+	    WHERE P.pay_no = #{payNo}
+	</select>
 
 	<select id="selectInquiryList" parameterType="hashmap"
 		resultType="com.example.demo.admin.model.Admin"> SELECT * FROM inquiry
@@ -963,7 +979,7 @@
 	
 	
 <!-- 상품 관리 -->
-	<select id="selectProductList" parameterType="hashmap" resultType="com.example.demo.admin.model.Admin">
+	<select id="selectAdminProductList" parameterType="hashmap" resultType="com.example.demo.admin.model.Admin">
     SELECT
         p.product_no AS productNo,
         p.company_no AS companyNo,
@@ -978,14 +994,85 @@
         c.com_name AS comName
     FROM product p
     LEFT JOIN company c ON p.company_no = c.company_no
-    ORDER BY product_no DESC
+    <where>
+        <if test="keyword != null and keyword != ''">
+            AND (
+                p.product_name LIKE CONCAT('%', #{keyword}, '%')
+                OR c.com_name LIKE CONCAT('%', #{keyword}, '%')
+            )
+        </if>
+
+        <if test="status != null and status != ''">
+            AND p.is_active = #{status}
+        </if>
+    </where>
+    ORDER BY p.product_no DESC
     LIMIT #{pageSize} OFFSET #{offSet}
 	</select>
 
-	<select id="selectProductCount" parameterType="hashmap" resultType="int">
-	    SELECT COUNT(*) FROM product
+	<select id="selectAdminProductCount" parameterType="hashmap" resultType="int">
+	    SELECT COUNT(*) FROM product p
+	    LEFT JOIN company c
+            ON p.company_no = c.company_no
+	    <where>
+            <if test="keyword != null and keyword != ''">
+                AND (
+                    p.product_name LIKE CONCAT('%', #{keyword}, '%')
+                    OR c.com_name LIKE CONCAT('%', #{keyword}, '%')
+                )
+            </if>
+
+            <if test="status != null and status != ''">
+                AND p.is_active = #{status}
+            </if>
+        </where>
 	</select>
 	
+	 <!-- 상품 상태 변경 -->
+    <update id="updateProductStatus"
+            parameterType="hashmap">
+
+        UPDATE product
+        SET is_active = #{isActive}
+        WHERE product_no = #{productNo}
+
+    </update>
+
+
+    <!-- 상품 삭제 -->
+    <delete id="deleteProduct"
+            parameterType="hashmap">
+
+        DELETE FROM product
+        WHERE product_no = #{productNo}
+
+    </delete>
+
+
+    <!-- 상품 상세 -->
+    <select id="selectProductInfo"
+            parameterType="hashmap"
+            resultType="com.example.demo.admin.model.Admin">
+
+        SELECT
+            p.product_no       AS productNo,
+            p.company_no       AS companyNo,
+            p.product_name     AS productName,
+            p.product_details  AS productDetails,
+            p.original_price   AS originalPrice,
+            p.is_active        AS isActive,
+            p.img_url          AS imgUrl,
+            p.pro_type         AS proType,
+            p.tag              AS tag,
+            p.deposit          AS deposit,
+            c.com_name         AS comName
+        FROM product p
+        LEFT JOIN company c
+            ON p.company_no = c.company_no
+        WHERE p.product_no = #{productNo}
+
+    </select>
+<!-- 쿠폰 관리-->	
 	<select id="selectCouponList" parameterType="hashmap" resultType="com.example.demo.admin.model.Admin">
     SELECT
         coupon_code AS couponCode,
@@ -994,14 +1081,61 @@
         issue_type AS issueType,
         max_issue_cnt AS maxIssueCnt
     FROM coupon
+    WHERE 1=1
+    <if test="keyword != null and keyword != ''">
+	    AND (
+	        coupon_code LIKE CONCAT('%', #{keyword}, '%')
+	        OR coupon_name LIKE CONCAT('%', #{keyword}, '%')
+	    )
+	</if>
     ORDER BY coupon_code DESC
     LIMIT #{pageSize} OFFSET #{offSet}
 	</select>
 	
 	<select id="selectCouponCount" parameterType="hashmap" resultType="int">
 	    SELECT COUNT(*) FROM coupon
+	    WHERE 1=1
+    <if test="keyword != null and keyword != ''">
+	    AND (
+	        coupon_code LIKE CONCAT('%', #{keyword}, '%')
+	        OR coupon_name LIKE CONCAT('%', #{keyword}, '%')
+	    )
+	</if>
 	</select>
 	
+<!-- 쿠폰 등록 -->
+	<insert id="insertCoupon"
+	        parameterType="hashmap">
+	
+	    INSERT INTO coupon
+	    (
+	        coupon_code,
+	        coupon_name,
+	        discount_rate,
+	        issue_type,
+	        max_issue_cnt
+	    )
+	    VALUES
+	    (
+	        #{couponCode},
+	        #{couponName},
+	        #{discountRate},
+	        #{issueType},
+	        #{maxIssueCnt}
+	    )
+	
+	</insert>
+
+<!-- 쿠폰 삭제 -->
+	<delete id="deleteCoupon"
+	        parameterType="hashmap">
+	
+	    DELETE FROM coupon
+	    WHERE coupon_code = #{couponCode}
+	
+	</delete>
+<!--패스관리-->
+	<!-- 패스목록-->
 	<select id="selectAllPassList" parameterType="hashmap" resultType="com.example.demo.admin.model.Admin">
     SELECT
         pass_no AS passNo,
@@ -1011,11 +1145,114 @@
         is_active AS isActive,
         reg_date AS regDate
     FROM pass_product
+    WHERE 1 = 1
+    <!-- 검색어 -->
+    <if test="keyword != null and keyword != ''">
+        AND pass_name LIKE CONCAT('%', #{keyword}, '%')
+    </if>
+
+    <!-- 상태 -->
+    <if test="status != null and status != ''">
+        AND is_active = #{status}
+    </if>
+
     ORDER BY pass_no DESC
     LIMIT #{pageSize} OFFSET #{offSet}
 	</select>
 	
 	<select id="selectPassCount" parameterType="hashmap" resultType="int">
 	    SELECT COUNT(*) FROM pass_product
+	     WHERE 1 = 1
+
+	    <if test="keyword != null and keyword != ''">
+	        AND pass_name LIKE CONCAT('%', #{keyword}, '%')
+	    </if>
+	
+	    <if test="status != null and status != ''">
+	        AND is_active = #{status}
+	    </if>
+	</select>
+	
+	<update id="updatePassStatus" parameterType="hashmap">
+	    UPDATE pass_product
+	    SET is_active = #{isActive}
+	    WHERE pass_no = #{passNo}
+	</update>
+	
+<!-- 패스 등록 -->
+	<insert id="insertPass" parameterType="hashmap">
+	    INSERT INTO pass_product
+	    (
+	        pass_name,
+	        price,
+	        review_cnt,
+	        is_active
+	    )
+	    VALUES
+	    (
+	        #{passName},
+	        #{price},
+	        #{reviewCnt},
+	        #{isActive}
+	    )
+	</insert>
+
+
+<!-- 패스 삭제 -->
+	<delete id="deletePass" parameterType="hashmap">
+	
+	    DELETE FROM pass_product
+	    WHERE pass_no = #{passNo}
+	
+	</delete>
+	
+<!-- 결제완료 페이지에서 조회 -->
+	<!--① 패스권 결제 조회-->
+	<select id="selectPassPayment" parameterType="hashmap" resultType="hashmap">
+		SELECT
+		    p.pay_no,
+		    p.user_id,
+		    p.amount,
+		    p.pay_status,
+		    p.pay_date,
+		    pp.pass_no,
+		    pp.item_name,
+		    pr.pass_name
+		FROM payment p
+		JOIN payment_pass pp ON p.pay_no = pp.pay_no
+		JOIN pass_product pr ON pp.pass_no = pr.pass_no
+		WHERE p.pay_no = #{payNo}
+	</select>
+	<!--② 예약 결제 조회-->
+	<select id="selectReservationPayment" parameterType="hashmap" resultType="hashmap">
+		SELECT
+		    p.pay_no,
+		    p.user_id,
+		    p.amount,
+		    p.pay_status,
+		    p.pay_date,
+		    r.res_no,
+		    r.res_date,
+		    r.res_time,
+		    r.use_date,
+		    r.use_time,
+		    r.res_status
+		FROM payment p
+		JOIN payment_reservation pr ON p.pay_no = pr.pay_no
+		JOIN reservation r ON pr.res_no = r.res_no
+		WHERE p.pay_no = #{payNo}
+	</select>
+	<!--③ 업체 등록 결제 조회-->
+	<select id="selectRegistrationPayment" parameterType="hashmap" resultType="hashmap">
+		SELECT
+		    p.pay_no,
+		    p.user_id,
+		    p.amount,
+		    p.pay_status,
+		    p.pay_date,
+		    pr.company_no
+		FROM payment p
+		JOIN payment_resistration pr ON p.pay_no = pr.pay_no
+		WHERE p.pay_no = #{payNo}
 	</select>
 </mapper>

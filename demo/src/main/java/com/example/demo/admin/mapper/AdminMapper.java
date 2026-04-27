@@ -34,7 +34,7 @@ public interface AdminMapper {
 	
 	public Admin selectPassInfo(HashMap<String, Object> map);
 	
-	int selectPriceInfo(int passNo);    //결과가 행 전체가 아니라 Admin 아니고 int
+	Integer selectPriceInfo(int passNo);    //결과가 행 전체가 아니라 Admin 아니고 int
 	
 	int insertPayment2(HashMap<String, Object> map);
 	
@@ -103,16 +103,50 @@ public interface AdminMapper {
 	int selectReservationPaymentCount(HashMap<String, Object> map);
 	int selectRegistrationPaymentCount(HashMap<String, Object> map);
 	
-	// 상품관리
+// 상품관리
 	// 상품
-	public List<Admin> selectProductList(HashMap<String, Object> map);
-    int selectProductCount(HashMap<String, Object> map);
+	public List<Admin> selectAdminProductList(HashMap<String, Object> map);
+    int selectAdminProductCount(HashMap<String, Object> map);
+    // 상품 상태 변경
+    int updateProductStatus(HashMap<String, Object> map);
 
+    // 상품 삭제
+    int deleteProduct(HashMap<String, Object> map);
+
+    // 상품 상세
+    Admin selectProductInfo(HashMap<String, Object> map);
+    
+    
     // 쿠폰
     public List<Admin> selectCouponList(HashMap<String, Object> map);
     int selectCouponCount(HashMap<String, Object> map);
 
+    // 쿠폰 등록
+    int insertCoupon(HashMap<String, Object> map);
+
+    // 쿠폰 삭제
+    int deleteCoupon(HashMap<String, Object> map);
+    
     // 패스
     public List<Admin> selectAllPassList(HashMap<String, Object> map);
     int selectPassCount(HashMap<String, Object> map);
+    
+    // 패스 상태변경
+    int updatePassStatus(HashMap<String, Object> map);
+    
+    // 패스 등록
+    int insertPass(HashMap<String, Object> map);
+
+    // 패스 삭제
+    int deletePass(HashMap<String, Object> map);
+    
+    
+    //결제완료페이지에서 조회
+    HashMap<String, Object> selectPaymentByPayNo(int payNo);
+    
+    HashMap<String, Object> selectPassPayment(HashMap<String, Object> map);
+
+    HashMap<String, Object> selectReservationPayment(HashMap<String, Object> map);
+
+    HashMap<String, Object> selectRegistrationPayment(HashMap<String, Object> map);
 }

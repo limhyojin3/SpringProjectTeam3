@@ -31,9 +31,9 @@ public class AdminController {
 		return "admin/adminMain";
 	}
 
-	@RequestMapping("/adminReviewWait.do")
+	@RequestMapping("/adminReview.do")
 	public String Review(Model model) throws Exception {
-		return "admin/adminReviewWait";
+		return "admin/adminReview";
 	}
 
 	@RequestMapping("/adminStatistics.do")
@@ -63,12 +63,17 @@ public class AdminController {
 	}
 
 	@RequestMapping("/adminPayFinish.do")
-	public String adminPayFinish(@RequestParam("payNo") int payNo, Model model) {
+	public String adminPayFinish(@RequestParam("payNo") int payNo, @RequestParam("type") String type, Model model) {
 
-//		HashMap<String, Object> payment = adminService.getPaymentByPayNo(payNo);
-
-//		model.addAttribute("payment", payment);
-
+		HashMap<String, Object> map = new HashMap<>();
+	    map.put("payNo", payNo);
+	    map.put("type", type);
+	    
+		HashMap<String, Object> payment = adminService.getPaymentFinishInfo(map);
+		
+		model.addAttribute("payment", payment);
+	    model.addAttribute("type", type);
+	    
 		return "admin/adminPayFinish";
 	}
 
@@ -428,13 +433,14 @@ public class AdminController {
 		}
 		
 		
-		// 상품 관리
-		@RequestMapping("/productList.dox")
+// 상품 관리 쿠폰 관리 패스 관리
+		//목록조회
+		@RequestMapping("/productAdminList.dox")
 		@ResponseBody
 		public HashMap<String, Object> productList(@RequestParam HashMap<String, Object> map) {
 			map.put("pageSize", Integer.parseInt(map.get("pageSize").toString()));
 			map.put("offSet", Integer.parseInt(map.get("offSet").toString()));
-			return adminService.getProductList(map);
+			return adminService.getAdminProductList(map);
 		}
 
 		@RequestMapping("/couponList.dox")
@@ -452,4 +458,73 @@ public class AdminController {
 			map.put("offSet", Integer.parseInt(map.get("offSet").toString()));
 			return adminService.getAllPassList(map);
 		}
+		
+		 // 상품 상태 변경 (판매중지 / 재판매)
+		@RequestMapping(value="/productStatusUpdate.dox", method=RequestMethod.POST)
+		@ResponseBody
+		public HashMap<String,Object> productStatusUpdate(
+		        @RequestParam HashMap<String,Object> map) {
+
+		    return adminService.updateProductStatus(map);
+		}
+		
+	    // 상품 삭제
+	    @RequestMapping("/productDelete.dox")
+	    @ResponseBody
+	    public HashMap<String, Object> productDelete(HashMap<String, Object> map) {
+	        return adminService.deleteProduct(map);
+	    }
+
+	    // 상품 상세
+	    @RequestMapping("/productView.dox")
+	    @ResponseBody
+	    public HashMap<String, Object> productView(HashMap<String, Object> map) {
+	        return adminService.selectProductInfo(map);
+	    }
+	    
+	
+	 // 쿠폰 등록
+	 @RequestMapping("/couponInsert.dox")
+	 @ResponseBody
+	 public HashMap<String, Object> couponInsert(@RequestParam HashMap<String, Object> map) {
+
+	     return adminService.addCoupon(map);
+	 }
+	    
+	
+	// 쿠폰 삭제
+	@RequestMapping("/couponDelete.dox")
+	@ResponseBody
+	public HashMap<String, Object> couponDelete(@RequestParam HashMap<String, Object> map) {
+
+	    return adminService.deleteCoupon(map);
+	}
+	
+	
+	// 패스 상태 변경 (중지 / 재사용)
+	@RequestMapping(value="/passStatusUpdate.dox", method=RequestMethod.POST)
+	@ResponseBody
+	public HashMap<String, Object> passStatusUpdate(
+	        @RequestParam HashMap<String,Object> map){
+
+	    return adminService.editPassStatus(map);
+	}
+	
+	// 패스 등록
+	@RequestMapping("/passAdd.dox")
+	@ResponseBody
+	public HashMap<String, Object> passAdd(
+	        @RequestParam HashMap<String, Object> map) {
+
+	    return adminService.addPass(map);
+	}
+
+	// 패스 삭제
+	@RequestMapping("/passDelete.dox")
+	@ResponseBody
+	public HashMap<String, Object> passDelete(
+	        @RequestParam HashMap<String, Object> map) {
+
+	    return adminService.removePass(map);
+	}
 }
