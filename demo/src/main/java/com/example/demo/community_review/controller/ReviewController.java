@@ -240,9 +240,6 @@ public class ReviewController {
             e.printStackTrace();
             resultMap.put("result", "ERROR");
         }
-     // 여기서 확인 가능!
-        System.out.println("프론트에서 온 데이터: " + map); 
-        // 콘솔에 {reviewNo=123, checkOnly=Y, userId=test} 이런 식으로 찍혀야 함
         
         return new Gson().toJson(resultMap);
     }
