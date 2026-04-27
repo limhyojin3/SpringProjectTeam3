@@ -8,27 +8,23 @@
     <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
     <title>Gemini AI 챗봇</title>
     <style>
-        /* 선생님께서 주신 스타일 유지 */
-        body { font-family: Arial, sans-serif; background-color: #f4f4f4; margin: 0; padding: 0; display: flex; justify-content: center; align-items: center; height: 100vh; }
-        .chat-container { width: 350px; background: white; border-radius: 10px; overflow: hidden; box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1); display: flex; flex-direction: column; }
-        .chat-header { background: #007bff; color: white; padding: 15px; text-align: center; font-weight: bold; }
-        .chat-box { height: 400px; overflow-y: auto; padding: 15px; display: flex; flex-direction: column; }
-        .message { max-width: 70%; padding: 10px; border-radius: 10px; margin-bottom: 10px; font-size: 14px; line-height: 1.4; word-break: break-all; }
-        .user { align-self: flex-end; background: #007bff; color: white; }
-        .bot { align-self: flex-start; background: #e9ecef; color: #333; }
-        .chat-input { display: flex; padding: 10px; border-top: 1px solid #ccc; background: white; }
-        .chat-input textarea { flex: 1; height: 40px; border: none; resize: none; padding: 10px; border-radius: 5px; outline: none; }
-        .chat-input button { margin-left: 10px; padding: 10px 15px; background: #007bff; color: white; border: none; cursor: pointer; border-radius: 5px; }
-        /* 로딩 중 버튼 스타일 추가 */
-        .chat-input button:disabled { background: #ccc; cursor: not-allowed; }
     </style>
 </head>
 <body>
     <div id="app" class="chat-container">
         <div class="chat-header">Gemini AI 챗봇</div>
         <div class="chat-box" ref="chatBox">
-            <div class="message bot" v-if="messages.length === 0">안녕하세요! 무엇을 도와드릴까요?</div>
-            
+           <div class="message bot">
+                안녕하세요! 메리뷰 AI 가이드입니다. 
+                <br>
+                아래 버튼을 눌러보시거나 궁금한 점을 입력해주세요!
+                
+                <div class="quick-questions">
+                    <button @click="askQuickQuestion('메리뷰는 어떤 서비스인가요?')" class="q-btn">서비스 소개</button>
+                    <button @click="askQuickQuestion('인기 있는 웨딩홀 추천해줘')" class="q-btn">웨딩홀 추천</button>
+                    <button @click="askQuickQuestion('리뷰 작성은 어떻게 하나요?')" class="q-btn">리뷰 작성법</button>
+                </div>
+            </div>
             <div v-for="msg in messages" :class="['message', msg.type]">
                 {{ msg.text }}
             </div>
@@ -50,53 +46,49 @@
     const app = Vue.createApp({
         data() {
             return {
+                isChatOpen: false, // 처음엔 닫혀있음
                 userInput: "",
                 messages: [],
-                isLoading: false // 로딩 상태 추가
+                isLoading: false
             };
         },
         methods: {
             sendMessage() {
-                // 입력값이 없거나 이미 로딩 중이면 중단
-                if (this.userInput.trim() === "" || this.isLoading) return;
-                
-                // 1. 유저 메시지 화면에 추가
-                this.messages.push({ text: this.userInput, type: 'user' });
-                
-                let inputText = this.userInput;
-                this.userInput = ""; // 입력창 비우기
-                this.isLoading = true; // 로딩 시작
-                this.scrollToBottom();
-                
-                // 2. 선생님 스타일의 jQuery AJAX 호출
-                $.ajax({
-                    url: "/gemini/chat",
-                    type: "GET",
-                    data: { input: inputText },
-                    success: (response) => {
-                        // 봇 메시지 추가
-                        this.messages.push({ text: response, type: 'bot' });
-                    },
-                    error: (xhr) => {
-                        this.messages.push({ 
-                            text: "오류가 발생했습니다. (사유: " + (xhr.responseText || "서버 연결 실패") + ")", 
-                            type: 'bot' 
-                        });
-                    },
-                    complete: () => {
-                        this.isLoading = false; // 성공하든 실패하든 로딩 종료
-                        this.scrollToBottom();
-                    }
-                });
+            if (this.userInput.trim() === "" || this.isLoading) return;
+            
+            this.messages.push({ text: this.userInput, type: 'user' });
+            let inputText = this.userInput;
+            this.userInput = "";
+            this.isLoading = true;
+            this.scrollToBottom();
+            
+            $.ajax({
+                url: "/gemini/chat",
+                type: "GET",
+                data: { input: inputText },
+                success: (response) => {
+                    this.messages.push({ text: response, type: 'bot' });
+                },
+                error: (xhr) => {
+                    this.messages.push({ text: "잠시 후 다시 시도해주세요.", type: 'bot' });
+                },
+                complete: () => {
+                    this.isLoading = false;
+                    this.scrollToBottom();
+                }
+            });
             },
             scrollToBottom() {
                 this.$nextTick(() => {
                     const chatBox = this.$refs.chatBox;
-                    if (chatBox) {
-                        chatBox.scrollTop = chatBox.scrollHeight;
-                    }
+                    if(chatBox) chatBox.scrollTop = chatBox.scrollHeight;
                 });
-            }
+            },
+            // 추천 질문 클릭 시 실행되는 함수
+            askQuickQuestion(questionText) {
+                this.userInput = questionText; // 클릭한 텍스트를 입력창에 넣기
+                this.sendMessage();           // 바로 전송 함수 호출!
+            },
         }
     });
     app.mount('#app');

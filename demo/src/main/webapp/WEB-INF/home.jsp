@@ -87,6 +87,22 @@
                     </section>
                 </div>
             </div>
+            <div class="chat-btn" @click="isChatOpen = !isChatOpen">
+                <span v-if="!isChatOpen">💬</span> <span v-else>✖</span>
+            </div>
+            <div class="chat-container" v-show="isChatOpen" style="display: none;">
+                <div class="chat-header">메리뷰 AI 가이드</div>
+                <div class="chat-box" ref="chatBox">
+                    <div class="message bot">안녕하세요! 궁금한 점을 물어보세요.</div>
+                    <div v-for="msg in messages" :class="['message', msg.type]">
+                        {{ msg.text }}
+                    </div>
+                </div>
+                <div class="chat-input">
+                    <textarea v-model="userInput" @keydown.enter.prevent="sendMessage" placeholder="질문을 입력하세요..."></textarea>
+                    <button @click="sendMessage" :disabled="isLoading">전송</button>
+                </div>
+            </div>
         </div>
     </div>
     <jsp:include page="/WEB-INF/common/footer.jsp" />
@@ -99,9 +115,14 @@
             return {
                 reviewList: [],
                 postList: [],
+                isChatOpen: false, 
+                userInput: "",
+                messages: [],
+                isLoading: false
             };
         },
         methods: {
+            // --- 기존 홈 기능 ---
             fnGoPost: function(postNo) {
                 location.href = '/api/community/detail.do?postNo=' + postNo;
             },
@@ -112,7 +133,44 @@
                 event.target.style.display = 'none';
                 event.target.nextElementSibling.style.display = 'flex';
             },
-        }, // methods
+
+            // --- 챗봇 기능 (새로 추가됨!) ---
+            sendMessage() {
+                if (this.userInput.trim() === "" || this.isLoading) return;
+                
+                // 사용자 메시지 화면에 추가
+                this.messages.push({ text: this.userInput, type: 'user' });
+                let inputText = this.userInput;
+                this.userInput = "";
+                this.isLoading = true;
+                this.scrollToBottom();
+                
+                // Spring 컨트롤러와 통신
+                $.ajax({
+                    url: "/gemini/chat",
+                    type: "GET",
+                    data: { input: inputText },
+                    success: (response) => {
+                        this.messages.push({ text: response, type: 'bot' });
+                    },
+                    error: (xhr) => {
+                        this.messages.push({ text: "오류가 발생했습니다. 다시 시도해주세요.", type: 'bot' });
+                    },
+                    complete: () => {
+                        this.isLoading = false;
+                        this.scrollToBottom();
+                    }
+                });
+            },
+            scrollToBottom() {
+                this.$nextTick(() => {
+                    const chatBox = this.$refs.chatBox;
+                    if (chatBox) {
+                        chatBox.scrollTop = chatBox.scrollHeight;
+                    }
+                });
+            }
+        },
         mounted() {
             let self = this;
             axios.get("/mainReviewList.dox")
