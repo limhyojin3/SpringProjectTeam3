@@ -1,7 +1,4 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
-
-<!-- <%-- 1. JSTL 코어 태그 라이브러리를 사용하겠다고 선언합니다 --%>
-<%@ taglib prefix="c" uri="jakarta.tags.core" %> -->
     <!DOCTYPE html>
     <html lang="en">
 
@@ -13,19 +10,14 @@
             integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
         <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
         <script src="/js/page-change.js"></script>
-        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
-    
-        <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
-        <script src="https://cdn.quilljs.com/1.3.6/quill.min.js"></script>
-        <link rel="stylesheet" href="${pageContext.request.contextPath}/css/common.css">
         <style>
             /* 기본 레이아웃 */
-            /*body {
+            body {
                 font-family: 'Malgun Gothic', sans-serif;
                 margin: 0;
                 padding: 0;
                 background-color: #f9f9f9;
-            }*/
+            }
 
             #app {
                 max-width: 1200px;
@@ -38,15 +30,15 @@
             }
 
             /* 헤더 영역 */
-            /* header {
+            header {
                 display: flex;
                 justify-content: space-between;
                 align-items: center;
                 padding: 20px;
                 border-bottom: 2px solid #333;
-            }*/
+            }
 
-            /*.nav-top button {
+            .nav-top button {
                 padding: 8px 15px;
                 margin-right: 5px;
                 border: 1px solid #ff7f9f;
@@ -54,17 +46,17 @@
                 color: #ff7f9f;
                 cursor: pointer;
                 border-radius: 5px;
-            }*/
+            }
 
-            /*.user-info {
+            .user-info {
                 background: #ff7f9f;
                 color: white;
                 padding: 10px 20px;
                 border-radius: 5px;
-            }*/
+            }
 
             /* 메인 바디 레이아웃 */
-            .container1 {
+            .container {
                 display: flex;
                 flex: 1;
             }
@@ -184,13 +176,13 @@
             }
 
             /* 푸터 */
-            /* footer {
+            footer {
                 background: #ffc1cc;
                 padding: 20px;
                 text-align: center;
                 font-size: 14px;
                 border-top: 1px solid #ddd;
-            }*/
+            }
 
             /* 플로팅 버튼 */
             .ai-chatbot {
@@ -511,12 +503,21 @@
     </head>
 
     <body>
-        <jsp:include page="/WEB-INF/common/header.jsp" />
         <div id="app">
             <!-- html 코드는 id가 app인 태그 안에서 작업 -->
-            
+            <header>
+                <div class="logo"><img src="/img/merryViewLogo.png" alt="메리뷰" height="60"></div>
+                <div class="nav-top">
+                    <button>회사소개</button>
+                    <button>제휴업체</button>
+                    <button>커뮤니티</button>
+                    <button>패스구매</button>
+                    <button>고객센터</button>
+                </div>
+                <div class="user-info">{{ user.name }}님</div>
+            </header>
 
-            <div class="container1">
+            <div class="container">
                 <aside>
                     <div class="menu-item" v-for="m in menuList" :key="m.id">
                         <button :class="{ active: currentMenu === m.id }" @click="handleMenuClick(m.id)">
@@ -1032,9 +1033,9 @@
             </div>
         </div>
 
-        <jsp:include page="/WEB-INF/common/footer.jsp" />
-
-        
+        <footer>
+            푸터 → 업체 정보 | 사업자번호: 000-00-00000 | 고객센터: 1588-0000
+        </footer>
 
         <div class="ai-chatbot">ai 챗봇</div>
         </div>
