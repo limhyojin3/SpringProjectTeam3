@@ -13,6 +13,7 @@ import org.springframework.transaction.interceptor.TransactionAspectSupport;
 
 import com.example.demo.common.Message;
 import com.example.demo.member.mapper.MemberMapper;
+import com.example.demo.member.model.ChatLog;
 import com.example.demo.member.model.Member;
 
 import jakarta.servlet.http.HttpSession;
@@ -554,5 +555,16 @@ public class MemberService {
 	// 인기 글
 	public List<Member> getMainPostList() {
 	    return memberMapper.selectMainPostList();
+	}
+	
+	// *챗봇 로그*
+	public void saveChatLog(String userId, String question, String answer, String type) {
+	    ChatLog log = new ChatLog();
+	    log.setUserId(userId != null ? userId : "guest");
+	    log.setQuestion(question);
+	    log.setAnswer(answer);
+	    log.setChatType(type);
+	    
+	    memberMapper.insertChatLog(log);
 	}
 }

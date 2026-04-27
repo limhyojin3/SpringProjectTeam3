@@ -21,6 +21,24 @@ public class ChatResponse {
  private List<Candidate> candidates;
  private PromptFeedback promptFeedback;
 
+ public ChatResponse(String answer) {
+     this.candidates = new java.util.ArrayList<>();
+     
+     Candidate candidate = new Candidate();
+     Content content = new Content();
+     Parts parts = new Parts();
+     
+     parts.setText(answer);
+     
+     List<Parts> partsList = new java.util.ArrayList<>();
+     partsList.add(parts);
+     
+     content.setParts(partsList);
+     candidate.setContent(content);
+     
+     this.candidates.add(candidate);
+ }
+ 
  @Getter
  @Setter
  public static class Candidate {

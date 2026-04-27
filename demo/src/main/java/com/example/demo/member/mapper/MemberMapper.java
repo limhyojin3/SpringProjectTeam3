@@ -6,6 +6,7 @@ import java.util.Map;
 
 import org.apache.ibatis.annotations.Mapper;
 
+import com.example.demo.member.model.ChatLog;
 import com.example.demo.member.model.Member;
 
 @Mapper
@@ -115,5 +116,8 @@ public interface MemberMapper {
 	List<Member> selectMainReviewList();
 	// 인기글 3개
 	List<Member> selectMainPostList();
+	
+	// *챗봇 로그* 
+	int insertChatLog(ChatLog chatLog);
 	
 }

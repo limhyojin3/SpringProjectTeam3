@@ -36,7 +36,6 @@ public class ChatRequest {
         private double temperature;
 
     }
-
     public ChatRequest(String prompt) {
         this.contents = new ArrayList<>();
         Content content = new Content();
