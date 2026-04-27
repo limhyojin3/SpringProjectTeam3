@@ -9,7 +9,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -18,40 +17,36 @@ import com.example.demo.common.Message;
 @Service
 public class FileService {
 
-    @Value("${file.upload-dir}")
-    private String uploadPath;
-
-    /**
-     * 고도화된 파일 업로드 프로세스
-     * 반환값: originalName, storedName, imgUrl 정보를 담은 Map
-     */
     public Map<String, String> uploadFile(MultipartFile file) {
         if (file == null || file.isEmpty()) {
             return null;
         }
 
-        // 1. 폴더 생성 (C:/uploads/project/)
+        String projectPath = System.getProperty("user.dir");
+        String uploadPath = projectPath + "/src/main/resources/static/uploads/";
+
         File folder = new File(uploadPath);
         if (!folder.exists()) {
             folder.mkdirs();
         }
 
-        // 2. 파일명 생성 (원본명, 저장용명)
+        // 1. 원본 파일명 가져오기
         String originalName = file.getOriginalFilename();
-        String uuid = UUID.randomUUID().toString();
-        String extension = originalName.substring(originalName.lastIndexOf("."));
-        String storedName = uuid + extension; // 저장용 이름
+        
+        // 2. 저장용 파일명 생성 (UUID 대신 원본명 활용)
+        // System.currentTimeMillis()를 붙이면 이름 식별도 쉽고 중복 저장도 방지됩니다.
+        // 만약 이것조차 싫고 "순수 원본명"만 쓰고 싶다면 storedName = originalName; 으로 바꾸세요.
+        String storedName = System.currentTimeMillis() + "_" + originalName;
 
         try {
-        	// [수정 포인트] transferTo 대신 InputStream을 직접 복사합니다.
+            // 3. 파일 물리적 복사
             Path destination = new File(uploadPath + storedName).toPath();
             Files.copy(file.getInputStream(), destination, StandardCopyOption.REPLACE_EXISTING);
 
-            // 4. DB에 저장할 3종 세트 구성 (중요!)
+            // 4. 정보 구성
             Map<String, String> fileMap = new HashMap<>();
             fileMap.put("originalName", originalName);
-            fileMap.put("storedName", storedName);
-            // application.properties의 가상경로와 맞춰서 생성
+            fileMap.put("storedName", storedName); // 이제 DB와 폴더에 "시간_원본명.jpg"로 들어갑니다.
             fileMap.put("imgUrl", "/uploads/" + storedName); 
             
             return fileMap;
