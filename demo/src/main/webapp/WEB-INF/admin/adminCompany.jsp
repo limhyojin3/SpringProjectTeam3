@@ -15,48 +15,164 @@
         <link rel="stylesheet" href="${pageContext.request.contextPath}/css/common.css">
         <link rel="stylesheet" href="${pageContext.request.contextPath}/css/adminNavi.css">
         <style>
+            body {
+                background-color: #f5f6f7;
+                font-size: 14px;
+                color: #333;
+            }
+
             .middle {
                 width: 100%;
-                /* 화면 전체 높이를 사용하되, 헤더/푸터 제외한 나머지는 유연하게(1fr) */
                 display: grid;
-                grid-template-areas:
-                    "nav main";
+                grid-template-areas: "nav main";
                 grid-template-columns: 300px 1fr;
-                /* 너비 고정 */
             }
 
             .main {
                 grid-area: main;
                 border: 1px solid #ffc7c2;
+                background: #f5f6f7;
                 padding: 20px;
                 display: flex;
                 gap: 20px;
-                /* 카드 사이 간격 */
                 align-items: flex-start;
-                /* 카드들이 위쪽에 고정되도록 */
             }
 
-            .inquiry-wrap {
+            .company-container {
+                padding: 20px;
+                background: #fff;
+                border-radius: 10px;
+                box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+            }
+
+            .company-header {
                 display: flex;
-                width: 100%;
-                gap: 20px;
+                justify-content: space-between;
+                align-items: center;
+                margin-bottom: 15px;
+                gap: 10px;
             }
 
-            .left {
-                width: 40%;
+            .company-header input,
+            .company-header select {
                 border: 1px solid #ddd;
-                height: 70vh;
-                overflow-y: auto;
+                padding: 6px 10px;
+                border-radius: 6px;
             }
 
-            .right {
-                flex: 1;
+            .keyword-group input {
                 border: 1px solid #ddd;
-                padding: 15px;
+                padding: 6px 10px;
+                border-radius: 6px;
+                outline: none;
             }
 
-            .active {
-                background-color: #ffe5e5;
+            .keyword-group select {
+                border: 1px solid #ddd;
+                padding: 6px;
+                border-radius: 6px;
+            }
+
+            .filter-group {
+                display: flex;
+                flex-direction: row;
+            }
+
+            .filter-group select {
+                border: 1px solid #ddd;
+                padding: 6px;
+                border-radius: 6px;
+            }
+
+            /* 테이블 */
+            .companytable {
+                width: 1000px;
+                border-collapse: collapse;
+            }
+
+            .companytable tr {
+                cursor: pointer;
+            }
+
+            .companytable th {
+                background: #f1f3f5;
+                padding: 10px;
+                font-size: 13px;
+            }
+
+            .companytable td {
+                padding: 10px;
+                font-size: 13px;
+                border-bottom: 1px solid #eee;
+            }
+
+            .companytable tr:hover {
+                background: #f8f9fa;
+            }
+
+            /* 선택 강조 */
+            .active-row {
+                background: #e7f1ff !important;
+            }
+
+            /* 상태 배지 */
+            .status-badge {
+                padding: 4px 8px;
+                border-radius: 10px;
+                font-size: 12px;
+            }
+
+            .status-active {
+                background: #e6f4ea;
+                color: #2f9e44;
+            }
+
+            .status-stop {
+                background: #fff1f0;
+                color: #d9480f;
+            }
+
+            .status-dormant {
+                background: #f1f3f5;
+                color: #868e96;
+            }
+
+            .status-withdraw {
+                background: #000;
+                color: #fff;
+            }
+
+            /* 신고 수 */
+            .count-badge {
+                background: red;
+                color: white;
+                border-radius: 50%;
+                padding: 3px 8px;
+                font-size: 12px;
+            }
+
+            button {
+                border: 1px solid #ddd;
+                background: #fff;
+                padding: 5px 10px;
+                font-size: 12px;
+                border-radius: 6px;
+                cursor: pointer;
+            }
+
+            button:hover {
+                background: #f8f9fa;
+            }
+
+            .pagination-wrap {
+                display: flex;
+                gap: 5px;
+            }
+
+            .pagination-wrap button.active {
+                background: #007bff;
+                color: #fff;
+                transform: scale(1.1);
             }
         </style>
     </head>
@@ -67,104 +183,75 @@
             <div class="middle">
                 <jsp:include page="/WEB-INF/admin/adminNavi.jsp" />
                 <div class="main">
-                    <div class=inquiry-wrap>
-                        <!-- 왼쪽: 회원 리스트 -->
-                        <div class="left">
-                            <table class="table table-hover table-bordered">
-                                <thead>
-                                    <tr>
-                                        <th>ID</th>
-                                        <th>이름</th>
-                                        <th>상태</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr v-for="user in userList"
-                                        :class="{active: selectedUser && selectedUser.userId && selectedUser.userId === user.userId}"
-                                        @click="selectUser(user)">
-                                        {{ console.log("row user:", user) }}
-                                        <td>{{user.userId}}</td>
-                                        <td>{{user.name}}</td>
-                                        <td>
-                                            <span :class="['badge', getStatusClass(user.status)]">
-                                                {{ getStatusInfo(user.status).text }}
-                                            </span>
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
+                    <div class="company-container">
+
+                        <h2>업체 관리</h2>
+                        <!-- 필터 영역 -->
+                        <div class="company-header">
+                            <div class="keyword-group">
+                                <select v-model="searchType">
+                                    <option value="all">전체</option>
+                                    <option value="userId">아이디</option>
+                                    <option value="companyName">업체명</option>
+                                    <option value="ceoName">대표자명</option>
+                                </select>
+                                <input v-model="keyword" placeholder="검색어 입력" @keyup.enter="fnGetCompanyList">
+                                <button @click="fnGetCompanyList">검색</button>
+                            </div>
+                            <div class="filter-group">
+                                <select v-model="statusFilter" @change="fnGetCompanyList">
+                                    <option value="ALL">상태 전체</option>
+                                    <option value="ACTIVE">활동</option>
+                                    <option value="STOP">정지</option>
+                                    <option value="DORMANT">휴면</option>
+                                    <option value="WITHDRAWN">탈퇴</option>
+                                </select>
+                                <button @click="fnResetSearch">초기화</button>
+                            </div>
                         </div>
 
-                        <!-- 오른쪽: 상세 + 정지 -->
-                        <div class="right" v-if="selectedUser">
-                            <h3>업체 상세</h3>
-                            <p>ID: {{ selectedUser.userId }}</p>
-                            <p>업체명: {{ selectedUser.name }}</p>
-                            <p>대표자: {{ selectedUser.ceoName }}</p>
-                            <p>사업자번호: {{ selectedUser.bizNo }}</p>
-                            <p>제휴 등급: {{ selectedUser.grade }}</p>
-                            <p>회원 상태:
-                                <span :style="{color: selectedUser.status === 'STOP' ? 'red' : 'green'}">
-                                    {{ selectedUser.status === 'STOP' ? '정지됨' : '정상' }}
-                                </span>
-                            </p>
-                            <p>휴무 상태:
-                                <span :style="{color: selectedUser.status === 'STOP' ? 'red' : 'green'}">
-                                    {{ selectedUser.companyStatus === 'STOP' ? '휴무' : '영업' }}
-                                </span>
-                            </p>
-                            <h4>정지 이력</h4>
-                            <table class="table table-sm table-bordered">
-                                <thead>
-                                    <tr>
-                                        <th>구분</th>
-                                        <th>사유</th>
-                                        <th>관리자</th>
-                                        <th>날짜</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr v-for="(item, index) in banHistoryList" :key="item.banRegDate + index">
-                                        <td>
-                                            {{ item.actionType === 'BAN' ? '정지' : '해제' }}
-                                        </td>
-                                        <td>{{ item.reason || '-' }}</td>
-                                        <td>{{ item.adminId }}</td>
-                                        <td>{{ item.banRegDate }}</td>
-                                    </tr>
-                                </tbody>
-                            </table>
+                        <table class="companytable">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>업체명</th>
+                                    <th>대표자</th>
+                                    <th>상태</th>
+                                    <th>신고</th>
+                                    <th>가입일</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr v-for="company in companyList" @click="selectCompany(company)">
+                                    <td>{{company.userId}}</td>
+                                    <td>{{company.companyName}}</td>
+                                    <td>{{company.ceoName}}</td>
+                                    <td>
+                                        <span class="status-badge" :class="getStatusClass(company.status)">
+                                            {{ getStatusInfo(company.status).text }}
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <span v-if="company.reportCount > 0" class="count-badge">
+                                            {{ company.reportCount }}
+                                        </span>
+                                        <span v-else>-</span>
+                                    </td>
+                                    <td>{{ formatDate(company.regDate) }}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <div class="pagination-wrap">
+                            <button @click="fnPageMove(currentPage-1)" :disabled="currentPage===1">‹</button>
 
-                            <!-- 정지 영역 -->
-                            <div v-if="selectedUser && selectedUser.status !== 'STOP'">
-                                <h4>정지 처리</h4>
+                            <button v-for="p in index" :key="p" @click="fnPageMove(p)"
+                                :class="{active: currentPage === p}">
+                                {{ p }}
+                            </button>
 
-                                <input v-model="banReason" placeholder="정지 사유" />
-
-                                <button @click="fnBanUser"
-                                    :disabled="selectedUser.userId === sessionId || sessionRole !== 'ADMIN'">
-                                    정지
-                                </button>
-
-                                <p v-if="selectedUser.userId === sessionId" style="color:red;">
-                                    본인 계정은 정지할 수 없습니다
-                                </p>
-                            </div>
-
-                            <!-- 해제 영역 -->
-                            <div v-if="selectedUser && selectedUser.status === 'STOP'">
-                                <h4>정지 해제</h4>
-
-                                <input v-model="unbanReason" placeholder="해제 사유" />
-
-                                <button @click="fnUnbanUser"
-                                    :disabled="selectedUser.userId === sessionId || sessionRole !== 'ADMIN'">
-                                    해제
-                                </button>
-                            </div>
+                            <button @click="fnPageMove(currentPage+1)" :disabled="currentPage===index">›</button>
                         </div>
                     </div>
-
                 </div>
             </div>
             <jsp:include page="/WEB-INF/common/footer.jsp" />
@@ -175,14 +262,17 @@
                     return {
                         // 변수 - (key : value)
                         activeMenu: "",
-                        userList: [],
-                        selectedUser: null,
-                        suspendReason: "",
-                        banReason: "",
-                        unbanReason: "",
-                        banHistoryList: [],
+                        companyList: [],
                         sessionId: "${sessionScope.sessionId}",
                         sessionRole: "${sessionScope.sessionRole}",
+                        searchType: "all",
+                        keyword: "",
+                        statusFilter: "ALL",
+                        selectedCompany: null,
+                        pageSize: 10,
+                        index: 1,
+                        currentPage: 1,
+
                     };
                 },
                 methods: {
@@ -191,9 +281,29 @@
                         location.href = url;
                     },
 
-                    fnGetUserList: function () {
+                    fnPageMove(p) {
+                        if (p < 1 || p > this.index) return;
+                        this.currentPage = p;
+                        this.fnGetUserList();
+                    },
+
+                    selectCompany(company) {
+                        location.href = "/adminCompanyDetail.do?userId=" + company.userId;
+                    },
+
+                    formatDate(date) {
+                        return date ? date.substring(0, 10) : '-';
+                    },
+
+                    fnGetCompanyList: function () {
                         let self = this;
-                        let param = {};
+                        let param = {
+                            searchType: self.searchType,
+                            keyword: self.keyword,
+                            status: self.statusFilter,
+                            pageSize: self.pageSize,
+                            offSet: self.pageSize * (self.currentPage - 1),
+                        };
                         $.ajax({
                             url: "http://localhost:8080/companyList.dox",
                             dataType: "json",
@@ -201,102 +311,18 @@
                             data: param,
                             success: function (data) {
                                 console.log(data);
-                                self.userList = data.list;
-                                console.log(self.userList);
-                                console.log(self.userList[0]);
+                                self.companyList = data.list;
+                                self.index = Math.ceil(data.totalCount / self.pageSize);
                             }
                         });
                     },
 
-                    fnGetBanHistory(userId, targetType) {
-                        let self = this;
-
-                        $.ajax({
-                            url: "http://localhost:8080/banHistory.dox",
-                            type: "POST",
-                            dataType: "json",
-                            data: {
-                                target_id: userId,
-                                target_type: targetType
-                            },
-                            success: function (res) {
-                                self.banHistoryList = res.list || [];
-                            }
-                        });
-                    },
-
-                    selectUser(user) {
-                        this.selectedUser = user;
-                        this.fnGetBanHistory(user.userId, user.targetType);
-                    },
-
-                    resetForm() {
-                        this.selectedUser = null;
-                        this.banReason = "";
-                        this.unbanReason = "";
-                    },
-
-                    fnBanUser() {
-                        let self = this;
-
-                        if (!self.banReason) {
-                            alert("정지 사유 입력해라");
-                            return;
-                        }
-
-                        if (!confirm("정지하시겠습니까?")) return;
-
-                        $.ajax({
-                            url: "http://localhost:8080/editMemberBan.dox",
-                            type: "POST",
-                            dataType: "json",
-                            data: {
-                                target_id: self.selectedUser.userId,
-                                target_type: self.selectedUser.targetType,
-                                action_type: "BAN",
-                                reason: self.banReason,
-                                admin_id: self.sessionId,
-                            },
-                            success: function (res) {
-                                alert("정지 완료");
-
-                                let userId = self.selectedUser.userId;
-                                let targetType = self.selectedUser.targetType;
-
-                                self.resetForm();
-                                self.fnGetUserList();
-                                self.fnGetBanHistory(userId, targetType);
-                            }
-                        });
-                    },
-
-                    fnUnbanUser() {
-                        let self = this;
-
-                        if (!confirm("해제하시겠습니까?")) return;
-
-                        $.ajax({
-                            url: "http://localhost:8080/editMemberBan.dox",
-                            type: "POST",
-                            dataType: "json",
-                            data: {
-                                target_id: self.selectedUser.userId,
-                                target_type: self.selectedUser.targetType,
-                                action_type: "UNBAN",
-                                reason: self.unbanReason,
-                                admin_id: self.sessionId,
-                            },
-                            success: function (res) {
-                                alert("해제 완료");
-
-                                let userId = self.selectedUser.userId;
-                                let targetType = self.selectedUser.targetType;
-
-                                self.resetForm();
-                                self.fnGetUserList();
-                                self.fnGetBanHistory(userId, targetType);
-                            }
-                        });
+                    fnResetSearch() {
+                        this.keyword = "";
+                        this.page = 1;
+                        this.searchType = "all";
+                        this.statusFilter = "ALL";
+                        this.fnGetCompanyList();
                     },
 
                     getStatusInfo(status) {
@@ -312,31 +338,29 @@
 
                     getStatusClass(status) {
                         const map = {
-                            ACTIVE: "badge-success",
-                            STOP: "badge-danger",
-                            DORMANT: "badge-secondary",
-                            WITHDRAWN: "badge-dark"
+                            ACTIVE: "status-active",
+                            STOP: "status-stop",
+                            DORMANT: "status-dormant",
+                            WITHDRAWN: "status-withdraw"
                         };
-                        return map[status] || "badge-light";
+                        return map[status] || "";
                     },
-
                 }, // methods
                 mounted() {
                     // 처음 시작할 때 실행되는 부분
                     let self = this;
                     const path = location.pathname;
-
                     this.activeMenu =
                         path.includes('adminMain') ? 'main' :
                             path.includes('adminUser') ? 'user' :
                                 path.includes('adminCompany') ? 'company' :
                                     path.includes('adminBoard') ? 'board' :
-                                        path.includes('adminReviewWait') ? 'reviewWait' :
+                                        path.includes('adminReview') ? 'review' :
                                             path.includes('adminPayment') ? 'payment' :
                                                 path.includes('adminReport') ? 'report' :
                                                     path.includes('adminStatistics') ? 'stats' :
                                                         '';
-                    self.fnGetUserList();
+                    self.fnGetCompanyList();
                 }
             });
 

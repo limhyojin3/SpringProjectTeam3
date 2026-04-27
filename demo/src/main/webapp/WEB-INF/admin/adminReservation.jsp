@@ -27,34 +27,34 @@
                 --bg-color: #f8f9fa;
             }
 
-            .pass-container {
-                max-width: 1100px;
+            .pay-container {
+                max-width: 600px;
                 margin: 50px auto;
                 padding: 0 20px;
                 font-family: 'Pretendard', sans-serif;
             }
 
-            .pass-header {
+            .pay-header {
                 text-align: center;
                 margin-bottom: 40px;
             }
 
-            .pass-header h2 {
+            .pay-header h2 {
                 font-size: 2rem;
                 color: #333;
             }
 
-            .pass-header p {
+            .pay-header p {
                 color: #666;
             }
 
-            .pass-grid {
+            .pay-grid {
                 display: grid;
                 grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
                 gap: 20px;
             }
 
-            .pass-card {
+            .pay-card {
                 background: white;
                 border: 1px solid #ddd;
                 border-radius: 12px;
@@ -64,13 +64,13 @@
                 position: relative;
             }
 
-            .pass-card:hover {
+            .pay-card:hover {
                 transform: translateY(-10px);
                 box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
             }
 
             /* 추천 카드 강조 */
-            .pass-card.highlight {
+            .pay-card.highlight {
                 border: 2px solid var(--primary-color);
             }
 
@@ -86,44 +86,44 @@
                 font-size: 0.8rem;
             }
 
-            .pass-name {
+            .pay-name {
                 font-size: 2rem;
                 font-weight: bold;
                 margin-bottom: 15px;
             }
 
-            .pass-price {
+            .pay-price {
                 font-size: 2rem;
                 font-weight: 800;
                 color: #333;
                 margin-bottom: 5px;
             }
 
-            .pass-price span {
+            .pay-price span {
                 font-size: 1rem;
                 font-weight: normal;
             }
 
-            .pass-review {
+            .pay-review {
                 font-size: 0.9rem;
                 color: #888;
                 margin-bottom: 20px;
             }
 
-            .pass-features {
+            .pay-features {
                 list-style: none;
                 padding: 0;
                 margin-bottom: 30px;
                 text-align: left;
             }
 
-            .pass-features li {
+            .pay-features li {
                 margin-bottom: 10px;
                 color: #555;
                 font-size: 0.95rem;
             }
 
-            .pass-features li::before {
+            .pay-features li::before {
                 content: '✓';
                 color: var(--primary-color);
                 margin-right: 8px;
@@ -228,84 +228,72 @@
             <jsp:include page="/WEB-INF/common/header.jsp" />
             <div class="middle">
                 <div class="main">
-                    <div class="pass-container">
-                        <div class="pass-header">
-                            <h2>원하시는 패스를 선택하세요</h2>
-                            <p>나에게 딱 맞는 플랜으로 서비스를 시작해보세요.</p>
+                    <div class="pay-content">
+                        <!-- 제목 -->
+                        <div class="pay-header">
+                            <h2>예약 결제</h2>
+                            <p>예약 정보를 확인하고 결제를 진행하세요</p>
                         </div>
-                        <div class="pass-grid">
-                            <div class="pass-card" v-for="pass in passList">
 
-                                <div class="pass-name">{{ pass.passName }}</div>
+                        <!-- 카드 -->
+                        <div class="pay-card highlight" v-if="info">
 
-                                <div class="pass-price">
-                                    {{ pass.price.toLocaleString() }}<span>원</span>
-                                </div>
+                            <!-- 예약 정보 -->
+                            <div class="pay-name">예약 정보</div>
 
-                                <div class="pass-review">
-                                    열람 가능한 리뷰 수: {{ pass.reviewCnt }}개
-                                </div>
-
-                                <button class="pay-button" @click="openModal(pass)">
-                                    결제하기
-                                </button>
+                            <div class="order-info">
+                                <p><strong>상품번호</strong> {{info.product_no}}</p>
+                                <p><strong>업체번호</strong> {{info.company_no}}</p>
+                                <p><strong>이용 날짜</strong> {{info.use_date}}</p>
+                                <p><strong>이용 시간</strong> {{info.use_time}}</p>
                             </div>
-                        </div>
-                    </div>
-                    <div v-if="isModalOpen" class="modal-overlay">
-                        <div class="modal-content">
 
-                            <h2>결제 확인</h2>
-
-                            <p>상품명: {{ selectedPass.passName }}</p>
-                            <p>가격: {{ selectedPass.price.toLocaleString() }}원</p>
-                            <p>열람 가능한 리뷰 수: {{ selectedPass.reviewCnt }}개</p>
-
-                            <p v-if="selectedPass.description">
-                                {{ selectedPass.description }}
-                            </p>
-
-                            <hr />
+                            <!-- 금액 -->
+                            <div class="pay-price">
+                                {{info.amount}} <span>원</span>
+                            </div>
 
                             <!-- 약관 -->
-                            <!-- 전체 동의 -->
-                            <label>
-                                <input type="checkbox" v-model="agreeAll" @change="toggleAll" />
-                                전체 동의
-                            </label>
+                            <div class="text-left mt-4">
+                                <label class="d-block">
+                                    <input type="checkbox" v-model="agreeAll" @change="toggleAll">
+                                    전체 동의
+                                </label>
+                                <hr>
 
-                            <hr />
+                                <label class="d-block">
+                                    <input type="checkbox" v-model="agreeRequired1" @change="updateAll">
+                                    (필수) 결제 및 이용약관 동의
+                                </label>
 
-                            <!-- 필수 -->
-                            <label>
-                                <input type="checkbox" v-model="agreeRequired1" @change="updateAll" />
-                                (필수) 결제 및 이용약관 동의
-                            </label>
+                                <label class="d-block">
+                                    <input type="checkbox" v-model="agreeRequired2" @change="updateAll">
+                                    (필수) 개인정보 수집 및 이용 동의
+                                </label>
 
-                            <label>
-                                <input type="checkbox" v-model="agreeRequired2" @change="updateAll" />
-                                (필수) 개인정보 수집 및 이용 동의
-                            </label>
+                                <label class="d-block">
+                                    <input type="checkbox" v-model="agreeOptional1" @change="updateAll">
+                                    (선택) 마케팅 정보 수신 동의
+                                </label>
+                            </div>
 
-                            <!-- 선택 -->
-                            <label>
-                                <input type="checkbox" v-model="agreeOptional1" @change="updateAll" />
-                                (선택) 마케팅 정보 수신 동의
-                            </label>
+                            <!-- 버튼 -->
+                            <div class="mt-4">
+                                <button class="btn btn-secondary mr-2" onclick="history.back()">취소</button>
 
-                            <div class="buttons">
-                                <button @click="closeModal">취소</button>
-                                <button @click="fnPayment(selectedPass)"
+                                <button class="btn btn-primary" @click="fnPayment(info)"
                                     :disabled="!(agreeRequired1 && agreeRequired2)">
                                     결제하기
                                 </button>
                             </div>
 
                         </div>
+
                     </div>
                 </div>
             </div>
-            <jsp:include page="/WEB-INF/common/footer.jsp" />
+        </div>
+        <jsp:include page="/WEB-INF/common/footer.jsp" />
         </div>
         <script>
             IMP.init("imp48518435");
@@ -313,13 +301,18 @@
                 data() {
                     return {
                         // 변수 - (key : value)
+                        info: {
+                            res_no: 101,
+                            user_id: "test_user",
+                            product_no: 2001,
+                            company_no: 3001,
+                            use_date: "2026-05-01",
+                            use_time: "14:00",
+                            amount: 1000
+                        },
                         activeMenu: "",
-                        passList: [],
-                        //sessionId: "hyunwoo1125",       //체험권 비구매자
-                        //sessionId: "junho0324",        //체험권 구매자
                         sessionId: "${sessionId}",
                         isModalOpen: false,
-                        selectedPass: null,
                         paymentMethod: "",
                         //전체 동의
                         agreeAll: false,
@@ -336,7 +329,7 @@
                     fnPage: function (url) {
                         location.href = url;
                     },
-                    fnPayment: function (selectedPass) {
+                    fnPayment: function (info) {
                         let self = this;
                         if (!(this.agreeRequired1 && this.agreeRequired2)) {
                             alert("필수 약관에 동의해주세요");
@@ -347,31 +340,41 @@
                                 channelKey: "channel-key-1ebd3d65-20bd-412e-83f3-b7e0c3b368ff",
                                 pay_method: "card",
                                 merchant_uid: "order_" + self.sessionId + "_" + new Date().getTime(), // 주문 고유 번호
-                                name: selectedPass.passName,
-                                amount: selectedPass.price,      //제품 가격
+                                name: "예약",
+                                amount: info.amount,      //제품 가격
                             },
-                             function (response) {
-                                // 결제 종료 시 호출되는 콜백 함수
-                                // response.imp_uid 값으로 결제 단건조회 API를 호출하여 결제 결과를 확인하고,
-                                // 결제 결과를 처리하는 로직을 작성합니다.
-                                console.log(response);
-                                console.log("전체 response:", response);
-                                console.log("success:", response.success);
-                                console.log("imp_uid:", response.imp_uid);
-                                console.log("status:", response.status);
-                                console.log("paid_amount:", response.paid_amount);
-                                if (response.success) {
-                                    console.log("포트원 번호: " + response.imp_uid);
-                                    // 우리쪽 db에 결제정보 저장
-                                    // 페이지 이동 필요하면 페이지 이동 (메인 or 마이)
-                                    // 결제 성공 후 서버 검증
-                                    console.log("imp_uid:", response.imp_uid);
-                                    setTimeout(() => {
-                                        self.fnVerifyPayment(response.imp_uid, selectedPass);
-                                    }, 5000);
+                            function (rsp) { 
+                                console.log("전체 response:", rsp);
+                                console.log("success:", rsp.success);
+                                console.log("imp_uid:", rsp.imp_uid);
+
+                                if (rsp.success) {
+                                    // 1. @RequestParam 형식을 맞추기 위해 URLSearchParams 사용
+                                    var params = new URLSearchParams();
+                                    params.append('imp_uid', rsp.imp_uid);
+                                    params.append('amount', rsp.paid_amount);
+                                    // 이전에 보내주신 코드 흐름상 item이나 self.selectedPass를 활용하세요
+                                    params.append('passNo', self.selectedPass.passNo);
+                                    params.append('userId', 'test_user');
+
+                                    console.log("서버로 보내는 데이터:", params.toString());
+
+                                    // 2. 서버 검증 요청
+                                    axios.post('/verifyPayment.dox', params)
+                                        .then(function (res) {
+                                            if (res.data.success) {
+                                                alert("검증 성공: " + res.data.msg);
+                                            } else {
+                                                // 서버 콘솔 로그를 확인해야 하는 시점
+                                                alert("검증 실패: " + res.data.msg);
+                                                console.log("실패 상세:", res.data);
+                                            }
+                                        })
+                                        .catch(function (err) {
+                                            console.error("통신 에러 발생", err);
+                                        });
                                 } else {
-                                    console.log("에러내용: " + response.error_msg);
-                                    alert("결제가 취소되었습니다");
+                                    alert("결제에 실패하였습니다. 에러 내용: " + rsp.error_msg);
                                 }
                             },
                         );
@@ -395,73 +398,15 @@
                                 console.log(res);
                                 if (res.success) {
                                     console.log("포트원 번호: " + res.imp_uid);
-                                    alert("결제가완료되었습니다!");
+                                    alert("결제가완료되었어요~~~~~");
                                     self.isModalOpen = false;
-                                    location.href = "/adminPayFinish.do?payNo=" + res.pay_no;
+                                    location.href = "/adminPayFinish.do?orderId=" + res.imp_uid;
                                 } else {
                                     console.log("에러내용: " + res.error_msg);
                                     alert("결제 검증 실패");
                                 }
                             }
                         });
-                    },
-
-                    fnGetPassList: function () {
-                        let self = this;
-                        let param = {};
-                        $.ajax({
-                            url: "http://localhost:8080/pass.dox",
-                            dataType: "json",
-                            type: "POST",
-                            data: param,
-                            success: function (data) {
-                                console.log(data);
-                                self.passList = data.list;
-                            }
-                        });
-                    },
-                    fnCheck: function (pass) {
-                        let self = this;
-                        if (!self.sessionId || self.sessionId === "null" || self.sessionId === "") {
-                            if (confirm("로그인이 필요한 서비스입니다.\n로그인 페이지로 이동하시겠습니까?")) {
-                                location.href = "/login.do";
-                            }
-                            return;
-                        }
-                        if (pass.passName === "체험용 패스") {
-                            let param = {
-                                userId: self.sessionId
-                            };
-                            $.ajax({
-                                url: "http://localhost:8080/passCheck.dox",
-                                dataType: "json",
-                                type: "POST",
-                                data: param,
-                                success: function (data) {
-                                    console.log(data);
-                                    if (data.info != null) {
-                                        alert("이미 체험용 패스권을 구매하셨어요");
-                                        return;
-                                    }
-                                    self.selectedPass = pass;
-                                    self.isModalOpen = true;
-                                    console.log(self.selectedPass);
-                                }
-                            });
-                        } else {
-                            self.selectedPass = pass;
-                            self.isModalOpen = true;
-                            console.log(self.selectedPass);
-                        }
-                    },
-                    openModal: function (pass) {
-                        let self = this;
-                        self.paymentMethod = "";
-                        self.agreeAll = false;
-                        self.agreeRequired1 = false;
-                        self.agreeRequired2 = false;
-                        self.agreeOptional1 = false;
-                        self.fnCheck(pass);
                     },
 
                     toggleAll() {
@@ -474,11 +419,6 @@
                     updateAll() {
                         this.agreeAll = this.agreeRequired1 && this.agreeRequired2 && this.agreeOptional1;
                     },
-
-                    closeModal: function () {
-                        this.isModalOpen = false;
-                        this.selectedPass = null;
-                    }
 
                 }, // methods
                 mounted() {
@@ -496,7 +436,6 @@
                                                 path.includes('adminReport') ? 'report' :
                                                     path.includes('adminStatistics') ? 'stats' :
                                                         '';
-                    self.fnGetPassList();
                 }
             });
 
