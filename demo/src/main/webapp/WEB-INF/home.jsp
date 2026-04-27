@@ -54,10 +54,9 @@
                             <div class="review-card" v-for="review in reviewList" :key="review.reviewNo"
                                 @click="fnGoReview(review.reviewNo)">
                                 <div class="review-img-thumb">
-                                    <img v-if="review.imgUrl && !review.imgUrl.endsWith('.zip')" 
+                                    <img v-if="review.imgUrl" 
                                         :src="review.imgUrl" 
-                                        style="width:100%; height:100%; object-fit:cover;"
-                                        @error="event => { event.target.style.display='none'; event.target.parentElement.style.backgroundColor='#ffc7c2'; }">
+                                        @error="handleImgError">
                                     <div v-else class="thumb-placeholder">
                                         <span>🌸</span>
                                         <p>{{ review.title }}</p>
@@ -136,18 +135,59 @@
                 location.href = '/api/review/detail.do?reviewNo=' + reviewNo;
             },
             handleImgError: function(event) {
-                event.target.style.display = 'none';
-                event.target.nextElementSibling.style.display = 'flex';
+                // 이미지가 없으면 해당 이미지만 숨깁니다.
+                if (event.target) {
+                    event.target.style.display = 'none';
+                    
+                    // 부모 요소가 있을 때만 배경색을 바꿉니다.
+                    const parent = event.target.parentElement;
+                    if (parent) {
+                        parent.style.backgroundColor = '#ffc7c2';
+                    }
+                }
             },
+            // 1. 추천 질문 클릭 시 실행되는 함수
+            askQuickQuestion(questionText) {
+                /// 1. 사용자 질문을 화면에 표시
+                this.messages.push({ text: questionText, type: 'user' });
+                this.scrollToBottom();
 
-            // --- 챗봇 기능 (새로 추가됨!) ---
+                // 2. 질문 내용에 따라 고정 답변 매칭
+                let fixedReply = "";
+
+                if (questionText === '메리뷰는 어떤 서비스인가요?') {
+                    fixedReply = "🌸 메리뷰는 신랑, 신부님들의 리얼한 웨딩 후기를 공유하고, 투명한 웨딩 문화를 만들어가는 커뮤니티 플랫폼입니다!";
+                } 
+                else if (questionText === '인기 있는 웨딩홀 추천해줘') {
+                    fixedReply = "🏰 현재 우리 사이트에서 가장 조회수가 높은 곳은 '루클라비'와 '빌라드지디'입니다. 리뷰 게시판에서 더 자세한 후기를 확인해보세요!";
+                } 
+                else if (questionText === '리뷰 작성은 어떻게 하나요?') {
+                    fixedReply = "✍️ 로그인 후 '리얼후기' 게시판 하단의 글쓰기 버튼을 눌러 작성하실 수 있습니다. 사진을 첨부하면 베스트 리뷰 확률이 높아져요!";
+                }
+
+                // 3. 고정 답변이 있다면 서버에 묻지 않고 바로 출력
+                if (fixedReply !== "") {
+                    this.isLoading = true;
+                    setTimeout(() => { // 실제 대화하는 느낌을 주기 위해 0.5초 뒤에 출력
+                        this.messages.push({ text: fixedReply, type: 'bot' });
+                        this.isLoading = false;
+                        this.scrollToBottom();
+                    }, 500);
+                } 
+                else {
+                    // 4. 고정 답변이 없는 일반 질문만 서버(AI)로 전송
+                    this.userInput = questionText;
+                    this.sendMessage();
+                }
+            },
+            // 2. 챗봇 기능 
             sendMessage() {
                 if (this.userInput.trim() === "" || this.isLoading) return;
                 
                 // 사용자 메시지 화면에 추가
                 this.messages.push({ text: this.userInput, type: 'user' });
                 let inputText = this.userInput;
-                this.userInput = "";
+                this.userInput = ""; // 입력창 비우기
                 this.isLoading = true;
                 this.scrollToBottom();
                 
@@ -157,10 +197,11 @@
                     type: "GET",
                     data: { input: inputText },
                     success: (response) => {
+                        // 서버에서 온 답변을 채팅창에 추가
                         this.messages.push({ text: response, type: 'bot' });
                     },
                     error: (xhr) => {
-                        this.messages.push({ text: "오류가 발생했습니다. 다시 시도해주세요.", type: 'bot' });
+                        this.messages.push({ text: "잠시 후 다시 시도해주세요", type: 'bot' });
                     },
                     complete: () => {
                         this.isLoading = false;
@@ -168,6 +209,7 @@
                     }
                 });
             },
+            // 하단 자동 스크롤
             scrollToBottom() {
                 this.$nextTick(() => {
                     const chatBox = this.$refs.chatBox;
@@ -176,11 +218,8 @@
                     }
                 });
             },
-            // 추천 질문 클릭 시 실행되는 함수
-            askQuickQuestion(questionText) {
-                this.userInput = questionText; // 클릭한 텍스트를 입력창에 넣기
-                this.sendMessage();           // 바로 전송 함수 호출!
-            },
+            
+
         },
         mounted() {
             let self = this;
