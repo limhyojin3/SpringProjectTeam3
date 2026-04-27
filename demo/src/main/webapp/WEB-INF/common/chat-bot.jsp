@@ -13,17 +13,16 @@
 <body>
     <div id="app" class="chat-container">
         <div class="chat-header">Gemini AI 챗봇</div>
-        <div class="chat-box" ref="chatBox">
-           <div class="message bot">
-                안녕하세요! 메리뷰 AI 가이드입니다. 
-                <br>
-                아래 버튼을 눌러보시거나 궁금한 점을 입력해주세요!
-                
+        <div class="chat-box" ref="chatBox"> 
+            <div class="message bot" v-if="messages.length === 0">
+            안녕하세요! 메리뷰 AI 가이드입니다. <br>
+            아래 버튼을 눌러보시거나 궁금한 점을 입력해주세요!
                 <div class="quick-questions">
-                    <button @click="askQuickQuestion('메리뷰는 어떤 서비스인가요?')" class="q-btn">서비스 소개</button>
-                    <button @click="askQuickQuestion('인기 있는 웨딩홀 추천해줘')" class="q-btn">웨딩홀 추천</button>
-                    <button @click="askQuickQuestion('리뷰 작성은 어떻게 하나요?')" class="q-btn">리뷰 작성법</button>
+                    <div @click="askQuickQuestion('메리뷰는 어떤 서비스인가요?')" class="q-btn">서비스 소개</div>
+                    <div @click="askQuickQuestion('인기 있는 웨딩홀 추천해줘')" class="q-btn">웨딩홀 추천</div>
+                    <div @click="askQuickQuestion('리뷰 작성은 어떻게 하나요?')" class="q-btn">리뷰 작성법</div>
                 </div>
+            </div>
             </div>
             <div v-for="msg in messages" :class="['message', msg.type]">
                 {{ msg.text }}
