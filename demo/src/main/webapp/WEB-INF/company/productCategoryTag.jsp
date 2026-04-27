@@ -1914,7 +1914,7 @@
                     product2: {
                         companyNo: '',
                         productNo: '',
-                        proType: [""],
+                        proType: [],
                         productName: '',
                         productDetails: '',
                         originalPrice: '',
@@ -2525,9 +2525,9 @@
                                     company: p.comName,
                                     content: p.productDetails,
                                     price: p.originalPrice,
-                                    category: JSON.parse(p.proType),
-                                    tag: JSON.parse(p.tag),
-                                    deposit: p.deposit
+                                    category:typeof p.proType === 'string' ? JSON.parse(p.proType) : p.proType,
+                                    tag: typeof p.tag === 'string' ? JSON.parse(p.tag) : p.tag,
+                                    deposit: p.deposit || 0
                                 }
                             });
                             console.log(productList1);
