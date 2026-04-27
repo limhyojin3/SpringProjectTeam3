@@ -264,7 +264,7 @@
                     return {
                         // 변수 - (key : value)
                         activeMenu: "",
-                        board: [],
+                        boardList: [],
                         sessionId: "${sessionScope.sessionId}",
                         sessionRole: "${sessionScope.sessionRole}",
                         searchType: "all",
