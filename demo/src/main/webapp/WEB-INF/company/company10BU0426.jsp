@@ -216,7 +216,7 @@
             .review-thumb-box {
                 width: 80px;
                 height: 80px;
-                background: #ffcef0;
+                /*background: #ffcef0;*/
                 display: flex;
                 align-items: center;
                 justify-content: center;
@@ -436,6 +436,69 @@
                 background: #e8e8e8;
                 border-color: #999;
             }
+
+            /* 테이블 전체 컨테이너 */
+            table {
+                width: 100%;
+                border-collapse: separate;
+                /* 테두리 둥글게 하기 위해 분리 */
+                border-spacing: 0;
+                margin-bottom: 40px;
+                /* 테이블 간 간격 확보 */
+                background-color: #fff;
+                border-radius: 12px;
+                overflow: hidden;
+                box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+                /* 은은한 그림자 */
+                border: 1px solid #edf2f7;
+            }
+
+            /* 왼쪽 헤더 (th) */
+            th {
+                width: 180px;
+                /* 일정한 너비 유지 */
+                background-color: #f9fafb;
+                /* 은은한 회색 배경 */
+                color: #4a5568;
+                font-weight: 600;
+                text-align: left;
+                padding: 14px 20px;
+                border-bottom: 1px solid #edf2f7;
+                border-right: 1px solid #edf2f7;
+                font-size: 14px;
+            }
+
+            /* 오른쪽 내용 (td) */
+            td {
+                padding: 14px 20px;
+                color: #2d3748;
+                border-bottom: 1px solid #edf2f7;
+                font-size: 15px;
+            }
+
+            /* 마지막 행은 테두리 제거 */
+            tr:last-child th,
+            tr:last-child td {
+                border-bottom: none;
+            }
+
+            /* 테이블 제목 부분 강조 */
+            h2 {
+                font-size: 1.5rem;
+                margin-bottom: 25px;
+                padding-left: 10px;
+                border-left: 5px solid #ff1493;
+                /* 메인 컬러 포인트 */
+            }
+
+            /* 삼항 연산자로 들어간 텍스트 강조 (결제완료/미결제 등) */
+            td {
+                line-height: 1.6;
+            }
+
+            /* 상태별 배지 스타일 (선택사항) */
+            /* td 내부에 span 등으로 감싸져 있다면 더 좋지만, 
+   현재 구조에서 글자색만으로도 충분히 세련되어 보일 거예요. */
         </style>
     </head>
 
@@ -490,12 +553,13 @@
                             <div v-for="i in productList3" class="content-card"
                                 style="display: flex; align-items: center; padding: 15px;">
                                 <div
-                                    style="width: 120px; height: 80px; background: #ffcef0; display: flex; align-items: center; justify-content: center; margin-right: 20px;">
+                                    style="width: 100px; height: 100px;  display: flex; align-items: center; justify-content: center; margin-right: 20px;">
                                     <!--{{ i.thumbnail }}-->
-                                    <img :src="i.imgUrl" :alt="i.productName" style="max-width: 100%; max-height: 100%">
+                                    <img :src="i.imgUrl" :alt="i.productName"
+                                        style="width: 100%; height: 100%; object-fit: cover;">
                                 </div>
-                                <div style="flex: 1;">{{ i.productDetails }}</div>
-                                <div>{{ i.originalPrice }}</div>
+                                <div style="flex: 1; font-weight: bold;">{{ i.productDetails }}</div>
+                                <div>{{ Number(i.originalPrice).toLocaleString() }}원</div>
                                 <button @click="goEditPage(i)" style="margin-left: 10px;">수정하기</button>
                                 <button @click="fnRemove2(i)" style="margin-left: 10px;">삭제하기</button>
                             </div>
@@ -678,7 +742,8 @@
                                         <div class="form-group">
                                             <div style="margin-bottom: 10px; font-weight: bold;">기존 이미지 : </div>
                                             <div class="image-editor-box">
-                                                <img :src="product1.imgUrl">
+                                                <img :src="product1.imgUrl"
+                                                    style="max-width: 500px; max-height: 500px;">
                                             </div>
                                             <br>
                                             <div style="margin-bottom: 10px; font-weight: bold;">수정할 이미지 : </div>
@@ -688,6 +753,7 @@
                                                 사진 선택하기
                                                 <input type="file" @change="fnFileChange" ref="fileInput"
                                                     style="display: none;">
+
                                             </label>
                                             <div class="image-editor-box">
 
@@ -719,17 +785,23 @@
                                     <td>{{ res.productName }}</td>
                                 </tr>
                                 <tr>
-                                    <th>예약 내용</th>
-                                    <td>{{ res.resContent }}</td>
+                                    <th>예약 내용/ 요청 사항</th>
+                                    <td>{{ res.resContent === '' ? '요청사항 없음' : res.resContent }}</td>
                                 </tr>
                                 <tr>
-                                    <th>예약 일자</th>
-                                    <td>{{ res.resDate }}</td>
+                                    <th>예약저장</th>
+                                    <td>{{ res.resDate }} {{ res.resTime }}</td>
                                 </tr>
                                 <tr>
-                                    <th>이용 일자</th>
-                                    <td>{{ res.useDatetime }}</td>
+                                    <th>예약결제</th>
+                                    <td>{{ res.payDate === undefined ? '(미결제)' : '(결제완료)' + res.payDate }}</td>
                                 </tr>
+
+                                <tr>
+                                    <th>예약 날짜/시간</th>
+                                    <td>{{ res.useDate }} {{ res.useTime }}</td>
+                                </tr>
+
                                 <tr>
                                     <th>예약자명</th>
                                     <td>{{ res.resUserId }}</td>
@@ -739,8 +811,18 @@
                                     <td>{{ res.tel }}</td>
                                 </tr>
                                 <tr>
-                                    <th>결제 금액</th>
-                                    <td>(예약금) {{ res.deposit }}</td>
+                                    <th>예약금</th>
+                                    <td>{{ Number(res.deposit).toLocaleString() }}원</td>
+                                </tr>
+                                <tr>
+                                    <th>예약 처리상태</th>
+                                    <td v-if="res.resStatus === 'WAIT'" style="color: #3714ff;">
+                                        {{ res.resStatus }}
+                                    </td>
+                                    <td v-else-if="res.resStatus === 'CANCEL'" style="color: red;">
+                                        {{ res.resStatus }}
+                                    </td>
+                                    <td v-else>{{ res.resStatus }}</td>
                                 </tr>
                             </table>
                         </template>
@@ -759,11 +841,13 @@
                         <div class="content-card" v-for="i in fnPaginatedInquiry" :key="i">
 
                             <div style="display: flex;">
-                                <div style="width: 120px; height: 80px; background: #ffcef0; margin-right: 20px; text-align: center;" >
+                                <div style="width: 100px; height: 100px;  margin-right: 20px; text-align: center;">
                                     <img :src="fnThumbnail(i)" :alt="i.product"
-                                        style="max-width: 100%; max-height: 100%">
+                                        style="width: 100%; height: 100%; object-fit: cover;">
+
                                 </div>
-                                <div style="flex: 1;"><strong>상세 내용</strong></div>
+                                <h3>상품명 : <span style="color: #d6336c;">{{i.product}}</span> </h3>
+
                             </div>
 
                             <table>
@@ -804,52 +888,51 @@
 
 
                             <div class="tab-menu">
-                                <button :class="{ active: reviewTab === 'detail' }" @click="reviewTab = 'detail'">상세
-                                    리뷰({{reviews.length}})
+                                <button :class="{ active: reviewTab === 'detail' }" @click="fnReview()">상세
+                                    리뷰({{totalReviewCnt}})
                                 </button>
 
-                                <button :class="{ active: reviewTab === 'simple' }" @click="reviewTab = 'simple'">한줄
-                                    리뷰({{simpleReviews.length}})
+                                <button :class="{ active: reviewTab === 'simple' }" @click="fnSimple()">한줄
+                                    리뷰({{totalSimpleReviewCnt}})
                                 </button>
                             </div>
 
                             <div v-if="reviewTab === 'detail'" class="content-card">
 
-                                <h3>리뷰 내역 : <span style="color: #ff1493;">새 리뷰 {{this.reviews.filter(r => r.updated ===
-                                        'new').length}}건</span></h3>
-                                <template v-for="w in weddinglist" :key="w.name">
+                                <h3>리뷰 내역 : <span style="color: #ff1493;">새 리뷰 {{newReviewCnt}}건</span></h3>
+                                <template v-for="w in productList3" :key="w.productName">
                                     <div class="review-header-info" style="margin-bottom: 10px;">
                                         <div class="review-thumb-box">
-                                            <img :src="w.thumbnail" style="max-width: 100%; max-height: 100%;">
+                                            <img :src="w.imgUrl"
+                                                style="width: 100%; height: 100%; object-fit: cover;">
                                         </div>
                                         <div class="review-product-name">
-                                            <a href="javascript:;"
-                                                @click="page1 = w.name; page = 1"><strong>{{w.name}}</strong></a>
+                                            <a href="javascript:;" style="text-decoration: none; color:#0b3f8e;"
+                                                @click="fnReviewDetails3(w)"><strong>{{w.productName}}</strong></a>
                                         </div>
-                                        <div class="review-count-badge">리뷰 갯수: {{w.reviewcount}}개 </div>
+                                        <div class="review-count-badge">리뷰 갯수: {{w.reviewCount}}개 </div>
                                     </div>
                                 </template>
                             </div>
 
-
                             <div v-if="reviewTab === 'simple'" class="content-card">
 
-                                <h3>리뷰 내역 : <span style="color: #ff1493;">새 리뷰 {{this.simpleReviews.filter(r =>
-                                        r.updated === 'new').length}}건</span></h3>
+                                <h3>리뷰 내역 : <span style="color: #ff1493;">새 리뷰 {{newUnpaidReviewCnt}}건</span></h3>
 
-                                <template v-for="w in simpleweddinglist" :key="w.name">
+                                <template v-for="w in productList4" :key="w.productName">
 
                                     <div class="review-header-info" style="margin-bottom: 10px;">
                                         <div class="review-thumb-box">
-                                            <img :src="w.thumbnail" style="max-width: 100%; max-height: 100%;">
+                                            <img :src="w.imgUrl"
+                                                style="width: 100%; height: 100%; object-fit: cover;">
                                         </div>
                                         <div class="review-product-name">
 
-                                            <a href="javascript:;"
-                                                @click="page1 = w.name; page = 1"><strong>{{w.name}}</strong></a>
+                                            <a href="javascript:;" style="text-decoration: none; color:#0b3f8e;"
+                                                @click="fnSimpleReviewDetails3(w)"><strong>{{w.productName}}</strong></a>
 
                                         </div>
-                                        <div class="review-count-badge">리뷰 갯수: {{w.reviewcount}}개 </div>
+                                        <div class="review-count-badge">리뷰 갯수: {{w.reviewCount}}개 </div>
                                     </div>
                                 </template>
                             </div>
@@ -861,19 +944,24 @@
                         <!--page1이 main이 아닌 경우-->
                         <template v-else> <!--page1 != 'main'-->
 
-
+                            <!-- 1
+                            {{reviewTab}}
+                            {{reviews}} -->
                             <!-- reviewTab === 'detail' 인 경우-->
                             <template v-if="reviewTab === 'detail'">
-                                <template v-for="rev in paginatedReviews" :key="rev.id" class="detail-review-item">
+                                <template v-for="rev in paginatedReviews" :key="rev" class="detail-review-item">
                                     <!-- {{rev}} -->
-                                    <div class="star-rating">평점 : {{rev.rating}}/5</div>
+                                    <div class="star-rating">평점 : {{rating2(rev)}}</div>
+                                        <!-- {{rev.rating}}/5 -->
 
                                     <div style="display: flex; gap: 20px;">
                                         <div style="position: relative;">
-                                            <span class="new-label" v-if="rev.updated === 'new'"
+                                            <span class="new-label" v-if="rev.updated === '1'"
                                                 style="position: absolute; top: -5px; left: -5px;">NEW
                                             </span>
-                                            <div class="review-photo">리뷰 사진</div>
+                                            <div class="review-photo">
+                                                <img :src="rev.imgUrl" :alt="rev.imgDescription" style="width: 100%; height: 100%; object-fit: cover;">
+                                            </div>
                                         </div>
                                         <div style="flex: 1; line-height: 1.6; color: #444;">
                                             {{rev.content}}
@@ -881,12 +969,13 @@
                                     </div>
                                     <div
                                         style="text-align: right; font-size: 13px; color: #888; margin-top: 15px; border-top: 1px dashed #eee; padding-top: 10px;">
-                                        작성자: <strong>{{rev.author}}</strong> | 작성일자: {{rev.date}}
+                                        작성자: <strong>{{rev.userId}}</strong> | 작성일자: {{rev.regDate}}
                                     </div>
+                                    <hr>
                                 </template>
                                 <div class="pagination">
                                     <span v-for="num in totalPages" :key="num">
-                                        <a @click="page = num" href="javascript:;"
+                                        <a @click="fnPageChange2(num)" href="javascript:;"
                                             :style="page === num ? 'color: #ff1493; border: 1px solid #ff1493;' : ''">
                                             {{num}}
                                         </a>
@@ -911,14 +1000,14 @@
                                     </thead>
                                     <tbody>
 
-
-                                        <template v-for="(rev, idx) in paginatedSimpleReviews" :key="rev.id">
+                                        <!--self.simpleReviews = data.list; =[]-->
+                                        <template v-for="(rev, idx) in paginatedSimpleReviews" :key="rev.reviewNo">
                                             <!--페이지에 맞는 리뷰 표시-->
                                             <tr>
                                                 <td>{{ (page - 1) * 5 + idx + 1 }} <span class="new-label"
-                                                        v-if="rev.updated === 'new'">NEW</span></td>
+                                                        v-if="rev.updated === '1'">NEW</span></td>
                                                 <td>{{rev.content}}</td>
-                                                <td>{{rev.userid}}</td>
+                                                <td>{{rev.userId}}</td>
                                                 <td><span style="color: #ff6a00;">{{rev.rating}}</span><span>/5</span>
                                                 </td>
                                             </tr>
@@ -958,11 +1047,18 @@
         const app = Vue.createApp({
             data() {
                 return {
+                    resCount: '',
+                    newReviewCnt: 0,
+                    newUnpaidReviewCnt: 0,
+                    productNo: '',
+                    totalSimpleReviewCnt: 0,
                     // 변수 - (key : value)
+                    totalReviewCnt: 0,
                     productList3: [],
+                    productList4: [],
                     inquiryList: [
-                        { id: 1, product: '화려하게', title: '투어 일정 변경하고 싶습니다.', userid: '김결혼', content: '04.01일 예약했는데 04.08일로 변경하고 싶어요.' },
-                        { id: 2, product: '스몰 웨딩', title: '메이크업 추가되나요?', userid: '아리랑', content: '메이크업 여기서 받고싶어요.' },
+                        { id: 1, product: '야외 스냅 기본', title: '투어 일정 변경하고 싶습니다.', userid: '김결혼', content: '04.01일 예약했는데 04.08일로 변경하고 싶어요.' },
+                        { id: 2, product: '해변스냅', title: '메이크업 추가되나요?', userid: '아리랑', content: '메이크업 여기서 받고싶어요.' },
                     ],
                     user: {
                         id: 1, name: 'ABC 드레스 샵', usePeriod: '25.01.01 ~ 26.01.01', lastPayment: '신협 ***', grade: '제휴업체' /* 일반업체, 제휴업체 구분 변수 */
@@ -1087,10 +1183,10 @@
 
             }, // data
             computed: {
-                resCount() {
-                    return this.reservationList.length;
-                }
-                ,
+                // resCount() {
+                //     return this.reservationList.length;
+                // }
+                //,
                 revCnt() {
                     return this.reviews.filter(r => r.updated === 'new').length
                         + this.simpleReviews.filter(r => r.updated === 'new').length;
@@ -1100,13 +1196,15 @@
                     // productList에서 이름이 일치하는 녀석을 찾고, 없으면 빈 객체{}를 반환
                     return this.productList.find(p => p.name === this.product) || {};
                 },
+
+
                 menuList() {
                     return [
                         { id: 'main', name: '마이 페이지', count: 0 },
                         { id: 'product', name: '상품 관리', count: 0 },
                         { id: 'reservation', name: '예약 관리', count: this.resCount },
                         { id: 'inquiry', name: '문의 내역', count: 2 },
-                        { id: 'review', name: '리뷰 내역', count: this.revCnt },
+                        { id: 'review', name: '리뷰 내역', count: this.newReviewCnt + this.newUnpaidReviewCnt },
                         { id: 'customer', name: '고객센터', count: 0 }
                     ];
                 },
@@ -1131,10 +1229,12 @@
 
 
                 filteredReviews() {
-                    return this.reviews.filter(rev => rev.product === this.page1); // 현재 선택된 상품(page1)에 해당하는 리뷰만 반환 //[] 리스트..
+                    return this.reviews;
+                    //return this.reviews.filter(rev => rev.product === this.page1); // 현재 선택된 상품(page1)에 해당하는 리뷰만 반환 //[] 리스트..
                 },
                 filteredSimpleReviews() {
-                    return this.simpleReviews.filter(rev => rev.product === this.page1); // 현재 선택된 상품(page1)에 해당하는 리뷰만 반환 //[] 리스트..
+                    return this.simpleReviews;
+                    //return this.simpleReviews.filter(rev => rev.product === this.page1); // 현재 선택된 상품(page1)에 해당하는 리뷰만 반환 //[] 리스트..
                 },
 
 
@@ -1225,6 +1325,8 @@
                             //console.log(data);
 
                             self.productList3 = data.list; //덮어씌우기
+
+
                         }
                     });
                 },
@@ -1392,7 +1494,6 @@
 
                         }
 
-
                         alert("삭제되었습니다.");
                     } else {
                         alert("삭제가 취소되었습니다.");
@@ -1400,7 +1501,7 @@
 
                 },
                 fnThumbnail(inquiry) {    //fnThumbnail(개별문의)
-                    return this.productList.find(p => p.name === inquiry.product).thumbnail;
+                    return this.productList3.find(p => p.productName === inquiry.product).imgUrl;
                 }
                 ,
                 handleMenuClick(menuId) {   //main,product,reservation,inquiry,review,customer
@@ -1416,10 +1517,18 @@
                     }
                     else if (menuId === 'product') {
                         this.fnProductList();
-                    } else if(menuId === 'reservation'){
+                    } else if (menuId === 'reservation') {
                         this.fnReservationList();
+                    } else if (menuId === 'review') {
+
+                        this.fnSimple();
+                        this.fnReview();
                     }
                 },
+
+
+
+
                 fnFileChange(event) {
                     // 1. 이벤트가 일어난 대상(input)에서 선택된 파일들 중 첫 번째[0]를 가져와요.
                     const file = event.target.files[0];
@@ -1564,7 +1673,7 @@
                 fnReservationList: function () {
                     let self = this;
                     let param = {
-                        userId : 'sunsu09'
+                        userId: 'sunsu09'
                     };
                     $.ajax({
                         url: "/ReservationList.dox",
@@ -1574,9 +1683,139 @@
                         success: function (data) {
                             console.log(data);
                             self.reservationList = data.list;
+                            self.resCount = data.newResCnt;
                         }
                     });
+                },
+                fnReview() {
+                    this.reviewTab = 'detail'
+
+                    let self = this;
+                    let param = {
+                        userId: 'sunsu09'
+                    };
+                    $.ajax({
+                        url: "/getReviewCnt.dox",
+                        dataType: "json",
+                        type: "POST",
+                        data: param,
+                        success: function (data) {
+                            //console.log(data);
+                            self.productList3 = data.list;
+                            self.newReviewCnt = data.info.reviewCount;
+
+                            let reviewCntList = self.productList3.map(p => p.reviewCount); //[3,0,1..];
+
+                            let sum = 0;
+                            for (let i = 0; i < reviewCntList.length; i++) {
+                                sum += reviewCntList[i];
+                            }
+
+                            self.totalReviewCnt = sum;
+                        }
+                    });
+                },
+                fnSimple() {
+                    this.reviewTab = 'simple'
+
+                    let self = this;
+                    let param = {
+                        userId: 'sunsu09'
+                    };
+                    $.ajax({
+                        url: "/getSimpleReviewCnt.dox",
+                        dataType: "json",
+                        type: "POST",
+                        data: param,
+                        success: function (data) {
+                            //console.log(data);
+                            self.productList4 = data.list;
+                            self.newUnpaidReviewCnt = data.info.reviewCount;
+
+                            let reviewCntList = self.productList4.map(p => p.reviewCount); //[3,0,1..];
+
+                            let sum = 0;
+                            for (let i = 0; i < reviewCntList.length; i++) {
+                                sum += reviewCntList[i];
+                            }
+
+                            self.totalSimpleReviewCnt = sum;
+
+                        }
+                    });
+                },
+                fnReviewDetails3(w) {
+                    this.page1 = 1;
+                    this.page = 1;
+
+                    let self = this;
+                    let param = {
+                        userId: 'sunsu09',
+                        productNo: w.productNo
+                    };
+                    console.log(param.productNo);
+                    $.ajax({
+                        url: "/ReviewDetails3.dox",
+                        dataType: "json",
+                        type: "POST",
+                        data: param,
+                        success: function (data) {
+                            //console.log(data);
+                            self.reviews = data.list;
+                            //console.log(self.reviews);
+
+
+                        }
+                    });
+
+                },
+                fnSimpleReviewDetails3(w) {
+                    this.page1 = 1;
+                    this.page = 1;
+
+
+                    let self = this;
+                    let param = {
+                        userId: 'sunsu09',
+                        productNo: w.productNo
+                    };
+
+                    $.ajax({
+                        url: "/SimpleReviewDetails3.dox",
+                        dataType: "json",
+                        type: "POST",
+                        data: param,
+                        success: function (data) {
+                            //console.log(data);
+
+                            self.simpleReviews = data.list;
+                            //reviews, simpleReviews
+                        }
+                    });
+                },
+                fnPageChange2(num) {
+                    this.page = num;
+
+                    window.scrollTo({
+                        top: 0,
+                        behavior: 'smooth' // 'smooth'는 부드럽게, 'auto'는 즉시 이동합니다.
+                    });
+                },
+                rating2(rev) {
+                    if (rev.rating.slice(0, 1) == 5) {
+                        return '★★★★★';
+                    } else if (rev.rating.slice(0, 1) == 4) {
+                        return '★★★★☆';
+                    } else if (rev.rating.slice(0, 1) == 3) {
+                        return '★★★☆☆';
+                    } else if (rev.rating.slice(0, 1) == 2) {
+                        return '★★☆☆☆';
+                    } else {
+                        return '★☆☆☆☆';
+                    }
                 }
+
+
             }, // methods
 
 
@@ -1584,6 +1823,10 @@
                 // 처음 시작할 때 실행되는 부분
                 let self = this;
                 self.fnCom();
+                self.fnReservationList();
+                self.fnSimple();
+                self.fnReview();
+
             }
 
 

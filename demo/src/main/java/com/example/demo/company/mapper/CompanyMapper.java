@@ -24,6 +24,39 @@ public interface CompanyMapper {
 	//int result = companyMapper.deleteProduct(map);
 	//selectSimpleReviewCnt
 	
+	//selectNewReviewCnt
+	
+	//<insert id="insertPaymentFinal" parameterType="map">
+//	<update id="updatePaymentFinal" parameterType="map">
+	int insertPaymentFinal(HashMap<String, Object> map);
+	
+	int updatePaymentFinal(HashMap<String, Object> map);
+	
+	
+	
+	//<update id="checkOver30minute" parameterType="map">
+	int checkOver30minute(HashMap<String, Object> map);
+	
+	List<Company> selectMyReservationList(HashMap<String, Object> map);
+	
+	int insertReservation(HashMap<String, Object> map);
+	
+	List<String> selectBookedTimes(HashMap<String, Object> map);
+	
+	String selectNewResCnt(HashMap<String, Object> map);
+	
+	List<Company> selectProductListForTag(HashMap<String, Object> map);
+	
+	List<String> selectTagList(HashMap<String, Object> map);
+	
+	List<Review> selectSimpleReviewDetails3(HashMap<String, Object> map);
+	
+	List<Review> selectReviewDetails3(HashMap<String, Object> map);
+	
+	Company selectNewSimpleReviewCnt(HashMap<String, Object> map);
+	
+	Company selectNewReviewCnt(HashMap<String, Object> map);
+	
 	List<Company> selectSimpleReviewCnt(HashMap<String, Object> map);
 	
 	List<Company> selectReviewCnt(HashMap<String, Object> map);
