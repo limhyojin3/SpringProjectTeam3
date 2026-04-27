@@ -20,9 +20,6 @@ public interface ReviewMapper {
     
     // 리뷰 상세 정보 조회
     HashMap<String, Object> selectReviewDetail(HashMap<String, Object> map);
-    
-    // (필요 시 유지) 무료 리뷰 전용 목록 조회
-    List<HashMap<String, Object>> selectFreeReviewList(HashMap<String, Object> map);
 
 
     /**
@@ -63,4 +60,9 @@ public interface ReviewMapper {
     
     // 리뷰 제목 가져오기
     String getReviewTitle(String targetId);
+    
+    // 기존 인터페이스에 추가
+    void insertFreeViewLog(Map<String, Object> params);
+
+	int checkViewLogExists(Map<String, Object> params);
 }

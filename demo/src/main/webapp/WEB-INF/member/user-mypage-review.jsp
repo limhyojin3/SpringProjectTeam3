@@ -239,7 +239,7 @@
             },
             fetchFreeReviews: function(page) {
                 let self = this;
-                axios.get("/myFreeReviewList.dox?page=" + page)
+                axios.get("myFreeReviewList.dox?page=" + page)
                     .then(res => {
                         self.freeReviewList = res.data.list;
                         self.freeTotalCount = res.data.totalCount;
