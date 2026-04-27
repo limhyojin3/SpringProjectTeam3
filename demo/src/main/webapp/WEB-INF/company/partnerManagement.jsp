@@ -926,7 +926,7 @@
                                                 style="width: 100%; height: 100%; object-fit: cover;">
                                         </div>
                                         <div class="review-product-name">
-
+<!--totalSimpleReviewCnt-->
                                             <a href="javascript:;" style="text-decoration: none; color:#0b3f8e;"
                                                 @click="fnSimpleReviewDetails3(w)"><strong>{{w.productName}}</strong></a>
 
@@ -1056,8 +1056,8 @@
                     productList3: [],
                     productList4: [],
                     inquiryList: [
-                        { id: 1, product: '야외 스냅 기본', title: '투어 일정 변경하고 싶습니다.', userid: '김결혼', content: '04.01일 예약했는데 04.08일로 변경하고 싶어요.' },
-                        { id: 2, product: '해변스냅', title: '메이크업 추가되나요?', userid: '아리랑', content: '메이크업 여기서 받고싶어요.' },
+                        { id: 1, product: '야외 스냅 기본', title: '투어 일정 변경하고 싶습니다.', userid: '김결혼', content: '04.01일 예약했는데 04.08일로 변경하고 싶어요.', imgUrl: "https://i.imgur.com/P4PQtwM.jpeg"},
+                        { id: 2, product: '해변스냅', title: '메이크업 추가되나요?', userid: '아리랑', content: '메이크업 여기서 받고싶어요.', imgUrl: "https://i.imgur.com/rFfGfor.jpeg"},
                     ],
                     user: {
                         id: 1, name: 'ABC 드레스 샵', usePeriod: '25.01.01 ~ 26.01.01', lastPayment: '신협 ***', grade: '제휴업체' /* 일반업체, 제휴업체 구분 변수 */
@@ -1291,7 +1291,7 @@
                 fnCom: function () {
                     let self = this;
                     let param = {
-                        userid: 'sunsu09'
+                        userid: "${sessionScope.sessionId}" //이거 맞다
                     };
                     $.ajax({
                         url: "http://localhost:8080/company.dox",
@@ -1299,7 +1299,7 @@
                         type: "POST",
                         data: param,
                         success: function (data) {
-                            //console.log(data); //info,result,message
+                            console.log(data); //info,result,message
 
                             self.user.name = data.info.comName;
                             self.user.usePeriod = data.info.usePeriod;
@@ -1313,7 +1313,7 @@
                 fnProductList: function () {
                     let self = this;
                     let param = {
-                        userid: 'sunsu09'
+                        userid: "${sessionScope.sessionId}"
                     };
                     $.ajax({
                         url: "http://localhost:8080/productList.dox",
@@ -1349,7 +1349,7 @@
                     self.productPage = 'edit';
 
                     let param = {
-                        userid: 'sunsu09',
+                        userid: "${sessionScope.sessionId}",
                         productNo: item.productNo //파라미터로 보내주면되는구나~
                     };
                     $.ajax({
@@ -1499,8 +1499,9 @@
                     }
 
                 },
-                fnThumbnail(inquiry) {    //fnThumbnail(개별문의)
-                    return this.productList3.find(p => p.productName === inquiry.product).imgUrl;
+                fnThumbnail(i) {    //fnThumbnail(개별문의) 해변스냅
+                    return this.inquiryList.find(p=> p.product === i.product).imgUrl;
+                    //return this.productList3.find(p => p.productName === inquiry.product).imgUrl;
                 }
                 ,
                 handleMenuClick(menuId) {   //main,product,reservation,inquiry,review,customer
@@ -1576,7 +1577,7 @@
 
                             if (res.result === "success") {
                                 alert("상품 정보가 모두 수정되었습니다!");
-                                window.location.href = "/company9.do";
+                                window.location.href = "/partnerManagement.do";  //
                             } else {
                                 alert("서버 응답은 성공했지만, result가 success가 아닙니다.");
                             }
@@ -1604,7 +1605,7 @@
 
 
                     formData.append("proType", JSON.stringify(this.product2.proType));
-                    formData.append("userId", 'sunsu09');
+                    formData.append("userId", "${sessionScope.sessionId}");
 
                     $.ajax({
                         url: "/upload2.dox",
@@ -1622,7 +1623,7 @@
 
                             if (res.result === "success") {
                                 alert("상품 정보가 모두 수정되었습니다!");
-                                window.location.href = "/company9.do";
+                                window.location.href = "/partnerManagement.do"; //
                             } else {
                                 alert("서버 응답은 성공했지만, result가 success가 아닙니다.");
                             }
@@ -1646,7 +1647,7 @@
                             success: function (data) {
 
                                 alert(data.message);
-                                location.href = "/company9.do"
+                                location.href = "/partnerManagement.do"
                             }
                         });
 
@@ -1672,7 +1673,7 @@
                 fnReservationList: function () {
                     let self = this;
                     let param = {
-                        userId: 'sunsu09'
+                        userId: "${sessionScope.sessionId}"
                     };
                     $.ajax({
                         url: "/ReservationList.dox",
@@ -1691,7 +1692,7 @@
 
                     let self = this;
                     let param = {
-                        userId: 'sunsu09'
+                        userId: "${sessionScope.sessionId}"
                     };
                     $.ajax({
                         url: "/getReviewCnt.dox",
@@ -1699,7 +1700,7 @@
                         type: "POST",
                         data: param,
                         success: function (data) {
-                            //console.log(data);
+                            console.log(data);
                             self.productList3 = data.list;
                             self.newReviewCnt = data.info.reviewCount;
 
@@ -1719,7 +1720,7 @@
 
                     let self = this;
                     let param = {
-                        userId: 'sunsu09'
+                        userId: "${sessionScope.sessionId}"
                     };
                     $.ajax({
                         url: "/getSimpleReviewCnt.dox",
@@ -1749,7 +1750,7 @@
 
                     let self = this;
                     let param = {
-                        userId: 'sunsu09', //${sessionScope.sessionId}
+                        userId: "${sessionScope.sessionId}", //${sessionScope.sessionId}
                         productNo: w.productNo
                     };
                     console.log(param.productNo);
@@ -1775,7 +1776,7 @@
 
                     let self = this;
                     let param = {
-                        userId: 'sunsu09',
+                        userId: "${sessionScope.sessionId}",
                         productNo: w.productNo
                     };
 
