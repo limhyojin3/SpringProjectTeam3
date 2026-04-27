@@ -93,7 +93,7 @@
 		JOIN reservation r ON p.product_no = r.product_no
 		-- 3. 조건: 업체 테이블의 로그인 아이디가 'sunsu09'인 경우
 		left join member m on m.user_id = r.user_id --
-		WHERE c.user_id = 'sunsu09'
+		WHERE c.user_id = #{userId}
 	</select>
 	<select id="selectNewResCnt" parameterType="map"
 		resultType="String">
@@ -106,7 +106,7 @@
 		JOIN reservation r ON p.product_no = r.product_no
 		-- 3. 조건: 업체 테이블의 로그인 아이디가 'sunsu09'인 경우
 		left join member m on m.user_id = r.user_id --
-		WHERE c.user_id = 'sunsu09' AND R.RES_STATUS = 'WAIT'
+		WHERE c.user_id = #{userId} AND R.RES_STATUS = 'WAIT'
 
 	</select>
 
@@ -116,7 +116,7 @@
 		reviewCount from product p
 		left join review r on p.product_no = r.product_no and r.is_paid = 1
 		where p.company_no = (
-		select company_no cmpNo from company c where c.user_id = 'sunsu09')
+		select company_no cmpNo from company c where c.user_id = #{userId})
 		group by p.product_no, p.product_name, p.img_url;
 	</select>
 
@@ -126,7 +126,7 @@
 		reviewCount from product p
 		left join review r on p.product_no = r.product_no and r.is_paid = 0
 		where p.company_no = (
-		select company_no cmpNo from company c where c.user_id = 'sunsu09')
+		select company_no cmpNo from company c where c.user_id = #{userId})
 		group by p.product_no, p.product_name, p.img_url;
 	</select>
 
@@ -135,7 +135,7 @@
 		select count(company_no) reviewCount from review r where r.is_paid = 1
 		and updated =
 		1 and r.company_no = (
-		select company_no from company c where user_id = 'sunsu09')
+		select company_no from company c where user_id = #{userId})
 	</select>
 
 	<select id="selectNewSimpleReviewCnt" parameterType="map"
@@ -143,7 +143,7 @@
 		select count(company_no) reviewCount from review r where r.is_paid = 0
 		and updated =
 		1 and r.company_no = (
-		select company_no from company c where user_id = 'sunsu09')
+		select company_no from company c where user_id = #{userId})
 	</select>
 	<select id="selectReviewDetails3" parameterType="map"
 		resultType="com.example.demo.company.model.Review">
@@ -223,7 +223,7 @@
 		left join payment_reservation pr on r.res_no = pr.res_no
 		inner join company c on c.company_no = r.company_no
 		inner join member m on m.user_id = r.user_id
-		where r.user_id = 'maygirl05'
+		where r.user_id = #{userId}
 	</select>
 
 	<!--int result = companyMapper.checkOver30minute(map);-->
@@ -234,7 +234,7 @@
 		and res_date is not null
 		and res_time is not null
 		and timestampdiff(minute, addtime(res_date, res_time), now()) >= 30
-		and user_id = 'maygirl05'
+		and user_id = #{userId}
 	</update>
 	
 	<insert id="insertPaymentFinal" parameterType="map">
