@@ -1173,7 +1173,7 @@
                     product2: {
                         companyNo: '',
                         productNo: '',
-                        proType: [""],
+                        proType: [],
                         productName: '',
                         productDetails: '',
                         originalPrice: '',
