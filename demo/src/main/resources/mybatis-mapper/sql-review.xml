@@ -208,6 +208,17 @@
 	    VALUES (#{userId}, #{reviewNo}, NOW())
 	</insert>
     
-    
+	<insert id="insertFreeViewLog" parameterType="hashmap">
+	    INSERT INTO free_view_log (user_id, review_no, viewed_at)
+	    VALUES (#{userId}, #{reviewNo}, NOW())
+	</insert>    
+	
+	<select id="checkViewLogExists" parameterType="hashmap" resultType="int">
+	    SELECT COUNT(*) 
+	    FROM free_view_log 
+	    WHERE user_id = #{userId} AND review_no = #{reviewNo}
+	</select>
+	
+	
 
 </mapper>

@@ -29,4 +29,5 @@ public class Review {
     private Integer remainingCount; // user_pass_wallet의 잔액
     private Timestamp usedAt;       // pass_usage_log의 사용 시간
     private int isViewed;           // 0: 안봄, 1: 봄 (조인 쿼리 결과용)
+    private Timestamp viewdAt;
 }

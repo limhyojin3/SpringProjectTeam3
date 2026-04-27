@@ -180,4 +180,19 @@ public class ReviewService {
         return (count != null) ? count : 0;
     }
     
+    // 무료 리뷰 열람 기록 저장 (상세보기 클릭 시 호출)
+    public void saveFreeViewLog(Map<String, Object> map, String userId) {
+        Map<String, Object> params = new HashMap<>();
+        params.put("reviewNo", map.get("reviewNo"));
+        params.put("userId", userId);
+
+        // 1. 이미 존재하는지 확인
+        int count = reviewMapper.checkViewLogExists(params);
+
+        // 2. 없을 때만 인서트
+        if (count == 0) {
+            reviewMapper.insertFreeViewLog(params);
+        }
+    }
+    
 }
