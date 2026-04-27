@@ -129,8 +129,11 @@ public class AdminService {
 
 		String userId = (String) map.get("userId");
 		String itemName = (String) map.get("itemName");
-		int passNo = Integer.parseInt(String.valueOf(map.get("passNo").toString()));
+		String type = String.valueOf(map.get("type"));
+
 		int amount = Integer.parseInt(String.valueOf(map.get("amount").toString()));
+
+		int dbPrice = 0;
 
 		// 1. 최소 검증
 		if (userId == null || userId.isEmpty()) {
@@ -139,8 +142,26 @@ public class AdminService {
 		if (amount <= 0) {
 			return false;
 		}
-		// 2. DB 가격 조회
-		int dbPrice = adminMapper.selectPriceInfo(passNo);
+		// 2. 결제 종류별 가격 조회
+		if ("PASS".equals(type)) {
+
+			int passNo = Integer.parseInt(String.valueOf(map.get("passNo")));
+
+			dbPrice = adminMapper.selectPriceInfo(passNo);
+
+		} else if ("REG".equals(type)) {
+
+			dbPrice = 1000; // 등록비 고정금액
+
+		} else if ("RES".equals(type)) {
+
+			dbPrice = amount; // 임시
+
+		} else {
+
+			return false;
+
+		}
 		// 3. 비교
 		return dbPrice == amount;
 	}
@@ -161,6 +182,25 @@ public class AdminService {
 	public void completePayment(HashMap<String, Object> map) {
 		adminMapper.insertPayment(map);
 		adminMapper.insertPaymentPass(map);
+	}
+
+	public HashMap<String, Object> getPaymentByPayNo(int payNo) {
+		return adminMapper.selectPaymentByPayNo(payNo);
+	}
+
+	public HashMap<String, Object> getPaymentFinishInfo(HashMap<String, Object> map) {
+
+		String type = map.get("type").toString();
+
+		if (type.equals("PASS")) {
+			return adminMapper.selectPassPayment(map);
+		} else if (type.equals("RES")) {
+			return adminMapper.selectReservationPayment(map);
+		} else if (type.equals("REG")) {
+			return adminMapper.selectRegistrationPayment(map);
+		}
+
+		return new HashMap<>();
 	}
 
 	public HashMap<String, Object> getInquiryList(Map<String, Object> map) {
@@ -401,9 +441,10 @@ public class AdminService {
 		int dbPrice = 0;
 
 		try {
-			String impUid = (String) map.get("imp_uid");
-			amount = Integer.parseInt(map.get("amount").toString());
-			int passNo = Integer.parseInt(map.get("passNo").toString());
+			String impUid = String.valueOf(map.get("imp_uid"));
+			String type = String.valueOf(map.get("type"));
+
+			amount = Integer.parseInt(String.valueOf(map.get("amount")));
 
 			// 1. 토큰 발급
 			String accessToken = getAccessToken();
@@ -412,11 +453,22 @@ public class AdminService {
 			actualPaidAmount = getPaymentData(impUid, accessToken);
 
 			// 3. DB 상품 가격 조회
-			dbPrice = adminMapper.selectPriceInfo(passNo);
+			if ("PASS".equals(type)) {
 
-			// --------------------------------------------------
-			// [중요] 여기서 서버(STS/Eclipse) 콘솔을 확인하세요!
-			// --------------------------------------------------
+				int passNo = Integer.parseInt(String.valueOf(map.get("passNo")));
+
+				dbPrice = adminMapper.selectPriceInfo(passNo);
+
+			} else if ("REG".equals(type)) {
+
+				dbPrice = 1000; // 등록비 고정금액
+
+			} else if ("RES".equals(type)) {
+
+				dbPrice = Integer.parseInt(String.valueOf(map.get("reservePrice")));
+
+			}
+
 			System.out.println("========= [결제 검증 상세 결과] =========");
 			System.out.println("1. 포트원 조회 금액 (A): " + actualPaidAmount);
 			System.out.println("2. 프론트 보낸 금액 (B): " + amount);
@@ -452,8 +504,6 @@ public class AdminService {
 		body.put("imp_key", "6441076133101874"); // 본인의 API 키
 		body.put("imp_secret", "0QLgaXVjWTQOZmnBlwbma7943DaRO8QiJkViTnqgLEuaqsSu27eLiaRxoQWQnlkPDNNjgIunttaxAPm0"); // 본인의
 																													// Secret
-																													// 키
-
 		try {
 			// 2. 포트원에 토큰 요청
 			Map response = restTemplate.postForObject(url, body, Map.class);
@@ -606,92 +656,284 @@ public class AdminService {
 		result.put("totalCount", adminMapper.selectPaymentCount(map));
 		return result;
 	}
+
 	public HashMap<String, Object> getPassPaymentList(HashMap<String, Object> map) {
 		HashMap<String, Object> result = new HashMap<>();
 		result.put("list", adminMapper.selectPassPaymentList(map));
 		result.put("totalCount", adminMapper.selectPassPaymentCount(map));
 		return result;
 	}
+
 	public HashMap<String, Object> getReservationPaymentList(HashMap<String, Object> map) {
 		HashMap<String, Object> result = new HashMap<>();
 		result.put("list", adminMapper.selectReservationPaymentList(map));
 		result.put("totalCount", adminMapper.selectReservationPaymentCount(map));
 		return result;
 	}
+
 	public HashMap<String, Object> getRegistrationPaymentList(HashMap<String, Object> map) {
 		HashMap<String, Object> result = new HashMap<>();
 		result.put("list", adminMapper.selectRegistrationPaymentList(map));
 		result.put("totalCount", adminMapper.selectRegistrationPaymentCount(map));
 		return result;
 	}
-	
-	
-	// 상품 관리
+
+// 상품 관리
 	// 🔹 상품
-    public HashMap<String, Object> getProductList(HashMap<String, Object> map) {
-        HashMap<String, Object> result = new HashMap<>();
+	public HashMap<String, Object> getAdminProductList(HashMap<String, Object> map) {
+		HashMap<String, Object> result = new HashMap<>();
 
-        try {
-            List<Admin> list = adminMapper.selectProductList(map);
-            System.out.println("🔥 product list size = " + list.size());
-            System.out.println("🔥 product list = " + list);
-            int count = adminMapper.selectProductCount(map);
+		try {
+			List<Admin> list = adminMapper.selectAdminProductList(map);
+			int count = adminMapper.selectAdminProductCount(map);
 
-            result.put("list", list);
-            result.put("totalCount", count);
-            result.put("result", "success");
-            result.put("message", "상품 조회 성공");
+			result.put("list", list);
+			result.put("totalCount", count);
+			result.put("result", "success");
+			result.put("message", "상품 조회 성공");
 
-        } catch (Exception e) {
-            result.put("result", "fail");
-            result.put("message", "상품 조회 실패");
-            e.printStackTrace();
-        }
+		} catch (Exception e) {
+			result.put("result", "fail");
+			result.put("message", "상품 조회 실패");
+			e.printStackTrace();
+		}
 
-        return result;
-    }
+		return result;
+	}
 
-    // 🔹 쿠폰
-    public HashMap<String, Object> getCouponList(HashMap<String, Object> map) {
-        HashMap<String, Object> result = new HashMap<>();
+	// 상품 상태 변경
+	public HashMap<String, Object> updateProductStatus(HashMap<String, Object> map) {
+		HashMap<String, Object> resultMap = new HashMap<>();
 
-        try {
-            List<Admin> list = adminMapper.selectCouponList(map);
-            int count = adminMapper.selectCouponCount(map);
+		try {
 
-            result.put("list", list);
-            result.put("totalCount", count);
-            result.put("result", "success");
-            result.put("message", "쿠폰 조회 성공");
+			int cnt = adminMapper.updateProductStatus(map);
 
-        } catch (Exception e) {
-            result.put("result", "fail");
-            result.put("message", "쿠폰 조회 실패");
-            e.printStackTrace();
-        }
+			resultMap.put("result", "success");
+			resultMap.put("message", "상태가 변경되었습니다.");
 
-        return result;
-    }
+		} catch (Exception e) {
+			e.printStackTrace();
+			resultMap.put("result", "fail");
+			resultMap.put("message", "상태 변경 실패");
+		}
 
-    // 🔹 패스
-    public HashMap<String, Object> getAllPassList(HashMap<String, Object> map) {
-        HashMap<String, Object> result = new HashMap<>();
+		return resultMap;
+	}
 
-        try {
-            List<Admin> list = adminMapper.selectAllPassList(map);
-            int count = adminMapper.selectPassCount(map);
+	// 상품 삭제
+	public HashMap<String, Object> deleteProduct(HashMap<String, Object> map) {
+		HashMap<String, Object> resultMap = new HashMap<>();
 
-            result.put("list", list);
-            result.put("totalCount", count);
-            result.put("result", "success");
-            result.put("message", "패스 조회 성공");
+		try {
+			adminMapper.deleteProduct(map);
 
-        } catch (Exception e) {
-            result.put("result", "fail");
-            result.put("message", "패스 조회 실패");
-            e.printStackTrace();
-        }
+			resultMap.put("result", "success");
+			resultMap.put("message", "삭제되었습니다.");
 
-        return result;
-    }
+		} catch (Exception e) {
+			e.printStackTrace();
+			resultMap.put("result", "fail");
+			resultMap.put("message", "삭제 실패");
+		}
+
+		return resultMap;
+	}
+
+	// 상품 상세 조회
+	public HashMap<String, Object> selectProductInfo(HashMap<String, Object> map) {
+		HashMap<String, Object> resultMap = new HashMap<>();
+
+		try {
+			Admin info = adminMapper.selectProductInfo(map);
+
+			resultMap.put("result", "success");
+			resultMap.put("info", info);
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			resultMap.put("result", "fail");
+			resultMap.put("message", "상세조회 실패");
+		}
+
+		return resultMap;
+	}
+
+// 🔹 쿠폰
+	public HashMap<String, Object> getCouponList(HashMap<String, Object> map) {
+		HashMap<String, Object> result = new HashMap<>();
+
+		try {
+			List<Admin> list = adminMapper.selectCouponList(map);
+			int count = adminMapper.selectCouponCount(map);
+
+			result.put("list", list);
+			result.put("totalCount", count);
+			result.put("result", "success");
+			result.put("message", "쿠폰 조회 성공");
+
+		} catch (Exception e) {
+			result.put("result", "fail");
+			result.put("message", "쿠폰 조회 실패");
+			e.printStackTrace();
+		}
+
+		return result;
+	}
+
+	public HashMap<String, Object> addCoupon(HashMap<String, Object> map) {
+
+		HashMap<String, Object> resultMap = new HashMap<>();
+
+		try {
+
+			int cnt = adminMapper.insertCoupon(map);
+
+			if (cnt > 0) {
+				resultMap.put("result", "success");
+				resultMap.put("message", "쿠폰이 등록되었습니다.");
+			} else {
+				resultMap.put("result", "fail");
+				resultMap.put("message", "쿠폰 등록 실패");
+			}
+
+		} catch (Exception e) {
+			e.printStackTrace();
+
+			resultMap.put("result", "fail");
+			resultMap.put("message", "오류 발생");
+		}
+
+		return resultMap;
+	}
+
+	public HashMap<String, Object> deleteCoupon(HashMap<String, Object> map) {
+
+		HashMap<String, Object> resultMap = new HashMap<>();
+
+		try {
+
+			int cnt = adminMapper.deleteCoupon(map);
+
+			if (cnt > 0) {
+				resultMap.put("result", "success");
+				resultMap.put("message", "쿠폰이 삭제되었습니다.");
+			} else {
+				resultMap.put("result", "fail");
+				resultMap.put("message", "삭제 실패");
+			}
+
+		} catch (Exception e) {
+			e.printStackTrace();
+
+			resultMap.put("result", "fail");
+			resultMap.put("message", "오류 발생");
+		}
+
+		return resultMap;
+	}
+
+	// 🔹 패스
+	public HashMap<String, Object> getAllPassList(HashMap<String, Object> map) {
+		HashMap<String, Object> result = new HashMap<>();
+
+		try {
+			List<Admin> list = adminMapper.selectAllPassList(map);
+			int count = adminMapper.selectPassCount(map);
+
+			result.put("list", list);
+			result.put("totalCount", count);
+			result.put("result", "success");
+			result.put("message", "패스 조회 성공");
+
+		} catch (Exception e) {
+			result.put("result", "fail");
+			result.put("message", "패스 조회 실패");
+			e.printStackTrace();
+		}
+
+		return result;
+	}
+
+	public HashMap<String, Object> editPassStatus(HashMap<String, Object> map) {
+
+		HashMap<String, Object> resultMap = new HashMap<>();
+
+		try {
+
+			int cnt = adminMapper.updatePassStatus(map);
+
+			if (cnt > 0) {
+				resultMap.put("result", "success");
+				resultMap.put("message", "상태가 변경되었습니다.");
+			} else {
+				resultMap.put("result", "fail");
+				resultMap.put("message", "변경 실패");
+			}
+
+		} catch (Exception e) {
+			e.printStackTrace();
+
+			resultMap.put("result", "fail");
+			resultMap.put("message", "오류 발생");
+		}
+
+		return resultMap;
+	}
+
+	// 패스 등록
+	public HashMap<String, Object> addPass(HashMap<String, Object> map) {
+
+		HashMap<String, Object> resultMap = new HashMap<>();
+
+		try {
+
+			map.put("price", Integer.parseInt(map.get("price").toString()));
+
+			int cnt = adminMapper.insertPass(map);
+
+			if (cnt > 0) {
+				resultMap.put("result", "success");
+				resultMap.put("message", "등록되었습니다.");
+			} else {
+				resultMap.put("result", "fail");
+				resultMap.put("message", "등록 실패");
+			}
+
+		} catch (Exception e) {
+			e.printStackTrace();
+
+			resultMap.put("result", "fail");
+			resultMap.put("message", "오류 발생");
+		}
+
+		return resultMap;
+	}
+
+	// 패스 삭제
+	public HashMap<String, Object> removePass(HashMap<String, Object> map) {
+
+		HashMap<String, Object> resultMap = new HashMap<>();
+
+		try {
+
+			int cnt = adminMapper.deletePass(map);
+
+			if (cnt > 0) {
+				resultMap.put("result", "success");
+				resultMap.put("message", "삭제되었습니다.");
+			} else {
+				resultMap.put("result", "fail");
+				resultMap.put("message", "삭제 실패");
+			}
+
+		} catch (Exception e) {
+			e.printStackTrace();
+
+			resultMap.put("result", "fail");
+			resultMap.put("message", "오류 발생");
+		}
+
+		return resultMap;
+	}
 }

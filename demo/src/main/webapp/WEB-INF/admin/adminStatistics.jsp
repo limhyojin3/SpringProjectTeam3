@@ -30,8 +30,6 @@
 
             .main {
                 grid-area: main;
-                border: 1px solid #ffc7c2;
-                background-color: #ffc7c2;
                 padding: 20px;
                 display: flex;
                 gap: 20px;
