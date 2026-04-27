@@ -26,16 +26,17 @@ public class CompanyController {
 	@Autowired
 	CompanyService companyService;
 
-	/* 사용가능 */
-	@RequestMapping("/company10.do")
+	/* 사용가능 / 이름변경: company10.do -> partnerManagement.do (4/27~) */
+	@RequestMapping("/partnerManagement.do")
 	public String test2(Model model) throws Exception {
-		return "/company/company10";
+		return "/company/partnerManagement";
 	}
 	
 	/* 상품목록조회(카테고리 / 태그 필터)  + 상품 상세페이지  */
-	@RequestMapping("/company2.do")
+	/* 이름변경: company2.do -> productCategoryTag.do */
+	@RequestMapping("/productCategoryTag.do")
 	public String te4(Model model) throws Exception {
-		return "/company/company2";
+		return "/company/productCategoryTag";
 	}
 	
 	
@@ -49,7 +50,7 @@ public class CompanyController {
 	/* 로그인 없이 입장용 */
 	@RequestMapping("/company9.do")
 	public String test99(Model model) throws Exception {
-		return "/company/company10";
+		return "/company/partnerManagement";
 	}
 	
 	
