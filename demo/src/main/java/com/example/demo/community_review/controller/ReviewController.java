@@ -1,5 +1,6 @@
 package com.example.demo.community_review.controller;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -7,6 +8,8 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -55,10 +58,44 @@ public class ReviewController {
         return "/review/review-add"; 
     }
 
+ // --- [페이지 이동 및 로그 저장] ---
+
     @RequestMapping("/detail.do")
     public String goReviewDetail(@RequestParam("reviewNo") String reviewNo, HttpServletRequest request, Model model) {
         HttpSession session = request.getSession();
         String sessionId = (String) session.getAttribute("sessionId");
+
+        try {
+            // 리뷰 상세 정보를 가져오기 위한 맵 세팅
+            HashMap<String, Object> map = new HashMap<>();
+            map.put("reviewNo", reviewNo);
+            
+            // 1. 리뷰 상세 정보를 DB에서 조회
+            HashMap<String, Object> review = reviewService.getReviewDetailInfo(map);
+            
+            if (review != null && sessionId != null) {
+                // DB 타입에 상관없이 비교하기 위해 String으로 변환
+                String isPaid = String.valueOf(review.get("isPaid")); 
+                String writerId = (String) review.get("userId");
+
+                // 디버깅 콘솔 출력 (로그 안쌓이면 서버 콘솔 확인용)
+                System.out.println("=== 무료리뷰 열람 로그 체크 ===");
+                System.out.println("접속자: " + sessionId + " | 작성자: " + writerId + " | 유료여부: " + isPaid);
+
+                // 조건: 무료리뷰(0 또는 N) 이고 + 내가 쓴 글이 아닐 때만 저장
+                if (("0".equals(isPaid) || "N".equals(isPaid)) || "false".equals(isPaid) && !sessionId.equals(writerId)) {
+                    System.out.println("결과: 무료 리뷰 열람 - 로그 저장 실행");
+                    reviewService.saveFreeViewLog(map, sessionId); 
+                } else {
+                    System.out.println("결과: 조건 미충족 (유료리뷰거나 본인글임)");
+                }
+            }
+        } catch (Exception e) {
+            System.out.println("로그 저장 중 오류 발생: " + e.getMessage());
+            e.printStackTrace();
+        }
+
+        // 뷰(JSP/HTML)로 데이터 전달
         model.addAttribute("reviewNo", reviewNo);
         model.addAttribute("sessionId", sessionId);
         return "/review/review-detail";  
@@ -256,5 +293,9 @@ public class ReviewController {
         resultMap.put("count", count != null ? count : 0);
         return new Gson().toJson(resultMap);
     }
+    
+    
+    
+    
     
 }

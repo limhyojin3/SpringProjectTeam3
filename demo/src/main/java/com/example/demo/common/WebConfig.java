@@ -12,19 +12,15 @@ import lombok.RequiredArgsConstructor;
 
 @Configuration
 public class WebConfig implements WebMvcConfigurer {
-
+	
     @Override 
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        // 1. 외부 저장소 설정: /uploads/** 로 들어오는 요청을 실제 C:/uploads/project/ 폴더로 매핑
-        registry.addResourceHandler("/uploads/**")
-                .addResourceLocations("file:///C:/uploads/project/");
-        
-//        // 2. 프로젝트 내부 저장소 설정 (필요 없다면 삭제해도 무방하지만 일단 유지했습니다)
-//        String projectPath = System.getProperty("user.dir");
-//        registry.addResourceHandler("/img2/**")
-//                .addResourceLocations("file:///" + projectPath + "/src/main/resources/static/uploads/");
+    	 // 2. 프로젝트 내부 저장소 설정 (필요 없다면 삭제해도 무방하지만 일단 유지했습니다)
+        String projectPath = System.getProperty("user.dir");
+        registry.addResourceHandler("/img2/**")
+        .addResourceLocations("file:///" + projectPath + "/src/main/resources/static/uploads/");
     }
-
+	
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(new LoginCheckInterceptor())

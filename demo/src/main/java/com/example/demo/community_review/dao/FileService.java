@@ -1,58 +1,66 @@
 package com.example.demo.community_review.dao;
 
-import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.StandardCopyOption;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.cloudinary.Cloudinary;
+import com.cloudinary.utils.ObjectUtils;
 import com.example.demo.common.Message;
+
+import jakarta.annotation.PostConstruct;
 
 @Service
 public class FileService {
 
-    @Value("${file.upload-dir}")
-    private String uploadPath;
+    // 1. properties 파일에서 설정값 읽어오기
+    @Value("${cloudinary.cloud-name}")
+    private String cloudName;
+
+    @Value("${cloudinary.api-key}")
+    private String apiKey;
+
+    @Value("${cloudinary.api-secret}")
+    private String apiSecret;
+
+    private Cloudinary cloudinary;
+
+    // 2. 빈(Bean)이 생성된 후 설정값들을 가지고 Cloudinary 객체 초기화
+    @PostConstruct
+    public void init() {
+        this.cloudinary = new Cloudinary(ObjectUtils.asMap(
+            "cloud_name", cloudName,
+            "api_key", apiKey,
+            "api_secret", apiSecret
+        ));
+    }
 
     /**
-     * 고도화된 파일 업로드 프로세스
-     * 반환값: originalName, storedName, imgUrl 정보를 담은 Map
+     * Cloudinary 클라우드 서버에 파일을 업로드하고 접속 가능한 URL을 반환합니다.
      */
     public Map<String, String> uploadFile(MultipartFile file) {
         if (file == null || file.isEmpty()) {
             return null;
         }
 
-        // 1. 폴더 생성 (C:/uploads/project/)
-        File folder = new File(uploadPath);
-        if (!folder.exists()) {
-            folder.mkdirs();
-        }
-
-        // 2. 파일명 생성 (원본명, 저장용명)
-        String originalName = file.getOriginalFilename();
-        String uuid = UUID.randomUUID().toString();
-        String extension = originalName.substring(originalName.lastIndexOf("."));
-        String storedName = uuid + extension; // 저장용 이름
-
         try {
-        	// [수정 포인트] transferTo 대신 InputStream을 직접 복사합니다.
-            Path destination = new File(uploadPath + storedName).toPath();
-            Files.copy(file.getInputStream(), destination, StandardCopyOption.REPLACE_EXISTING);
+            // Cloudinary에 파일 업로드 실행
+            Map uploadResult = cloudinary.uploader().upload(file.getBytes(), ObjectUtils.emptyMap());
 
-            // 4. DB에 저장할 3종 세트 구성 (중요!)
+            // 업로드 완료 후 정보 가져오기
+            String imgUrl = (String) uploadResult.get("secure_url"); // 클라우드 보안 주소
+            String publicId = (String) uploadResult.get("public_id"); // 클라우드 내 고유 ID
+            String originalName = file.getOriginalFilename();
+
+            // 컨트롤러 및 DB 저장용 정보 구성
             Map<String, String> fileMap = new HashMap<>();
             fileMap.put("originalName", originalName);
-            fileMap.put("storedName", storedName);
-            // application.properties의 가상경로와 맞춰서 생성
-            fileMap.put("imgUrl", "/uploads/" + storedName); 
+            fileMap.put("storedName", publicId); 
+            fileMap.put("imgUrl", imgUrl); 
             
             return fileMap;
 

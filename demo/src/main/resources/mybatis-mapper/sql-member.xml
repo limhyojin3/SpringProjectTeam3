@@ -249,21 +249,18 @@
 	        R.rating,
 	        R.reg_date,
 	        C.com_name
-	    FROM pass_usage_log PUL
-	    JOIN review R ON PUL.review_no = R.review_no
+	    FROM free_view_log FVL  JOIN review R ON FVL.review_no = R.review_no
 	    LEFT JOIN company C ON R.company_no = C.company_no
-	    WHERE PUL.user_id = #{userId}
-	    AND R.is_paid = 0
-	    AND R.user_id != #{userId}
-	    ORDER BY PUL.used_at DESC
-	    LIMIT #{pageSize} OFFSET #{offset}
+	    WHERE FVL.user_id = #{userId}
+	      AND R.is_paid = 0
+	      AND R.user_id != #{userId} ORDER BY FVL.viewed_at DESC  LIMIT #{pageSize} OFFSET #{offset}
 	</select>
 	<!-- 무료 리뷰 전체 개수 -->
 	<select id="selectMyFreeReviewCount" parameterType="String" resultType="int">
 	    SELECT COUNT(*)
-	    FROM pass_usage_log PUL
-	    JOIN review R ON PUL.review_no = R.review_no
-	    WHERE PUL.user_id = #{userId}
+	    FROM free_view_log FVL
+	    JOIN review R ON FVL.review_no = R.review_no
+	    WHERE FVL.user_id = #{userId}
 	    AND R.is_paid = 0
 	    AND R.user_id != #{userId}
 	</select>
@@ -590,6 +587,23 @@
 	    ORDER BY like_cnt DESC
 	    LIMIT 3
 	</select>
+	
+	<!-- 챗봇 로그 -->
+	<insert id="insertChatLog" parameterType="com.example.demo.member.model.ChatLog">
+	    INSERT INTO tbl_chat_log (
+	        user_id,
+	        question,
+        	answer,
+        	chat_type,
+        	created_at
+        ) VALUES (
+	        #{userId},
+			#{question},
+	        #{answer},
+	        #{chatType},
+	        NOW()
+        )
+	</insert>
 	
 	
 </mapper>

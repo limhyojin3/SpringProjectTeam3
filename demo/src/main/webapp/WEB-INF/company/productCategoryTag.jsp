@@ -10,14 +10,19 @@
             integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
         <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
         <script src="/js/page-change.js"></script>
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
+        <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
+        <script src="https://cdn.quilljs.com/1.3.6/quill.min.js"></script>
+        <link rel="stylesheet" href="${pageContext.request.contextPath}/css/common.css">
+
         <style>
             /* 기본 레이아웃 */
-            body {
+            /*body {
                 font-family: 'Malgun Gothic', sans-serif;
                 margin: 0;
                 padding: 0;
                 background-color: #f9f9f9;
-            }
+            }*/
 
             #app {
                 max-width: 1200px;
@@ -30,15 +35,15 @@
             }
 
             /* 헤더 영역 */
-            header {
+            /*header {
                 display: flex;
                 justify-content: space-between;
                 align-items: center;
                 padding: 20px;
                 border-bottom: 2px solid #333;
-            }
+            }*/
 
-            .nav-top button {
+            /*.nav-top button {
                 padding: 8px 15px;
                 margin-right: 5px;
                 border: 1px solid #ff7f9f;
@@ -46,17 +51,17 @@
                 color: #ff7f9f;
                 cursor: pointer;
                 border-radius: 5px;
-            }
+            }*/
 
-            .user-info {
+            /*.user-info {
                 background: #ff7f9f;
                 color: white;
                 padding: 10px 20px;
                 border-radius: 5px;
-            }
+            }*/
 
             /* 메인 바디 레이아웃 */
-            .container {
+            .container1 {
                 display: flex;
                 flex: 1;
             }
@@ -257,13 +262,13 @@
             }
 
             /* 푸터 */
-            footer {
+            /*footer {
                 background: #ffc1cc;
                 padding: 20px;
                 text-align: center;
                 font-size: 14px;
                 border-top: 1px solid #ddd;
-            }
+            }*/
 
             /* 플로팅 버튼 */
             .ai-chatbot {
@@ -347,12 +352,12 @@
             }
 
             /* 페이징 */
-            .pagination {
+            .pagination1 {
                 text-align: center;
                 margin-top: 25px;
             }
 
-            .pagination a {
+            .pagination1 a {
                 display: inline-block;
                 padding: 8px 12px;
                 margin: 0 4px;
@@ -365,14 +370,14 @@
                 font-weight: 500;
             }
 
-            .pagination a:hover {
+            .pagination1 a:hover {
                 background: #ff7f9f;
                 color: white;
                 transform: translateY(-2px);
                 box-shadow: 0 4px 12px rgba(255, 124, 159, 0.3);
             }
 
-            .pagination a:active {
+            .pagination1 a:active {
                 transform: translateY(0px);
             }
 
@@ -1206,21 +1211,13 @@
     </head>
 
     <body>
+
+        <jsp:include page="/WEB-INF/common/header.jsp" />
         <div id="app">
             <!-- html 코드는 id가 app인 태그 안에서 작업 -->
-            <header>
-                <div class="logo"><img src="/img/merryViewLogo.png" alt="메리뷰" height="60"></div>
-                <div class="nav-top">
-                    <button>회사소개</button>
-                    <button>제휴업체</button>
-                    <button>커뮤니티</button>
-                    <button>패스구매</button>
-                    <button>고객센터</button>
-                </div>
-                <div class="user-info">{{ user.name }}님</div>
-            </header>
+            
 
-            <div class="container">
+            <div class="container1">
 
 
                 <main>
@@ -1266,7 +1263,7 @@
                         </div>
 
                         <div v-if="currentMenu === 'main' && productPage === 'detail'">
-                            {{product1}}
+                            <!-- {{product1}} -->
                             <button @click="fnBack()" style="margin-bottom:10px;">← 뒤로가기</button>
 
                             <div class="detail-container">
@@ -1575,7 +1572,7 @@
                                 {{selectedDate}}
                                 {{selectedTime}} -->
 
-                                {{myReservation1}}
+                                <!-- {{myReservation1}} -->
 
 
                                 <div class="payment-btn-group">
@@ -1619,9 +1616,7 @@
         </div>
         </div>
 
-        <footer>
-            푸터 → 업체 정보 | 사업자번호: 000-00-00000 | 고객센터: 1588-0000
-        </footer>
+        <jsp:include page="/WEB-INF/common/footer.jsp" />
 
         <div class="ai-chatbot">ai 챗봇</div>
         </div>
@@ -1914,7 +1909,7 @@
                     product2: {
                         companyNo: '',
                         productNo: '',
-                        proType: [""],
+                        proType: [],
                         productName: '',
                         productDetails: '',
                         originalPrice: '',
@@ -1939,16 +1934,38 @@
                 ,
                 filteredList() {
                     return this.productList.filter(product => {
-                        // 카테고리 조건 (선택 안 했으면 pass, 선택했으면 포함 여부 확인)
-                        const matchCategory = this.selectCategory.length === 0 ||
-                            this.selectCategory.some(cat => product.category.includes(cat));
 
+                        // 카테고리 조건 (선택 안 했으면 pass, 선택했으면 포함 여부 확인)
+                        const matchCategory = this.selectCategory.length === 0 || (
+
+                            product.category &&
+                            Array.isArray(product.category) &&
+                            this.selectCategory.some(cat => product.category.includes(cat))
+                                     //[]            //과즙팡팡   과즙팡팡,스몰웨딩
+                        );
                         // 태그 조건
-                        const matchTag = this.selectTags.length === 0 ||
-                            this.selectTags.some(tag => product.tag.includes(tag));
+                        const matchTag = this.selectTags.length === 0 || (
+
+                            product.tag &&
+                            Array.isArray(product.tag) &&
+                            this.selectTags.some(tag => product.tag.includes(tag))
+                        );
 
                         // 둘 다 만족하는 것만 리턴 (AND 조건)
                         return matchCategory && matchTag;
+
+
+
+                        // 카테고리 조건 (선택 안 했으면 pass, 선택했으면 포함 여부 확인)
+                        //const matchCategory = this.selectCategory.length === 0 || 
+                        //    this.selectCategory.some(cat => product.category.includes(cat));
+                                  // []             //과즙팡팡     과즙팡팡,스몰웨딩
+                        // 태그 조건
+                        //const matchTag = this.selectTags.length === 0 ||
+                        //    this.selectTags.some(tag => product.tag.includes(tag));
+
+                        // 둘 다 만족하는 것만 리턴 (AND 조건)
+                        //return matchCategory && matchTag;
                     });
                 }
                 ,
@@ -2062,7 +2079,7 @@
                 fnCom: function () {
                     let self = this;
                     let param = {
-                        userid: 'sunsu09'
+                        userid: "${sessionScope.sessionId}"
                     };
                     $.ajax({
                         url: "http://localhost:8080/company.dox",
@@ -2084,7 +2101,7 @@
                 fnProductList: function () {
                     let self = this;
                     let param = {
-                        userid: 'sunsu09'
+                        userid: "${sessionScope.sessionId}"
                     };
                     $.ajax({
                         url: "http://localhost:8080/productList.dox",
@@ -2118,7 +2135,7 @@
                     self.productPage = 'edit';
 
                     let param = {
-                        userid: 'sunsu09',
+                        userid: "${sessionScope.sessionId}",
                         productNo: item.productNo //파라미터로 보내주면되는구나~
                     };
                     $.ajax({
@@ -2336,7 +2353,7 @@
 
                             if (res.result === "success") {
                                 alert("상품 정보가 모두 수정되었습니다!");
-                                window.location.href = "/company9.do";
+                                window.location.href = "/partnerManagement.do";
                             } else {
                                 alert("서버 응답은 성공했지만, result가 success가 아닙니다.");
                             }
@@ -2364,7 +2381,7 @@
 
 
                     formData.append("proType", JSON.stringify(this.product2.proType));
-                    formData.append("userId", 'sunsu09');
+                    formData.append("userId", "${sessionScope.sessionId}");
 
                     $.ajax({
                         url: "/upload2.dox",
@@ -2382,7 +2399,7 @@
 
                             if (res.result === "success") {
                                 alert("상품 정보가 모두 수정되었습니다!");
-                                window.location.href = "/company9.do";
+                                window.location.href = "/partnerManagement.do";
                             } else {
                                 alert("서버 응답은 성공했지만, result가 success가 아닙니다.");
                             }
@@ -2406,7 +2423,7 @@
                             success: function (data) {
 
                                 alert(data.message);
-                                location.href = "/company9.do"
+                                location.href = "/partnerManagement.do"
                             }
                         });
 
@@ -2461,7 +2478,7 @@
 
                         let self = this;
                         let param = {
-                            userId: self.user.name,
+                            userId: "${sessionScope.sessionId}",
                             productNo: self.product1.id,
                             companyNo: self.product1.companyNo,
                             resContent: self.res_content,
@@ -2525,9 +2542,9 @@
                                     company: p.comName,
                                     content: p.productDetails,
                                     price: p.originalPrice,
-                                    category: JSON.parse(p.proType),
-                                    tag: JSON.parse(p.tag),
-                                    deposit: p.deposit
+                                    category: typeof p.proType === 'string' ? JSON.parse(p.proType) : p.proType,
+                                    tag: typeof p.tag === 'string' ? JSON.parse(p.tag) : p.tag,
+                                    deposit: p.deposit || 0
                                 }
                             });
                             console.log(productList1);
@@ -2576,11 +2593,21 @@
                     });
                 },
                 goMyResPage() {
+
+                    let loginId = "${sessionScope.sessionId}";
+
+                    if(!loginId || loginId === ""){
+                        alert("로그인 해주세요!");
+                        return;
+
+                    }
+
+
                     this.productPage = 'resultOfReservation';
 
                     let self = this;
                     let param = {
-                        userId: self.user.name
+                        userId: "${sessionScope.sessionId}"
                     };
 
                     //myReservation1: {},
@@ -2667,7 +2694,7 @@
 
                         let self = this;
                         let param = {
-                            userId: self.myReservation1.userId,
+                            userId: "${sessionScope.sessionId}",
                             amount: self.payAmount,
                             resNo: self.myReservation1.resNo
                         };

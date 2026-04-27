@@ -99,6 +99,12 @@
 		    <artifactId>jakarta.servlet.jsp.jstl</artifactId>
 		    <version>3.0.1</version>
 		</dependency>
+		
+		<dependency>
+		    <groupId>com.cloudinary</groupId>
+		    <artifactId>cloudinary-http44</artifactId>
+		    <version>1.36.0</version>
+		</dependency>
 	</dependencies>
 	<repositories>
 	    <repository>

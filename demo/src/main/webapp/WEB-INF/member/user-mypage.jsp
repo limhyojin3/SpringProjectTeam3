@@ -120,8 +120,17 @@
                 <div class="right-sections">
                     <div class="greeting">
                         안녕하세요, <strong>{{info.name}}님!</strong><br>
-                        본식까지 D-100일 남으셨네요!<br>
-                        사회자, 주례는 정하셨나요? 슬슬 신랑 예복을 준비할 시기예요!
+                        <span v-if="weddingDate">
+                            <span v-if="dDay > 0">본식까지 D-{{dDay}}일 남으셨네요! 🎉</span>
+                            <span v-else-if="dDay === 0">오늘이 본식 날이에요! 축하드려요! 💍</span>
+                            <span v-else>본식 후 {{Math.abs(dDay)}}일이 지났네요! 🥂</span>
+                        </span>
+                        <span v-else>
+                            결혼 예정일을 입력하고 쿠폰 받으세요! 🎁
+                            <a href="/userMyPage.do">예정일 입력하기</a>
+                        </span>
+                        <br>
+                        <span v-if="dDayMessage">{{ dDayMessage }}</span>
                     </div>
                     <div class="shortcut-wrap">
                         <div class="shortcut-btn" @click="fnEdit()">내 정보 수정</div>
@@ -151,8 +160,32 @@
                     userId: "",
                     name: "",
                 },
-                passWallet: null
+                passWallet: null,
+                weddingDate: '${member.weddingDate}',
+                dDay: (() => {
+                    const w = '${member.weddingDate}';
+                    if (!w) return null;
+                    const today = new Date();
+                    today.setHours(0, 0, 0, 0);
+                    const wedding = new Date(w);
+                    return Math.round((wedding - today) / (1000 * 60 * 60 * 24));
+                })()
             };
+        },
+        computed: {
+            dDayMessage() {
+                const d = this.dDay;
+                if (d === null) return null;
+                if (d > 300) return "웨딩홀은 정하셨나요? 인기 있는 곳은 금방 마감돼요! 💒";
+                if (d > 200) return "스드메 계약할 시기예요! 스튜디오부터 알아보세요 📸";
+                if (d > 100) return "슬슬 신랑 예복을 준비할 시기예요! 👔";
+                if (d > 60)  return "사회자, 주례는 정하셨나요? 😊";
+                if (d > 30)  return "청첩장 발송하셨나요? 신혼여행도 확정해두세요 ✈️";
+                if (d > 14)  return "웨딩 촬영 준비는 되셨나요? 🌸";
+                if (d > 0)   return "거의 다 왔어요, 마지막 점검할 시간이에요 💍";
+                if (d === 0) return "오늘이 그 날이에요! 행복한 하루 되세요 🎊";
+                return "결혼을 축하드려요! 행복한 신혼생활 되세요 🥂";
+            }
         },
         methods: {
             fnEdit: function() {
