@@ -18,7 +18,7 @@
                     <a class="nav-link" href="/about.do" style="color: #ff4d6d !important; font-weight: 700 !important; padding: 0 15px !important;">회사소개</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#" style="color: #ff4d6d !important; font-weight: 700 !important; padding: 0 15px !important;">업체찾기</a>
+                    <a class="nav-link" href="${pageContext.request.contextPath}/productCategoryTag.do" style="color: #ff4d6d !important; font-weight: 700 !important; padding: 0 15px !important;">업체찾기</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="${pageContext.request.contextPath}/api/community/list.do" style="color: #ff4d6d !important; font-weight: 700 !important; padding: 0 15px !important;">커뮤니티</a>
@@ -43,7 +43,7 @@
                                     <%-- 업체 상품관리 페이지 주소 변경 필요--%>
                                     <%-- 2. 업체(PARTNER 또는 NPARTNER)인 경우 --%>
                                     <c:when test="${sessionScope.sessionRole == 'PARTNER' or sessionScope.sessionRole == 'NPARTNER'}">
-                                        <a class="nav-link" href="${pageContext.request.contextPath}/company10.do" style="color: #ff4d6d !important; font-weight: 700 !important; padding: 0 15px !important;">업체페이지</a>
+                                        <a class="nav-link" href="${pageContext.request.contextPath}/partnerManagement.do " style="color: #ff4d6d !important; font-weight: 700 !important; padding: 0 15px !important;">업체페이지</a>
                                     </c:when>
                                     <%-- 3. 관리자인 경우 --%>
                                     <c:when test="${sessionScope.sessionRole == 'ADMIN'}">
