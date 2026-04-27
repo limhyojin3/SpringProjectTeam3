@@ -223,39 +223,36 @@
                 },
                 // 핵심: 중복 알림 방지 로직이 적용된 fnDetail
                 fnDetail(item) {
-                    if(!this.sessionId) {
-                        alert("로그인 후 이용 가능합니다.");
-                        location.href = "/member/login.do";
+                    // [수정] 유료 리뷰인데 로그인을 안 했다면? -> 로그인 페이지로 이동
+                    if(item.isPaid == 1 && !this.sessionId) {
+                        alert("유료 리뷰는 로그인 후 이용 가능합니다.");
+                        location.href = "/login.do";
                         return;
                     }
 
-                    // 1. 본인 글인지 먼저 확인
-                    if (this.sessionId === item.userId) {
-                        // 본인 글이면 유료/무료 상관없이 바로 이동
+                    // 1. 본인 글인지 확인 (로그인된 경우에만 해당)
+                    if (this.sessionId && this.sessionId === item.userId) {
                         location.href = "/api/review/detail.do?reviewNo=" + item.reviewNo;
                         return;
                     }
 
+                    // 2. 유료 리뷰 로직
                     if(item.isPaid == 1) {
-                        // 1. 먼저 서버에 "차감 없이 확인만" 하거나 "이미 본 글인지" 체크 요청
-                        // 여기서는 useTicket API가 ALREADY_VIEWED를 먼저 뱉는 성질을 이용합니다.
                         $.ajax({
                             url: "/api/review/useTicket.dox",
                             type: "POST",
-                            data: JSON.stringify({ reviewNo: item.reviewNo, checkOnly: "Y" }), // 백엔드에서 checkOnly 처리 가능 시
+                            data: JSON.stringify({ reviewNo: item.reviewNo, checkOnly: "Y" }),
                             contentType: "application/json",
                             success: (data) => {
                                 let result = (typeof data === 'string') ? JSON.parse(data) : data;
 
                                 if(result.result === "ALREADY_VIEWED") {
-                                    // 이미 결제한 글이면 질문 없이 바로 이동
                                     location.href = "/api/review/detail.do?reviewNo=" + item.reviewNo;
                                 } else {
-                                    // 처음 보는 글일 때만 confirm 창 출력
                                     const confirmMsg = "유료 리뷰입니다. 열람권을 사용하여 확인하시겠습니까?\n" +
-                                                     "------------------------------------------\n" +
-                                                     "현재 보유 열람권: " + this.userRemainingCount + "개\n" +
-                                                     "------------------------------------------";
+                                                    "------------------------------------------\n" +
+                                                    "현재 보유 열람권: " + this.userRemainingCount + "개\n" +
+                                                    "------------------------------------------";
 
                                     if(confirm(confirmMsg)) {
                                         this.fnExecuteUsage(item);
@@ -264,6 +261,7 @@
                             }
                         });
                     } else {
+                        // [추가] 무료 리뷰는 로그인 여부 상관없이 바로 이동
                         location.href = "/api/review/detail.do?reviewNo=" + item.reviewNo;
                     }
                 },
