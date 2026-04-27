@@ -381,7 +381,7 @@
                         let self = this
                         console.log("서버로 보내는 imp_uid:", imp_uid);
                         $.ajax({
-                            url: "/verifyPayment.dox",
+                            url: "http://localhost:8080/verifyPayment.dox",
                             type: "POST",
                             data: {
                                 userId: this.sessionId,     // 로그인 아이디
@@ -389,7 +389,7 @@
                                 passNo: selectedPass.passNo,
                                 amount: selectedPass.price,
                                 itemName: selectedPass.passName,
-
+                                type:"PASS"
                             },
                             success: function (res) {
                                 console.log(res);
@@ -397,7 +397,8 @@
                                     console.log("포트원 번호: " + res.imp_uid);
                                     alert("결제가완료되었습니다!");
                                     self.isModalOpen = false;
-                                    location.href = "/adminPayFinish.do?payNo=" + res.pay_no;
+                                    location.href = "/adminPayFinish.do?payNo=" + res.pay_no + "&type=PASS";
+                                    <!-- 예약이면 &type=RES 등록이면 &type=REG -->
                                 } else {
                                     console.log("에러내용: " + res.error_msg);
                                     alert("결제 검증 실패");
