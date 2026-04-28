@@ -312,7 +312,7 @@
                             {
                                 channelKey: "channel-key-1ebd3d65-20bd-412e-83f3-b7e0c3b368ff",
                                 pay_method: "card",
-                                merchant_uid: "order_" + self.sessionId + "_" + new Date().getTime(), // 주문 고유 번호
+                                merchant_uid: "order_REG" + self.sessionId + "_" + new Date().getTime(), // 주문 고유 번호
                                 name: "등록비",
                                 amount: 1000,      //제품 가격
                             },
@@ -328,10 +328,8 @@
                                     // 우리쪽 db에 결제정보 저장
                                     // 페이지 이동 필요하면 페이지 이동 (메인 or 마이)
                                     // 결제 성공 후 서버 검증
-                                    console.log("imp_uid:", response.imp_uid);
-                                    setTimeout(() => {
+                                    console.log("imp_uid:", response.imp_uid);                               
                                         self.fnVerifyPayment(response.imp_uid);
-                                    }, 5000);
                                 } else {
                                     console.log("에러내용: " + response.error_msg);
                                     alert("결제가 취소되었습니다");
@@ -357,11 +355,11 @@
                             },
                             success: function (res) {
                                 console.log(res);
-                                if (res.success) {
+                                if (res.result == "success") {
                                     console.log("포트원 번호: " + res.imp_uid);
-                                    alert("결제가완료되었어요~~~~~");
+                                    alert("결제가완료되었습니다");
                                     self.isModalOpen = false;
-                                    location.href = "/adminPayFinish.do?payNo=" + res.pay_no + "&type=REG";
+                                    location.href = "/adminPayFinish.do?payNo=" + res.payNo + "&type=REG";
                                 } else {
                                     console.log("에러내용: " + res.error_msg);
                                     alert("결제 검증 실패");

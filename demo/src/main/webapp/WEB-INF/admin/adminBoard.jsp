@@ -90,10 +90,6 @@
                 border-collapse: collapse;
             }
 
-            .board-table tr {
-                cursor: pointer;
-            }
-
             .board-table th {
                 background: #f1f3f5;
                 padding: 10px;
@@ -227,19 +223,26 @@
                                     <th>제목</th>
                                     <th>ID</th>
                                     <th>작성일</th>
+                                    <th>관리</th>
                                 </tr>
                             </thead>
 
                             <tbody>
                                 <tr v-for="board in boardList"
-                                    :class="{ 'active-row': selectedBoard && selectedBoard.userId === board.userId }"
-                                    @click="fnSelectBoard(board)">
-
+                                    :class="{ 'active-row': selectedBoard && selectedBoard.userId === board.userId }">
                                     <td>{{board.postNo}}</td>
                                     <td>{{board.category}}</td>
                                     <td>{{board.title}}</td>
                                     <td>{{board.userId}}</td>
                                     <td>{{ formatDate(board.regDate) }}</td>
+                                    <td>
+                                        <button @click="fnSelectBoard(board)">보기</button>
+                                        <button @click="fnToggleBoard(board)"
+                                            :style="board.isDeleted == 0 ? 'color:red;' : 'color:green;'">
+
+                                            {{ board.isDeleted == 0 ? '숨김' : '복구' }}
+                                        </button>
+                                    </td>
                                 </tr>
                             </tbody>
                         </table>
@@ -270,7 +273,7 @@
                         searchType: "all",
                         category: "ALL",
                         keyword: "",
-                        sortType:"latest",
+                        sortType: "latest",
                         selectedBoard: null,
                         pageSize: 10,
                         index: 1,
@@ -319,12 +322,52 @@
                         });
                     },
 
-                    selectBoard(board) {
-                        location.href = "/adminBoardDetail.do?postNo=" + board.postNo;
-                    },
-
                     fnSelectBoard(board) {
                         window.open('http://localhost:8080/api/community/detail.do?postNo=' + board.postNo, '_blank', 'width=1000, height=1000');
+                    },
+
+                    fnToggleBoard(board) {
+                        let self = this;
+
+                        let msg = board.isDeleted == 0
+                            ? "게시글을 숨김 처리하시겠습니까?"
+                            : "게시글을 복구하시겠습니까?";
+
+                        if (!confirm(msg)) {
+                            return;
+                        }
+
+                        $.ajax({
+                            url: "http://localhost:8080/boardApprove.dox",
+                            type: "POST",
+                            data: {
+                                postNo: board.postNo
+                            },
+                            success: function () {
+                                alert("처리 완료");
+                                self.fnGetBoardList();
+                            }
+                        });
+                    },
+
+                    fnApprove(board) {
+                        let self = this;
+
+                        if (!confirm("삭제하시겠습니까?")) {
+                            return;
+                        }
+
+                        $.ajax({
+                            url: "http://localhost:8080/.dox",
+                            type: "POST",
+                            data: {
+                                userId: board.userId
+                            },
+                            success: function () {
+                                alert("삭제 완료");
+                                self.fnGetBoardList();
+                            }
+                        });
                     },
 
                     getStatusInfo(status) {

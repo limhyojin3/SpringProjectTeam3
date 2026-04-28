@@ -15,25 +15,201 @@
         <link rel="stylesheet" href="${pageContext.request.contextPath}/css/common.css">
         <link rel="stylesheet" href="${pageContext.request.contextPath}/css/adminNavi.css">
         <style>
+            body {
+                background: #f8f9fc;
+                font-size: 14px;
+                color: #333;
+            }
+
             .middle {
                 width: 100%;
-                /* 화면 전체 높이를 사용하되, 헤더/푸터 제외한 나머지는 유연하게(1fr) */
                 display: grid;
-                grid-template-areas:
-                    "nav main";
+                grid-template-areas: "nav main";
                 grid-template-columns: 300px 1fr;
-                /* 너비 고정 */
+                min-height: calc(100vh - 160px);
             }
 
             .main {
                 grid-area: main;
-                border: 1px solid #ffc7c2;
-                padding: 20px;
+                padding: 35px;
+            }
+
+            /* 메인 카드 */
+            .content-box {
+                width: 100%;
+                background: #fff;
+                border-radius: 18px;
+                box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
+                padding: 30px;
+            }
+
+            /* 제목 */
+            .page-title {
+                font-size: 26px;
+                font-weight: 700;
+                color: #222;
+                margin-bottom: 25px;
+            }
+
+            /* 탭 */
+            .tab-menu {
                 display: flex;
-                gap: 20px;
-                /* 카드 사이 간격 */
-                align-items: flex-start;
-                /* 카드들이 위쪽에 고정되도록 */
+                gap: 12px;
+                margin-bottom: 25px;
+                flex-wrap: wrap;
+            }
+
+            .tab-menu button {
+                border: none;
+                background: #eef1f6;
+                color: #555;
+                padding: 12px 24px;
+                border-radius: 12px;
+                font-size: 15px;
+                font-weight: 600;
+                transition: all .25s ease;
+                cursor: pointer;
+            }
+
+            .tab-menu button:hover {
+                background: #dbe7ff;
+                color: #2b62ff;
+                transform: translateY(-2px);
+            }
+
+            .tab-menu button.active {
+                background: linear-gradient(135deg, #4a7dff, #275df7);
+                color: white;
+                box-shadow: 0 6px 14px rgba(39, 93, 247, 0.25);
+            }
+
+            /* 테이블 */
+            .report-table {
+                width: 100%;
+                border-collapse: collapse;
+                overflow: hidden;
+                border-radius: 14px;
+            }
+
+            .report-table thead {
+                background: #f4f6fa;
+            }
+
+            .report-table th {
+                padding: 16px;
+                text-align: center;
+                font-size: 14px;
+                font-weight: 700;
+                color: #444;
+                border-bottom: 1px solid #e6eaf0;
+            }
+
+            .report-table td {
+                padding: 15px;
+                text-align: center;
+                font-size: 14px;
+                color: #555;
+                border-bottom: 1px solid #f0f2f5;
+            }
+
+            .report-table tbody tr {
+                transition: .2s;
+            }
+
+            .report-table tbody tr:hover {
+                background: #f8fbff;
+            }
+
+            /* 공통 버튼 */
+            button {
+                border: none;
+                background: #eef1f6;
+                padding: 8px 14px;
+                border-radius: 10px;
+                font-size: 13px;
+                font-weight: 600;
+                cursor: pointer;
+                transition: .2s;
+            }
+
+            button:hover {
+                background: #dbe7ff;
+                color: #2b62ff;
+            }
+
+            /* 환불 버튼 */
+            .btn-refund {
+                background: #fff0f0;
+                color: #e04a4a;
+            }
+
+            .btn-refund:hover {
+                background: #ffdede;
+                color: #c62828;
+            }
+
+            /* 페이징 */
+            .page-box {
+                margin-top: 25px;
+                display: flex;
+                justify-content: center;
+                gap: 8px;
+                flex-wrap: wrap;
+            }
+
+            .page-box button {
+                min-width: 42px;
+            }
+
+            .page-box button.active {
+                background: #275df7;
+                color: white;
+            }
+
+            .page-box button:disabled {
+                opacity: .4;
+                cursor: not-allowed;
+            }
+
+            /* 상태 뱃지 */
+            .badge-success {
+                display: inline-block;
+                background: #e7f8ee;
+                color: #1c9b52;
+                padding: 5px 12px;
+                border-radius: 20px;
+                font-size: 13px;
+                font-weight: 600;
+            }
+
+            .badge-danger {
+                display: inline-block;
+                background: #fff0f0;
+                color: #e04a4a;
+                padding: 5px 12px;
+                border-radius: 20px;
+                font-size: 13px;
+                font-weight: 600;
+            }
+
+            @media (max-width: 1200px) {
+                .middle {
+                    grid-template-columns: 220px 1fr;
+                }
+            }
+
+            @media (max-width: 900px) {
+                .middle {
+                    grid-template-columns: 1fr;
+                }
+
+                .main {
+                    padding: 20px;
+                }
+
+                .tab-menu {
+                    flex-direction: column;
+                }
             }
         </style>
     </head>
