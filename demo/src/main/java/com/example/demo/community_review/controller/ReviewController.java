@@ -257,6 +257,7 @@ public class ReviewController {
         return gson.toJson(resultMap);
     }
     
+    // 열람권 사용
     @PostMapping("/useTicket.dox")
     @ResponseBody
     public String useTicket(HttpServletRequest request, @RequestBody HashMap<String, Object> map) {
@@ -281,6 +282,7 @@ public class ReviewController {
         return new Gson().toJson(resultMap);
     }
     
+    // 사용자의 남은 열람권
     @PostMapping("/getUserAccessCount.dox")
     @ResponseBody
     public String getUserAccessCount(@RequestBody HashMap<String, Object> map) {
@@ -294,8 +296,20 @@ public class ReviewController {
         return new Gson().toJson(resultMap);
     }
     
-    
-    
-    
+    @PostMapping("/productList.dox")
+    @ResponseBody
+    public Map<String, Object> getProductList(@RequestBody Map<String, Object> map) {
+        Map<String, Object> result = new HashMap<>();
+        try {
+            // map 안에 프론트에서 보낸 companyNo가 들어있음
+            List<Map<String, Object>> list = reviewService.getProductListByCompany(map);
+            result.put("list", list);
+            result.put("result", "success");
+        } catch (Exception e) {
+            e.printStackTrace();
+            result.put("result", "error");
+        }
+        return result;
+    }
     
 }

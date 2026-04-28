@@ -26,23 +26,27 @@ public class CommunityController {
 
     // --- [페이지 이동 메서드] ---
     
+    // 커뮤니티 목록
     @RequestMapping("/list.do")
     public String communityPage() {
         return "/community/community-list"; 
     }
 
+    // 커뮤니티 상세 내용
     @RequestMapping("/detail.do")
     public String detailPage(HttpServletRequest request, @RequestParam HashMap<String, Object> map) {
         request.setAttribute("postNo", map.get("postNo"));
         return "/community/community-detail"; 
     }
     
+    // 커뮤니티 게시글 추가
     @RequestMapping("/add.do")
     public String addPage(HttpSession session) {
         if (session.getAttribute("sessionId") == null) return "redirect:/login.do";
         return "/community/community-add";
     }
     
+    // 커뮤니티 게시글 수정
     @RequestMapping("/edit.do")
     public String editPage(@RequestParam("postNo") String postNo, Model model, HttpSession session) {
         // [수정] sessionId 키값 사용
@@ -148,6 +152,7 @@ public class CommunityController {
         return gson.toJson(resultMap);
     }
     
+    // 좋아요 기능 로직
     @PostMapping("/toggleLike.dox")
     @ResponseBody
     public String toggleLike(@RequestBody HashMap<String, Object> map, HttpSession session) {
