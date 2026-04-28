@@ -1572,7 +1572,7 @@
                                 {{selectedDate}}
                                 {{selectedTime}} -->
 
-                                <!-- {{myReservation1}} -->
+                                {{myReservation1}}
 
 
                                 <div class="payment-btn-group">
