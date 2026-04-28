@@ -32,6 +32,19 @@ public class PaymentService {
 		paymentMapper.insertPaymentPass(map);
 	}
 	
+	public void updateWalletCount(HashMap<String, Object> map) {
+		HashMap<String, Object> resultMap = new HashMap<>();
+		int count = paymentMapper.selectWalletCnt(map);
+		
+		if (count > 0) {
+			paymentMapper.updateWalletCnt(map);
+			resultMap.put("message", "열람권이 충전되었습니다");
+		} else {
+			paymentMapper.insertWalletCnt(map);
+			resultMap.put("message", "열람권이 충전되었습니다");
+		}
+	}
+	
 	@Transactional
 	public void completeReservationPayment(HashMap<String,Object> map){
 
@@ -105,6 +118,7 @@ public class PaymentService {
 					}
 				}
 				completePassPayment(map);
+				
 			}else if(type.equals("RES")){
 			    // completeReservationPayment(map);
 			}else if(type.equals("REG")){

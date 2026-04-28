@@ -226,14 +226,16 @@ public class AdminService {
 
 			if (count > 0) {
 				adminMapper.updateAnswer(map);
-				resultMap.put("result", "success");
 				resultMap.put("message", Message.MSG_EDIT);
 			} else {
 				adminMapper.insertAnswer(map);
-				resultMap.put("result", "success");
 				resultMap.put("message", Message.MSG_ADD);
 			}
+			
+			adminMapper.updateInquiryStatus(map);
+			resultMap.put("result", "success");
 
+			
 		} catch (Exception e) {
 			// TODO: handle exception
 			System.out.println(e.getMessage());
