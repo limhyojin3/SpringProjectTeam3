@@ -1416,7 +1416,7 @@
 
                                     <div class="ticket-side">
                                         <div class="side-content">
-                                            <img :src="product1.thumbnail" style="max-height: 200px;">
+                                            <img :src="product1.thumbnail" style="height: 200px; width: 200px; object-fit: cover;">
                                             <div class="amount-label">TOTAL DEPOSIT</div>
                                             <div class="amount-value">{{ Number(product1.deposit).toLocaleString() }}원
                                             </div>
@@ -1566,7 +1566,7 @@
 
                                     <div class="ticket-side">
                                         <div class="side-content">
-                                            <img :src="myReservation1.imgUrl" style="max-height: 200px;">
+                                            <img :src="myReservation1.imgUrl" style="height: 200px; width: 200px; object-fit: cover;">
                                             <div class="amount-label">TOTAL DEPOSIT(예약금)</div>
                                             <div class="amount-value">{{ Number(myReservation1.deposit).toLocaleString()
                                                 }}원</div>
