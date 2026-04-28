@@ -150,12 +150,20 @@
 		select r.reg_date, r.img_description, r.is_paid, r.review_no, r.user_id,
 		r.company_no, r.product_no, r.rating, r.content, r.img_url, r.updated
 		from review r
-		where is_paid = 1 and product_no = #{productNo};
+		where is_paid = 1 and product_no = #{productNo}
+		order by r.reg_date desc;
 	</select>
 	<select id="selectSimpleReviewDetails3" parameterType="map"
 		resultType="com.example.demo.company.model.Review">
-		SELECT r.review_no, r.content, r.user_id, r.rating, r.updated
-		FROM REVIEW r WHERE IS_PAID = 0 AND PRODUCT_NO = #{productNo};
+		SELECT 
+			r.review_no,
+			r.content,
+			r.user_id,
+			r.rating,
+			r.updated,
+			r.reg_date
+		FROM REVIEW r WHERE IS_PAID = 0 AND PRODUCT_NO = #{productNo}
+		order by r.reg_date desc
 	</select>
 	<select id="selectTagList" parameterType="map"
 		resultType="string">
@@ -236,25 +244,24 @@
 		and timestampdiff(minute, addtime(res_date, res_time), now()) >= 30
 		and user_id = #{userId}
 	</update>
-	
-	<insert id="insertPaymentFinal" parameterType="map">
-		insert into payment_reservation 
-		values(null, #{userId}, #{amount}, 'SUCCESS', NOW(), #{resNo}, 0, null)
-		
-		<selectKey keyProperty="payDate,payNo" resultType="map" order="AFTER">
+
+	<insert id="insertPaymentFinal" parameterType="map"> insert into
+		payment_reservation values(null, #{userId}, #{amount}, 'SUCCESS', NOW(),
+		#{resNo}, 0, null) <selectKey keyProperty="payDate,payNo"
+			resultType="map" order="AFTER">
 			SELECT
-				pay_date AS payDate,
-				pay_no AS payNo
+			pay_date AS payDate,
+			pay_no AS payNo
 			FROM payment_reservation
 			WHERE pay_no = LAST_INSERT_ID()
 		</selectKey>
 	</insert>
 	<update id="updatePaymentFinal" parameterType="map">
-		update reservation 
-		set 
-			res_status = 'CONFIRM', 
-			pay_date = #{payDate}, 
-			pay_no = #{payNo} 
+		update reservation
+		set
+		res_status = 'CONFIRM',
+		pay_date = #{payDate},
+		pay_no = #{payNo}
 		where res_no = #{resNo}
 	</update>
 
