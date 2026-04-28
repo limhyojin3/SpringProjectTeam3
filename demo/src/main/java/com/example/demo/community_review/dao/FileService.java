@@ -17,7 +17,6 @@ import jakarta.annotation.PostConstruct;
 @Service
 public class FileService {
 
-    // 1. properties 파일에서 설정값 읽어오기
     @Value("${cloudinary.cloud-name}")
     private String cloudName;
 
@@ -29,34 +28,38 @@ public class FileService {
 
     private Cloudinary cloudinary;
 
-    // 2. 빈(Bean)이 생성된 후 설정값들을 가지고 Cloudinary 객체 초기화
     @PostConstruct
     public void init() {
+        // secure 옵션을 true로 주고, 설정을 명확히 잡습니다.
         this.cloudinary = new Cloudinary(ObjectUtils.asMap(
-            "cloud_name", cloudName,
-            "api_key", apiKey,
-            "api_secret", apiSecret
+            "cloud_name", "drs9up8om",
+            "api_key", "622697756414154",
+            "api_secret", "9PXw753Ff1PzeFv98TlxlrYC0Pg",
+            "secure", true 
         ));
     }
 
-    /**
-     * Cloudinary 클라우드 서버에 파일을 업로드하고 접속 가능한 URL을 반환합니다.
-     */
     public Map<String, String> uploadFile(MultipartFile file) {
         if (file == null || file.isEmpty()) {
             return null;
         }
 
         try {
-            // Cloudinary에 파일 업로드 실행
-            Map uploadResult = cloudinary.uploader().upload(file.getBytes(), ObjectUtils.emptyMap());
+            // 에러 핵심 해결: 타임스탬프를 서버의 현재 시간으로 직접 생성해서 파라미터로 넘깁니다.
+            // 이렇게 하면 Cloudinary 서버와의 시간 오차로 인한 Signature 에러를 줄일 수 있습니다.
+            Map<String, Object> params = ObjectUtils.asMap(
+                "timestamp", System.currentTimeMillis() / 1000L,
+                "resource_type", "auto"
+            );
 
-            // 업로드 완료 후 정보 가져오기
-            String imgUrl = (String) uploadResult.get("secure_url"); // 클라우드 보안 주소
-            String publicId = (String) uploadResult.get("public_id"); // 클라우드 내 고유 ID
+            // 파일 업로드 실행
+            Map uploadResult = cloudinary.uploader().upload(file.getBytes(), params);
+
+            // 결과 데이터 추출
+            String imgUrl = (String) uploadResult.get("secure_url"); 
+            String publicId = (String) uploadResult.get("public_id"); 
             String originalName = file.getOriginalFilename();
 
-            // 컨트롤러 및 DB 저장용 정보 구성
             Map<String, String> fileMap = new HashMap<>();
             fileMap.put("originalName", originalName);
             fileMap.put("storedName", publicId); 
@@ -64,9 +67,11 @@ public class FileService {
             
             return fileMap;
 
-        } catch (IOException e) {
+        } catch (Exception e) { // IOException 외의 에러도 잡기 위해 Exception으로 확대
+            System.err.println("Cloudinary 업로드 중 에러 발생: " + e.getMessage());
             e.printStackTrace();
-            throw new RuntimeException(Message.MSG_SERVER_ERR);
-        }
+            // 에러 발생 시 null을 리턴하거나 예외를 던져서 컨트롤러에서 알 수 있게 합니다.
+            throw new RuntimeException("파일 업로드 실패: " + e.getMessage());
+        } 
     }
 }

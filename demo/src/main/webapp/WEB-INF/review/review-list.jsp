@@ -60,6 +60,7 @@
                     <select class="form-control col-3" v-model="searchType">
                         <option value="all">전체</option>
                         <option value="company">업체명</option>
+                        <option value="title">제목</option>
                         <option value="content">내용</option>
                     </select>
                     <input type="text" class="form-control col-7" placeholder="검색어를 입력하세요..." v-model="searchKeyword" @keyup.enter="fnList">
@@ -87,7 +88,7 @@
                     <tr>
                         <th style="width: 80px;">구분</th>
                         <th style="width: 100px;">별점</th>
-                        <th>리뷰 정보</th>
+                        <th>리뷰 제목</th>
                         <th style="width: 90px;">추천</th>
                         <th style="width: 130px;">작성자</th>
                         <th style="width: 120px;">날짜</th>
