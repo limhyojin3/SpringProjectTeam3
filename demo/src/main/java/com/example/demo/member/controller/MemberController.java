@@ -36,6 +36,12 @@ public class MemberController {
 	@Autowired
     private GeminiService geminiService;
 	
+	// 0. 대문
+	@RequestMapping("/marryIntro.do") // 주소 
+	public String first(Model model) throws Exception{
+		return "/Intro_home"; // 파일명
+	}
+	
 	// 0. 메인 홈 *로그인 후 연결하려고 임시로 주소만 생성했어요* 주소 변경 시 수정 예정
 	@RequestMapping("/merryViewHome.do") // 주소 
 	public String home(Model model) throws Exception{
@@ -133,7 +139,7 @@ public class MemberController {
 	@RequestMapping("/logout.do")
 	public String logout(HttpSession session) {
 	    session.invalidate();  // 세션 전체 삭제
-	    return "redirect:/login.do";  // 로그인 페이지로 이동
+	    return "redirect:/merryViewHome.do";  // 로그인 페이지로 이동
 	}
 	
 	//*2. join (회원가입)*
@@ -399,6 +405,10 @@ public class MemberController {
 	        @RequestParam(defaultValue = "1") int page,
 	        HttpSession session) {
 	    String userId = (String) session.getAttribute("sessionId");
+	    
+//	    List<Member> list = memberService.getMyPaidReviewList(userId, page);
+//	    System.out.println("리뷰 목록: " + list); // 추가
+	    
 	    Map<String, Object> result = new HashMap<>();
 	    result.put("list", memberService.getMyPaidReviewList(userId, page));
 	    result.put("totalCount", memberService.getMyPaidReviewCount(userId));
@@ -413,6 +423,9 @@ public class MemberController {
 	        @RequestParam(defaultValue = "1") int page,
 	        HttpSession session) {
 	    String userId = (String) session.getAttribute("sessionId");
+	    
+//	    List<Member> list = memberService.getMyPaidReviewList(userId, page);
+	    
 	    Map<String, Object> result = new HashMap<>();
 	    result.put("list", memberService.getMyFreeReviewList(userId, page));
 	    result.put("totalCount", memberService.getMyFreeReviewCount(userId));

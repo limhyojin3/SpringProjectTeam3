@@ -9,7 +9,7 @@
         <a class="navbar-brand font-weight-bold"
            style="color: #ff4d6d !important; font-size: 1.6rem !important; text-decoration: none !important;"
            href="${pageContext.request.contextPath}/merryViewHome.do">
-           MERRY VIEW
+           MARRY VIEW
         </a>
         
         <div class="collapse navbar-collapse">
@@ -18,7 +18,7 @@
                     <a class="nav-link" href="/about.do" style="color: #ff4d6d !important; font-weight: 700 !important; padding: 0 15px !important;">회사소개</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="${pageContext.request.contextPath}/productCategoryTag.do" style="color: #ff4d6d !important; font-weight: 700 !important; padding: 0 15px !important;">업체찾기</a>
+                    <a class="nav-link" href="${pageContext.request.contextPath}/productCategoryTag.do" style="color: #ff4d6d !important; font-weight: 700 !important; padding: 0 15px !important;">상품목록</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="${pageContext.request.contextPath}/api/community/list.do" style="color: #ff4d6d !important; font-weight: 700 !important; padding: 0 15px !important;">커뮤니티</a>
@@ -62,11 +62,15 @@
                 <li class="nav-item mx-3" style="color: #ffb3c1 !important;">|</li>
                 <%-- 아이콘 메뉴들 --%>
                 <%-- 고객센터 아이콘 --%>
-                <li class="nav-item">
-                    <a class="nav-link" href="javascript:;" style="color: #ff4d6d !important; padding: 0 10px !important;">
-                        <i class="fas fa-headset" href="#" style="font-size: 1.3rem !important;"></i>
-                    </a>
-                </li>
+                <c:if test="${sessionScope.role != 'ADMIN'}">
+                    <li class="nav-item">
+                        <a class="nav-link" 
+                        href="${sessionScope.role == 'COMPANY' ? '#' : '/userMyPage-cs.do'}" 
+                        style="color: #ff4d6d !important; padding: 0 10px !important;">
+                            <i class="fas fa-headset" style="font-size: 1.3rem !important;"></i>
+                        </a>
+                    </li>
+                </c:if>
                 <%-- 로그인 시 "OOO님" 문구 표시 --%>
                 <c:if test="${not empty sessionScope.sessionId}">
                     <li class="nav-item" style="color: #ff4d6d; font-weight: bold; margin-left: 10px;">
@@ -78,8 +82,10 @@
                 <li class="nav-item">
                     <c:choose>
                         <c:when test="${empty sessionScope.sessionId}">
-                            <a class="nav-link" href="${pageContext.request.contextPath}/login.do" title="로그인" style="color: #ff4d6d !important; padding: 0 10px !important;">
+                            <a class="nav-link" href="${pageContext.request.contextPath}/login.do" 
+                            title="로그인" style="color: #ff4d6d !important; padding: 0 10px !important;">
                                 <i class="fas fa-user-circle" style="font-size: 1.3rem !important;"></i>
+                                <span style="font-size: 0.95rem; font-weight: bold; margin-left: 4px;">로그인</span>
                             </a>
                         </c:when>
                         <c:otherwise>

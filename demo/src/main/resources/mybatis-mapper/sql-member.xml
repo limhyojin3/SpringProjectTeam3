@@ -219,6 +219,7 @@
 	        R.title,
 	        R.rating,
 	        R.reg_date,
+	        R.img_url,
 	        C.com_name
 	    FROM pass_usage_log PUL
 	    JOIN review R ON PUL.review_no = R.review_no
@@ -248,6 +249,7 @@
 	        R.title,
 	        R.rating,
 	        R.reg_date,
+	        R.img_url,
 	        C.com_name
 	    FROM free_view_log FVL  JOIN review R ON FVL.review_no = R.review_no
 	    LEFT JOIN company C ON R.company_no = C.company_no

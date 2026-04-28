@@ -177,14 +177,14 @@
                         <button class="write-tab" :class="{'active-tab': reviewTab === 'post'}" @click="switchReviewTab('post')">글</button>
                         <button class="write-tab" :class="{'active-tab': reviewTab === 'review'}" @click="switchReviewTab('review')">리뷰</button>
                     </div>
-                    <!-- 좋아한 업체 테이블 -->
+                    <!-- 좋아한 상품 테이블 -->
                     <div v-if="reviewTab === 'company'">
                         <table class="write-table" >
                             <thead>
                                 <tr>
                                     <th class="col-check"><input type="checkbox" @click="selectAllCompanyLikes()"></th>
                                     <th class="col-no">번호</th>
-                                    <th class="col-title">업체명</th>
+                                    <th class="col-title">상품명</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -289,8 +289,8 @@
                     </div>
                 </div>
             </div>
-        <jsp:include page="/WEB-INF/common/footer.jsp" />
     </div>
+    <jsp:include page="/WEB-INF/common/footer.jsp" />
 </div>
 <script>
     const app = Vue.createApp({
