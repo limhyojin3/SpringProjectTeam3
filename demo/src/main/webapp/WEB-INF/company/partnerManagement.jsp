@@ -755,7 +755,21 @@
                                                         </div>
                                                     </div>
                                                 </div>
-
+                                                <div class="form-group">
+                                                    <label class="form-label">상품 태그</label>                                        
+                                                        <input type="text" placeholder="첫번째 태그"
+                                                            v-model="tagMap.input1">
+                                                        <input type="text" placeholder="두번째 태그"
+                                                            v-model="tagMap.input2">
+                                                        <input type="text" placeholder="세번째 태그"
+                                                            v-model="tagMap.input3">
+                                                        <input type="text" placeholder="네번째 태그"
+                                                            v-model="tagMap.input4">
+                                                        <input type="text" placeholder="다섯번째 태그"
+                                                            v-model="tagMap.input5">
+                                                </div>
+                                                {{tagMap}}
+                                                {{tagMapToList}}
 
                                                 <div class="form-group">
 
@@ -776,6 +790,15 @@
                                                             v-model="product2.originalPrice">
                                                     </div>
                                                 </div>
+                                                <div class="form-group">
+                                                    <label class="form-label"><span class="form-info-label">예약금</span></label>
+                                                    <div class="form-info-box">
+                                                        <input placeholder="여기에 예약금을 적어주세요." type="text"
+                                                            style="width: 200px; padding: 10px; border: 1px solid #ddd; border-radius: 4px;"
+                                                            v-model="product2.deposit">
+                                                    </div>
+                                                </div>
+                                                {{product2.deposit}}
                                             </div>
                                         </div>
 
@@ -807,7 +830,7 @@
                                         </div>
 
                                         <div class="form-button-group">
-                                            <button class="btn-cancel" @click="productPage = 'list'">취소(돌아가기)</button>
+                                            <button class="btn-cancel" @click="fnBack3()">취소(돌아가기)</button>
                                             <button class="btn-submit" @click="fnInsertProduct()">상품 등록</button>
                                         </div>
                                     </div>
@@ -846,6 +869,23 @@
                                                     </div>
                                                 </div>
 
+                                                <div class="form-group">
+                                                    <label class="form-label">상품 태그</label>                                        
+                                                        <input type="text" placeholder="첫번째 태그"
+                                                            v-model="tagMap.input1">
+                                                        <input type="text" placeholder="두번째 태그"
+                                                            v-model="tagMap.input2">
+                                                        <input type="text" placeholder="세번째 태그"
+                                                            v-model="tagMap.input3">
+                                                        <input type="text" placeholder="네번째 태그"
+                                                            v-model="tagMap.input4">
+                                                        <input type="text" placeholder="다섯번째 태그"
+                                                            v-model="tagMap.input5">
+                                                </div>
+                                                {{tagMap}}
+                                                {{tagMapToList}}
+                                                {{product1}}
+
 
                                                 <div class="form-group">
                                                     <label class="form-label">상품 설명</label>
@@ -867,6 +907,16 @@
                                                             v-model="product1.originalPrice">
                                                     </div>
                                                 </div>
+
+                                                <div class="form-group">
+                                                    <label class="form-label"><span class="form-info-label">예약금</span></label>
+                                                    <div class="form-info-box">
+                                                        <input placeholder="여기에 예약금을 적어주세요." type="text"
+                                                            style="width: 200px; padding: 10px; border: 1px solid #ddd; border-radius: 4px;"
+                                                            v-model="product1.deposit">
+                                                    </div>
+                                                </div>
+                                                {{product1.deposit}}
                                             </div>
                                         </div>
 
@@ -1338,7 +1388,16 @@
                         productName: '',
                         productDetails: '',
                         originalPrice: '',
-                        imgUrl: ''
+                        imgUrl: '',
+                        deposit: 0,
+                        tag: []
+                    },
+                    tagMap: {
+                        input1:'',
+                        input2:'',
+                        input3:'',
+                        input4:'',
+                        input5:''
                     }
                 }
 
@@ -1348,6 +1407,13 @@
                 //     return this.reservationList.length;
                 // }
                 //,
+                tagMapToList(){
+                    const filteredtagArray = Object.values(this.tagMap).filter(tag => tag.trim() !== "");
+
+                    console.log(filteredtagArray);
+                    return filteredtagArray;
+                },
+
                 revCnt() {
                     return this.reviews.filter(r => r.updated === 'new').length
                         + this.simpleReviews.filter(r => r.updated === 'new').length;
@@ -1547,8 +1613,21 @@
                                     self.product1.proType = [];
                                 }
                             }
+                            if(typeof self.product1.tag === 'string'){
+                                try {
+                                    let rawArry = JSON.parse(self.product1.tag);
 
+                                    self.product1.tag = rawArry;
 
+                                    self.tagMap.input1 = self.product1.tag[0] || "";
+                                    self.tagMap.input2 = self.product1.tag[1] || "";
+                                    self.tagMap.input3 = self.product1.tag[2] || "";
+                                    self.tagMap.input4 = self.product1.tag[3] || "";
+                                    self.tagMap.input5 = self.product1.tag[4] || "";
+                                } catch(e){
+                                    self.product1.tag = [];
+                                }
+                            }
 
                         }
                     });
@@ -1619,7 +1698,9 @@
                         productName: '',
                         productDetails: '',
                         originalPrice: '',
-                        imgUrl: ''
+                        imgUrl: '',
+                        deposit: 0,
+                        tag: []
                     }
                     this.productPage = 'reg';
 
@@ -1721,6 +1802,9 @@
                     formData.append("productDetails", this.product1.productDetails);
                     formData.append("originalPrice", this.product1.originalPrice);
 
+                    formData.append("deposit", this.product1.deposit);
+                    formData.append("tag",JSON.stringify(this.tagMapToList));
+
                     formData.append("proType", JSON.stringify(this.product1.proType));
 
                     $.ajax({
@@ -1764,6 +1848,10 @@
                     formData.append("productName", this.product2.productName);
                     formData.append("productDetails", this.product2.productDetails);
                     formData.append("originalPrice", this.product2.originalPrice);
+
+                    //
+                    formData.append("deposit", this.product2.deposit);
+                    formData.append("tag", JSON.stringify(this.tagMapToList));
 
 
                     formData.append("proType", JSON.stringify(this.product2.proType));
