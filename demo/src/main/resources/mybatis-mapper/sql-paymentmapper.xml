@@ -33,7 +33,7 @@
 		)
 	</insert>
 
-	<insert id="insertPaymentReservation" parameterType="map">
+	<!--<insert id="insertPaymentReservation" parameterType="map">
 		INSERT INTO payment_reservation (
 			pay_no,
 			user_id,
@@ -46,11 +46,11 @@
 			#{payNo},
 			#{userId},
 			#{amount},
-			'PAID',				<!--#{payStatus},-->
-			NOW(),				<!--#{payDate},-->
+			'PAID',				#{payStatus},
+			NOW(),				#{payDate},
 			#{resNo}
 		)
-	</insert>
+	</insert>-->
 
 	<insert id="insertPaymentRegistration" parameterType="map">
 		INSERT INTO payment_resistration (
