@@ -16,4 +16,5 @@ public class Community {
     private int isDeleted;    // 삭제 여부 (0: 유지, 1: 삭제) 
     private int commentCnt;	  // 댓글 개수 출력
     private int isLiked;	  // 좋아요 여부
+    private String nickname;
 }

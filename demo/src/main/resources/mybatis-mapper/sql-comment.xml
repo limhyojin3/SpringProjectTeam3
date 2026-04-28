@@ -12,24 +12,30 @@
 
    <select id="selectReviewCommentList" parameterType="hashmap" resultType="hashmap">
 	    SELECT 
-	        comment_no AS commentNo,
-	        review_no AS reviewNo, 
-	        user_id AS userId,
-	        content,
-	        like_cnt AS likeCnt,
-	        parent_no AS parentNo,
-	        is_deleted AS isDeleted,
-	        DATE_FORMAT(reg_date, '%Y-%m-%d %H:%i') AS regDate,
+	        c.comment_no AS commentNo,
+	        c.review_no AS reviewNo, 
+	        c.user_id AS userId,
+	        CASE 
+	            WHEN m.status = 'WITHDRAWN' THEN '탈퇴회원'
+	            ELSE IFNULL(d.nickname, c.user_id) 
+	        END AS nickname,
+	        c.content,
+	        c.like_cnt AS likeCnt,
+	        c.parent_no AS parentNo,
+	        c.is_deleted AS isDeleted,
+	        DATE_FORMAT(c.reg_date, '%Y-%m-%d %H:%i') AS regDate,
 	        (SELECT COUNT(*) 
 	         FROM comment_like cl 
 	         WHERE cl.comment_no = c.comment_no AND cl.user_id = #{userId}) AS isLiked
 	    FROM comment c
-	    WHERE review_no = #{reviewNo} 
-	      AND is_deleted = 0
+	    LEFT JOIN MEMBER m ON c.user_id = m.user_id
+	    LEFT JOIN USER_DETAIL d ON c.user_id = d.user_id
+	    WHERE c.review_no = #{reviewNo} 
+	      AND c.is_deleted = 0
 	    ORDER BY 
-	        CASE WHEN parent_no IS NULL THEN comment_no ELSE parent_no END ASC,
-	        CASE WHEN parent_no IS NULL THEN 0 ELSE 1 END ASC,
-	        reg_date ASC
+	        CASE WHEN c.parent_no IS NULL THEN c.comment_no ELSE c.parent_no END ASC,
+	        CASE WHEN c.parent_no IS NULL THEN 0 ELSE 1 END ASC,
+	        c.reg_date ASC
 	</select>
 	
 	<insert id="insertReviewComment" parameterType="hashmap">
@@ -52,26 +58,32 @@
 	        )
 	</insert>
 	
-	   <select id="selectCommunityCommentList" parameterType="hashmap" resultType="hashmap">
+	<select id="selectCommunityCommentList" parameterType="hashmap" resultType="hashmap">
 	    SELECT 
-	        comment_no AS commentNo,
-	        post_no AS postNo, 
-	        user_id AS userId,
-	        content,
-	        like_cnt AS likeCnt,
-	        parent_no AS parentNo,
-	        is_deleted AS isDeleted,
-	        DATE_FORMAT(reg_date, '%Y-%m-%d %H:%i') AS regDate,
+	        c.comment_no AS commentNo,
+	        c.post_no AS postNo, 
+	        c.user_id AS userId,
+	        CASE 
+	            WHEN m.status = 'WITHDRAWN' THEN '탈퇴회원'
+	            ELSE IFNULL(d.nickname, c.user_id) 
+	        END AS nickname,
+	        c.content,
+	        c.like_cnt AS likeCnt,
+	        c.parent_no AS parentNo,
+	        c.is_deleted AS isDeleted,
+	        DATE_FORMAT(c.reg_date, '%Y-%m-%d %H:%i') AS regDate,
 	        (SELECT COUNT(*) 
 	         FROM comment_like cl 
 	         WHERE cl.comment_no = c.comment_no AND cl.user_id = #{userId}) AS isLiked
 	    FROM comment c
-	    WHERE post_no = #{postNo} 
-	      AND is_deleted = 0
+	    LEFT JOIN MEMBER m ON c.user_id = m.user_id
+	    LEFT JOIN USER_DETAIL d ON c.user_id = d.user_id
+	    WHERE c.post_no = #{postNo} 
+	      AND c.is_deleted = 0
 	    ORDER BY 
-	        CASE WHEN parent_no IS NULL THEN comment_no ELSE parent_no END ASC,
-	        CASE WHEN parent_no IS NULL THEN 0 ELSE 1 END ASC,
-	        reg_date ASC
+	        CASE WHEN c.parent_no IS NULL THEN c.comment_no ELSE c.parent_no END ASC,
+	        CASE WHEN c.parent_no IS NULL THEN 0 ELSE 1 END ASC,
+	        c.reg_date ASC
 	</select>
 	
 	<insert id="insertCommunityComment" parameterType="hashmap">

@@ -263,15 +263,34 @@ public class ReviewController {
     public String useTicket(HttpServletRequest request, @RequestBody HashMap<String, Object> map) {
         HashMap<String, Object> resultMap = new HashMap<>();
         HttpSession session = request.getSession();
+        
+        // 1. 세션에서 아이디와 권한(Role)을 가져옴
         String sessionId = (String) session.getAttribute("sessionId");
+        String sessionRole = (String) session.getAttribute("sessionRole"); // 테이블의 ROLE 컬럼값
 
+        // 로그인 체크
         if (sessionId == null) {
             resultMap.put("result", "LOGIN_REQUIRED");
             return new Gson().toJson(resultMap);
         }
 
+        // 2. 관리자(ADMIN) 체크: 관리자라면 차감 로직을 아예 타지 않고 즉시 성공 반환
+        if ("ADMIN".equals(sessionRole)) {
+            resultMap.put("result", "SUCCESS");
+            resultMap.put("message", "관리자 권한으로 프리패스합니다.");
+            return new Gson().toJson(resultMap);
+        }
+
+        // 3. 본인 글인지 체크 (프론트에서 reviewNo 등을 보냈을 때 서비스에서 판단하거나, 여기서 writerId를 비교)
+        // 만약 map에 writerId(작성자ID)가 포함되어 넘어온다면 아래 조건도 추가 가능
+        String writerId = (String) map.get("userId"); // 프론트에서 보낸 작성자 ID가 있다면
+        if (sessionId.equals(writerId)) {
+            resultMap.put("result", "SUCCESS");
+            return new Gson().toJson(resultMap);
+        }
+
+        // 4. 일반 유저인 경우에만 실제 티켓 차감 서비스 호출
         map.put("userId", sessionId);
-        
         try {
             resultMap = reviewService.useAccessTicket(map);
         } catch (Exception e) {

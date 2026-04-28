@@ -64,7 +64,7 @@
                     </div>
                     <h2 class="post-title">{{ post.title }}</h2>
                     <div class="post-info">
-                        <span>작성자 <strong>@{{ post.userId }}</strong></span>
+                        <span>작성자 <strong>@{{ post.nickname }}</strong></span>
                         <span>|</span>
                         <span>{{ post.regDate }}</span>
                         <span>|</span>
@@ -104,30 +104,46 @@
                     </div>
 
                     <div class="comment-list">
-                        <div v-for="item in commentList" :key="item.commentNo" :class="['comment-item', { 'is-reply': item.parentNo }]">
-                            <div class="comment-header d-flex justify-content-between">
-                                <b>@{{ item.userId }}</b>
-                                <span class="text-muted small">{{ item.regDate }}</span>
-                            </div>
-                            <div class="comment-body">{{ item.content }}</div>
-                            <div class="comment-footer mt-2">
-                                <span class="comment-like-btn" @click="fnCommentLike(item)">
-                                    <i :class="item.isLiked > 0 ? 'fas fa-heart text-danger' : 'far fa-heart'"></i>
-                                    <small>{{ item.likeCnt }}</small>
-                                </span>
-                                <span class="action-link" v-if="!item.parentNo && sessionId" @click="item.showReply = !item.showReply">답글</span>
-                                <span class="action-link" v-if="item.userId === sessionId" @click="fnRemoveComment(item.commentNo)">삭제</span>
-                                <span class="action-link text-danger" v-if="sessionId && item.userId !== sessionId" @click="fnOpenReportModal('COMMENT', item.commentNo, item.userId)">신고</span>
-                            </div>
+    <div v-for="item in commentList" :key="item.commentNo" :class="['comment-item', { 'is-reply': item.parentNo }]">
+        
+        <div class="comment-header d-flex justify-content-between">
+            <b :class="{'text-muted': item.nickname === '탈퇴회원'}">
+                @{{ item.nickname }}
+            </b>
+            <span class="text-muted small">{{ item.regDate }}</span>
+        </div>
 
-                            <div class="mt-3" v-if="item.showReply">
-                                <textarea v-model="item.replyContent" class="form-control" rows="2" placeholder="답글 작성..."></textarea>
-                                <div class="text-right mt-2">
-                                    <button class="btn btn-sm btn-dark" @click="fnAddComment(item)">답글 등록</button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+        <div class="comment-body mt-1">
+            <template v-if="item.nickname === '탈퇴회원'">
+                <span class="text-muted" style="font-style: italic;">탈퇴한 사용자의 댓글입니다.</span>
+            </template>
+            <template v-else>
+                {{ item.content }}
+            </template>
+        </div>
+
+        <div class="comment-footer mt-2" v-if="item.nickname !== '탈퇴회원'">
+            <span class="comment-like-btn" @click="fnCommentLike(item)">
+                <i :class="item.isLiked > 0 ? 'fas fa-heart text-danger' : 'far fa-heart'"></i>
+                <small>{{ item.likeCnt }}</small>
+            </span>
+            
+            <span class="action-link" v-if="!item.parentNo && sessionId" @click="item.showReply = !item.showReply">답글</span>
+            
+            <span class="action-link" v-if="item.userId === sessionId" @click="fnRemoveComment(item.commentNo)">삭제</span>
+            
+            <span class="action-link text-danger" v-if="sessionId && item.userId !== sessionId" @click="fnOpenReportModal('COMMENT', item.commentNo, item.userId)">신고</span>
+        </div>
+
+        <div class="mt-3" v-if="item.showReply && item.nickname !== '탈퇴회원'">
+            <textarea v-model="item.replyContent" class="form-control" rows="2" placeholder="답글 작성..."></textarea>
+            <div class="text-right mt-2">
+                <button class="btn btn-sm btn-dark" @click="fnAddComment(item)">답글 등록</button>
+            </div>
+        </div>
+
+    </div>
+</div>
                 </div>
             </template>
             <div v-else class="text-center py-5">

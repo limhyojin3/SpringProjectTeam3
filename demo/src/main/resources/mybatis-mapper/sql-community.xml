@@ -44,11 +44,14 @@
 	    </if>
 	</select>
     
-	<!-- 게시글 리스트 -->
-   <select id="selectPostList" parameterType="hashmap" resultType="com.example.demo.community_review.model.Community">
+	<select id="selectPostList" parameterType="hashmap" resultType="com.example.demo.community_review.model.Community">
 	    SELECT 
 	        p.post_no AS postNo,
 	        p.user_id AS userId,
+	        CASE 
+	            WHEN m.status = 'WITHDRAWN' THEN '탈퇴회원'
+	            ELSE IFNULL(d.nickname, p.user_id) 
+	        END AS nickname,
 	        p.category,
 	        p.title,
 	        p.content,
@@ -59,6 +62,8 @@
 	        (SELECT COUNT(*) FROM comment c 
 	         WHERE c.post_no = p.post_no AND c.is_deleted = 0) AS commentCnt
 	    FROM Community_Post p
+	    LEFT JOIN MEMBER m ON p.user_id = m.user_id
+	    LEFT JOIN USER_DETAIL d ON p.user_id = d.user_id
 	    WHERE p.is_deleted = 0
 	    
 	    <if test="category != null and category != '' and category != '전체'">
@@ -136,20 +141,26 @@
 	<!-- 커뮤니티 게시글 상세 내용 -->
 	<select id="selectPostDetail" parameterType="hashmap" resultType="com.example.demo.community_review.model.Community">
 	    SELECT 
-	        post_no AS postNo,
-	        user_id AS userId,
-	        title,
-	        category,
-	        content,
-	        view_cnt AS viewCnt,
-	        like_cnt AS likeCnt,
-	        reg_date AS regDate,
+	        p.post_no AS postNo,
+	        p.user_id AS userId,
+	        CASE 
+	            WHEN m.status = 'WITHDRAWN' THEN '탈퇴회원'
+	            ELSE IFNULL(d.nickname, p.user_id) 
+	        END AS nickname,
+	        p.title,
+	        p.category,
+	        p.content,
+	        p.view_cnt AS viewCnt,
+	        p.like_cnt AS likeCnt,
+	        p.reg_date AS regDate,
 	        (SELECT COUNT(*) 
 	         FROM community_like 
-	         WHERE post_no = community_Post.post_no 
+	         WHERE post_no = p.post_no 
 	           AND user_id = #{userId}) AS isLiked
-	    FROM community_Post
-	    WHERE post_no = #{postNo}
+	    FROM community_Post p
+	    LEFT JOIN MEMBER m ON p.user_id = m.user_id
+	    LEFT JOIN USER_DETAIL d ON p.user_id = d.user_id
+	    WHERE p.post_no = #{postNo}
 	</select>
 	
 	<!-- 게시글 작성자인지 아닌지 구분해서 수정, 삭제 할 수 있도록 -->
