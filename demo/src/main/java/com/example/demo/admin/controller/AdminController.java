@@ -191,33 +191,6 @@ public class AdminController {
 		return new Gson().toJson(resultMap);
 	}
 
-	@PostMapping("/verifyPayment.dox")
-	@ResponseBody
-	public HashMap<String, Object> verifyPayment(@RequestParam HashMap<String, Object> map) {
-		HashMap<String, Object> result = new HashMap<>();
-		// 포트원에서 실 결제 검증
-		boolean isValid = adminService.getPayInfo(map);
-
-		if (isValid) {
-			// 성공 시 디비에 결제 이력 및 패스 정보 저장
-			adminService.completePayment(map);
-
-			System.out.println("========= [테스트 결과] =========");
-			System.out.println("결제 검증 성공: 실제 금액과 일치합니다.");
-			System.out.println("결제 번호(imp_uid): " + map.get("imp_uid"));
-			System.out.println("================================");
-
-			result.put("success", true);
-			result.put("msg", "결제 검증 완료!");
-			result.put("pay_no", map.get("pay_no"));
-
-		} else {
-			result.put("success", false);
-			result.put("msg", "결제 검증 실패");
-		}
-		return result;
-	}
-
 	@RequestMapping(value = "/inquiry.dox", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
 	@ResponseBody
 	public String inquiry(Model model, @RequestParam HashMap<String, Object> map) throws Exception {
@@ -386,6 +359,18 @@ public class AdminController {
 			resultMap = adminService.getBoardList(map);
 
 			return resultMap;
+		}
+		
+		// 게시판 삭제하는척만
+		@RequestMapping(value = "/boardApprove.dox", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
+		@ResponseBody
+		public String boardApprove(Model model, @RequestParam HashMap<String, Object> map) throws Exception {
+
+		    HashMap<String, Object> resultMap = new HashMap<>();
+
+		    resultMap = adminService.editBoardApprove(map);
+
+		    return new Gson().toJson(resultMap);
 		}
 		
 		// 게시판 상세

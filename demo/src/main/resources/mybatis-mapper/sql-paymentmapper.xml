@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.example.demo.admin.mapper.PaymentMapper">
+
+    <insert id="insertPayment" parameterType="hashmap" useGeneratedKeys="true"
+		keyProperty="payNo">
+		INSERT INTO payment (
+		user_id,
+		amount,
+		pay_status,
+		pay_date
+		)
+		VALUES (
+		#{userId},
+		#{amount},
+		'SUCCESS',
+		NOW()
+		)
+	</insert>
+	
+	<insert id="insertPaymentPass" parameterType="map">
+		INSERT INTO payment_pass (
+		pay_no,
+		pass_no,
+		item_name
+		)
+		VALUES (
+		#{payNo},
+		#{passNo},
+		#{itemName}
+		)
+	</insert>
+
+	<!--<insert id="insertPaymentReservation" parameterType="map">
+		INSERT INTO payment_reservation (
+			pay_no,
+			user_id,
+			amount,
+			pay_status,
+			pay_date,
+			res_no
+		)
+		VALUES (
+			#{payNo},
+			#{userId},
+			#{amount},
+			'PAID',				#{payStatus},
+			NOW(),				#{payDate},
+			#{resNo}
+		)
+	</insert>-->
+
+	<insert id="insertPaymentRegistration" parameterType="map">
+		INSERT INTO payment_resistration (
+			pay_no,
+			company_no
+			)
+		VALUES (
+			#{payNo},
+			#{companyNo}
+		)
+	
+	</insert>
+</mapper>

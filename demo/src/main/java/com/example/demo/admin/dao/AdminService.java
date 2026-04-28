@@ -628,7 +628,27 @@ public class AdminService {
 		}
 		return resultMap;
 	}
+	
+	// 게시판 삭제하는척만
+	public HashMap<String, Object> editBoardApprove(HashMap<String, Object> map) {
 
+		HashMap<String, Object> resultMap = new HashMap<>();
+
+		try {
+			
+			adminMapper.updateBoardApprove(map);
+
+			resultMap.put("result", "success");
+
+		} catch (Exception e) {
+			System.out.println(e.getMessage());
+			resultMap.put("result", "fail");
+			throw e; // 트랜잭션 롤백
+		}
+
+		return resultMap;
+	}
+	
 	// 게시판 상세
 	public HashMap<String, Object> getPostDetail(HashMap<String, Object> map) {
 		HashMap<String, Object> resultMap = new HashMap<>();

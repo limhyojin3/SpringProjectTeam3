@@ -284,7 +284,7 @@
                     fnPageMove(p) {
                         if (p < 1 || p > this.index) return;
                         this.currentPage = p;
-                        this.fnGetUserList();
+                        this.fnGetCompanyList();
                     },
 
                     selectCompany(company) {
@@ -319,7 +319,7 @@
 
                     fnResetSearch() {
                         this.keyword = "";
-                        this.page = 1;
+                        this.currentPage = 1;
                         this.searchType = "all";
                         this.statusFilter = "ALL";
                         this.fnGetCompanyList();

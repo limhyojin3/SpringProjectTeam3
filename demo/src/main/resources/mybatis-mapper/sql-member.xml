@@ -212,7 +212,7 @@
 	
 	<!-- 내 리뷰 조회 내역 -->
 	<!-- 유료 리뷰 열람 내역 -->
-	<select id="selectMyPaidReviewList" parameterType="hashmap"
+	<!--<select id="selectMyPaidReviewList" parameterType="hashmap"
 	    resultType="com.example.demo.member.model.Member">
 	    SELECT
 	        R.review_no,
@@ -229,7 +229,7 @@
 	    AND R.user_id != #{userId}
 	    ORDER BY PUL.used_at DESC
 	    LIMIT #{pageSize} OFFSET #{offset}
-	</select>
+	</select>-->
 	
 	<!-- 유료 리뷰 전체 개수 -->
 	<select id="selectMyPaidReviewCount" parameterType="String" resultType="int">
@@ -569,7 +569,8 @@
 	        review_no,
 	        title,
 	        img_url,
-	        reg_date
+	        reg_date,
+	        is_paid
 	    FROM review
 	    WHERE approval_status = 'APPROVED'
 	    ORDER BY reg_date DESC

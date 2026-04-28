@@ -73,10 +73,28 @@
             </div>
 
             <div class="info-card">
-                <div><i class="fas fa-store mr-2" style="color:#ff4d6d"></i> <b>업체:</b> {{ info.comName }}</div>
-                <div><i class="fas fa-won-sign mr-2" style="color:#ff4d6d"></i> <b>비용:</b> {{ Number(info.totalCost || 0).toLocaleString() }}원</div>
-                <div><i class="fas fa-star mr-2" style="color:#ffb703"></i> <b>평점:</b> {{ info.rating }} / 5.0</div>
-                <div><i class="fas fa-link mr-2" style="color:#ff4d6d"></i> <b>경로:</b> {{ info.bookingSource }}</div>
+                <div>
+                    <i class="fas fa-store mr-2" style="color:#ff4d6d"></i> 
+                    <b>업체:</b> {{info.comName || info.externalName}}
+                </div>
+
+                <div v-if="info.companyNo && info.productName">
+                    <i class="fas fa-box-open mr-2" style="color:#ff4d6d"></i> 
+                    <b>이용 상품:</b> <span class="text-primary font-weight-bold">{{ info.productName }}</span>
+                </div>
+
+                <div>
+                    <i class="fas fa-won-sign mr-2" style="color:#ff4d6d"></i> 
+                    <b>비용:</b> {{ Number(info.totalCost || 0).toLocaleString() }}원
+                </div>
+                <div>
+                    <i class="fas fa-star mr-2" style="color:#ffb703"></i> 
+                    <b>평점:</b> {{ info.rating }} / 5
+                </div>
+                <div>
+                    <i class="fas fa-link mr-2" style="color:#ff4d6d"></i> 
+                    <b>경로:</b> {{ info.bookingSource }}
+                </div>
             </div>
 
             <div v-if="imgList.length > 0" class="img-wrapper">

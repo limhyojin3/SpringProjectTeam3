@@ -195,4 +195,8 @@ public class ReviewService {
         }
     }
     
+    public List<Map<String, Object>> getProductListByCompany(Map<String, Object> map) {
+        return reviewMapper.selectProductListByCompany(map);
+    }
+    
 }

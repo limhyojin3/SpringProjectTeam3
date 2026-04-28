@@ -296,8 +296,8 @@
                             <div class="buttons">
                                 <button @click="closeModal">취소</button>
                                 <button @click="fnPayment(selectedPass)"
-                                    :disabled="!(agreeRequired1 && agreeRequired2)">
-                                    결제하기
+                                    :disabled="!(agreeRequired1 && agreeRequired2) || isPaying">
+                                   {{ isPaying ? '결제 진행중...' : '결제하기' }}
                                 </button>
                             </div>
 
@@ -308,6 +308,7 @@
             <jsp:include page="/WEB-INF/common/footer.jsp" />
         </div>
         <script>
+            var IMP = window.IMP;
             IMP.init("imp48518435");
             const app = Vue.createApp({
                 data() {
@@ -328,6 +329,7 @@
                         agreeRequired2: false,
                         // 선택 동의
                         agreeOptional1: false,
+                        isPaying: false,
 
                     };
                 },
@@ -338,6 +340,13 @@
                     },
                     fnPayment: function (selectedPass) {
                         let self = this;
+
+                        if (self.isPaying) {
+                            return;
+                        }
+
+                        self.isPaying = true;
+
                         if (!(this.agreeRequired1 && this.agreeRequired2)) {
                             alert("필수 약관에 동의해주세요");
                             return;
@@ -350,7 +359,7 @@
                                 name: selectedPass.passName,
                                 amount: selectedPass.price,      //제품 가격
                             },
-                             function (response) {
+                            function (response) {
                                 // 결제 종료 시 호출되는 콜백 함수
                                 // response.imp_uid 값으로 결제 단건조회 API를 호출하여 결제 결과를 확인하고,
                                 // 결제 결과를 처리하는 로직을 작성합니다.
@@ -360,49 +369,55 @@
                                 console.log("imp_uid:", response.imp_uid);
                                 console.log("status:", response.status);
                                 console.log("paid_amount:", response.paid_amount);
-                                if (response.success) {
+                                if (response.imp_uid) {
                                     console.log("포트원 번호: " + response.imp_uid);
                                     // 우리쪽 db에 결제정보 저장
                                     // 페이지 이동 필요하면 페이지 이동 (메인 or 마이)
                                     // 결제 성공 후 서버 검증
                                     console.log("imp_uid:", response.imp_uid);
-                                    setTimeout(() => {
-                                        self.fnVerifyPayment(response.imp_uid, selectedPass);
-                                    }, 5000);
+                                        self.fnVerifyPayment(response.imp_uid, response.merchant_uid, selectedPass);
                                 } else {
                                     console.log("에러내용: " + response.error_msg);
+                                    self.isPaying = false;
+                                    console.log(response);
                                     alert("결제가 취소되었습니다");
                                 }
                             },
                         );
                     },
 
-                    fnVerifyPayment(imp_uid, selectedPass) {
+                    fnVerifyPayment(imp_uid, merchant_uid, selectedPass) {
                         let self = this
                         console.log("서버로 보내는 imp_uid:", imp_uid);
                         $.ajax({
                             url: "http://localhost:8080/verifyPayment.dox",
                             type: "POST",
                             data: {
-                                userId: this.sessionId,     // 로그인 아이디
+                                userId: self.sessionId,     // 로그인 아이디
                                 imp_uid: imp_uid,           // 결제 고유 값(중복)
+                                merchant_uid: merchant_uid,
                                 passNo: selectedPass.passNo,
                                 amount: selectedPass.price,
                                 itemName: selectedPass.passName,
-                                type:"PASS"
+                                type: "PASS"
                             },
                             success: function (res) {
                                 console.log(res);
-                                if (res.success) {
+                                if (res.result == "success") {
                                     console.log("포트원 번호: " + res.imp_uid);
                                     alert("결제가완료되었습니다!");
                                     self.isModalOpen = false;
                                     location.href = "/adminPayFinish.do?payNo=" + res.pay_no + "&type=PASS";
-                                    <!-- 예약이면 &type=RES 등록이면 &type=REG -->
+                                    //예약이면 &type=RES 등록이면 &type=REG
                                 } else {
                                     console.log("에러내용: " + res.error_msg);
+                                    self.isPaying = false;
                                     alert("결제 검증 실패");
                                 }
+                            }, error: function (xhr, status, err) {
+                                self.isPaying = false;
+                                alert("서버 통신 오류");
+                                console.log(xhr);
                             }
                         });
                     },
