@@ -264,6 +264,6 @@
 		pay_no = #{payNo}
 		where res_no = #{resNo}
 	</update>
-
+ 
  
 </mapper>

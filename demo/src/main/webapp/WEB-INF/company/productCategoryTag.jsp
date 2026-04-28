@@ -1373,6 +1373,7 @@
                                 <!-- <div style="text-align: right;">
                                     <img :src="product1.thumbnail" style="max-height: 200px; margin-top: 10px; margin-right: 20px;">
                                 </div> -->
+                                <!-- {{product1}} -->
 
                                 <div class="ticket-body">
                                     <div class="ticket-info">
@@ -1380,6 +1381,10 @@
                                             <label>예약 상품</label>
                                             <div class="value">{{ product1.name }} <small>({{ product1.company
                                                     }})</small></div>
+                                        </div>
+                                        <div class="info-row">
+                                            <label>TOTAL PRICE(상품 및 서비스 가격)</label>
+                                            <div class="value">{{Number(product1.price).toLocaleString()}}원</div>
                                         </div>
 
                                         <div class="info-grid">
@@ -1521,6 +1526,10 @@
                                                     }})</small></div>
                                         </div>
 
+                                        <div class="info-row">
+                                            <label>TOTAL PRICE(상품 및 서비스 가격)</label>
+                                            <div class="value">{{Number(myReservation1.originalPrice).toLocaleString()}}원</div>
+                                        </div>
                                         <div class="info-grid">
                                             <div class="info-row">
                                                 <label>예약 사용일시</label>
@@ -1558,7 +1567,7 @@
                                     <div class="ticket-side">
                                         <div class="side-content">
                                             <img :src="myReservation1.imgUrl" style="max-height: 200px;">
-                                            <div class="amount-label">TOTAL DEPOSIT</div>
+                                            <div class="amount-label">TOTAL DEPOSIT(예약금)</div>
                                             <div class="amount-value">{{ Number(myReservation1.deposit).toLocaleString()
                                                 }}원</div>
                                             <div class="agreement-text">필수 항목 동의 : 노쇼관련</div>
@@ -1574,7 +1583,7 @@
                                 {{selectedDate}}
                                 {{selectedTime}} -->
 
-                                {{myReservation1}}
+                                <!-- {{myReservation1}} -->
 
 
                                 <div class="payment-btn-group">
@@ -1587,7 +1596,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div v-if="currentMenu === 'main' && productPage === 'paymentFinal'" class="payment-container">
+                        <!-- <div v-if="currentMenu === 'main' && productPage === 'paymentFinal'" class="payment-container">
 
 
                             <div class="payment-card">
@@ -1597,9 +1606,9 @@
                                 <div class="payment-form">
                                     <label for="payAmount">예약금 결제</label>
                                     <div class="input-group">
-                                        <!-- <input id="payAmount" v-model="payAmount" type="text" placeholder="금액을 입력하세요">
+                                         <input id="payAmount" v-model="payAmount" type="text" placeholder="금액을 입력하세요">
                                         <span class="unit">KRW</span> -->
-                                        결제 진행합니다.
+                                        <!-- 결제 진행합니다.
                                     </div>
                                 </div>
 
@@ -1609,7 +1618,7 @@
                                         @click="productPage='reservaionPaymentDetails'; payAmount='';">뒤로가기</button>
                                 </div>
                             </div>
-                        </div>
+                        </div> --> 
 
             </div>
         </div>
@@ -2671,12 +2680,14 @@
                 fnPaymentFinal() {
                     if (confirm("예약사항을 모두 확인하셨습니까?")) {
 
-                        let self = this;
-                        let param = {
 
-                        };
+                        this.fnPaymentReal();
+                        //let self = this;
+                        //let param = {
 
-                        self.productPage = 'paymentFinal';
+                        //};
+
+                        //self.productPage = 'paymentFinal';
                         // $.ajax({
                         //     url: "/.dox",
                         //     dataType: "json",
