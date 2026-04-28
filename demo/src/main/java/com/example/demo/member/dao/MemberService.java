@@ -429,6 +429,7 @@ public class MemberService {
 	    map.put("userId", userId);
 	    map.put("pageSize", 5);
 	    map.put("offset", (page - 1) * 5);
+	    System.out.println("userId: " + userId);
 	    return memberMapper.selectMyPostLikeList(map);
 	}
 	// 페이지 사이징
