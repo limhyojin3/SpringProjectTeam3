@@ -1572,7 +1572,7 @@
                                 {{selectedDate}}
                                 {{selectedTime}} -->
 
-                                <!-- {{myReservation1}} -->
+                                {{myReservation1}}
 
 
                                 <div class="payment-btn-group">
@@ -2689,10 +2689,32 @@
                     }
                 },
                 fnPaymentFinal2() {
+
+                    //04.28 12:00pm : 
+                        // payAmount-> 입력한 금액 을 의미함.
+                        // myReservation1.deposit 은 예약금을 의미함.
                     if (this.payAmount == this.myReservation1.deposit) {
                         //alert('결제진행!');
 
-                        let self = this;
+                        // 결제하는 로직 붙이기 ( ) -> 
+
+                        //   결제 로직 담당한 메서드( )  
+                        // this.fnPaymentReal();  
+                        // 
+
+
+
+
+
+
+
+
+
+
+
+                        // 아래는 결제 완료 된 이후 데이터가 넘어갈 부분 (주석으로 막아뒀음 04.28 12:00pm)
+
+                        /* let self = this;
                         let param = {
                             userId: "${sessionScope.sessionId}",
                             amount: self.payAmount,
@@ -2714,12 +2736,28 @@
                                 //payAmount='';
 
                             }
-                        });
+                        });*/
 
 
                     } else {
-                        alert("금액이 맞지않습니다.");
+                        //alert("금액이 맞지않습니다.");
                     }
+                },
+
+
+
+                // 제현님이 하실 부분 여기입니다!
+                // 결제하는 로직
+                fnPaymentReal(){
+
+
+
+
+
+
+
+
+
                 }
 
             }, // methods
@@ -2737,3 +2775,9 @@
 
         app.mount('#app');
     </script>
+
+    <!--
+    -- 결제 하면서 3개를 넘김 (->
+-- { userId : self.myReservation1.userId,
+-- amount : self.myReservation1.deposit,
+-- resNo : self.myReservation1.resNo }-->
