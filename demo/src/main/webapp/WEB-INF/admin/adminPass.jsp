@@ -399,15 +399,16 @@
                                 passNo: selectedPass.passNo,
                                 amount: selectedPass.price,
                                 itemName: selectedPass.passName,
+                                reviewCnt : selectedPass.reviewCnt,
                                 type: "PASS"
                             },
                             success: function (res) {
                                 console.log(res);
                                 if (res.result == "success") {
                                     console.log("포트원 번호: " + res.imp_uid);
-                                    alert("결제가완료되었습니다!");
+                                    alert("결제가완료되었습니다");
                                     self.isModalOpen = false;
-                                    location.href = "/adminPayFinish.do?payNo=" + res.pay_no + "&type=PASS";
+                                    location.href = "/adminPayFinish.do?payNo=" + res.payNo + "&type=PASS";
                                     //예약이면 &type=RES 등록이면 &type=REG
                                 } else {
                                     console.log("에러내용: " + res.error_msg);

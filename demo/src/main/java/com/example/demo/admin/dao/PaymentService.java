@@ -34,15 +34,16 @@ public class PaymentService {
 	
 	public void updateWalletCount(HashMap<String, Object> map) {
 		HashMap<String, Object> resultMap = new HashMap<>();
-		int count = paymentMapper.selectWalletCnt(map);
-		
-		if (count > 0) {
-			paymentMapper.updateWalletCnt(map);
-			resultMap.put("message", "열람권이 충전되었습니다");
-		} else {
-			paymentMapper.insertWalletCnt(map);
-			resultMap.put("message", "열람권이 충전되었습니다");
-		}
+		int cnt = paymentMapper.selectWalletCnt(map); // 지갑 존재 여부 COUNT(*)
+
+	    if (cnt > 0) {
+	        paymentMapper.updateWalletCnt(map);   // 기존 사용자 충전
+	        resultMap.put("message", "열람권이 충전되었습니다");
+	    } else {
+	        paymentMapper.insertWalletCnt(map);   // 첫 구매 생성
+	        resultMap.put("message", "열람권 지갑이 생성되었습니다");
+	    }
+	    
 	}
 	
 	@Transactional
@@ -117,6 +118,7 @@ public class PaymentService {
 						return result;
 					}
 				}
+				updateWalletCount(map);
 				completePassPayment(map);
 				
 			}else if(type.equals("RES")){

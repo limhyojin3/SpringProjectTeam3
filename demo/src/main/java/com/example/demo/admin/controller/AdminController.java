@@ -204,7 +204,7 @@ public class AdminController {
 	@ResponseBody
 	public String inquiryAnswer(Model model, @RequestParam HashMap<String, Object> map) throws Exception {
 		HashMap<String, Object> resultMap = new HashMap<String, Object>();
-		resultMap = adminService.addAnswer(map);
+		resultMap = adminService.editAnswer(map);
 
 		return new Gson().toJson(resultMap);
 	}

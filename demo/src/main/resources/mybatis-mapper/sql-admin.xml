@@ -371,20 +371,26 @@
 	    WHERE P.pay_no = #{payNo}
 	</select>
 
+
+<!-- 관리자 문의 게시판 -->
+	<!-- 문의 목록 조회-->
 	<select id="selectInquiryList" parameterType="hashmap"
-		resultType="com.example.demo.admin.model.Admin"> SELECT * FROM inquiry
-		WHERE 1=1 <if test="status != null and status != ''">
+		resultType="com.example.demo.admin.model.Admin">
+		SELECT * FROM inquiry
+		WHERE 1=1
+		<if test="status != null and status != ''">
 			AND status = #{status}
 		</if> ORDER BY reg_date DESC </select>
 
 	<!--답변여부확인-->
-	<select id="checkAnswer" resultType="int">
+	<select id="checkAnswer" parameterType="hashmap" resultType="int">
 		SELECT COUNT(*)
 		FROM inquiry_answer
 		WHERE inquiry_no = #{inquiryNo}
 	</select>
 
-	<insert id="insertAnswer">
+	<!--새로운 테이블에 답변을 저장하려했는데 이미 문의 테이블에 답변 컬럼이 있어서 삭제예정
+	<insert id="insertAnswer" parameterType="hashmap">
 		INSERT INTO inquiry (
 		inquiry_no,
 		answer_content
@@ -392,15 +398,15 @@
 		#{inquiryNo},
 		#{answer}
 		)
-	</insert>
+	</insert> 새로운 테이블에 답변을 저장하려했는데 이미 문의 테이블에 답변 컬럼이 있어서 삭제예정-->
 
-	<update id="updateAnswer">
+	<update id="updateAnswer" parameterType="hashmap">
 		UPDATE inquiry
-		SET answer_content = #{answer}
+		SET answer_content = #{answerContent}
 		WHERE inquiry_no = #{inquiryNo}
 	</update>
 
-	<update id="updateInquiryStatus">
+	<update id="updateInquiryStatus" parameterType="hashmap">
 		UPDATE inquiry
 		SET status = 'DONE'
 		WHERE inquiry_no = #{inquiryNo}

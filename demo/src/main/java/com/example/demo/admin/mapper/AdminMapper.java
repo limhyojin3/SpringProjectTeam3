@@ -44,15 +44,15 @@ public interface AdminMapper {
 
 	int insertPayment(Map<String, Object> map);
 	
-	public List<Admin> selectInquiryList(Map<String, Object> map);
+	public List<Admin> selectInquiryList(HashMap<String, Object> map);
 	
-	int checkAnswer(Map<String, Object> map);
+	int checkAnswer(HashMap<String, Object> map);
 
-	int insertAnswer(Map<String, Object> map);
+	int insertAnswer(HashMap<String, Object> map);
 
-	void updateAnswer(Map<String, Object> map);
+	void updateAnswer(HashMap<String, Object> map);
 
-	void updateInquiryStatus(Map<String, Object> map);
+	void updateInquiryStatus(HashMap<String, Object> map);
 
 	// 관리자 전체 회원목록 페이지
 	public List<Admin> selectUserList(HashMap<String, Object> map);

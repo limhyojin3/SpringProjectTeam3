@@ -44,6 +44,7 @@ public class Admin {
 	
 	// 문의목록
 	int inquiryNo; 			//문의 번호
+	String answerContent;
 	
 	// 결제목록
 	String saleMonth;
