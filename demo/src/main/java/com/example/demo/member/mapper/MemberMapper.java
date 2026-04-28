@@ -113,7 +113,7 @@ public interface MemberMapper {
 	
 	// *메인 홈 출력* 
 	// 최근 리뷰 4개
-	List<Member> selectMainReviewList();
+	List<Member> selectMainReviewList(String userId);
 	// 인기글 3개
 	List<Member> selectMainPostList();
 	

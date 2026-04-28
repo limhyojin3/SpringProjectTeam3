@@ -53,6 +53,9 @@ public class Member {
 	int isPaid;
 	String imgUrl;
 	String approvalStatus;
+	//
+	int isPurchased; // 추가
+	
 	// Community_Post table에 있는 컬럼들 입니다.
 	String postNo;
 	String category;

@@ -91,7 +91,7 @@
                                 <div class="review-img-thumb" style="overflow:hidden; height: 200px; background: #eee;">
                                     <img v-if="review.imgUrl && !review.imgUrl.endsWith('.zip')"
                                         :src="review.imgUrl.split(',')[0]"
-                                        :class="{'blur-img': review.isPaid == 1 && review.userId !== sessionId}"
+                                        :class="{'blur-img': review.isPaid == 1 && review.isPurchased == 0 && userRole !== 'ADMIN'&& review.userId !== sessionId}"
                                         style="width:100%; height:100%; object-fit:cover;"
                                         @error="handleImgError">
                                     <div v-else class="thumb-placeholder" style="height:100%; display:flex; flex-direction:column; justify-content:center; align-items:center;">
@@ -160,6 +160,7 @@
             data() {
                 return {
                     sessionId: '${sessionId}', 
+                    userRole: '${sessionRole}',
                     reviewList: [],
                     postList: [],
                     isChatOpen: false, 
@@ -184,8 +185,8 @@
                         return;
                     }
 
-                    // 2. 무료 리뷰이거나 내가 쓴 글인 경우: 즉시 이동
-                    if (review.isPaid != 1  || review.userId === this.sessionId) {
+                    // 2. 무료 리뷰이거나 내가 쓴 글이거나 이미 구매했거나 관리자인 경우: 즉시 이동
+                    if (review.isPaid != 1  || review.userId === this.sessionId || review.isPurchased == 1 || this.userRole === 'ADMIN') {
                         location.href = '/api/review/detail.do?reviewNo=' + review.reviewNo; 
                         return;
                     }

@@ -13,7 +13,7 @@
 	    WHERE M.USER_ID = #{userId}
 	</select>
 	
-	<!-- member 테이블 INSERT -->
+	<!-- 회원가입 member 테이블 INSERT -->
 	<insert id="insertMember" parameterType="hashmap">
 	    INSERT INTO MEMBER (USER_ID, PASSWORD, ROLE, STATUS, TEL, REG_DATE)
 	    VALUES (
@@ -212,7 +212,7 @@
 	
 	<!-- 내 리뷰 조회 내역 -->
 	<!-- 유료 리뷰 열람 내역 -->
-	<!--<select id="selectMyPaidReviewList" parameterType="hashmap"
+	<select id="selectMyPaidReviewList" parameterType="hashmap"
 	    resultType="com.example.demo.member.model.Member">
 	    SELECT
 	        R.review_no,
@@ -229,7 +229,7 @@
 	    AND R.user_id != #{userId}
 	    ORDER BY PUL.used_at DESC
 	    LIMIT #{pageSize} OFFSET #{offset}
-	</select>-->
+	</select>
 	
 	<!-- 유료 리뷰 전체 개수 -->
 	<select id="selectMyPaidReviewCount" parameterType="String" resultType="int">
@@ -255,7 +255,8 @@
 	    LEFT JOIN company C ON R.company_no = C.company_no
 	    WHERE FVL.user_id = #{userId}
 	      AND R.is_paid = 0
-	      AND R.user_id != #{userId} ORDER BY FVL.viewed_at DESC  LIMIT #{pageSize} OFFSET #{offset}
+	      AND R.user_id != #{userId} ORDER BY FVL.viewed_at DESC  
+	      LIMIT #{pageSize} OFFSET #{offset}
 	</select>
 	<!-- 무료 리뷰 전체 개수 -->
 	<select id="selectMyFreeReviewCount" parameterType="String" resultType="int">
@@ -268,7 +269,7 @@
 	</select>
 	
 	<!-- 내가 쓴 글 조회 -->
-	<select id="selectMyPostList" parameterType="String"
+	<select id="selectMyPostList" parameterType="hashmap"
 	    resultType="com.example.demo.member.model.Member">
 	    SELECT 
         post_no,
@@ -281,6 +282,7 @@
 	    WHERE user_id = #{userId}
 	    AND is_deleted = 0
 	    ORDER BY reg_date DESC
+	    LIMIT #{pageSize} OFFSET #{offset}
 	</select>
 	<!-- 페이지 -->
 	<select id="selectMyPostCount" parameterType="String" resultType="int">
@@ -291,7 +293,7 @@
 	</select>
 	
 	<!-- 내가 쓴 리뷰 조회 -->
-	<select id="selectMyReviewList" parameterType="String"
+	<select id="selectMyReviewList" parameterType="hashmap"
 	    resultType="com.example.demo.member.model.Member">
 	    SELECT 
 	        review_no,
@@ -302,6 +304,7 @@
 	    FROM review
 	    WHERE user_id = #{userId}
 	    ORDER BY reg_date DESC
+	    LIMIT #{pageSize} OFFSET #{offset}
 	</select>
 	<!-- 페이지 -->
 	<select id="selectMyReviewCount" parameterType="String" resultType="int">
@@ -311,7 +314,7 @@
 	</select>
 	
 	<!-- 내가 쓴 댓글 조회 -->
-	<select id="selectMyCommentList" parameterType="String"
+	<select id="selectMyCommentList" parameterType="hashmap"
 	    resultType="com.example.demo.member.model.Member">
 	    SELECT 
 	        comment_no,
@@ -323,6 +326,7 @@
 	    WHERE user_id = #{userId}
 	    AND is_deleted = 0
 	    ORDER BY reg_date DESC
+	    LIMIT #{pageSize} OFFSET #{offset}
 	</select>
 	<!-- 페이지 -->
 	<select id="selectMyCommentCount" parameterType="String" resultType="int">
@@ -490,13 +494,14 @@
 	    SELECT COUNT(*) FROM COMPANY WHERE COM_NAME = #{comName}
 	</select>
 	
-	<!-- member 테이블 INSERT (업체) -->
+	
+	<!-- 회원가입 member 테이블 INSERT (업체) -->
 	<insert id="insertCompanyMember" parameterType="hashmap">
 	    INSERT INTO MEMBER (USER_ID, PASSWORD, ROLE, STATUS, TEL, REG_DATE)
 	    VALUES (
 	        #{userId},
 	        #{password},
-	        'PARTNER',
+	        'NPARTNER',
 	        'ACTIVE',
 	        #{comTel},
 	        NOW()
@@ -564,16 +569,23 @@
 	
 	<!-- 메인 홈 출력 -->
 	<!-- 메인 최근 리뷰 4개 -->
-	<select id="selectMainReviewList" resultType="com.example.demo.member.model.Member">
-	    SELECT 
-	        review_no,
-	        title,
-	        img_url,
-	        reg_date,
-	        is_paid
-	    FROM review
-	    WHERE approval_status = 'APPROVED'
-	    ORDER BY reg_date DESC
+	<select id="selectMainReviewList" parameterType="String" resultType="com.example.demo.member.model.Member">
+	    SELECT
+	        R.review_no,
+	        R.title,
+	        R.img_url,
+	        R.reg_date,
+	        R.is_paid,
+	        R.user_id,
+	        <!-- 추가: 현재 로그인한 유저가 이미 구매한 리뷰인지 여부 -->
+	        CASE WHEN PUL.user_id IS NOT NULL THEN 1 ELSE 0 END AS is_purchased
+	    FROM review R
+	    <!-- 추가: pass_usage_log 조인으로 구매 여부 확인 -->
+	    LEFT JOIN pass_usage_log PUL
+	        ON R.review_no = PUL.review_no
+	        AND PUL.user_id = #{userId}
+	    WHERE R.approval_status = 'APPROVED'
+	    ORDER BY R.reg_date DESC
 	    LIMIT 4
 	</select>
 	
