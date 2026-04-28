@@ -19,4 +19,10 @@ public interface PaymentMapper {
 	//int insertPaymentReservation(HashMap<String, Object> map);
 	
 	int insertPaymentRegistration(HashMap<String, Object> map);
+	
+	int selectWalletCnt(HashMap<String, Object> map);
+	
+	int updateWalletCnt(HashMap<String, Object> map);
+	
+	int insertWalletCnt(HashMap<String, Object> map);
 }
