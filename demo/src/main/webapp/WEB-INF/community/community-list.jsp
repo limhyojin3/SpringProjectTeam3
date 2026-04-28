@@ -102,7 +102,7 @@
                             {{ item.title }}
                             <span v-if="item.commentCnt > 0" class="comment-count">[{{ item.commentCnt }}]</span>
                         </td>
-                        <td><span class="badge badge-light p-2">@{{ item.userId }}</span></td>
+                        <td><span class="badge badge-light p-2">@{{ item.nickname }}</span></td>
                         <td class="small text-muted">{{ item.regDate }}</td>
                         <td>{{ item.viewCnt }}</td>
                         <td class="badge-heart">❤️ {{ item.likeCnt }}</td>

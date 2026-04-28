@@ -75,7 +75,7 @@
             <div class="info-card">
                 <div>
                     <i class="fas fa-store mr-2" style="color:#ff4d6d"></i> 
-                    <b>업체:</b> {{info.comName || info.externalName}}
+                    <b>업체:</b> {{info.comName ||  info.externalName}}
                 </div>
 
                 <div v-if="info.companyNo && info.productName">

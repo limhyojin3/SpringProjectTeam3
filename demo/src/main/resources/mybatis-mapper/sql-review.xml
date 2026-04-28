@@ -39,7 +39,11 @@
     <select id="selectReviewList" parameterType="hashmap" resultType="hashmap">
 	    SELECT 
 	        r.review_no AS reviewNo,
-	        r.user_id AS userId,
+	        CASE 
+	            WHEN m.status = 'WITHDRAWN' THEN '탈퇴회원'
+	            ELSE d.nickname 
+	        END AS nickname,
+	        r.user_id AS userId, 
 	        r.rating AS rating,
 	        r.view_cnt AS viewCnt,
 	        r.like_cnt AS likeCnt,
@@ -56,8 +60,10 @@
 	        DATE_FORMAT(r.reg_date, '%Y-%m-%d') AS regDate
 	    FROM Review r
 	    LEFT OUTER JOIN Company c ON r.company_no = c.company_no
+	    LEFT JOIN MEMBER m ON r.user_id = m.user_id
+	    LEFT JOIN USER_DETAIL d ON r.user_id = d.user_id
 	    WHERE r.approval_status = 'APPROVED'
-	    
+	
 	    <if test="isPaid != null and isPaid != '' or isPaid == 0">
 	        AND r.is_paid = #{isPaid}
 	    </if>
@@ -68,57 +74,64 @@
 	
 	    <if test="searchKeyword != null and searchKeyword != ''">
 	        <choose>
-	            <when test="searchType == 'company'"> 
-	                AND c.com_name LIKE CONCAT('%', #{searchKeyword}, '%') 
+	            <when test="searchType == 'company'">
+	                AND c.com_name LIKE CONCAT('%', #{searchKeyword}, '%')
 	            </when>
-	            <when test="searchType == 'title'"> 
-	                AND r.title LIKE CONCAT('%', #{searchKeyword}, '%') 
+	            <when test="searchType == 'title'">
+	                AND r.title LIKE CONCAT('%', #{searchKeyword}, '%')
 	            </when>
-	            <when test="searchType == 'content'"> 
-	                AND r.content LIKE CONCAT('%', #{searchKeyword}, '%') 
+	            <when test="searchType == 'content'">
+	                AND r.content LIKE CONCAT('%', #{searchKeyword}, '%')
 	            </when>
 	            <otherwise>
 	                AND (c.com_name LIKE CONCAT('%', #{searchKeyword}, '%')
-	                OR r.title   LIKE CONCAT('%', #{searchKeyword}, '%')
+	                OR r.title LIKE CONCAT('%', #{searchKeyword}, '%')
 	                OR r.content LIKE CONCAT('%', #{searchKeyword}, '%'))
 	            </otherwise>
 	        </choose>
 	    </if>
+	
 	    ORDER BY r.reg_date DESC
 	    LIMIT #{startIndex}, #{pageSize}
 	</select>
 
 	<!-- 상세 리뷰 조회 -->
     <select id="selectReviewDetail" parameterType="hashmap" resultType="hashmap">
-        SELECT 
-            r.review_no AS reviewNo,
-            r.user_id AS userId,
-            r.company_no AS companyNo,
-            r.res_no AS resNo,
-            r.rating AS rating,
-            r.approval_status AS approvalStatus,
-            r.view_cnt AS viewCnt,
-            r.like_cnt AS likeCnt,
-            r.is_paid AS isPaid,
-            r.receipt_name AS receiptName,
-            r.title AS title,
-            r.content AS content,
-            r.booking_source AS bookingSource,
-            r.original_name AS originalName,
-            r.stored_name AS storedName,
-            r.img_url AS imgUrl,
-            r.img_description AS imgDescription,
-            r.total_cost AS totalCost,
-            r.external_name AS externalName,
-            DATE_FORMAT(r.reg_date, '%Y-%m-%d %H:%i') AS regDate,
-            c.com_name AS comName,
-            p.product_name AS productName,
-            (SELECT COUNT(*) FROM Review_Like WHERE review_no = r.review_no AND user_id = #{userId}) AS isLiked
-        FROM Review r
-        LEFT OUTER JOIN Company c ON r.company_no = c.company_no
-        LEFT OUTER JOIN product p ON r.product_no = p.product_no
-        WHERE r.review_no = #{reviewNo} 
-    </select>
+	    SELECT 
+	        r.review_no AS reviewNo,
+	        CASE 
+	            WHEN m.status = 'WITHDRAWN' THEN '탈퇴회원'
+	            ELSE d.nickname 
+	        END AS nickname,
+	        r.user_id AS userId,
+	        r.company_no AS companyNo,
+	        r.res_no AS resNo,
+	        r.rating AS rating,
+	        r.approval_status AS approvalStatus,
+	        r.view_cnt AS viewCnt,
+	        r.like_cnt AS likeCnt,
+	        r.is_paid AS isPaid,
+	        r.receipt_name AS receiptName,
+	        r.title AS title,
+	        r.content AS content,
+	        r.booking_source AS bookingSource,
+	        r.original_name AS originalName,
+	        r.stored_name AS storedName,
+	        r.img_url AS imgUrl,
+	        r.img_description AS imgDescription,
+	        r.total_cost AS totalCost,
+	        r.external_name AS externalName,
+	        DATE_FORMAT(r.reg_date, '%Y-%m-%d %H:%i') AS regDate,
+	        c.com_name AS comName,
+	        p.product_name AS productName,
+	        (SELECT COUNT(*) FROM Review_Like WHERE review_no = r.review_no AND user_id = #{userId}) AS isLiked
+	    FROM Review r
+	    LEFT OUTER JOIN Company c ON r.company_no = c.company_no
+	    LEFT OUTER JOIN product p ON r.product_no = p.product_no
+	    LEFT JOIN MEMBER m ON r.user_id = m.user_id
+	    LEFT JOIN USER_DETAIL d ON r.user_id = d.user_id
+	    WHERE r.review_no = #{reviewNo} 
+	</select>
 
 	<!-- 조회 수 증가 -->
     <update id="updateViewCount" parameterType="hashmap">
