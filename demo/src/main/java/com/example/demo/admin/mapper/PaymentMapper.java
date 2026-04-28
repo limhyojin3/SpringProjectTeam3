@@ -16,7 +16,7 @@ public interface PaymentMapper {
 
 	int insertPaymentPass(HashMap<String, Object> map);
 	
-	int insertPaymentReservation(HashMap<String, Object> map);
+	//int insertPaymentReservation(HashMap<String, Object> map);
 	
 	int insertPaymentRegistration(HashMap<String, Object> map);
 }

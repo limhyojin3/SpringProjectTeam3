@@ -35,9 +35,9 @@ public class PaymentService {
 	@Transactional
 	public void completeReservationPayment(HashMap<String,Object> map){
 
-	    paymentMapper.insertPayment(map); // 공통 결제
+	   // paymentMapper.insertPayment(map); // 공통 결제
 
-	    paymentMapper.insertPaymentReservation(map); // 상세
+	   // paymentMapper.insertPaymentReservation(map); // 상세
 	    
 	    //paymentMapper.updateReservationStatus(map); 가 필요할지도???
 	}
@@ -45,9 +45,9 @@ public class PaymentService {
 	@Transactional
 	public void completeRegistrationPayment(HashMap<String,Object> map){
 
-	    paymentMapper.insertPayment(map); // 공통 결제
+	    //paymentMapper.insertPayment(map); // 공통 결제
 
-	    paymentMapper.insertPaymentRegistration(map); // 상세
+	    //paymentMapper.insertPaymentRegistration(map); // 상세
 	    
 	}
 
@@ -106,7 +106,7 @@ public class PaymentService {
 				}
 				completePassPayment(map);
 			}else if(type.equals("RES")){
-			    completeReservationPayment(map);
+			    // completeReservationPayment(map);
 			}else if(type.equals("REG")){
 			    completeRegistrationPayment(map);
 			}

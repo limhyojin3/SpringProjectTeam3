@@ -379,6 +379,7 @@
                                 } else {
                                     console.log("에러내용: " + response.error_msg);
                                     self.isPaying = false;
+                                    console.log(response);
                                     alert("결제가 취소되었습니다");
                                 }
                             },
