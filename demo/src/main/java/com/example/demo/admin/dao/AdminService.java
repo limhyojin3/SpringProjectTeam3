@@ -203,7 +203,7 @@ public class AdminService {
 		return new HashMap<>();
 	}
 
-	public HashMap<String, Object> getInquiryList(Map<String, Object> map) {
+	public HashMap<String, Object> getInquiryList(HashMap<String, Object> map) {
 		HashMap<String, Object> resultMap = new HashMap<String, Object>();
 		try {
 			List<Admin> list = adminMapper.selectInquiryList(map);
@@ -219,22 +219,12 @@ public class AdminService {
 		return resultMap;
 	}
 
-	public HashMap<String, Object> addAnswer(Map<String, Object> map) {
+	public HashMap<String, Object> editAnswer(HashMap<String, Object> map) {
 		HashMap<String, Object> resultMap = new HashMap<String, Object>();
 		try {
-			int count = adminMapper.checkAnswer(map);
-
-			if (count > 0) {
-				adminMapper.updateAnswer(map);
-				resultMap.put("message", Message.MSG_EDIT);
-			} else {
-				adminMapper.insertAnswer(map);
-				resultMap.put("message", Message.MSG_ADD);
-			}
 			
-			adminMapper.updateInquiryStatus(map);
-			resultMap.put("result", "success");
-
+			adminMapper.updateAnswer(map);
+			resultMap.put("message", Message.MSG_EDIT);
 			
 		} catch (Exception e) {
 			// TODO: handle exception

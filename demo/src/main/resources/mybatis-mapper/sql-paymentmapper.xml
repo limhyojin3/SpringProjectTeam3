@@ -35,12 +35,34 @@
 
 <!-- 결제 후 열람권 충전 로직-->
 	<!-- 열람권 유무 조회 -->
-		<select id="" parameterType="hashmap" resultType="int">
-			SELECT remaining_count
-			FROM payment p
+		<select id="selectWalletCnt" parameterType="hashmap" resultType="int">
+			SELECT COUNT(*)
+			FROM user_pass_wallet
 			WHERE user_id = #{userId}
 		</select>
 
+	<!-- 열람권 추가 -->
+		<insert id="insertWalletCnt" parameterType="hashmap">
+		INSERT INTO user_pass_wallet (
+			user_id, remaining_count, total_purchased, pass_no
+			)
+		VALUES (
+			#{userId},
+			#{reviewCnt},
+			#{reviewCnt},
+			#{passNo}
+		)
+		</insert>
+		
+	<!-- 열람권 수정 -->
+	<update id="updateWalletCnt" parameterType="hashmap">
+		UPDATE user_pass_wallet
+		SET
+			remaining_count = remaining_count + #{reviewCnt},
+			total_purchased = total_purchased + #{reviewCnt},
+			pass_no = #{passNo}
+		WHERE user_id = #{userId}
+	</update>
 
 	<!--<insert id="insertPaymentReservation" parameterType="map">
 		INSERT INTO payment_reservation (
