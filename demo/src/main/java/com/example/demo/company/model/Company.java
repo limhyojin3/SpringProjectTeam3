@@ -31,6 +31,7 @@ public class Company {
 	String proType;
 	String tag;
 	
+	
 	String resNo;
 	String resDate;
 	String resTime;
