@@ -640,9 +640,10 @@ public class MemberController {
 	// 최근 리뷰
 		@GetMapping("/mainReviewList.dox")
 		@ResponseBody
-		public List<Member> getMainReviewList() {
-		    return memberService.getMainReviewList();
-		}	
+		public List<Member> getMainReviewList(HttpSession session) {
+			String userId = (String) session.getAttribute("sessionId");
+		    return memberService.getMainReviewList(userId);
+		}
 		
 	// 챗봇 로그 저장
 		@PostMapping("/ask")

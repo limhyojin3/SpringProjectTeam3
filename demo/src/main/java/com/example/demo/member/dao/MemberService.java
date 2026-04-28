@@ -58,7 +58,7 @@ public class MemberService {
 		          return resultMap;
 		        }
 		    } else if(tab.equals("company")) {
-		        if(!member.getRole().equals("PARTNER")) {
+		        if(!member.getRole().equals("PARTNER") && !member.getRole().equals("NPARTNER")) {
 		           resultMap.put("loginResult", false);
 		           resultMap.put("message", "일반 로그인을 이용해주세요.");
 		           return resultMap;
@@ -550,8 +550,8 @@ public class MemberService {
 	
 	// *메인 홈 출력* 
 	// 최근 리뷰
-	public List<Member> getMainReviewList() {
-	    return memberMapper.selectMainReviewList();
+	public List<Member> getMainReviewList(String userId) {
+		return memberMapper.selectMainReviewList(userId);
 	}
 	// 인기 글
 	public List<Member> getMainPostList() {
