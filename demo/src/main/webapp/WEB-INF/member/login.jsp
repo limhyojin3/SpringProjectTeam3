@@ -118,7 +118,7 @@
         <div id="container">
             <!-- 로고 -->
             <div class="logo">
-                <img src="/img/merryview-logo-text.svg" alt="메리뷰 로고" @click="fnMain()">
+                <img src="/img/marryview-logo-text.svg" alt="메리뷰 로고" @click="fnMain()">
             </div>
 
             <!-- 탭 버튼 -->

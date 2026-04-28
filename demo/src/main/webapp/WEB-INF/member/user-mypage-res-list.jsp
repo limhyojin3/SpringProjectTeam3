@@ -103,8 +103,8 @@
                         </section>
                     </div>
                 </div>
-            <jsp:include page="/WEB-INF/common/footer.jsp" />
         </div>
+        <jsp:include page="/WEB-INF/common/footer.jsp" />
     </div>
 </body>
 <script>

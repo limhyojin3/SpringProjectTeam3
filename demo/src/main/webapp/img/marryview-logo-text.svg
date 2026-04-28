@@ -23,7 +23,7 @@
     font-weight="400"
     fill="#c8a882"
     text-anchor="middle"
-    letter-spacing="6">M e r r y V i e w</text>
+    letter-spacing="6">M a r r y V i e w</text>
 
   <!-- 구분선 -->
   <line x1="100" y1="100" x2="300" y2="100" stroke="#f4a096" stroke-width="0.8" opacity="0.5"/>

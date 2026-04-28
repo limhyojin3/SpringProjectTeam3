@@ -79,6 +79,9 @@
             justify-content: center;
             font-size: 13px;
             color: #999;
+            object-fit:cover;
+            height:120px; 
+            overflow:hidden;
         }
 
         .review-card-title {
@@ -160,9 +163,10 @@
                             <div class="review-card" v-for="review in paidReviewList" :key="review.reviewNo"
                                 @click="fnGoReview(review.reviewNo)">
                                 <div class="review-thumbnail">
-                                    <img v-if="review.imgUrl" 
-                                        :src="review.imgUrl" 
-                                        style="width:100%; height:100%; object-fit:cover;">
+                                    <img v-if="review.imgUrl && !review.imgUrl.endsWith('.zip')"
+                                        :src="review.imgUrl.split(',')[0]"
+                                        style="width:100%; height:100%; object-fit:cover;"
+                                        @error="handleImgError">
                                     <span v-else>썸네일</span>
                                 </div>
                                 <div class="review-card-title">{{ review.title }}</div> <!--제목-->
@@ -182,9 +186,19 @@
                     
                     <!-- 무료 리뷰 목록 -->
                     <div v-if="reviewTab === 'free'">
-                        <div class="review-list-item" v-for="review in freeReviewList" :key="review.reviewNo"
-                            @click="fnGoReview(review.reviewNo)">
-                            {{ review.title }} - {{ review.comName }}
+                        <div class="review-list">
+                            <div class="review-card" v-for="review in freeReviewList" :key="review.reviewNo"
+                                @click="fnGoReview(review.reviewNo)">
+                                <div class="review-thumbnail">
+                                    <img v-if="review.imgUrl && !review.imgUrl.endsWith('.zip')"
+                                        :src="review.imgUrl.split(',')[0]"
+                                        style="width:100%; height:100%; object-fit:cover;"
+                                        @error="handleImgError">
+                                    <span v-else>썸네일</span>
+                                </div>
+                                <div class="review-card-title">{{ review.title }}</div> <!--제목-->
+                                <div class="review-card-title">{{ review.comName }}</div> <!--업체 명-->
+                            </div>
                         </div>
                         <!-- 페이지 -->
                         <div class="review-index-wrap">
@@ -245,6 +259,18 @@
                         self.freeTotalCount = res.data.totalCount;
                         self.freeCurrentPage = res.data.currentPage;
                     });
+            },
+            handleImgError: function(event) {
+                // 이미지가 없으면 해당 이미지만 숨깁니다.
+                if (event.target) {
+                    event.target.style.display = 'none';
+                    
+                    // 부모 요소가 있을 때만 배경색을 바꿉니다.
+                    const parent = event.target.parentElement;
+                    if (parent) {
+                        parent.style.backgroundColor = '#ffc7c2';
+                    }
+                }
             },
         }, // methods
         mounted() {
