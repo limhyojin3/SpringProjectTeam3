@@ -1,6 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 
-<!-- <%-- 1. JSTL 코어 태그 라이브러리를 사용하겠다고 선언합니다 --%>
+    <!-- <%-- 1. JSTL 코어 태그 라이브러리를 사용하겠다고 선언합니다 --%>
 <%@ taglib prefix="c" uri="jakarta.tags.core" %> -->
     <!DOCTYPE html>
     <html lang="en">
@@ -14,7 +14,7 @@
         <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
         <script src="/js/page-change.js"></script>
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
-    
+
         <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
         <script src="https://cdn.quilljs.com/1.3.6/quill.min.js"></script>
         <link rel="stylesheet" href="${pageContext.request.contextPath}/css/common.css">
@@ -514,7 +514,7 @@
         <jsp:include page="/WEB-INF/common/header.jsp" />
         <div id="app">
             <!-- html 코드는 id가 app인 태그 안에서 작업 -->
-            
+
 
             <div class="container1">
                 <aside>
@@ -902,8 +902,7 @@
                                 <template v-for="w in productList3" :key="w.productName">
                                     <div class="review-header-info" style="margin-bottom: 10px;">
                                         <div class="review-thumb-box">
-                                            <img :src="w.imgUrl"
-                                                style="width: 100%; height: 100%; object-fit: cover;">
+                                            <img :src="w.imgUrl" style="width: 100%; height: 100%; object-fit: cover;">
                                         </div>
                                         <div class="review-product-name">
                                             <a href="javascript:;" style="text-decoration: none; color:#0b3f8e;"
@@ -922,11 +921,10 @@
 
                                     <div class="review-header-info" style="margin-bottom: 10px;">
                                         <div class="review-thumb-box">
-                                            <img :src="w.imgUrl"
-                                                style="width: 100%; height: 100%; object-fit: cover;">
+                                            <img :src="w.imgUrl" style="width: 100%; height: 100%; object-fit: cover;">
                                         </div>
                                         <div class="review-product-name">
-<!--totalSimpleReviewCnt-->
+                                            <!--totalSimpleReviewCnt-->
                                             <a href="javascript:;" style="text-decoration: none; color:#0b3f8e;"
                                                 @click="fnSimpleReviewDetails3(w)"><strong>{{w.productName}}</strong></a>
 
@@ -948,38 +946,48 @@
                             {{reviews}} -->
                             <!-- reviewTab === 'detail' 인 경우-->
                             <template v-if="reviewTab === 'detail'">
-                                <template v-for="rev in paginatedReviews" :key="rev" class="detail-review-item">
-                                    <!-- {{rev}} -->
-                                    <div class="star-rating">평점 : {{rating2(rev)}}</div>
+
+                                <template v-if="reviews && reviews.length > 0">
+
+                                    <template v-for="rev in paginatedReviews" :key="rev" class="detail-review-item">
+                                        <!-- {{rev}} -->
+                                        <div class="star-rating">평점 : {{rating2(rev)}}</div>
                                         <!-- {{rev.rating}}/5 -->
 
-                                    <div style="display: flex; gap: 20px;">
-                                        <div style="position: relative;">
-                                            <span class="new-label" v-if="rev.updated === '1'"
-                                                style="position: absolute; top: -5px; left: -5px;">NEW
-                                            </span>
-                                            <div class="review-photo">
-                                                <img :src="rev.imgUrl" :alt="rev.imgDescription" style="width: 100%; height: 100%; object-fit: cover;">
+                                        <div style="display: flex; gap: 20px;">
+                                            <div style="position: relative;">
+                                                <span class="new-label" v-if="rev.updated === '1'"
+                                                    style="position: absolute; top: -5px; left: -5px;">NEW
+                                                </span>
+                                                <div class="review-photo">
+                                                    <img :src="rev.imgUrl" :alt="rev.imgDescription"
+                                                        style="width: 100%; height: 100%; object-fit: cover;">
+                                                </div>
+                                            </div>
+                                            <div style="flex: 1; line-height: 1.6; color: #444;">
+                                                {{rev.content}}
                                             </div>
                                         </div>
-                                        <div style="flex: 1; line-height: 1.6; color: #444;">
-                                            {{rev.content}}
+                                        <div
+                                            style="text-align: right; font-size: 13px; color: #888; margin-top: 15px; border-top: 1px dashed #eee; padding-top: 10px;">
+                                            작성자: <strong>{{rev.userId}}</strong> | 작성일자: {{rev.regDate}}
                                         </div>
+                                        <hr>
+                                    </template>
+                                    <div class="pagination1">
+                                        <span v-for="num in totalPages" :key="num">
+                                            <a @click="fnPageChange2(num)" href="javascript:;"
+                                                :style="page === num ? 'color: #ff1493; border: 1px solid #ff1493;' : ''">
+                                                {{num}}
+                                            </a>
+                                        </span>
                                     </div>
-                                    <div
-                                        style="text-align: right; font-size: 13px; color: #888; margin-top: 15px; border-top: 1px dashed #eee; padding-top: 10px;">
-                                        작성자: <strong>{{rev.userId}}</strong> | 작성일자: {{rev.regDate}}
-                                    </div>
-                                    <hr>
                                 </template>
-                                <div class="pagination1">
-                                    <span v-for="num in totalPages" :key="num">
-                                        <a @click="fnPageChange2(num)" href="javascript:;"
-                                            :style="page === num ? 'color: #ff1493; border: 1px solid #ff1493;' : ''">
-                                            {{num}}
-                                        </a>
-                                    </span>
-                                </div>
+                                <template v-else>
+                                    <div style="text-align: center; padding: 50px;">
+                                        <h2 style="color: #ccc;">아직 작성된 리뷰가 없습니다!</h2>
+                                    </div>
+                                </template>
                             </template>
 
 
@@ -987,42 +995,50 @@
 
                             <!--reviewTab === 'simple' 인 경우-->
                             <template v-else-if="reviewTab === 'simple'">
+                                <template v-if="simpleReviews && simpleReviews.length > 0">
 
-                                <table>
-                                    <thead>
-                                        <tr>
-                                            <th>번호</th>
-                                            <th>내용</th>
-                                            <th>작성자</th>
-                                            <th>평점</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
 
-                                        <!--self.simpleReviews = data.list; =[]-->
-                                        <template v-for="(rev, idx) in paginatedSimpleReviews" :key="rev.reviewNo">
-                                            <!--페이지에 맞는 리뷰 표시-->
+                                    <table>
+                                        <thead>
                                             <tr>
-                                                <td>{{ (page - 1) * 5 + idx + 1 }} <span class="new-label"
-                                                        v-if="rev.updated === '1'">NEW</span></td>
-                                                <td>{{rev.content}}</td>
-                                                <td>{{rev.userId}}</td>
-                                                <td><span style="color: #ff6a00;">{{rev.rating}}</span><span>/5</span>
-                                                </td>
+                                                <th>번호</th>
+                                                <th>내용</th>
+                                                <th>작성자</th>
+                                                <th>평점</th>
                                             </tr>
-                                        </template>
+                                        </thead>
+                                        <tbody>
 
-                                    </tbody>
-                                </table>
-                                <div class="pagination1">
-                                    <span v-for="num in totalSimplePages" :key="num">
-                                        <a @click="page = num" href="javascript:;"
-                                            :style="page === num ? 'color: #ff1493; border: 1px solid #ff1493;' : ''">
-                                            {{num}}
-                                        </a>
-                                    </span> <!-- num 에 해당하는 페이지가 뜨고 그 페이지에 자료가 5개씩 표시되도록( )-->
-                                </div>
+                                            <!--self.simpleReviews = data.list; =[]-->
+                                            <template v-for="(rev, idx) in paginatedSimpleReviews" :key="rev.reviewNo">
+                                                <!--페이지에 맞는 리뷰 표시-->
+                                                <tr>
+                                                    <td>{{ (page - 1) * 5 + idx + 1 }} <span class="new-label"
+                                                            v-if="rev.updated === '1'">NEW</span></td>
+                                                    <td>{{rev.content}}</td>
+                                                    <td>{{rev.userId}}</td>
+                                                    <td><span
+                                                            style="color: #ff6a00;">{{rev.rating}}</span><span>/5</span>
+                                                    </td>
+                                                </tr>
+                                            </template>
 
+                                        </tbody>
+                                    </table>
+                                    <div class="pagination1">
+                                        <span v-for="num in totalSimplePages" :key="num">
+                                            <a @click="page = num" href="javascript:;"
+                                                :style="page === num ? 'color: #ff1493; border: 1px solid #ff1493;' : ''">
+                                                {{num}}
+                                            </a>
+                                        </span> <!-- num 에 해당하는 페이지가 뜨고 그 페이지에 자료가 5개씩 표시되도록( )-->
+                                    </div>
+                                </template>
+                                <template v-else>
+                                    <div style="text-align: center; padding: 50px;">
+                                        <h2 style="color: #ccc;">아직 작성된 리뷰가 없습니다!</h2>
+                                    </div>
+                                </template>
                             </template>
 
 
@@ -1034,7 +1050,7 @@
 
         <jsp:include page="/WEB-INF/common/footer.jsp" />
 
-        
+
 
         <div class="ai-chatbot">ai 챗봇</div>
         </div>
@@ -1056,8 +1072,8 @@
                     productList3: [],
                     productList4: [],
                     inquiryList: [
-                        { id: 1, product: '야외 스냅 기본', title: '투어 일정 변경하고 싶습니다.', userid: '김결혼', content: '04.01일 예약했는데 04.08일로 변경하고 싶어요.', imgUrl: "https://i.imgur.com/P4PQtwM.jpeg"},
-                        { id: 2, product: '해변스냅', title: '메이크업 추가되나요?', userid: '아리랑', content: '메이크업 여기서 받고싶어요.', imgUrl: "https://i.imgur.com/rFfGfor.jpeg"},
+                        { id: 1, product: '야외 스냅 기본', title: '투어 일정 변경하고 싶습니다.', userid: '김결혼', content: '04.01일 예약했는데 04.08일로 변경하고 싶어요.', imgUrl: "https://i.imgur.com/P4PQtwM.jpeg" },
+                        { id: 2, product: '해변스냅', title: '메이크업 추가되나요?', userid: '아리랑', content: '메이크업 여기서 받고싶어요.', imgUrl: "https://i.imgur.com/rFfGfor.jpeg" },
                     ],
                     user: {
                         id: 1, name: 'ABC 드레스 샵', usePeriod: '25.01.01 ~ 26.01.01', lastPayment: '신협 ***', grade: '제휴업체' /* 일반업체, 제휴업체 구분 변수 */
@@ -1500,7 +1516,7 @@
 
                 },
                 fnThumbnail(i) {    //fnThumbnail(개별문의) 해변스냅
-                    return this.inquiryList.find(p=> p.product === i.product).imgUrl;
+                    return this.inquiryList.find(p => p.product === i.product).imgUrl;
                     //return this.productList3.find(p => p.productName === inquiry.product).imgUrl;
                 }
                 ,
@@ -1786,7 +1802,7 @@
                         type: "POST",
                         data: param,
                         success: function (data) {
-                            //console.log(data);
+                            console.log(data);
 
                             self.simpleReviews = data.list;
                             //reviews, simpleReviews
@@ -1802,6 +1818,9 @@
                     });
                 },
                 rating2(rev) {
+
+                    rev.rating = rev.rating + "";
+
                     if (rev.rating.slice(0, 1) == 5) {
                         return '★★★★★';
                     } else if (rev.rating.slice(0, 1) == 4) {

@@ -32,9 +32,9 @@ public class FileService {
     public void init() {
         // secure 옵션을 true로 주고, 설정을 명확히 잡습니다.
         this.cloudinary = new Cloudinary(ObjectUtils.asMap(
-            "cloud_name", "cloudName",
-            "api_key", "apiKey",
-            "api_secret", "apiSecret",
+            "cloud_name", cloudName,
+            "api_key", apiKey,
+            "api_secret", apiSecret,
             "secure", true 
         ));
     }

@@ -14,6 +14,8 @@
         <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
         <script src="https://cdn.quilljs.com/1.3.6/quill.min.js"></script>
         <link rel="stylesheet" href="${pageContext.request.contextPath}/css/common.css">
+        <script src="https://cdn.iamport.kr/v1/iamport.js"></script>
+
 
         <style>
             /* 기본 레이아웃 */
@@ -1215,7 +1217,7 @@
         <jsp:include page="/WEB-INF/common/header.jsp" />
         <div id="app">
             <!-- html 코드는 id가 app인 태그 안에서 작업 -->
-            
+
 
             <div class="container1">
 
@@ -1572,7 +1574,7 @@
                                 {{selectedDate}}
                                 {{selectedTime}} -->
 
-                                <!-- {{myReservation1}} -->
+                                {{myReservation1}}
 
 
                                 <div class="payment-btn-group">
@@ -1591,17 +1593,18 @@
                             <div class="payment-card">
                                 <h2 class="payment-title">Final Payment</h2>
                                 <p class="payment-subtitle">예약을 확정하기 위해 결제 금액을 확인해 주세요.</p>
-
+                                {{myReservation1}}
                                 <div class="payment-form">
                                     <label for="payAmount">예약금 결제</label>
                                     <div class="input-group">
-                                        <input id="payAmount" v-model="payAmount" type="text" placeholder="금액을 입력하세요">
-                                        <span class="unit">KRW</span>
+                                        <!-- <input id="payAmount" v-model="payAmount" type="text" placeholder="금액을 입력하세요">
+                                        <span class="unit">KRW</span> -->
+                                        결제 진행합니다.
                                     </div>
                                 </div>
 
                                 <div class="payment-buttons">
-                                    <button class="btn-pay" @click="fnPaymentFinal2()">결제하기</button>
+                                    <button class="btn-pay" @click="fnPaymentReal()">결제하기</button>
                                     <button class="btn-back"
                                         @click="productPage='reservaionPaymentDetails'; payAmount='';">뒤로가기</button>
                                 </div>
@@ -1625,10 +1628,14 @@
     </html>
 
     <script>
+        
         const app = Vue.createApp({
+
+
             data() {
                 return {
                     // 변수 - (key : value)
+                    flag: false,
                     payAmount: '',
                     myReservation1: {},
                     myReservationList: [],
@@ -1941,7 +1948,7 @@
                             product.category &&
                             Array.isArray(product.category) &&
                             this.selectCategory.some(cat => product.category.includes(cat))
-                                     //[]            //과즙팡팡   과즙팡팡,스몰웨딩
+                            //[]            //과즙팡팡   과즙팡팡,스몰웨딩
                         );
                         // 태그 조건
                         const matchTag = this.selectTags.length === 0 || (
@@ -1959,7 +1966,7 @@
                         // 카테고리 조건 (선택 안 했으면 pass, 선택했으면 포함 여부 확인)
                         //const matchCategory = this.selectCategory.length === 0 || 
                         //    this.selectCategory.some(cat => product.category.includes(cat));
-                                  // []             //과즙팡팡     과즙팡팡,스몰웨딩
+                        // []             //과즙팡팡     과즙팡팡,스몰웨딩
                         // 태그 조건
                         //const matchTag = this.selectTags.length === 0 ||
                         //    this.selectTags.some(tag => product.tag.includes(tag));
@@ -2596,7 +2603,7 @@
 
                     let loginId = "${sessionScope.sessionId}";
 
-                    if(!loginId || loginId === ""){
+                    if (!loginId || loginId === "") {
                         alert("로그인 해주세요!");
                         return;
 
@@ -2689,47 +2696,125 @@
                     }
                 },
                 fnPaymentFinal2() {
-                    if (this.payAmount == this.myReservation1.deposit) {
-                        //alert('결제진행!');
+                    // myReservation1.deposit 은 예약금을 의미함.
+                    let self = this;
+                    let param = {
+                        userId: "${sessionScope.sessionId}",
+                        amount: self.myReservation1.deposit,
+                        resNo: self.myReservation1.resNo
+                    };
 
-                        let self = this;
-                        let param = {
-                            userId: "${sessionScope.sessionId}",
-                            amount: self.payAmount,
-                            resNo: self.myReservation1.resNo
-                        };
-
-                        console.log(param);
-                        $.ajax({
-                            url: "/addAndEditPaymentFinal.dox",
-                            dataType: "json",
-                            type: "POST",
-                            data: param,
-                            success: function (data) {
-                                console.log(data);
+                    console.log(param);
+                    $.ajax({
+                        url: "/addAndEditPaymentFinal.dox",
+                        dataType: "json",
+                        type: "POST",
+                        data: param,
+                        success: function (data) {
+                            console.log(data);
+                            if (data.result == 'success') {
                                 alert('결제 완료되었습니다! 예약이 확정되었습니다!');
 
                                 self.productPage = 'list';
                                 self.payAmount = '';
-                                //payAmount='';
 
+                            } else {
+                                alert("결제 실패! 서버 오류입니다");
                             }
-                        });
+                            //payAmount='';
+                        }
+                    });
+                },
+                // 제현님이 하실 부분 여기입니다!
+                // 결제하는 로직
+                fnPaymentReal() {
+                    let self = this;
 
+                    ////
+                    var IMP = window.IMP;
+                    IMP.init("imp48518435");
+                    
+                    
+                    IMP.request_pay(
+                        {
+                            channelKey: "channel-key-1ebd3d65-20bd-412e-83f3-b7e0c3b368ff",
+                            pay_method: "card",
+                            merchant_uid: "order_" + self.sessionId + "_" + new Date().getTime(), // 주문 고유 번호
+                            name: self.myReservation1.productName,
+                            amount: self.myReservation1.deposit,      //제품 가격
+                        },
+                        function (response) {
+                            // 결제 종료 시 호출되는 콜백 함수
+                            // response.imp_uid 값으로 결제 단건조회 API를 호출하여 결제 결과를 확인하고,
+                            // 결제 결과를 처리하는 로직을 작성합니다.
+                            console.log(response);
+                            console.log("전체 response:", response);
+                            console.log("success:", response.success);
+                            console.log("imp_uid:", response.imp_uid);
+                            console.log("status:", response.status);
+                            console.log("paid_amount:", response.paid_amount);
+                            if (response.imp_uid) {
+                                console.log("포트원 번호: " + response.imp_uid);
+                                // 우리쪽 db에 결제정보 저장
+                                // 페이지 이동 필요하면 페이지 이동 (메인 or 마이)
+                                // 결제 성공 후 서버 검증
+                                console.log("imp_uid:", response.imp_uid);
+                                self.fnVerifyPayment(response.imp_uid, response.merchant_uid);
+                            } else {
+                                console.log("에러내용: " + response.error_msg);
+                                // self.isPaying = false;
+                                alert("결제가 취소되었습니다");
+                            }
+                        },
+                    );
+                },
 
-                    } else {
-                        alert("금액이 맞지않습니다.");
-                    }
-                }
+                fnVerifyPayment(imp_uid, merchant_uid) {
+                    let self = this
+                    console.log("서버로 보내는 imp_uid:", imp_uid);
+                    $.ajax({
+                        url: "http://localhost:8080/verifyPayment.dox",
+                        type: "POST",
+                        data: {
+                            userId: self.sessionId,     // 로그인 아이디
+                            imp_uid: imp_uid,           // 결제 고유 값(중복)
+                            merchant_uid: merchant_uid,
+                            amount: self.myReservation1.deposit,
+                            type: "RES"
+                        },
+                        success: function (res) {
+                            console.log(res);
+                            if (res.result == "success") {
+                                console.log("포트원 번호: " + res.imp_uid);
+
+                                // self.isModalOpen = false; 모달 끄기
+                                // location.href = "/adminPayFinish.do?payNo=" + res.pay_no + "&type=PASS";
+                                //예약이면 &type=RES 등록이면 &type=REG
+                                self.fnPaymentFinal2();
+                            } else {
+                                console.log("에러내용: " + res.error_msg);
+                                self.isPaying = false;
+                                alert("결제 검증 실패");
+                            }
+                        }, error: function (xhr, status, err) {
+                            self.isPaying = false;
+                            alert("서버 통신 오류");
+                            console.log(xhr);
+                        }
+                    });
+                },
 
             }, // methods
             //productTag
 
             mounted() {
                 // 처음 시작할 때 실행되는 부분
+                
+                
                 let self = this;
                 //self.fnCom();
                 self.fnGetTagAndProductList();
+
             }
 
 
@@ -2737,3 +2822,9 @@
 
         app.mount('#app');
     </script>
+
+    <!--
+    -- 결제 하면서 3개를 넘김 (->
+-- { userId : self.myReservation1.userId,
+-- amount : self.myReservation1.deposit,
+-- resNo : self.myReservation1.resNo }-->
