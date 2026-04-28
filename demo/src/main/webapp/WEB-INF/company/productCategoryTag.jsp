@@ -1591,7 +1591,7 @@
                             <div class="payment-card">
                                 <h2 class="payment-title">Final Payment</h2>
                                 <p class="payment-subtitle">예약을 확정하기 위해 결제 금액을 확인해 주세요.</p>
-
+                                {{myReservation1}}
                                 <div class="payment-form">
                                     <label for="payAmount">예약금 결제</label>
                                     <div class="input-group">

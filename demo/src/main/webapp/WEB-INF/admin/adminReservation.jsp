@@ -242,6 +242,7 @@
                             <div class="pay-name">예약 정보</div>
 
                             <div class="order-info">
+                                <p><strong>예약번호</strong> {{info.res_no}}</p>
                                 <p><strong>상품번호</strong> {{info.product_no}}</p>
                                 <p><strong>업체번호</strong> {{info.company_no}}</p>
                                 <p><strong>이용 날짜</strong> {{info.use_date}}</p>
@@ -302,7 +303,7 @@
                     return {
                         // 변수 - (key : value)
                         info: {
-                            res_no: 101,
+                            res_no: 1,
                             user_id: "test_user",
                             product_no: 2001,
                             company_no: 3001,
@@ -329,7 +330,7 @@
                     fnPage: function (url) {
                         location.href = url;
                     },
-                    fnPayment: function (info) {
+                    fnPayment: function () {
                         let self = this;
                         if (!(this.agreeRequired1 && this.agreeRequired2)) {
                             alert("필수 약관에 동의해주세요");
@@ -339,68 +340,55 @@
                             {
                                 channelKey: "channel-key-1ebd3d65-20bd-412e-83f3-b7e0c3b368ff",
                                 pay_method: "card",
-                                merchant_uid: "order_" + self.sessionId + "_" + new Date().getTime(), // 주문 고유 번호
-                                name: "예약",
-                                amount: info.amount,      //제품 가격
+                                merchant_uid: "order_RES" + self.sessionId + "_" + new Date().getTime(), // 주문 고유 번호
+                                name: "예약금",
+                                amount: 1000,      //제품 가격
+
                             },
-                            function (rsp) { 
-                                console.log("전체 response:", rsp);
-                                console.log("success:", rsp.success);
-                                console.log("imp_uid:", rsp.imp_uid);
-
-                                if (rsp.success) {
-                                    // 1. @RequestParam 형식을 맞추기 위해 URLSearchParams 사용
-                                    var params = new URLSearchParams();
-                                    params.append('imp_uid', rsp.imp_uid);
-                                    params.append('amount', rsp.paid_amount);
-                                    // 이전에 보내주신 코드 흐름상 item이나 self.selectedPass를 활용하세요
-                                    params.append('passNo', self.selectedPass.passNo);
-                                    params.append('userId', 'test_user');
-
-                                    console.log("서버로 보내는 데이터:", params.toString());
-
-                                    // 2. 서버 검증 요청
-                                    axios.post('/verifyPayment.dox', params)
-                                        .then(function (res) {
-                                            if (res.data.success) {
-                                                alert("검증 성공: " + res.data.msg);
-                                            } else {
-                                                // 서버 콘솔 로그를 확인해야 하는 시점
-                                                alert("검증 실패: " + res.data.msg);
-                                                console.log("실패 상세:", res.data);
-                                            }
-                                        })
-                                        .catch(function (err) {
-                                            console.error("통신 에러 발생", err);
-                                        });
+                            function (response) {
+                                console.log(response);
+                                console.log("전체 response:", response);
+                                console.log("success:", response.success);
+                                console.log("imp_uid:", response.imp_uid);
+                                console.log("status:", response.status);
+                                console.log("paid_amount:", response.paid_amount);
+                                if (response.success) {
+                                    console.log("포트원 번호: " + response.imp_uid);
+                                    // 우리쪽 db에 결제정보 저장
+                                    // 페이지 이동 필요하면 페이지 이동 (메인 or 마이)
+                                    // 결제 성공 후 서버 검증
+                                    console.log("imp_uid:", response.imp_uid);
+                                    self.fnVerifyPayment(response.imp_uid);
                                 } else {
-                                    alert("결제에 실패하였습니다. 에러 내용: " + rsp.error_msg);
+                                    console.log("에러내용: " + response.error_msg);
+                                    alert("결제가 취소되었습니다");
                                 }
                             },
                         );
                     },
 
-                    fnVerifyPayment(imp_uid, selectedPass) {
+                    fnVerifyPayment(imp_uid) {
                         let self = this
                         console.log("서버로 보내는 imp_uid:", imp_uid);
                         $.ajax({
                             url: "http://localhost:8080/verifyPayment.dox",
                             type: "POST",
                             data: {
-                                userId: this.sessionId,     // 로그인 아이디
+                                userId: self.sessionId,     // 로그인 아이디
                                 imp_uid: imp_uid,           // 결제 고유 값(중복)
-                                passNo: selectedPass.passNo,
-                                amount: selectedPass.price,
-                                itemName: selectedPass.passName,
+                                amount: 1000,
+                                itemName: "등록비",
+                                type: "RES",
+                                resNo: self.info.res_no
 
                             },
                             success: function (res) {
                                 console.log(res);
-                                if (res.success) {
+                                if (res.result == "success") {
                                     console.log("포트원 번호: " + res.imp_uid);
-                                    alert("결제가완료되었어요~~~~~");
+                                    alert("결제가완료되었습니다");
                                     self.isModalOpen = false;
-                                    location.href = "/adminPayFinish.do?payNo=" + res.pay_no + "&type=RES";
+                                    location.href = "/adminPayFinish.do?payNo=" + res.payNo + "&type=RES";
                                 } else {
                                     console.log("에러내용: " + res.error_msg);
                                     alert("결제 검증 실패");
@@ -419,6 +407,7 @@
                     updateAll() {
                         this.agreeAll = this.agreeRequired1 && this.agreeRequired2 && this.agreeOptional1;
                     },
+
 
                 }, // methods
                 mounted() {

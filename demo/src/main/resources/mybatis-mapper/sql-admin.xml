@@ -766,6 +766,16 @@
 			</choose>
 		</if>
 	</select>
+	
+<!-- 게시글 삭제하는척만 -->	
+	<update id="updateBoardApprove" parameterType="hashmap">
+		UPDATE community_post
+		SET is_deleted = CASE 
+                        WHEN is_deleted = 0 THEN 1
+                        ELSE 0
+                     END
+		WHERE post_no = #{postNo}
+	</update>	
 
 <!-- 게시글 상세 -->
 <select id="selectPostDetail" parameterType="hashmap"

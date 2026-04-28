@@ -17,6 +17,8 @@ public interface AdminMapper {
 	public List<Admin> selectReviewList(HashMap<String, Object> map);
 	
 	public List<Admin> selectBoardList(HashMap<String, Object> map);
+	public int updateBoardApprove(HashMap<String, Object> map);
+	
 	
 	public Admin selectPostDetail(HashMap<String, Object> map);
 
