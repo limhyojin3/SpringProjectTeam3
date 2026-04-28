@@ -567,7 +567,8 @@
 	        review_no,
 	        title,
 	        img_url,
-	        reg_date
+	        reg_date,
+	        is_paid
 	    FROM review
 	    WHERE approval_status = 'APPROVED'
 	    ORDER BY reg_date DESC

@@ -12,8 +12,8 @@ public class Community {
     private String content;   // 본문 (LONGTEXT)
     private int viewCnt;      // 조회수
     private int likeCnt;      // 좋아요 수
-    private String regDate;// 등록일
+    private String regDate;	  // 등록일
     private int isDeleted;    // 삭제 여부 (0: 유지, 1: 삭제) 
-    private int commentCnt;
-    private int isLiked;
+    private int commentCnt;	  // 댓글 개수 출력
+    private int isLiked;	  // 좋아요 여부
 }
