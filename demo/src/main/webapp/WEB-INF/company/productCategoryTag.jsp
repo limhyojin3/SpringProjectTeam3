@@ -1395,14 +1395,8 @@
                                             </div>
                                             <div class="info-row">
                                                 <label>예약자명</label>
-                                                <div class="value">{{ user.name }}님</div>
+                                                <div class="value">{{userid}} 님</div>
                                             </div>
-                                        </div>
-
-
-                                        <div class="info-row">
-                                            <label>휴대폰 번호</label>
-                                            <div class="value">{{ user.contact }}</div>
                                         </div>
 
                                         <div class="info-row">
@@ -1630,7 +1624,7 @@
 
         <jsp:include page="/WEB-INF/common/footer.jsp" />
 
-        <div class="ai-chatbot">ai 챗봇</div>
+        <!-- <div class="ai-chatbot">ai 챗봇</div> -->
         </div>
     </body>
 
@@ -1644,6 +1638,7 @@
             data() {
                 return {
                     // 변수 - (key : value)
+                    userid: "${sessionScope.sessionId}", 
                     flag: false,
                     payAmount: '',
                     myReservation1: {},

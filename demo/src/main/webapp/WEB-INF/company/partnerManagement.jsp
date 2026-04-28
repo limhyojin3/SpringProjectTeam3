@@ -68,7 +68,7 @@
                 display: flex;
                 flex: 1;
                 margin-top: 50px;
-                background-color: #fff9f9; 
+                background-color: #fff9f9;
             }
 
             /* 사이드바 */
@@ -127,7 +127,7 @@
             }
 
             .content-card {
-                border: 2px solid  #ffc7c2;
+                border: 2px solid #ffc7c2;
                 padding: 30px;
                 border-radius: 10px;
                 margin-bottom: 20px;
@@ -520,9 +520,9 @@
                 flex-direction: column;
                 gap: 10px;
                 border: 1px solid #eee;
-                height: 100vh;
+                min-height: 100vh;
                 /* 부모(.main-content) 높이만큼 꽉 채움 */
-                
+
 
             }
 
@@ -577,8 +577,8 @@
                 position: relative;
             }
                 */
-            #wrapper{
-                background-color: #fff9f9; 
+            #wrapper {
+                background-color: #fff9f9;
             }
 
 
@@ -1198,7 +1198,7 @@
 
 
 
-        <div class="ai-chatbot">ai 챗봇</div>
+        <!-- <div class="ai-chatbot">ai 챗봇</div> -->
         </div>
     </body>
 
