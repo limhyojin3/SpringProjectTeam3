@@ -385,9 +385,9 @@
 	</select>
 
 	<insert id="insertAnswer">
-		INSERT INTO inquiry_answer (
+		INSERT INTO inquiry (
 		inquiry_no,
-		content
+		answer_content
 		) VALUES (
 		#{inquiryNo},
 		#{answer}
@@ -395,8 +395,8 @@
 	</insert>
 
 	<update id="updateAnswer">
-		UPDATE inquiry_answer
-		SET content = #{answer}
+		UPDATE inquiry
+		SET answer_content = #{answer}
 		WHERE inquiry_no = #{inquiryNo}
 	</update>
 

@@ -33,6 +33,15 @@
 		)
 	</insert>
 
+<!-- 결제 후 열람권 충전 로직-->
+	<!-- 열람권 유무 조회 -->
+		<select id="" parameterType="hashmap" resultType="int">
+			SELECT remaining_count
+			FROM payment p
+			WHERE user_id = #{userId}
+		</select>
+
+
 	<!--<insert id="insertPaymentReservation" parameterType="map">
 		INSERT INTO payment_reservation (
 			pay_no,
