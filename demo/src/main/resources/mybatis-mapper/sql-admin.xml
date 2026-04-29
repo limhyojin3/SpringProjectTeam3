@@ -184,14 +184,27 @@
 </select>
 
 <!--댓글로 게시판 추적-->
-<!--<select id="selectCommentTargetPost"
+<select id="selectCommentPostNo"
         parameterType="hashmap"
         resultType="int">
+
     SELECT post_no
     FROM comment
     WHERE comment_no = #{commentNo}
 
-</select>-->
+</select>
+<!--대댓글추적-->
+<select id="selectParentCommentPostNo"
+        parameterType="hashmap"
+        resultType="int">
+
+    SELECT p.post_no
+    FROM comment c
+    JOIN comment p ON c.parent_comment_no = p.comment_no
+    WHERE c.comment_no = #{commentNo}
+    LIMIT 1
+
+</select>
 
 <!-- 전체 개수(for 페이징) 영역 시작 -->
 <!-- Report 시작 -->

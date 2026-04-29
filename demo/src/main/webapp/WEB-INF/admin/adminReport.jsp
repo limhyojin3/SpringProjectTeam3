@@ -528,12 +528,15 @@
 
                                 success: function (res) {
                                     console.log(res);
-                                    window.open(
-                                        "http://localhost:8080/api/community/detail.do?postNo=" + res.postNo,
-                                        "_blank",
-                                        "width=1000,height=1000"
-                                    );
-
+                                    if (res.result == "success") {
+                                        window.open(
+                                            "http://localhost:8080/postDetail.do?postNo=" + res.postNo,
+                                            "_blank",
+                                            "width=1000,height=1000"
+                                        );
+                                    } else {
+                                        alert("댓글 원본 게시글을 찾을 수 없습니다.");
+                                    }
                                 }
                             });
 

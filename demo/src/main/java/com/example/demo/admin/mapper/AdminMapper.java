@@ -99,7 +99,9 @@ public interface AdminMapper {
 	public int selectReportHistory(HashMap<String, Object> map);
 	
 	// 댓글로 게시판 추적
-	int selectCommentTargetPost(HashMap<String, Object> map);
+	Integer selectCommentPostNo(HashMap<String, Object> map);
+
+	Integer selectParentCommentPostNo(HashMap<String, Object> map);
 
 	
 	// 결제 관리

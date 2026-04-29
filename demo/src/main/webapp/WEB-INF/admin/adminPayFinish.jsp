@@ -158,7 +158,6 @@
                                 주문이 정상적으로 처리되었습니다.<br>
                                 아래 결제 정보를 확인해주세요.
                             </p>
-                            ${payment}
                             <div class="info-box">
 
                                 <div class="info-row">
