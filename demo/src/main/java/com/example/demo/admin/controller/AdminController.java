@@ -140,6 +140,7 @@ public class AdminController {
 		return new Gson().toJson(resultMap);
 	}
 
+	//리뷰게시판 목록조회
 	@RequestMapping(value = "/viewReview.dox", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
 	@ResponseBody
 	public String viewReview(Model model, @RequestParam HashMap<String, Object> map) throws Exception {
@@ -155,7 +156,30 @@ public class AdminController {
 
 		return new Gson().toJson(resultMap);
 	}
+	//관리자 리뷰 승인
+	@RequestMapping(value = "/reviewApprove.dox", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
+	@ResponseBody
+	public String editReviewApprove(Model model, @RequestParam HashMap<String, Object> map) throws Exception {
 
+		HashMap<String, Object> resultMap = new HashMap<>();
+
+		resultMap = adminService.editReviewApprove(map);
+
+		return new Gson().toJson(resultMap);
+	}
+
+	//관리자 리뷰 반려
+	@RequestMapping(value = "/reviewReject.dox", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
+	@ResponseBody
+	public String editReviewReject(@RequestParam HashMap<String, Object> map) {
+		HashMap<String, Object> resultMap = new HashMap<>();
+
+		resultMap = adminService.editReviewReject(map);
+
+		return new Gson().toJson(resultMap);
+	}
+	
+	
 	// 신고게시판 검색어 필터 목록 조회
 	@RequestMapping(value = "/viewReport.dox", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
 	@ResponseBody
@@ -195,6 +219,13 @@ public class AdminController {
 	@ResponseBody
 	public String inquiry(Model model, @RequestParam HashMap<String, Object> map) throws Exception {
 		HashMap<String, Object> resultMap = new HashMap<String, Object>();
+		
+		int pageSize = Integer.parseInt((String) map.get("pageSize"));
+		int offSet = Integer.parseInt((String) map.get("offSet"));
+
+		map.put("pageSize", pageSize);
+		map.put("offSet", offSet);
+		
 		resultMap = adminService.getInquiryList(map);
 
 		return new Gson().toJson(resultMap);
@@ -340,6 +371,16 @@ public class AdminController {
 		    HashMap<String, Object> resultMap = new HashMap<>();
 
 		    resultMap = adminService.getReportDetail(map);
+
+		    return new Gson().toJson(resultMap);
+		}
+		
+		// 댓글로 게시판 추적
+		@RequestMapping(value = "/adminCommentTargetPost.dox", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
+		@ResponseBody
+		public String adminCommentTargetPost(@RequestParam HashMap<String, Object> map) {
+
+		    HashMap<String, Object> resultMap = adminService.adminCommentTargetPost(map);
 
 		    return new Gson().toJson(resultMap);
 		}
@@ -512,4 +553,23 @@ public class AdminController {
 
 	    return adminService.removePass(map);
 	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 }

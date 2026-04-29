@@ -306,7 +306,6 @@
             .pagination-wrap button:disabled {
                 cursor: not-allowed;
             }
-
         </style>
     </head>
 
@@ -338,9 +337,10 @@
                                     <select v-model="targetType" @change="fnGetReportList">
                                         <option value="ALL">전체</option>
                                         <option value="MEMBER">회원</option>
-                                        <option value="POST">게시글</option>
                                         <option value="REVIEW">리뷰</option>
                                         <option value="COMPANY">업체</option>
+                                        <option value="POST">게시글</option>
+                                        <option value="COMMENT">댓글</option>
                                     </select>
                                 </div>
                                 <div>
@@ -375,6 +375,7 @@
                                     <th>신고자</th>
                                     <th>신고 대상(유형)</th>
                                     <th>번호 OR ID</th>
+                                    <th>신고 제목</th>
                                     <th>신고 사유</th>
                                     <th>일시</th>
                                     <th>처리/통보</th>
@@ -393,6 +394,7 @@
                                         </span>
                                     </td>
                                     <td>{{ r.uniTargetId }}</td>
+                                    <td>{{ r.reportTitle }}</td>
                                     <td class="text-left" :title="r.reportContent">
                                         {{ r.reportContent }}
                                     </td>
@@ -449,6 +451,10 @@
                                     </div>
                                     <!-- 버튼 -->
                                     <div class="modal-footer">
+                                        <button class="btn btn-success"
+                                            @click="fnView(selectedReport.targetType, selectedReport.uniTargetId)">
+                                            관련 글 보기
+                                        </button>
                                         <button class="btn btn-success" @click="fnApprove(selectedReport)">
                                             승인
                                         </button>
@@ -505,6 +511,35 @@
                     // 함수(메소드) - (key : function())
                     fnPage: function (url) {
                         location.href = url;
+                    },
+
+                    fnView: function (targetType, uniTargetId) {
+                        if (targetType === "REVIEW") {
+                            window.open("http://localhost:8080/api/review/detail.do?reviewNo=" + uniTargetId, '_blank', 'width=1000, height=1000');
+                        } else if (targetType === "POST") {
+                            window.open("http://localhost:8080/api/community/detail.do?postNo=" + uniTargetId, '_blank', 'width=1000, height=1000');
+                        } else if (targetType === "COMMENT") {
+
+                            $.ajax({
+                                url: "http://localhost:8080/adminCommentTargetPost.dox",
+                                type: "POST",
+                                dataType: "json",
+                                data: { commentNo: uniTargetId },
+
+                                success: function (res) {
+                                    console.log(res);
+                                    window.open(
+                                        "http://localhost:8080/api/community/detail.do?postNo=" + res.postNo,
+                                        "_blank",
+                                        "width=1000,height=1000"
+                                    );
+
+                                }
+                            });
+
+                        } else {
+                            alert("게시글 조회 실패");
+                        }
                     },
 
                     toggleAll() {
@@ -648,7 +683,7 @@
 
                     fnReject(r) {
                         let self = this;
-                        
+
                         if (!confirm("반려하시겠습니까?")) {
                             return
                         };

@@ -17,6 +17,11 @@ public interface PaymentMapper {
 	int insertPaymentPass(HashMap<String, Object> map);
 	
 	//int insertPaymentReservation(HashMap<String, Object> map);
+	int updateRefundStatus(HashMap<String, Object> map);
+	
+	int updateRefund(HashMap<String, Object> map);
+
+	int updateReservationCancel(HashMap<String, Object> map);
 	
 	int insertPaymentRegistration(HashMap<String, Object> map);
 	

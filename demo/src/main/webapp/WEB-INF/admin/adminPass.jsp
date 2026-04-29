@@ -345,17 +345,18 @@
                             return;
                         }
 
-                        self.isPaying = true;
-
                         if (!(this.agreeRequired1 && this.agreeRequired2)) {
                             alert("필수 약관에 동의해주세요");
                             return;
                         }
+
+                        self.isPaying = true;
+
                         IMP.request_pay(
                             {
                                 channelKey: "channel-key-1ebd3d65-20bd-412e-83f3-b7e0c3b368ff",
                                 pay_method: "card",
-                                merchant_uid: "order_" + self.sessionId + "_" + new Date().getTime(), // 주문 고유 번호
+                                merchant_uid: "order_PASS" + self.sessionId + "_" + new Date().getTime(), // 주문 고유 번호
                                 name: selectedPass.passName,
                                 amount: selectedPass.price,      //제품 가격
                             },
@@ -375,7 +376,7 @@
                                     // 페이지 이동 필요하면 페이지 이동 (메인 or 마이)
                                     // 결제 성공 후 서버 검증
                                     console.log("imp_uid:", response.imp_uid);
-                                        self.fnVerifyPayment(response.imp_uid, response.merchant_uid, selectedPass);
+                                    self.fnVerifyPayment(response.imp_uid, response.merchant_uid, selectedPass);
                                 } else {
                                     console.log("에러내용: " + response.error_msg);
                                     self.isPaying = false;
@@ -405,9 +406,10 @@
                             success: function (res) {
                                 console.log(res);
                                 if (res.result == "success") {
+                                    self.isModalOpen = false;
+                                    self.isPaying = false;
                                     console.log("포트원 번호: " + res.imp_uid);
                                     alert("결제가완료되었습니다");
-                                    self.isModalOpen = false;
                                     location.href = "/adminPayFinish.do?payNo=" + res.payNo + "&type=PASS";
                                     //예약이면 &type=RES 등록이면 &type=REG
                                 } else {

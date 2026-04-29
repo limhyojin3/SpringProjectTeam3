@@ -84,18 +84,18 @@
             }
 
             /* 테이블 */
-            .report-table {
+            .payment-table {
                 width: 100%;
                 border-collapse: collapse;
                 overflow: hidden;
                 border-radius: 14px;
             }
 
-            .report-table thead {
+            .payment-table thead {
                 background: #f4f6fa;
             }
 
-            .report-table th {
+            .payment-table th {
                 padding: 16px;
                 text-align: center;
                 font-size: 14px;
@@ -104,7 +104,7 @@
                 border-bottom: 1px solid #e6eaf0;
             }
 
-            .report-table td {
+            .payment-table td {
                 padding: 15px;
                 text-align: center;
                 font-size: 14px;
@@ -112,11 +112,11 @@
                 border-bottom: 1px solid #f0f2f5;
             }
 
-            .report-table tbody tr {
+            .payment-table tbody tr {
                 transition: .2s;
             }
 
-            .report-table tbody tr:hover {
+            .payment-table tbody tr:hover {
                 background: #f8fbff;
             }
 
@@ -229,7 +229,7 @@
                     </div>
 
                     <!-- 패스권 결제 -->
-                    <table v-if="activeTab === 'pass'" class="report-table">
+                    <table v-if="activeTab === 'pass'" class="payment-table">
                         <thead>
                             <tr>
                                 <th>결제번호</th>
@@ -253,17 +253,18 @@
                     </table>
 
                     <!-- 예약 결제 -->
-                    <table v-if="activeTab === 'reservation'" class="report-table">
+                    <table v-if="activeTab === 'reservation'" class="payment-table">
                         <thead>
                             <tr>
                                 <th>결제번호</th>
                                 <th>유저</th>
                                 <th>예약번호</th>
                                 <th>상품명</th>
-                                <th>금액</th>
-                                <th>환불여부</th>
+                                <th>예약금</th>
+                                <th>결제여부</th>
+                                <th>진행여부</th>
                                 <th>결제일</th>
-                                <th>관리</th>
+                                <!-- <th>관리</th> -->
                             </tr>
                         </thead>
                         <tbody>
@@ -273,17 +274,19 @@
                                 <td>{{ r.resNo }}</td>
                                 <td>{{ r.productName }}</td>
                                 <td>{{ r.amount }}</td>
-                                <td>{{ r.resStatus}}</td>
+                                <td>{{ r.payStatus }}</td>
+                                <td>{{ r.resStatus }}</td>
                                 <td>{{ formatDate(r.payDate) }}</td>
-                                <td>
-                                    <button @click="fnRefund(r)">환불</button>
-                                </td>
+                                <!-- <td>
+                                    <button @click="fnRefund(r)">환불
+                                    </button>
+                                </td> -->
                             </tr>
                         </tbody>
                     </table>
 
                     <!-- 등록 결제 -->
-                    <table v-if="activeTab === 'registration'" class="report-table">
+                    <table v-if="activeTab === 'registration'" class="payment-table">
                         <thead>
                             <tr>
                                 <th>결제번호</th>
@@ -356,27 +359,37 @@
                                 offSet: self.pageSize * (self.currentPage - 1)
                             },
                             success: function (res) {
+                                console.log(res);
                                 self.list = res.list;
                                 self.index = Math.ceil(res.totalCount / self.pageSize);
                             }
                         });
                     },
 
-                    fnRefund(r) {
-                        if (!confirm("환불 처리하시겠습니까?")) return;
+                    fnRefund(p) {
+                        let self = this;
+
+                        if (!confirm("환불하시겠습니까?")) {
+                            return;
+                        }
 
                         $.ajax({
-                            url: "/reservationRefund.dox",
+                            url: "http://localhost:8080/refundPayment.dox",
                             type: "POST",
+                            dataType: "json",
                             data: {
-                                pay_no: r.payNo
+                                payNo: p.payNo,
+                                imp_uid: p.impUid
                             },
-                            success: () => {
-                                alert("환불 완료");
-                                this.fnGetList();
+                            success: function (data) {
+                                alert(data.message);
+                                self.fnGetList();
+                            },
+                            error: function () {
+                                alert("환불 실패");
                             }
                         });
-                    },
+                    }
 
                 }, // methods
                 mounted() {

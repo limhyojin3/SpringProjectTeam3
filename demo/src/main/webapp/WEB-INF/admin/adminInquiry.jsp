@@ -15,184 +15,258 @@
         <link rel="stylesheet" href="${pageContext.request.contextPath}/css/common.css">
         <link rel="stylesheet" href="${pageContext.request.contextPath}/css/adminNavi.css">
         <style>
+            body {
+                background-color: #f5f6f7;
+                font-size: 14px;
+                color: #333;
+            }
+
             .middle {
                 width: 100%;
                 display: grid;
                 grid-template-areas: "nav main";
                 grid-template-columns: 300px 1fr;
-                min-height: calc(100vh - 160px);
-                background: #f8f9fc;
+                gap: 5px;
             }
 
             .main {
                 grid-area: main;
-                padding: 35px;
-            }
-
-            /* 좌우 감싸는 영역 */
-            .inquiry-wrap {
+                background: #f5f6f7;
+                padding: 20px;
                 display: flex;
-                width: 100%;
                 gap: 20px;
+                align-items: flex-start;
             }
 
-            /* ================= 왼쪽 리스트 ================= */
-            .left {
-                flex: 1.2;
-                /* 기존 비율 유지 */
+            .inquiry-container {
+                width: 100%;
+                padding: 20px;
+                font-family: sans-serif;
                 background: #fff;
-                border-radius: 18px;
-                box-shadow: 0 8px 24px rgba(0, 0, 0, .06);
-                overflow: hidden;
-                height: 75vh;
+                border-radius: 10px;
+                box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
             }
 
-            /* 테이블 */
-            .left table {
-                margin: 0;
-            }
-
-            .left thead {
-                background: #f4f6fa;
-            }
-
-            .left th {
-                padding: 16px;
-                font-size: 14px;
-                font-weight: 700;
-                color: #444;
-                text-align: center;
-                border-bottom: 1px solid #e6eaf0;
-            }
-
-            .left td {
-                padding: 15px;
-                font-size: 14px;
-                color: #555;
-                text-align: center;
-                border-bottom: 1px solid #f0f2f5;
-            }
-
-            .left tbody tr {
-                cursor: pointer;
-                transition: .2s;
-            }
-
-            .left tbody tr:hover {
-                background: #f8fbff;
-            }
-
-            /* ================= 오른쪽 상세 ================= */
-            .right {
-                flex: 1;
-                /* 기존 비율 유지 */
-                background: #fff;
-                border-radius: 18px;
-                box-shadow: 0 8px 24px rgba(0, 0, 0, .06);
-                padding: 28px;
-                min-height: 75vh;
-            }
-
-            /* 제목 */
-            .right h5 {
+            .inquiry-container h2 {
+                margin-bottom: 18px;
                 font-size: 24px;
                 font-weight: 700;
-                color: #222;
-                margin-bottom: 10px;
             }
 
-            /* 날짜 */
-            .right p {
-                font-size: 13px;
-                color: #888;
+            /* 상단 헤더 */
+            .inquiry-header {
+                display: flex;
+                justify-content: flex-end;
                 margin-bottom: 18px;
             }
 
-            /* 문의 내용 */
-            .right .content-area {
-                min-height: 180px;
-                background: #f8f9fc;
-                padding: 18px;
-                border-radius: 14px;
-                line-height: 1.7;
-                color: #444;
-                margin-bottom: 25px;
-            }
-
-            /* 답변 제목 */
-            .right h6 {
-                font-size: 16px;
+            .inquiry-header h2 {
+                margin: 0;
+                font-size: 26px;
                 font-weight: 700;
-                color: #333;
-                margin-bottom: 10px;
+                color: #222;
             }
 
-            /* textarea */
-            .right textarea.form-control {
-                border-radius: 14px;
-                border: 1px solid #dfe4ea;
-                resize: none;
-                padding: 14px;
-            }
-
-            /* select */
-            .right select.form-control {
-                border-radius: 12px;
-                height: 46px;
-            }
-
-            /* 버튼 */
-            .right .btn {
-                min-width: 110px;
-                height: 44px;
-                border: none;
-                border-radius: 12px;
-                font-weight: 600;
-                transition: .2s;
-            }
-
-            .right .btn-primary {
-                background: linear-gradient(135deg, #4a7dff, #275df7);
-            }
-
-            .right .btn-primary:hover {
-                transform: translateY(-2px);
-                box-shadow: 0 6px 14px rgba(39, 93, 247, .25);
-            }
-
-            /* 상태 색상 */
-            .text-danger {
-                color: #e04a4a !important;
-                font-weight: 700;
-            }
-
-            .text-success {
-                color: #1c9b52 !important;
-                font-weight: 700;
-            }
-
-            /* 선택 안 했을 때 */
-            .right:has(p:only-child) {
+            .filter-group {
                 display: flex;
-                justify-content: center;
                 align-items: center;
-                color: #999;
-                font-size: 18px;
+                gap: 10px;
+            }
+
+            .filter-group div {
+                display: flex;
+                align-items: center;
+                gap: 6px;
+            }
+
+            .filter-group span {
+                font-size: 14px;
                 font-weight: 600;
+                color: #555;
+            }
+
+            .filter-group select {
+                border: 1px solid #ddd;
+                padding: 6px 10px;
+                border-radius: 8px;
+                min-width: 110px;
+                outline: none;
+            }
+
+            .filter-group button {
+                border: none;
+                background: #007bff;
+                color: #fff;
+                padding: 7px 14px;
+                border-radius: 8px;
+                cursor: pointer;
+                font-size: 13px;
+            }
+
+            .filter-group button:hover {
+                background: #0069d9;
+            }
+
+            /* 테이블 */
+            .inquiry-table {
+                width: 1000px;
+                border-collapse: collapse;
+                background: #fff;
+                overflow: hidden;
+                box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+
+            }
+
+            .inquiry-table th {
+                background: #f1f3f5;
+                font-weight: 600;
+                font-size: 13px;
+                color: #555;
+                border-bottom: 1px solid #eee;
+                padding: 12px 10px;
+                text-align: center;
+            }
+
+            .inquiry-table td {
+                padding: 12px 10px;
+                border-bottom: 1px solid #f1f1f1;
+                font-size: 13px;
+                color: #333;
+                text-align: center;
+            }
+
+            .inquiry-table tr:hover {
+                background: #f8f9fa;
+            }
+
+            .text-left {
+                text-align: left !important;
+                max-width: 260px;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+            }
+
+            /* 상태 배지 */
+            .status-badge {
+                padding: 4px 9px;
+                border-radius: 30px;
+                font-size: 11px;
+                font-weight: 600;
+            }
+
+            .waiting {
+                background: #f1f3f5;
+                color: #868e96;
+            }
+
+            .complete {
+                background: #e6f4ea;
+                color: #2f9e44;
+            }
+
+            /* 공통 버튼 */
+            button {
+                border: 1px solid #ddd;
+                background: #fff;
+                padding: 5px 10px;
+                font-size: 12px;
+                border-radius: 6px;
+                cursor: pointer;
+            }
+
+            button:hover {
+                background: #f8f9fa;
+            }
+
+            /* 하단 페이징 */
+            .BatchPaging {
+                display: flex;
+                justify-content: space-between;
+                margin-top: 15px;
+            }
+
+            .pagination-wrap {
+                display: flex;
+                gap: 5px;
+            }
+
+            .pagination-wrap button {
+                border: 1px solid #ddd;
+                background: #fff;
+                padding: 5px 10px;
+                border-radius: 6px;
+            }
+
+            .pagination-wrap button.active {
+                background: #007bff;
+                color: #fff;
+                border: 1px solid #007bff;
+                font-weight: bold;
+            }
+
+            .pagination-wrap button:hover:not(:disabled) {
+                background: #e6f0ff;
+            }
+
+            .pagination-wrap button:disabled {
+                cursor: not-allowed;
+                opacity: .5;
+            }
+
+            /* 모달 */
+            .modal-content {
+                border-radius: 12px;
+                border: none;
+            }
+
+            .modal-header {
+                border-bottom: 1px solid #eee;
+            }
+
+            .modal-title {
+                font-weight: 700;
+            }
+
+            .modal-body p {
+                margin-bottom: 8px;
+                font-size: 14px;
+            }
+
+            .content-box {
+                background: #f5f5f5;
+                padding: 14px;
+                border-radius: 8px;
+                min-height: 120px;
+                white-space: pre-wrap;
+                line-height: 1.6;
+            }
+
+            .modal textarea.form-control {
+                resize: none;
+                border-radius: 8px;
+            }
+
+            .modal-footer .btn {
+                min-width: 90px;
             }
 
             /* 반응형 */
-            @media (max-width:1100px) {
-                .inquiry-wrap {
-                    flex-direction: column;
+            @media (max-width: 1100px) {
+                .middle {
+                    grid-template-columns: 1fr;
+                    grid-template-areas:
+                        "main";
                 }
 
-                .left,
-                .right {
-                    flex: none;
-                    width: 100%;
-                    height: auto;
-                    min-height: auto;
+                .inquiry-header {
+                    flex-direction: column;
+                    align-items: flex-start;
+                    gap: 10px;
+                }
+
+                .filter-group {
+                    flex-wrap: wrap;
                 }
             }
         </style>
@@ -204,207 +278,281 @@
             <div class="middle">
                 <jsp:include page="/WEB-INF/admin/adminNavi.jsp" />
                 <div class="main">
-                    <div class="inquiry-wrap">
-
-                        <!-- 왼쪽 리스트 -->
-                        <div class="left">
-                            <select class="form-control" style="width:150px; margin-bottom:10px;" v-model="status"
-                                @change="fnGetList">
-                                <option value="">전체</option>
-                                <option value="WAIT">WAIT</option>
-                                <option value="DONE">DONE</option>
-                            </select>
-                            <table class="table table-hover mb-0">
-                                <thead>
-                                    <tr>
-                                        <th>번호</th>
-                                        <th>ID</th>
-                                        <th>제목</th>
-                                        <th>등록일</th>
-                                        <th>상태</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr v-for="item in inquirylist" :key="item.inquiryNo" @click="selectInquiry(item)">
-                                        <td>{{item.inquiryNo}}</td>
-                                        <td>{{item.userId}}</td>
-                                        <td>{{item.title}}</td>
-                                        <td>{{item.regDate}}</td>
-                                        <td :class="item.status === 'WAIT' ? 'text-danger' : 'text-success'">
-                                            {{item.status}}
-                                        </td>
-
-                                    </tr>
-                                </tbody>
-                            </table>
+                    <div class="inquiry-container">
+                            <h2>문의 관리</h2>
+                        <div class="inquiry-header">
+                            <div class="filter-group">
+                                <div>
+                                    <span>처리상태</span>
+                                    <select v-model="status" @change="fnGetList">
+                                        <option value="ALL">전체</option>
+                                        <option value="WAIT">WAIT</option>
+                                        <option value="DONE">DONE</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <span>정렬</span>
+                                    <select v-model="sortType" @change="fnGetList">
+                                        <option value="latest">최신순</option>
+                                        <option value="old">오래된순</option>
+                                    </select>
+                                </div>
+                                <button @click="fnResetSearch">초기화</button>
+                            </div>
                         </div>
 
-                        <!-- 오른쪽 상세 -->
-                        <div class="right" v-if="selected">
+                        <!-- 리스트 -->
+                        <table class="inquiry-table">
+                            <thead>
+                                <tr>
+                                    <th>번호</th>
+                                    <th>ID</th>
+                                    <th>제목</th>
+                                    <th>등록일</th>
+                                    <th>상태</th>
+                                    <th>관리</th>
+                                </tr>
+                            </thead>
 
-                            <!-- 제목 -->
-                            <h5>{{ selected.title }}</h5>
+                            <tbody>
+                                <tr v-for="item in inquirylist" :key="item.inquiryNo">
 
-                            <!-- 작성일 (있으면) -->
-                            <p>
-                                {{ selected.regDate || selected.reg_date }}
-                            </p>
+                                    <td>{{item.inquiryNo}}</td>
+                                    <td>{{item.userId}}</td>
 
-                            <hr>
+                                    <td class="text-left">
+                                        {{item.title}}
+                                    </td>
 
-                            <!-- 문의 내용 -->
-                            <div class="content-area">
-                                {{ selected.content }}
+                                    <td>{{item.regDate}}</td>
+
+                                    <td>
+                                        <span class="status-badge"
+                                            :class="item.status == 'WAIT' ? 'waiting' : 'complete'">
+                                            {{item.status}}
+                                        </span>
+                                    </td>
+
+                                    <td>
+                                        <button @click="fnselectInquiry(item)">보기</button>
+                                    </td>
+
+                                </tr>
+
+                                <tr v-if="inquirylist.length == 0">
+                                    <td colspan="6">문의 내역 없음</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <!-- 페이징  -->
+                        <div class="pagination-wrap">
+                            <button @click="fnPageMove(currentPage-1)" :disabled="currentPage==1">‹</button>
+
+                            <button v-for="p in index" :key="p" @click="fnPageMove(p)"
+                                :class="{active: currentPage==p}">
+                                {{p}}
+                            </button>
+
+                            <button @click="fnPageMove(currentPage+1)" :disabled="currentPage==index">›</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 모달 -->
+                <div class="modal fade" id="inquiryModal" tabindex="-1">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+
+                            <div class="modal-header">
+                                <h5 class="modal-title">문의 상세</h5>
+                                <button type="button" class="close" data-dismiss="modal">&times;</button>
                             </div>
 
-                            <hr>
+                            <div class="modal-body" v-if="selected">
 
-                            <!-- 답변 영역 -->
-                            <h6>답변</h6>
+                                <p><b>작성자 :</b> {{selected.userId}}</p>
+                                <p><b>제목 :</b> {{selected.title}}</p>
+                                <p><b>등록일 :</b> {{selected.regDate}}</p>
 
-                            <textarea class="form-control" rows="7" v-model="answerContent"
-                                placeholder="답변을 입력하세요"></textarea>
+                                <hr>
 
-                            <br>
+                                <p><b>문의 내용</b></p>
 
-                            <!-- 저장 및 상태변경 버튼 -->
-                            <div style="display:flex; gap:10px;">
+                                <div class="content-box">
+                                    {{selected.content}}
+                                </div>
+
+                                <hr>
+
+                                <p><b>답변</b></p>
+
+                                <textarea class="form-control" rows="6" v-model="answerContent"
+                                    placeholder="답변을 입력하세요"></textarea>
+
+                            </div>
+
+                            <div class="modal-footer">
+
                                 <button class="btn btn-primary" @click="saveAnswer()">
                                     저장
                                 </button>
 
-                                <button class="btn btn-success" v-if="selected.status == 'WAIT'"
+                                <button class="btn btn-success" v-if="selected && selected.status == 'WAIT'"
                                     @click="fnchangeStatus('DONE')">
                                     DONE
                                 </button>
 
-                                <button class="btn btn-danger" v-else @click="fnchangeStatus('WAIT')">
+                                <button class="btn btn-danger" v-if="selected && selected.status == 'DONE'"
+                                    @click="fnchangeStatus('WAIT')">
                                     WAIT
                                 </button>
+
+                                <button class="btn btn-secondary" data-dismiss="modal">
+                                    닫기
+                                </button>
+
                             </div>
 
                         </div>
 
-                        <!-- 선택 안했을 때 -->
-                        <div class="right" v-else>
-                            <p>문의를 선택하세요</p>
-                        </div>
-
                     </div>
                 </div>
+                <jsp:include page="/WEB-INF/common/footer.jsp" />
             </div>
-            <jsp:include page="/WEB-INF/common/footer.jsp" />
-        </div>
-        <script>
-            const app = Vue.createApp({
-                data() {
-                    return {
-                        // 변수 - (key : value)
-                        activeMenu: "",
-                        inquirylist: [],
-                        selected: null,
-                        answerContent: "",
-                        status: ""
-                    };
-                },
-                methods: {
-                    // 함수(메소드) - (key : function())
-                    fnPage: function (url) {
-                        location.href = url;
+            <script>
+                const app = Vue.createApp({
+                    data() {
+                        return {
+                            // 변수 - (key : value)
+                            activeMenu: "",
+                            inquirylist: [],
+                            selected: null,
+                            answerContent: "",
+                            status: "ALL",
+                            sortType: "latest",
+                            pageSize: 5,
+                            index: 1,
+                            currentPage: 1
+                        };
                     },
+                    methods: {
+                        // 함수(메소드) - (key : function())
+                        fnPage: function (url) {
+                            location.href = url;
+                        },
 
+                        fnPageMove(p) {
+                            if (p < 1 || p > this.index) return;
 
-                    fnGetList() {
-                        let self = this;
-                        $.ajax({
-                            url: "http://localhost:8080/inquiry.dox",
-                            type: "POST",
-                            dataType: "json",
-                            data: {
-                                status: self.status
-                            },
-                            success: function (data) {
-                                self.inquirylist = data.list;
+                            this.currentPage = p;
+                            this.fnGetList();
+                        },
+
+                        fnResetSearch() {
+                            this.status = "ALL";
+                            this.sortType = "latest";
+                            this.currentPage = 1;
+                            this.fnGetList();
+                        },
+
+                        fnGetList() {
+                            let self = this;
+                            let param = {
+                                status: self.status,
+                                sortType: self.sortType,
+                                pageSize: self.pageSize,
+                                offSet: self.pageSize * (self.currentPage - 1)
+                            };
+                            $.ajax({
+                                url: "http://localhost:8080/inquiry.dox",
+                                type: "POST",
+                                dataType: "json",
+                                data: param,
+                                success: function (data) {
+                                    self.inquirylist = data.list || [];
+                                    self.index = Math.ceil(data.totalCount / self.pageSize);
+                                }
+                            });
+                        },
+
+                        fnselectInquiry(item) {
+                            this.selected = item;
+                            this.answerContent = item.answerContent || "";
+                            console.log(this.selected);
+                            $('#inquiryModal').modal('show');
+                        },
+
+                        fnchangeStatus(status) {
+                            let self = this;
+
+                            $.ajax({
+                                url: "http://localhost:8080/inquiryAnswer.dox",
+                                type: "POST",
+                                dataType: "json",
+                                data: {
+                                    inquiryNo: self.selected.inquiryNo,
+                                    answerContent: self.answerContent,
+                                    status: status
+                                },
+                                success: function (res) {
+                                    self.selected.status = status;
+                                    self.fnGetList(); // 왼쪽 리스트 갱신
+                                    alert("상태 변경 완료");
+                                }
+                            });
+                        },
+                        saveAnswer() {
+                            let self = this;
+
+                            if (!self.answerContent) {
+                                alert("답변 입력하세요");
+                                return;
                             }
-                        });
-                    },
 
-                    selectInquiry(item) {
-                        this.selected = item;
-                        this.answerContent = item.answerContent || "";
-                        console.log(this.selected);
-                    },
+                            $.ajax({
+                                url: "http://localhost:8080/inquiryAnswer.dox",
+                                type: "POST",
+                                dataType: "json",
+                                data: {
+                                    inquiryNo: self.selected.inquiryNo,
+                                    answerContent: self.answerContent,
+                                    status: self.selected.status
+                                },
+                                success: function () {
+                                    alert("저장 완료");
 
-                    fnchangeStatus(status) {
-                        let self = this;
+                                    // 목록 새로고침
+                                    self.fnGetList();
 
-                        $.ajax({
-                            url: "http://localhost:8080/inquiryAnswer.dox",
-                            type: "POST",
-                            dataType: "json",
-                            data: {
-                                inquiryNo: self.selected.inquiryNo,
-                                answerContent: self.answerContent,
-                                status: status
-                            },
-                            success: function (res) {
-                                self.selected.status = status;
-                                self.fnGetList(); // 왼쪽 리스트 갱신
-                                alert("상태 변경 완료");
-                            }
-                        });
-                    },
-                    saveAnswer() {
-                        let self = this;
-
-                        if (!self.answerContent) {
-                            alert("답변 입력하세요");
-                            return;
+                                    // 선택 유지하고 싶으면 아래 유지
+                                    // self.selected.answerContent = self.answerContent;
+                                }
+                            });
                         }
 
-                        $.ajax({
-                            url: "http://localhost:8080/inquiryAnswer.dox",
-                            type: "POST",
-                            dataType: "json",
-                            data: {
-                                inquiryNo: self.selected.inquiryNo,
-                                answerContent: self.answerContent,
-                                status: self.selected.status
-                            },
-                            success: function () {
-                                alert("저장 완료");
-
-                                // 목록 새로고침
-                                self.fnGetList();
-
-                                // 선택 유지하고 싶으면 아래 유지
-                                // self.selected.answerContent = self.answerContent;
-                            }
-                        });
+                    }, // methods
+                    mounted() {
+                        // 처음 시작할 때 실행되는 부분
+                        let self = this;
+                        const path = location.pathname;
+                        this.activeMenu =
+                            path.includes('adminMain') ? 'main' :
+                                path.includes('adminUser') ? 'user' :
+                                    path.includes('adminCompany') ? 'company' :
+                                        path.includes('adminBoard') ? 'board' :
+                                            path.includes('adminReviewWait') ? 'reviewWait' :
+                                                path.includes('adminPayment') ? 'payment' :
+                                                    path.includes('adminReport') ? 'report' :
+                                                        path.includes('adminInquiry') ? 'inquiry' :
+                                                            path.includes('adminStatistics') ? 'stats' :
+                                                                '';
+                        this.fnGetList();
                     }
+                });
 
-                }, // methods
-                mounted() {
-                    // 처음 시작할 때 실행되는 부분
-                    let self = this;
-                    const path = location.pathname;
-                    this.activeMenu =
-                        path.includes('adminMain') ? 'main' :
-                            path.includes('adminUser') ? 'user' :
-                                path.includes('adminCompany') ? 'company' :
-                                    path.includes('adminBoard') ? 'board' :
-                                        path.includes('adminReviewWait') ? 'reviewWait' :
-                                            path.includes('adminPayment') ? 'payment' :
-                                                path.includes('adminReport') ? 'report' :
-                                                    path.includes('adminInquiry') ? 'inquiry' :
-                                                        path.includes('adminStatistics') ? 'stats' :
-                                                            '';
-                    this.fnGetList();
-                }
-            });
-
-            app.mount('#app');
-        </script>
+                app.mount('#app');
+            </script>
+            <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
     </body>
 
     </html>

@@ -144,7 +144,7 @@
                         <h4>리뷰승인</h4>
                         <div class="data-box">
                             <div class="reviewTable">
-                                <h3>아직 승인되지 않은 리뷰 : {{reviewWait}}</h3>
+                                <h3>아직 검토되지 않은 리뷰 : {{reviewWait}}</h3>
                                 <table>
                                     <tr>
                                         <th>번호</th>

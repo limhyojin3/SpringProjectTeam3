@@ -98,6 +98,7 @@ public class Admin {
 	String bizNo;
 	String registrationFee;
 	String comName;
+	String resStatus;
 	
 	// 상품 목록
 //	int productNo;

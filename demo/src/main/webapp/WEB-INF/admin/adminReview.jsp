@@ -329,6 +329,24 @@
                                 </select>
                                 <input v-model="keyword" placeholder="검색어 입력" @keyup.enter="fnGetReviewList">
                                 <button @click="fnGetReviewList">검색</button>
+                            </div>
+                            <div class="filter-group">
+                                <div>
+                                    승인상태
+                                    <select v-model="approvalStatus" @change="fnGetReviewList">
+                                        <option value="ALL">전체</option>
+                                        <option value="WAIT">대기</option>
+                                        <option value="APPROVED">승인</option>
+                                        <option value="REJECTED">반려</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    정렬
+                                    <select v-model="sortType" @change="fnGetReviewList">
+                                        <option value="latest">최신순</option>
+                                        <option value="old">오래된순</option>
+                                    </select>
+                                </div>
                                 <button @click="fnResetSearch">초기화</button>
                             </div>
                         </div>
@@ -339,6 +357,7 @@
                                     <th>번호</th>
                                     <th>작성자</th>
                                     <th>제목</th>
+                                    <th>승인상태</th>
                                     <th>작성일</th>
                                     <th>관리</th>
                                 </tr>
@@ -350,6 +369,7 @@
                                     <td class="text-left" :title="r.reviewContent">
                                         {{ r.title }}
                                     </td>
+                                    <td>{{ r.approvalStatus }}</td>
                                     <td>{{ formatDate(r.regDate) }}</td>
                                     <td>
                                         <button @click="fnSelectReview(r.reviewNo)">보기</button>
@@ -393,7 +413,7 @@
                         sortType: "latest",
                         searchType: "all",
                         targetType: "ALL",
-                        processStatus: "ALL",
+                        approvalStatus: "ALL",
                         uniTargetId: "",
                         reviewTitle: "",
                         reviewContent: "",
@@ -443,10 +463,10 @@
 
                     fnResetSearch() {
                         this.keyword = "";
-                        this.page = 1;
+                        this.currentPage = 1;
                         this.searchType = "all";
                         this.targetType = "ALL"
-                        this.processStatus = "ALL";
+                        this.approvalStatus = "ALL";
                         this.sortType = "latest"
                         this.fnGetReviewList();
                     },
@@ -455,7 +475,7 @@
                         let self = this;
                         let param = {
                             targetType: self.targetType,
-                            processStatus: self.processStatus,
+                            approvalStatus: self.approvalStatus,
                             keyword: self.keyword,
                             searchType: self.searchType,
                             sortType: self.sortType,
@@ -527,13 +547,6 @@
                         });
                     },
 
-                    fnResetSearch() {
-                        this.keyword = "";
-                        this.currentPage = 1;
-                        this.searchType = "all";
-                        this.category = "ALL"
-                        this.fnGetReviewList();
-                    },
                 }, // methods
                 mounted() {
                     // 처음 시작할 때 실행되는 부분
