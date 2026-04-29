@@ -725,6 +725,9 @@
                                 <!-- 상품 등록 폼 -->
                                 <div v-else-if="productPage === 'reg'">
                                     <div class="product-form-wrapper">
+                                        {{serverTagList}}
+                                        {{newTagsOnly}}
+                                        {{uniqueNewTagsOnly()}}
                                         <h2 style="color: #333; margin-bottom: 30px;">상품 등록하기</h2>
 
                                         <div class="product-form-section">
@@ -1721,6 +1724,23 @@
                     }
                     this.productPage = 'reg';
 
+                    let self = this;
+                    let param = {
+
+                    };
+                    $.ajax({
+                        url: "/getTagList.dox",
+                        dataType: "json",
+                        type: "POST",
+                        data: param,
+                        success: function (data) {
+                            console.log(data);
+                            self.serverTagList = data.tagList;
+                        }
+                    });
+                    
+
+
                 },
                 resetForm() {
                     this.productForm = {
@@ -1871,11 +1891,11 @@
 
                     //
                     formData.append("deposit", this.product2.deposit);
-                    formData.append("tag", JSON.stringify(this.tagMapToList));
-
-
                     formData.append("proType", JSON.stringify(this.product2.proType));
                     formData.append("userId", "${sessionScope.sessionId}");
+                    
+                    formData.append("tag",JSON.stringify([...new Set(this.tagMapToList)]));
+                    formData.append("uniqueNewTagsOnly", this.uniqueNewTagsOnly());
 
                     $.ajax({
                         url: "/upload2.dox",
@@ -1892,7 +1912,8 @@
 
 
                             if (res.result === "success") {
-                                alert("상품 정보가 모두 수정되었습니다!");
+                                alert("상품 정보가 모두 등록되었습니다!");
+                                console.log(res.message1);
                                 window.location.href = "/partnerManagement.do"; //
                             } else {
                                 alert("서버 응답은 성공했지만, result가 success가 아닙니다.");

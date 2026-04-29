@@ -65,9 +65,9 @@
 	<insert id="insertProduct"
 		parameterType="com.example.demo.company.model.Company">
 		INSERT INTO PRODUCT(PRODUCT_NAME, PRODUCT_DETAILS, ORIGINAL_PRICE,
-		IMG_URL, PRO_TYPE, COMPANY_NO)
+		IMG_URL, PRO_TYPE, COMPANY_NO, tag, deposit)
 		VALUES(#{productName}, #{productDetails}, #{originalPrice}, #{imgUrl},
-		#{proType}, #{companyNo})
+		#{proType}, #{companyNo}, #{tag}, #{deposit})
 
 	</insert>
 

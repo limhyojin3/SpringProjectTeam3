@@ -170,9 +170,28 @@ public class CompanyService {
 
 			int result = companyMapper.insertProduct(product);
 
+			int result1 = 0;
+			//[]
+			if(product.getUniqueNewTagsOnly() != null && !product.getUniqueNewTagsOnly().isEmpty()) {
+				result1 = companyMapper.insertUniqueNewTagsOnly(product);
+			} else {
+				System.out.println("보낼 태그가 없어서 insert를 건너뜁니다!");
+			}
+			
+			
+			
 			if (result > 0) {
-				resultMap.put("result", "success");
-				resultMap.put("message", Message.MSG_ADD);
+				
+				if(result1 > 0) {
+					resultMap.put("result", "success");
+					resultMap.put("message", Message.MSG_ADD);
+					resultMap.put("message1", "태그도 추가되었어요!");
+				} else {
+					resultMap.put("result", "success");
+					resultMap.put("message", Message.MSG_ADD);
+					resultMap.put("message1", "태그는 추가된게 없네요!");
+				}
+				
 			}
 
 		} catch (Exception e) {
@@ -465,6 +484,29 @@ public class CompanyService {
 				resultMap.put("message", Message.MSG_REMOVE);
 			}
 
+		} catch (Exception e) {
+			// TODO: handle exception
+			System.out.println(e.getMessage());
+			resultMap.put("result", "fail");
+			resultMap.put("message", Message.MSG_SERVER_ERR);
+		}
+		return resultMap;
+	}
+	
+	public HashMap<String, Object> getTagList(HashMap<String, Object> map) {
+		HashMap<String, Object> resultMap = new HashMap<String, Object>();
+		try {
+//			List<User> list = defaultMapper.selectUserList(map);
+//			User info = defaultMapper.selectUser(map);
+//			int result = defaultMapper.updateXXX(map);
+
+//			resultMap.put("list", list);
+
+			List<String> tagList = companyMapper.selectTagList(map);
+
+			resultMap.put("tagList", tagList);
+			resultMap.put("result", "success");
+			resultMap.put("message", Message.MSG_ADD);
 		} catch (Exception e) {
 			// TODO: handle exception
 			System.out.println(e.getMessage());
