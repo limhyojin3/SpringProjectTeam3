@@ -1,488 +1,518 @@
-/* 기본 스타일 리셋 */
-* { box-sizing: border-box; margin: 0; padding: 0; }
-body { 
-	font-family: 'Noto Sans KR', 
-	sans-serif; background-color: #f9f9f9; 
-	color: #333;
-	 
-}
+	/* 기본 스타일 리셋 */
+	* { box-sizing: border-box; margin: 0; padding: 0; }
+	body { 
+		font-family: 'Noto Sans KR', 
+		sans-serif; background-color: #f9f9f9; 
+		color: #333;
+		 
+	}
+	
+	/* 전체 페이지 레이아웃 */
+	#wrapper {
+	    max-width: 1300px;
+	    margin: 50px auto;
+	    padding: 0 20px;
+	    position: relative;
+	}
+	
+	.main-content {
+	    display: flex;
+		width: 100%;
+		align-items: flex-start;
+	    gap: 30px;
+	}
+	
+	/* 왼쪽 배너 영역 */
+	.left-banner {
+	    width: 320px;
+	    flex-shrink: 0;
+	}
+	
+	.main-banner-img {
+	    width: 100%;
+	    height: 740px;
+		position: relative;
+		background-image: url("../img/left-banner2.jpg");
+		background-position: center;
+	    background-color: #eaeaea; /* 이미지 없을 때 배경색 */
+	    border: 1px solid #ddd;
+	    border-radius: 8px;
+	    display: flex;
+	    justify-content: center;
+	    align-items: center;
+	    overflow: hidden;
+	}
+	.banner-overlay{
+		position: absolute;
+		bottom: 30px;
+		left: 20px;
+		right: 20px;
+		color: white;
+		text-shadow: 1px 1px 4px rgba(0,0,0,0.5);
+		padding: 10px;
+	}
+	
+	.banner-overlay h2 {
+	    font-size: 22px;
+	    font-weight: bold;
+	    margin-bottom: 6px;
+	    color: white;
+		text-shadow: 2px 2px 10px rgba(0,0,0,0.9), 0 0 20px rgba(0,0,0,0.7);
+	}
+	
+	.banner-overlay p {
+	    font-size: 13px;
+	    opacity: 0.9;
+	    line-height: 1.6;
+		text-shadow: 1px 1px 8px rgba(0,0,0,0.9), 0 0 15px rgba(0,0,0,0.7);
+	}
+	
+	.main-banner-img img {
+	    width: 100%;
+	    height: 100%;
+	    object-fit: cover;
+	}
+	
+	.img-placeholder {
+	    color: #999;
+	    font-size: 1.5rem;
+	    font-weight: bold;
+	}
+	
+	/* 오른쪽 콘텐츠 영역 */
+	.right-sections {
+	    flex: 1; /* 남는 공간을 모두 차지하도록 설정 */
+		min-width: 0;        /* flex 자식 요소의 최소 넓이 제한 해제 (중요) */
+	    display: flex;
+	    flex-direction: column;
+	    gap: 40px;
+	}
 
-/* 전체 페이지 레이아웃 */
-#wrapper {
-    max-width: 1300px;
-    margin: 50px auto;
-    padding: 0 20px;
-    position: relative;
-}
+	h2 { font-size: 24px; font-weight: 700; margin-bottom: 20px; }
+	
+	/* 리얼후기 섹션 */
+	.review-section {
+	    background-color: #fff;
+	    padding: 40px;
+	    border-radius: 12px;
+	    border: 1px solid #eee;
+	    text-align: center;
+	}
+	
+	.section-title-wrap {
+	    display: flex;
+	    justify-content: center;
+	    align-items: center;
+	    flex-direction: column;  /* ← 추가 */
+	    margin-bottom: 10px;
+	}
+	
+	.section-title-wrap h2 {
+	    padding-bottom: 12px;
+	    border-bottom: 3px solid #f4a096;
+	    width: 300px;  /* ← 원하는 길이로 조절 */
+	    text-align: center;
+	}
+	
+	.hash-tag-wrap {
+	    font-size: 14px;
+	    color: #555;
+	    display: flex;
+	    justify-content: center;
+	    align-items: center;
+	    gap: 10px;
+	    margin-bottom: 5px;
+	}
+	
+	.review-tag {
+	    background-color: #ff6b6b; /* 리얼후기 빨간 배경색 */
+	    color: #fff;
+	    padding: 2px 8px;
+	    border-radius: 15px;
+	    font-size: 12px;
+	}
+	
+	.review-card, .post-card { cursor: pointer; position: relative; }
+	    .tag-pink   { background-color: #f4a096; }
+	    .tag-purple { background-color: #9b8fd4; }
+	    .tag-yellow { background-color: #f0b429; }
+	    .tag-red    { background-color: #ff6b6b; }
+	
+	.section-desc {
+	    font-size: 13px;
+	    color: #888;
+	    margin-bottom: 30px;
+	}
+	
+	.review-grid {
+	    display: grid;
+	    grid-template-columns: repeat(4, 1fr);
+	    gap: 15px;
+	}
+	
+	.review-card {
+	    text-align: left;
+	}
+	
+	.review-img-thumb {
+	    width: 100%;
+	    height: 150px;
+	    background-color: #f2f2f2;
+	    border: 1px solid #eee;
+	    border-radius: 6px;
+	    margin-bottom: 10px;
+	    overflow: hidden;
+		position: relative;
+	}
+	
+	.review-img-thumb img {
+	    width: 100%;
+	    height: 100%;
+	    object-fit: cover;
+	}
+	
+	.review-title {
+	    font-size: 13px;
+	    color: #444;
+	    line-height: 1.4;
+	    overflow: hidden;
+	    text-overflow: ellipsis;
+	    display: -webkit-box;
+	    -webkit-line-clamp: 2; /* 두 줄까지 표시 후 말줄임 */
+	    -webkit-box-orient: vertical;
+	}
+	
+	/* 커뮤니티 섹션 (점선 박스) */
+	.community-section, .review-section {
+	    border: 2px dashed #f4a096; /* 점선 테두리 */
+	    padding: 30px;
+	    border-radius: 12px;
+		background-color: white;
+	}
+	
+	.section-header {
+	    display: flex;
+	    justify-content: space-between;
+	    align-items: center;
+	    margin-bottom: 20px;
+	}
+	
+	.section-header h2 { margin-bottom: 0; }
+	
+	.more-link {
+	    font-size: 12px;
+	    color: #888;
+	    text-decoration: none;
+	}
+	
+	.review-title:hover, .more-link:hover {
+	    color: #f4a096;
+	}
+	
+	.post-grid {
+	    display: grid;
+	    grid-template-columns: repeat(4, 1fr);
+	    gap: 15px;
+	}
+	
+	.post-card {
+	    background-color: #fff9f9 ;
+	    padding: 20px;
+	    border: 1px solid #eee;
+	    border-radius: 8px;
+	}
+	
+	.post-text {
+	    font-size: 13px;
+	    color: #666;
+	    line-height: 1.6;
+	    margin-bottom: 3px;
+	    overflow: hidden;
+	    white-space: nowrap;
+	    text-overflow: ellipsis;
+	}
+	
+	.post-info {
+	    font-size: 12px;
+	    color: #888;
+	    margin-top: 15px;
+	    display: flex;
+	    align-items: center;
+	    gap: 10px;
+	}
+	
+	.post-info i {
+	    font-style: normal;
+	    margin-right: 2px;
+	}
+	
+	.post-views {
+	    margin-left: auto; /* 조회수를 오른쪽으로 */
+	}
+	
+	.thumb-placeholder {
+	    width: 100%;
+	    height: 100%;
+	    background-color: #ffc7c2;
+	    display: flex;
+	    flex-direction: column;
+	    justify-content: center;
+	    align-items: center;
+	    gap: 8px;
+	    padding: 10px;
+	}
+	
+	.thumb-placeholder span {
+	    font-size: 24px;
+	}
+	
+	.thumb-placeholder p {
+		font-size: 12px;
+		color: #fff;
+		text-align: center;
+		line-height: 1.4;
+		overflow: hidden;
+		max-height: 2.8em;  /* ← line-clamp 대신 */
+		margin: 0;
+	}
+	
+	/* 하단 로고 */
+	.footer-logo {
+	    position: absolute;
+	    bottom: -60px;
+	    left: 20px;
+	    font-family: 'Georgia', serif; /* 예쁜 서체 사용 */
+	    font-style: italic;
+	    font-size: 40px;
+	    color: #f4a096;
+	}
+	/* ✅ 애니메이션 추가 */
+	@keyframes fadeUp {
+	    from {
+	        opacity: 0;
+	        transform: translateY(20px);
+	    }
+	    to {
+	        opacity: 1;
+	        transform: translateY(0);
+	    }
+	}
+	
+	.review-section,
+	.community-section {
+	    animation: fadeUp 0.7s ease forwards;
+	    opacity: 0;
+	}
+	
+	.left-banner {
+	    animation: fadeUp 0.7s ease forwards;
+	    opacity: 0;
+	    animation-delay: 0.1s;
+	}
+	
+	.review-section    { animation-delay: 0.4s; }  
+	.community-section { animation-delay: 0.7s; }
+	
+	.review-img-thumb, .post-card {
+	    transition: transform 0.2s ease, box-shadow 0.2s ease;
+	}
+	
+	.review-img-thumb:hover, .post-card:hover {
+	    transform: translateY(-5px);
+	    box-shadow: 0 6px 15px rgba(244, 160, 150, 0.3);
+	}
+	
+	.review-more-wrap {
+	    display: flex;
+	    justify-content: flex-end;
+	    margin-top: 15px;
+	}
 
-.main-content {
-    display: flex;
-	width: 100%;
-	align-items: flex-start;
-    gap: 30px;
-}
-
-/* 왼쪽 배너 영역 */
-.left-banner {
-    width: 320px;
-    flex-shrink: 0;
-}
-
-.main-banner-img {
-    width: 100%;
-    height: 700px;
-	position: relative;
-	background-image: url("../img/left-banner2.jpg");
-	background-position: center;
-    background-color: #eaeaea; /* 이미지 없을 때 배경색 */
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    overflow: hidden;
-}
-.banner-overlay{
-	position: absolute;
-	bottom: 30px;
-	left: 20px;
-	right: 20px;
-	color: white;
-	text-shadow: 1px 1px 4px rgba(0,0,0,0.5);
-	padding: 10px;
-}
-
-.banner-overlay h2 {
-    font-size: 22px;
-    font-weight: bold;
-    margin-bottom: 6px;
-    color: white;
-	text-shadow: 2px 2px 10px rgba(0,0,0,0.9), 0 0 20px rgba(0,0,0,0.7);
-}
-
-.banner-overlay p {
-    font-size: 13px;
-    opacity: 0.9;
-    line-height: 1.6;
-	text-shadow: 1px 1px 8px rgba(0,0,0,0.9), 0 0 15px rgba(0,0,0,0.7);
-}
-
-.main-banner-img img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-}
-
-.img-placeholder {
-    color: #999;
-    font-size: 1.5rem;
-    font-weight: bold;
-}
-
-/* 오른쪽 콘텐츠 영역 */
-.right-sections {
-    flex: 1; /* 남는 공간을 모두 차지하도록 설정 */
-	min-width: 0;        /* flex 자식 요소의 최소 넓이 제한 해제 (중요) */
-    display: flex;
-    flex-direction: column;
-    gap: 40px;
-}
-
-
-h2 { font-size: 24px; font-weight: 700; margin-bottom: 20px; }
-
-/* 리얼후기 섹션 */
-.review-section {
-    background-color: #fff;
-    padding: 40px;
-    border-radius: 12px;
-    border: 1px solid #eee;
-    text-align: center;
-}
-
-.section-title-wrap {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-direction: column;  /* ← 추가 */
-    margin-bottom: 10px;
-}
-
-.section-title-wrap h2 {
-    padding-bottom: 12px;
-    border-bottom: 3px solid #f4a096;
-    width: 300px;  /* ← 원하는 길이로 조절 */
-    text-align: center;
-}
-
-.hash-tag-wrap {
-    font-size: 14px;
-    color: #555;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 10px;
-    margin-bottom: 5px;
-}
-
-.review-tag {
-    background-color: #ff6b6b; /* 리얼후기 빨간 배경색 */
-    color: #fff;
-    padding: 2px 8px;
-    border-radius: 15px;
-    font-size: 12px;
-}
-
-.section-desc {
-    font-size: 13px;
-    color: #888;
-    margin-bottom: 30px;
-}
-
-.review-grid {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 15px;
-}
-
-.review-card {
-    text-align: left;
-}
-
-.review-img-thumb {
-    width: 100%;
-    height: 150px;
-    background-color: #f2f2f2;
-    border: 1px solid #eee;
-    border-radius: 6px;
-    margin-bottom: 10px;
-    overflow: hidden;
-}
-
-.review-img-thumb img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-}
-
-.review-title {
-    font-size: 13px;
-    color: #444;
-    line-height: 1.4;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    display: -webkit-box;
-    -webkit-line-clamp: 2; /* 두 줄까지 표시 후 말줄임 */
-    -webkit-box-orient: vertical;
-}
-
-/* 커뮤니티 섹션 (점선 박스) */
-.community-section, .review-section {
-    border: 2px dashed #f4a096; /* 점선 테두리 */
-    padding: 30px;
-    border-radius: 12px;
-	background-color: white;
-}
-
-.section-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 20px;
-}
-
-.section-header h2 { margin-bottom: 0; }
-
-.more-link {
-    font-size: 12px;
-    color: #888;
-    text-decoration: none;
-}
-
-.review-title:hover, .more-link:hover {
-    color: #f4a096;
-}
-
-.post-grid {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 15px;
-}
-
-.post-card {
-    background-color: #fff9f9 ;
-    padding: 20px;
-    border: 1px solid #eee;
-    border-radius: 8px;
-}
-
-.post-text {
-    font-size: 13px;
-    color: #666;
-    line-height: 1.6;
-    margin-bottom: 3px;
-    overflow: hidden;
-    white-space: nowrap;
-    text-overflow: ellipsis;
-}
-
-.post-info {
-    font-size: 12px;
-    color: #888;
-    margin-top: 15px;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-}
-
-.post-info i {
-    font-style: normal;
-    margin-right: 2px;
-}
-
-.post-views {
-    margin-left: auto; /* 조회수를 오른쪽으로 */
-}
-
-.thumb-placeholder {
-    width: 100%;
-    height: 100%;
-    background-color: #ffc7c2;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    gap: 8px;
-    padding: 10px;
-}
-
-.thumb-placeholder span {
-    font-size: 24px;
-}
-
-.thumb-placeholder p {
-	font-size: 12px;
-	color: #fff;
-	text-align: center;
-	line-height: 1.4;
-	overflow: hidden;
-	max-height: 2.8em;  /* ← line-clamp 대신 */
-	margin: 0;
-}
-
-/* 하단 로고 */
-.footer-logo {
-    position: absolute;
-    bottom: -60px;
-    left: 20px;
-    font-family: 'Georgia', serif; /* 예쁜 서체 사용 */
-    font-style: italic;
-    font-size: 40px;
-    color: #f4a096;
-}
-/* ✅ 애니메이션 추가 */
-@keyframes fadeUp {
-    from {
-        opacity: 0;
-        transform: translateY(20px);
+	/* 프리미엄 배지 스타일 */
+    .premium-badge {
+        position: absolute;
+        top: 0;
+        left: 0;
+        background: linear-gradient(45deg, #f0b429, #f7d07a);
+        color: #fff;
+        padding: 4px 10px;
+        font-size: 0.7rem;
+        font-weight: bold;
+        border-bottom-right-radius: 10px;
+        z-index: 10;
+        display: flex;
+        align-items: center;
+        position: absolute;
     }
-    to {
-        opacity: 1;
-        transform: translateY(0);
+    .premium-badge i { margin-right: 4px; }
+
+    /* 유료 리뷰 이미지 블러 처리 (미구매 시) */
+    .blur-img {
+        filter: blur(8px) brightness(0.8);
+        transition: 0.3s;
     }
-}
-
-.review-section,
-.community-section {
-    animation: fadeUp 0.7s ease forwards;
-    opacity: 0;
-}
-
-.left-banner {
-    animation: fadeUp 0.7s ease forwards;
-    opacity: 0;
-    animation-delay: 0.1s;
-}
-
-.review-section    { animation-delay: 0.4s; }  
-.community-section { animation-delay: 0.7s; }
-
-.review-img-thumb, .post-card {
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
-}
-
-.review-img-thumb:hover, .post-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 6px 15px rgba(244, 160, 150, 0.3);
-}
-
-.review-more-wrap {
-    display: flex;
-    justify-content: flex-end;
-    margin-top: 15px;
-}
 
 
-/**/
-#app { position: relative;}
-
-/* 1. 둥둥 떠 있는 퀵 버튼 */
-.chat-btn {
-    position: fixed;
-    bottom: 30px; /* 화면 맨 아래에서 거리 */
-    right: 30px;
-    width: 60px;
-    height: 60px;
-    background-color: rgb(232, 121, 124);
-    border-radius: 50%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    color: white;
-    font-size: 24px;
-    cursor: pointer;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-    z-index: 9999;
-    transition: all 0.3s ease;
-}
-
-.chat-btn:hover {
-    transform: scale(1.1);
-    background-color: rgb(255, 108, 108);
-}
-
-/* 2. 채팅창 전체 컨테이너 */
-.chatbot-container {
-    position: fixed;
-    bottom: 100px; /* 버튼보다 위로 띄움 */
-    right: 30px;
-    width: 350px;
-    height: 550px;
-    background: white;
-    border-radius: 20px;
-    display: flex;
-    flex-direction: column;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
-    overflow: hidden;
-    z-index: 9998;
-    border: 1px solid #eee;
-}
-
-/* 3. 헤더 영역 */
-.chat-header {
-    background: rgb(232, 121, 124);
-    color: white;
-    padding: 15px 20px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
-.chat-header h3 {
-    margin: 0;
-    font-size: 16px;
-    font-weight: bold;
-}
-
-.chat-header .close-btn {
-    cursor: pointer;
-    font-size: 12px;
-    opacity: 0.8;
-}
-
-/* 4. 메시지 출력 창 (스크롤 영역) */
-.chat-messages {
-    flex: 1;
-    overflow-y: auto;
-    padding: 20px;
-    background-color: #f9f9f9; /* 연한 회색 배경 */
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-}
-
-/* 5. 말풍선 스타일 */
-.message {
-    max-width: 85%;
-    padding: 12px 16px;
-    border-radius: 15px;
-    font-size: 14px;
-    line-height: 1.5;
-    position: relative;
-}
-
-/* 봇 메시지 (좌측) */
-.message.bot {
-    align-self: flex-start;
-    background: white;
-    color: #333;
-    border: 1px solid #eee;
-    border-bottom-left-radius: 2px;
-}
-
-/* 사용자 메시지 (우측) */
-.message.user {
-    align-self: flex-end;
-    background: rgb(232, 121, 124);
-    color: white;
-    border-bottom-right-radius: 2px;
-}
-
-/* 6. 추천 질문 (퀵 버튼) */
-.quick-questions {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-    margin-top: 10px;
-}
-
-.q-btn {
-    background: white;
-    border: 1px solid #ffc7c2;
-    color: #ef7777;
-    padding: 10px;
-    border-radius: 10px;
-    text-align: left;
-    font-size: 13px;
-    cursor: pointer;
-    transition: 0.2s;
-}
-
-.q-btn:hover {
-    background: #fff5f5;
-    border-color: rgb(232, 121, 124);
-}
-
-/* 7. 하단 입력 영역 */
-.chat-input-area {
-    padding: 15px;
-    background: white;
-    border-top: 1px solid #eee;
-    display: flex;
-    gap: 10px;
-    align-items: center;
-}
-
-.chat-input-area input {
-    flex: 1;
-    border: 1px solid #ddd;
-    padding: 12px;
-    border-radius: 10px;
-    outline: none;
-    font-size: 14px;
-}
-
-.chat-input-area button {
-    background: rgb(232, 121, 124);
-    color: white;
-    border: none;
-    padding: 10px 20px;
-    border-radius: 10px;
-    font-weight: bold;
-    cursor: pointer;
-    white-space: nowrap;
-}
-
-.chat-input-area button:hover {
-    background: rgb(255, 108, 108);
+	/**/
+	#app { position: relative;}
+	
+	/* 1. 둥둥 떠 있는 퀵 버튼 */
+	.chat-btn {
+	    position: fixed;
+	    bottom: 30px; /* 화면 맨 아래에서 거리 */
+	    right: 30px;
+	    width: 60px;
+	    height: 60px;
+	    background-color: rgb(232, 121, 124);
+	    border-radius: 50%;
+	    display: flex;
+	    justify-content: center;
+	    align-items: center;
+	    color: white;
+	    font-size: 24px;
+	    cursor: pointer;
+	    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+	    z-index: 9999;
+	    transition: all 0.3s ease;
+	}
+	
+	.chat-btn:hover {
+	    transform: scale(1.1);
+	    background-color: rgb(255, 108, 108);
+	}
+	
+	/* 2. 채팅창 전체 컨테이너 */
+	.chatbot-container {
+	    position: fixed;
+	    bottom: 100px; /* 버튼보다 위로 띄움 */
+	    right: 30px;
+	    width: 350px;
+	    height: 550px;
+	    background: white;
+	    border-radius: 20px;
+	    display: flex;
+	    flex-direction: column;
+	    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+	    overflow: hidden;
+	    z-index: 9998;
+	    border: 1px solid #eee;
+	}
+	
+	/* 3. 헤더 영역 */
+	.chat-header {
+	    background: rgb(232, 121, 124);
+	    color: white;
+	    padding: 15px 20px;
+	    display: flex;
+	    justify-content: space-between;
+	    align-items: center;
+	}
+	
+	.chat-header h3 {
+	    margin: 0;
+	    font-size: 16px;
+	    font-weight: bold;
+	}
+	
+	.chat-header .close-btn {
+	    cursor: pointer;
+	    font-size: 12px;
+	    opacity: 0.8;
+	}
+	
+	/* 4. 메시지 출력 창 (스크롤 영역) */
+	.chat-messages {
+	    flex: 1;
+	    overflow-y: auto;
+	    padding: 20px;
+	    background-color: #f9f9f9; /* 연한 회색 배경 */
+	    display: flex;
+	    flex-direction: column;
+	    gap: 12px;
+	}
+	
+	/* 5. 말풍선 스타일 */
+	.message {
+	    max-width: 85%;
+	    padding: 12px 16px;
+	    border-radius: 15px;
+	    font-size: 14px;
+	    line-height: 1.5;
+	    position: relative;
+	}
+	
+	/* 봇 메시지 (좌측) */
+	.message.bot {
+	    align-self: flex-start;
+	    background: white;
+	    color: #333;
+	    border: 1px solid #eee;
+	    border-bottom-left-radius: 2px;
+	}
+	
+	/* 사용자 메시지 (우측) */
+	.message.user {
+	    align-self: flex-end;
+	    background: rgb(232, 121, 124);
+	    color: white;
+	    border-bottom-right-radius: 2px;
+	}
+	
+	/* 6. 추천 질문 (퀵 버튼) */
+	.quick-questions {
+	    display: flex;
+	    flex-direction: column;
+	    gap: 8px;
+	    margin-top: 10px;
+	}
+	
+	.q-btn {
+	    background: white;
+	    border: 1px solid #ffc7c2;
+	    color: #ef7777;
+	    padding: 10px;
+	    border-radius: 10px;
+	    text-align: left;
+	    font-size: 13px;
+	    cursor: pointer;
+	    transition: 0.2s;
+	}
+	
+	.q-btn:hover {
+	    background: #fff5f5;
+	    border-color: rgb(232, 121, 124);
+	}
+	
+	/* 7. 하단 입력 영역 */
+	.chat-input-area {
+	    padding: 15px;
+	    background: white;
+	    border-top: 1px solid #eee;
+	    display: flex;
+	    gap: 10px;
+	    align-items: center;
+	}
+	
+	.chat-input-area input {
+	    flex: 1;
+	    border: 1px solid #ddd;
+	    padding: 12px;
+	    border-radius: 10px;
+	    outline: none;
+	    font-size: 14px;
+	}
+	
+	.chat-input-area button {
+	    background: rgb(232, 121, 124);
+	    color: white;
+	    border: none;
+	    padding: 10px 20px;
+	    border-radius: 10px;
+	    font-weight: bold;
+	    cursor: pointer;
+	    white-space: nowrap;
+	}
+	
+	.chat-input-area button:hover {
+	    background: rgb(255, 108, 108);
 }

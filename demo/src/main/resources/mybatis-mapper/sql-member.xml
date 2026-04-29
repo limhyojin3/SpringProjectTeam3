@@ -360,24 +360,24 @@
 	<select id="selectMyPostLikeList" parameterType="hashmap"
 	    resultType="com.example.demo.member.model.Member">
 	    SELECT 
-	        PL.like_no,
-	        PL.post_no,
+		        CL.like_no,
+	        CL.post_no,
 	        CP.title,
 	        CP.category,
 	        CP.reg_date,
 	        CP.view_cnt
-	    FROM post_like PL
-	    JOIN community_post CP ON PL.post_no = CP.post_no
-	    WHERE PL.user_id = #{userId}
-	    AND CP.user_id != #{userId}  <!-- 본인 글 제외 -->
+	    FROM community_like CL          <!-- post_like → community_like -->
+	    JOIN community_post CP ON CL.post_no = CP.post_no
+	    WHERE CL.user_id = #{userId}
+	    AND CP.user_id != #{userId}
 	    LIMIT #{pageSize} OFFSET #{offset}
 	</select>
 	<!-- 페이지 -->
 	<select id="selectMyPostLikeCount" parameterType="String" resultType="int">
 	    SELECT COUNT(*)
-	    FROM post_like PL
-	    JOIN community_post CP ON PL.post_no = CP.post_no
-	    WHERE PL.user_id = #{userId}
+	    FROM community_like CL          <!-- post_like → community_like -->
+	    JOIN community_post CP ON CL.post_no = CP.post_no
+	    WHERE CL.user_id = #{userId}
 	    AND CP.user_id != #{userId}
 	</select>
 	

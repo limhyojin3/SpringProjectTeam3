@@ -140,13 +140,35 @@
             margin: 0 auto;
             width: 350px;
         }
+        .link-wrap a{
+            margin-top: 5px;
+            text-decoration: none;
+            color: #767676;
+            font-size: 15px;
+            font-weight: 500;
+        }
+        .link-login:hover , .link-find:hover{
+            color: #f15443;
+            text-shadow: 1px 1px 1px pink;
+        }
+        .msg-box {
+            height: 40px;
+            font-size: 11px;
+            padding-left: 5px;
+            color: transparent;
+        }
+
+        /* msg-box 감싸는 td border 제거 */
+        .msg-box-row td {
+            border: none !important;
+        }
     </style>
 </head>
 <body>
     <div id="app">
         <div id="container">
             <div class="logo">
-                <img src="/img/merryview-logo-text.svg" alt="메리뷰 로고" @click="fnMain()">
+                <img src="/img/marryview-logo-text.svg" alt="메리뷰 로고" @click="fnMain()">
             </div>
             <div v-if="!isVerified">
                 <h1>비밀번호 변경</h1>
@@ -193,15 +215,20 @@
                         <th>비밀번호 확인</th>
                         <td><input type="password" v-model="confirmPw" placeholder="비밀번호 다시 입력"></td>
                     </tr>
+                    <tr class="msg-box-row">
+                        <td colspan="2">
+                            <div class="msg-box" :style="{color: isPwdValid ? 'green' : 'red'}">
+                                {{ pwdMsg }}
+                            </div>
+                        </td>
+                    </tr>
                 </table>
                 <button class="login-btn" @click="fnChangePw()">비밀번호 변경</button>
-                <p :class="isPwdValid ? 'success-text' : 'error-text'">{{ pwdMsg }}</p>
             </div>
 
             <div class="link-wrap">
-                <a href="/login.do"><span>로그인 페이지로 돌아가기</span></a>
-                <span>|</span>
-                <a href="/find-id.do"><span>아이디 찾기</span></a>
+                <a href="/login.do"><span class="link-login">로그인 페이지로 돌아가기  | </span></a>
+                <a href="/find-id.do"><span class="link-find">아이디 찾기</span></a>
             </div>
         </div>
     </div>
@@ -311,7 +338,7 @@
             // * 비밀번호 유효성 및 일치 확인 *
             fnCheckPwd: function() {
                 let pwd = this.newPw;
-                let pwdConf = this.newPwConfirm;
+                let pwdConf = this.confirmPw;
 
                 if (!pwd) {
                     this.pwdMsg = "";
@@ -363,8 +390,17 @@
                         }
                     }
                 });
-            }
-        }, // methods
+            },
+        },
+        watch: {
+                newPw: function() {
+                    this.fnCheckPwd();
+                },
+                confirmPw: function() {
+                    this.fnCheckPwd();
+                }
+        },
+        // methods
         mounted() {
             // 처음 시작할 때 실행되는 부분
             let self = this;

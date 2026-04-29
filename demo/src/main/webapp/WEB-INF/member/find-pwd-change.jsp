@@ -146,7 +146,7 @@
         <!-- 로고 -->
         <div id="container">
             <div class="logo">
-              <img src="/img/merryview-logo-text.svg" alt="메리뷰 로고">
+              <img src="/img/marryview-logo-text.svg" alt="메리뷰 로고" @click="fnMain()">
             </div>
             <h1>비밀번호 찾기</h1>
             <table>
@@ -189,6 +189,9 @@
             };
         },
         methods: {
+            fnMain : function(){
+                location.href="/merryViewHome.do";
+            },
             // 1단계: 정보 일치 확인
             fnCheckUser: function() {
                 if(!this.userId || !this.userName || !this.phone) return alert("입력란을 채워주세요.");
