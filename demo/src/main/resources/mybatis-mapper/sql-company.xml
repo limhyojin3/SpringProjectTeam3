@@ -15,7 +15,7 @@
 		left join company c on m.user_id = c.user_id
 		where m.user_id = #{userid}
 	</select>
-
+ 
 	<select id="selectProduct" parameterType="hashmap"
 		resultType="com.example.demo.company.model.Company">
 		SELECT P.PRODUCT_NO, P.PRODUCT_NAME,P.PRODUCT_DETAILS, P.ORIGINAL_PRICE,

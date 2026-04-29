@@ -1359,7 +1359,93 @@
                                 </div>
                             </div>
                         </div>
+                        <div v-if="currentMenu === 'inquiry'" class="payment-container">
 
+                            <!-- <div>상품 번호</div>
+                            <div>상품 이름</div>
+                            <div>문의 내용</div>
+                            <button>문의하기 버튼</button> -->
+
+
+                            <div class="reservation-ticket">
+                                <div class="ticket-header">
+                                    <span class="ticket-brand">MERRY VIEW RESERVATION</span>
+                                    <span class="ticket-type">OFFICIAL TICKET</span>
+                                </div>
+                                <!-- {{product1}}
+                                {{selectedDate}}
+                                {{selectedTime}} -->
+                                <!-- <div style="text-align: right;">
+                                    <img :src="product1.thumbnail" style="max-height: 200px; margin-top: 10px; margin-right: 20px;">
+                                </div> -->
+                                {{product1}}
+
+                                <div class="ticket-body">
+                                    <div class="ticket-info">
+                                        <div class="info-row product-name">
+                                            <label>문의할 상품</label>
+                                            <div class="value">{{ product1.name }} <small>({{ product1.company
+                                                    }})</small></div>
+                                        </div>
+                                        <div class="info-row">
+                                            <label>상품 및 서비스 내용</label>
+                                            <div class="value">{{product1.content}}</div>
+                                        </div>
+
+                                        <div class="info-grid">
+                                            <div class="info-row">
+                                                <label>문의자 명</label>
+                                                <div class="value">{{userid}}</div>
+                                            </div>
+                                            <div class="info-row">
+                                                <label>문의 내용</label>
+                                                <div class="value">inquiry contents</div>
+                                            </div>
+                                        </div>
+
+                                        <div class="info-row">
+                                            <label>요청 사항</label>
+                                            <div class="value">{{res_content ? res_content : "요청사항 없음"}}</div>
+                                        </div>
+                                        inq_content
+
+
+
+                                    </div>
+
+                                    <div class="ticket-side">
+                                        <div class="side-content">
+                                            <img :src="product1.thumbnail" style="height: 200px; width: 200px; object-fit: cover;">
+                                            <div class="amount-label">TOTAL PRICE(상품 및 서비스 가격)</div>
+                                            <div class="amount-value">{{ Number(product1.price).toLocaleString() }}원
+                                            </div>
+                                            <div class="agreement-text">필수 항목 동의 : 노쇼관련</div>
+                                            <!-- <div class="ticket-barcode">|| ||| || |||| | ||</div> -->
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- {{user.name}}
+                                {{product1.id}}
+                                {{product1.companyNo}}
+                                {{res_content}}
+                                {{selectedDate}}
+                                {{selectedTime}} -->
+
+
+
+                                <div class="payment-btn-group">
+                                    <button class="btn-cancel-pay" @click="productPage = 'detail'">뒤로가기</button>
+                                    <button class="btn-final-reserve" @click="fnSaveReservation(user)">예약 저장하기</button>
+                                </div>
+                            </div>
+
+
+
+                            
+
+
+                        </div>
                         <div v-if="currentMenu === 'main' && productPage === 'payment'" class="payment-container">
 
                             <div class="reservation-ticket">
