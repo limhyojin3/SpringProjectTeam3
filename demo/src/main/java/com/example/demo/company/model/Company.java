@@ -58,6 +58,14 @@ public class Company {
 	
 	List<String> uniqueNewTagsOnly;
 	
+	String role;
+	String status;
+	String regDate;
+	String lastLogin;
+	String previousPayment;
+	String outDate;
+	
+	
   // 통계용 필드 (DB 테이블엔 없지만 화면에 뿌릴 때 필요)
   private Double avgRating;
   private Integer reviewCount;
