@@ -1842,6 +1842,7 @@
 
                             if (res.result === "success") {
                                 alert("상품 정보가 모두 수정되었습니다!");
+                                console.log(res.message1);
                                 window.location.href = "/partnerManagement.do";  //
                             } else {
                                 alert("서버 응답은 성공했지만, result가 success가 아닙니다.");

@@ -268,12 +268,14 @@
 	</update>
  
  	<insert id="insertUniqueNewTagsOnly" parameterType="com.example.demo.company.model.Company">
- 		insert into product_tag
- 		values
- 		<foreach collection="uniqueNewTagsOnly" item="tag" separator=",">
- 			(null, #{tag})
- 			
- 		</foreach>
+ 		<if test="uniqueNewTagsOnly != null and uniqueNewTagsOnly.size() > 0">
+ 			insert into product_tag
+ 			values
+ 		
+ 			<foreach collection="uniqueNewTagsOnly" item="tag" separator=",">
+ 				(null, #{tag})
+ 			</foreach>
+ 		</if>
  		
  	</insert>
  

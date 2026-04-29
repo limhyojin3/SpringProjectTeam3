@@ -85,37 +85,37 @@ public class CompanyController {
 			throws IllegalStateException, IOException {
 		// 1. 파일이 저장될 물리적 경로 설정
 
-//		if (file != null && !file.isEmpty()) {
-//			String projectPath = System.getProperty("user.dir");// 현재 프로젝트 폴더 경로를 가져옴
-//			String uploadDir = projectPath + "/src/main/resources/static/uploads/";
-//
-//			
-//			String originalName = file.getOriginalFilename();
-//			String uuid = UUID.randomUUID().toString();
-//			String savedName = uuid + "_" + originalName;
-//
-//			File folder = new File(uploadDir);
-//
-//			if (!folder.exists()) {
-//				folder.mkdirs();
-//			}
-//
-//			File copyFile = new File(uploadDir + savedName);
-//			file.transferTo(copyFile);
-//
-//			product.setImgUrl("/img2/" + savedName);
-//
-//		}
-//
-//		HashMap<String, Object> resultMap = companyService.editProduct(product);
+		if (file != null && !file.isEmpty()) {
+			String projectPath = System.getProperty("user.dir");// 현재 프로젝트 폴더 경로를 가져옴
+			String uploadDir = projectPath + "/src/main/resources/static/uploads/";
 
-		System.out.println(product);//uniqueNewTagsOnly=[아름다운, 자유로운]
+			
+			String originalName = file.getOriginalFilename();
+			String uuid = UUID.randomUUID().toString();
+			String savedName = uuid + "_" + originalName;
+
+			File folder = new File(uploadDir);
+
+			if (!folder.exists()) {
+				folder.mkdirs();
+			}
+
+			File copyFile = new File(uploadDir + savedName);
+			file.transferTo(copyFile);
+
+			product.setImgUrl("/img2/" + savedName);
+
+		}
+
+		HashMap<String, Object> resultMap = companyService.editProduct(product);
+
+//		System.out.println(product);//uniqueNewTagsOnly=[아름다운, 자유로운]
 		
 		//int insertUniqueNewTagsOnly(Company product);
 		
-		companyService.addUniqueNewTagsOnly(product);
-//		return new Gson().toJson(resultMap);
-		return null;
+//		companyService.addUniqueNewTagsOnly(product);
+		return new Gson().toJson(resultMap);
+//		return null;
 
 	}
 	
