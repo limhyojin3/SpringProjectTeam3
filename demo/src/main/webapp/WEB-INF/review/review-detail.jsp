@@ -59,7 +59,8 @@
                     <span :class="info.isPaid == 1 ? 'badge badge-danger' : 'badge badge-primary'">
                         {{ info.isPaid == 1 ? '유료리뷰' : '무료리뷰' }}
                     </span>
-                    <div v-if="info.userId !== sessionId">
+                    
+                    <div v-if="info.userId !== sessionId && info.nickname !== '탈퇴회원'">
                         <button class="btn btn-sm btn-outline-secondary border-0" @click="openReportModal('REVIEW', reviewNo, info.userId)">
                             <i class="fas fa-bullhorn text-danger mr-1"></i> <span class="small text-muted">신고</span>
                         </button>
@@ -67,7 +68,9 @@
                 </div>
                 <h2 class="mt-3" style="font-weight: 700; color: #222;">{{ info.title }}</h2>
                 <div class="d-flex justify-content-between align-items-center flex-wrap">
-                    <small class="text-muted">작성자: <b>{{ info.userId }}</b> | {{ info.regDate }}</small>
+                    <small class="text-muted">
+                        작성자: <b :class="{'text-danger': info.nickname === '탈퇴회원'}">{{ info.nickname }}</b> | {{ info.regDate }}
+                    </small>
                     <small class="text-muted"><i class="far fa-eye"></i> {{ info.viewCnt }} | <i class="far fa-heart text-danger"></i> {{ info.likeCnt }}</small>
                 </div>
             </div>
@@ -105,7 +108,11 @@
 
             <div class="text-center border-bottom pb-5">
                 <button class="btn btn-light border mr-2 px-4" @click="fnBack">목록으로</button>
-                <button :class="info.isLiked > 0 ? 'btn-danger' : 'btn-outline-danger'" class="btn px-5 shadow-sm" @click="fnLike">
+                
+                <button :class="info.isLiked > 0 ? 'btn-danger' : 'btn-outline-danger'" 
+                        class="btn px-5 shadow-sm" 
+                        @click="info.nickname !== '탈퇴회원' ? fnLike() : null"
+                        :style="info.nickname === '탈퇴회원' ? 'cursor: default; opacity: 0.5;' : ''">
                     <i class="fas fa-heart mr-1"></i> {{ info.isLiked > 0 ? '좋아요 취소' : '좋아요' }} {{ info.likeCnt }}
                 </button>
             </div>
@@ -119,49 +126,55 @@
                                 <span v-if="item.parentNo" class="reply-mark">ㄴ</span>
                                 <span class="comment-user">
                                     <template v-if="item.isDeleted == 0">
-                                        {{ item.nickname }}
+                                        <span :class="{'text-danger': item.nickname === '탈퇴회원'}">{{ item.nickname }}</span>
                                     </template>
-                                    
                                     <template v-else>
-                                        <b v-if="item.delRole === 'ADMIN'" class="text-danger" style="font-size: 0.9em;">
-                                            [관리자 삭제]
-                                        </b>
-                                        <b v-else class="text-muted" style="font-size: 0.9em;">
-                                            [삭제된 댓글]
-                                        </b>
+                                        <b v-if="item.delRole === 'ADMIN'" class="text-danger" style="font-size: 0.9em;">[관리자 삭제]</b>
+                                        <b v-else class="text-muted" style="font-size: 0.9em;">[삭제된 댓글]</b>
                                     </template>
                                 </span>
                                 <span class="comment-date">{{ item.regDate }}</span>
-                                <span v-if="item.isDeleted == 0" class="comment-like-btn ml-3" @click="fnCommentLike(item)">
+                                
+                                <span v-if="item.isDeleted == 0 && item.nickname !== '탈퇴회원' && info.nickname !== '탈퇴회원'" 
+                                    class="comment-like-btn ml-3" @click="fnCommentLike(item)">
                                     <i :class="item.isLiked > 0 ? 'fas fa-heart text-danger' : 'far fa-heart text-muted'"></i>
                                     <small :class="{'like-active': item.isLiked > 0}">{{ item.likeCnt }}</small>
                                 </span>
                             </div>
 
                             <div v-if="item.isDeleted == 0" class="comment-action-btns">
-                                <span v-if="!item.parentNo" @click="fnShowReply(item.commentNo)">
-                                    <i class="far fa-comment-dots"></i> {{ replyTo === item.commentNo ? '취소' : '답글' }}
-                                </span>
+                                <template v-if="item.nickname !== '탈퇴회원' && info.nickname !== '탈퇴회원'">
+                                    <span v-if="!item.parentNo" @click="fnShowReply(item.commentNo)">
+                                        <i class="far fa-comment-dots"></i> {{ replyTo === item.commentNo ? '취소' : '답글' }}
+                                    </span>
+
+                                    <span v-if="item.userId !== sessionId && sessionRole !== 'ADMIN'" 
+                                        @click="openReportModal('COMMENT', item.commentNo, item.userId)" 
+                                        class="report-link text-danger">
+                                        <i class="fas fa-exclamation-triangle"></i> 신고
+                                    </span>
+                                </template>
 
                                 <span v-if="item.userId === sessionId && !item.isEdit" @click="fnEditMode(item)">
                                     <i class="far fa-edit"></i> 수정
                                 </span>
-
                                 <span v-if="(item.userId === sessionId || sessionRole === 'ADMIN') && !item.isEdit" 
                                     @click="fnDeleteComment(item.commentNo)">
                                     <i class="far fa-trash-alt"></i> 삭제
-                                </span>
-
-                                <span v-if="item.userId !== sessionId && sessionRole !== 'ADMIN'" 
-                                    @click="openReportModal('COMMENT', item.commentNo, item.userId)" 
-                                    class="report-link text-danger">
-                                    <i class="fas fa-exclamation-triangle"></i> 신고
                                 </span>
                             </div>
                         </div>
 
                         <div v-if="item.isDeleted == 0">
-                            <div v-if="!item.isEdit" class="comment-content">{{ item.content }}</div>
+                            <div v-if="!item.isEdit" class="comment-content">
+                                <template v-if="item.nickname === '탈퇴회원'">
+                                    <span class="text-muted font-italic">탈퇴한 사용자의 댓글입니다.</span>
+                                </template>
+                                <template v-else>
+                                    {{ item.content }}
+                                </template>
+                            </div>
+                            
                             <div v-else class="mt-2">
                                 <textarea class="form-control edit-textarea" v-model="item.content" rows="2"></textarea>
                                 <div class="text-right mt-2">
@@ -182,7 +195,8 @@
                             </template>
                         </div>
 
-                        <div v-if="item.isDeleted == 0 && replyTo === item.commentNo" class="mt-3 p-3 bg-white border rounded shadow-sm">
+                        <div v-if="item.isDeleted == 0 && replyTo === item.commentNo && item.nickname !== '탈퇴회원' && info.nickname !== '탈퇴회원'" 
+                            class="mt-3 p-3 bg-white border rounded shadow-sm">
                             <textarea class="form-control" v-model="replyContent" rows="2" :placeholder="item.userId + '님께 답글 남기기...'"></textarea>
                             <div class="text-right mt-2">
                                 <button class="btn btn-sm btn-comment" @click="fnSaveReply(item.commentNo)">답글 등록</button>
@@ -190,11 +204,16 @@
                         </div>
                     </div>
                 </div>
-                <div class="comment-input-box shadow-sm">
+                
+                <div class="comment-input-box shadow-sm mt-4" v-if="info.nickname !== '탈퇴회원'">
                     <textarea class="form-control mb-2" v-model="newComment" rows="3" placeholder="댓글을 입력해 주세요."></textarea>
                     <div class="text-right">
                         <button class="btn btn-comment px-4 py-2" @click="fnAddComment">댓글 등록</button>
                     </div>
+                </div>
+                
+                <div v-else class="alert alert-light text-center mt-4 border">
+                    <i class="fas fa-info-circle text-muted"></i> 탈퇴한 사용자의 리뷰에는 댓글을 남길 수 없습니다.
                 </div>
             </div>
         </div>
