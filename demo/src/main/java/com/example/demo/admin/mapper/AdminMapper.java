@@ -15,6 +15,8 @@ public interface AdminMapper {
 	public List<Admin> selectClientsList(HashMap<String, Object> map);
 
 	public List<Admin> selectReviewList(HashMap<String, Object> map);
+	public int updateReviewApprove(HashMap<String, Object> map);
+	public int updateReviewReject(HashMap<String, Object> map);
 	
 	public List<Admin> selectBoardList(HashMap<String, Object> map);
 	public int updateBoardApprove(HashMap<String, Object> map);
@@ -40,11 +42,13 @@ public interface AdminMapper {
 	
 	int insertPayment2(HashMap<String, Object> map);
 	
-	int insertPaymentPass(HashMap<String, Object> map);
+	
 
-	int insertPayment(Map<String, Object> map);
+	int insertPayment1(Map<String, Object> map);
 	
 	public List<Admin> selectInquiryList(HashMap<String, Object> map);
+	
+	int selectInquiryCount(HashMap<String, Object> map);
 	
 	int checkAnswer(HashMap<String, Object> map);
 
@@ -93,6 +97,9 @@ public interface AdminMapper {
 	
 	// 신고 누적 횟수
 	public int selectReportHistory(HashMap<String, Object> map);
+	
+	// 댓글로 게시판 추적
+	int selectCommentTargetPost(HashMap<String, Object> map);
 
 	
 	// 결제 관리

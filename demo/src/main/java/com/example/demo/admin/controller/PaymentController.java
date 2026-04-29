@@ -49,4 +49,14 @@ public class PaymentController {
 		
 		return paymentService.verifyPayment(map);
 	}
+	
+	//환불
+	@RequestMapping(value = "/refundPayment.dox", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
+	@ResponseBody
+	public String refundPayment(Model model, @RequestParam HashMap<String, Object> map) throws Exception {
+
+	    HashMap<String, Object> resultMap = paymentService.refundPayment(map);
+	    return new Gson().toJson(resultMap);
+	}
+	
 }

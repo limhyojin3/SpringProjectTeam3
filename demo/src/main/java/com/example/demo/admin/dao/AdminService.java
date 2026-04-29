@@ -58,7 +58,7 @@ public class AdminService {
 		HashMap<String, Object> resultMap = new HashMap<String, Object>();
 		try {
 			List<Admin> list = adminMapper.selectReviewList(map);
-			int totalCount = adminMapper.selectReportCount(map);
+			int totalCount = adminMapper.selectReviewCount(map);
 
 			resultMap.put("list", list);
 			resultMap.put("totalCount", totalCount);
@@ -70,6 +70,42 @@ public class AdminService {
 			resultMap.put("result", "fail");
 			resultMap.put("message", Message.MSG_SERVER_ERR);
 		}
+		return resultMap;
+	}
+	
+	public HashMap<String, Object> editReviewApprove(HashMap<String, Object> map) {
+
+		HashMap<String, Object> resultMap = new HashMap<>();
+
+		try {
+			adminMapper.updateReviewApprove(map);
+
+			resultMap.put("result", "success");
+
+		} catch (Exception e) {
+			System.out.println(e.getMessage());
+			resultMap.put("result", "fail");
+			throw e; // 트랜잭션 롤백
+		}
+
+		return resultMap;
+	}
+	
+	public HashMap<String, Object> editReviewReject(HashMap<String, Object> map) {
+
+		HashMap<String, Object> resultMap = new HashMap<>();
+
+		try {
+			adminMapper.updateReviewReject(map);
+
+			resultMap.put("result", "success");
+
+		} catch (Exception e) {
+			System.out.println(e.getMessage());
+			resultMap.put("result", "fail");
+			throw e; // 트랜잭션 롤백
+		}
+
 		return resultMap;
 	}
 
@@ -171,18 +207,14 @@ public class AdminService {
 	}
 
 	public int addPayment(HashMap<String, Object> map) {
-		return adminMapper.insertPayment(map);
+		return adminMapper.insertPayment1(map);
 	}
 
-	public int addPaymentPass(HashMap<String, Object> map) {
-		return adminMapper.insertPaymentPass(map);
-	}
+//	public int addPaymentPass(HashMap<String, Object> map) {
+//		return adminMapper.insertPaymentPass(map);
+//	}
 
-	@Transactional
-	public void completePayment(HashMap<String, Object> map) {
-		adminMapper.insertPayment(map);
-		adminMapper.insertPaymentPass(map);
-	}
+	
 
 	public HashMap<String, Object> getPaymentByPayNo(int payNo) {
 		return adminMapper.selectPaymentByPayNo(payNo);
@@ -207,8 +239,11 @@ public class AdminService {
 		HashMap<String, Object> resultMap = new HashMap<String, Object>();
 		try {
 			List<Admin> list = adminMapper.selectInquiryList(map);
+			int totalCount = adminMapper.selectInquiryCount(map);
+			
 			resultMap.put("list", list);
 			resultMap.put("result", "success");
+	        resultMap.put("totalCount", totalCount);
 			resultMap.put("message", Message.MSG_SEARCH);
 		} catch (Exception e) {
 			// TODO: handle exception
@@ -423,121 +458,6 @@ public class AdminService {
 		return resultMap;
 	}
 
-	private final String IMP_KEY = "6441076133101874";
-	private final String IMP_SECRET = "0QLgaXVjWTQOZmnBlwbma7943DaRO8QiJkViTnqgLEuaqsSu27eLiaRxoQWQnlkPDNNjgIunttaxAPm0";
-
-	// 결제 검증 핵심 로직
-	public boolean verifyPayment(HashMap<String, Object> map) {
-		int actualPaidAmount = 0;
-		int amount = 0;
-		int dbPrice = 0;
-
-		try {
-			String impUid = String.valueOf(map.get("imp_uid"));
-			String type = String.valueOf(map.get("type"));
-
-			amount = Integer.parseInt(String.valueOf(map.get("amount")));
-
-			// 1. 토큰 발급
-			String accessToken = getAccessToken();
-
-			// 2. 포트원 실제 결제액 조회 (샌드박스 포함 필수!)
-			actualPaidAmount = getPaymentData(impUid, accessToken);
-
-			// 3. DB 상품 가격 조회
-			if ("PASS".equals(type)) {
-
-				int passNo = Integer.parseInt(String.valueOf(map.get("passNo")));
-
-				dbPrice = adminMapper.selectPriceInfo(passNo);
-
-			} else if ("REG".equals(type)) {
-
-				dbPrice = 1000; // 등록비 고정금액
-
-			} else if ("RES".equals(type)) {
-
-				dbPrice = Integer.parseInt(String.valueOf(map.get("reservePrice")));
-
-			}
-
-			System.out.println("========= [결제 검증 상세 결과] =========");
-			System.out.println("1. 포트원 조회 금액 (A): " + actualPaidAmount);
-			System.out.println("2. 프론트 보낸 금액 (B): " + amount);
-			System.out.println("3. DB 등록 가격 (C): " + dbPrice);
-			System.out.println("========================================");
-
-			// 검증 성공 조건: A == B 이고 A == C 여야 함
-			boolean isMatch = (actualPaidAmount == amount) && (actualPaidAmount == dbPrice);
-
-			if (!isMatch) {
-				System.out.println(">>> 검증 불일치 발생!");
-				if (actualPaidAmount == 0)
-					System.out.println("사유: 포트원에서 결제 내역을 찾을 수 없음 (샌드박스 설정 확인 필요)");
-				if (actualPaidAmount != dbPrice)
-					System.out.println("사유: 결제 금액과 DB 가격이 다름");
-			}
-
-			return isMatch;
-
-		} catch (Exception e) {
-			System.out.println("검증 중 에러: " + e.getMessage());
-			e.printStackTrace();
-			return false;
-		}
-	}
-
-	private String getAccessToken() {
-		RestTemplate restTemplate = new RestTemplate();
-		String url = "https://api.iamport.kr/users/getToken";
-
-		// 1. 요청 바디 설정
-		Map<String, String> body = new HashMap<>();
-		body.put("imp_key", "6441076133101874"); // 본인의 API 키
-		body.put("imp_secret", "0QLgaXVjWTQOZmnBlwbma7943DaRO8QiJkViTnqgLEuaqsSu27eLiaRxoQWQnlkPDNNjgIunttaxAPm0"); // 본인의
-																													// Secret
-		try {
-			// 2. 포트원에 토큰 요청
-			Map response = restTemplate.postForObject(url, body, Map.class);
-
-			// 3. 응답에서 response 객체 꺼내기
-			Map responseData = (Map) response.get("response");
-
-			if (responseData != null && responseData.get("access_token") != null) {
-				String token = (String) responseData.get("access_token");
-				System.out.println(">>> 토큰 발급 성공: " + token); // 로그 확인용
-				return token;
-			}
-		} catch (Exception e) {
-			System.out.println("토큰 발급 중 에러: " + e.getMessage());
-		}
-		return null;
-	}
-
-	private int getPaymentData(String impUid, String accessToken) {
-		RestTemplate restTemplate = new RestTemplate();
-
-		String url = "https://api.iamport.kr/payments/" + impUid + "?include_sandbox=true";
-
-		HttpHeaders headers = new HttpHeaders();
-		headers.set("Authorization", accessToken);
-		HttpEntity<String> entity = new HttpEntity<>(headers);
-
-		try {
-			ResponseEntity<Map> response = restTemplate.exchange(url, HttpMethod.GET, entity, Map.class);
-			Map responseData = (Map) response.getBody().get("response");
-
-			if (responseData == null)
-				return 0;
-
-			// 포트원은 금액을 숫자로 주므로 안전하게 변환
-			return Integer.parseInt(String.valueOf(responseData.get("amount")));
-		} catch (Exception e) {
-			System.out.println("포트원 조회 중 진짜 에러 발생: " + e.getMessage());
-			return 0;
-		}
-	}
-
 	// 신고관리 일괄 신고 승인
 	@Transactional
 	public HashMap<String, Object> batchApproveReport(HashMap<String, Object> map) {
@@ -595,6 +515,29 @@ public class AdminService {
 		} catch (Exception e) {
 			System.out.println(e.getMessage());
 			resultMap.put("result", "fail");
+		}
+
+		return resultMap;
+	}
+	
+	// 댓글로 게시판 추적
+	public HashMap<String, Object> adminCommentTargetPost(HashMap<String, Object> map) {
+
+		HashMap<String, Object> resultMap = new HashMap<>();
+
+		try {
+
+			int postNo = adminMapper.selectCommentTargetPost(map);
+
+			resultMap.put("result", "success");
+			resultMap.put("postNo", postNo);
+
+		} catch (Exception e) {
+
+			e.printStackTrace();
+
+			resultMap.put("result", "fail");
+			resultMap.put("message", "조회 실패");
 		}
 
 		return resultMap;

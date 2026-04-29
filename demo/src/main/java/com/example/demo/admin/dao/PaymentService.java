@@ -7,6 +7,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.HashMap;
 
+import org.cloudinary.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -14,7 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.example.demo.admin.mapper.PaymentMapper;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-
+import org.springframework.beans.factory.annotation.Value;
 //PaymentService.java
 @Service
 public class PaymentService {
@@ -24,6 +25,12 @@ public class PaymentService {
 	
 	@Autowired
 	AdminService adminService;
+	
+	@Value("${iamport.imp_key}")
+	private String impKey;
+
+	@Value("${iamport.imp_secret}")
+	private String impSecret;
 	
 	@Transactional
 	public void completePassPayment(HashMap<String, Object> map) {
@@ -111,7 +118,7 @@ public class PaymentService {
 				if (map.get("passNo").toString().equals("1")) {
 					HashMap<String, Object> chk = adminService.getPassInfo(map);
 
-					if (chk != null) {
+					if (chk.get("info") != null) {
 						result.put("result", "fail");
 						result.put("message", "체험권은 1회만 구매 가능합니다.");
 						System.out.println("체험용 패스 여부 : " + chk);
@@ -123,6 +130,7 @@ public class PaymentService {
 				
 			}else if(type.equals("RES")){
 			    // completeReservationPayment(map);
+
 			}else if(type.equals("REG")){
 			    completeRegistrationPayment(map);
 			}
@@ -154,29 +162,49 @@ public class PaymentService {
 		conn.setRequestMethod("POST");
 		conn.setRequestProperty("Content-Type", "application/json");
 		conn.setDoOutput(true);
+		
+		String json = "{"
+	            + "\"imp_key\":\"" + impKey + "\","
+	            + "\"imp_secret\":\"" + impSecret + "\""
+	            + "}";
 
-		String json = "{" + "\"imp_key\":\"6441076133101874\"," + "\"imp_secret\":\"0QLgaXVjWTQOZmnBlwbma7943DaRO8QiJkViTnqgLEuaqsSu27eLiaRxoQWQnlkPDNNjgIunttaxAPm0\"" + "}";
+	    OutputStream os = conn.getOutputStream();
+	    os.write(json.getBytes("UTF-8"));
+	    os.flush();
+	    os.close();
 
-		OutputStream os = conn.getOutputStream();
-		os.write(json.getBytes("UTF-8"));
-		os.flush();
-		os.close();
+	    int code = conn.getResponseCode();
 
-		BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream(), "UTF-8"));
+	    BufferedReader br;
 
-		String line = "";
-		StringBuilder sb = new StringBuilder();
+	    if (code == 200) {
+	        br = new BufferedReader(
+	            new InputStreamReader(conn.getInputStream(), "UTF-8"));
+	    } else {
+	        br = new BufferedReader(
+	            new InputStreamReader(conn.getErrorStream(), "UTF-8"));
+	    }
 
-		while ((line = br.readLine()) != null) {
-			sb.append(line);
-		}
+	    String line = "";
+	    StringBuilder sb = new StringBuilder();
 
-		br.close();
+	    while ((line = br.readLine()) != null) {
+	        sb.append(line);
+	    }
 
-		ObjectMapper mapper = new ObjectMapper();
-		JsonNode root = mapper.readTree(sb.toString());
+	    br.close();
 
-		return root.path("response").path("access_token").asText();
+	    System.out.println("토큰 응답코드 = " + code);
+	    System.out.println("토큰 응답본문 = " + sb.toString());
+
+	    if (code != 200) {
+	        throw new RuntimeException("토큰 발급 실패");
+	    }
+
+	    ObjectMapper mapper = new ObjectMapper();
+	    JsonNode root = mapper.readTree(sb.toString());
+
+	    return root.path("response").path("access_token").asText();
 	}
 
 	// =========================
@@ -230,4 +258,122 @@ public class PaymentService {
 
 	    return info;
 	}
+	
+//	public HashMap<String, Object> refundPayment(HashMap<String, Object> map) {
+//	    HashMap<String, Object> resultMap = new HashMap<>();
+//
+//	    try {
+//
+//	        String impUid = map.get("imp_uid").toString();
+//
+//	        // -----------------------------
+//	        // 1. 포트원 토큰 발급
+//	        // -----------------------------
+//	        URL url = new URL("https://api.iamport.kr/users/getToken");
+//	        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+//
+//	        conn.setRequestMethod("POST");
+//	        conn.setRequestProperty("Content-Type", "application/json");
+//	        conn.setDoOutput(true);
+//
+//	        String jsonInput =
+//	            "{ \"imp_key\":\"테스트REST_API_KEY\", " +
+//	            "\"imp_secret\":\"테스트REST_API_SECRET\" }";
+//
+//	        OutputStream os = conn.getOutputStream();
+//	        os.write(jsonInput.getBytes("UTF-8"));
+//	        os.flush();
+//	        os.close();
+//
+//	        BufferedReader br =
+//	            new BufferedReader(new InputStreamReader(conn.getInputStream(), "UTF-8"));
+//
+//	        StringBuilder sb = new StringBuilder();
+//	        String line = "";
+//
+//	        while ((line = br.readLine()) != null) {
+//	            sb.append(line);
+//	        }
+//
+//	        br.close();
+//
+//	        JSONObject tokenObj = new JSONObject(sb.toString());
+//	        String accessToken =
+//	            tokenObj.getJSONObject("response").getString("access_token");
+//
+//	        // -----------------------------
+//	        // 2. 환불 요청
+//	        // -----------------------------
+//	        URL cancelUrl = new URL("https://api.iamport.kr/payments/cancel");
+//	        HttpURLConnection cancelConn =
+//	            (HttpURLConnection) cancelUrl.openConnection();
+//
+//	        cancelConn.setRequestMethod("POST");
+//	        cancelConn.setRequestProperty("Content-Type", "application/json");
+//	        cancelConn.setRequestProperty("Authorization", accessToken);
+//	        cancelConn.setDoOutput(true);
+//
+//	        String cancelJson =
+//	            "{ \"imp_uid\":\"" + impUid + "\", " +
+//	            "\"reason\":\"관리자 환불\" }";
+//
+//	        OutputStream os2 = cancelConn.getOutputStream();
+//	        os2.write(cancelJson.getBytes("UTF-8"));
+//	        os2.flush();
+//	        os2.close();
+//
+//	        BufferedReader br2 =
+//	            new BufferedReader(new InputStreamReader(cancelConn.getInputStream(), "UTF-8"));
+//
+//	        StringBuilder sb2 = new StringBuilder();
+//
+//	        while ((line = br2.readLine()) != null) {
+//	            sb2.append(line);
+//	        }
+//
+//	        br2.close();
+//
+//	        // -----------------------------
+//	        // 3. DB 상태 변경
+//	        // -----------------------------
+//	        paymentMapper.updateRefundStatus(map);
+//
+//	        resultMap.put("result", "success");
+//	        resultMap.put("message", "환불 완료");
+//
+//	    } catch (Exception e) {
+//	        e.printStackTrace();
+//	        resultMap.put("result", "fail");
+//	        resultMap.put("message", "환불 실패");
+//	    }
+//
+//	    return resultMap;
+//	}
+	
+	// 환불
+	public HashMap<String, Object> refundPayment(HashMap<String, Object> map) {
+
+		HashMap<String, Object> resultMap = new HashMap<>();
+
+		try {
+
+			// 결제 환불 처리
+			paymentMapper.updateRefund(map);
+
+			// 예약 상태 취소
+			paymentMapper.updateReservationCancel(map);
+
+			resultMap.put("result", "success");
+			resultMap.put("message", "환불 완료");
+
+		} catch (Exception e) {
+			e.printStackTrace();
+
+			resultMap.put("result", "fail");
+			resultMap.put("message", "환불 실패");
+		}
+
+		return resultMap;
+	}
+	
 }
