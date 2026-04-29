@@ -455,4 +455,17 @@ public class CompanyService {
 		}
 		return resultMap;  
 	} 
+	
+	//companyService.addUniqueNewTagsOnly(product);
+	public HashMap<String, Object> addUniqueNewTagsOnly(Company product) {
+		
+		HashMap<String, Object> resultMap = new HashMap<String, Object>();
+		try {
+			int result1 = companyMapper.insertUniqueNewTagsOnly(product);
+			System.out.println(result1);
+			
+		} catch (Exception e) {
+		}
+		return resultMap;  
+	}
 }

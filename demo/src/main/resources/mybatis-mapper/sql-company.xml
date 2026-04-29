@@ -267,5 +267,14 @@
 		where res_no = #{resNo}
 	</update>
  
+ 	<insert id="insertUniqueNewTagsOnly" parameterType="com.example.demo.company.model.Company">
+ 		insert into product_tag
+ 		values
+ 		<foreach collection="uniqueNewTagsOnly" item="tag" separator=",">
+ 			(null, #{tag})
+ 			
+ 		</foreach>
+ 		
+ 	</insert>
  
 </mapper>

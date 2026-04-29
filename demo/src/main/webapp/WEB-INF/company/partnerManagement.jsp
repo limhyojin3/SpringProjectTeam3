@@ -1820,9 +1820,11 @@
                     formData.append("originalPrice", this.product1.originalPrice);
 
                     formData.append("deposit", this.product1.deposit);
-                    formData.append("tag",JSON.stringify(this.tagMapToList));
+                    formData.append("tag",JSON.stringify([...new Set(this.tagMapToList)]));
 
                     formData.append("proType", JSON.stringify(this.product1.proType));
+
+                    formData.append("uniqueNewTagsOnly", this.uniqueNewTagsOnly());
 
                     $.ajax({
                         url: "/upload.dox",
@@ -2088,6 +2090,7 @@
                 uniqueNewTagsOnly(){
                     return [...new Set(this.newTagsOnly)];
                 }
+                
 
 
             }, // methods
