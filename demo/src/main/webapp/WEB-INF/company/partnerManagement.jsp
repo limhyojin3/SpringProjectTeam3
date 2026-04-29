@@ -671,7 +671,7 @@
                                     <h3>마지막 결제 수단</h3>
                                     <p style="text-align: right; font-size: 20px;">{{ user.lastPayment }}</p>
                                 </div>
-                                <button style="float: right;" @click="withdraw">탈퇴하기</button>
+                                <!-- <button style="float: right;" @click="withdraw">탈퇴하기</button> -->
                             </div>
 
 
@@ -725,6 +725,9 @@
                                 <!-- 상품 등록 폼 -->
                                 <div v-else-if="productPage === 'reg'">
                                     <div class="product-form-wrapper">
+                                        <!-- {{serverTagList}}
+                                        {{newTagsOnly}}
+                                        {{uniqueNewTagsOnly()}} -->
                                         <h2 style="color: #333; margin-bottom: 30px;">상품 등록하기</h2>
 
                                         <div class="product-form-section">
@@ -755,7 +758,21 @@
                                                         </div>
                                                     </div>
                                                 </div>
-
+                                                <div class="form-group">
+                                                    <label class="form-label">상품 태그</label>                                        
+                                                        <input type="text" placeholder="첫번째 태그"
+                                                            v-model="tagMap.input1">
+                                                        <input type="text" placeholder="두번째 태그"
+                                                            v-model="tagMap.input2">
+                                                        <input type="text" placeholder="세번째 태그"
+                                                            v-model="tagMap.input3">
+                                                        <input type="text" placeholder="네번째 태그"
+                                                            v-model="tagMap.input4">
+                                                        <input type="text" placeholder="다섯번째 태그"
+                                                            v-model="tagMap.input5">
+                                                </div>
+                                                <!-- {{tagMap}}
+                                                {{tagMapToList}} -->
 
                                                 <div class="form-group">
 
@@ -768,6 +785,7 @@
                                                 </div>
 
                                                 <div class="form-group">
+                                                    
                                                     <label class="form-label"><span class="form-info-label">예상
                                                             견적</span></label>
                                                     <div class="form-info-box">
@@ -776,6 +794,15 @@
                                                             v-model="product2.originalPrice">
                                                     </div>
                                                 </div>
+                                                <div class="form-group">
+                                                    <label class="form-label"><span class="form-info-label">예약금</span></label>
+                                                    <div class="form-info-box">
+                                                        <input placeholder="여기에 예약금을 적어주세요." type="text"
+                                                            style="width: 200px; padding: 10px; border: 1px solid #ddd; border-radius: 4px;"
+                                                            v-model="product2.deposit">
+                                                    </div>
+                                                </div>
+                                                <!-- {{product2.deposit}} -->
                                             </div>
                                         </div>
 
@@ -807,7 +834,7 @@
                                         </div>
 
                                         <div class="form-button-group">
-                                            <button class="btn-cancel" @click="productPage = 'list'">취소(돌아가기)</button>
+                                            <button class="btn-cancel" @click="fnBack3()">취소(돌아가기)</button>
                                             <button class="btn-submit" @click="fnInsertProduct()">상품 등록</button>
                                         </div>
                                     </div>
@@ -816,6 +843,9 @@
                                 <!-- 상품 수정 폼 -->
                                 <div v-else-if="productPage === 'edit'">
                                     <div class="product-form-wrapper">
+                                        <!-- {{serverTagList}}
+                                        {{newTagsOnly}}
+                                        {{uniqueNewTagsOnly()}} -->
                                         <h2 style="color: #333; margin-bottom: 30px;">상품 수정하기</h2>
 
                                         <div class="product-form-section">
@@ -846,6 +876,23 @@
                                                     </div>
                                                 </div>
 
+                                                <div class="form-group">
+                                                    <label class="form-label">상품 태그</label>                                        
+                                                        <input type="text" placeholder="첫번째 태그"
+                                                            v-model="tagMap.input1">
+                                                        <input type="text" placeholder="두번째 태그"
+                                                            v-model="tagMap.input2">
+                                                        <input type="text" placeholder="세번째 태그"
+                                                            v-model="tagMap.input3">
+                                                        <input type="text" placeholder="네번째 태그"
+                                                            v-model="tagMap.input4">
+                                                        <input type="text" placeholder="다섯번째 태그"
+                                                            v-model="tagMap.input5">
+                                                </div>
+                                                <!-- {{tagMap}}
+                                                {{tagMapToList}}
+                                                {{product1}} -->
+
 
                                                 <div class="form-group">
                                                     <label class="form-label">상품 설명</label>
@@ -867,6 +914,16 @@
                                                             v-model="product1.originalPrice">
                                                     </div>
                                                 </div>
+
+                                                <div class="form-group">
+                                                    <label class="form-label"><span class="form-info-label">예약금</span></label>
+                                                    <div class="form-info-box">
+                                                        <input placeholder="여기에 예약금을 적어주세요." type="text"
+                                                            style="width: 200px; padding: 10px; border: 1px solid #ddd; border-radius: 4px;"
+                                                            v-model="product1.deposit">
+                                                    </div>
+                                                </div>
+                                                <!-- {{product1.deposit}} -->
                                             </div>
                                         </div>
 
@@ -1338,8 +1395,18 @@
                         productName: '',
                         productDetails: '',
                         originalPrice: '',
-                        imgUrl: ''
-                    }
+                        imgUrl: '',
+                        deposit: 0,
+                        tag: []
+                    },
+                    tagMap: {
+                        input1:'',
+                        input2:'',
+                        input3:'',
+                        input4:'',
+                        input5:''
+                    },
+                    serverTagList: [],
                 }
 
             }, // data
@@ -1348,6 +1415,22 @@
                 //     return this.reservationList.length;
                 // }
                 //,
+                tagMapToList(){
+                    const filteredtagArray = Object.values(this.tagMap).filter(tag => tag.trim() !== "");
+
+                    //console.log(filteredtagArray);
+                    return filteredtagArray;
+                },
+                newTagsOnly(){
+                    if(!this.serverTagList) {
+                        return tagMapToList();
+                    }
+                    
+                    return this.tagMapToList.filter(t => !this.serverTagList.includes(t));
+
+                },
+                
+
                 revCnt() {
                     return this.reviews.filter(r => r.updated === 'new').length
                         + this.simpleReviews.filter(r => r.updated === 'new').length;
@@ -1437,7 +1520,7 @@
                     return Math.ceil(this.reservationList.length / 3);
                 },
 
-
+                
 
             },
             methods: {
@@ -1523,6 +1606,9 @@
                             console.log(data);
                             // 1. 일단 전체 데이터를 담습니다.
                             self.product1 = data.info;//덮어씌우기
+                            self.serverTagList = data.tagList;
+
+                            
 
                             //
                             // 2. 문자열로 들어온 proType을 실제 배열로 변환합니다.
@@ -1547,8 +1633,21 @@
                                     self.product1.proType = [];
                                 }
                             }
+                            if(typeof self.product1.tag === 'string'){
+                                try {
+                                    let rawArry = JSON.parse(self.product1.tag);
 
+                                    self.product1.tag = rawArry;
 
+                                    self.tagMap.input1 = self.product1.tag[0] || "";
+                                    self.tagMap.input2 = self.product1.tag[1] || "";
+                                    self.tagMap.input3 = self.product1.tag[2] || "";
+                                    self.tagMap.input4 = self.product1.tag[3] || "";
+                                    self.tagMap.input5 = self.product1.tag[4] || "";
+                                } catch(e){
+                                    self.product1.tag = [];
+                                }
+                            }
 
                         }
                     });
@@ -1619,9 +1718,28 @@
                         productName: '',
                         productDetails: '',
                         originalPrice: '',
-                        imgUrl: ''
+                        imgUrl: '',
+                        deposit: 0,
+                        tag: []
                     }
                     this.productPage = 'reg';
+
+                    let self = this;
+                    let param = {
+
+                    };
+                    $.ajax({
+                        url: "/getTagList.dox",
+                        dataType: "json",
+                        type: "POST",
+                        data: param,
+                        success: function (data) {
+                            console.log(data);
+                            self.serverTagList = data.tagList;
+                        }
+                    });
+                    
+
 
                 },
                 resetForm() {
@@ -1721,7 +1839,12 @@
                     formData.append("productDetails", this.product1.productDetails);
                     formData.append("originalPrice", this.product1.originalPrice);
 
+                    formData.append("deposit", this.product1.deposit);
+                    formData.append("tag",JSON.stringify([...new Set(this.tagMapToList)]));
+
                     formData.append("proType", JSON.stringify(this.product1.proType));
+
+                    formData.append("uniqueNewTagsOnly", this.uniqueNewTagsOnly());
 
                     $.ajax({
                         url: "/upload.dox",
@@ -1739,6 +1862,7 @@
 
                             if (res.result === "success") {
                                 alert("상품 정보가 모두 수정되었습니다!");
+                                console.log(res.message1);
                                 window.location.href = "/partnerManagement.do";  //
                             } else {
                                 alert("서버 응답은 성공했지만, result가 success가 아닙니다.");
@@ -1765,9 +1889,13 @@
                     formData.append("productDetails", this.product2.productDetails);
                     formData.append("originalPrice", this.product2.originalPrice);
 
-
+                    //
+                    formData.append("deposit", this.product2.deposit);
                     formData.append("proType", JSON.stringify(this.product2.proType));
                     formData.append("userId", "${sessionScope.sessionId}");
+                    
+                    formData.append("tag",JSON.stringify([...new Set(this.tagMapToList)]));
+                    formData.append("uniqueNewTagsOnly", this.uniqueNewTagsOnly());
 
                     $.ajax({
                         url: "/upload2.dox",
@@ -1784,7 +1912,8 @@
 
 
                             if (res.result === "success") {
-                                alert("상품 정보가 모두 수정되었습니다!");
+                                alert("상품 정보가 모두 등록되었습니다!");
+                                console.log(res.message1);
                                 window.location.href = "/partnerManagement.do"; //
                             } else {
                                 alert("서버 응답은 성공했지만, result가 success가 아닙니다.");
@@ -1978,7 +2107,18 @@
                     } else {
                         return '★☆☆☆☆';
                     }
+                },
+
+                uniqueNewTagsOnly(){
+                    return [...new Set(this.newTagsOnly)];
+                },
+                fnBack3(){
+                    this.tagMap = {};
+                    //this.tagMapToList = [];
+                    this.productPage = 'list'
+                    this.product2.deposit = 0;
                 }
+                
 
 
             }, // methods

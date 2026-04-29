@@ -28,11 +28,16 @@ public interface CompanyMapper {
 	
 	//<insert id="insertPaymentFinal" parameterType="map">
 //	<update id="updatePaymentFinal" parameterType="map">
+	
+	//<insert id="insertUniqueNewTagsOnly" parameterType="com.example.demo.company.model.Company">
+	
+	int insertUniqueNewTagsOnly(Company product);
+	
 	int insertPaymentFinal(HashMap<String, Object> map);
 	
 	int updatePaymentFinal(HashMap<String, Object> map);
 	
-	
+	//List<String> tagList = companyMapper.selectTagList(map);
 	
 	//<update id="checkOver30minute" parameterType="map">
 	int checkOver30minute(HashMap<String, Object> map);

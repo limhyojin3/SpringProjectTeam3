@@ -109,7 +109,13 @@ public class CompanyController {
 
 		HashMap<String, Object> resultMap = companyService.editProduct(product);
 
+//		System.out.println(product);//uniqueNewTagsOnly=[아름다운, 자유로운]
+		
+		//int insertUniqueNewTagsOnly(Company product);
+		
+//		companyService.addUniqueNewTagsOnly(product);
 		return new Gson().toJson(resultMap);
+//		return null;
 
 	}
 	
@@ -150,8 +156,9 @@ public class CompanyController {
 
 		HashMap<String, Object> resultMap = companyService.addProduct(product);
 
+//		System.out.println(product);
 		return new Gson().toJson(resultMap);
-
+//		return null;
 	}
 	//productRemove.dox
 	@ResponseBody
@@ -245,6 +252,14 @@ public class CompanyController {
 	@ResponseBody
 	public String test89(@RequestParam HashMap<String, Object> map) throws Exception {
 		HashMap<String, Object> resultMap = companyService.addAndEditPaymentFinal(map);
+
+		return new Gson().toJson(resultMap);
+	}
+	
+	@RequestMapping(value = "/getTagList.dox", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
+	@ResponseBody
+	public String tess89(@RequestParam HashMap<String, Object> map) throws Exception {
+		HashMap<String, Object> resultMap = companyService.getTagList(map);
 
 		return new Gson().toJson(resultMap);
 	}

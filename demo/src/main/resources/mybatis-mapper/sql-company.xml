@@ -17,7 +17,7 @@
 	<select id="selectProduct" parameterType="hashmap"
 		resultType="com.example.demo.company.model.Company">
 		SELECT P.PRODUCT_NO, P.PRODUCT_NAME,P.PRODUCT_DETAILS, P.ORIGINAL_PRICE,
-		P.IMG_URL, P.PRO_TYPE
+		P.IMG_URL, P.PRO_TYPE, p.deposit, p.tag
 		FROM PRODUCT P
 		LEFT JOIN COMPANY C ON P.COMPANY_NO = C.COMPANY_NO
 		WHERE C.USER_ID = #{userid} AND PRODUCT_NO = #{productNo}
@@ -40,7 +40,9 @@
 		PRODUCT_DETAILS = #{productDetails},
 		ORIGINAL_PRICE = #{originalPrice},
 		IMG_URL = #{imgUrl},
-		PRO_TYPE = #{proType}
+		PRO_TYPE = #{proType},
+		deposit = #{deposit},
+		tag = #{tag}
 		WHERE PRODUCT_NO = #{productNo}
 
 	</update>
@@ -63,9 +65,9 @@
 	<insert id="insertProduct"
 		parameterType="com.example.demo.company.model.Company">
 		INSERT INTO PRODUCT(PRODUCT_NAME, PRODUCT_DETAILS, ORIGINAL_PRICE,
-		IMG_URL, PRO_TYPE, COMPANY_NO)
+		IMG_URL, PRO_TYPE, COMPANY_NO, tag, deposit)
 		VALUES(#{productName}, #{productDetails}, #{originalPrice}, #{imgUrl},
-		#{proType}, #{companyNo})
+		#{proType}, #{companyNo}, #{tag}, #{deposit})
 
 	</insert>
 
@@ -94,6 +96,7 @@
 		-- 3. 조건: 업체 테이블의 로그인 아이디가 'sunsu09'인 경우
 		left join member m on m.user_id = r.user_id --
 		WHERE c.user_id = #{userId}
+		order by r.res_date desc, r.res_time desc
 	</select>
 	<select id="selectNewResCnt" parameterType="map"
 		resultType="String">
@@ -265,5 +268,16 @@
 		where res_no = #{resNo}
 	</update>
  
+ 	<insert id="insertUniqueNewTagsOnly" parameterType="com.example.demo.company.model.Company">
+ 		<if test="uniqueNewTagsOnly != null and uniqueNewTagsOnly.size() > 0">
+ 			insert into product_tag
+ 			values
+ 		
+ 			<foreach collection="uniqueNewTagsOnly" item="tag" separator=",">
+ 				(null, #{tag})
+ 			</foreach>
+ 		</if>
+ 		
+ 	</insert>
  
 </mapper>
