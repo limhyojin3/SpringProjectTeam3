@@ -54,102 +54,119 @@
         <jsp:include page="/WEB-INF/common/header.jsp" />
 
         <main class="main-content">
-            <template v-if="post && post.postNo">
-                <div class="post-header">
-                    <div class="d-flex justify-content-between align-items-start">
-                        <span class="category-tag"># {{ post.category || '일반' }}</span>
-                        <button v-if="sessionId && post.userId !== sessionId" class="btn-report" @click="fnOpenReportModal('POST', post.postNo, post.userId)">
-                            <i class="fas fa-siren-on"></i> 신고
-                        </button>
-                    </div>
-                    <h2 class="post-title">{{ post.title }}</h2>
-                    <div class="post-info">
-                        <span>작성자 <strong>@{{ post.nickname }}</strong></span>
-                        <span>|</span>
-                        <span>{{ post.regDate }}</span>
-                        <span>|</span>
-                        <span>조회 {{ post.viewCnt }}</span>
-                    </div>
-                </div>
-
-                <div class="post-content" v-html="post.content"></div>
-
-                <div class="bottom-area">
-                    <button class="btn-like" @click="fnPostLike">
-                        <template v-if="post && post.isLiked > 0">
-                            <span style="color: #ff4d6d;">❤️</span>
-                        </template>
-                        <template v-else>
-                            <span>🤍</span>
-                        </template>
-                        좋아요 {{ post.likeCnt || 0 }}
+        <template v-if="post && post.postNo">
+            <div class="post-header">
+                <div class="d-flex justify-content-between align-items-start">
+                    <span class="category-tag"># {{ post.category || '일반' }}</span>
+                    <button v-if="sessionId && post.userId !== sessionId && post.nickname !== '탈퇴회원'" 
+                            class="btn-report" 
+                            @click="fnOpenReportModal('POST', post.postNo, post.userId)">
+                        <i class="fas fa-siren-on"></i> 신고
                     </button>
-                    <div class="right-btns">
-                        <button class="btn-list" @click="fnGoList">목록으로</button>
-                        <template v-if="post.userId === sessionId">
-                            <button class="btn-edit" @click="fnEdit">수정</button>
-                            <button class="btn-delete" @click="fnRemove">삭제</button>
-                        </template>
+                </div>
+                <h2 class="post-title">{{ post.title }}</h2>
+                <div class="post-info">
+                    <span>작성자 <strong :class="{'text-danger': post.nickname === '탈퇴회원'}">@{{ post.nickname }}</strong></span>
+                    <span>|</span>
+                    <span>{{ post.regDate }}</span>
+                    <span>|</span>
+                    <span>조회 {{ post.viewCnt }}</span>
+                </div>
+            </div>
+
+            <div class="post-content" v-html="post.content"></div>
+
+            <div class="bottom-area">
+                <button class="btn-like" @click="post.nickname !== '탈퇴회원' ? fnPostLike() : null" :style="post.nickname === '탈퇴회원' ? 'cursor: default; opacity: 0.7;' : ''">
+                    <template v-if="post && post.isLiked > 0">
+                        <span style="color: #ff4d6d;">❤️</span>
+                    </template>
+                    <template v-else>
+                        <span>🤍</span>
+                    </template>
+                    좋아요 {{ post.likeCnt || 0 }}
+                </button>
+                
+                <div class="right-btns">
+                    <button class="btn-list" @click="fnGoList">목록으로</button>
+                    <button v-if="post.userId === sessionId" class="btn-edit" @click="fnEdit">수정</button>
+                    <button v-if="post.userId === sessionId || sessionRole === 'ADMIN'" 
+                            class="btn-delete" 
+                            @click="fnRemove">
+                        삭제
+                    </button>
+                </div>
+            </div>
+
+            <div class="comment-section">
+                <h5 class="mb-4">댓글 <b>{{ commentList.length }}</b></h5>
+                
+                <div class="comment-write-box mb-4" v-if="sessionId && post.nickname !== '탈퇴회원'">
+                    <textarea v-model="newComment" class="form-control" placeholder="댓글을 입력해주세요." rows="3"></textarea>
+                    <div class="text-right mt-2">
+                        <button class="btn-primary-sm" @click="fnAddComment(null)">등록</button>
                     </div>
                 </div>
+                <div v-else-if="post.nickname === '탈퇴회원'" class="alert alert-light text-center">
+                    탈퇴한 사용자의 게시글에는 댓글을 작성할 수 없습니다.
+                </div>
 
-                <div class="comment-section">
-                    <h5 class="mb-4">댓글 <b>{{ commentList.length }}</b></h5>
-                    
-                    <div class="comment-write-box mb-4" v-if="sessionId">
-                        <textarea v-model="newComment" class="form-control" placeholder="댓글을 입력해주세요." rows="3"></textarea>
-                        <div class="text-right mt-2">
-                            <button class="btn-primary-sm" @click="fnAddComment(null)">등록</button>
+                <div class="comment-list">
+                    <div v-for="item in commentList" :key="item.commentNo" :class="['comment-item', { 'is-reply': item.parentNo }]">
+                        <div class="comment-header d-flex justify-content-between">
+                            <b :class="{'text-muted': item.nickname === '탈퇴회원' || item.isDeleted == 1}">
+                                <template v-if="item.isDeleted == 0">@{{ item.nickname }}</template>
+                                <template v-else-if="item.delRole === 'ADMIN'">[관리자 삭제]</template>
+                                <template v-else>[삭제된 댓글]</template>
+                            </b>
+                            <span class="text-muted small">{{ item.regDate }}</span>
+                        </div>
+
+                        <div class="comment-body mt-1">
+                            <template v-if="item.isDeleted == 1">
+                                <span class="text-muted" style="font-style: italic;">삭제된 댓글입니다.</span>
+                            </template>
+                            <template v-else-if="item.nickname === '탈퇴회원'">
+                                <span class="text-muted" style="font-style: italic;">탈퇴한 사용자의 댓글입니다.</span>
+                            </template>
+                            <template v-else>
+                                {{ item.content }}
+                            </template>
+                        </div>
+
+                        <div class="comment-footer mt-2" v-if="item.isDeleted == 0">
+                            <template v-if="post.nickname !== '탈퇴회원' && item.nickname !== '탈퇴회원'">
+                                <span class="comment-like-btn" @click="fnCommentLike(item)">
+                                    <i :class="item.isLiked > 0 ? 'fas fa-heart text-danger' : 'far fa-heart'"></i>
+                                    <small>{{ item.likeCnt }}</small>
+                                </span>
+                                
+                                <span class="action-link" v-if="!item.parentNo && sessionId" @click="item.showReply = !item.showReply">답글</span>
+                                
+                                <span class="action-link text-danger" 
+                                    v-if="sessionId && item.userId !== sessionId && sessionRole !== 'ADMIN'" 
+                                    @click="fnOpenReportModal('COMMENT', item.commentNo, item.userId)">
+                                    신고
+                                </span>
+                            </template>
+
+                            <span class="action-link" v-if="item.userId === sessionId || sessionRole === 'ADMIN'" @click="fnRemoveComment(item.commentNo)">삭제</span>
+                        </div>
+
+                        <div class="mt-3" v-if="item.isDeleted == 0 && item.showReply && item.nickname !== '탈퇴회원' && post.nickname !== '탈퇴회원'">
+                            <textarea v-model="item.replyContent" class="form-control" rows="2" placeholder="답글 작성..."></textarea>
+                            <div class="text-right mt-2">
+                                <button class="btn btn-sm btn-dark" @click="fnAddComment(item)">답글 등록</button>
+                            </div>
                         </div>
                     </div>
-
-                    <div class="comment-list">
-    <div v-for="item in commentList" :key="item.commentNo" :class="['comment-item', { 'is-reply': item.parentNo }]">
-        
-        <div class="comment-header d-flex justify-content-between">
-            <b :class="{'text-muted': item.nickname === '탈퇴회원'}">
-                @{{ item.nickname }}
-            </b>
-            <span class="text-muted small">{{ item.regDate }}</span>
-        </div>
-
-        <div class="comment-body mt-1">
-            <template v-if="item.nickname === '탈퇴회원'">
-                <span class="text-muted" style="font-style: italic;">탈퇴한 사용자의 댓글입니다.</span>
-            </template>
-            <template v-else>
-                {{ item.content }}
-            </template>
-        </div>
-
-        <div class="comment-footer mt-2" v-if="item.nickname !== '탈퇴회원'">
-            <span class="comment-like-btn" @click="fnCommentLike(item)">
-                <i :class="item.isLiked > 0 ? 'fas fa-heart text-danger' : 'far fa-heart'"></i>
-                <small>{{ item.likeCnt }}</small>
-            </span>
-            
-            <span class="action-link" v-if="!item.parentNo && sessionId" @click="item.showReply = !item.showReply">답글</span>
-            
-            <span class="action-link" v-if="item.userId === sessionId" @click="fnRemoveComment(item.commentNo)">삭제</span>
-            
-            <span class="action-link text-danger" v-if="sessionId && item.userId !== sessionId" @click="fnOpenReportModal('COMMENT', item.commentNo, item.userId)">신고</span>
-        </div>
-
-        <div class="mt-3" v-if="item.showReply && item.nickname !== '탈퇴회원'">
-            <textarea v-model="item.replyContent" class="form-control" rows="2" placeholder="답글 작성..."></textarea>
-            <div class="text-right mt-2">
-                <button class="btn btn-sm btn-dark" @click="fnAddComment(item)">답글 등록</button>
-            </div>
-        </div>
-
-    </div>
-</div>
                 </div>
-            </template>
-            <div v-else class="text-center py-5">
-                <p class="text-muted">게시글을 불러오고 있습니다...</p>
             </div>
-        </main>
+        </template>
+        <div v-else class="text-center py-5">
+            <p class="text-muted">게시글을 불러오고 있습니다...</p>
+        </div>
+    </main>
 
         <div class="modal fade" id="reportModal" tabindex="-1" role="dialog">
             <div class="modal-dialog" role="document">
@@ -188,6 +205,7 @@
                     commentList: [],
                     newComment: "",
                     sessionId: "${sessionId}",
+                    sessionRole: "${sessionRole}",
                     reportInfo: {
                         target_type: '',
                         target_id: '',
@@ -284,6 +302,7 @@
                     });
                 },
                 fnCommentLike(item) {
+                    if(!this.sessionId) return alert("로그인이 필요합니다.");
                     $.ajax({
                         url: "/api/comment/like.dox",
                         type: "POST",
@@ -298,8 +317,15 @@
                         url: "/api/comment/remove.dox",
                         type: "POST",
                         contentType: "application/json",
-                        data: JSON.stringify({ commentNo: commentNo }),
-                        success: () => { this.fnGetComments(); }
+                        data: JSON.stringify({ 
+                            commentNo: commentNo,
+                            userId : this.sessionId,
+                            sessionRole : this.sessionRole, 
+                        }),
+                        success: () => { 
+                            alert("삭제되었습니다");
+                            this.fnGetComments(); 
+                        }
                     });
                 },
                 fnPostLike() {

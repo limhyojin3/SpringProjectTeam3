@@ -27,6 +27,6 @@ public class ReportController {
     // 내 신고 목록 불러오기
     @PostMapping("/my-list.dox")
     public Map<String, Object> getMyReports(@RequestBody HashMap<String, Object> map) {
-        return reportService.getMyReports(map);
-    }
+        return reportService.getMyReportList(map);
+    }  
 }

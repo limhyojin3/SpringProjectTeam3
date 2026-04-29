@@ -37,8 +37,27 @@
             reg_date AS regDate,
             target_title AS targetTitle
         FROM Report 
-        WHERE reporter_id = #{reporterId} 
+        WHERE reporter_id = #{reporterId}
+        <if test="searchType != null and searchType != ''">
+            AND target_type = #{searchType}
+        </if>
+        <if test="searchStatus != null and searchStatus != ''">
+            AND answer_status = #{searchStatus}
+        </if>
         ORDER BY reg_date DESC
+        LIMIT #{startIndex}, #{pageSize}
+    </select>
+
+    <select id="selectReportCount" resultType="int">
+        SELECT COUNT(*)
+        FROM Report
+        WHERE reporter_id = #{reporterId}
+        <if test="searchType != null and searchType != ''">
+            AND target_type = #{searchType}
+        </if>
+        <if test="searchStatus != null and searchStatus != ''">
+            AND answer_status = #{searchStatus}
+        </if>
     </select>
 
 </mapper>

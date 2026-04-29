@@ -60,7 +60,7 @@
 	        p.like_cnt AS likeCnt,
 	        p.is_deleted AS isDeleted,
 	        (SELECT COUNT(*) FROM comment c 
-	         WHERE c.post_no = p.post_no AND c.is_deleted = 0) AS commentCnt
+	         WHERE c.post_no = p.post_no) AS commentCnt
 	    FROM Community_Post p
 	    LEFT JOIN MEMBER m ON p.user_id = m.user_id
 	    LEFT JOIN USER_DETAIL d ON p.user_id = d.user_id

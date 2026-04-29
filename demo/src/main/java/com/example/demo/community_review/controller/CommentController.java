@@ -1,4 +1,4 @@
-package com.example.demo.community_review.controller;
+package com.example.demo.community_review.controller; 
 
 import java.util.HashMap;
 import java.util.Map;
@@ -19,7 +19,7 @@ public class CommentController {
     @Autowired
     private CommentService commentService;
     
-    private final Gson gson = new Gson();
+    private final Gson gson = new Gson(); 
     
     //  리뷰 댓글 목록 조회
     @PostMapping("/Review-list.dox")
