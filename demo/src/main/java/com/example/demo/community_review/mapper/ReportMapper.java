@@ -17,4 +17,7 @@ public interface ReportMapper {
     
     // [중복 신고 체크]
     int checkDuplicateReport(HashMap<String, Object> map);
+    
+    // 신고 전체 개수 조회
+    int selectReportCount(HashMap<String, Object> map);
 }

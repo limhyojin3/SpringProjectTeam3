@@ -2,7 +2,7 @@
 <%-- 1. JSTL 코어 태그 라이브러리를 사용하겠다고 선언합니다 --%>
 <%@ taglib prefix="c" uri="jakarta.tags.core" %>
 
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 
 <nav class="navbar navbar-expand-lg sticky-top bg-white shadow-sm" style="border-bottom: 2px solid #fff0f3 !important;">
     <div class="container">

@@ -117,37 +117,72 @@
                         <div class="d-flex justify-content-between align-items-center">
                             <div>
                                 <span v-if="item.parentNo" class="reply-mark">ㄴ</span>
-                                <span class="comment-user">{{ item.userId }}</span>
+                                <span class="comment-user">
+                                    <template v-if="item.isDeleted == 0">
+                                        {{ item.nickname }}
+                                    </template>
+                                    
+                                    <template v-else>
+                                        <b v-if="item.delRole === 'ADMIN'" class="text-danger" style="font-size: 0.9em;">
+                                            [관리자 삭제]
+                                        </b>
+                                        <b v-else class="text-muted" style="font-size: 0.9em;">
+                                            [삭제된 댓글]
+                                        </b>
+                                    </template>
+                                </span>
                                 <span class="comment-date">{{ item.regDate }}</span>
-                                <span class="comment-like-btn ml-3" @click="fnCommentLike(item)">
+                                <span v-if="item.isDeleted == 0" class="comment-like-btn ml-3" @click="fnCommentLike(item)">
                                     <i :class="item.isLiked > 0 ? 'fas fa-heart text-danger' : 'far fa-heart text-muted'"></i>
                                     <small :class="{'like-active': item.isLiked > 0}">{{ item.likeCnt }}</small>
                                 </span>
                             </div>
-                            <div class="comment-action-btns">
+
+                            <div v-if="item.isDeleted == 0" class="comment-action-btns">
                                 <span v-if="!item.parentNo" @click="fnShowReply(item.commentNo)">
                                     <i class="far fa-comment-dots"></i> {{ replyTo === item.commentNo ? '취소' : '답글' }}
                                 </span>
-                                <template v-if="item.userId === sessionId && !item.isEdit">
-                                    <span @click="fnEditMode(item)"><i class="far fa-edit"></i> 수정</span>
-                                    <span @click="fnDeleteComment(item.commentNo)"><i class="far fa-trash-alt"></i> 삭제</span>
-                                </template>
-                                <template v-else-if="item.userId !== sessionId">
-                                    <span @click="openReportModal('COMMENT', item.commentNo, item.userId)" class="report-link text-danger">
-                                        <i class="fas fa-exclamation-triangle"></i> 신고
-                                    </span>
-                                </template>
+
+                                <span v-if="item.userId === sessionId && !item.isEdit" @click="fnEditMode(item)">
+                                    <i class="far fa-edit"></i> 수정
+                                </span>
+
+                                <span v-if="(item.userId === sessionId || sessionRole === 'ADMIN') && !item.isEdit" 
+                                    @click="fnDeleteComment(item.commentNo)">
+                                    <i class="far fa-trash-alt"></i> 삭제
+                                </span>
+
+                                <span v-if="item.userId !== sessionId && sessionRole !== 'ADMIN'" 
+                                    @click="openReportModal('COMMENT', item.commentNo, item.userId)" 
+                                    class="report-link text-danger">
+                                    <i class="fas fa-exclamation-triangle"></i> 신고
+                                </span>
                             </div>
                         </div>
-                        <div v-if="!item.isEdit" class="comment-content">{{ item.content }}</div>
-                        <div v-else class="mt-2">
-                            <textarea class="form-control edit-textarea" v-model="item.content" rows="2"></textarea>
-                            <div class="text-right mt-2">
-                                <button class="btn btn-sm btn-light border mr-1" @click="fnCancelEdit(item)">취소</button>
-                                <button class="btn btn-sm btn-comment" @click="fnUpdateComment(item)">수정완료</button>
+
+                        <div v-if="item.isDeleted == 0">
+                            <div v-if="!item.isEdit" class="comment-content">{{ item.content }}</div>
+                            <div v-else class="mt-2">
+                                <textarea class="form-control edit-textarea" v-model="item.content" rows="2"></textarea>
+                                <div class="text-right mt-2">
+                                    <button class="btn btn-sm btn-light border mr-1" @click="fnCancelEdit(item)">취소</button>
+                                    <button class="btn btn-sm btn-comment" @click="fnUpdateComment(item)">수정완료</button>
+                                </div>
                             </div>
                         </div>
-                        <div v-if="replyTo === item.commentNo" class="mt-3 p-3 bg-white border rounded shadow-sm">
+
+                        <div v-else class="comment-content mt-2">
+                            <template v-if="item.delRole === 'ADMIN'">
+                                <span class="text-danger font-italic">
+                                    <i class="fas fa-ban"></i> 관리자에 의해 삭제된 댓글입니다.
+                                </span>
+                            </template>
+                            <template v-else>
+                                <span class="text-muted">삭제된 댓글입니다.</span>
+                            </template>
+                        </div>
+
+                        <div v-if="item.isDeleted == 0 && replyTo === item.commentNo" class="mt-3 p-3 bg-white border rounded shadow-sm">
                             <textarea class="form-control" v-model="replyContent" rows="2" :placeholder="item.userId + '님께 답글 남기기...'"></textarea>
                             <div class="text-right mt-2">
                                 <button class="btn btn-sm btn-comment" @click="fnSaveReply(item.commentNo)">답글 등록</button>
@@ -211,6 +246,7 @@
                 return {
                     reviewNo: "${reviewNo}",
                     sessionId: "${sessionId}",
+                    sessionRole: "${sessionRole}",
                     info: null,
                     imgList: [],
                     commentList: [],
@@ -395,15 +431,25 @@
                 },
                 fnDeleteComment(commentNo) {
                     if(!confirm("삭제하시겠습니까?")) return;
+
                     $.ajax({
                         url: "/api/comment/remove.dox",
                         type: "POST",
-                        data: JSON.stringify({ commentNo: commentNo, userId: this.sessionId }),
+                        // ✅ sessionRole을 추가해서 보냅니다.
+                        data: JSON.stringify({ 
+                            commentNo: commentNo, 
+                            userId: this.sessionId,
+                            sessionRole: this.sessionRole 
+                        }),
                         contentType: "application/json",
-                        success: () => { alert("삭제되었습니다."); this.fnGetComments(); }
+                        success: () => { 
+                            alert("삭제되었습니다."); 
+                            this.fnGetComments(); 
+                        }
                     });
                 },
                 fnLike() {
+                    if (!this.sessionId || this.sessionId === 'null') return alert("로그인이 필요합니다.");
                     $.ajax({
                         url: "/api/review/like.dox",
                         type: "POST",
@@ -424,6 +470,7 @@
                     this.replyContent = ""; 
                 },
                 fnSaveReply(parentNo) {
+                    if (!this.sessionId || this.sessionId === 'null') return alert("로그인이 필요합니다.");
                     if(this.replyContent.trim() === "") return alert("답글 내용을 입력해주세요.");
                     $.ajax({
                         url: "/api/comment/Review-add.dox",

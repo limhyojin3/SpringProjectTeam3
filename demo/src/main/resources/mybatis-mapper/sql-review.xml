@@ -52,7 +52,7 @@
 	        r.content AS content,
 	        IFNULL(c.com_name, '일반 리뷰') AS comName,
 	        c.com_type AS comType, 
-	        (SELECT COUNT(*) FROM comment com WHERE com.review_no = r.review_no AND com.is_deleted = 0) AS commentCnt,
+	        (SELECT COUNT(*) FROM comment com WHERE com.review_no = r.review_no) AS commentCnt,
 	        CASE 
 	            WHEN r.stored_name IS NOT NULL OR (r.img_url IS NOT NULL AND r.img_url != '') THEN 'Y'
 	            ELSE 'N'
