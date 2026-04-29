@@ -15,7 +15,7 @@
 		left join company c on m.user_id = c.user_id
 		where m.user_id = #{userid}
 	</select>
- 
+
 	<select id="selectProduct" parameterType="hashmap"
 		resultType="com.example.demo.company.model.Company">
 		SELECT P.PRODUCT_NO, P.PRODUCT_NAME,P.PRODUCT_DETAILS, P.ORIGINAL_PRICE,
@@ -282,8 +282,35 @@
 	</insert>
 	<insert id="insertInquiryProduct" parameterType="map">
 		insert into inquiry_product
-		values(null, #{userId}, #{productNo}, #{inquiryTitle}, #{inquiryContents})
-	
+		values(null, #{userId}, #{companyNo}, #{productNo}, #{inquiryTitle},
+		#{inquiryContents})
+
 	</insert>
+	<select id="selectInquiryProductList" parameterType="map"
+		resultType="com.example.demo.company.model.Company">
+		select
+		ip.inquiry_no,
+		ip.user_id,
+		ip.product_no,
+		ip.inquiry_title,
+		ip.inquiry_contents,
+		p.product_name,
+		p.product_details,
+		p.img_url,
+		p.pro_type,
+		p.tag,
+		p.original_price,
+		p.deposit,
+		c.company_no,
+		c.com_name,
+		c.com_intro
+		from inquiry_product ip
+		left join product p on ip.product_no = p.product_no
+		left join company c on p.company_no = c.company_no
+		where c.company_no = (
+		select c1.company_no from company c1 where c1.user_id = #{userId}
+		)
+
+	</select>
 
 </mapper>

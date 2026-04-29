@@ -1029,32 +1029,31 @@
                             </div>
 
                             <div v-if="currentMenu === 'inquiry'">
-                                <h2>문의 관리 : <span style="color: #ff1493;">새 문의 {{inquiryList.length}}건</span></h2>
+                                <h2>문의 관리 : <span style="color: #ff1493;">총 문의 {{inquiryList.length}}건</span></h2>
                                 <div class="content-card" v-for="i in fnPaginatedInquiry" :key="i">
 
                                     <div style="display: flex;">
                                         <div
                                             style="width: 100px; height: 100px;  margin-right: 20px; text-align: center;">
-                                            <img :src="fnThumbnail(i)" :alt="i.product"
+                                            <img :src="fnThumbnail(i)" :alt="i.productName"
                                                 style="width: 100%; height: 100%; object-fit: cover;">
 
                                         </div>
-                                        <h3>상품명 : <span style="color: #d6336c;">{{i.product}}</span> </h3>
+                                        <h3>상품명 : <span style="color: #d6336c;">{{i.productName}}</span> </h3>
 
                                     </div>
-
                                     <table>
                                         <tr>
                                             <th>제목</th>
-                                            <td>{{i.title}}</td>
+                                            <td>{{i.inquiryTitle}}</td>
                                         </tr>
                                         <tr>
                                             <th>작성자</th>
-                                            <td>{{i.userid}}</td>
+                                            <td>{{i.userId}}</td>
                                         </tr>
                                         <tr>
                                             <th>내용</th>
-                                            <td>{{i.content}}</td>
+                                            <td>{{i.inquiryContents}}</td>
                                         </tr>
                                     </table>
 
@@ -1780,7 +1779,7 @@
 
                 },
                 fnThumbnail(i) {    //fnThumbnail(개별문의) 해변스냅
-                    return this.inquiryList.find(p => p.product === i.product).imgUrl;
+                    return this.inquiryList.find(p => p.productName === i.productName).imgUrl;
                     //return this.productList3.find(p => p.productName === inquiry.product).imgUrl;
                 }
                 ,
@@ -1803,6 +1802,8 @@
 
                         this.fnSimple();
                         this.fnReview();
+                    } else if (menuId === 'inquiry'){
+                        this.fnInquiryProduct();
                     }
                 },
 
@@ -2117,9 +2118,34 @@
                     //this.tagMapToList = [];
                     this.productPage = 'list'
                     this.product2.deposit = 0;
-                }
-                
+                },
+                fnInquiryProduct(){
+                    let self = this;
+                    let param = {
+                        userId : "${sessionScope.sessionId}"
+                    };
 
+                    console.log(param);
+
+                    $.ajax({
+                        url: "/getInquiryProductList.dox",
+                        dataType: "json",
+                        type: "POST",
+                        data: param,
+                        success: function (data) {
+                            console.log(data);
+
+                            self.inquiryList = data.list;
+                            // self.inquiryList.id = data.list.inquiryNo;
+                            // self.inquiryList.product = data.list.productName;
+                            // self.inquiryList.title = data.list.inquiryTitle;
+                            // self.inquiryList.userid = data.list.userId;
+                            // self.inquiryList.content = data.list.inquiryContents;
+                            // self.inquiryList.imgUrl = data.list.imgUrl;
+
+                        }
+                    });
+                }
 
             }, // methods
 

@@ -21,15 +21,11 @@ public interface CompanyMapper {
 	//updateProduct
 	//selectCompanyByUserId
 	
-	//int result = companyMapper.deleteProduct(map);
-	//selectSimpleReviewCnt
+	//<select id="selectInquiryProductList" parameterType="map"
+//	resultType="com.example.demo.company.model.Company">
 	
-	//selectNewReviewCnt
+	List<Company> selectInquiryProductList(HashMap<String, Object> map);
 	
-	//<insert id="insertPaymentFinal" parameterType="map">
-//	<update id="updatePaymentFinal" parameterType="map">
-	
-	//<insert id="insertUniqueNewTagsOnly" parameterType="com.example.demo.company.model.Company">
 	int insertInquiryProduct(HashMap<String, Object> map);
 	
 	int insertUniqueNewTagsOnly(Company product);

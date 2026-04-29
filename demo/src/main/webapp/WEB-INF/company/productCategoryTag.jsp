@@ -2912,6 +2912,7 @@
                     let param = {
                         userId:"${sessionScope.sessionId}",
                         productNo : self.product1.id,
+                        companyNo : self.product1.companyNo,
                         inquiryTitle: self.inquiry.title,
                         inquiryContents : self.inquiry.contents
                     };
