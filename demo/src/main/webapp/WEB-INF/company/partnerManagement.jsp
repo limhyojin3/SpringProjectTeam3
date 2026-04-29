@@ -671,7 +671,7 @@
                                     <h3>마지막 결제 수단</h3>
                                     <p style="text-align: right; font-size: 20px;">{{ user.lastPayment }}</p>
                                 </div>
-                                <button style="float: right;" @click="withdraw">탈퇴하기</button>
+                                <!-- <button style="float: right;" @click="withdraw">탈퇴하기</button> -->
                             </div>
 
 
@@ -725,9 +725,9 @@
                                 <!-- 상품 등록 폼 -->
                                 <div v-else-if="productPage === 'reg'">
                                     <div class="product-form-wrapper">
-                                        {{serverTagList}}
+                                        <!-- {{serverTagList}}
                                         {{newTagsOnly}}
-                                        {{uniqueNewTagsOnly()}}
+                                        {{uniqueNewTagsOnly()}} -->
                                         <h2 style="color: #333; margin-bottom: 30px;">상품 등록하기</h2>
 
                                         <div class="product-form-section">
@@ -771,8 +771,8 @@
                                                         <input type="text" placeholder="다섯번째 태그"
                                                             v-model="tagMap.input5">
                                                 </div>
-                                                {{tagMap}}
-                                                {{tagMapToList}}
+                                                <!-- {{tagMap}}
+                                                {{tagMapToList}} -->
 
                                                 <div class="form-group">
 
@@ -802,7 +802,7 @@
                                                             v-model="product2.deposit">
                                                     </div>
                                                 </div>
-                                                {{product2.deposit}}
+                                                <!-- {{product2.deposit}} -->
                                             </div>
                                         </div>
 
@@ -843,9 +843,9 @@
                                 <!-- 상품 수정 폼 -->
                                 <div v-else-if="productPage === 'edit'">
                                     <div class="product-form-wrapper">
-                                        {{serverTagList}}
+                                        <!-- {{serverTagList}}
                                         {{newTagsOnly}}
-                                        {{uniqueNewTagsOnly()}}
+                                        {{uniqueNewTagsOnly()}} -->
                                         <h2 style="color: #333; margin-bottom: 30px;">상품 수정하기</h2>
 
                                         <div class="product-form-section">
@@ -889,9 +889,9 @@
                                                         <input type="text" placeholder="다섯번째 태그"
                                                             v-model="tagMap.input5">
                                                 </div>
-                                                {{tagMap}}
+                                                <!-- {{tagMap}}
                                                 {{tagMapToList}}
-                                                {{product1}}
+                                                {{product1}} -->
 
 
                                                 <div class="form-group">
@@ -923,7 +923,7 @@
                                                             v-model="product1.deposit">
                                                     </div>
                                                 </div>
-                                                {{product1.deposit}}
+                                                <!-- {{product1.deposit}} -->
                                             </div>
                                         </div>
 
@@ -2111,6 +2111,12 @@
 
                 uniqueNewTagsOnly(){
                     return [...new Set(this.newTagsOnly)];
+                },
+                fnBack3(){
+                    this.tagMap = {};
+                    //this.tagMapToList = [];
+                    this.productPage = 'list'
+                    this.product2.deposit = 0;
                 }
                 
 
