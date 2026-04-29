@@ -661,11 +661,11 @@
                         <main>
                             <div v-if="currentMenu === 'main'">
                                 <h2>안녕하세요, '{{ user.name }}'님!</h2>
-                                <div class="section-title" v-if="user.grade === '제휴업체'">제휴업체</div>
-                                <div class="section-title" v-else-if="user.grade === '일반업체'">일반업체</div>
+                                <div class="section-title" v-if="user.grade === 'PARTNER'">제휴업체</div>
+                                <div class="section-title" v-else-if="user.grade === 'NPARTNER'">일반업체</div>
                                 <div class="content-card">
-                                    <h3><span v-if="user.grade === '제휴업체'">제휴업체</span> 이용 기간</h3>
-                                    <p style="text-align: right; font-size: 20px;">{{ user.usePeriod }}</p>
+                                    <h3><span v-if="user.grade === '제휴업체'">제휴업체</span> 등록 일자</h3>
+                                    <p style="text-align: right; font-size: 20px;">{{ user.regDate }}</p>
                                 </div>
                                 <div class="content-card">
                                     <h3>마지막 결제 수단</h3>
@@ -1547,9 +1547,9 @@
                             console.log(data); //info,result,message
 
                             self.user.name = data.info.comName;
-                            self.user.usePeriod = data.info.usePeriod;
-                            self.user.grade = data.info.grade;
-                            self.user.lastPayment = data.info.lastPayment;
+                            self.user.regDate = data.info.regDate;
+                            self.user.grade = data.info.role;
+                            self.user.lastPayment = data.info.previousPayment;
 
                             //console.log(self.user);
                         }
