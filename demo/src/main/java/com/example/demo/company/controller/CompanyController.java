@@ -263,4 +263,13 @@ public class CompanyController {
 
 		return new Gson().toJson(resultMap);
 	}
+	
+//	public HashMap<String, Object> addInquiryProduct(HashMap<String, Object> map)
+	@RequestMapping(value = "/addInquiryProduct.dox", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
+	@ResponseBody
+	public String tess09(@RequestParam HashMap<String, Object> map) throws Exception {
+		HashMap<String, Object> resultMap = companyService.addInquiryProduct(map);
+
+		return new Gson().toJson(resultMap);
+	}
 }

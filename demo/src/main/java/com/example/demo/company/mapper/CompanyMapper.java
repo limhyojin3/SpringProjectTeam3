@@ -30,6 +30,7 @@ public interface CompanyMapper {
 //	<update id="updatePaymentFinal" parameterType="map">
 	
 	//<insert id="insertUniqueNewTagsOnly" parameterType="com.example.demo.company.model.Company">
+	int insertInquiryProduct(HashMap<String, Object> map);
 	
 	int insertUniqueNewTagsOnly(Company product);
 	

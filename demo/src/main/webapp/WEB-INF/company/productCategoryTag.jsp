@@ -1355,11 +1355,11 @@
                                     </div>
 
                                     <button class="btn-reserve" @click="fnReserve">예약하기</button>
-                                    <button class="btn-inquiry" @click="currentMenu = 'inquiry'">상품 문의하기</button>
+                                    <button class="btn-inquiry" @click="productPage = 'inquiry'">상품 문의하기</button>
                                 </div>
                             </div>
                         </div>
-                        <div v-if="currentMenu === 'inquiry'" class="payment-container">
+                        <div v-if="currentMenu === 'main' && productPage === 'inquiry'" class="payment-container">
 
                             <!-- <div>상품 번호</div>
                             <div>상품 이름</div>
@@ -1379,6 +1379,8 @@
                                     <img :src="product1.thumbnail" style="max-height: 200px; margin-top: 10px; margin-right: 20px;">
                                 </div> -->
                                 {{product1}}
+                                {{"${sessionScope.sessionId}"}}
+                                {{inquiry}}
 
                                 <div class="ticket-body">
                                     <div class="ticket-info">
@@ -1395,27 +1397,33 @@
                                         <div class="info-grid">
                                             <div class="info-row">
                                                 <label>문의자 명</label>
-                                                <div class="value">{{userid}}</div>
+                                                <div class="value">{{"${sessionScope.sessionId}"}}</div>
+                                            </div>
+                                            <div class="info-row">
+                                                <label>문의 제목</label>
+                                                <div class="value">
+                                                    <input v-model="inquiry.title"
+                                                        style="min-width: 400px;">
+
+                                                </div>
                                             </div>
                                             <div class="info-row">
                                                 <label>문의 내용</label>
-                                                <div class="value">inquiry contents</div>
+                                                <div class="value">
+                                                    <textarea v-model="inquiry.contents"
+                                                        style="min-width: 400px; min-height: 200px;"></textarea>
+
+                                                </div>
                                             </div>
                                         </div>
-
-                                        <div class="info-row">
-                                            <label>요청 사항</label>
-                                            <div class="value">{{res_content ? res_content : "요청사항 없음"}}</div>
-                                        </div>
-                                        inq_content
-
 
 
                                     </div>
 
                                     <div class="ticket-side">
                                         <div class="side-content">
-                                            <img :src="product1.thumbnail" style="height: 200px; width: 200px; object-fit: cover;">
+                                            <img :src="product1.thumbnail"
+                                                style="height: 200px; width: 200px; object-fit: cover;">
                                             <div class="amount-label">TOTAL PRICE(상품 및 서비스 가격)</div>
                                             <div class="amount-value">{{ Number(product1.price).toLocaleString() }}원
                                             </div>
@@ -1436,13 +1444,13 @@
 
                                 <div class="payment-btn-group">
                                     <button class="btn-cancel-pay" @click="productPage = 'detail'">뒤로가기</button>
-                                    <button class="btn-final-reserve" @click="fnSaveReservation(user)">예약 저장하기</button>
+                                    <button class="btn-final-reserve" @click="fnInquiryAboutProduct">문의하기</button>
                                 </div>
                             </div>
 
 
 
-                            
+
 
 
                         </div>
@@ -1496,7 +1504,8 @@
 
                                     <div class="ticket-side">
                                         <div class="side-content">
-                                            <img :src="product1.thumbnail" style="height: 200px; width: 200px; object-fit: cover;">
+                                            <img :src="product1.thumbnail"
+                                                style="height: 200px; width: 200px; object-fit: cover;">
                                             <div class="amount-label">TOTAL DEPOSIT</div>
                                             <div class="amount-value">{{ Number(product1.deposit).toLocaleString() }}원
                                             </div>
@@ -1608,7 +1617,8 @@
 
                                         <div class="info-row">
                                             <label>TOTAL PRICE(상품 및 서비스 가격)</label>
-                                            <div class="value">{{Number(myReservation1.originalPrice).toLocaleString()}}원</div>
+                                            <div class="value">
+                                                {{Number(myReservation1.originalPrice).toLocaleString()}}원</div>
                                         </div>
                                         <div class="info-grid">
                                             <div class="info-row">
@@ -1646,7 +1656,8 @@
 
                                     <div class="ticket-side">
                                         <div class="side-content">
-                                            <img :src="myReservation1.imgUrl" style="height: 200px; width: 200px; object-fit: cover;">
+                                            <img :src="myReservation1.imgUrl"
+                                                style="height: 200px; width: 200px; object-fit: cover;">
                                             <div class="amount-label">TOTAL DEPOSIT(예약금)</div>
                                             <div class="amount-value">{{ Number(myReservation1.deposit).toLocaleString()
                                                 }}원</div>
@@ -1688,7 +1699,7 @@
                                     <div class="input-group">
                                          <input id="payAmount" v-model="payAmount" type="text" placeholder="금액을 입력하세요">
                                         <span class="unit">KRW</span> -->
-                                        <!-- 결제 진행합니다.
+                        <!-- 결제 진행합니다.
                                     </div>
                                 </div>
 
@@ -1698,7 +1709,7 @@
                                         @click="productPage='reservaionPaymentDetails'; payAmount='';">뒤로가기</button>
                                 </div>
                             </div>
-                        </div> --> 
+                        </div> -->
 
             </div>
         </div>
@@ -1717,14 +1728,18 @@
     </html>
 
     <script>
-        
+
         const app = Vue.createApp({
 
 
             data() {
                 return {
                     // 변수 - (key : value)
-                    userid: "${sessionScope.sessionId}", 
+                    inquiry: {
+                        title: '',
+                        contents: ''
+                    },
+                    userid: "${sessionScope.sessionId}",
                     flag: false,
                     payAmount: '',
                     myReservation1: {},
@@ -1985,9 +2000,6 @@
                         { id: 9, product: '스몰 웨딩', content: '레스토랑 웨딩 식순 문의입니다.', resDate: '26.03.25', useDate: '26.04.28 17:00PM', name: '윤소식', contact: '010-3333-4444', price: '30,000원' },
                         { id: 10, product: '동화같은 분위기', content: '파스텔 톤 생화 장식 상담입니다.', resDate: '26.03.28', useDate: '26.05.02 12:00PM', name: '조전통', contact: '010-6666-7777', price: '50,000원' },
                         { id: 11, product: '화려하게', content: '대형 웨딩홀 촬영 스케줄 문의입니다.', resDate: '26.04.01', useDate: '26.05.05 14:00PM', name: '한찬란', contact: '010-8888-9999', price: '100,000원' }
-                    ],
-                    inquiry: [
-                        { id: 1, }
                     ],
                     category: ["스튜디오", "드레스", "메이크업"],
                     selectedItems: [],
@@ -2825,8 +2837,8 @@
                     ////
                     var IMP = window.IMP;
                     IMP.init("imp48518435");
-                    
-                    
+
+
                     IMP.request_pay(
                         {
                             channelKey: "channel-key-1ebd3d65-20bd-412e-83f3-b7e0c3b368ff",
@@ -2895,14 +2907,43 @@
                         }
                     });
                 },
+                fnInquiryAboutProduct() {
+                    let self = this;
+                    let param = {
+                        userId:"${sessionScope.sessionId}",
+                        productNo : self.product1.id,
+                        inquiryTitle: self.inquiry.title,
+                        inquiryContents : self.inquiry.contents
+                    };
+
+                    console.log(param);
+                    $.ajax({
+                        url: "/addInquiryProduct.dox",
+                        dataType: "json",
+                        type: "POST",
+                        data: param,
+                        success: function (data) {
+                            console.log(data);
+                            if (data.result == 'success') {
+                                alert('문의가 등록되었습니다!');
+
+                                self.productPage = 'list';
+
+                            } else {
+                                alert("문의 등록 실패! 서버 오류입니다");
+                            }
+                            //payAmount='';
+                        }
+                    });
+                }
 
             }, // methods
             //productTag
 
             mounted() {
                 // 처음 시작할 때 실행되는 부분
-                
-                
+
+
                 let self = this;
                 //self.fnCom();
                 self.fnGetTagAndProductList();

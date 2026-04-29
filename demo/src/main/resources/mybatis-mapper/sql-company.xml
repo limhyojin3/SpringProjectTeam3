@@ -280,5 +280,10 @@
 		</if>
 
 	</insert>
+	<insert id="insertInquiryProduct" parameterType="map">
+		insert into inquiry_product
+		values(null, #{userId}, #{productNo}, #{inquiryTitle}, #{inquiryContents})
+	
+	</insert>
 
 </mapper>
