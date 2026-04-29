@@ -527,21 +527,30 @@ public class AdminService {
 
 		try {
 
-			int postNo = adminMapper.selectCommentTargetPost(map);
+			Integer postNo = adminMapper.selectCommentPostNo(map);
 
-			resultMap.put("result", "success");
-			resultMap.put("postNo", postNo);
+			if (postNo == null) {
+				postNo = adminMapper.selectParentCommentPostNo(map);
+			}
+
+			if (postNo != null) {
+				resultMap.put("result", "success");
+				resultMap.put("postNo", postNo);
+			} else {
+				resultMap.put("result", "fail");
+				resultMap.put("message", "대상 게시글 없음");
+			}
 
 		} catch (Exception e) {
-
 			e.printStackTrace();
-
 			resultMap.put("result", "fail");
 			resultMap.put("message", "조회 실패");
 		}
 
 		return resultMap;
 	}
+	
+	
 
 	// 게시판 전체 목록
 	public HashMap<String, Object> getBoardList(HashMap<String, Object> map) {

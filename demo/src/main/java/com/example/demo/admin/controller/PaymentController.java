@@ -43,10 +43,19 @@ public class PaymentController {
 	@ResponseBody
 	public HashMap<String, Object> verifyPayment(@RequestParam HashMap<String, Object> map) {
 
-		int reviewCnt = Integer.parseInt((String) map.get("reviewCnt"));
+		String type = String.valueOf(map.get("type"));
+		
+		int reviewCnt = 0;
+		
+		if("RES".equals(type)) {
+	        Object obj = map.get("reviewCnt");
+	        if(obj != null && !obj.toString().equals("")) {
+
+		reviewCnt = Integer.parseInt((String) map.get("reviewCnt"));
 
 		map.put("reviewCnt", reviewCnt);
-		
+	        }
+		}
 		return paymentService.verifyPayment(map);
 	}
 	
