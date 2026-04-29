@@ -782,6 +782,7 @@
                                                 </div>
 
                                                 <div class="form-group">
+                                                    
                                                     <label class="form-label"><span class="form-info-label">예상
                                                             견적</span></label>
                                                     <div class="form-info-box">
@@ -839,6 +840,9 @@
                                 <!-- 상품 수정 폼 -->
                                 <div v-else-if="productPage === 'edit'">
                                     <div class="product-form-wrapper">
+                                        {{serverTagList}}
+                                        {{newTagsOnly}}
+                                        {{uniqueNewTagsOnly()}}
                                         <h2 style="color: #333; margin-bottom: 30px;">상품 수정하기</h2>
 
                                         <div class="product-form-section">
@@ -1398,7 +1402,8 @@
                         input3:'',
                         input4:'',
                         input5:''
-                    }
+                    },
+                    serverTagList: [],
                 }
 
             }, // data
@@ -1410,9 +1415,18 @@
                 tagMapToList(){
                     const filteredtagArray = Object.values(this.tagMap).filter(tag => tag.trim() !== "");
 
-                    console.log(filteredtagArray);
+                    //console.log(filteredtagArray);
                     return filteredtagArray;
                 },
+                newTagsOnly(){
+                    if(!this.serverTagList) {
+                        return tagMapToList();
+                    }
+                    
+                    return this.tagMapToList.filter(t => !this.serverTagList.includes(t));
+
+                },
+                
 
                 revCnt() {
                     return this.reviews.filter(r => r.updated === 'new').length
@@ -1503,7 +1517,7 @@
                     return Math.ceil(this.reservationList.length / 3);
                 },
 
-
+                
 
             },
             methods: {
@@ -1589,6 +1603,9 @@
                             console.log(data);
                             // 1. 일단 전체 데이터를 담습니다.
                             self.product1 = data.info;//덮어씌우기
+                            self.serverTagList = data.tagList;
+
+                            
 
                             //
                             // 2. 문자열로 들어온 proType을 실제 배열로 변환합니다.
@@ -2066,6 +2083,10 @@
                     } else {
                         return '★☆☆☆☆';
                     }
+                },
+
+                uniqueNewTagsOnly(){
+                    return [...new Set(this.newTagsOnly)];
                 }
 
 

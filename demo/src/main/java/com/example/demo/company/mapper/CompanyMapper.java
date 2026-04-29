@@ -32,7 +32,7 @@ public interface CompanyMapper {
 	
 	int updatePaymentFinal(HashMap<String, Object> map);
 	
-	
+	//List<String> tagList = companyMapper.selectTagList(map);
 	
 	//<update id="checkOver30minute" parameterType="map">
 	int checkOver30minute(HashMap<String, Object> map);
