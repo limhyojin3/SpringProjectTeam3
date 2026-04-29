@@ -22,7 +22,7 @@
         /* 탭 버튼 */
         .tab-wrap {
             display: flex;
-            margin-bottom: 20px;
+            margin-bottom: 1px;
         }
 
         .tab-wrap button {
@@ -110,6 +110,19 @@
         .logo {
             cursor: pointer;
             margin-left: -30px;
+            padding-bottom: 15px;
+        }
+        .link-wrap a{
+            display: inline-block;
+            margin-top: 10px;
+            text-decoration: none;
+            color: #767676;
+            font-size: 15px;
+            font-weight: 500;
+        }
+        .link-join:hover , .link-find:hover{
+            color: #f15443;
+            text-shadow: 1px 1px 1px pink;
         }
     </style>
 </head>
@@ -158,9 +171,9 @@
             <button class="login-btn" @click="fnLogin()">로그인</button>
 
             <div class="link-wrap">
-                <a href="/join.do"><span>회원가입</span></a>
-                <span>|</span>
-                <a href="/find-id.do"><span>아이디 찾기/비밀번호 변경</span></a>
+                <a href="/join.do"><span class="link-join">회원가입 | </span></a>
+                <a href="/find-id.do"><span class="link-find"> 아이디 찾기 | </span></a>
+                <a href="/find-pwd.do"><span class="link-find"> 비밀번호 변경</span></a>
             </div>
 
         </div>

@@ -210,7 +210,6 @@
                     <input type="radio" name="gender" v-model="info.gender" value="M"> 남
                     <input type="radio" name="gender" v-model="info.gender" value="F"> 여
                 </div>
-                <div class="msg-box"></div>
             </div>
         </div>
 
@@ -225,7 +224,9 @@
                         placeholder="010 1234 5678">
                     <button class="btn-check" @click="fnSendSms()">인증 요청</button>
                 </div>
-                <div class="msg-box"></div>
+                <div class="msg-box" :style="{color: isUserTelAvailable ? 'green' : 'red'}">
+                    {{ telMsg }}
+                </div>
             </div>
         </div>
         <!-- 인증번호 입력 -->
@@ -239,7 +240,9 @@
                         placeholder="6자리 숫자를 입력하세요">
                     <button class="btn-check" @click="fnCheckSms()">인증 확인</button>
                 </div>
-                <div class="msg-box"></div>
+                <div class="msg-box" :style="{color: isVerified ? 'green' : 'red'}">
+                    {{ authCodeMsg }}
+                </div>
             </div> 
         </div>
 
@@ -268,7 +271,9 @@
                     :disabled="!isVerified"
                     placeholder="비밀번호를 한 번 더 입력하세요.">
                 </div>
-                <div class="msg-box"></div>
+                <div class="msg-box" :style="{color: isPwdMatch ? 'green' : 'red'}">
+                    {{ pwdMsg }}
+                </div>
             </div>
         </div>
 
@@ -279,7 +284,6 @@
                 <div class="form-input">
                     <input type="date" v-model="info.weddingDate">
                 </div>
-                <div class="msg-box"></div>
             </div>
         </div>
 
@@ -311,6 +315,11 @@
                 isVerified: false,  // 인증 완료 여부
                 isUserIdAvailable: false,  // 아이디 중복체크 통과 여부 (true  → 사용 가능한 아이디)
                 userIdMsg: "",             // 아이디 중복체크 결과 메시지
+
+                authCodeMsg : "",
+
+                telMsg : "",
+                isUserTelAvailable: false,
                 
                 emailDomain: "naver.com",      // 선택된 도메인
                 emailDomainDirect: false,      // 직접입력 여부
@@ -350,6 +359,10 @@
                     alert("전화번호를 입력해주세요.");
                     return;
                 }
+                if(!self.isVerified) {
+                    alert("전화번호 인증을 완료해주세요.");
+                    return;
+                }
                 if(!self.info.password) {
                     alert("비밀번호를 입력해주세요.");
                     return;
@@ -379,7 +392,7 @@
                     success: function (data) {
                         if(data.result === 'success') {
                             alert(self.info.userName + "님 가입을 축하합니다!");
-                            location.href = "/merryViewHome.do";  // 홈으로 이동
+                            location.href = "/login.do";  // 로그인으로 이동
                         } else {
                             alert(data.message);
                         }
@@ -419,6 +432,11 @@
                     alert("아이디를 입력해주세요.");
                     return;
                 }
+                if(self.info.userId.length < 6) {
+                    alert("아이디는 6자 이상이어야 합니다.");
+                    return;
+                }
+
                 let hasLetter = /[a-zA-Z]/.test(self.info.userId);
                 if(!hasLetter) {
                     alert("영문자 또는 영문과 숫자를 모두 포함해야 합니다.");
@@ -443,7 +461,11 @@
             // *이름*
             // 이름 서식 제한(한글만 입력 허용)
             filterName: function() {
-                this.info.userName = this.info.userName.replace(/[^가-힣]/g, '');
+                // 가-힣(완성형) 뿐만 아니라 ㄱ-ㅎ(자음), ㅏ-ㅣ(모음)까지 허용
+                const val = event.target.value.replace(/[^ㄱ-ㅎㅏ-ㅣ가-힣]/g, '');
+                // 데이터와 화면 값 동기화
+                this.info.ceoName = val;
+                event.target.value = val;
             },
             // *휴대폰 번호*
             // 휴대폰 번호 입력 
@@ -518,9 +540,11 @@
                     data: { tel: self.info.userTel.replace(/-/g, '') },
                     success: function(data) {
                         if(data.result === 'success') {
-                            alert("인증번호가 발송되었습니다!");
+                            self.telMsg = "✅ 인증번호가 발송되었습니다.";  // 추가
+                            self.isUserTelAvailable = true;
                         } else {
-                            alert("발송 실패. 다시 시도해주세요.");
+                            self.telMsg = "❌ 발송에 실패했습니다.";  // 추가
+                            self.isUserTelAvailable = false;
                         }
                     }
                 });
@@ -538,10 +562,11 @@
                     },
                     success: function(data) {
                         if(data.result === 'success') {
-                            alert("인증이 완료되었습니다!");
                             self.isVerified = true;
+                            self.authCodeMsg = "✅ 인증이 완료되었습니다.";  // 추가
                         } else {
-                            alert("인증번호가 틀렸습니다.");
+                            self.isVerified = false;
+                            self.authCodeMsg = "❌ 인증번호가 틀렸습니다.";  // 추가
                         }
                     }
                 });

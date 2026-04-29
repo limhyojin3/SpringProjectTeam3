@@ -16,39 +16,11 @@
     <script src="/js/page-change.js"></script>
 </head>
 <style>
-    .review-card, .post-card { cursor: pointer; position: relative; }
-    .tag-pink   { background-color: #f4a096; }
-    .tag-purple { background-color: #9b8fd4; }
-    .tag-yellow { background-color: #f0b429; }
-    .tag-red    { background-color: #ff6b6b; }
-
-    /* 프리미엄 배지 스타일 */
-    .premium-badge {
-        position: absolute;
-        top: 0;
-        left: 0;
-        background: linear-gradient(45deg, #f0b429, #f7d07a);
-        color: #fff;
-        padding: 4px 10px;
-        font-size: 0.7rem;
-        font-weight: bold;
-        border-bottom-right-radius: 10px;
-        z-index: 10;
-        display: flex;
-        align-items: center;
-    }
-    .premium-badge i { margin-right: 4px; }
-
-    /* 유료 리뷰 이미지 블러 처리 (미구매 시) */
-    .blur-img {
-        filter: blur(8px) brightness(0.8);
-        transition: 0.3s;
-    }
+    /* 홈 css에 있어요. */
 </style>
 <body>
     <div id="app">
         <jsp:include page="/WEB-INF/common/header.jsp" />
-        
         <div id="wrapper">
             <div class="main-content">
                 <div class="left-banner">
@@ -60,35 +32,25 @@
                         </div>
                     </div>
                 </div>
-
                 <div class="right-sections">
                     <section class="review-section">
                         <div class="section-title-wrap">
                             <h2>이유있는 선택!</h2>
                         </div>
-                        
-
                         <div class="hash-tag-wrap">
                             <div class="review-tag tag-pink"><span>#감동</span></div>
                             <div class="review-tag tag-purple"><span>#행복</span></div>
                             <div class="review-tag tag-yellow"><span>#결혼준비</span></div>
                             <div class="review-tag tag-red"><span>#리얼후기</span></div>
                         </div>
-
                         <p class="section-desc">메리뷰를 선택한 소중한 신랑, 신부님들의 리얼한 후기를 확인하세요.</p>
-
-                        
-                        
                         <div class="review-grid">
                             <div class="review-card" v-for="review in reviewList" :key="review.reviewNo"
                                 @click="fnGoReview(review)">
-                                
-                                
-                                <div v-if="review.isPaid == 1" class="premium-badge">
-                                    <i class="fas fa-crown"></i> Premium
-                                </div>
-
                                 <div class="review-img-thumb" style="overflow:hidden; height: 200px; background: #eee;">
+                                    <div v-if="review.isPaid == 1" class="premium-badge">
+                                        <i class="fas fa-crown"></i> Premium
+                                    </div>
                                     <img v-if="review.imgUrl && !review.imgUrl.endsWith('.zip')"
                                         :src="review.imgUrl.split(',')[0]"
                                         :class="{'blur-img': review.isPaid == 1 && review.isPurchased == 0 && userRole !== 'ADMIN'&& review.userId !== sessionId}"
@@ -102,18 +64,15 @@
                                 <p class="review-title" style="margin-top: 10px; font-weight: bold;">{{ review.title }}</p>
                             </div>
                         </div>
-
                         <div class="review-more-wrap">
                             <a href="/api/review/list.do" class="more-link">더보기 ></a>
                         </div>
                     </section>
-
                     <section class="community-section">
                         <div class="section-header">
                             <h2>⭐커뮤니티 인기글⭐</h2>
                             <a href="/api/community/list.do" class="more-link">더보기 ></a>
                         </div>
-
                         <div class="post-grid">
                             <div class="post-card" v-for="post in postList" :key="post.postNo"
                                 @click="fnGoPost(post.postNo)">
@@ -127,7 +86,6 @@
                     </section>
                 </div>
             </div>
-
             <div class="chat-btn" @click="isChatOpen = !isChatOpen">
                 <span v-if="!isChatOpen">💬</span> 
                 <span v-else>✖</span>
@@ -178,8 +136,8 @@
             },
             methods: {
                 fnGoReview: function(review) { 
-                    // 1. 로그인 체크 (세션값이 비어있는지 확인)
-                    if (!this.sessionId || this.sessionId === '' || this.sessionId === 'null') {
+                    // 1. 로그인 체크 - 유료 리뷰일 때만 로그인 필요
+                    if (review.isPaid == 1 && (!this.sessionId || this.sessionId === '' || this.sessionId === 'null')) {
                         alert("로그인이 필요한 서비스입니다.");
                         location.href = "/login.do";
                         return;

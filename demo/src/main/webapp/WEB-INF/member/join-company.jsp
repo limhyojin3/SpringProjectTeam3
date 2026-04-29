@@ -250,7 +250,9 @@
                         <option value="SNAP">스냅</option>
                     </select>
                 </div>
-                <div class="msg-box"></div>
+                <div class="msg-box" :style="{color: isComTypeSelected ? 'green' : 'red'}">
+                    {{ comTypeMsg }}
+                </div>
             </div>
         </div>
 
@@ -265,7 +267,9 @@
                         placeholder="010 1234 5678">
                     <button class="btn-check" @click="fnSendSms()">인증 요청</button>
                 </div>
-                <div class="msg-box"></div>
+                <div class="msg-box" :style="{color: isComTelVerified ? 'green' : 'red'}">
+                    {{ comTelMsg }}
+                </div>
             </div>
         </div>
         <!-- 인증번호 입력 -->
@@ -279,7 +283,9 @@
                         placeholder="6자리 숫자를 입력하세요">
                     <button class="btn-check" @click="fnCheckSms()">인증 확인</button>
                 </div>
-                <div class="msg-box"></div>
+                <div class="msg-box" :style="{color: isVerified ? 'green' : 'red'}">
+                    {{ authCodeMsg }}
+                </div>
             </div> 
         </div>
 
@@ -293,7 +299,9 @@
                         placeholder="000-00-0000">
                     <button class="btn-check" @click="fnCheckBizNo()">번호 인증</button>
                 </div>
-                <div class="msg-box"></div>
+                <div class="msg-box" :style="{color: isBizVerified ? 'green' : 'red'}">
+                    {{ bizMsg }}
+                </div>
             </div>
         </div>
         <!-- 비밀번호 -->
@@ -321,7 +329,9 @@
                     :disabled="!(isVerified && isBizVerified)"
                     placeholder="비밀번호를 한 번 더 입력하세요.">
                 </div>
-                <div class="msg-box"></div>
+                <div class="msg-box" :style="{color: isPwdMatch ? 'green' : 'red'}">
+                    {{ pwdMsg }}
+                </div>
             </div>
         </div>
 
@@ -336,7 +346,9 @@
                 <div class="form-input">
                     <input type="text" v-model="info.comAddressDetail" placeholder="상세 주소를 입력해주세요.">
                 </div>
-                <div class="msg-box"></div>
+                <div class="msg-box" :style="{color: isAddressMatch ? 'green' : 'red'}">
+                    {{ addressMsg }}
+                </div>
             </div>
         </div>
         <button class="btn-submit" @click="fnCompanyJoin()">가입 하기</button>
@@ -368,13 +380,21 @@
                     // *번호 인증
                     authCode : ""
                 },
+                authCodeMsg : "",
+
                 isVerified: false,  // 인증 완료 여부
                 isBizVerified: false, // 사업자번호 확인 완료
+                bizMsg: "", 
                 isComNameAvailable: false, // 업체명 중복체크 통과 여부 (true  → 사용 가능한 업체명)
                 comNameMsg: "",            // 아이디 중복체크 결과 메시지
                 isUserIdAvailable: false,  // 아이디 중복체크 통과 여부 (true  → 사용 가능한 아이디)
                 userIdMsg: "",             // 아이디 중복체크 결과 메시지
                 
+                comTypeMsg: "",
+                comTelMsg: "",
+                isComTelVerified: false,  // 전화번호 입력 여부
+                isComTypeSelected: false,  // 업체 분류 선택 여부
+
                 emailDomain: "naver.com",      // 선택된 도메인
                 emailDomainDirect: false,      // 직접입력 여부
                 isEmailAvailable: false,       // 중복체크 결과
@@ -382,6 +402,9 @@
 
                 pwdMsg: "", // 비밀번호 확인
                 isPwdMatch: false, // 비밀번호 일치체크
+
+                addressMsg : "",
+                isAddressMatch:false, // 사업장 위치 입력 여부
             };
         },
         methods: {
@@ -393,6 +416,15 @@
                 // 유효성 검사
                 if(!self.info.comName) {
                     alert("업체명을 입력해주세요.");
+                    return;
+                }
+                if(!self.isComNameAvailable) {
+                    alert("업체명 중복체크를 해주세요.");
+                    return;
+                }
+                // 추가
+                if(!self.info.comType) {
+                    alert("업체 분류를 선택해주세요.");
                     return;
                 }
                 if(!self.info.userId) {
@@ -419,8 +451,16 @@
                     alert("전화번호를 입력해주세요.");
                     return;
                 }
+                if(!self.isVerified) {
+                    alert("전화번호 인증을 완료해주세요.");
+                    return;
+                }
                 if(self.info.bizNo.replace(/-/g, '').length !== 10) {
                     alert("사업자 번호를 인증해주세요.");
+                    return;
+                }
+                if(!self.isBizVerified) {
+                    alert("사업자 번호을 완료해주세요.");
                     return;
                 }
                 if(!self.info.password) {
@@ -429,6 +469,15 @@
                 }
                 if(!self.isPwdMatch) {
                     alert("비밀번호가 일치하지 않습니다.");
+                    return;
+                }
+                if(!self.info.comAddress) {
+                    alert("사업장 주소를 입력해주세요.");
+                    return;
+                }
+                // 추가
+                if(!self.info.comAddressDetail) {
+                    alert("상세 주소를 입력해주세요.");
                     return;
                 }
 
@@ -454,7 +503,7 @@
                     success: function (data) {
                         if(data.result === 'success') {
                             alert(self.info.comName + "님 가입을 축하합니다!");
-                            window.location.href = "/company10.do";  // 업체 마이페이지로 이동
+                            window.location.href = "/login.do";  // 로그인으로 이동
                         } else {
                             alert(data.message);
                         }
@@ -520,6 +569,10 @@
                 
                 if(!self.info.userId) {
                     alert("아이디를 입력해주세요.");
+                    return;
+                }
+                if(self.info.userId.length < 6) {
+                    alert("아이디는 6자 이상이어야 합니다.");
                     return;
                 }
                 let hasLetter = /[a-zA-Z]/.test(self.info.userId);
@@ -666,6 +719,8 @@
                 new daum.Postcode({
                     oncomplete: (data) => {
                         this.info.comAddress = data.roadAddress;
+                        this.addressMsg = "✅ 주소가 입력되었습니다.";
+                        this.isAddressMatch = true; 
                     }
                 }).open();
             },
@@ -683,9 +738,10 @@
                     data: { tel: self.info.comTel.replace(/-/g, '') },
                     success: function(data) {
                         if(data.result === 'success') {
-                            alert("인증번호가 발송되었습니다!");
+                            self.comTelMsg = "✅ 인증번호가 발송되었습니다.";  // 추가
+                            self.isComTelVerified = true;  // 추가
                         } else {
-                            alert("발송 실패. 다시 시도해주세요.");
+                            self.comTelMsg = "❌ 발송에 실패했습니다.";  // 추가
                         }
                     }
                 });
@@ -702,10 +758,14 @@
                     },
                     success: function(data) {
                         if(data.result === 'success') {
-                            alert("인증이 완료되었습니다!");
                             self.isVerified = true;
+                            self.comTelMsg = "✅ 인증이 완료되었습니다.";  // 추가
+                            self.isComTelVerified = true;
+                            self.authCodeMsg = "✅ 인증이 완료되었습니다.";
                         } else {
-                            alert("인증번호가 틀렸습니다.");
+                            self.comTelMsg = "❌ 인증번호가 틀렸습니다.";  // 추가
+                            self.isComTelVerified = false;
+                            self.authCodeMsg = "❌ 인증번호가 틀렸습니다."; 
                         }
                     }
                 });
@@ -724,6 +784,7 @@
                 // 형식만 통과시키기
                 alert("사업자번호 인증이 완료되었습니다.");
                 self.isBizVerified = true;
+                self.bizMsg = "✅ 사업자번호 인증이 완료되었습니다.";
             }
         }, // methods
         watch: {

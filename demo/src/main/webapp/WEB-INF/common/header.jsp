@@ -62,10 +62,10 @@
                 <li class="nav-item mx-3" style="color: #ffb3c1 !important;">|</li>
                 <%-- 아이콘 메뉴들 --%>
                 <%-- 고객센터 아이콘 --%>
-                <c:if test="${sessionScope.role != 'ADMIN'}">
+                <c:if test="${sessionRole != 'ADMIN'}">
                     <li class="nav-item">
                         <a class="nav-link" 
-                        href="${sessionScope.role == 'COMPANY' ? '#' : '/userMyPage-cs.do'}" 
+                        href="${sessionRole == 'COMPANY' ? '#' : '/userMyPage-cs.do'}" 
                         style="color: #ff4d6d !important; padding: 0 10px !important;">
                             <i class="fas fa-headset" style="font-size: 1.3rem !important;"></i>
                         </a>

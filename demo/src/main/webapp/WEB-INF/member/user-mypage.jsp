@@ -89,8 +89,8 @@
 
         .btn-withdraw {
             position: absolute;
-            bottom: 20px;
-            right: 20px;
+            bottom: 60px;
+            right: 360px;
             padding: 8px 20px;
             background-color: white;
             border: 1px solid #ddd;
@@ -105,6 +105,14 @@
             background-color: #f44336;
             color: white;
             border-color: #f44336;
+        }
+        .weddingDate{
+            color: rgb(0, 110, 255);
+            cursor: pointer;
+        }
+        .weddingDate:hover{
+            color: rgb(255, 152, 221);
+            text-shadow: 1px 1px 1px pink;
         }
     </style>
 </head>
@@ -127,7 +135,7 @@
                         </span>
                         <span v-else>
                             결혼 예정일을 입력하고 쿠폰 받으세요! 🎁
-                            <a href="/userMyPage.do">예정일 입력하기</a>
+                            <span @click="fnEdit()" class="weddingDate">예정일 입력하기</span>
                         </span>
                         <br>
                         <span v-if="dDayMessage">{{ dDayMessage }}</span>
@@ -138,13 +146,28 @@
                         <div class="shortcut-btn" @click="fnReservation()">예약 목록</div>
                     </div>
                     <p class="pass-title">현재 이용 중인 패스</p>
-                    <div class="pass-box" v-if="passWallet">
+                    <div class="pass-box" v-if="passWallet && passWallet.remainingCount > 0">
                         <h3>{{ passWallet.passName }} 이용 중입니다</h3>
                         <p>잔여 횟수 {{ passWallet.remainingCount }}회</p>
                     </div>
                     <div class="pass-box" v-else>
                         <h3>현재 이용 중인 패스가 없습니다.</h3>
+                    </div>
                     <button class="btn-withdraw" @click="fnWithdraw()">탈퇴하기</button>
+                </div>
+            </div>
+            <!-- 탈퇴 비밀번호 확인 모달 -->
+            <div v-if="showWithdrawModal" style="position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:999;display:flex;align-items:center;justify-content:center;">
+                <div style="background:white;padding:30px;border-radius:12px;width:300px;text-align:center;">
+                    <h4 style="margin-bottom:15px;">비밀번호 확인</h4>
+                    <p style="font-size:13px;color:#888;margin-bottom:15px;">탈퇴하려면 비밀번호를 입력해주세요.</p>
+                    <input type="password" v-model="withdrawPwd" placeholder="비밀번호 입력"
+                        style="width:100%;border:1px solid #eee;padding:8px;border-radius:6px;margin-bottom:15px;">
+                    <div style="display:flex;gap:10px;justify-content:center;">
+                        <button @click="fnConfirmWithdraw()"
+                            style="padding:8px 20px;background:#f4a096;color:white;border:none;border-radius:6px;cursor:pointer;">확인</button>
+                        <button @click="showWithdrawModal=false; withdrawPwd=''" 
+                            style="padding:8px 20px;border:1px solid #eee;border-radius:6px;cursor:pointer;">취소</button>
                     </div>
                 </div>
             </div>
@@ -160,6 +183,8 @@
                     userId: "",
                     name: "",
                 },
+                showWithdrawModal: false,
+                withdrawPwd: "",
                 passWallet: null,
                 weddingDate: '${member.weddingDate}',
                 dDay: (() => {
@@ -198,16 +223,23 @@
                 location.href = "/myReservation.do";
             },
             fnWithdraw: function() {
-                if (!confirm("정말 탈퇴하시겠습니까?")) return;
+                if (!confirm("탈퇴 후에는 복구가 불가능합니다. 정말 탈퇴하시겠습니까?")) return;
+                this.showWithdrawModal = true;  // 모달 열기
+            },
+            fnConfirmWithdraw: function() {
                 let self = this;
+                self.showWithdrawModal = false;
                 $.ajax({
                     url: "/leaveMember.dox",
                     type: "POST",
-                    data: { userId: self.info.userId },
+                    data: { 
+                        userId: self.info.userId,
+                        password: self.withdrawPwd
+                    },
                     success: function(data) {
                         if (data.result === "success") {
                             alert("탈퇴되었습니다.");
-                            location.href = "/merryViewHome.do";
+                            location.href = "/marryIntro.do";
                         } else {
                             alert(data.message);
                         }

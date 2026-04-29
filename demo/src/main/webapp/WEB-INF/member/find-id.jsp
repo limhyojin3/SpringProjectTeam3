@@ -140,13 +140,24 @@
             margin: 0 auto;
             width: 350px;
         }
+        .link-wrap a{
+            margin-top: 5px;
+            text-decoration: none;
+            color: #767676;
+            font-size: 15px;
+            font-weight: 500;
+        }
+        .link-login:hover , .link-find:hover{
+            color: #f15443;
+            text-shadow: 1px 1px 1px pink;
+        }
     </style>
 </head>
 <body>
     <div id="app">
         <div id="container">
             <div class="logo">
-                <img src="/img/merryview-logo-text.svg" alt="메리뷰 로고" @click="fnMain()">
+                <img src="/img/marryview-logo-text.svg" alt="메리뷰 로고" @click="fnMain()">
             </div>
             <div v-if="!isVerified">
                 <h1>아이디 찾기</h1>
@@ -185,9 +196,8 @@
                 '{{userId}}'입니다.
             </div>
             <div class="link-wrap">
-                <a href="/login.do"><span>로그인 페이지로 돌아가기</span></a>
-                <span>|</span>
-                <a href="/find-pwd.do"><span>비밀번호 변경</span></a>
+                <a href="/login.do"><span class="link-login">로그인 페이지로 돌아가기  | </span></a>
+                <a href="/find-pwd.do" class="link-find"><span> 비밀번호 변경</span></a>
             </div>
         </div>
     </div>

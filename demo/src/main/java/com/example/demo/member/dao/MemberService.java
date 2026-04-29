@@ -273,6 +273,18 @@ public class MemberService {
 	public HashMap<String, Object> editUserStatus(HashMap<String, Object> map) {
 	    HashMap<String, Object> resultMap = new HashMap<>();
 	    try {
+	    	// 추가: 비밀번호 검증
+	        Member member = memberMapper.selectMember(map); // 기존 유저 조회 mapper 사용
+	        if (member == null) {
+	            resultMap.put("result", "fail");
+	            resultMap.put("message", "사용자를 찾을 수 없습니다.");
+	            return resultMap;
+	        }
+	        if (!passwordEncoder.matches((String) map.get("password"), member.getPassword())) {
+	            resultMap.put("result", "fail");
+	            resultMap.put("message", "비밀번호가 일치하지 않습니다.");
+	            return resultMap;
+	        }
 	        // DB 업데이트 실행 (성공 시 1, 실패 시 0)
 	        int result = memberMapper.updateUserStatus(map);
 	        
