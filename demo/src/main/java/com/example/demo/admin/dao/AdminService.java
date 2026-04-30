@@ -468,9 +468,6 @@ public class AdminService {
 			// 1. 신고 일괄 처리
 			adminMapper.batchApproveReport(map);
 
-			// 2. (선택) 자동 정지 로직 여기 붙일 수 있음
-			// 👉 나중에 추가 가능
-
 			resultMap.put("result", "success");
 			resultMap.put("message", Message.MSG_EDIT);
 

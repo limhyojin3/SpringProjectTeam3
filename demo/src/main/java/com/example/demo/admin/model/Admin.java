@@ -45,6 +45,7 @@ public class Admin {
 	// 문의목록
 	int inquiryNo; 			//문의 번호
 	String answerContent;
+	String inquiryType;
 	
 	// 결제목록
 	String saleMonth;
@@ -68,6 +69,10 @@ public class Admin {
 	String refundDate;
 
 	int companyNo;
+	//환불
+	String impUid;
+	int chargeCount;
+	
 	
 
 	// 회원목록
@@ -118,6 +123,7 @@ public class Admin {
 //	int discountRate;
 	String issueType;
 	int maxIssueCnt;
+	int remainingCount;  //패스 지갑에 남은 열람권 횟수
 
 	// 패스
 
