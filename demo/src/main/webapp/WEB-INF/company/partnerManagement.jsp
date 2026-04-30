@@ -30,8 +30,8 @@
             #app {
                 max-width: 1200px;
                 margin: 0 auto;
-                background: transparent;
-                /* border: 1px solid #ddd; */
+                background: white;
+                border: 1px solid #ddd;
                 min-height: 100vh;
                 display: flex;
                 flex-direction: column;
@@ -68,8 +68,7 @@
                 display: flex;
                 flex: 1;
                 margin-top: 50px;
-                background-color: #f5f2fc;
-                /* border: 1px solid #9b8fd4 ; */
+                background-color: #fff9f9;
             }
 
             /* 사이드바 */
@@ -127,45 +126,12 @@
                 padding: 30px;
             }
 
-            .main-welcome-card {
-                background: white;
-                border: 1px solid #e0e0e0;
-                border-radius: 10px;
-                padding: 24px 28px;
-                margin-bottom: 16px;
-                box-shadow: 0 2px 8px rgba(0,0,0,0.06);
-                border-left: 4px solid #9b8fd4;
-            }
-            .main-welcome-card p {
-                font-size: 15px;
-                color: #333;
-                line-height: 1.8;
-            }
-            .main-welcome-card strong {
-                color: #9b8fd4;
-                font-weight: 700;
-            }
-            .grade-badge {
-                display: inline-block;
-                padding: 4px 12px;
-                border-radius: 4px;
-                font-size: 13px;
-                font-weight: 700;
-                color: white;
-                margin-top: 10px;
-            }
-            .grade-badge.partner  { background: #ffb400; }
-            .grade-badge.npartner { background: #f4a096; }
-
-            
             .content-card {
-                background-color: white;
-                border: 1px solid #eee;
+                border: 2px solid #ffc7c2;
                 padding: 30px;
                 border-radius: 10px;
                 margin-bottom: 20px;
                 position: relative;
-                box-shadow: 0 2px 8px rgba(0,0,0,0.06);
             }
 
             .section-title {
@@ -175,18 +141,6 @@
                 color: white;
                 font-weight: bold;
                 margin-bottom: 15px;
-            }
-
-            .section-header {
-                border-left: 4px solid #9b8fd4;
-                padding-left: 12px;
-                margin-bottom: 20px;
-            }
-            .section-header h2 {
-                border: none;      /* 기존 h2 border-left 덮어쓰기 */
-                padding: 0;
-                margin: 0;
-                font-size: 1.3rem;
             }
 
             /* 테이블 및 리스트 스타일 */
@@ -219,27 +173,21 @@
             }
 
             /* 탭 버튼 */
-            
+            .tab-menu {
+                margin-bottom: 20px;
+            }
 
             .tab-menu button {
                 padding: 10px 20px;
-                border: 1px solid #d4cdf0;
-                border-bottom: none;
+                border: 1px solid #ddd;
                 background: #eee;
                 cursor: pointer;
             }
 
             .tab-menu button.active {
-                background: #9b8fd4;
+                background: #ff7f9f;
                 color: white;
-                border-color: #9b8fd4;
-            }
-
-            .tab-menu button:first-child {
-                border-radius: 8px 0 0 0px;   /* 왼쪽 위아래만 */
-            }
-            .tab-menu button:last-child {
-                border-radius: 0 8px 0px 0;   /* 오른쪽 위아래만 */
+                border-color: #ff7f9f;
             }
 
             /* 푸터 */
@@ -347,12 +295,12 @@
                 border-radius: 4px;
                 transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
                 cursor: pointer;
-                border: none !important;    /* ← !important 추가 */
+                border: 1px solid transparent;
                 font-weight: 500;
             }
 
             .pagination1 a:hover {
-                background: #9b8fd4;
+                background: #ff7f9f;
                 color: white;
                 transform: translateY(-2px);
                 box-shadow: 0 4px 12px rgba(255, 124, 159, 0.3);
@@ -554,7 +502,7 @@
                 font-size: 1.5rem;
                 margin-bottom: 25px;
                 padding-left: 10px;
-                /* border-left: 5px solid #9b8fd4; */
+                border-left: 5px solid #ff1493;
                 /* 메인 컬러 포인트 */
             }
 
@@ -565,27 +513,21 @@
 
             .nav-container {
                 background-color: transparent;
-                background-color: #ede9f8;
+                background-color: #ffc7c2;
                 padding: 20px 10px;
                 border-radius: 12px;
                 display: flex;
                 flex-direction: column;
                 gap: 10px;
-                border: 1px solid #9b8fd4;
+                border: 1px solid #eee;
                 min-height: 100vh;
                 /* 부모(.main-content) 높이만큼 꽉 채움 */
 
 
             }
-            /* 네비게이션바 hover 효과 추가*/
-            .nav-btn:hover {
-                background: #9b8fd4;
-                color: white;
-                border-color: #9b8fd4;
-            }
 
             .nav-title {
-                background-color: #9b8fd4;
+                background-color: #f4a096;
                 color: #fff;
                 text-align: center;
                 padding: 15px;
@@ -605,160 +547,6 @@
                 font-size: 14px;
                 transition: 0.3s;
             }
-
-            /* 수정하기 버튼 */
-            .btn-edit {
-                padding: 6px 14px;
-                background: #9b8fd4;
-                color: white;
-                border: 1px solid #9b8fd4;
-                border-radius: 6px;
-                cursor: pointer;
-                font-size: 13px;
-                font-weight: 500;
-                transition: 0.2s;
-                margin-left: 10px;   /* ← 추가 */
-            }
-            .btn-edit:hover {
-                background: white;
-                color: #9b8fd4;
-            }
-            /* 삭제하기 버튼 */
-            .btn-delete {
-                padding: 6px 14px;
-                background: #f4a096;
-                color: white;
-                border: 1px solid #f4a096;
-                border-radius: 6px;
-                cursor: pointer;
-                font-size: 13px;
-                font-weight: 500;
-                transition: 0.2s;
-                margin-left: 10px;   /* ← 추가 */
-            }
-            .btn-delete:hover {
-                background: white;
-                color: #f4a096;
-            }
-            /* 상품관리 페이지의 상품 등록 버튼 */
-            .btn-product-reg {
-                background: #ffb400;
-                padding: 10px 24px;
-                border: none;
-                border-radius: 10px;
-                font-weight: bold;
-                cursor: pointer;
-                color: white;
-                font-size: 14px;
-                transition: 0.2s;
-            }
-            .btn-product-reg:hover {
-                background: #e0a500;
-                transform: translateY(-2px);
-                box-shadow: 0 4px 12px rgba(240, 180, 41, 0.3);
-            }
-
-            /* 예약관리 css */
-            /* 티켓 카드 */
-            .ticket-card {
-                display: flex;
-                align-items: center;
-                gap: 16px;
-                background: white;
-                border: 1px solid #e0e0e0;
-                border-radius: 10px;
-                padding: 16px;
-                margin-bottom: 12px;
-                cursor: pointer;
-                transition: 0.2s;
-                position: relative;
-            }
-            .ticket-card:hover {
-                border-color: #9b8fd4;
-                box-shadow: 0 4px 12px rgba(155, 143, 212, 0.15);
-                transform: translateY(-2px);
-            }
-            .ticket-img {
-                width: 80px;
-                height: 80px;
-                border-radius: 8px;
-                object-fit: cover;
-                flex-shrink: 0;
-            }
-            .ticket-info {
-                flex: 1;
-            }
-            .ticket-no {
-                font-size: 11px;
-                color: #aaa;
-                margin-bottom: 4px;
-            }
-            .ticket-name {
-                font-size: 15px;
-                font-weight: 700;
-                color: #333;
-                margin-bottom: 6px;
-            }
-            .ticket-date {
-                font-size: 13px;
-                color: #888;
-            }
-            .ticket-status {
-                font-size: 12px;
-                font-weight: 700;
-                padding: 4px 10px;
-                border-radius: 20px;
-            }
-            .ticket-status.wait   { background: #eef0ff; color: #3714ff; }
-            .ticket-status.cancel { background: #fff0f0; color: red; }
-            .ticket-status.done   { background: #f0fff4; color: green; }
-            .ticket-detail-label {
-                writing-mode: vertical-rl;
-                font-size: 11px;
-                color: #bbb;
-                letter-spacing: 2px;
-                padding: 0 8px;
-                border-left: 1px solid #eee;
-            }
-
-            /* 상세 뒤로가기 버튼 */
-            .btn-back {
-                padding: 8px 18px;
-                background: white;
-                border: 1px solid #9b8fd4;
-                color: #9b8fd4;
-                border-radius: 6px;
-                cursor: pointer;
-                font-size: 13px;
-                font-weight: 500;
-                margin-bottom: 20px;
-                transition: 0.2s;
-            }
-            .btn-back:hover {
-                background: #9b8fd4;
-                color: white;
-            }
-
-            /* 문의 답변 버튼 */
-            .btn-reply {
-                background: #ffb400;
-                color: white;
-                margin-top: 10px;
-                padding: 10px 20px;
-                border: none;
-                display: block;
-                margin-left: auto;
-                cursor: pointer;
-                border-radius: 10px;
-                font-size: 14px;
-                font-weight: 500;
-                transition: 0.2s;
-            }
-            .btn-reply:hover {
-                background: #e0a500;
-                transform: translateY(-2px);
-                box-shadow: 0 4px 12px rgba(240, 180, 41, 0.3);
-            } 
 
             /*.main-content{
                 background-color: #fff9f9; 
@@ -789,9 +577,9 @@
                 position: relative;
             }
                 */
-            /* #wrapper {
-                background-color: #f5f2fc;
-            } */
+            #wrapper {
+                background-color: #fff9f9;
+            }
 
 
             /* 상태별 배지 스타일 (선택사항) */
@@ -872,19 +660,18 @@
 
                         <main>
                             <div v-if="currentMenu === 'main'">
-                                <div class="main-welcome-card">
-                                    <p>안녕하세요, <strong>'{{ user.name }}'</strong>님!</p>
-                                    <span class="grade-badge partner" v-if="user.grade === 'PARTNER'">제휴업체</span>
-                                    <span class="grade-badge npartner" v-else-if="user.grade === 'NPARTNER'">일반업체</span>
-                                </div>
+                                <h2>안녕하세요, '{{ user.name }}'님!</h2>
+                                <div class="section-title" v-if="user.grade === 'PARTNER'">제휴업체</div>
+                                <div class="section-title" v-else-if="user.grade === 'NPARTNER'">일반업체</div>
                                 <div class="content-card">
-                                    <h3>등록 일자</h3>
+                                    <h3><span v-if="user.grade === '제휴업체'">제휴업체</span> 등록 일자</h3>
                                     <p style="text-align: right; font-size: 20px;">{{ user.regDate }}</p>
                                 </div>
                                 <div class="content-card">
                                     <h3>마지막 결제 수단</h3>
                                     <p style="text-align: right; font-size: 20px;">{{ user.lastPayment }}</p>
                                 </div>
+                                <!-- <button style="float: right;" @click="withdraw">탈퇴하기</button> -->
                             </div>
 
 
@@ -893,41 +680,25 @@
 
                                 <div v-if="productPage === 'list'">
                                     <!-- db 랑 연결한 곳 -->
-                                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; padding-left: 10px;">
-                                        <div class="section-header">
-                                            <h2>등록한 상품({{ productList3.length }})</h2>
-                                        </div>
-                                            <button @click="goRegPage2"class="btn-product-reg">상품등록</button>
-                                    </div>
-                                    <!-- productList3 -> fnPaginatedProductList 로 변경했어요. 페이지 사이징 때문에. -->
-                                    <div v-for="i in fnPaginatedProductList" class="content-card"
+                                    <h2>등록한 상품({{ productList3.length }})</h2>
+                                    <div v-for="i in productList3" class="content-card"
                                         style="display: flex; align-items: center; padding: 15px;">
                                         <div
                                             style="width: 100px; height: 100px;  display: flex; align-items: center; justify-content: center; margin-right: 20px;">
                                             <!--{{ i.thumbnail }}-->
                                             <img :src="i.imgUrl" :alt="i.productName"
-                                                style="width: 100%; height: 100%; object-fit: cover; border-radius: 10px;">
+                                                style="width: 100%; height: 100%; object-fit: cover;">
                                         </div>
                                         <div style="flex: 1; font-weight: bold;">{{ i.productDetails }}</div>
                                         <div>{{ Number(i.originalPrice).toLocaleString() }}원</div>
-                                        <button @click="goEditPage(i)" class="btn-edit">수정하기</button>
-                                        <button @click="fnRemove2(i)" class="btn-delete">삭제하기</button>
+                                        <button @click="goEditPage(i)" style="margin-left: 10px;">수정하기</button>
+                                        <button @click="fnRemove2(i)" style="margin-left: 10px;">삭제하기</button>
                                     </div>
-                                    <!-- 여기에 페이징이 있어야 해요 -->
-                                    <div class="pagination1">
-                                        <span v-for="num in totalProductPages" :key="num">
-                                            <a @click="productCurrentPage = num" href="javascript:;"
-                                                :style="productCurrentPage === num ? 'color: #9b8fd4; border:none ;' : ''">
-                                                {{ num }}
-                                            </a>
-                                        </span>
-                                    </div>
-<!-- 
                                     <div style="text-align: center;">
                                         <button @click="goRegPage2"
-                                            style="background: #ffb400; padding: 15px 40px; border: none; border-radius: 10px; font-weight: bold; cursor: pointer;">상품
+                                            style="background: #ffb400; padding: 15px 40px; border: none; font-weight: bold; cursor: pointer;">상품
                                             등록</button>
-                                    </div> -->
+                                    </div>
 
 
                                     <!-- 여기는 프론트만으로 되는 곳-->
@@ -1149,6 +920,7 @@
                                         </div>
 
                                         <div class="product-form-section">
+                                            <div class="form-title-box">상품 이미지</div>
                                             <div class="form-content-box">
                                                 <div class="form-group">
                                                     <div style="margin-bottom: 10px; font-weight: bold;">기존 이미지 : </div>
@@ -1187,85 +959,82 @@
                                     </div>
                                 </div>
                             </div>
-                            <!-- 예약관리 페이지 -->
+
                             <div v-if="currentMenu === 'reservation'">
-                                <div class="section-header">
-                                    <h2>예약 관리 : <span style="color:#9b8fd4;">새 예약 {{ resCount }}건</span></h2>
-                                </div>
+                                <h2>예약 관리 : <span style="color: #ff1493;">새 예약 {{ resCount }}건</span></h2>
+                                <template v-for="res in fnPaginatedReservation" :key="res.id">
+                                    <table style="margin-bottom: 30px;">
+                                        <tr>
+                                            <th>예약 상품</th>
+                                            <td>{{ res.productName }}</td>
+                                        </tr>
+                                        <tr>
+                                            <th>예약 내용/ 요청 사항</th>
+                                            <td>{{ res.resContent === '' ? '요청사항 없음' : res.resContent }}</td>
+                                        </tr>
+                                        <tr>
+                                            <th>예약저장</th>
+                                            <td>{{ res.resDate }} {{ res.resTime }}</td>
+                                        </tr>
+                                        <tr>
+                                            <th>예약결제</th>
+                                            <td>{{ res.payDate === undefined ? '(미결제)' : '(결제완료)' + res.payDate }}</td>
+                                        </tr>
 
-                                <!-- 티켓 목록 -->
-                                <template v-if="!selectedRes">
-                                    <div class="ticket-card"
-                                        v-for="(res, idx) in pagedResList" :key="idx"
-                                        @click="selectedRes = res">
-                                        <img class="ticket-img"
-                                            :src="productList3.find(p => p.productName === res.productName)?.imgUrl"
-                                            :alt="res.productName"
-                                            v-if="productList3.find(p => p.productName === res.productName)?.imgUrl">
-                                        <div class="ticket-info">
-                                            <div class="ticket-no">No. {{ idx + 1 }}</div>
-                                            <div class="ticket-name">{{ res.productName }}</div>
-                                            <div class="ticket-date">예약 날짜/시간 : {{ res.useDate }} {{ res.useTime }}</div>
-                                            <div style="margin-top:6px;">
-                                                <span class="ticket-status"
-                                                    :class="res.resStatus === 'WAIT' ? 'wait' : res.resStatus === 'CANCEL' ? 'cancel' : 'done'">
-                                                    {{ res.resStatus === 'WAIT' ? '✅ 예약이 확정되었습니다.' : res.resStatus === 'CANCEL' ? '❌ 취소된 예약입니다.' : res.resStatus }}
-                                                </span>
-                                            </div>
-                                        </div>
-                                        <div class="ticket-detail-label">DETAIL</div>
-                                    </div>
+                                        <tr>
+                                            <th>예약 날짜/시간</th>
+                                            <td>{{ res.useDate }} {{ res.useTime }}</td>
+                                        </tr>
 
-                                    <!-- 페이징 -->
-                                    <div class="pagination1">
-                                        <span v-for="num in totalResPageCount" :key="num">
-                                            <a @click="resCurrentPage = num" href="javascript:;"
-                                                :style="resCurrentPage === num ? 'color:#9b8fd4; border:1px solid #9b8fd4;' : 'border:none;'">
-                                                {{ num }}
-                                            </a>
-                                        </span>
-                                    </div>
-                                </template>
-                                <template v-else>
-                                    <button class="btn-back" @click="selectedRes = null">← 목록으로</button>
-                                    <table>
-                                        <tr><th>예약 상품</th><td>{{ selectedRes.productName }}</td></tr>
-                                        <tr><th>예약 내용/요청 사항</th><td>{{ selectedRes.resContent === '' ? '요청사항 없음' : selectedRes.resContent }}</td></tr>
-                                        <tr><th>예약저장</th><td>{{ selectedRes.resDate }} {{ selectedRes.resTime }}</td></tr>
-                                        <tr><th>예약결제</th><td>{{ selectedRes.payDate === undefined ? '(미결제)' : '(결제완료)' + selectedRes.payDate }}</td></tr>
-                                        <tr><th>예약 날짜/시간</th><td>{{ selectedRes.useDate }} {{ selectedRes.useTime }}</td></tr>
-                                        <tr><th>예약자명</th><td>{{ selectedRes.resUserId }}</td></tr>
-                                        <tr><th>연락처</th><td>{{ selectedRes.tel }}</td></tr>
-                                        <tr><th>예약금</th><td>{{ Number(selectedRes.deposit).toLocaleString() }}원</td></tr>
+                                        <tr>
+                                            <th>예약자명</th>
+                                            <td>{{ res.resUserId }}</td>
+                                        </tr>
+                                        <tr>
+                                            <th>연락처</th>
+                                            <td>{{ res.tel }}</td>
+                                        </tr>
+                                        <tr>
+                                            <th>예약금</th>
+                                            <td>{{ Number(res.deposit).toLocaleString() }}원</td>
+                                        </tr>
                                         <tr>
                                             <th>예약 처리상태</th>
-                                            <td :style="selectedRes.resStatus === 'WAIT' ? 'color:#3714ff;' : selectedRes.resStatus === 'CANCEL' ? 'color:red;' : ''">
-                                                {{ selectedRes.resStatus }}
+                                            <td v-if="res.resStatus === 'WAIT'" style="color: #3714ff;">
+                                                {{ res.resStatus }}
                                             </td>
+                                            <td v-else-if="res.resStatus === 'CANCEL'" style="color: red;">
+                                                {{ res.resStatus }}
+                                            </td>
+                                            <td v-else>{{ res.resStatus }}</td>
                                         </tr>
                                     </table>
                                 </template>
-                                <!-- <div class="pagination1">
+                                <div class="pagination1">
                                     <span v-for="num in totalPageReservation" :key="num">
                                         <a @click="fnPageChange(num)" href="javascript:;"
                                             :style="currentPage === num ? 'color: #ff1493; border: 1px solid #ff1493;' : ''">
                                             {{num}}
-                                        </a>
+                                        </a> <!-- 1,2,3,4-->
                                     </span>
-                                </div> -->
+                                </div>
                             </div>
 
                             <div v-if="currentMenu === 'inquiry'">
-                               <div class="section-header">
-                                    <h2>문의 관리 : <span style="color:#9b8fd4;">새 문의 {{inquiryList.length}}건</span></h2>
-                                </div>
-                                <div class="content-card" v-for="i in fnPaginatedInquiry" :key="i">
+                                <!-- {{productPage}}
+                                {{page1}} -->
+                                <template v-if="page1 === 'main'">
+                                    <h2>문의 관리 : <span style="color: #ff1493;">총 문의 {{inquiryList.length}}건</span></h2>
+                                    <div class="content-card" v-for="i in fnPaginatedInquiry" :key="i">
 
-                                    <div style="display: flex;">
-                                        <div
-                                            style="width: 100px; height: 100px;  margin-right: 20px; text-align: center;">
-                                            <img :src="fnThumbnail(i)" :alt="i.product"
-                                                style="width: 100%; height: 100%; object-fit: cover; border-radius: 10px;">
+                                        <div style="display: flex;">
+                                            <div
+                                                style="width: 100px; height: 100px;  margin-right: 20px; text-align: center;">
+                                                <img :src="fnThumbnail(i)" :alt="i.productName"
+                                                    style="width: 100%; height: 100%; object-fit: cover;">
+
+                                            </div>
+                                            <h3>상품명 : <span style="color: #d6336c;">{{i.productName}}</span> </h3>
 
                                         </div>
                                         <table>
@@ -1307,63 +1076,142 @@
                                     <div
                                         style="padding: 20px; border: 1px solid #ddd; border-radius: 8px; background-color: #fff; max-width: 800px; margin: 0 auto;">
 
-                                    <button class="btn-reply">답변하기</button>
+                                        <div
+                                            style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; padding-bottom: 10px; border-bottom: 2px solid #333;">
+                                            <h2 style="margin: 0; font-size: 1.5rem; color: #333;">문의 답변 등록</h2>
+                                            <button @click="fnBacktoInquiry"
+                                                style="padding: 8px 16px; background-color: #f4f4f4; border: 1px solid #ccc; border-radius: 4px; cursor: pointer; font-size: 0.9rem;">
+                                                ← 리스트로 돌아가기
+                                            </button>
+                                        </div>
 
-                                </div>
-                                <div class="pagination1">
-                                    <span v-for="num in inquiryList.length" :key="num">
-                                        <a @click="currentPage = num" href="javascript:;"
-                                            :style="currentPage === num ? 'color: #9b8fd4; border: 1px solid #ff1493;' : 'border:none;'">
-                                            {{num}}
-                                        </a> <!-- 1,2-->
-                                    </span>
-                                </div>
+                                        <div
+                                            style="margin-bottom: 30px; padding: 15px; background-color: #f9f9f9; border-radius: 4px; border: 1px solid #eaeaea;">
+                                            <h3
+                                                style="margin-top: 0; color: #555; border-bottom: 1px solid #ddd; padding-bottom: 8px;">
+                                                원본 문의 내용</h3>
+
+                                            <table
+                                                style="width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 0.95rem;">
+                                                <colgroup>
+                                                    <col style="width: 20%; background-color: #eee;">
+                                                    <col style="width: 30%;">
+                                                    <col style="width: 20%; background-color: #eee;">
+                                                    <col style="width: 30%;">
+                                                </colgroup>
+                                                <tr>
+                                                    <th
+                                                        style="padding: 10px; border: 1px solid #ddd; text-align: left;">
+                                                        문의 번호</th>
+                                                    <td style="padding: 10px; border: 1px solid #ddd;">{{
+                                                        inquiryDetails.inquiryNo }}</td>
+                                                    <th
+                                                        style="padding: 10px; border: 1px solid #ddd; text-align: left;">
+                                                        작성자 ID</th>
+                                                    <td style="padding: 10px; border: 1px solid #ddd;">{{
+                                                        inquiryDetails.userId }}</td>
+                                                </tr>
+                                                <tr>
+                                                    <th
+                                                        style="padding: 10px; border: 1px solid #ddd; text-align: left;">
+                                                        문의 제목</th>
+                                                    <td colspan="3"
+                                                        style="padding: 10px; border: 1px solid #ddd; font-weight: bold;">
+                                                        {{ inquiryDetails.inquiryTitle }}</td>
+                                                </tr>
+                                                <tr>
+                                                    <th
+                                                        style="padding: 10px; border: 1px solid #ddd; text-align: left; vertical-align: top;">
+                                                        문의 내용</th>
+                                                    <td colspan="3"
+                                                        style="padding: 10px; border: 1px solid #ddd; min-height: 100px; white-space: pre-wrap;">
+                                                        {{ inquiryDetails.inquiryContents }}</td>
+                                                </tr>
+                                            </table>
+                                        </div>
+
+                                        <div>
+                                            <h3 style="margin-top: 0; color: #333;">답변 달기</h3>
+                                            <!-- {{inquiryAnswer}} -->
+
+                                            <div style="margin-top: 15px;">
+                                                <label
+                                                    style="display: block; margin-bottom: 8px; font-weight: bold; color: #555;">답변자</label>
+                                                <input v-model="inquiryAnswer.ansUserId" placeholder="답변을 작성한 담당자명을 입력해주세요."
+                                                    style="width: 50%; padding: 12px; border: 1px solid #ccc; border-radius: 4px; resize: vertical; font-family: inherit; font-size: 1rem; box-sizing: border-radius;">
+                                            </div>
+
+
+                                            <div style="margin-top: 15px;">
+                                                <label
+                                                    style="display: block; margin-bottom: 8px; font-weight: bold; color: #555;">답변
+                                                    내용</label>
+                                                <textarea v-model="inquiryAnswer.answerContents" placeholder="문의에 대한 정성스러운 답변을 작성해 주세요."
+                                                    style="width: 100%; height: 200px; padding: 12px; border: 1px solid #ccc; border-radius: 4px; resize: vertical; font-family: inherit; font-size: 1rem; box-sizing: border-radius;"></textarea>
+                                            </div>
+
+                                            <div
+                                                style="margin-top: 25px; text-align: center; display: flex; justify-content: center; gap: 15px;">
+                                                <button @click="fnBacktoInquiry"
+                                                    style="padding: 12px 24px; background-color: #fff; border: 1px solid #ccc; border-radius: 4px; cursor: pointer; font-size: 1rem; color: #333;">
+                                                    취소
+                                                </button>
+                                                <button @click="fnSaveAnswer"
+                                                    style="padding: 12px 24px; background-color: #ff1493; border: none; border-radius: 4px; cursor: pointer; font-size: 1rem; color: #fff; font-weight: bold;">
+                                                    <span v-if="inquiryAnswer.inquiryAns === '0'">답변 등록하기</span>
+                                                    <span v-else>답변 수정하기</span>
+                                                </button>
+                                                
+                                            </div>
+                                        </div>
+
+                                    </div>
+
+                                </template>
+
                             </div>
 
-                            <!-- 리뷰 내역 페이지 -->
                             <div v-if="currentMenu === 'review'">
+
+
                                 <!--page1 이 main인경우-->
                                 <template v-if="page1 === 'main'">
+
+
                                     <div class="tab-menu">
-                                        <button :class="{ active: reviewTab === 'detail' }" @click="fnReview()">유료
+                                        <button :class="{ active: reviewTab === 'detail' }" @click="fnReview()">상세
                                             리뷰({{totalReviewCnt}})
                                         </button>
 
-                                        <button :class="{ active: reviewTab === 'simple' }" @click="fnSimple()">무료
+                                        <button :class="{ active: reviewTab === 'simple' }" @click="fnSimple()">한줄
                                             리뷰({{totalSimpleReviewCnt}})
                                         </button>
                                     </div>
 
                                     <div v-if="reviewTab === 'detail'" class="content-card">
-                                        <h3>유료 리뷰 내역 : <span style="color: #ff1493;">새 리뷰 {{newReviewCnt}}건</span></h3>
-                                        <template v-for="w in pagedProductList3" :key="w.productName">
+
+                                        <h3>리뷰 내역 : <span style="color: #ff1493;">새 리뷰 {{newReviewCnt}}건</span></h3>
+                                        <template v-for="w in productList3" :key="w.productName">
                                             <div class="review-header-info" style="margin-bottom: 10px;">
                                                 <div class="review-thumb-box">
-                                                    <img :src="w.imgUrl" style="width: 100%; height: 100%; object-fit: cover; border-radius: 10px;">
+                                                    <img :src="w.imgUrl"
+                                                        style="width: 100%; height: 100%; object-fit: cover;">
                                                 </div>
                                                 <div class="review-product-name">
                                                     <a href="javascript:;" style="text-decoration: none; color:#0b3f8e;"
                                                         @click="fnReviewDetails3(w)"><strong>{{w.productName}}</strong></a>
                                                 </div>
-                                                <div class="review-count-badge">리뷰 갯수: {{w.reviewCount}}개</div>
+                                                <div class="review-count-badge">리뷰 갯수: {{w.reviewCount}}개 </div>
                                             </div>
                                         </template>
-                                        <div class="pagination1">
-                                            <span v-for="num in totalReviewListPages3" :key="num">
-                                                <a @click="reviewListPage = num" href="javascript:;"
-                                                    :style="reviewListPage === num ? 'color:#9b8fd4; border:1px solid #9b8fd4;' : 'border:none;'">
-                                                    {{ num }}
-                                                </a>
-                                            </span>
-                                        </div>
                                     </div>
 
                                     <div v-if="reviewTab === 'simple'" class="content-card">
 
-                                        <h3>무료 리뷰 내역 : <span style="color: #ff1493;">새 리뷰 {{newUnpaidReviewCnt}}건</span>
+                                        <h3>리뷰 내역 : <span style="color: #ff1493;">새 리뷰 {{newUnpaidReviewCnt}}건</span>
                                         </h3>
 
-                                        <template v-for="w in pagedProductList4 " :key="w.productName">
+                                        <template v-for="w in productList4" :key="w.productName">
 
                                             <div class="review-header-info" style="margin-bottom: 10px;">
                                                 <div class="review-thumb-box">
@@ -1379,20 +1227,11 @@
                                                 <div class="review-count-badge">리뷰 갯수: {{w.reviewCount}}개 </div>
                                             </div>
                                         </template>
-                                        <!-- 페이징 추가 -->
-                                        <div class="pagination1">
-                                            <span v-for="num in totalReviewListPages4" :key="num">
-                                                <a @click="reviewListPage = num" href="javascript:;"
-                                                    :style="reviewListPage === num ? 'color:#9b8fd4; border:1px solid #9b8fd4;' : 'border:none;'">
-                                                    {{ num }}
-                                                </a>
-                                            </span>
-                                        </div>
                                     </div>
                                 </template>
 
 
-    
+
 
                                 <!--page1이 main이 아닌 경우-->
                                 <template v-else> <!--page1 != 'main'-->
@@ -1524,17 +1363,16 @@
         const app = Vue.createApp({
             data() {
                 return {
-                    // 리뷰 내역 페이지 사이징
-                    reviewListPage: 1,   // 리뷰 상품 목록 페이지
-                    reviewListPageSize: 5,
-                    // 예약 관리 페이지 사이징
-                    selectedRes: null,
-                    resCurrentPage: 1,
-                    resPageSize: 5,
-                    // 상품관리 페이지 사이징//
-                    productCurrentPage: 1,
-                    productPageSize: 5,   // 한 페이지에 보여줄 상품 수
-                    //
+
+                    /*문의 답변과 관련된 맵*/
+                    inquiryAnswer:{
+                        inquiryNo: '',
+                        ansUserId:'',
+                        answerNo: '',
+                        answerContents:'',
+                        inquiryAns: ''
+                    },
+                    inquiryDetails: {},
                     resCount: '',
                     newReviewCnt: 0,
                     newUnpaidReviewCnt: 0,
@@ -1789,41 +1627,9 @@
                 totalPageReservation() {
                     return Math.ceil(this.reservationList.length / 3);
                 },
-                // 상품 관리 페이지 사이징
-                fnPaginatedProductList() {
-                    const start = (this.productCurrentPage - 1) * this.productPageSize;
-                    const end = start + this.productPageSize;
-                    return this.productList3.slice(start, end);
-                },
-                totalProductPages() {
-                    return Math.ceil(this.productList3.length / this.productPageSize);
-                },
 
-                // 예약관리 페이지
-                pagedResList() {
-                    const start = (this.resCurrentPage - 1) * this.resPageSize;
-                    const end = start + this.resPageSize;
-                    return this.reservationList.slice(start, end);
-                },
-                totalResPageCount() {
-                    return Math.ceil(this.reservationList.length / this.resPageSize);
-                },
-                
-                // 리뷰 내역 페이지
-                pagedProductList3() {
-                    const start = (this.reviewListPage - 1) * this.reviewListPageSize;
-                    return this.productList3.slice(start, start + this.reviewListPageSize);
-                },
-                pagedProductList4() {
-                    const start = (this.reviewListPage - 1) * this.reviewListPageSize;
-                    return this.productList4.slice(start, start + this.reviewListPageSize);
-                },
-                totalReviewListPages3() {
-                    return Math.ceil(this.productList3.length / this.reviewListPageSize);
-                },
-                totalReviewListPages4() {
-                    return Math.ceil(this.productList4.length / this.reviewListPageSize);
-                },
+
+
             },
             methods: {
                 // 함수(메소드) - (key : function())
@@ -2087,9 +1893,6 @@
                 }
                 ,
                 handleMenuClick(menuId) {   //main,product,reservation,inquiry,review,customer
-                    this.selectedRes = null;      // ← 추가
-                    this.resCurrentPage = 1;
-                    this.productCurrentPage = 1;
                     this.currentMenu = menuId;
                     this.productPage = 'list';
                     this.page = 1;
@@ -2287,7 +2090,6 @@
                 },
                 fnReview() {
                     this.reviewTab = 'detail'
-                    this.reviewListPage = 1
 
                     let self = this;
                     let param = {
@@ -2316,7 +2118,6 @@
                 },
                 fnSimple() {
                     this.reviewTab = 'simple'
-                    this.reviewListPage = 1
 
                     let self = this;
                     let param = {
