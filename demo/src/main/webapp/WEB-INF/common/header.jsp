@@ -147,7 +147,7 @@
                         <li><a href="${pageContext.request.contextPath}/api/community/list.do">전체 보기</a></li>
                         <li><a href="${pageContext.request.contextPath}/api/community/list.do?category=자유">자유글</a></li>
                         <li><a href="${pageContext.request.contextPath}/api/community/list.do?category=질문">질문글</a></li>
-                        <li><a href="${pageContext.request.contextPath}/api/community/list.do?category=정보공유">정보공유글</a></li>
+                        <li><a href="${pageContext.request.contextPath}/api/community/list.do?category=정보">정보공유글</a></li>
                     </ul>
                 </li>
 
