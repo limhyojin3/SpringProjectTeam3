@@ -65,6 +65,15 @@ public class Company {
 	String previousPayment;
 	String outDate;
 	
+	String inquiryNo;
+	String inquiryTitle;
+	String inquiryContents;
+	String inquiryAns;
+	
+	String answerNo;
+	String answerContents;
+	String ansUserId;
+	
 	
   // 통계용 필드 (DB 테이블엔 없지만 화면에 뿌릴 때 필요)
   private Double avgRating;
