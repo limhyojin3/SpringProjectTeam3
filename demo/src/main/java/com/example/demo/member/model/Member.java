@@ -52,6 +52,7 @@ public class Member {
 	double rating;
 	int isPaid;
 	String imgUrl;
+	String thumbnailUrl;
 	String approvalStatus;
 	//
 	int isPurchased; // 추가

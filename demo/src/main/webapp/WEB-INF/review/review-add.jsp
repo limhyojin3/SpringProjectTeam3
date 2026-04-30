@@ -43,8 +43,9 @@
     </style>
 </head>
 <body>
+    <jsp:include page="/WEB-INF/common/header.jsp" />
     <div id="app">
-        <jsp:include page="/WEB-INF/common/header.jsp" />
+        
         
         <div class="write-container">
             <h3 class="text-center font-weight-bold mb-4">리뷰 작성</h3>

@@ -577,6 +577,7 @@
 	        R.reg_date,
 	        R.is_paid,
 	        R.user_id,
+	        IFNULL(R.thumbnail_url, R.img_url) AS thumbnailUrl,
 	        <!-- 추가: 현재 로그인한 유저가 이미 구매한 리뷰인지 여부 -->
 	        CASE WHEN PUL.user_id IS NOT NULL THEN 1 ELSE 0 END AS is_purchased
 	    FROM review R
