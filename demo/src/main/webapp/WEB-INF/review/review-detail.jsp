@@ -61,6 +61,12 @@
             border-radius: 12px;        /* 부드러운 모서리 처리 */
             transition: transform 0.3s ease;
         }
+        /* 에디터 내부 이미지 스타일 강제 적용 */
+        .review-content img {
+           max-width: 100%;    /* 본문 너비를 넘지 않음 */
+    height: auto;       /* 비율 유지 */
+    object-fit: contain; /* 잘리지 않고 전체가 다 보이게 함 */
+        }
 
         /* 3. 가로가 너무 긴 사진(1920x500 등)을 위한 특수 효과 */
         /* 마우스를 올리면 원본을 더 잘 볼 수 있게 살짝 확대 */
@@ -123,11 +129,91 @@
             color: #555; 
             position: relative;
         }
+        /* 전체 컨테이너 */
+        .post-navigation {
+            margin: 40px 0;
+            border: 1px solid #e1e1e1;
+            border-radius: 12px;
+            overflow: hidden;
+            background-color: #fff;
+            list-style: none;
+            padding: 0;
+        }
+
+        /* 각 행 스타일 */
+        .post-navigation li {
+            display: flex;
+            align-items: center;
+            padding: 20px 25px;
+            cursor: pointer;
+            transition: all 0.3s ease; /* 부드러운 전환 효과 */
+            position: relative;
+        }
+
+        /* 구분선 */
+        .post-navigation li:first-child {
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        /* 마우스를 올렸을 때(Hover) 배경색과 텍스트 이동 효과 */
+        .post-navigation li:hover {
+            background-color: #fff9fa; /* 메인 테마색 연한 버전 */
+        }
+
+        .post-navigation li:hover .nav-title {
+            color: #ff4d7d; /* 강조색으로 변경 */
+            transform: translateX(5px); /* 오른쪽으로 살짝 이동 */
+        }
+
+        /* 라벨 디자인 (이전글/다음글 뱃지) */
+        .nav-label {
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: #999;
+            width: 70px;
+            text-transform: uppercase;
+        }
+
+        /* 제목 텍스트 */
+        .nav-title {
+            flex: 1;
+            font-size: 1rem;
+            color: #444;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            margin: 0 15px;
+        }
+
+        /* 화살표 아이콘 커스텀 */
+        .nav-arrow {
+            font-size: 1.2rem;
+            color: #ccc;
+            transition: color 0.3s;
+        }
+
+        .post-navigation li:hover .nav-arrow {
+            color: #ff4d7d;
+        }
+
+        /* 글이 없을 때 스타일 */
+        .nav-none {
+            background-color: #fafafa !important;
+            cursor: default !important;
+        }
+
+        .nav-none .nav-title {
+            color: #bbb !important;
+            transform: none !important;
+        }
     </style>
 </head>
 <body>
+    <jsp:include page="/WEB-INF/common/header.jsp" />
     <div id="app">
-        <jsp:include page="/WEB-INF/common/header.jsp" />
+        
 
         <div class="detail-container" v-if="info">
             <div class="border-bottom pb-3 mb-4">
@@ -295,7 +381,35 @@
                     <i class="fas fa-info-circle text-muted"></i> 탈퇴한 사용자의 리뷰에는 댓글을 남길 수 없습니다.
                 </div>
             </div>
+
+             <ul class="post-navigation">
+                <!-- 다음글 (위쪽) -->
+                <li v-if="reviewDetail && reviewDetail.nextNo" @click="fnGoDetail(reviewDetail.nextNo)">
+                    <span class="nav-label">Next</span>
+                    <span class="nav-arrow">▲</span>
+                    <span class="nav-title">{{ reviewDetail.nextTitle }}</span>
+                </li>
+                <li v-else class="nav-none">
+                    <span class="nav-label">Next</span>
+                    <span class="nav-arrow" style="color:#eee">▲</span>
+                    <span class="nav-title">다음 글이 없습니다.</span>
+                </li>
+
+                <!-- 이전글 (아래쪽) -->
+                <li v-if="reviewDetail && reviewDetail.prevNo" @click="fnGoDetail(reviewDetail.prevNo)">
+                    <span class="nav-label">Prev</span>
+                    <span class="nav-arrow">▼</span>
+                    <span class="nav-title">{{ reviewDetail.prevTitle }}</span>
+                </li>
+                <li v-else class="nav-none">
+                    <span class="nav-label">Prev</span>
+                    <span class="nav-arrow" style="color:#eee">▼</span>
+                    <span class="nav-title">이전 글이 없습니다.</span>
+                </li>
+            </ul>
         </div>
+
+       
 
         <div class="modal fade" id="reportModal" tabindex="-1" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered">
@@ -347,6 +461,7 @@
                     sessionRole: "${sessionRole}",
                     info: null,
                     imgList: [],
+                    reviewDetail: null, // 이전/다음글 정보를 담을 변수 추가
                     commentList: [],
                     newComment: "",
                     replyTo: null,
@@ -380,6 +495,7 @@
                             const data = (typeof res === 'string') ? JSON.parse(res) : res;
                             if (data.result === "success") {
                                 this.info = data.info;
+                                this.reviewDetail = data.info;
                                 if (this.info.imgUrl) {
                                     this.imgList = this.info.imgUrl.split(',').filter(url => url.trim() !== '');
                                 }
@@ -387,6 +503,10 @@
                             }
                         }
                     });
+                },
+                fnGoDetail(no) {
+                    // URL 파라미터를 변경하여 상세 페이지 재접속
+                    location.href = "/api/review/detail.do?reviewNo=" + no;
                 },
                 fnGetComments() {
                     $.ajax({

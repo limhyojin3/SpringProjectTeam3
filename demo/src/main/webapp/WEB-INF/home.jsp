@@ -49,19 +49,20 @@
                         <div class="review-grid">
                             <div class="review-card" v-for="review in reviewList" :key="review.reviewNo"
                                 @click="fnGoReview(review)">
-                                <div class="review-img-thumb" style="overflow:hidden; height: 200px; background: #eee;">
-                                    <div v-if="review.isPaid == 1" class="premium-badge">
-                                        <i class="fas fa-crown"></i> Premium
-                                    </div>
-                                    <img v-if="review.imgUrl && !review.imgUrl.endsWith('.zip')"
-                                        :src="review.imgUrl.split(',')[0]"
-                                        :class="{'blur-img': review.isPaid == 1 && review.isPurchased == 0 && userRole !== 'ADMIN'&& review.userId !== sessionId}"
-                                        style="width:100%; height:100%; object-fit:cover;"
-                                        @error="handleImgError">
-                                    <div v-else class="thumb-placeholder" style="height:100%; display:flex; flex-direction:column; justify-content:center; align-items:center;">
-                                        <span style="font-size: 2rem;">🌸</span>
-                                        <p style="font-size: 0.8rem; color: #888; margin-top: 5px;">{{ review.title }}</p>
-                                    </div>
+                               <!-- 2. 이미지 영역 (썸네일 추출 및 블러 처리 로직 통합) -->
+                                <div class="card-img-box">
+                                    <!-- 
+                                    1) thumbnailUrl이 있으면 우선 사용
+                                    2) 없으면 기존 imgUrl의 첫 번째 이미지 사용
+                                    3) 둘 다 없으면 기본 로고 출력
+                                    -->
+                                    <img :src="review.thumbnailUrl || (review.imgUrl && !review.imgUrl.endsWith('.zip') ? review.imgUrl.split(',')[0] : '/images/marryviewlogo_v3.png')" 
+                                        :class="{
+                                            'default-logo': !review.thumbnailUrl && !review.imgUrl,
+                                            'blur-img': review.isPaid == 1 && review.isPurchased == 0 && userRole !== 'ADMIN' && review.userId !== sessionId
+                                        }"
+                                        @error="(e) => e.target.src = '/images/marryviewlogo_v3.png'"
+                                        alt="리뷰 썸네일">
                                 </div>
                                 <p class="review-title" style="margin-top: 10px; font-weight: bold;">{{ review.title }}</p>
                             </div>

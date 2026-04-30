@@ -103,8 +103,9 @@
     </style>
 </head>
 <body>
+    <jsp:include page="/WEB-INF/common/header.jsp" />
     <div id="app">
-        <jsp:include page="/WEB-INF/common/header.jsp" />
+        
 
         <main class="main-content">
             <div class="d-flex justify-content-between align-items-end mb-4">
