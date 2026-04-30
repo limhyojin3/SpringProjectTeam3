@@ -1209,16 +1209,17 @@
             .btn-back:hover {
                 color: #666;
             }
-            .inquiryTicket{
+
+            .inquiryTicket {
                 box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
                 cursor: pointer;
                 transition: transform 0.2s, box-shadow 0.2s;
             }
+
             .inquiryTicket:hover {
                 transform: translateY(-5px);
                 box-shadow: 0 8px 20px rgba(255, 127, 159, 0.15);
             }
-
         </style>
     </head>
 
@@ -1700,7 +1701,8 @@
                         </div>
 
                         <!-- 나의 문의내역 보는 리스트-->
-                        <div v-if="currentMenu === 'main' && productPage === 'myRealInquiryList'" style="max-width: 900px; margin: 20px auto; padding: 20px;">
+                        <div v-if="currentMenu === 'main' && productPage === 'myRealInquiryList'"
+                            style="max-width: 900px; margin: 20px auto; padding: 20px;">
                             <!-- <button @click="productPage = 'list'">뒤로가기</button> -->
                             <!-- {{product1}}여기서는 사용 ㄴㄴ -->
                             {{"${sessionScope.sessionId}"}}
@@ -1717,11 +1719,12 @@
                             </div>
 
                             <!-- 문의 리스트 반복문 -->
-                            <div v-if="myInquiryList && myInquiryList.length > 0"> 
+                            <div v-if="myInquiryList && myInquiryList.length > 0">
 
                                 {{myInquiry1}}
 
-                                <div v-for="(inquiry, index) in myInquiryList" :key="index" @click="fnInquiryAnswerDetails(inquiry)" class="inquiryTicket"
+                                <div v-for="(inquiry, index) in myInquiryList" :key="index"
+                                    @click="fnInquiryAnswerDetails(inquiry)" class="inquiryTicket"
                                     style="display: flex; border: 1px solid #eee; border-radius: 8px; margin-bottom: 15px; overflow: hidden; background: #fff; box-shadow: 0 2px 5px rgba(0,0,0,0.05);">
 
                                     <!-- 1. 상품 이미지 구역 -->
@@ -1774,11 +1777,88 @@
                             </div>
 
                         </div>
-                        <div v-if="currentMenu === 'main' && productPage === 'inquiry1Details'">
-                            <button @click="productPage = 'myRealInquiryList'">뒤로 가기</button>
+                        <div v-if="currentMenu === 'main' && productPage === 'inquiry1Details'"
+                            style="max-width: 800px; margin: 0 auto; padding: 20px; font-family: 'Noto Sans KR', sans-serif;">
+                            <!-- <button @click="productPage = 'myRealInquiryList'">뒤로 가기</button> -->
 
                             {{myInquiry1}}
+                            <!-- <div>문의내역 상세보기</div>
+                            <hr>
+                            <div>내가 문의한 제목</div>
+                            <div>내가 문의한 내용</div>
+                            <hr>
+                            <div>답변내용</div>
+                            <div>답변자</div> -->
 
+
+                            <!-- 상단 헤더 -->
+                            <div
+                                style="margin-bottom: 30px; display: flex; align-items: center; justify-content: space-between;">
+                                <h2 style="font-size: 1.8rem; font-weight: bold; margin: 0;">문의 내용 상세보기</h2>
+                                <button @click="productPage = 'myRealInquiryList'"
+                                    style="padding: 6px 15px; border: 1px solid #333; background: #fff; cursor: pointer; border-radius: 4px;">
+                                    ← 리스트로 돌아가기
+                                </button>
+                            </div>
+
+                            <!-- 1. 관련 상품 정보 (카드 형태) -->
+                            <div
+                                style="display: flex; align-items: center; padding: 15px; border: 1px solid #eee; border-radius: 12px; background: #fafafa; margin-bottom: 25px;">
+                                <img :src="myInquiry1.imgUrl"
+                                    style="width: 80px; height: 80px; object-fit: cover; border-radius: 8px; margin-right: 20px;">
+                                <div>
+                                    <div style="font-size: 0.85rem; color: #888;">문의 상품</div>
+                                    <div style="font-size: 1.1rem; font-weight: bold; color: #333;">{{
+                                        myInquiry1.productName }}</div>
+                                </div>
+                            </div>
+
+                            <!-- 2. 나의 문의 내용 -->
+                            <div
+                                style="border: 1px solid #eee; border-radius: 12px; overflow: hidden; margin-bottom: 25px;">
+                                <div
+                                    style="background: #f8f9fa; padding: 15px 20px; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; align-items: center;">
+                                    <span style="font-weight: bold; color: #555;">나의 문의</span>
+                                    <span style="font-size: 0.9rem; color: #999;">No. {{ myInquiry1.inquiryNo }}</span>
+                                </div>
+                                <div style="padding: 25px; background: #fff;">
+                                    <h3 style="margin: 0 0 15px 0; font-size: 1.3rem; color: #333;">Q. {{
+                                        myInquiry1.inquiryTitle }}</h3>
+                                    <div
+                                        style="line-height: 1.6; color: #666; white-space: pre-wrap; font-size: 1.05rem;">
+                                        {{ myInquiry1.inquiryContents }}</div>
+                                </div>
+                            </div>
+
+                            <!-- 3. 답변 내용 (답변이 있을 때만 표시) -->
+                            <div v-if="myInquiry1.inquiryAns === '1'"
+                                style="border: 1px solid #eee; border-radius: 12px; overflow: hidden; background: #fff;">
+                                <div
+                                    style="background: #333; padding: 15px 20px; color: #fff; font-weight: bold; display: flex; align-items: center;">
+                                    <span style="margin-right: 10px;">A.</span> 관리자 답변
+                                </div>
+                                <div style="padding: 25px;">
+                                    <!-- 데이터에 답변 필드명이 'answerContents'라고 가정했습니다 -->
+                                    <div
+                                        style="line-height: 1.6; color: #333; white-space: pre-wrap; font-size: 1.05rem; margin-bottom: 20px;">
+                                        <!-- {{ myInquiry1.answerContents || '답변 내용을 불러오는 중입니다.' }} -->
+                                        답변 내용을 불러오는 중입니다.
+                                    </div>
+                                    <div
+                                        style="text-align: right; font-size: 0.9rem; color: #999; border-top: 1px solid #f4f4f4; padding-top: 15px;">
+                                        <!-- 답변자: {{ myInquiry1.ansUserId || '관리자' }} -->
+                                        답변자 : 관리자
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- 답변 대기 중일 때 표시 -->
+                            <div v-else
+                                style="padding: 40px; text-align: center; border: 1px dashed #ddd; border-radius: 12px; color: #999; background: #fafafa;">
+                                <div style="font-size: 1.5rem; margin-bottom: 10px;">⏳</div>
+                                답변을 기다리고 있습니다. 조금만 더 기다려 주세요!
+                            </div>
+ 
                         </div>
 
             </div>
@@ -3045,7 +3125,7 @@
                     });
                 },
                 //특정 문의를 클릭하면 실행되는거
-                fnInquiryAnswerDetails(inquiry){
+                fnInquiryAnswerDetails(inquiry) {
 
                     //특정 문의에 대한걸 복사해서 변수에 담는다.
                     this.myInquiry1 = { ...inquiry };
