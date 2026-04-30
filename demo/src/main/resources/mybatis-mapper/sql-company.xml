@@ -100,6 +100,7 @@
 		WHERE c.user_id = #{userId}
 		order by r.res_date desc, r.res_time desc
 	</select>
+	
 	<select id="selectNewResCnt" parameterType="map"
 		resultType="String">
 		SELECT
