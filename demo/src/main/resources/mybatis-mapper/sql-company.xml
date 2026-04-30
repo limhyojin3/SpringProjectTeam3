@@ -317,32 +317,50 @@
 	</select>
 	<!-- 문의에 답변작성해서 테이블에 insert 됨 -->
 	<insert id="insertProductInquiryAnswer" parameterType="map">
-		insert into inquiry_product_answer 
+		insert into inquiry_product_answer
 		values(null, #{inquiryNo}, #{answerContents}, #{ansUserId})
 	</insert>
 	<!-- 답변했으니까 inquiry_ans 업데이트해준다 -->
 	<update id="updateInquiryAnsStatus" parameterType="map">
 		update inquiry_product
-			set inquiry_ans = 1
+		set inquiry_ans = 1
 		where inquiry_no = #{inquiryNo}
-		
+
 	</update>
 	<!-- 넘어온 inquiry_no = 6으로 문의 번호, 문의에 답변여부, 답변번호, 답변컨텐츠, 답변자명을 조회하기. -->
 	<select id="selectInquiryAnsYn" parameterType="map"
 		resultType="com.example.demo.company.model.Company">
-		select ip.inquiry_no, ip.inquiry_ans, ipa.answer_no, 
+		select ip.inquiry_no, ip.inquiry_ans, ipa.answer_no,
 		ipa.answer_contents, ipa.ans_user_id from inquiry_product ip
-		left join inquiry_product_answer ipa 
+		left join inquiry_product_answer ipa
 		on ip.inquiry_no = ipa.inquiry_no where ip.inquiry_no = #{inquiryNo}
 	</select>
-	
+
 	<!-- inquiry_ans 가 1이상인 경우(수정하는 상황) answer를 업데이트만 하는경우-->
 	<update id="updateProductInquiryAnswer" parameterType="map">
 		update inquiry_product_answer
-		set 
-			answer_contents = #{answerContents},
-			ans_user_id = #{ansUserId}
+		set
+		answer_contents = #{answerContents},
+		ans_user_id = #{ansUserId}
 		where inquiry_no = #{inquiryNo}
 	</update>
-	 
+
+	<!-- 내가 문의한 내역 불러오는 쿼리 -->
+	<select id="selectMyInquiryList" parameterType="map"
+		resultType="com.example.demo.company.model.Company">
+		SELECT
+		ip.inquiry_no,
+		p.product_no,
+		ip.inquiry_title,
+		ip.inquiry_contents,
+		ip.inquiry_ans,
+		p.product_name,
+		p.product_details,
+		p.original_price,
+		p.is_active,
+		p.img_url
+		FROM inquiry_product ip
+		left join product p on ip.product_no = p.product_no
+		where ip.user_id = #{userId}
+	</select>
 </mapper>

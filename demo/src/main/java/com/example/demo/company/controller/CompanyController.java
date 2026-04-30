@@ -298,6 +298,16 @@ public class CompanyController {
 	public String tess09901(@RequestParam HashMap<String, Object> map) throws Exception {
 		HashMap<String, Object> resultMap = companyService.getInquiryAnsYn(map);
 
-		return new Gson().toJson(resultMap); 
+		return new Gson().toJson(resultMap);
+	}
+	
+	/* 내가 문의한 내역 불러오기 */
+	//public HashMap<String, Object> getMyInquiryList(HashMap<String, Object> map)
+	@RequestMapping(value = "/getMyInquiryList.dox", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
+	@ResponseBody
+	public String test03(@RequestParam HashMap<String, Object> map) throws Exception {
+		HashMap<String, Object> resultMap = companyService.getMyInquiryList(map);
+
+		return new Gson().toJson(resultMap);
 	}
 }

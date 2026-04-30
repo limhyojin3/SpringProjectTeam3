@@ -25,6 +25,9 @@ public interface CompanyMapper {
 //	resultType="com.example.demo.company.model.Company">
 	
 	
+	/* 내가 문의한 내역 불러오는 쿼리 */
+	List<Company> selectMyInquiryList(HashMap<String, Object> map);
+	
 	/* inquiry_ans 가 1이상인 경우(수정하는 상황) answer를 업데이트만 하는경우 */
 	int updateProductInquiryAnswer(HashMap<String, Object> map);
 	
