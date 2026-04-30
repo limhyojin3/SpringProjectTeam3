@@ -1225,7 +1225,7 @@
                 <main>
                     <main>
                         <div v-if="currentMenu === 'main' && productPage === 'list'">
-                            <div style="text-align: right; flex-direction: column;" >
+                            <div style="text-align: right; flex-direction: column;">
                                 <button @click="goMyResPage">나의 예약 보러가기</button>
                                 <button @click="goMyInquiryPage">나의 문의 보러가기</button>
 
@@ -1404,8 +1404,7 @@
                                             <div class="info-row">
                                                 <label>문의 제목</label>
                                                 <div class="value">
-                                                    <input v-model="inquiry.title"
-                                                        style="min-width: 400px;">
+                                                    <input v-model="inquiry.title" style="min-width: 400px;">
 
                                                 </div>
                                             </div>
@@ -1692,7 +1691,8 @@
 
                         <!-- 나의 문의내역 보는 리스트-->
                         <div v-if="currentMenu === 'main' && productPage === 'myRealInquiryList'">
-                        
+                            <button @click="productPage = 'list'">뒤로가기</button>
+                        </div>
 
             </div>
         </div>
@@ -2893,11 +2893,11 @@
                 fnInquiryAboutProduct() {
                     let self = this;
                     let param = {
-                        userId:"${sessionScope.sessionId}",
-                        productNo : self.product1.id,
-                        companyNo : self.product1.companyNo,
+                        userId: "${sessionScope.sessionId}",
+                        productNo: self.product1.id,
+                        companyNo: self.product1.companyNo,
                         inquiryTitle: self.inquiry.title,
-                        inquiryContents : self.inquiry.contents
+                        inquiryContents: self.inquiry.contents
                     };
 
                     console.log(param);
@@ -2921,7 +2921,7 @@
                     });
                 },
                 //나의 문의내역 보러가기
-                goMyInquiryPage(){
+                goMyInquiryPage() {
 
                     //페이지 변경
                     this.productPage = 'myRealInquiryList';
