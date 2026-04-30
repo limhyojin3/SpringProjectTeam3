@@ -1021,8 +1021,8 @@
                             </div>
 
                             <div v-if="currentMenu === 'inquiry'">
-                                {{productPage}}
-                                {{page1}}
+                                <!-- {{productPage}}
+                                {{page1}} -->
                                 <template v-if="page1 === 'main'">
                                     <h2>문의 관리 : <span style="color: #ff1493;">총 문의 {{inquiryList.length}}건</span></h2>
                                     <div class="content-card" v-for="i in fnPaginatedInquiry" :key="i">
@@ -1051,7 +1051,7 @@
                                                 <td>{{i.inquiryContents}}</td>
                                             </tr>
                                         </table>
-                                        {{page1}}
+                                        <!-- {{page1}} -->
                                         <button style="background: #ffb400; margin-top: 10px; 
                                 padding: 10px 20px; border: none; display: block; 
                                 margin-left: auto; cursor: pointer;" @click="fnAnswerToProductInquiry(i)">답변하기</button>
@@ -1068,11 +1068,11 @@
 
                                 </template>
                                 <template v-if="page1 === 'answer'">
-                                    <button @click="fnBacktoInquiry">뒤로가기</button>
-                                    답변대상
+                                    <!-- <button @click="fnBacktoInquiry">뒤로가기</button> -->
+                                    <!-- 답변대상
                                     답변제목
                                     답변내용
-                                    {{inquiryDetails}}
+                                    {{inquiryDetails}} -->
                                     <div
                                         style="padding: 20px; border: 1px solid #ddd; border-radius: 8px; background-color: #fff; max-width: 800px; margin: 0 auto;">
 
@@ -1132,7 +1132,7 @@
 
                                         <div>
                                             <h3 style="margin-top: 0; color: #333;">답변 달기</h3>
-                                            {{inquiryAnswer}}
+                                            <!-- {{inquiryAnswer}} -->
 
                                             <div style="margin-top: 15px;">
                                                 <label

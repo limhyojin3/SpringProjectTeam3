@@ -1225,8 +1225,10 @@
                 <main>
                     <main>
                         <div v-if="currentMenu === 'main' && productPage === 'list'">
-                            <div style="text-align: right;">
+                            <div style="text-align: right; flex-direction: column;" >
                                 <button @click="goMyResPage">나의 예약 보러가기</button>
+                                <button @click="goMyInquiryPage">나의 문의 보러가기</button>
+
 
                             </div>
 
@@ -1687,29 +1689,10 @@
                                 </div>
                             </div>
                         </div>
-                        <!-- <div v-if="currentMenu === 'main' && productPage === 'paymentFinal'" class="payment-container">
 
-
-                            <div class="payment-card">
-                                <h2 class="payment-title">Final Payment</h2>
-                                <p class="payment-subtitle">예약을 확정하기 위해 결제 금액을 확인해 주세요.</p>
-                                {{myReservation1}}
-                                <div class="payment-form">
-                                    <label for="payAmount">예약금 결제</label>
-                                    <div class="input-group">
-                                         <input id="payAmount" v-model="payAmount" type="text" placeholder="금액을 입력하세요">
-                                        <span class="unit">KRW</span> -->
-                        <!-- 결제 진행합니다.
-                                    </div>
-                                </div>
-
-                                <div class="payment-buttons">
-                                    <button class="btn-pay" @click="fnPaymentReal()">결제하기</button>
-                                    <button class="btn-back"
-                                        @click="productPage='reservaionPaymentDetails'; payAmount='';">뒤로가기</button>
-                                </div>
-                            </div>
-                        </div> -->
+                        <!-- 나의 문의내역 보는 리스트-->
+                        <div v-if="currentMenu === 'main' && productPage === 'myRealInquiryList'">
+                        
 
             </div>
         </div>
@@ -2936,6 +2919,12 @@
                             //payAmount='';
                         }
                     });
+                },
+                //나의 문의내역 보러가기
+                goMyInquiryPage(){
+
+                    //페이지 변경
+                    this.productPage = 'myRealInquiryList';
                 }
 
             }, // methods
