@@ -26,15 +26,15 @@ public class GeminiService {
     private String geminiApiKey;
 
     public String getContents(String prompt) {
-
-        // Gemini에 요청 전송
-        String requestUrl = apiUrl + "?key=" + geminiApiKey;
-
-        ChatRequest request = new ChatRequest(prompt);
-        ChatResponse response = restTemplate.postForObject(requestUrl, request, ChatResponse.class);
-
-        String message = response.getCandidates().get(0).getContent().getParts().get(0).getText().toString();
-
-        return message;
+    	try {
+            String requestUrl = apiUrl + "?key=" + geminiApiKey;
+            ChatRequest request = new ChatRequest(prompt);
+            ChatResponse response = restTemplate.postForObject(requestUrl, request, ChatResponse.class);
+            String message = response.getCandidates().get(0).getContent().getParts().get(0).getText().toString();
+            return message;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "현재 AI 서비스가 일시적으로 불안정합니다. 잠시 후 다시 시도해주세요.";
+        }
     }
 }

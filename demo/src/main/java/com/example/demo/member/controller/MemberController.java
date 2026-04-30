@@ -637,6 +637,11 @@ public class MemberController {
 		public String about() {
 		    return "/common/home-about";
 		}
+	// 찾아오시는 길 페이지
+		@GetMapping("/location.do")
+		public String about2() {
+			return "/common/home-about2";
+		}
 	// 최근 리뷰
 		@GetMapping("/mainReviewList.dox")
 		@ResponseBody
