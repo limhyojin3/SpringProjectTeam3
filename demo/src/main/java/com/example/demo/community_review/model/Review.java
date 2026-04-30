@@ -35,6 +35,7 @@ public class Review {
     private String originalName;    // 실제 파일명
     private String storedName;      // 서버 저장 파일명
     private String imgUrl;          // 이미지 접근 경로
+    private String thumbnailUrl;    // 본문 추출 썸네일 (사용자용)
     private String imgDescription;  // 이미지 설명
     private String receiptName;     // 영수증 파일명
 

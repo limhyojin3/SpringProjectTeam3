@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -41,7 +42,6 @@ public class ReviewController {
     @RequestMapping("/list.do")
     public String reviewList(HttpServletRequest request, Model model) {
         HttpSession session = request.getSession();
-        // ✅ MemberController에서 사용하는 "sessionId"로 통일
         String sessionId = (String) session.getAttribute("sessionId");
         model.addAttribute("sessionId", sessionId);
         return "/review/review-list"; 
@@ -55,43 +55,29 @@ public class ReviewController {
         return "/review/review-add"; 
     }
 
- // --- [페이지 이동 및 로그 저장] ---
-
     @RequestMapping("/detail.do")
     public String goReviewDetail(@RequestParam("reviewNo") String reviewNo, HttpServletRequest request, Model model) {
         HttpSession session = request.getSession();
         String sessionId = (String) session.getAttribute("sessionId");
         try {
-            // 리뷰 상세 정보를 가져오기 위한 맵 세팅
             HashMap<String, Object> map = new HashMap<>();
             map.put("reviewNo", reviewNo);
             
-            // 1. 리뷰 상세 정보를 DB에서 조회
             HashMap<String, Object> review = reviewService.getReviewDetailInfo(map);
             
             if (review != null && sessionId != null) {
-                // DB 타입에 상관없이 비교하기 위해 String으로 변환
                 String isPaid = String.valueOf(review.get("isPaid")); 
                 String writerId = (String) review.get("userId");
 
-                // 디버깅 콘솔 출력 (로그 안쌓이면 서버 콘솔 확인용)
-                System.out.println("=== 무료리뷰 열람 로그 체크 ===");
-                System.out.println("접속자: " + sessionId + " | 작성자: " + writerId + " | 유료여부: " + isPaid);
-
-                // 조건: 무료리뷰(0 또는 N) 이고 + 내가 쓴 글이 아닐 때만 저장
-                if (("0".equals(isPaid) || "N".equals(isPaid)) || "false".equals(isPaid) && !sessionId.equals(writerId)) {
-                    System.out.println("결과: 무료 리뷰 열람 - 로그 저장 실행");
+                // 무료리뷰이고 본인 글이 아닐 때만 로그 저장
+                if (("0".equals(isPaid) || "N".equals(isPaid) || "false".equals(isPaid)) && !sessionId.equals(writerId)) {
                     reviewService.saveFreeViewLog(map, sessionId); 
-                } else {
-                    System.out.println("결과: 조건 미충족 (유료리뷰거나 본인글임)");
                 }
             }
         } catch (Exception e) {
-            System.out.println("로그 저장 중 오류 발생: " + e.getMessage());
             e.printStackTrace();
         }
 
-        // 뷰(JSP/HTML)로 데이터 전달
         model.addAttribute("reviewNo", reviewNo);
         model.addAttribute("sessionId", sessionId);
         return "/review/review-detail";  
@@ -121,10 +107,12 @@ public class ReviewController {
         try {
             int count = reviewService.getReviewCount(map);
             List<HashMap<String, Object>> list = reviewService.selectReviewList(map);
+            List<HashMap<String, Object>> bestList = reviewService.selectBestReviewList(map);
             
             resultMap.put("count", count);
             resultMap.put("list", list);
             resultMap.put("result", "success");
+            resultMap.put("bestList", bestList);
         } catch (Exception e) {
             e.printStackTrace();
             resultMap.put("result", "error");
@@ -133,7 +121,7 @@ public class ReviewController {
     }
     
     /**
-     * 리뷰 저장 (세션 키 "sessionId" 적용)
+     * 리뷰 저장 (썸네일 추출 및 파일 처리 통합)
      */
     @PostMapping("/save.dox")
     @ResponseBody
@@ -146,36 +134,32 @@ public class ReviewController {
             Review review = gson.fromJson(reviewDataJson, Review.class);
             
             HttpSession session = request.getSession();
-            // ✅ "userId" 대신 "sessionId"를 꺼내옵니다.
             String currentId = (String) session.getAttribute("sessionId");
             
-            // 로그인 체크 로직 (DB 에러 방지)
             if (currentId == null) {
                 return "{\"result\":\"fail\", \"message\":\"로그인이 필요합니다.\"}";
             }
             
             review.setUserId(currentId);
 
-         // --- [파일 처리 로직 수정] ---
+            // [영수증 파일 처리]
             if (receiptFile != null && !receiptFile.isEmpty()) {
                 Map<String, String> fileInfo = fileService.uploadFile(receiptFile);
                 if (fileInfo != null) {
-                	// ✅ is_paid가 1(유료)인 경우에만 이미지 컬럼을 채움
-                    // 만약 Review 모델에서 isPaid가 String이면 "1".equals(...) 
-                    // int 타입이면 review.getIsPaid() == 1 로 비교
-                    if ("1".equals(review.getIsPaid()) || Integer.valueOf(1).equals(review.getIsPaid())) {
+                    // 유료 리뷰일 경우에만 메인 이미지 컬럼들에 정보 채움
+                    if ("1".equals(String.valueOf(review.getIsPaid()))) {
                         review.setOriginalName(fileInfo.get("originalName"));
                         review.setStoredName(fileInfo.get("storedName"));
                         review.setImgUrl(fileInfo.get("imgUrl"));
                     } 
-                    
-                    // 무료/유료 공통으로 영수증 증빙 컬럼은 채워줌 (상태 관리용)
-                    // 만약 DB 컬럼명이 receipt_name 이라면 아래와 같이 세팅
+                    // 공통 영수증 증빙 정보 저장
                     review.setReceiptName(fileInfo.get("storedName")); 
                 }
             }
-            // ---------------------------
             
+            // [핵심: 서비스 호출]
+            // 서비스 내부에서 extractThumbnail(review.getContent())를 호출하여 
+            // review.setThumbnailUrl()이 수행되도록 구현되어 있어야 합니다.
             return reviewService.registerReview(review, receiptFile, reviewFiles);
             
         } catch (Exception e) {
@@ -197,7 +181,7 @@ public class ReviewController {
 
             if (cookies != null) {
                 for (Cookie cookie : cookies) {
-                    if (cookie.getName().equals("viewed_reviews")) {
+                    if ("viewed_reviews".equals(cookie.getName())) {
                         if (cookie.getValue().contains("|" + reviewNo + "|")) {
                             isVisited = true;
                         } else {
@@ -213,7 +197,7 @@ public class ReviewController {
             }
 
             if (!isVisited) {
-                if (cookies == null || java.util.Arrays.stream(cookies).noneMatch(c -> c.getName().equals("viewed_reviews"))) {
+                if (cookies == null || java.util.Arrays.stream(cookies).noneMatch(c -> "viewed_reviews".equals(c.getName()))) {
                     Cookie newCookie = new Cookie("viewed_reviews", "|" + reviewNo + "|");
                     newCookie.setPath("/");
                     newCookie.setMaxAge(60 * 60 * 24);
@@ -241,7 +225,6 @@ public class ReviewController {
         Map<String, Object> resultMap = new HashMap<>();
         try {
             HttpSession session = request.getSession();
-            // ✅ "userId" 대신 "sessionId" 적용
             String currentId = (String) session.getAttribute("sessionId");
             map.put("userId", currentId);
             
@@ -253,39 +236,34 @@ public class ReviewController {
         return gson.toJson(resultMap);
     }
     
-    // 열람권 사용
     @PostMapping("/useTicket.dox")
     @ResponseBody
     public String useTicket(HttpServletRequest request, @RequestBody HashMap<String, Object> map) {
         HashMap<String, Object> resultMap = new HashMap<>();
         HttpSession session = request.getSession();
         
-        // 1. 세션에서 아이디와 권한(Role)을 가져옴
         String sessionId = (String) session.getAttribute("sessionId");
-        String sessionRole = (String) session.getAttribute("sessionRole"); // 테이블의 ROLE 컬럼값
+        String sessionRole = (String) session.getAttribute("sessionRole");
 
-        // 로그인 체크
         if (sessionId == null) {
             resultMap.put("result", "LOGIN_REQUIRED");
-            return new Gson().toJson(resultMap);
+            return gson.toJson(resultMap);
         }
 
-        // 2. 관리자(ADMIN) 체크: 관리자라면 차감 로직을 아예 타지 않고 즉시 성공 반환
+        // 관리자 프리패스
         if ("ADMIN".equals(sessionRole)) {
             resultMap.put("result", "SUCCESS");
             resultMap.put("message", "관리자 권한으로 프리패스합니다.");
-            return new Gson().toJson(resultMap);
+            return gson.toJson(resultMap);
         }
 
-        // 3. 본인 글인지 체크 (프론트에서 reviewNo 등을 보냈을 때 서비스에서 판단하거나, 여기서 writerId를 비교)
-        // 만약 map에 writerId(작성자ID)가 포함되어 넘어온다면 아래 조건도 추가 가능
-        String writerId = (String) map.get("userId"); // 프론트에서 보낸 작성자 ID가 있다면
+        // 본인 글 체크
+        String writerId = (String) map.get("userId"); 
         if (sessionId.equals(writerId)) {
             resultMap.put("result", "SUCCESS");
-            return new Gson().toJson(resultMap);
+            return gson.toJson(resultMap);
         }
 
-        // 4. 일반 유저인 경우에만 실제 티켓 차감 서비스 호출
         map.put("userId", sessionId);
         try {
             resultMap = reviewService.useAccessTicket(map);
@@ -294,21 +272,19 @@ public class ReviewController {
             resultMap.put("result", "ERROR");
         }
         
-        return new Gson().toJson(resultMap);
+        return gson.toJson(resultMap);
     }
     
-    // 사용자의 남은 열람권
     @PostMapping("/getUserAccessCount.dox")
     @ResponseBody
     public String getUserAccessCount(@RequestBody HashMap<String, Object> map) {
         HashMap<String, Object> resultMap = new HashMap<>();
         String userId = (String) map.get("userId");
         
-        // 이전에 만든 Mapper의 getUserAccessCount 호출
         Integer count = reviewService.getUserAccessCount(userId); 
         
         resultMap.put("count", count != null ? count : 0);
-        return new Gson().toJson(resultMap);
+        return gson.toJson(resultMap);
     }
     
     @PostMapping("/productList.dox")
@@ -316,7 +292,6 @@ public class ReviewController {
     public Map<String, Object> getProductList(@RequestBody Map<String, Object> map) {
         Map<String, Object> result = new HashMap<>();
         try {
-            // map 안에 프론트에서 보낸 companyNo가 들어있음
             List<Map<String, Object>> list = reviewService.getProductListByCompany(map);
             result.put("list", list);
             result.put("result", "success");
@@ -326,5 +301,4 @@ public class ReviewController {
         }
         return result;
     }
-    
 }

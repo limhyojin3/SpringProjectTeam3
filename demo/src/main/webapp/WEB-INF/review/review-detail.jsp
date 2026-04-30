@@ -12,13 +12,76 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     
     <style>
-        .detail-container { max-width: 800px; margin: 30px auto; padding: 30px; background: #fff; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
+        .detail-container { 
+            max-width: 900px; /* 가독성을 위해 너비를 살짝 넓힘 */
+            margin: 30px auto; 
+            padding: 40px; /* 내부 여백 확대 */
+            background: #fff; 
+            border-radius: 20px; /* 더 부드러운 곡선 */
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05); 
+        }        
         .info-card { background: #fff9fa; border: 1px solid #ffccd5; border-radius: 10px; padding: 15px; display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px; color: #555; }
-        .img-wrapper { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin-bottom: 20px; }
-        .review-img { max-width: 100%; height: auto; border-radius: 8px; border: 1px solid #eee; transition: 0.3s; }
-        .review-img:hover { transform: scale(1.02); }
+        .img-wrapper { 
+            display: flex; 
+            flex-direction: column; /* 가로가 아닌 세로 방향 정렬 */
+            align-items: center; 
+            gap: 20px; 
+            margin: 30px 0; 
+        }        
+        .review-img { 
+            width: 100%; /* 박스 너비에 꽉 채움 */
+            max-width: 100%; 
+            height: auto; 
+            border-radius: 12px; 
+            border: 1px solid #f1f1f1; 
+            transition: transform 0.3s ease; 
+        }
+        .review-img:hover { 
+            transform: translateY(-5px); 
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1); 
+        }
         .multi-img { max-width: calc(50% - 10px); }
-        .review-content { font-size: 1.1rem; line-height: 1.8; white-space: pre-wrap; margin-bottom: 30px; color: #333; }
+        /* 본문 텍스트 간격 조정 */
+        .review-content { 
+            font-size: 1.1rem; 
+            line-height: 1.8; 
+            white-space: pre-wrap; 
+            margin: 30px 0; 
+            padding: 0 10px; /* 텍스트가 양 끝에 붙지 않게 여백 */
+            color: #333; 
+            word-break: break-word; /* 긴 단어 자동 줄바꿈 */
+        }
+
+        /* 2. v-html 내부 이미지(Quill 생성) 최적화 */
+        .review-content :deep(img) {
+            display: block;
+            max-width: 100% !important; /* 부모 너비를 절대 넘지 않음 */
+            height: auto !important;    /* 비율 유지 */
+            margin: 30px auto;          /* 위아래 간격 및 중앙 정렬 */
+            border-radius: 12px;        /* 부드러운 모서리 처리 */
+            transition: transform 0.3s ease;
+        }
+
+        /* 3. 가로가 너무 긴 사진(1920x500 등)을 위한 특수 효과 */
+        /* 마우스를 올리면 원본을 더 잘 볼 수 있게 살짝 확대 */
+        .review-content :deep(img:hover) {
+            transform: scale(1.01);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            cursor: zoom-in; /* 클릭하면 커질 것 같은 느낌 제공 */
+        }
+
+        /* 4. 에디터 내부 공백(p 태그) 정렬 */
+        .review-content :deep(p) {
+            margin-bottom: 1.5rem;
+        }
+
+        /* 5. 비디오나 iframe이 있을 경우를 대비 */
+        .review-content :deep(iframe) {
+            max-width: 100%;
+            width: 100%;
+            aspect-ratio: 16 / 9;
+            border-radius: 12px;
+        }
         
         .comment-section { margin-top: 50px; border-top: 2px solid #fff0f3; padding-top: 30px; }
         .comment-count { color: #ff4d6d; font-weight: bold; }
@@ -47,6 +110,19 @@
         .modal-header { background-color: #ff4d6d; color: white; }
         .btn-report-submit { background-color: #ff4d6d; color: white; border: none; }
         .btn-report-submit:hover { background-color: #ff3355; color: white; }
+
+        .info-card { 
+            background: #fff9fa; 
+            border: 1px solid #ffccd5; 
+            border-radius: 15px; 
+            padding: 25px; 
+            display: grid; 
+            grid-template-columns: 1fr 1fr; /* 2열 유지 */
+            gap: 15px 30px; /* 행과 열 간격 분리 */
+            margin-bottom: 40px; 
+            color: #555; 
+            position: relative;
+        }
     </style>
 </head>
 <body>
@@ -100,8 +176,11 @@
                 </div>
             </div>
 
-            <div v-if="imgList.length > 0" class="img-wrapper">
-                <img v-for="(src, index) in imgList" :key="index" :src="src" :class="['review-img', imgList.length > 1 ? 'multi-img' : 'single-img']">
+            <div v-if="imgList.length > 0 && sessionRole === 'ADMIN'" class="img-wrapper">
+                <img v-for="(src, index) in imgList" 
+                    :key="index" 
+                    :src="src" 
+                    :class="['review-img', imgList.length > 1 ? 'multi-img' : 'single-img']">
             </div>
 
             <div class="review-content" v-html="info.content"></div>
