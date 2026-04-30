@@ -1132,7 +1132,7 @@
 
                                         <div>
                                             <h3 style="margin-top: 0; color: #333;">답변 달기</h3>
-
+                                            {{inquiryAnswer}}
 
                                             <div style="margin-top: 15px;">
                                                 <label
@@ -1158,8 +1158,10 @@
                                                 </button>
                                                 <button @click="fnSaveAnswer"
                                                     style="padding: 12px 24px; background-color: #ff1493; border: none; border-radius: 4px; cursor: pointer; font-size: 1rem; color: #fff; font-weight: bold;">
-                                                    답변 등록하기
+                                                    <span v-if="inquiryAnswer.inquiryAns === '0'">답변 등록하기</span>
+                                                    <span v-else>답변 수정하기</span>
                                                 </button>
+                                                
                                             </div>
                                         </div>
 
@@ -1363,10 +1365,12 @@
                 return {
 
                     /*문의 답변과 관련된 맵*/
-                    inquiryAnswer: {
-                        ansUserId: '',
-                        answerContents: '',
-                        answerNo: ''
+                    inquiryAnswer:{
+                        inquiryNo: '',
+                        ansUserId:'',
+                        answerNo: '',
+                        answerContents:'',
+                        inquiryAns: ''
                     },
                     inquiryDetails: {},
                     resCount: '',
@@ -2264,12 +2268,11 @@
                             console.log(data);
 
                             if(data.result === 'success'){
-                                self.inquiryAnswer = data.info;
-
+                                self.inquiryAnswer.inquiryNo = data.info.inquiryNo || '';
                                 self.inquiryAnswer.ansUserId = data.info.ansUserId || '';
                                 self.inquiryAnswer.answerNo = data.info.answerNo || '';
                                 self.inquiryAnswer.answerContents = data.info.answerContents || '';
-
+                                self.inquiryAnswer.inquiryAns = data.info.inquiryAns || '';
                             }
                         }
                     });
@@ -2285,7 +2288,7 @@
                         inquiryNo: self.inquiryDetails.inquiryNo,
                         answerContents: self.inquiryAnswer.answerContents,
                         ansUserId: self.inquiryAnswer.ansUserId,
-                        inquiryAns : self.inquiryDetails.inquiryAns
+                        inquiryAns : self.inquiryAnswer.inquiryAns
                     };
                     console.log(param);
                     $.ajax({
