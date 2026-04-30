@@ -187,7 +187,14 @@
 
                                 <%-- 3. 파트너/관리자 등은 드롭다운 없이 단일 링크로 유지 --%>
                                 <c:when test="${sessionScope.sessionRole == 'PARTNER' or sessionScope.sessionRole == 'NPARTNER'}">
-                                    <a class="nav-link custom-nav-link" href="${pageContext.request.contextPath}/partnerManagement.do">업체페이지 <i class="fas fa-chevron-right arrow-icon"></i></a>
+                                    <a class="nav-link custom-nav-link" href="javascript:void(0)">업체페이지</a>
+                                    <ul class="dropdown-contents">
+                                        <li><a href="${pageContext.request.contextPath}/partnerManagement.do">업체페이지 홈</a></li>
+                                        <li><a href="${pageContext.request.contextPath}/partnerManagement.do?menu=product">상품 관리</a></li>
+                                        <li><a href="${pageContext.request.contextPath}/partnerManagement.do?menu=reservation">예약 관리</a></li>
+                                        <li><a href="${pageContext.request.contextPath}/partnerManagement.do?menu=inquiry">문의 내역</a></li>
+                                        <li><a href="${pageContext.request.contextPath}/partnerManagement.do?menu=review">리뷰 내역</a></li>
+                                    </ul>
                                 </c:when>
                                 <c:when test="${sessionScope.sessionRole == 'ADMIN'}">
                                     <a class="nav-link custom-nav-link" href="${pageContext.request.contextPath}/adminMain.do">관리자페이지 <i class="fas fa-chevron-right arrow-icon"></i></a>
@@ -254,6 +261,24 @@ document.addEventListener('DOMContentLoaded', function() {
         const categoryParam = urlParams.get('category');
         const isPaidParam   = urlParams.get('isPaid');
 
+        // 업체 로그인 시← 추가
+        if (menuParam) {
+            setTimeout(() => {
+                const navBtns = document.querySelectorAll('.nav-btn');
+                navBtns.forEach(btn => {
+                    const menuMap = {
+                        'product': '상품 관리',
+                        'reservation': '예약 관리',
+                        'inquiry': '문의 내역',
+                        'review': '리뷰 내역'
+                    };
+                    if (btn.innerText.trim() === menuMap[menuParam]) {
+                        btn.click();
+                    }
+                });
+            }, 400);
+        }
+
         // A. 유료/무료 리뷰 탭
         if (isPaidParam !== null) {
             document.querySelectorAll('.review-tabs .tab-item').forEach(tab => {
@@ -289,4 +314,6 @@ document.addEventListener('DOMContentLoaded', function() {
     handleTabClick();
 
 });
+
+
 </script>
