@@ -201,9 +201,8 @@
     </style>
 </head>
 <body>
+    <jsp:include page="/WEB-INF/common/header.jsp" />
     <div id="app">
-        <jsp:include page="/WEB-INF/common/header.jsp" />
-
         <!-- 히어로 -->
         <div class="about-hero">
             <div class="about-hero-overlay">

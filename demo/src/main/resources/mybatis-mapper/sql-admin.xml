@@ -18,10 +18,12 @@
 	<select id="selectClientsList" parameterType="hashmap"
 		resultType="com.example.demo.admin.model.Admin"> SELECT
 		DATE_FORMAT(REG_DATE, '%Y-%m') AS USER_MONTH, Count(*) AS USER_COUNT
-		FROM MEMBER WHERE 1=1 <if test="role != null and role != 'ALL'">
+		FROM MEMBER WHERE 1=1 
+		<if test="role != null and role != 'ALL'">
 			AND ROLE = #{role}
-		</if> GROUP BY USER_MONTH ORDER BY
-		USER_MONTH; </select>
+		</if> 
+		GROUP BY USER_MONTH 
+		ORDER BY USER_MONTH ASC; </select>
 
 <!-- 리뷰게시판 글 목록 -->
 	<select id="selectReviewList" parameterType="hashmap"
@@ -91,6 +93,52 @@
 	
 	LIMIT #{pageSize} OFFSET #{offSet}
 	</select>
+	
+	<!--Review 페이지네이션 count-->
+	<select id="selectReviewCount" parameterType="hashmap" resultType="int">
+		SELECT COUNT(*) FROM review WHERE 1=1
+		<!-- 검색어 필터-->
+	<if test="keyword != null and keyword != ''">
+		<choose>
+			<when test="searchType == 'userId'">
+				AND USER_ID LIKE CONCAT('%', #{keyword}, '%')
+			</when>
+			<when test="searchType == 'title'">
+				AND TITLE LIKE CONCAT('%', #{keyword}, '%')
+			</when>
+			<when test="searchType == 'content'">
+				AND CONTENT LIKE CONCAT('%', #{keyword}, '%')
+			</when>
+			<otherwise>
+				AND (
+				USER_ID LIKE CONCAT('%', #{keyword}, '%')
+				OR TITLE LIKE CONCAT('%', #{keyword}, '%')
+				OR CONTENT LIKE CONCAT('%', #{keyword}, '%')
+				)
+			</otherwise>
+		</choose>
+	</if>
+	<!-- 처리상태 필터 (복합 조건) -->
+	<if
+		test="approvalStatus != null and approvalStatus != 'ALL'">
+		<choose>
+			<!-- 대기 -->
+			<when test="approvalStatus == 'WAIT'">
+				AND approval_status = "WAIT"
+			</when>
+			<!-- 승인 -->
+			<when test="approvalStatus == 'APPROVED'">
+				AND approval_status = "APPROVED"
+			</when>
+			<!-- 반려 -->
+			<when test="approvalStatus == 'REJECTED'">
+				AND approval_status = "REJECTED"
+			</when>
+		</choose>
+	</if>
+	</select>
+	<!--review 끝-->
+	
 <!-- 리뷰 게시판 승인-->
 	<update id="updateReviewApprove" parameterType="hashmap">
 		UPDATE review
@@ -264,50 +312,6 @@
 	</if>
 	</select>
 	<!--Report 끝-->
-	<!--Review 시작-->
-	<select id="selectReviewCount" parameterType="hashmap" resultType="int">
-		SELECT COUNT(*) FROM review WHERE 1=1
-		<!-- 검색어 필터-->
-	<if test="keyword != null and keyword != ''">
-		<choose>
-			<when test="searchType == 'userId'">
-				AND user_id LIKE CONCAT('%', #{keyword}, '%')
-			</when>
-			<when test="searchType == 'title'">
-				AND title LIKE CONCAT('%', #{keyword}, '%')
-			</when>
-			<when test="searchType == 'content'">
-				AND content LIKE CONCAT('%', #{keyword}, '%')
-			</when>
-			<otherwise>
-				AND (
-				USER_ID LIKE CONCAT('%', #{keyword}, '%')
-				OR TITLE LIKE CONCAT('%', #{keyword}, '%')
-				OR CONTENT LIKE CONCAT('%', #{keyword}, '%')
-				)
-			</otherwise>
-		</choose>
-	</if>
-	<!-- 처리상태 필터 (복합 조건) -->
-	<if
-		test="processStatus != null and processStatus != 'ALL'">
-		<choose>
-			<!-- 대기 -->
-			<when test="processStatus == 'WAIT'">
-				AND approval_status = "WAIT"
-			</when>
-			<!-- 승인 -->
-			<when test="processStatus == 'APPROVED'">
-				AND approval_status = "APPROVED"
-			</when>
-			<!-- 반려 -->
-			<when test="processStatus == 'REJECTED'">
-				AND approval_status = "REJECTED"
-			</when>
-		</choose>
-	</if>
-	</select>
-	<!--review 끝-->
 
 <!-- 전체 개수(페이징)영역 끝 -->
 
@@ -581,6 +585,11 @@
 		GROUP BY TARGET_USER_ID
 		) R ON R.TARGET_USER_ID = M.USER_ID
 		WHERE M.ROLE IN ('PARTNER', 'NPARTNER')
+		<!-- 필터 : 신고 대상 유형 (PARTNER, NPARTNER) -->
+	<if
+		test="role != null and role != 'ALL'">
+		AND M.ROLE = #{role}
+	</if>
 		<!-- 필터 : 검색어 필터-->
 	<if test="keyword != null and keyword != ''">
 		<choose>
@@ -619,6 +628,11 @@
 		LEFT JOIN COMPANY C
 		ON M.USER_ID = C.USER_ID
 		WHERE M.ROLE IN ('PARTNER', 'NPARTNER')
+	<!-- 필터 : 신고 대상 유형 (PARTNER, NPARTNER) -->
+	<if
+		test="role != null and role != 'ALL'">
+		AND M.ROLE = #{role}
+	</if>
 		<!-- 필터 : 검색어 필터-->
 	<if test="keyword != null and keyword != ''">
 		<choose>
@@ -1014,8 +1028,9 @@
 
 	<select id="selectRegistrationPaymentCount" parameterType="hashmap" resultType="int">
 	    SELECT COUNT(*)
-	    FROM payment P
-	    JOIN payment_resistration PR ON P.pay_no = PR.pay_no
+	    FROM payment p
+	    JOIN payment_resistration pr ON p.pay_no = pr.pay_no
+	    JOIN company c ON pr.company_no = c.company_no
 	</select>
 
 

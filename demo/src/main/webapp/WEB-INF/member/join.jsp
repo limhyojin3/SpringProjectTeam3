@@ -11,156 +11,176 @@
     <script src="/js/page-change.js"></script>
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; }
-        body { 
-            background: linear-gradient(135deg, #ffe8e6, #f5f0ff);
+        body {
+            background: #fafafa;
             font-family: 'Noto Sans KR', sans-serif;
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        #app {
             display: flex;
             flex-direction: column;
             align-items: center;
-            padding: 40px 20px;
-            width: 100%; 
+            padding: 60px 16px 40px;
+            min-height: 100vh;
         }
+
+        .logo-wrap {
+            text-align: center;
+            margin-bottom: 28px;
+            cursor: pointer;
+        }
+        .logo-wrap img { height: 80px; }
 
         .signup-container {
             display: flex;
-            gap: 30px;
+            gap: 20px;
             justify-content: center;
-            padding: 20px;
-            width: 100%;        
-            max-width: 900px;   
+            width: 100%;
+            max-width: 800px;
+            margin-bottom: 20px;
         }
 
         .signup-box {
             flex: 1;
-            max-width: 300px;
-            min-height: 360px;  /* 높이 통일 */
-            border: 2px solid #eee;
-            border-radius: 16px;
-            padding: 30px 20px;
+            min-width: 240px;
+            background: #fff;
+            border: 1px solid #e0e0e0;
+            border-radius: 10px;
+            padding: 28px 20px;
             text-align: center;
             cursor: pointer;
-            background: white;
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 10px;
-            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            gap: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+            transition: transform 0.2s, box-shadow 0.2s;
         }
-
         .signup-box:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+            transform: translateY(-4px);
+            box-shadow: 0 8px 20px rgba(244,160,150,0.25);
         }
 
-        #inner-box-user {
+        /* 상단 타이틀 배너 */
+        .box-header {
             width: 100%;
-            border-radius: 10px;
-            border: 2px solid #d18d84;
-            background: linear-gradient(135deg, #ffada2, #f4a096);
-            box-shadow: 1px 1px 3px rgba(0,0,0,0.1);
+            border-radius: 6px;
             padding: 12px;
+            margin-bottom: 4px;
         }
-
-        #inner-box-company {
-            width: 100%;
-            border-radius: 10px;
-            border: 2px solid #a564cd;
-            background: linear-gradient(135deg, #cc7aff, #a855f7);
-            box-shadow: 1px 1px 3px rgba(0,0,0,0.1);
-            padding: 12px;
-        }
-
-        #inner-box-user h3, #inner-box-company h3 {
+        .box-header.user    { background: #f4a096; }
+        .box-header.company { background: #9b8fd4; }
+        .box-header h3 {
             color: white;
-            font-size: 16px;
-            text-shadow: 1px 1px 2px rgba(0,0,0,0.15);
+            font-size: 15px;
+            font-weight: 700;
+            letter-spacing: 0.5px;
         }
 
-        .company-txt-color { color: #a81bff !important; }
-        .user-txt-color { color: #ff1ba8 !important; }
-        .txt-bold { font-weight: bold;}
-
-        .signup-box p {
-            font-size: 14px;
-            color: #555;
-            line-height: 1.6;
-        }
-
-        .link-login {
-            margin-top: 20px;
-            text-decoration: none;
-            color: #767676;
-            font-size: 14px;
-            font-weight: 500;
-            cursor: pointer;
-        }
-
-        .link-login:hover {
-            color: #f15443;
-            text-shadow: 1px 1px 1px pink;
-        }
+        /* 내용 */
         .signup-box-content {
             flex: 1;
             display: flex;
             flex-direction: column;
-            justify-content: center;  /* 세로 중앙 */
             align-items: center;
-            gap: 8px;
+            gap: 10px;
+            width: 100%;
         }
-        .content-left{
+
+        .box-slogan {
+            font-size: 13px;
+            font-weight: 700;
+            color: #f4a096;
+        }
+        .box-slogan.company { color: #9b8fd4; }
+
+        .box-sub {
+            font-size: 13px;
+            color: #666;
+            margin-bottom: 4px;
+        }
+
+        .content-list {
+            width: 100%;
             text-align: left;
+            border-top: 1px solid #f0f0f0;
+            padding-top: 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 7px;
         }
-        .content-left p {
-            padding-bottom: 5px;
+        .content-list p {
+            font-size: 12px;
+            color: #666;
+            line-height: 1.5;
         }
+        .content-list p.highlight {
+            color: #f4a096;
+            font-weight: 700;
+        }
+        .content-list p.highlight.company { color: #9b8fd4; }
+        .content-list p.muted {
+            color: #aaa;
+            font-size: 11px;
+            padding-left: 4px;
+        }
+
+        /* 하단 링크 */
+        .link-wrap {
+            display: flex;
+            justify-content: center;
+        }
+        .link-login {
+            text-decoration: none;
+            color: #888;
+            font-size: 13px;
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+        .link-login:hover { color: #f4a096; }
     </style>
 </head>
 <body>
     <div id="app">
-        <!-- html 코드는 id가 app인 태그 안에서 작업 -->
-        <div class="signup-container">
-        <div class="signup-box user" @click="fnUserJoin()">
-            <div id="inner-box-user">
-                <h3>일반 회원가입</h3>
-            </div>
-            <div class="signup-box-content">
-                <p class="txt-bold user-txt-color">♥똑똑한 결혼 준비♥</p>
-                <p>메리뷰와 함께 하세요!</p>
-                <div class="content-left">
-                    <p>✅ 결혼 예정일 입력시 쿠폰</p>
-                    <p>✅ 결혼 준비 커뮤니티 참여</p>
-                    <p>✅ 내 리뷰 작성으로 얻는 혜택</p>
-                    <p>✅ 거품없는 솔직한 리얼 후기 열람</p>
-                </div>
-            </div>
+        <div class="logo-wrap" @click="fnMain()">
+            <img src="/img/marryview-logo-en.svg" alt="메리뷰 로고">
         </div>
-        <div class="signup-box company" @click="fnCompanyJoin()">
-            <div id="inner-box-company">
-                <h3>업체 가입</h3>
-            </div>
-            <div class="signup-box-content">
-                <div class="txt-bold">
-                    <p class="company-txt-color">♥메리뷰와 제휴를 맺어♥</p>
-                    <p class="company-txt-color">♥결혼 준비 파트너가 되어보세요!♥</p>
+        <div class="signup-container">
+            <!-- 일반 회원가입 -->
+            <div class="signup-box" @click="fnUserJoin()">
+                <div class="box-header user">
+                    <h3>일반 회원가입</h3>
                 </div>
-                <p class="txt-bold">파트너가 되면 이런 혜택을 받을 수 있어요!</p>
-                <div class="content-left">
-                    <div class="company-txt-color">
-                        <p class="txt-bold">✅ 예약 수수료 5%</p>
-                        <p>🔺 일반 업체의 경우 10%</p>
+                <div class="signup-box-content">
+                    <p class="box-slogan">♥ 똑똑한 결혼 준비 ♥</p>
+                    <p class="box-sub">메리뷰와 함께 하세요!</p>
+                    <div class="content-list">
+                        <p>✅ 결혼 예정일 입력 시 쿠폰 제공</p>
+                        <p>✅ 결혼 준비 커뮤니티 참여</p>
+                        <p>✅ 내 리뷰 작성으로 얻는 혜택</p>
+                        <p>✅ 솔직한 리얼 후기 열람</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 업체 가입 -->
+            <div class="signup-box" @click="fnCompanyJoin()">
+                <div class="box-header company">
+                    <h3>업체 가입</h3>
+                </div>
+                <div class="signup-box-content">
+                    <p class="box-slogan company">♥ 결혼 준비 파트너 ♥</p>
+                    <p class="box-sub">메리뷰와 제휴를 맺어보세요!</p>
+                    <div class="content-list">
+                        <p>✅ 파트너 혜택</p>
+                        <p class="highlight company">✅ 예약 수수료 5%</p>
+                        <p class="muted">🔺 일반 업체의 경우 10%</p>
+                        <p>✅ 업체 페이지 무료 등록</p>
+                        <p>✅ 리뷰 관리 시스템 제공</p>
                     </div>
                 </div>
             </div>
         </div>
+        <div class="link-wrap">
+            <span @click="fnLogin()" class="link-login">로그인 페이지로 돌아가기</span>
         </div>
-        <span @click="fnLogin()" class="link-login cusor">로그인 페이지로 돌아가기</span>
     </div>
 </body>
 </html>
@@ -173,7 +193,9 @@
             };
         },
         methods: {
-            // 함수(메소드) - (key : function())
+            fnMain() {
+                location.href = '/merryViewHome.do';
+            },
             fnLogin: function () {
                 window.location.href = '/login.do';
             },

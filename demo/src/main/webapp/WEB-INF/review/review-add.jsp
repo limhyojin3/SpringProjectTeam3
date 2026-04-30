@@ -110,14 +110,21 @@
                 <div class="form-row mt-2">
                     <div class="col-md-4">
                         <label class="small font-weight-bold">예약 경로 <span class="essential">*</span></label>
-                        <input type="text" class="form-control" v-model="bookingSource" placeholder="예: 네이버예약">
+                        <select class="form-control" v-model="bookingSource" ref="bookingSource">
+                            <option value="">경로 선택</option>
+                            <option value="네이버 예약">네이버 예약</option>
+                            <option value="카카오 예약">카카오 예약</option>
+                            <option value="전화 예약">전화 예약</option>
+                            <option value="방문 예약">방문 예약</option>
+                            <option value="기타">기타</option>
+                        </select>
                     </div>
                     <div class="col-md-5">
                         <label class="small font-weight-bold">총 지불 비용 (원) <span class="essential">*</span></label>
                         <input type="text" class="form-control" :value="formattedCost" @input="fnInputCost" placeholder="예: 1,500,000">
                     </div>
                     <div class="col-md-3">
-                        <label class="small font-weight-bold">별점</label>
+                        <label class="small font-weight-bold">별점 <span class="essential">*</span> </label>
                         <select class="form-control" v-model="rating">
                             <option v-for="i in [5,4,3,2,1]" :value="i">{{ '★'.repeat(i) + '☆'.repeat(5-i) }}</option>
                         </select>
@@ -126,20 +133,14 @@
             </div>
 
             <div class="form-group">
-                <label class="font-weight-bold">리뷰 내용 <span class="essential">*</span></label>
+                <label class="font-weight-bold">
+                    리뷰 내용 <span class="essential">*</span>
+                    <span v-if="isPaid === 1" class="small text-danger ml-2">(사진 3장 이상 본문에 삽입 필수)</span>
+                </label>
                 <div id="editor"></div>
-                <div class="text-right small mt-1 text-muted">
-                    순수 텍스트 글자 수: {{ textLength }} / {{ isPaid === 1 ? '최소 500' : '최대 200' }}자
-                </div>
-            </div>
-
-            <div class="file-box">
-                <label class="font-weight-bold">📸 리뷰 사진 <span v-if="isPaid === 1" class="essential">(3장 이상 필수)</span></label>
-                <input type="file" class="form-control-file" ref="reviewFiles" multiple @change="fnFileCheck" accept="image/*">
-                <div class="preview-wrapper" v-if="previews.length > 0">
-                    <div v-for="(src, index) in previews" :key="index" class="preview-item">
-                        <img :src="src">
-                    </div>
+                <div class="d-flex justify-content-between small mt-1 text-muted">
+                    <span>이미지는 에디터 상단의 이미지 아이콘을 클릭해 본문에 삽입해주세요.</span>
+                    <span>순수 텍스트 글자 수: {{ textLength }} / {{ isPaid === 1 ? '최소 500' : '최대 200' }}자</span>
                 </div>
             </div>
 
@@ -201,8 +202,14 @@
                     this.quill = new Quill('#editor', {
                         theme: 'snow',
                         modules: {
-                            toolbar: [['bold', 'italic', 'underline'], [{ 'color': [] }, { 'background': [] }], [{ 'list': 'ordered'}, { 'list': 'bullet' }], ['clean']]
-                        },
+                           toolbar: [
+                                    ['bold', 'italic', 'underline'],
+                                    [{ 'color': [] }, { 'background': [] }],
+                                    [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+                                    ['image'], // 이미지 버튼 추가
+                                    ['clean']
+                                ]
+                            },
                         placeholder: '따뜻한 후기를 남겨주세요.'
                     });
                     this.quill.on('text-change', () => {
@@ -255,6 +262,9 @@
                 fnSave() {
                     if(!confirm("리뷰를 등록하시겠습니까? 등록 후에는 수정 및 삭제가 불가능합니다.")) return;
 
+                    const contentHtml = this.quill.root.innerHTML;
+                    const imgCount = (contentHtml.match(/<img/g) || []).length;
+
                     // 유효성 체크
                     if(!this.title.trim()) return alert("제목을 입력해주세요.");
                     if(!this.$refs.receiptFile.files[0]) return alert("영수증 인증 사진을 업로드해주세요.");
@@ -265,18 +275,43 @@
                     } else {
                         if(!this.externalName.trim()) return alert("업체명을 직접 입력해주세요.");
                     }
+                    /// 1. 예약 경로 검사
+                    if (!this.bookingSource || this.bookingSource.trim() === "") {
+                        alert("예약 경로를 입력해 주세요.");
+                        this.$refs.bookingSource.focus();
+                        return;
+                    }
 
-                    if(this.isPaid === 1) {
-                        if(this.textLength < 500) return alert("유료 리뷰는 500자 이상 작성해야 합니다.");
-                        if(this.$refs.reviewFiles.files.length < 3) return alert("유료 리뷰는 사진을 3장 이상 등록해야 합니다.");
+                    // 2. 지불 비용 검사 (숫자가 0이거나 비어있는지 확인)
+                    // totalCost가 0원일 수도 있다면 !this.totalCost && this.totalCost !== 0 로 체크
+                    if (!this.totalCost || this.totalCost <= 0) {
+                        alert("정확한 비용을 입력해 주세요.");
+                        this.$refs.totalCost.focus();
+                        return;
+                    }
+
+                    // 3. 별점 검사 (필수)
+                    if (!this.rating) {
+                        alert("별점을 선택해 주세요.");
+                        this.$refs.rating.focus();
+                        return;
+                    }
+
+                    if(this.isPaid === 1) 
+                        {
+                            if(this.textLength < 500) return alert("유료 리뷰는 500자 이상 작성해야 합니다.");
+                            if(imgCount < 3) return alert("유료 리뷰는 본문에 사진을 3장 이상 삽입해야 합니다.");
+                        } 
+                        else {
+                            if(imgCount > 2) return alert("무료 리뷰는 사진을 2장까지만 등록 가능합니다.");
                     }
 
                     const formData = new FormData();
                     const receipt = this.$refs.receiptFile.files[0];
-                    const reviewFiles = this.$refs.reviewFiles.files;
+                    
 
                     formData.append("receiptFile", receipt);
-                    for(let i=0; i<reviewFiles.length; i++) formData.append("reviewFiles", reviewFiles[i]);
+                   
                     
                     const reviewData = {
                         userId: this.sessionId,
@@ -284,7 +319,7 @@
                         productNo: this.companyType === 'internal' ? this.productNo : null,
                         externalName: this.companyType === 'external' ? this.externalName : null,
                         rating: this.rating,
-                        content: this.quill.root.innerHTML,
+                        content: contentHtml,
                         isPaid: this.isPaid,
                         title: this.title,
                         bookingSource: this.bookingSource,

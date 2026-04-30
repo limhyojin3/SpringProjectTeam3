@@ -14,212 +14,515 @@
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
         <link rel="stylesheet" href="${pageContext.request.contextPath}/css/common.css">
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Playfair+Display:wght@700&display=swap"
+            rel="stylesheet">
         <style>
-            .main {
-                grid-area: main;
-                border: 1px solid #ffc7c2;
-                padding: 20px;
-                gap: 20px;
-            }
+            @import url('https://fonts.googleapis.com/css2?family=Great+Vibes&display=swap');
 
             :root {
-                --primary-color: #4a90e2;
-                --bg-color: #f8f9fa;
+                --primary: #e88aa2;
+                /* 로즈 핑크 */
+                --primary-dark: #d86f8c;
+                --sub: #7c8db5;
+                /* 은은한 블루 */
+                --gold: #d9b26f;
+                --text: #2b2b2b;
+                --muted: #777;
+                --line: #ececec;
+                --bg: #fff8fb;
+                --card: #ffffff;
+                --shadow: 0 15px 35px rgba(0, 0, 0, .08);
             }
 
+            body {
+                background:
+                    radial-gradient(circle at top left, #ffeef4 0%, transparent 35%),
+                    radial-gradient(circle at right bottom, #eef4ff 0%, transparent 30%),
+                    #f8f9fb;
+            }
+
+            .main {
+                grid-area: main;
+                padding: 30px;
+                border: none;
+            }
+
+            /* 전체 래퍼 */
             .pass-container {
-                max-width: 1100px;
-                margin: 50px auto;
-                padding: 0 20px;
-                font-family: 'Pretendard', sans-serif;
+                max-width: 1280px;
+                margin: 0 auto;
+                padding: 20px;
+            }
+
+            .brand-wrap {
+                text-align: center;
+                margin-bottom: 18px;
             }
 
             .pass-header {
                 text-align: center;
-                margin-bottom: 40px;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                margin-bottom: 48px;
+                padding-top: 10px;
+                overflow: visible;
+            }
+
+            /* 메인 로고 */
+            .brand-title {
+                position: relative;
+                display: inline-block;
+
+                font-family: 'Great Vibes', cursive;
+                font-size: 92px;
+                font-weight: 400;
+                line-height: 1.32;
+
+                /* 핵심 : 필기체 좌측 튀는 현상 보정 */
+                padding: 24px 28px 14px 52px;
+                margin: 0;
+                transform: translateX(10px);
+
+                letter-spacing: 1px;
+                white-space: nowrap;
+                overflow: visible;
+
+                /* 골드 그라데이션 */
+                background: linear-gradient(90deg,
+                        #8b6524 0%,
+                        #c89a3e 18%,
+                        #f6e08d 34%,
+                        #fff7c9 48%,
+                        #d7aa45 62%,
+                        #9d6e1f 78%,
+                        #f4dd88 100%);
+
+                background-size: 300% auto;
+
+                -webkit-background-clip: text;
+                -webkit-text-fill-color: transparent;
+                background-clip: text;
+
+                text-shadow:
+                    0 2px 3px rgba(255, 255, 255, .55),
+                    0 8px 16px rgba(166, 120, 37, .18),
+                    0 18px 35px rgba(0, 0, 0, .08);
+
+                animation: goldMove 5s linear infinite;
+            }
+
+            /* 반짝이 */
+            .brand-title::before {
+                content: "✦";
+                position: absolute;
+                top: 12px;
+                right: -10px;
+                font-size: 22px;
+                color: #ffe89a;
+                text-shadow: 0 0 14px rgba(255, 232, 138, .9);
+                animation: twinkle 1.8s ease-in-out infinite;
+            }
+
+            .brand-title::after {
+                content: "✧";
+                position: absolute;
+                left: 8px;
+                bottom: 16px;
+                font-size: 18px;
+                color: #fff1aa;
+                text-shadow: 0 0 12px rgba(255, 232, 138, .85);
+                animation: twinkle 2.4s ease-in-out infinite .5s;
+            }
+
+            .hero-text {
+                margin-top: 8px;
+            }
+
+            .hero-main {
+                font-size: 22px;
+                font-weight: 700;
+                color: #333;
+                letter-spacing: -0.5px;
+            }
+
+            .hero-sub {
+                margin-top: 8px;
+                display: inline-block;
+                padding: 10px 24px;
+                font-size: 15px;
+                font-weight: 600;
+                color: #b07c39;
+                background: #fff8ea;
+                border-radius: 999px;
+            }
+
+            /* 서브 문구 */
+            .brand-sub {
+                margin-top: 10px;
+                font-family: 'Playfair Display', serif;
+                font-size: 14px;
+                letter-spacing: 4px;
+                color: #b28a3a;
+                text-transform: uppercase;
+            }
+
+            /* 밑줄 장식 */
+            .brand-line {
+                width: 180px;
+                height: 2px;
+                margin: 14px auto 0;
+                background: linear-gradient(90deg, transparent, #d7b15b, transparent);
+            }
+
+            /* 금빛 이동 */
+            @keyframes goldShine {
+                0% {
+                    background-position: -250px 0;
+                }
+
+                100% {
+                    background-position: 350px 0;
+                }
+            }
+
+            /* 반짝임 */
+            @keyframes twinkle {
+
+                0%,
+                100% {
+                    opacity: .4;
+                    transform: scale(.8) rotate(0deg);
+                }
+
+                50% {
+                    opacity: 1;
+                    transform: scale(1.2) rotate(12deg);
+                }
+            }
+
+            /* 모바일 */
+            @media(max-width:768px) {
+                .brand-title {
+                    font-size: 52px;
+                }
+
+                .brand-sub {
+                    font-size: 12px;
+                    letter-spacing: 2px;
+                }
+            }
+
+            /* 설명 문구 */
+            .pass-header p {
+                margin: 4px 0;
+                font-size: 18px;
+                color: #666;
+                font-weight: 500;
+                letter-spacing: -0.2px;
+            }
+
+            .pass-header p:first-of-type {
+                font-weight: 700;
+                color: #3f3f3f;
             }
 
             .pass-header h2 {
-                font-size: 2rem;
-                color: #333;
+                font-size: 42px;
+                font-weight: 800;
+                color: var(--text);
+                margin-bottom: 12px;
+                letter-spacing: -1px;
+            }
+
+            .pass-header h2 span {
+                color: var(--primary);
             }
 
             .pass-header p {
+                font-size: 17px;
                 color: #666;
+                margin: 0;
             }
 
+            /* 하단 고급 문구 */
+            .pass-header::after {
+                content: "REAL REVIEW · SMART CHOICE · HAPPY WEDDING";
+                display: block;
+                margin-top: 14px;
+                font-size: 13px;
+                letter-spacing: 3px;
+                color: #c59a3f;
+                font-weight: 700;
+            }
+
+            /* 애니메이션 */
+            @keyframes goldMove {
+                0% {
+                    background-position: 0% center;
+                }
+
+                100% {
+                    background-position: 300% center;
+                }
+            }
+
+            @keyframes twinkle {
+
+                0%,
+                100% {
+                    opacity: .4;
+                    transform: scale(.85) rotate(0deg);
+                }
+
+                50% {
+                    opacity: 1;
+                    transform: scale(1.2) rotate(15deg);
+                }
+            }
+
+            /* 모바일 */
+            @media(max-width:768px) {
+                .brand-title {
+                    font-size: 60px;
+                    padding: 18px 18px 8px 34px;
+                    transform: translateX(5px);
+                }
+
+                .pass-header p {
+                    font-size: 15px;
+                }
+
+                .pass-header::after {
+                    font-size: 11px;
+                    letter-spacing: 1.5px;
+                }
+            }
+
+            /* 카드 영역 */
             .pass-grid {
                 display: grid;
-                grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-                gap: 20px;
+                grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+                gap: 28px;
             }
 
+            /* 카드 */
             .pass-card {
-                background: white;
-                border: 1px solid #ddd;
-                border-radius: 12px;
-                padding: 30px 20px;
+                background: rgba(255, 255, 255, .88);
+                backdrop-filter: blur(8px);
+                border: 1px solid rgba(255, 255, 255, .7);
+                border-radius: 24px;
+                padding: 35px 28px;
                 text-align: center;
-                transition: transform 0.3s ease;
                 position: relative;
+                overflow: hidden;
+                box-shadow: var(--shadow);
+                transition: .25s ease;
+            }
+
+            .pass-card::before {
+                content: "";
+                position: absolute;
+                inset: 0;
+                background: linear-gradient(135deg, rgba(232, 138, 162, .08), rgba(124, 141, 181, .05));
+                z-index: 0;
+            }
+
+            .pass-card>* {
+                position: relative;
+                z-index: 1;
             }
 
             .pass-card:hover {
                 transform: translateY(-10px);
-                box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+                box-shadow: 0 20px 45px rgba(0, 0, 0, .12);
             }
 
-            /* 추천 카드 강조 */
-            .pass-card.highlight {
-                border: 2px solid var(--primary-color);
+            /* 추천 카드 자동 강조 */
+            .pass-card:nth-child(2) {
+                border: 2px solid var(--primary);
+                transform: scale(1.03);
             }
 
-            .badge {
+            .pass-card:nth-child(2)::after {
+                content: "BEST PLAN";
                 position: absolute;
-                top: -12px;
-                left: 50%;
-                transform: translateX(-50%);
-                background: var(--primary-color);
-                color: white;
-                padding: 4px 12px;
-                border-radius: 20px;
-                font-size: 0.8rem;
-            }
-
-            .pass-name {
-                font-size: 2rem;
-                font-weight: bold;
-                margin-bottom: 15px;
-            }
-
-            .pass-price {
-                font-size: 2rem;
+                top: 16px;
+                right: -34px;
+                background: linear-gradient(90deg, var(--primary), var(--primary-dark));
+                color: #fff;
+                width: 140px;
+                padding: 6px 0;
+                font-size: 12px;
                 font-weight: 800;
-                color: #333;
-                margin-bottom: 5px;
+                transform: rotate(35deg);
+                letter-spacing: 1px;
+            }
+
+            /* 이름 */
+            .pass-name {
+                font-size: 30px;
+                font-weight: 800;
+                color: #222;
+                margin-bottom: 18px;
+            }
+
+            /* 가격 */
+            .pass-price {
+                font-size: 42px;
+                font-weight: 900;
+                color: var(--primary-dark);
+                margin-bottom: 8px;
+                line-height: 1;
             }
 
             .pass-price span {
-                font-size: 1rem;
-                font-weight: normal;
+                font-size: 18px;
+                font-weight: 600;
+                margin-left: 4px;
+                color: #444;
             }
 
+            /* 설명 */
             .pass-review {
-                font-size: 0.9rem;
-                color: #888;
-                margin-bottom: 20px;
+                margin: 18px 0 24px;
+                color: #666;
+                font-size: 15px;
+                background: #fafafa;
+                padding: 12px;
+                border-radius: 12px;
             }
 
-            .pass-features {
-                list-style: none;
-                padding: 0;
-                margin-bottom: 30px;
-                text-align: left;
+            /* 기능 추가 느낌 */
+            .pass-review::before {
+                content: "💬 ";
             }
 
-            .pass-features li {
-                margin-bottom: 10px;
-                color: #555;
-                font-size: 0.95rem;
-            }
-
-            .pass-features li::before {
-                content: '✓';
-                color: var(--primary-color);
-                margin-right: 8px;
-                font-weight: bold;
-            }
-
+            /* 버튼 */
             .pay-button {
                 width: 100%;
-                padding: 12px;
-                background: var(--primary-color);
-                color: white;
                 border: none;
-                border-radius: 8px;
+                border-radius: 14px;
+                padding: 15px;
+                font-size: 16px;
+                font-weight: 800;
+                color: #fff;
                 cursor: pointer;
-                font-weight: bold;
-                transition: background 0.2s;
+                background: linear-gradient(90deg, var(--primary), var(--primary-dark));
+                transition: .2s;
             }
 
             .pay-button:hover {
-                background: #357abd;
+                transform: translateY(-2px);
+                box-shadow: 0 10px 18px rgba(232, 138, 162, .35);
             }
 
+            /* 모달 */
             .modal-overlay {
                 position: fixed;
-                top: 0;
-                left: 0;
-                width: 100%;
-                height: 100%;
-                background: rgba(0, 0, 0, 0.5);
+                inset: 0;
+                background: rgba(0, 0, 0, .45);
                 display: flex;
-                align-items: center;
                 justify-content: center;
-                z-index: 1000;
+                align-items: center;
+                z-index: 9999;
+                padding: 20px;
+                backdrop-filter: blur(4px);
             }
 
             .modal-content {
-                background: white;
-                padding: 30px;
-                border-radius: 15px;
-                width: 400px;
-                text-align: center;
+                width: 100%;
+                max-width: 520px;
+                background: #fff;
+                border-radius: 24px;
+                padding: 35px;
+                box-shadow: 0 20px 60px rgba(0, 0, 0, .18);
+                animation: fadeUp .25s ease;
             }
 
-            .order-info {
+            @keyframes fadeUp {
+                from {
+                    opacity: 0;
+                    transform: translateY(20px);
+                }
+
+                to {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
+            }
+
+            .modal-content h2 {
+                font-size: 28px;
+                font-weight: 800;
+                margin-bottom: 22px;
+                color: #222;
+            }
+
+            .modal-content p {
+                margin-bottom: 10px;
+                color: #555;
+                font-size: 15px;
+            }
+
+            .modal-content hr {
                 margin: 20px 0;
-                text-align: left;
-                background: #f8f9fa;
-                padding: 15px;
-                border-radius: 8px;
-            }
-
-            .pay-methods {
-                display: flex;
-                gap: 10px;
-                margin-bottom: 20px;
-            }
-
-            .pay-methods button {
-                flex: 1;
-                padding: 10px;
-                border: 1px solid #ddd;
-                cursor: pointer;
-                border-radius: 5px;
-            }
-
-            .pay-methods button.active {
-                border-color: var(--primary-color);
-                background: #eef5ff;
-                color: var(--primary-color);
-                font-weight: bold;
-            }
-
-            .modal-btns {
-                display: flex;
-                gap: 10px;
-            }
-
-            .btn-cancel {
-                flex: 1;
-                padding: 12px;
-                background: #ccc;
                 border: none;
-                border-radius: 8px;
+                border-top: 1px solid #eee;
+            }
+
+            /* 체크박스 */
+            .modal-content label {
+                display: flex;
+                align-items: flex-start;
+                gap: 10px;
+                padding: 10px 0;
+                cursor: pointer;
+                color: #444;
+                font-size: 15px;
+            }
+
+            .modal-content input[type=checkbox] {
+                margin-top: 3px;
+                transform: scale(1.15);
+                accent-color: var(--primary);
+            }
+
+            /* 버튼영역 */
+            .buttons {
+                display: flex;
+                gap: 12px;
+                margin-top: 28px;
+            }
+
+            .buttons button {
+                flex: 1;
+                border: none;
+                border-radius: 14px;
+                padding: 14px;
+                font-size: 15px;
+                font-weight: 800;
                 cursor: pointer;
             }
 
-            .btn-pay {
-                flex: 2;
-                padding: 12px;
-                background: var(--primary-color);
-                color: white;
-                border: none;
-                border-radius: 8px;
-                cursor: pointer;
-                font-weight: bold;
+            .buttons button:first-child {
+                background: #ececec;
+                color: #444;
             }
+
+            .buttons button:last-child {
+                background: linear-gradient(90deg, var(--primary), var(--primary-dark));
+                color: #fff;
+            }
+
+            .buttons button:disabled {
+                opacity: .55;
+                cursor: not-allowed;
+            }
+        </style>
         </style>
     </head>
 
@@ -230,8 +533,11 @@
                 <div class="main">
                     <div class="pass-container">
                         <div class="pass-header">
-                            <h2>원하시는 패스를 선택하세요</h2>
-                            <p>나에게 딱 맞는 플랜으로 서비스를 시작해보세요.</p>
+                            <h2 class="brand-title">MerryViewPass</h2>
+                            <div class="hero-text">
+                                <p class="hero-main">실제 신부들의 진짜 경험만 담았습니다</p>
+                                <p class="hero-sub">후회 없는 스드메 선택, MerryViewPass에서 시작하세요</p>
+                            </div>
                         </div>
                         <div class="pass-grid">
                             <div class="pass-card" v-for="pass in passList">
@@ -280,6 +586,12 @@
                             <label>
                                 <input type="checkbox" v-model="agreeRequired1" @change="updateAll" />
                                 (필수) 결제 및 이용약관 동의
+                                <br>
+                                현재 가지고 계신 열람권횟수가
+                                <br>
+                                구매하신 패스의 열람권 개수보다
+                                <br>
+                                적을경우 환불이 불가합니다!
                             </label>
 
                             <label>
@@ -297,7 +609,7 @@
                                 <button @click="closeModal">취소</button>
                                 <button @click="fnPayment(selectedPass)"
                                     :disabled="!(agreeRequired1 && agreeRequired2) || isPaying">
-                                   {{ isPaying ? '결제 진행중...' : '결제하기' }}
+                                    {{ isPaying ? '결제 진행중...' : '결제하기' }}
                                 </button>
                             </div>
 
@@ -400,7 +712,7 @@
                                 passNo: selectedPass.passNo,
                                 amount: selectedPass.price,
                                 itemName: selectedPass.passName,
-                                reviewCnt : selectedPass.reviewCnt,
+                                reviewCnt: selectedPass.reviewCnt,
                                 type: "PASS"
                             },
                             success: function (res) {
