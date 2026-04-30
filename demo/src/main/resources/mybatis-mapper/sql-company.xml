@@ -344,5 +344,5 @@
 			ans_user_id = #{ansUserId}
 		where inquiry_no = #{inquiryNo}
 	</update>
-	
+	 
 </mapper>

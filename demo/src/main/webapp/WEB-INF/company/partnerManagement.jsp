@@ -2285,10 +2285,10 @@
                 fnSaveAnswer() {
                     let self = this;
                     let param = {
-                        inquiryNo: self.inquiryDetails.inquiryNo,
+                        inquiryNo: self.inquiryAnswer.inquiryNo,
                         answerContents: self.inquiryAnswer.answerContents,
                         ansUserId: self.inquiryAnswer.ansUserId,
-                        inquiryAns : self.inquiryAnswer.inquiryAns
+                        inquiryAns : self.inquiryAnswer.inquiryAns //0 또는 1
                     };
                     console.log(param);
                     $.ajax({
@@ -2300,7 +2300,7 @@
                             console.log(data);
                             //답변이 등록되면서 답변여부가 업데이트 된다
                             if(data.result === 'success'){
-                                alert("답변이 등록되었습니다!");
+                                alert("답변 등록/수정 완료!");
                                 self.page1 = 'main';
                             } else{
                                 alert("서버 오류!");
