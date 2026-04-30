@@ -4,6 +4,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.StringJoiner; // 합치기용 임포트 추가
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -79,6 +81,10 @@ public class ReviewService {
         return reviewMapper.selectActiveCompanyList(map);
     }
     
+    public List<HashMap<String, Object>> selectBestReviewList(HashMap<String, Object> map) {
+        return reviewMapper.selectBestReviewList(map);
+    }
+    
     /**
      * 6. 리뷰 등록 로직 (방법 A: 여러 장 합치기 고도화)
      * - 영수증: 별도 저장
@@ -125,9 +131,18 @@ public class ReviewService {
                 }
             }
             
+         // [STEP 2.5] 추가: 본문에서 썸네일 추출하여 세팅
+            // 저장하기 직전에 본문 HTML에서 첫 번째 이미지 경로를 뽑아 thumbnailUrl에 넣습니다.
+            String thumbnail = extractThumbnail(review.getContent());
+            if (thumbnail == null) {
+                // 본문에 사진이 없으면 영수증 사진을 썸네일로 사용
+                thumbnail = review.getImgUrl(); 
+            }
+            review.setThumbnailUrl(thumbnail);
+            
             // [STEP 3] DB Insert 실행
             int result = reviewMapper.insertReview(review);
-            
+             
             return result > 0 ? gson.toJson(Message.SUCCESS_ADD) : gson.toJson(Message.FAIL_SERVER);
 
         } catch (Exception e) {
@@ -152,7 +167,7 @@ public class ReviewService {
         // 2. 만약 "단순 확인용" 호출이었다면 여기서 멈춤
         // 이미 본 기록이 없으므로 "처음 보는 글"이라는 신호를 보냄
         if ("Y".equals(checkOnly)) {
-            resultMap.put("result", "NOT_VIEWED_YET");
+            resultMap.put("result", "NOT_VIEWED_YET"); 
             return resultMap;
         }
 
@@ -197,6 +212,32 @@ public class ReviewService {
     
     public List<Map<String, Object>> getProductListByCompany(Map<String, Object> map) {
         return reviewMapper.selectProductListByCompany(map);
+    }
+    
+    /**
+     * 에디터 본문(HTML)에서 첫 번째 이미지의 src 추출
+     */
+    private String extractThumbnail(String content) {
+        if (content == null || content.isEmpty()) return null;
+        
+        // <img src="..."> 패턴 추출
+        Pattern pattern = Pattern.compile("<img[^>]+src\\s*=\\s*['\"]([^'\"]+)['\"]");
+        Matcher matcher = pattern.matcher(content);
+
+        if (matcher.find()) {
+            return matcher.group(1); 
+        }
+        return null; // 본문에 사진 없으면 null 리턴
+    }
+
+    /**
+     * 리뷰 등록
+     */
+    public int insertReview(Review review) {
+        // 본문 파싱해서 썸네일 필드 세팅
+        review.setThumbnailUrl(extractThumbnail(review.getContent()));
+        
+        return reviewMapper.insertReview(review);
     }
     
 }

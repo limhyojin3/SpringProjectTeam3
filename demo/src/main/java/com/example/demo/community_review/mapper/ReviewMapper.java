@@ -15,6 +15,7 @@ public interface ReviewMapper {
     HashMap<String, Object> selectReviewDetail(HashMap<String, Object> map);
     int selectReviewCount(HashMap<String, Object> map);
     String getReviewTitle(String targetId);
+    List<HashMap<String, Object>> selectBestReviewList(HashMap<String, Object> map);
 
     /* --- [2] 조회수 및 좋아요 --- */
     int updateViewCount(HashMap<String, Object> map);
