@@ -645,7 +645,7 @@ public class MemberController {
 		    model.addAttribute("kakaoMapKey", kakaoMapKey);
 		    return "/common/home-about2";
 		}
-		
+	 
 	// 최근 리뷰
 		@GetMapping("/mainReviewList.dox")
 		@ResponseBody
@@ -653,7 +653,7 @@ public class MemberController {
 			String userId = (String) session.getAttribute("sessionId");
 		    return memberService.getMainReviewList(userId);
 		}
-		
+		  
 	// 챗봇 로그 저장
 		@PostMapping("/ask")
 		public ResponseEntity<?> askChatbot(@RequestBody Map<String, String> params, HttpSession session) {
