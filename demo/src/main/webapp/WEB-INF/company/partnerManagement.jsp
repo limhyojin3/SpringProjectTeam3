@@ -1607,8 +1607,10 @@
 
     <script>
         const app = Vue.createApp({
+            el: '#app',
             data() {
                 return {
+                    currentMenu: 'main',
                     // 리뷰 내역 페이지 사이징
                     reviewListPage: 1,   // 리뷰 상품 목록 페이지
                     reviewListPageSize: 5,
@@ -2611,7 +2613,11 @@
                 self.fnReservationList();
                 self.fnSimple();
                 self.fnReview();
-
+                const urlParams = new URLSearchParams(window.location.search);
+                const menu = urlParams.get('menu');
+                if (menu) {
+                    this.currentMenu = menu;
+                }
             }
 
 
