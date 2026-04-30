@@ -336,4 +336,13 @@
 		on ip.inquiry_no = ipa.inquiry_no where ip.inquiry_no = #{inquiryNo}
 	</select>
 	
+	<!-- inquiry_ans 가 1이상인 경우(수정하는 상황) answer를 업데이트만 하는경우-->
+	<update id="updateProductInquiryAnswer" parameterType="map">
+		update inquiry_product_answer
+		set 
+			answer_contents = #{answerContents},
+			ans_user_id = #{ansUserId}
+		where inquiry_no = #{inquiryNo}
+	</update>
+	
 </mapper>

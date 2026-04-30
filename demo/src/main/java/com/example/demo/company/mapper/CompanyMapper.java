@@ -24,6 +24,10 @@ public interface CompanyMapper {
 	//<select id="selectInquiryProductList" parameterType="map"
 //	resultType="com.example.demo.company.model.Company">
 	
+	
+	/* inquiry_ans 가 1이상인 경우(수정하는 상황) answer를 업데이트만 하는경우 */
+	int updateProductInquiryAnswer(HashMap<String, Object> map);
+	
 	/* 넘어온 inquiry_no = 6으로 문의 번호, 문의에 답변여부, 답변번호, 답변컨텐츠, 답변자명을 조회하기. */
 	Company selectInquiryAnsYn(HashMap<String, Object> map);
 	

@@ -591,14 +591,16 @@ public class CompanyService {
 					resultMap.put("message", Message.MSG_ADD);
 				}
 			} 
-			//2. 문의 내용에 답변한적 있는 경우 //answer를 업데이트만 해주기!
+			//2. 문의 내용에 답변한적 있는 경우(즉,inquiry_ans가 1이상인경우) (수정하는 상황)
+			//answer를 업데이트만 해주기!
 			else {
-//				int result = companyMapper.updateProductInquiryAnswer(map);
-//				
-//				if(result > 0) {
-//					resultMap.put("result", "success");
-//					resultMap.put("message", Message.MSG_ADD);
-//				}
+				int result = companyMapper.updateProductInquiryAnswer(map);
+				
+				
+				if(result > 0) {
+					resultMap.put("result", "success");
+					resultMap.put("message", Message.MSG_ADD);
+				}
 				
 				
 			}
