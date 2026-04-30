@@ -3,7 +3,7 @@
     <div class="footer-top">
         <div style="font-weight: bold; font-size: 20px; color: #222;">MARRYVIEW</div>
         <div class="footer-links">
-            <a href="javascript:;">회사소개</a>
+            <a href="/about.do">회사소개</a>
             <a href="javascript:;" class="bold-link">개인정보처리방침</a>
             <a href="javascript:;">이용약관</a>
             <a href="javascript:;">파트너 입점문의</a>

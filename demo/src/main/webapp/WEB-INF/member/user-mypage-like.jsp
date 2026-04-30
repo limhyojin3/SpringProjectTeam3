@@ -161,8 +161,8 @@
     </style>
 </head>
 <body>
+    <jsp:include page="/WEB-INF/common/header.jsp" />
     <div id="app">
-        <jsp:include page="/WEB-INF/common/header.jsp" />
         <div id="wrapper">
             <div class="main-content">
 
