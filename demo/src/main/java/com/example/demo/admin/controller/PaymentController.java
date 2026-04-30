@@ -60,12 +60,22 @@ public class PaymentController {
 	}
 	
 	//환불
-	@RequestMapping(value = "/refundPayment.dox", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
+//	@RequestMapping(value = "/refundPayment.dox", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
+//	@ResponseBody
+//	public String refundPayment(Model model, @RequestParam HashMap<String, Object> map) throws Exception {
+//
+//	    HashMap<String, Object> resultMap = paymentService.refundPayment(map);
+//	    return new Gson().toJson(resultMap);
+//	}
+	// 패스 환불
+	@RequestMapping(value="/refundPass.dox", method=RequestMethod.POST, produces="application/json;charset=UTF-8")
 	@ResponseBody
-	public String refundPayment(Model model, @RequestParam HashMap<String, Object> map) throws Exception {
+	public String refundPass(@RequestParam HashMap<String, Object> map){
 
-	    HashMap<String, Object> resultMap = paymentService.refundPayment(map);
+	    HashMap<String, Object> resultMap = paymentService.refundPass(map);
+
 	    return new Gson().toJson(resultMap);
 	}
+	
 	
 }

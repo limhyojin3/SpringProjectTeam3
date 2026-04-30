@@ -9,13 +9,17 @@
 		user_id,
 		amount,
 		pay_status,
-		pay_date
+		pay_date,
+		imp_uid,
+        merchant_uid
 		)
 		VALUES (
 		#{userId},
 		#{amount},
 		'SUCCESS',
-		NOW()
+		NOW(),
+		#{imp_uid},
+        #{merchant_uid}
 		)
 	</insert>
 
@@ -115,5 +119,49 @@
 		WHERE pay_no = #{payNo}
 		AND res_status != 'DONE'
 	</update>-->
+	
+	<select id="selectPassPayment" parameterType="hashmap" resultType="hashmap">
+        SELECT p.*, pp.pass_no, pp.item_name
+        FROM payment p
+        INNER JOIN payment_pass pp ON p.pay_no = pp.pay_no
+        WHERE p.pay_no = #{payNo}
+    </select>
+
+<!-- selectRefundInfo에서 Pass 추가한거 -->
+    <select id="selectRefundPassInfo" parameterType="hashmap" resultType="hashmap">
+		SELECT p.pay_no AS payNo,
+		p.pay_status AS payStatus,
+		p.imp_uid AS impUid,
+		p.user_id AS userId,
+		pp.pass_no AS passNo,
+		pr.review_cnt AS reviewCnt,
+		w.remaining_count AS remainingCount
+		FROM payment p
+		JOIN payment_pass pp ON p.pay_no = pp.pay_no
+		JOIN pass_product pr ON pp.pass_no = pr.pass_no
+		JOIN user_pass_wallet w ON p.user_id = w.user_id
+		WHERE p.pay_no = #{payNo}
+	</select>
+
+	<update id="minusWallet" parameterType="hashmap">
+		UPDATE user_pass_wallet w
+		JOIN payment p ON w.user_id = p.user_id
+		JOIN payment_pass pp ON p.pay_no = pp.pay_no
+		JOIN pass_product pr ON pp.pass_no = pr.pass_no
+		SET w.remaining_count = w.remaining_count - pr.review_cnt
+		WHERE p.pay_no = #{payNo}
+	</update>
+
+    <update id="updateRefundPayment" parameterType="hashmap">
+		UPDATE payment
+		SET pay_status='CANCEL'
+		WHERE pay_no=#{payNo}
+	</update>
+
+    <update id="updateRefundPass" parameterType="hashmap">
+		UPDATE payment_pass
+		SET status='REFUND'
+		WHERE pay_no=#{payNo}
+	</update>
 	
 </mapper>

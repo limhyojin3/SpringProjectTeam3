@@ -1,6 +1,7 @@
 package com.example.demo.admin.controller;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -318,16 +319,20 @@ public class AdminController {
 	}
 	
 	// 신고관리 일괄 신고 승인
-		@RequestMapping(value = "/reportBatchApprove.dox", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
-		@ResponseBody
-		public String reportBatchApprove(Model model, @RequestParam HashMap<String, Object> map) throws Exception {
-		    
-		    HashMap<String, Object> resultMap = new HashMap<>();
+	@RequestMapping(value = "/reportBatchApprove.dox", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
+	@ResponseBody
+	public String reportBatchApprove(Model model,
+			@RequestParam(value="reportNos") List<Integer> reportNos,
+		    @RequestParam HashMap<String, Object> map) throws Exception {
+	    
+	    HashMap<String, Object> resultMap = new HashMap<>();
 
-		    resultMap = adminService.batchApproveReport(map);
+	    map.put("reportNos", reportNos);
+	    
+	    resultMap = adminService.batchApproveReport(map);
 
-		    return new Gson().toJson(resultMap);
-		}
+	    return new Gson().toJson(resultMap);
+	}
 		
 		// 신고 단일 승인
 		@RequestMapping(value = "/reportApprove.dox", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")

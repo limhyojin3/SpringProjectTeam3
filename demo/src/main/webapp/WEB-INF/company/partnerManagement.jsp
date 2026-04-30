@@ -988,17 +988,12 @@
                                                     </div>
                                                 </div>
                                                 <div class="form-group">
-                                                    <label class="form-label">상품 태그</label>                                        
-                                                        <input type="text" placeholder="첫번째 태그"
-                                                            v-model="tagMap.input1">
-                                                        <input type="text" placeholder="두번째 태그"
-                                                            v-model="tagMap.input2">
-                                                        <input type="text" placeholder="세번째 태그"
-                                                            v-model="tagMap.input3">
-                                                        <input type="text" placeholder="네번째 태그"
-                                                            v-model="tagMap.input4">
-                                                        <input type="text" placeholder="다섯번째 태그"
-                                                            v-model="tagMap.input5">
+                                                    <label class="form-label">상품 태그</label>
+                                                    <input type="text" placeholder="첫번째 태그" v-model="tagMap.input1">
+                                                    <input type="text" placeholder="두번째 태그" v-model="tagMap.input2">
+                                                    <input type="text" placeholder="세번째 태그" v-model="tagMap.input3">
+                                                    <input type="text" placeholder="네번째 태그" v-model="tagMap.input4">
+                                                    <input type="text" placeholder="다섯번째 태그" v-model="tagMap.input5">
                                                 </div>
                                                 <!-- {{tagMap}}
                                                 {{tagMapToList}} -->
@@ -1014,7 +1009,7 @@
                                                 </div>
 
                                                 <div class="form-group">
-                                                    
+
                                                     <label class="form-label"><span class="form-info-label">예상
                                                             견적</span></label>
                                                     <div class="form-info-box">
@@ -1024,7 +1019,8 @@
                                                     </div>
                                                 </div>
                                                 <div class="form-group">
-                                                    <label class="form-label"><span class="form-info-label">예약금</span></label>
+                                                    <label class="form-label"><span
+                                                            class="form-info-label">예약금</span></label>
                                                     <div class="form-info-box">
                                                         <input placeholder="여기에 예약금을 적어주세요." type="text"
                                                             style="width: 200px; padding: 10px; border: 1px solid #ddd; border-radius: 4px;"
@@ -1106,17 +1102,12 @@
                                                 </div>
 
                                                 <div class="form-group">
-                                                    <label class="form-label">상품 태그</label>                                        
-                                                        <input type="text" placeholder="첫번째 태그"
-                                                            v-model="tagMap.input1">
-                                                        <input type="text" placeholder="두번째 태그"
-                                                            v-model="tagMap.input2">
-                                                        <input type="text" placeholder="세번째 태그"
-                                                            v-model="tagMap.input3">
-                                                        <input type="text" placeholder="네번째 태그"
-                                                            v-model="tagMap.input4">
-                                                        <input type="text" placeholder="다섯번째 태그"
-                                                            v-model="tagMap.input5">
+                                                    <label class="form-label">상품 태그</label>
+                                                    <input type="text" placeholder="첫번째 태그" v-model="tagMap.input1">
+                                                    <input type="text" placeholder="두번째 태그" v-model="tagMap.input2">
+                                                    <input type="text" placeholder="세번째 태그" v-model="tagMap.input3">
+                                                    <input type="text" placeholder="네번째 태그" v-model="tagMap.input4">
+                                                    <input type="text" placeholder="다섯번째 태그" v-model="tagMap.input5">
                                                 </div>
                                                 <!-- {{tagMap}}
                                                 {{tagMapToList}}
@@ -1145,7 +1136,8 @@
                                                 </div>
 
                                                 <div class="form-group">
-                                                    <label class="form-label"><span class="form-info-label">예약금</span></label>
+                                                    <label class="form-label"><span
+                                                            class="form-info-label">예약금</span></label>
                                                     <div class="form-info-box">
                                                         <input placeholder="여기에 예약금을 적어주세요." type="text"
                                                             style="width: 200px; padding: 10px; border: 1px solid #ddd; border-radius: 4px;"
@@ -1276,24 +1268,44 @@
                                                 style="width: 100%; height: 100%; object-fit: cover; border-radius: 10px;">
 
                                         </div>
-                                        <h3>상품명 : <span style="color: #d6336c;">{{i.product}}</span> </h3>
+                                        <table>
+                                            <tr>
+                                                <th>제목</th>
+                                                <td>{{i.inquiryTitle}}</td>
+                                            </tr>
+                                            <tr>
+                                                <th>작성자</th>
+                                                <td>{{i.userId}}</td>
+                                            </tr>
+                                            <tr>
+                                                <th>내용</th>
+                                                <td>{{i.inquiryContents}}</td>
+                                            </tr>
+                                        </table>
+                                        <!-- {{page1}} -->
+                                        <button style="background: #ffb400; margin-top: 10px; 
+                                padding: 10px 20px; border: none; display: block; 
+                                margin-left: auto; cursor: pointer;" @click="fnAnswerToProductInquiry(i)">답변하기</button>
 
                                     </div>
+                                    <div class="pagination1">
+                                        <span v-for="num in inquiryList.length" :key="num">
+                                            <a @click="currentPage = num" href="javascript:;"
+                                                :style="currentPage === num ? 'color: #ff1493; border: 1px solid #ff1493;' : ''">
+                                                {{num}}
+                                            </a> <!-- 1,2-->
+                                        </span>
+                                    </div>
 
-                                    <table>
-                                        <tr>
-                                            <th>제목</th>
-                                            <td>{{i.title}}</td>
-                                        </tr>
-                                        <tr>
-                                            <th>작성자</th>
-                                            <td>{{i.userid}}</td>
-                                        </tr>
-                                        <tr>
-                                            <th>내용</th>
-                                            <td>{{i.content}}</td>
-                                        </tr>
-                                    </table>
+                                </template>
+                                <template v-if="page1 === 'answer'">
+                                    <!-- <button @click="fnBacktoInquiry">뒤로가기</button> -->
+                                    <!-- 답변대상
+                                    답변제목
+                                    답변내용
+                                    {{inquiryDetails}} -->
+                                    <div
+                                        style="padding: 20px; border: 1px solid #ddd; border-radius: 8px; background-color: #fff; max-width: 800px; margin: 0 auto;">
 
                                     <button class="btn-reply">답변하기</button>
 
@@ -1658,11 +1670,11 @@
                         tag: []
                     },
                     tagMap: {
-                        input1:'',
-                        input2:'',
-                        input3:'',
-                        input4:'',
-                        input5:''
+                        input1: '',
+                        input2: '',
+                        input3: '',
+                        input4: '',
+                        input5: ''
                     },
                     serverTagList: [],
                 }
@@ -1673,21 +1685,21 @@
                 //     return this.reservationList.length;
                 // }
                 //,
-                tagMapToList(){
+                tagMapToList() {
                     const filteredtagArray = Object.values(this.tagMap).filter(tag => tag.trim() !== "");
 
                     //console.log(filteredtagArray);
                     return filteredtagArray;
                 },
-                newTagsOnly(){
-                    if(!this.serverTagList) {
+                newTagsOnly() {
+                    if (!this.serverTagList) {
                         return tagMapToList();
                     }
-                    
+
                     return this.tagMapToList.filter(t => !this.serverTagList.includes(t));
 
                 },
-                
+
 
                 revCnt() {
                     return this.reviews.filter(r => r.updated === 'new').length
@@ -1898,7 +1910,7 @@
                             self.product1 = data.info;//덮어씌우기
                             self.serverTagList = data.tagList;
 
-                            
+
 
                             //
                             // 2. 문자열로 들어온 proType을 실제 배열로 변환합니다.
@@ -1923,7 +1935,7 @@
                                     self.product1.proType = [];
                                 }
                             }
-                            if(typeof self.product1.tag === 'string'){
+                            if (typeof self.product1.tag === 'string') {
                                 try {
                                     let rawArry = JSON.parse(self.product1.tag);
 
@@ -1934,7 +1946,7 @@
                                     self.tagMap.input3 = self.product1.tag[2] || "";
                                     self.tagMap.input4 = self.product1.tag[3] || "";
                                     self.tagMap.input5 = self.product1.tag[4] || "";
-                                } catch(e){
+                                } catch (e) {
                                     self.product1.tag = [];
                                 }
                             }
@@ -2028,7 +2040,7 @@
                             self.serverTagList = data.tagList;
                         }
                     });
-                    
+
 
 
                 },
@@ -2070,7 +2082,7 @@
 
                 },
                 fnThumbnail(i) {    //fnThumbnail(개별문의) 해변스냅
-                    return this.inquiryList.find(p => p.product === i.product).imgUrl;
+                    return this.inquiryList.find(p => p.productName === i.productName).imgUrl;
                     //return this.productList3.find(p => p.productName === inquiry.product).imgUrl;
                 }
                 ,
@@ -2096,6 +2108,8 @@
 
                         this.fnSimple();
                         this.fnReview();
+                    } else if (menuId === 'inquiry') {
+                        this.fnInquiryProduct();
                     }
                 },
 
@@ -2133,7 +2147,7 @@
                     formData.append("originalPrice", this.product1.originalPrice);
 
                     formData.append("deposit", this.product1.deposit);
-                    formData.append("tag",JSON.stringify([...new Set(this.tagMapToList)]));
+                    formData.append("tag", JSON.stringify([...new Set(this.tagMapToList)]));
 
                     formData.append("proType", JSON.stringify(this.product1.proType));
 
@@ -2186,8 +2200,8 @@
                     formData.append("deposit", this.product2.deposit);
                     formData.append("proType", JSON.stringify(this.product2.proType));
                     formData.append("userId", "${sessionScope.sessionId}");
-                    
-                    formData.append("tag",JSON.stringify([...new Set(this.tagMapToList)]));
+
+                    formData.append("tag", JSON.stringify([...new Set(this.tagMapToList)]));
                     formData.append("uniqueNewTagsOnly", this.uniqueNewTagsOnly());
 
                     $.ajax({
@@ -2404,18 +2418,95 @@
                     }
                 },
 
-                uniqueNewTagsOnly(){
+                uniqueNewTagsOnly() {
                     return [...new Set(this.newTagsOnly)];
                 },
-                fnBack3(){
+                fnBack3() {
                     this.tagMap = {};
                     //this.tagMapToList = [];
                     this.productPage = 'list'
                     this.product2.deposit = 0;
+                },
+                fnInquiryProduct() {
+                    let self = this;
+                    let param = {
+                        userId: "${sessionScope.sessionId}"
+                    };
+
+                    console.log(param);
+
+                    $.ajax({
+                        url: "/getInquiryProductList.dox",
+                        dataType: "json",
+                        type: "POST",
+                        data: param,
+                        success: function (data) {
+                            console.log(data);
+
+                            self.inquiryList = data.list;
+
+                        }
+                    });
+                },
+                //문의에 답변하러 넘어가는 타이밍
+                fnAnswerToProductInquiry(i) { //매개변수를 이용!
+                    this.page1 = 'answer';
+                    this.inquiryDetails = i;
+
+                    let self = this;
+                    let param = {
+                        inquiryNo: self.inquiryDetails.inquiryNo
+                    };
+                    console.log(param);
+                     $.ajax({
+                        url: "/getInquiryAnsYn.dox",
+                        dataType: "json",
+                        type: "POST",
+                        data: param,
+                        success: function (data) {
+                            console.log(data);
+
+                            if(data.result === 'success'){
+                                self.inquiryAnswer.inquiryNo = data.info.inquiryNo || '';
+                                self.inquiryAnswer.ansUserId = data.info.ansUserId || '';
+                                self.inquiryAnswer.answerNo = data.info.answerNo || '';
+                                self.inquiryAnswer.answerContents = data.info.answerContents || '';
+                                self.inquiryAnswer.inquiryAns = data.info.inquiryAns || '';
+                            }
+                        }
+                    });
+                },
+                fnBacktoInquiry() {
+                    this.page1 = 'main';
+                    //console.log(this.page1);
+                },
+                /*상품문의에 답변하기*/
+                fnSaveAnswer() {
+                    let self = this;
+                    let param = {
+                        inquiryNo: self.inquiryAnswer.inquiryNo,
+                        answerContents: self.inquiryAnswer.answerContents,
+                        ansUserId: self.inquiryAnswer.ansUserId,
+                        inquiryAns : self.inquiryAnswer.inquiryAns //0 또는 1
+                    };
+                    console.log(param);
+                    $.ajax({
+                        url: "/addProductInquiryAnswer.dox",
+                        dataType: "json",
+                        type: "POST",
+                        data: param,
+                        success: function (data) {
+                            console.log(data);
+                            //답변이 등록되면서 답변여부가 업데이트 된다
+                            if(data.result === 'success'){
+                                alert("답변 등록/수정 완료!");
+                                self.page1 = 'main';
+                            } else{
+                                alert("서버 오류!");
+                            }
+                        }
+                    });
                 }
-                
-
-
             }, // methods
 
 

@@ -30,7 +30,6 @@
 
             .main {
                 grid-area: main;
-                border: 1px solid #ffc7c2;
                 background: #f5f6f7;
                 padding: 20px;
                 display: flex;
@@ -174,6 +173,22 @@
                 color: #fff;
                 transform: scale(1.1);
             }
+
+            .role-badge {
+                padding: 4px 8px;
+                border-radius: 10px;
+                font-size: 12px;
+            }
+
+            .partner {
+                background: #e3f2fd;
+                color: #1976d2;
+            }
+
+            .normal {
+                background: #f1f3f5;
+                color: #555;
+            }
         </style>
     </head>
 
@@ -199,6 +214,14 @@
                                 <button @click="fnGetCompanyList">검색</button>
                             </div>
                             <div class="filter-group">
+                                <div>
+                                    유형
+                                    <select v-model="role" @change="fnGetCompanyList">
+                                        <option value="ALL">전체</option>
+                                        <option value="PARTNER">제휴</option>
+                                        <option value="NPARTNER">일반</option>
+                                    </select>
+                                </div>
                                 <select v-model="statusFilter" @change="fnGetCompanyList">
                                     <option value="ALL">상태 전체</option>
                                     <option value="ACTIVE">활동</option>
@@ -213,6 +236,7 @@
                         <table class="companytable">
                             <thead>
                                 <tr>
+                                    <th>유형</th>
                                     <th>ID</th>
                                     <th>업체명</th>
                                     <th>대표자</th>
@@ -223,6 +247,12 @@
                             </thead>
                             <tbody>
                                 <tr v-for="company in companyList" @click="selectCompany(company)">
+                                    <td>
+                                        <span class="role-badge"
+                                            :class="company.role === 'PARTNER' ? 'partner' : 'normal'">
+                                            {{ getRoleText(company.role) }}
+                                        </span>
+                                    </td>
                                     <td>{{company.userId}}</td>
                                     <td>{{company.companyName}}</td>
                                     <td>{{company.ceoName}}</td>
@@ -267,6 +297,7 @@
                         sessionRole: "${sessionScope.sessionRole}",
                         searchType: "all",
                         keyword: "",
+                        role: "ALL",
                         statusFilter: "ALL",
                         selectedCompany: null,
                         pageSize: 10,
@@ -279,6 +310,14 @@
                     // 함수(메소드) - (key : function())
                     fnPage: function (url) {
                         location.href = url;
+                    },
+                    
+                    getRoleText(role) {
+                        const map = {
+                            PARTNER: "제휴",
+                            NPARTNER: "일반"
+                        };
+                        return map[role] || role;
                     },
 
                     fnPageMove(p) {
@@ -300,6 +339,7 @@
                         let param = {
                             searchType: self.searchType,
                             keyword: self.keyword,
+                            role: self.role,
                             status: self.statusFilter,
                             pageSize: self.pageSize,
                             offSet: self.pageSize * (self.currentPage - 1),
@@ -321,6 +361,7 @@
                         this.keyword = "";
                         this.currentPage = 1;
                         this.searchType = "all";
+                        this.role = "ALL"
                         this.statusFilter = "ALL";
                         this.fnGetCompanyList();
                     },

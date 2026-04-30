@@ -238,6 +238,7 @@
                                 <th>금액</th>
                                 <th>상태</th>
                                 <th>날짜</th>
+                                <th>환불</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -248,6 +249,14 @@
                                 <td>{{ p.amount }}</td>
                                 <td>{{ p.payStatus }}</td>
                                 <td>{{ formatDate(p.payDate) }}</td>
+                                <td>
+                                    <button v-if="p.payStatus == 'SUCCESS'" class="btn-refund"
+                                        @click="fnRefund(p.payNo)">
+                                        환불
+                                    </button>
+
+                                    <span v-else class="badge-danger">환불완료</span>
+                                </td>
                             </tr>
                         </tbody>
                     </table>
@@ -304,6 +313,16 @@
                             </tr>
                         </tbody>
                     </table>
+                    <div class="page-box" v-if="list.length > 0">
+                        <button @click="fnPageMove(currentPage-1)">
+                            < </button>
+
+                                <button v-for="n in index" @click="fnPageMove(n)" :class="{active: currentPage==n}">
+                                    {{n}}
+                                </button>
+
+                                <button @click="fnPageMove(currentPage+1)"> > </button>
+                    </div>
                 </div>
             </div>
             <jsp:include page="/WEB-INF/common/footer.jsp" />
@@ -316,7 +335,7 @@
                         activeMenu: "",
                         activeTab: "pass",
                         list: [],
-                        pageSize: 10,
+                        pageSize: 5,
                         currentPage: 1,
                         index: 1
                     };
@@ -327,11 +346,18 @@
                         location.href = url;
                     },
 
+                    fnPageMove(p) {
+                        if (p < 1 || p > this.index) return;
+                        this.currentPage = p;
+                        this.fnGetList();
+                    },
+
                     fnChangeTab(tab) {
                         this.activeTab = tab;
                         this.currentPage = 1;
                         this.fnGetList();
                     },
+
 
                     formatDate(date) {
                         return date ? date.substring(0, 10) : '-';
@@ -366,27 +392,44 @@
                         });
                     },
 
-                    fnRefund(p) {
-                        let self = this;
+                    fnRefund(payNo) {
 
-                        if (!confirm("환불하시겠습니까?")) {
+                        console.log("환불 클릭", payNo);
+
+                        if (!confirm("정말 환불하시겠습니까?\n환불 후 복구할 수 없습니다.")) {
                             return;
                         }
 
                         $.ajax({
-                            url: "http://localhost:8080/refundPayment.dox",
+                            url: "/refundPass.dox",
                             type: "POST",
                             dataType: "json",
-                            data: {
-                                payNo: p.payNo,
-                                imp_uid: p.impUid
+                            data: { payNo: payNo },
+
+                            beforeSend: function () {
+                                console.log("AJAX 시작");
                             },
+
                             success: function (data) {
-                                alert(data.message);
-                                self.fnGetList();
+                                console.log("성공", data);
+                                if (data.result == "success") {
+                                    alert(data.message);
+                                    location.reload();
+                                } else {
+                                    alert(data.message);
+                                }
                             },
-                            error: function () {
-                                alert("환불 실패");
+
+                            error: function (xhr, status, err) {
+                                console.log("에러");
+                                console.log(xhr.responseText);
+                                console.log(status);
+                                console.log(err);
+                                alert("error");
+                            },
+
+                            complete: function () {
+                                console.log("AJAX 종료");
                             }
                         });
                     }

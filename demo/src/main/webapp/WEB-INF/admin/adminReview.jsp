@@ -32,7 +32,6 @@
 
             .main {
                 grid-area: main;
-                border: 1px solid #ffc7c2;
                 background: #f5f6f7;
                 padding: 20px;
                 display: flex;
