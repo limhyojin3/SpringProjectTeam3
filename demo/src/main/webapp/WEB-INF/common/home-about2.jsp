@@ -10,7 +10,7 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/common.css">
     <!-- 카카오맵 API -->
-    <script type="text/javascript"src="//dapi.kakao.com/v2/maps/sdk.js?appkey=f4b72986716b1d237aaa41d1abe4efb0"></script>
+    <script type="text/javascript"src="//dapi.kakao.com/v2/maps/sdk.js?appkey=${kakaoMapKey}"></script>
     <style>
         /* 히어로 섹션 */
         .about-hero {

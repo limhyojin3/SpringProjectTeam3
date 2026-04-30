@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -19,8 +20,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.example.demo.member.dao.GeminiService;
 import com.example.demo.member.dao.MemberService;
 import com.example.demo.member.dao.SmsService;
-import com.example.demo.member.model.ChatRequest;
-import com.example.demo.member.model.ChatResponse;
 import com.example.demo.member.model.Member;
 import com.google.gson.Gson;
 
@@ -638,10 +637,15 @@ public class MemberController {
 		    return "/common/home-about";
 		}
 	// 찾아오시는 길 페이지
+		@Value("${kakao.map.key}")
+		private String kakaoMapKey;
+
 		@GetMapping("/location.do")
-		public String about2() {
-			return "/common/home-about2";
+		public String location(Model model) {
+		    model.addAttribute("kakaoMapKey", kakaoMapKey);
+		    return "/common/home-about2";
 		}
+		
 	// 최근 리뷰
 		@GetMapping("/mainReviewList.dox")
 		@ResponseBody
