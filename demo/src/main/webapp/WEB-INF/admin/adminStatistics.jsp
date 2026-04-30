@@ -71,8 +71,9 @@
     </head>
 
     <body>
+        <jsp:include page="/WEB-INF/common/header.jsp" />
+
         <div id="app">
-            <jsp:include page="/WEB-INF/common/header.jsp" />
             <div class="middle">
                 <jsp:include page="/WEB-INF/admin/adminNavi.jsp" />
                 <div class="main">
@@ -248,7 +249,7 @@
                     let self = this;
                     const path = location.pathname;
 
-                     this.activeMenu =
+                    this.activeMenu =
                         path.includes('adminMain') ? 'main' :
                             path.includes('adminUser') ? 'user' :
                                 path.includes('adminCompany') ? 'company' :

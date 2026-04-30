@@ -193,8 +193,8 @@
     </head>
 
     <body>
+        <jsp:include page="/WEB-INF/common/header.jsp" />
         <div id="app">
-            <jsp:include page="/WEB-INF/common/header.jsp" />
             <div class="middle">
                 <jsp:include page="/WEB-INF/admin/adminNavi.jsp" />
                 <div class="main">
@@ -311,7 +311,7 @@
                     fnPage: function (url) {
                         location.href = url;
                     },
-                    
+
                     getRoleText(role) {
                         const map = {
                             PARTNER: "제휴",

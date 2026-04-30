@@ -224,8 +224,9 @@
     </head>
 
     <body>
+        <jsp:include page="/WEB-INF/common/header.jsp" />
+
         <div id="app">
-            <jsp:include page="/WEB-INF/common/header.jsp" />
             <div class="middle">
                 <div class="main">
                     <div class="pay-content">

@@ -305,13 +305,12 @@
             .pagination-wrap button:disabled {
                 cursor: not-allowed;
             }
-
         </style>
     </head>
 
     <body>
+        <jsp:include page="/WEB-INF/common/header.jsp" />
         <div id="app">
-            <jsp:include page="/WEB-INF/common/header.jsp" />
             <div class="middle">
                 <jsp:include page="/WEB-INF/admin/adminNavi.jsp" />
                 <div class="main">
@@ -526,7 +525,7 @@
 
                     fnReject(r) {
                         let self = this;
-                        
+
                         if (!confirm("반려하시겠습니까?")) {
                             return
                         };

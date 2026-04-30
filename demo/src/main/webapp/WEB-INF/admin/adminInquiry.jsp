@@ -39,7 +39,7 @@
             }
 
             .inquiry-container {
- 
+
                 padding: 20px;
                 background: #fff;
                 border-radius: 10px;
@@ -272,13 +272,14 @@
     </head>
 
     <body>
+        <jsp:include page="/WEB-INF/common/header.jsp" />
+
         <div id="app">
-            <jsp:include page="/WEB-INF/common/header.jsp" />
             <div class="middle">
                 <jsp:include page="/WEB-INF/admin/adminNavi.jsp" />
                 <div class="main">
                     <div class="inquiry-container">
-                            <h2>문의 관리</h2>
+                        <h2>문의 관리</h2>
                         <div class="inquiry-header">
                             <div class="filter-group">
                                 <div>
@@ -417,7 +418,7 @@
 
                     </div>
                 </div>
-                
+
             </div>
             <jsp:include page="/WEB-INF/common/footer.jsp" />
             <script>

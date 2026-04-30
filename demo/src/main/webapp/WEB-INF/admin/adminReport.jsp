@@ -100,6 +100,7 @@
             .report-table td:nth-child(3) {
                 width: 100px;
             }
+
             /* 신고 제목 */
             .report-table th:nth-child(6),
             .report-table td:nth-child(6) {
@@ -328,8 +329,8 @@
     </head>
 
     <body>
+        <jsp:include page="/WEB-INF/common/header.jsp" />
         <div id="app">
-            <jsp:include page="/WEB-INF/common/header.jsp" />
             <div class="middle">
                 <jsp:include page="/WEB-INF/admin/adminNavi.jsp" />
                 <div class="main">
@@ -360,7 +361,7 @@
                                         <option value="COMMENT">댓글</option>
                                     </select>
                                 </div>
-                                <div>                   
+                                <div>
                                     <select v-model="processStatus" @change="fnGetReportList">
                                         <option value="ALL">처리상태</option>
                                         <option value="WAIT_ACTION">처리대기</option> <!-- action_status = 0 -->
