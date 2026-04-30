@@ -15,149 +15,255 @@
             <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
             <link rel="stylesheet" href="${pageContext.request.contextPath}/css/common.css">
             <style>
+                /* 전체 배경 */
                 .middle {
                     width: 100%;
-                    background: #fff8f7;
                     min-height: 100vh;
+                    position: relative;
+                    overflow: hidden;
+                    background: linear-gradient(180deg, #fffdfd 0%, #fff6f8 100%);
                 }
 
+                /* 꽃 이미지 */
+                .middle::before {
+                    content: '';
+                    position: absolute;
+                    top: 0;
+                    left: 0;
+                    width: 500px;
+                    height: 500px;
+                    background-image: url(../../img/merryViewFlower2.png);
+                    background-size: cover;
+                    border-bottom-right-radius: 220px;
+                }
+
+                .middle::after {
+                    content: '';
+                    position: absolute;
+                    right: 0;
+                    bottom: 0;
+                    width: 500px;
+                    height: 500px;
+                    background-image: url(../../img/merryViewFlower.png);
+                    background-size: cover;
+                    border-top-left-radius: 220px;
+                }
+
+                /* 중앙 */
                 .main {
-                    padding: 50px 20px;
                     display: flex;
                     justify-content: center;
-
+                    padding: 70px 20px;
+                    position: relative;
+                    z-index: 2;
                 }
 
                 .pay-finish-box {
                     width: 100%;
-                    max-width: 720px;
-                    background: #fffdfc;
-                    border-radius: 28px;
-                    padding: 45px;
-                    box-shadow: 0 12px 30px rgba(215, 154, 154, 0.15);
+                    max-width: 760px;
+                    background: #ffffffee;
+                    border-radius: 30px;
+                    padding: 30px 48px;
+                    box-shadow: 0 15px 45px rgba(226, 170, 180, .15);
+                    border: 1px solid #f6e4e7;
                     text-align: center;
-                    border: 1px solid #f6e4e4;
                 }
 
-                .pay-img {
-                    width: 320px;
-                    max-width: 100%;
-                    border-radius: 20px;
-                    margin-bottom: 25px;
+                /* 제목 */
+                .ring-box {
+                    font-size: 42px;
+                    margin-bottom: 10px;
+                }
+
+                .pay-title {
+                    font-size: 52px;
+                    font-weight: 300;
+                    color: #222;
+                    margin-bottom: 10px;
+                }
+
+                .pay-title span {
+                    color: #ec7f90;
+                    font-weight: 700;
                 }
 
                 .pay-sub {
-                    font-size: 15px;
-                    color: #8a6d6d;
-                    margin-bottom: 30px;
+                    font-size: 21px;
+                    color: #666;
+                    line-height: 1.8;
+                    margin-bottom: 25px;
                 }
 
-                .info-box {
-                    background: #fff7f7;
-                    border-radius: 18px;
-                    padding: 25px 30px;
-                    text-align: left;
-                    margin-top: 10px;
-                    border: 1px solid #f3dddd;
+                /* 정보 */
+                .info-head {
+                    display: flex;
+                    align-items: center;
+                    gap: 18px;
+                    font-size: 26px;
+                    font-weight: 700;
+                    margin-bottom: 14px;
+                }
+
+                .info-head::before,
+                .info-head::after {
+                    content: '';
+                    flex: 1;
+                    height: 1px;
+                    background: #ececec;
                 }
 
                 .info-row {
                     display: flex;
                     justify-content: space-between;
-                    padding: 10px 0;
-                    border-bottom: 1px solid #f6eaea;
-                    font-size: 15px;
+                    padding: 18px 0;
+                    border-bottom: 1px solid #f1f1f1;
+                    font-size: 20px;
                 }
 
-                .info-row:last-child {
-                    border-bottom: none;
-                }
-
-                .info-title {
+                .success {
+                    color: #ec7085;
                     font-weight: 700;
-                    color: #9b7777;
                 }
 
-                .info-value {
-                    color: #555;
-                }
-
+                /* 타입박스 */
                 .type-box {
-                    margin-top: 22px;
-                    padding: 18px;
-                    border-radius: 16px;
-                    background: #fff2f2;
-                    color: #8d6c6c;
-                    font-weight: 600;
+                    margin-top: 35px;
+                    padding: 22px;
+                    border-radius: 18px;
+                    background: #fff6f7;
+                    border: 1px solid #f5dce0;
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: center;
                 }
 
-                .btn-area {
-                    margin-top: 35px;
+                .type-left {
                     display: flex;
-                    gap: 14px;
+                    gap: 16px;
+                    align-items: center;
+                }
+
+                .type-icon {
+                    width: 54px;
+                    height: 54px;
+                    border-radius: 50%;
+                    background: #ffe8ec;
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                }
+
+                .type-check {
+                    width: 44px;
+                    height: 44px;
+                    border-radius: 50%;
+                    background: #efb2bc;
+                    color: #fff;
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                }
+
+                /* 버튼 */
+                .btn-area {
+                    margin-top: 30px;
+                    display: flex;
+                    gap: 16px;
                     justify-content: center;
                     flex-wrap: wrap;
                 }
 
-                .btn-main {
-                    background: #e8b7b7;
-                    border: none;
-                    color: white;
-                    padding: 11px 24px;
-                    border-radius: 12px;
-                    font-weight: 600;
-                    transition: 0.2s;
+                .btn-main,
+                .btn-sub {
+                    min-width: 230px;
+                    height: 60px;
+                    border-radius: 14px;
+                    font-size: 19px;
+                    font-weight: 700;
                 }
 
-                .btn-main:hover {
-                    background: #d89e9e;
-                    color: white;
+                .btn-main {
+                    border: none;
+                    color: #fff;
+                    background: linear-gradient(90deg, #ef8e9a, #e96f7f);
                 }
 
                 .btn-sub {
+                    border: 2px solid #f0a8b2;
                     background: #fff;
-                    border: 1px solid #e8b7b7;
-                    color: #c18484;
-                    padding: 11px 24px;
-                    border-radius: 12px;
-                    font-weight: 600;
-                    transition: 0.2s;
+                    color: #e77988;
                 }
 
-                .btn-sub:hover {
-                    background: #fff5f5;
+                .bottom-msg {
+                    margin-top: 40px;
+                    color: #d58f99;
+                    font-size: 18px;
                 }
 
+                /* 반응형 */
                 @media(max-width:768px) {
+
                     .pay-finish-box {
-                        padding: 30px 20px;
+                        padding: 35px 20px;
+                    }
+
+                    .pay-title {
+                        font-size: 34px;
+                    }
+
+                    .pay-sub {
+                        font-size: 16px;
                     }
 
                     .info-row {
-                        flex-direction: column;
-                        gap: 5px;
+                        display: flex;
+                        justify-content: space-between;
+                        padding: 12px 0;
+                        /* 기존 18px -> 12px */
+                        border-bottom: 1px solid #f1f1f1;
+                        font-size: 20px;
                     }
 
-                    .pay-img {
-                        width: 260px;
+                    .type-box {
+                        flex-direction: column;
+                        gap: 18px;
+                        align-items: flex-start;
+                    }
+
+                    .btn-main,
+                    .btn-sub {
+                        width: 100%;
+                    }
+
+                    .middle::before,
+                    .middle::after {
+                        width: 180px;
+                        height: 180px;
                     }
                 }
             </style>
         </head>
 
         <body>
+            <jsp:include page="/WEB-INF/common/header.jsp" />
             <div id="app">
-                <jsp:include page="/WEB-INF/common/header.jsp" />
                 <div class="middle">
                     <div class="main">
                         <div class="pay-finish-box">
 
-                            <img src="/img/merryViewPay.JPG" class="pay-img">
+                            <div class="ring-box">💍</div>
+
+                            <h2 class="pay-title">
+                                결제가 <span>완료</span>되었습니다
+                            </h2>
 
                             <p class="pay-sub">
-                                주문이 정상적으로 처리되었습니다.<br>
-                                아래 결제 정보를 확인해주세요.
+                                소중한 순간을 함께 준비해주셔서 감사합니다.<br>
+                                더 행복한 결혼 준비를 위해 언제나 함께할게요.
                             </p>
+
+                            <div class="info-head">결제 정보</div>
+
                             <div class="info-box">
 
                                 <div class="info-row">
@@ -172,7 +278,7 @@
 
                                 <div class="info-row">
                                     <span class="info-title">결제상태</span>
-                                    <span class="info-value">${payment.pay_status}</span>
+                                    <span class="info-value success">${payment.pay_status}</span>
                                 </div>
 
                                 <div class="info-row">
@@ -184,22 +290,27 @@
 
                             <c:if test="${type eq 'PASS'}">
                                 <div class="type-box">
-                                    패스권 구매 완료<br>
-                                    상품명 : ${payment.pass_name}
+                                    <div class="type-left">
+                                        <div class="type-icon">♡</div>
+                                        <div class="type-text">
+                                            패스권 구매 완료<br>
+                                            상품명 : ${payment.pass_name}
+                                        </div>
+                                    </div>
+                                    <div class="type-check">✔</div>
                                 </div>
                             </c:if>
 
                             <c:if test="${type eq 'RES'}">
                                 <div class="type-box">
-                                    예약 결제 완료<br>
-                                    예약번호 : ${payment.res_no}
-                                </div>
-                            </c:if>
-
-                            <c:if test="${type eq 'REG'}">
-                                <div class="type-box">
-                                    업체 등록 결제 완료<br>
-                                    업체번호 : ${payment.company_no}
+                                    <div class="type-left">
+                                        <div class="type-icon">♡</div>
+                                        <div class="type-text">
+                                            예약 결제 완료<br>
+                                            예약번호 : ${payment.res_no}
+                                        </div>
+                                    </div>
+                                    <div class="type-check">✔</div>
                                 </div>
                             </c:if>
 
@@ -213,8 +324,11 @@
                                 </button>
                             </div>
 
-                        </div>
+                            <div class="bottom-msg">
+                                MARRY VIEW와 함께하는 모든 순간이 특별하길 바랍니다.
+                            </div>
 
+                        </div>
                     </div>
                 </div>
                 <jsp:include page="/WEB-INF/common/footer.jsp" />
