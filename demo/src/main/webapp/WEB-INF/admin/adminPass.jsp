@@ -522,13 +522,47 @@
                 opacity: .55;
                 cursor: not-allowed;
             }
-        </style>
+
+            .sakura {
+                position: fixed;
+                top: -50px;
+                pointer-events: none;
+                z-index: 999999;
+
+                width: 28px;
+                height: 28px;
+
+                background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cpath fill='%23ff7aa8' d='M32 4c4 8 10 10 18 10-8 4-10 10-10 18 4-8 10-10 18-10-8-4-10-10-10-18-4 8-10 10-18 10-8 0-14-2-18-10 8 0 14-2 18-10z'/%3E%3C/svg%3E");
+                background-size: contain;
+                background-repeat: no-repeat;
+
+                filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.15));
+
+                animation: sakuraFall linear forwards;
+            }
+
+            @keyframes sakuraFall {
+                0% {
+                    transform: translateY(0) translateX(0) rotate(0deg) scale(1);
+                    opacity: 1;
+                }
+
+                50% {
+                    transform: translateY(50vh) translateX(60px) rotate(180deg) scale(1.2);
+                    opacity: 0.9;
+                }
+
+                100% {
+                    transform: translateY(110vh) translateX(-40px) rotate(720deg) scale(0.9);
+                    opacity: 0;
+                }
+            }
         </style>
     </head>
 
     <body>
+        <jsp:include page="/WEB-INF/common/header.jsp" />
         <div id="app">
-            <jsp:include page="/WEB-INF/common/header.jsp" />
             <div class="middle">
                 <div class="main">
                     <div class="pass-container">
@@ -809,7 +843,7 @@
                     closeModal: function () {
                         this.isModalOpen = false;
                         this.selectedPass = null;
-                    }
+                    },
 
                 }, // methods
                 mounted() {
@@ -828,9 +862,48 @@
                                                     path.includes('adminStatistics') ? 'stats' :
                                                         '';
                     self.fnGetPassList();
-                }
-            });
+                    const maxSakura = 40;
+                    setInterval(() => {
+                        const current = document.querySelectorAll(".sakura").length;
 
+                        if (current >= maxSakura) return;
+
+                        createSakura();
+                    }, 150);
+                    function createSakura() {
+                        const current = document.querySelectorAll(".sakura").length;
+                        if (current >= maxSakura) return;
+                        const el = document.createElement("div");
+                        el.className = "sakura";
+
+                        // 랜덤 위치
+                        el.style.left = Math.random() * window.innerWidth + "px";
+
+                        // ❗ 크기 확 키움 (중요)
+                        const size = Math.random() * 22 + 8; // 18 ~ 40px
+                        el.style.width = size + "px";
+                        el.style.height = size + "px";
+
+                        // 속도 다양화
+                        const duration = Math.random() * 4 + 4; // 4~8초
+                        el.style.animationDuration = duration + "s";
+
+                        // 깊이감 (앞/뒤)
+                        el.style.zIndex = Math.random() > 0.5 ? 999999 : 999998;
+
+                        document.body.appendChild(el);
+
+                        setTimeout(() => {
+                            el.remove();
+                        }, duration * 8000);
+                    }
+                    setInterval(createSakura, 200);
+
+                    window.addEventListener("beforeunload", () => {
+                        clearInterval(sakuraInterval);
+                    });
+                },
+            });
             app.mount('#app');
         </script>
     </body>

@@ -213,8 +213,8 @@
     </head>
 
     <body>
+        <jsp:include page="/WEB-INF/common/header.jsp" />
         <div id="app">
-            <jsp:include page="/WEB-INF/common/header.jsp" />
             <div class="middle">
                 <div class="main">
                     <div class="regi-content">
@@ -229,10 +229,10 @@
                             <!-- 예약 정보 -->
                             <div class="regi-name">결제 정보</div>
 
-                            
+
                             <!-- 금액 -->
                             <div class="regi-price">
-                               <span>1000원</span>
+                                <span>1000원</span>
                             </div>
 
                             <!-- 약관 -->
@@ -316,7 +316,7 @@
                                 name: "등록비",
                                 amount: 1000,      //제품 가격
                             },
-                            function (response) { 
+                            function (response) {
                                 console.log(response);
                                 console.log("전체 response:", response);
                                 console.log("success:", response.success);
@@ -328,8 +328,8 @@
                                     // 우리쪽 db에 결제정보 저장
                                     // 페이지 이동 필요하면 페이지 이동 (메인 or 마이)
                                     // 결제 성공 후 서버 검증
-                                    console.log("imp_uid:", response.imp_uid);                               
-                                        self.fnVerifyPayment(response.imp_uid);
+                                    console.log("imp_uid:", response.imp_uid);
+                                    self.fnVerifyPayment(response.imp_uid);
                                 } else {
                                     console.log("에러내용: " + response.error_msg);
                                     alert("결제가 취소되었습니다");
@@ -349,7 +349,7 @@
                                 imp_uid: imp_uid,           // 결제 고유 값(중복)
                                 amount: 1000,
                                 itemName: "등록비",
-                                type:"REG"
+                                type: "REG"
 
 
                             },
