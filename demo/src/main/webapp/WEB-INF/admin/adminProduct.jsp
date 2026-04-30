@@ -197,7 +197,6 @@
                 <jsp:include page="/WEB-INF/admin/adminNavi.jsp" />
                 <div class="main">
                     <div class="content-box">
-                        <div class="page-title">상품 / 쿠폰 / 패스 관리</div>
                         <div class="tab-menu">
                             <button :class="{active: activeTab === 'product'}"
                                 @click="fnChangeTab('product')">상품관리</button>
@@ -480,7 +479,7 @@
                         info: {},
                         keyword: "",
                         status: "",
-                        pageSize: 10,
+                        pageSize: 5,
                         currentPage: 1,
                         index: 1,
                         coupon: {

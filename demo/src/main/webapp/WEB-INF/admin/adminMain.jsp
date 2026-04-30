@@ -27,7 +27,6 @@
 
             .main {
                 grid-area: main;
-                border: 1px solid #ffc7c2;
                 padding: 20px;
                 display: flex;
                 gap: 20px;
@@ -162,15 +161,16 @@
                                     </tr>
                                 </table>
                                 <div class="pagination-wrap">
-                                    <button @click="fnReviewPageMove(reviewCurrentPage-1)" :disabled="reviewCurrentPage===1">‹</button>
+                                    <button @click="fnReviewPageMove(reviewCurrentPage-1)"
+                                        :disabled="reviewCurrentPage===1">‹</button>
 
-                                    <button v-for="p in index" :key="p" @click="fnReviewPageMove(p)"
+                                    <button v-for="p in reviewIndex" :key="p" @click="fnReviewPageMove(p)"
                                         :class="{active: reviewCurrentPage === p}">
                                         {{ p }}
                                     </button>
 
                                     <button @click="fnReviewPageMove(reviewCurrentPage+1)"
-                                        :disabled="reviewCurrentPage===index">›</button>
+                                        :disabled="reviewCurrentPage===reviewIndex">›</button>
                                 </div>
                             </div>
                         </div>
@@ -229,24 +229,28 @@
                                     {{formatPercent(userGrowthRate)}}%
                                 </span>
                             </div>
-                            <div>일반 업체 등록수<br>{{nPartnerNow}} 곳<br>
-                                전월대비
-                                <span
-                                    :class="nPartnerGrowthRate === 0 ? 'same' : (nPartnerGrowthRate < 0 ? 'down' : 'up')">
-                                    {{formatPercent(nPartnerGrowthRate)}}%
-                                </span>
-                            </div>
-                            <div>제휴업체 등록수<br>{{partnerNow}} 곳<br>
-                                전월대비
-                                <span
-                                    :class="partnerGrowthRate === 0 ? 'same' : (partnerGrowthRate < 0 ? 'down' : 'up')">
-                                    {{formatPercent(partnerGrowthRate)}}%
-                                </span>
+                            <div>
+                                <div>일반업체 등록수<br>{{nPartnerNow}} 곳<br>
+                                    전월대비
+                                    <span
+                                        :class="nPartnerGrowthRate === 0 ? 'same' : (nPartnerGrowthRate < 0 ? 'down' : 'up')">
+                                        {{formatPercent(nPartnerGrowthRate)}}%
+                                    </span>
+                                </div>
+                                <br>
+                                <div>제휴업체 등록수<br>{{partnerNow}} 곳<br>
+                                    전월대비
+                                    <span
+                                        :class="partnerGrowthRate === 0 ? 'same' : (partnerGrowthRate < 0 ? 'down' : 'up')">
+                                        {{formatPercent(partnerGrowthRate)}}%
+                                    </span>
+                                    <br>
+                                    <br>
+                                    업체 제휴율 : {{formatPercent(affRate)}}%
+                                </div>
                             </div>
                             <div>
                                 전체 신규 등록 수 : {{newCommer}}
-                                <br>
-                                업체 제휴율 : {{affRate}}%
                             </div>
                         </div>
                         <button @click="fnPage('/adminStatistics.do')" type="button" class="detail-btn">상세보기</button>
@@ -293,10 +297,10 @@
                         newCommer: 0,
                         affRate: 0,
                         processStatus: "WAIT_ACTION",
-                        pageSize: 10,
+                        pageSize: 6,
                         index: 1,
                         currentPage: 1,
-                        reviewPageSize: 10,
+                        reviewPageSize: 6,
                         reviewIndex: 1,
                         reviewCurrentPage: 1,
                     };
@@ -306,7 +310,7 @@
                     fnGetReviewList: function () {
                         let self = this;
                         let param = {
-                            approvalStatus:"WAIT",
+                            approvalStatus: "WAIT",
                             pageSize: self.reviewPageSize,
                             offSet: self.reviewPageSize * (self.reviewCurrentPage - 1)
                         };
@@ -384,8 +388,14 @@
                             success: function (data) {
                                 console.log(data);
                                 self.list = data.list;
-                                self.salesNow = data.list[data.list.length - 1].totalRevenue;
-                                self.salesBefore = data.list[data.list.length - 2].totalRevenue;
+                                self.salesNow = data.list.length > 0
+                                    ? data.list[data.list.length - 1].totalRevenue
+                                    : 0;
+
+                                self.salesBefore = data.list.length > 1
+                                    ? data.list[data.list.length - 2].totalRevenue
+                                    : 0;
+
                                 self.salesGrowthRate = self.salesBefore === 0
                                     ? 0
                                     : ((self.salesNow - self.salesBefore) / self.salesBefore) * 100;
@@ -404,28 +414,33 @@
                             type: "POST",
                             data: param,
                             success: function (data) {
-                                console.log(data);
+                                let len = data.list.length;
+
+                                let now = len > 0 ? data.list[len - 1].userCount : 0;
+                                let before = len > 1 ? data.list[len - 2].userCount : 0;
+
+                                let growth = before === 0
+                                    ? 0
+                                    : ((now - before) / before) * 100;
+
                                 if (role === "USER") {
-                                    self.userNow = data.list[data.list.length - 1].userCount;
-                                    self.userBefore = data.list[data.list.length - 2].userCount;
-                                    self.userGrowthRate = self.userBefore === 0
-                                        ? 0
-                                        : ((self.userNow - self.userBefore) / self.user.Before) * 100;
+                                    self.userNow = now;
+                                    self.userBefore = before;
+                                    self.userGrowthRate = growth;
                                 }
+
                                 if (role === "NPARTNER") {
-                                    self.nPartnerNow = data.list[data.list.length - 1].userCount;
-                                    self.nPartnerBefore = data.list[data.list.length - 2].userCount;
-                                    self.nPartnerGrowthRate = self.nPartnerBefore === 0
-                                        ? 0
-                                        : ((self.nPartnerNow - self.nPartnerBefore) / self.nPartnerBefore) * 100;
+                                    self.nPartnerNow = now;
+                                    self.nPartnerBefore = before;
+                                    self.nPartnerGrowthRate = growth;
                                 }
+
                                 if (role === "PARTNER") {
-                                    self.partnerNow = data.list[data.list.length - 1].userCount;
-                                    self.partnerBefore = data.list[data.list.length - 2].userCount;
-                                    self.partnerGrowthRate = self.partnerBefore === 0
-                                        ? 0
-                                        : ((self.partnerNow - self.partnerBefore) / self.partnerBefore) * 100;
+                                    self.partnerNow = now;
+                                    self.partnerBefore = before;
+                                    self.partnerGrowthRate = growth;
                                 }
+
                                 self.fnAfterAllDone();
                             }
                         });

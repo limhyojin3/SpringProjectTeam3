@@ -39,9 +39,8 @@
             }
 
             .inquiry-container {
-                width: 100%;
+ 
                 padding: 20px;
-                font-family: sans-serif;
                 background: #fff;
                 border-radius: 10px;
                 box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
@@ -283,9 +282,8 @@
                         <div class="inquiry-header">
                             <div class="filter-group">
                                 <div>
-                                    <span>처리상태</span>
                                     <select v-model="status" @change="fnGetList">
-                                        <option value="ALL">전체</option>
+                                        <option value="ALL">처리상태</option>
                                         <option value="WAIT">WAIT</option>
                                         <option value="DONE">DONE</option>
                                     </select>
@@ -306,6 +304,7 @@
                             <thead>
                                 <tr>
                                     <th>번호</th>
+                                    <th>유형</th>
                                     <th>ID</th>
                                     <th>제목</th>
                                     <th>등록일</th>
@@ -318,6 +317,7 @@
                                 <tr v-for="item in inquirylist" :key="item.inquiryNo">
 
                                     <td>{{item.inquiryNo}}</td>
+                                    <td>{{item.inquiryType}}</td>
                                     <td>{{item.userId}}</td>
 
                                     <td class="text-left">
@@ -417,8 +417,9 @@
 
                     </div>
                 </div>
-                <jsp:include page="/WEB-INF/common/footer.jsp" />
+                
             </div>
+            <jsp:include page="/WEB-INF/common/footer.jsp" />
             <script>
                 const app = Vue.createApp({
                     data() {

@@ -32,7 +32,6 @@
 
             .main {
                 grid-area: main;
-                border: 1px solid #ffc7c2;
                 background: #f5f6f7;
                 padding: 20px;
                 display: flex;
@@ -81,7 +80,7 @@
             }
 
             .report-table {
-                width: 1000px;
+                width: 1150px;
                 border-collapse: collapse;
                 background: #fff;
                 box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
@@ -94,6 +93,25 @@
                 color: #555;
                 border-bottom: 1px solid #eee;
                 padding: 10px;
+            }
+
+            /* 신고자 */
+            .report-table th:nth-child(3),
+            .report-table td:nth-child(3) {
+                width: 100px;
+            }
+            /* 신고 제목 */
+            .report-table th:nth-child(6),
+            .report-table td:nth-child(6) {
+                width: 150px;
+            }
+
+            /* 신고 사유 */
+            .report-table th:nth-child(7),
+            .report-table td:nth-child(7) {
+                width: 260px;
+                min-width: 260px;
+                max-width: 260px;
             }
 
             .report-table td {
@@ -333,9 +351,8 @@
                             </div>
                             <div class="filter-group">
                                 <div>
-                                    신고대상
                                     <select v-model="targetType" @change="fnGetReportList">
-                                        <option value="ALL">전체</option>
+                                        <option value="ALL">신고대상</option>
                                         <option value="MEMBER">회원</option>
                                         <option value="REVIEW">리뷰</option>
                                         <option value="COMPANY">업체</option>
@@ -343,10 +360,9 @@
                                         <option value="COMMENT">댓글</option>
                                     </select>
                                 </div>
-                                <div>
-                                    처리상태
+                                <div>                   
                                     <select v-model="processStatus" @change="fnGetReportList">
-                                        <option value="ALL">전체</option>
+                                        <option value="ALL">처리상태</option>
                                         <option value="WAIT_ACTION">처리대기</option> <!-- action_status = 0 -->
                                         <option value="WAIT_ANSWER">답변대기</option>
                                         <!-- action_status = 1 AND answer_status = 0 -->

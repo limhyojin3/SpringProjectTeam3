@@ -16,7 +16,10 @@ import com.example.demo.admin.mapper.PaymentMapper;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Value;
-//PaymentService.java
+
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+	
 @Service
 public class PaymentService {
 
@@ -259,121 +262,127 @@ public class PaymentService {
 	    return info;
 	}
 	
-//	public HashMap<String, Object> refundPayment(HashMap<String, Object> map) {
-//	    HashMap<String, Object> resultMap = new HashMap<>();
-//
-//	    try {
-//
-//	        String impUid = map.get("imp_uid").toString();
-//
-//	        // -----------------------------
-//	        // 1. 포트원 토큰 발급
-//	        // -----------------------------
-//	        URL url = new URL("https://api.iamport.kr/users/getToken");
-//	        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-//
-//	        conn.setRequestMethod("POST");
-//	        conn.setRequestProperty("Content-Type", "application/json");
-//	        conn.setDoOutput(true);
-//
-//	        String jsonInput =
-//	            "{ \"imp_key\":\"테스트REST_API_KEY\", " +
-//	            "\"imp_secret\":\"테스트REST_API_SECRET\" }";
-//
-//	        OutputStream os = conn.getOutputStream();
-//	        os.write(jsonInput.getBytes("UTF-8"));
-//	        os.flush();
-//	        os.close();
-//
-//	        BufferedReader br =
-//	            new BufferedReader(new InputStreamReader(conn.getInputStream(), "UTF-8"));
-//
-//	        StringBuilder sb = new StringBuilder();
-//	        String line = "";
-//
-//	        while ((line = br.readLine()) != null) {
-//	            sb.append(line);
-//	        }
-//
-//	        br.close();
-//
-//	        JSONObject tokenObj = new JSONObject(sb.toString());
-//	        String accessToken =
-//	            tokenObj.getJSONObject("response").getString("access_token");
-//
-//	        // -----------------------------
-//	        // 2. 환불 요청
-//	        // -----------------------------
-//	        URL cancelUrl = new URL("https://api.iamport.kr/payments/cancel");
-//	        HttpURLConnection cancelConn =
-//	            (HttpURLConnection) cancelUrl.openConnection();
-//
-//	        cancelConn.setRequestMethod("POST");
-//	        cancelConn.setRequestProperty("Content-Type", "application/json");
-//	        cancelConn.setRequestProperty("Authorization", accessToken);
-//	        cancelConn.setDoOutput(true);
-//
-//	        String cancelJson =
-//	            "{ \"imp_uid\":\"" + impUid + "\", " +
-//	            "\"reason\":\"관리자 환불\" }";
-//
-//	        OutputStream os2 = cancelConn.getOutputStream();
-//	        os2.write(cancelJson.getBytes("UTF-8"));
-//	        os2.flush();
-//	        os2.close();
-//
-//	        BufferedReader br2 =
-//	            new BufferedReader(new InputStreamReader(cancelConn.getInputStream(), "UTF-8"));
-//
-//	        StringBuilder sb2 = new StringBuilder();
-//
-//	        while ((line = br2.readLine()) != null) {
-//	            sb2.append(line);
-//	        }
-//
-//	        br2.close();
-//
-//	        // -----------------------------
-//	        // 3. DB 상태 변경
-//	        // -----------------------------
-//	        paymentMapper.updateRefundStatus(map);
-//
-//	        resultMap.put("result", "success");
-//	        resultMap.put("message", "환불 완료");
-//
-//	    } catch (Exception e) {
-//	        e.printStackTrace();
-//	        resultMap.put("result", "fail");
-//	        resultMap.put("message", "환불 실패");
-//	    }
-//
-//	    return resultMap;
-//	}
-	
-	// 환불
-	public HashMap<String, Object> refundPayment(HashMap<String, Object> map) {
+	// 패스 환불
+	@Transactional
+	public HashMap<String, Object> refundPass(HashMap<String, Object> map) {
 
 		HashMap<String, Object> resultMap = new HashMap<>();
 
 		try {
+			HashMap<String, Object> info = paymentMapper.selectRefundPassInfo(map);
 
-			// 결제 환불 처리
-			paymentMapper.updateRefund(map);
+			if (info == null) {
+				resultMap.put("result", "fail");
+				resultMap.put("msg", "결제정보 없음");
+				return resultMap;
+			}
 
-			// 예약 상태 취소
-			paymentMapper.updateReservationCancel(map);
+			if ("REFUND".equals(String.valueOf(info.get("pay_status")))) {
+				resultMap.put("result", "fail");
+				resultMap.put("msg", "이미 환불된 결제입니다.");
+				return resultMap;
+			}
+
+			int reviewCnt = Integer.parseInt(String.valueOf(info.get("reviewCnt")));
+			int remain = Integer.parseInt(String.valueOf(info.get("remainingCount")));
+
+			// 사용했으면 환불 불가
+			if (remain < reviewCnt) {
+				resultMap.put("result", "fail");
+				resultMap.put("msg", "이미 사용한 열람권이 있어 환불 불가합니다.");
+				return resultMap;
+			}
+			System.out.println("1. 환불 시작");
+
+			String token = getToken();
+			
+			System.out.println("2. 토큰 완료");
+			
+			boolean success = cancelPayment(token, info.get("impUid").toString());
+
+			System.out.println("3. 포트원 환불 완료");
+
+			if (!success) {
+				throw new RuntimeException();
+			}
+            
+			// 1. 열람권 차감
+			paymentMapper.minusWallet(map);
+
+			// 2. 결제상태 환불
+			paymentMapper.updateRefundPayment(map);
+			System.out.println("4. payment 상태 변경 완료");
+			// 3. 패스권 상태 환불
+			paymentMapper.updateRefundPass(map);
 
 			resultMap.put("result", "success");
-			resultMap.put("message", "환불 완료");
+			resultMap.put("msg", "패스권 환불 완료");
 
 		} catch (Exception e) {
 			e.printStackTrace();
-
 			resultMap.put("result", "fail");
-			resultMap.put("message", "환불 실패");
+			resultMap.put("msg", "서버 오류");
 		}
 
 		return resultMap;
 	}
 	
+	public boolean cancelPayment(String token, String impUid) throws Exception {
+
+	    URL url = new URL("https://api.iamport.kr/payments/cancel");
+
+	    HttpURLConnection conn =
+	        (HttpURLConnection) url.openConnection();
+
+	    conn.setRequestMethod("POST");
+	    conn.setRequestProperty("Content-Type","application/json");
+	    conn.setRequestProperty("Authorization", token);
+	    conn.setDoOutput(true);
+
+	    String json =
+	        "{ \"imp_uid\":\""+impUid+"\" }";
+
+	    OutputStream os = conn.getOutputStream();
+	    os.write(json.getBytes("UTF-8"));
+	    os.flush();
+	    os.close();
+
+	    return conn.getResponseCode() == 200;
+	}
+	
+	public String getAccessToken() throws Exception {
+
+	    URL url = new URL("https://api.iamport.kr/users/getToken");
+	    HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+
+	    conn.setRequestMethod("POST");
+	    conn.setRequestProperty("Content-Type","application/json");
+	    conn.setDoOutput(true);
+
+	    String jsonInput =
+	      "{ \"imp_key\":\"" + impKey + "\"," +
+	      "\"imp_secret\":\"" + impSecret + "\" }";
+
+	    OutputStream os = conn.getOutputStream();
+	    os.write(jsonInput.getBytes("UTF-8"));
+	    os.flush();
+	    os.close();
+
+	    BufferedReader br =
+	      new BufferedReader(new InputStreamReader(conn.getInputStream(),"UTF-8"));
+
+	    String line;
+	    String result = "";
+
+	    while((line = br.readLine()) != null){
+	        result += line;
+	    }
+
+	    JsonObject json = JsonParser.parseString(result).getAsJsonObject();
+
+	    return json.get("response")
+	               .getAsJsonObject()
+	               .get("access_token")
+	               .getAsString();
+	}
 }
