@@ -759,17 +759,12 @@
                                                     </div>
                                                 </div>
                                                 <div class="form-group">
-                                                    <label class="form-label">상품 태그</label>                                        
-                                                        <input type="text" placeholder="첫번째 태그"
-                                                            v-model="tagMap.input1">
-                                                        <input type="text" placeholder="두번째 태그"
-                                                            v-model="tagMap.input2">
-                                                        <input type="text" placeholder="세번째 태그"
-                                                            v-model="tagMap.input3">
-                                                        <input type="text" placeholder="네번째 태그"
-                                                            v-model="tagMap.input4">
-                                                        <input type="text" placeholder="다섯번째 태그"
-                                                            v-model="tagMap.input5">
+                                                    <label class="form-label">상품 태그</label>
+                                                    <input type="text" placeholder="첫번째 태그" v-model="tagMap.input1">
+                                                    <input type="text" placeholder="두번째 태그" v-model="tagMap.input2">
+                                                    <input type="text" placeholder="세번째 태그" v-model="tagMap.input3">
+                                                    <input type="text" placeholder="네번째 태그" v-model="tagMap.input4">
+                                                    <input type="text" placeholder="다섯번째 태그" v-model="tagMap.input5">
                                                 </div>
                                                 <!-- {{tagMap}}
                                                 {{tagMapToList}} -->
@@ -785,7 +780,7 @@
                                                 </div>
 
                                                 <div class="form-group">
-                                                    
+
                                                     <label class="form-label"><span class="form-info-label">예상
                                                             견적</span></label>
                                                     <div class="form-info-box">
@@ -795,7 +790,8 @@
                                                     </div>
                                                 </div>
                                                 <div class="form-group">
-                                                    <label class="form-label"><span class="form-info-label">예약금</span></label>
+                                                    <label class="form-label"><span
+                                                            class="form-info-label">예약금</span></label>
                                                     <div class="form-info-box">
                                                         <input placeholder="여기에 예약금을 적어주세요." type="text"
                                                             style="width: 200px; padding: 10px; border: 1px solid #ddd; border-radius: 4px;"
@@ -877,17 +873,12 @@
                                                 </div>
 
                                                 <div class="form-group">
-                                                    <label class="form-label">상품 태그</label>                                        
-                                                        <input type="text" placeholder="첫번째 태그"
-                                                            v-model="tagMap.input1">
-                                                        <input type="text" placeholder="두번째 태그"
-                                                            v-model="tagMap.input2">
-                                                        <input type="text" placeholder="세번째 태그"
-                                                            v-model="tagMap.input3">
-                                                        <input type="text" placeholder="네번째 태그"
-                                                            v-model="tagMap.input4">
-                                                        <input type="text" placeholder="다섯번째 태그"
-                                                            v-model="tagMap.input5">
+                                                    <label class="form-label">상품 태그</label>
+                                                    <input type="text" placeholder="첫번째 태그" v-model="tagMap.input1">
+                                                    <input type="text" placeholder="두번째 태그" v-model="tagMap.input2">
+                                                    <input type="text" placeholder="세번째 태그" v-model="tagMap.input3">
+                                                    <input type="text" placeholder="네번째 태그" v-model="tagMap.input4">
+                                                    <input type="text" placeholder="다섯번째 태그" v-model="tagMap.input5">
                                                 </div>
                                                 <!-- {{tagMap}}
                                                 {{tagMapToList}}
@@ -916,7 +907,8 @@
                                                 </div>
 
                                                 <div class="form-group">
-                                                    <label class="form-label"><span class="form-info-label">예약금</span></label>
+                                                    <label class="form-label"><span
+                                                            class="form-info-label">예약금</span></label>
                                                     <div class="form-info-box">
                                                         <input placeholder="여기에 예약금을 적어주세요." type="text"
                                                             style="width: 200px; padding: 10px; border: 1px solid #ddd; border-radius: 4px;"
@@ -1029,47 +1021,152 @@
                             </div>
 
                             <div v-if="currentMenu === 'inquiry'">
-                                <h2>문의 관리 : <span style="color: #ff1493;">총 문의 {{inquiryList.length}}건</span></h2>
-                                <div class="content-card" v-for="i in fnPaginatedInquiry" :key="i">
+                                {{productPage}}
+                                {{page1}}
+                                <template v-if="page1 === 'main'">
+                                    <h2>문의 관리 : <span style="color: #ff1493;">총 문의 {{inquiryList.length}}건</span></h2>
+                                    <div class="content-card" v-for="i in fnPaginatedInquiry" :key="i">
 
-                                    <div style="display: flex;">
-                                        <div
-                                            style="width: 100px; height: 100px;  margin-right: 20px; text-align: center;">
-                                            <img :src="fnThumbnail(i)" :alt="i.productName"
-                                                style="width: 100%; height: 100%; object-fit: cover;">
+                                        <div style="display: flex;">
+                                            <div
+                                                style="width: 100px; height: 100px;  margin-right: 20px; text-align: center;">
+                                                <img :src="fnThumbnail(i)" :alt="i.productName"
+                                                    style="width: 100%; height: 100%; object-fit: cover;">
+
+                                            </div>
+                                            <h3>상품명 : <span style="color: #d6336c;">{{i.productName}}</span> </h3>
 
                                         </div>
-                                        <h3>상품명 : <span style="color: #d6336c;">{{i.productName}}</span> </h3>
+                                        <table>
+                                            <tr>
+                                                <th>제목</th>
+                                                <td>{{i.inquiryTitle}}</td>
+                                            </tr>
+                                            <tr>
+                                                <th>작성자</th>
+                                                <td>{{i.userId}}</td>
+                                            </tr>
+                                            <tr>
+                                                <th>내용</th>
+                                                <td>{{i.inquiryContents}}</td>
+                                            </tr>
+                                        </table>
+                                        {{page1}}
+                                        <button style="background: #ffb400; margin-top: 10px; 
+                                padding: 10px 20px; border: none; display: block; 
+                                margin-left: auto; cursor: pointer;" @click="fnAnswerToProductInquiry(i)">답변하기</button>
 
                                     </div>
-                                    <table>
-                                        <tr>
-                                            <th>제목</th>
-                                            <td>{{i.inquiryTitle}}</td>
-                                        </tr>
-                                        <tr>
-                                            <th>작성자</th>
-                                            <td>{{i.userId}}</td>
-                                        </tr>
-                                        <tr>
-                                            <th>내용</th>
-                                            <td>{{i.inquiryContents}}</td>
-                                        </tr>
-                                    </table>
+                                    <div class="pagination1">
+                                        <span v-for="num in inquiryList.length" :key="num">
+                                            <a @click="currentPage = num" href="javascript:;"
+                                                :style="currentPage === num ? 'color: #ff1493; border: 1px solid #ff1493;' : ''">
+                                                {{num}}
+                                            </a> <!-- 1,2-->
+                                        </span>
+                                    </div>
 
-                                    <button style="background: #ffb400; margin-top: 10px; 
-                                padding: 10px 20px; border: none; display: block; 
-                                margin-left: auto; cursor: pointer;">답변하기</button>
+                                </template>
+                                <template v-if="page1 === 'answer'">
+                                    <button @click="fnBacktoInquiry">뒤로가기</button>
+                                    답변대상
+                                    답변제목
+                                    답변내용
+                                    {{inquiryDetails}}
+                                    <div
+                                        style="padding: 20px; border: 1px solid #ddd; border-radius: 8px; background-color: #fff; max-width: 800px; margin: 0 auto;">
 
-                                </div>
-                                <div class="pagination1">
-                                    <span v-for="num in inquiryList.length" :key="num">
-                                        <a @click="currentPage = num" href="javascript:;"
-                                            :style="currentPage === num ? 'color: #ff1493; border: 1px solid #ff1493;' : ''">
-                                            {{num}}
-                                        </a> <!-- 1,2-->
-                                    </span>
-                                </div>
+                                        <div
+                                            style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; padding-bottom: 10px; border-bottom: 2px solid #333;">
+                                            <h2 style="margin: 0; font-size: 1.5rem; color: #333;">문의 답변 등록</h2>
+                                            <button @click="fnBacktoInquiry"
+                                                style="padding: 8px 16px; background-color: #f4f4f4; border: 1px solid #ccc; border-radius: 4px; cursor: pointer; font-size: 0.9rem;">
+                                                ← 리스트로 돌아가기
+                                            </button>
+                                        </div>
+
+                                        <div
+                                            style="margin-bottom: 30px; padding: 15px; background-color: #f9f9f9; border-radius: 4px; border: 1px solid #eaeaea;">
+                                            <h3
+                                                style="margin-top: 0; color: #555; border-bottom: 1px solid #ddd; padding-bottom: 8px;">
+                                                원본 문의 내용</h3>
+
+                                            <table
+                                                style="width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 0.95rem;">
+                                                <colgroup>
+                                                    <col style="width: 20%; background-color: #eee;">
+                                                    <col style="width: 30%;">
+                                                    <col style="width: 20%; background-color: #eee;">
+                                                    <col style="width: 30%;">
+                                                </colgroup>
+                                                <tr>
+                                                    <th
+                                                        style="padding: 10px; border: 1px solid #ddd; text-align: left;">
+                                                        문의 번호</th>
+                                                    <td style="padding: 10px; border: 1px solid #ddd;">{{
+                                                        inquiryDetails.inquiryNo }}</td>
+                                                    <th
+                                                        style="padding: 10px; border: 1px solid #ddd; text-align: left;">
+                                                        작성자 ID</th>
+                                                    <td style="padding: 10px; border: 1px solid #ddd;">{{
+                                                        inquiryDetails.userId }}</td>
+                                                </tr>
+                                                <tr>
+                                                    <th
+                                                        style="padding: 10px; border: 1px solid #ddd; text-align: left;">
+                                                        문의 제목</th>
+                                                    <td colspan="3"
+                                                        style="padding: 10px; border: 1px solid #ddd; font-weight: bold;">
+                                                        {{ inquiryDetails.inquiryTitle }}</td>
+                                                </tr>
+                                                <tr>
+                                                    <th
+                                                        style="padding: 10px; border: 1px solid #ddd; text-align: left; vertical-align: top;">
+                                                        문의 내용</th>
+                                                    <td colspan="3"
+                                                        style="padding: 10px; border: 1px solid #ddd; min-height: 100px; white-space: pre-wrap;">
+                                                        {{ inquiryDetails.inquiryContents }}</td>
+                                                </tr>
+                                            </table>
+                                        </div>
+
+                                        <div>
+                                            <h3 style="margin-top: 0; color: #333;">답변 달기</h3>
+
+
+                                            <div style="margin-top: 15px;">
+                                                <label
+                                                    style="display: block; margin-bottom: 8px; font-weight: bold; color: #555;">답변자</label>
+                                                <input v-model="inquiryAnswer.ansUserId" placeholder="답변을 작성한 담당자명을 입력해주세요."
+                                                    style="width: 50%; padding: 12px; border: 1px solid #ccc; border-radius: 4px; resize: vertical; font-family: inherit; font-size: 1rem; box-sizing: border-radius;">
+                                            </div>
+
+
+                                            <div style="margin-top: 15px;">
+                                                <label
+                                                    style="display: block; margin-bottom: 8px; font-weight: bold; color: #555;">답변
+                                                    내용</label>
+                                                <textarea v-model="inquiryAnswer.answerContents" placeholder="문의에 대한 정성스러운 답변을 작성해 주세요."
+                                                    style="width: 100%; height: 200px; padding: 12px; border: 1px solid #ccc; border-radius: 4px; resize: vertical; font-family: inherit; font-size: 1rem; box-sizing: border-radius;"></textarea>
+                                            </div>
+
+                                            <div
+                                                style="margin-top: 25px; text-align: center; display: flex; justify-content: center; gap: 15px;">
+                                                <button @click="fnBacktoInquiry"
+                                                    style="padding: 12px 24px; background-color: #fff; border: 1px solid #ccc; border-radius: 4px; cursor: pointer; font-size: 1rem; color: #333;">
+                                                    취소
+                                                </button>
+                                                <button @click="fnSaveAnswer"
+                                                    style="padding: 12px 24px; background-color: #ff1493; border: none; border-radius: 4px; cursor: pointer; font-size: 1rem; color: #fff; font-weight: bold;">
+                                                    답변 등록하기
+                                                </button>
+                                            </div>
+                                        </div>
+
+                                    </div>
+
+                                </template>
+
                             </div>
 
                             <div v-if="currentMenu === 'review'">
@@ -1264,6 +1361,14 @@
         const app = Vue.createApp({
             data() {
                 return {
+
+                    /*문의 답변과 관련된 맵*/
+                    inquiryAnswer: {
+                        ansUserId: '',
+                        answerContents: '',
+                        answerNo: ''
+                    },
+                    inquiryDetails: {},
                     resCount: '',
                     newReviewCnt: 0,
                     newUnpaidReviewCnt: 0,
@@ -1399,11 +1504,11 @@
                         tag: []
                     },
                     tagMap: {
-                        input1:'',
-                        input2:'',
-                        input3:'',
-                        input4:'',
-                        input5:''
+                        input1: '',
+                        input2: '',
+                        input3: '',
+                        input4: '',
+                        input5: ''
                     },
                     serverTagList: [],
                 }
@@ -1414,21 +1519,21 @@
                 //     return this.reservationList.length;
                 // }
                 //,
-                tagMapToList(){
+                tagMapToList() {
                     const filteredtagArray = Object.values(this.tagMap).filter(tag => tag.trim() !== "");
 
                     //console.log(filteredtagArray);
                     return filteredtagArray;
                 },
-                newTagsOnly(){
-                    if(!this.serverTagList) {
+                newTagsOnly() {
+                    if (!this.serverTagList) {
                         return tagMapToList();
                     }
-                    
+
                     return this.tagMapToList.filter(t => !this.serverTagList.includes(t));
 
                 },
-                
+
 
                 revCnt() {
                     return this.reviews.filter(r => r.updated === 'new').length
@@ -1519,7 +1624,7 @@
                     return Math.ceil(this.reservationList.length / 3);
                 },
 
-                
+
 
             },
             methods: {
@@ -1607,7 +1712,7 @@
                             self.product1 = data.info;//덮어씌우기
                             self.serverTagList = data.tagList;
 
-                            
+
 
                             //
                             // 2. 문자열로 들어온 proType을 실제 배열로 변환합니다.
@@ -1632,7 +1737,7 @@
                                     self.product1.proType = [];
                                 }
                             }
-                            if(typeof self.product1.tag === 'string'){
+                            if (typeof self.product1.tag === 'string') {
                                 try {
                                     let rawArry = JSON.parse(self.product1.tag);
 
@@ -1643,7 +1748,7 @@
                                     self.tagMap.input3 = self.product1.tag[2] || "";
                                     self.tagMap.input4 = self.product1.tag[3] || "";
                                     self.tagMap.input5 = self.product1.tag[4] || "";
-                                } catch(e){
+                                } catch (e) {
                                     self.product1.tag = [];
                                 }
                             }
@@ -1737,7 +1842,7 @@
                             self.serverTagList = data.tagList;
                         }
                     });
-                    
+
 
 
                 },
@@ -1802,7 +1907,7 @@
 
                         this.fnSimple();
                         this.fnReview();
-                    } else if (menuId === 'inquiry'){
+                    } else if (menuId === 'inquiry') {
                         this.fnInquiryProduct();
                     }
                 },
@@ -1841,7 +1946,7 @@
                     formData.append("originalPrice", this.product1.originalPrice);
 
                     formData.append("deposit", this.product1.deposit);
-                    formData.append("tag",JSON.stringify([...new Set(this.tagMapToList)]));
+                    formData.append("tag", JSON.stringify([...new Set(this.tagMapToList)]));
 
                     formData.append("proType", JSON.stringify(this.product1.proType));
 
@@ -1894,8 +1999,8 @@
                     formData.append("deposit", this.product2.deposit);
                     formData.append("proType", JSON.stringify(this.product2.proType));
                     formData.append("userId", "${sessionScope.sessionId}");
-                    
-                    formData.append("tag",JSON.stringify([...new Set(this.tagMapToList)]));
+
+                    formData.append("tag", JSON.stringify([...new Set(this.tagMapToList)]));
                     formData.append("uniqueNewTagsOnly", this.uniqueNewTagsOnly());
 
                     $.ajax({
@@ -2110,19 +2215,19 @@
                     }
                 },
 
-                uniqueNewTagsOnly(){
+                uniqueNewTagsOnly() {
                     return [...new Set(this.newTagsOnly)];
                 },
-                fnBack3(){
+                fnBack3() {
                     this.tagMap = {};
                     //this.tagMapToList = [];
                     this.productPage = 'list'
                     this.product2.deposit = 0;
                 },
-                fnInquiryProduct(){
+                fnInquiryProduct() {
                     let self = this;
                     let param = {
-                        userId : "${sessionScope.sessionId}"
+                        userId: "${sessionScope.sessionId}"
                     };
 
                     console.log(param);
@@ -2136,17 +2241,70 @@
                             console.log(data);
 
                             self.inquiryList = data.list;
-                            // self.inquiryList.id = data.list.inquiryNo;
-                            // self.inquiryList.product = data.list.productName;
-                            // self.inquiryList.title = data.list.inquiryTitle;
-                            // self.inquiryList.userid = data.list.userId;
-                            // self.inquiryList.content = data.list.inquiryContents;
-                            // self.inquiryList.imgUrl = data.list.imgUrl;
 
                         }
                     });
-                }
+                },
+                //문의에 답변하러 넘어가는 타이밍
+                fnAnswerToProductInquiry(i) { //매개변수를 이용!
+                    this.page1 = 'answer';
+                    this.inquiryDetails = i;
 
+                    let self = this;
+                    let param = {
+                        inquiryNo: self.inquiryDetails.inquiryNo
+                    };
+                    console.log(param);
+                     $.ajax({
+                        url: "/getInquiryAnsYn.dox",
+                        dataType: "json",
+                        type: "POST",
+                        data: param,
+                        success: function (data) {
+                            console.log(data);
+
+                            if(data.result === 'success'){
+                                self.inquiryAnswer = data.info;
+
+                                self.inquiryAnswer.ansUserId = data.info.ansUserId || '';
+                                self.inquiryAnswer.answerNo = data.info.answerNo || '';
+                                self.inquiryAnswer.answerContents = data.info.answerContents || '';
+
+                            }
+                        }
+                    });
+                },
+                fnBacktoInquiry() {
+                    this.page1 = 'main';
+                    //console.log(this.page1);
+                },
+                /*상품문의에 답변하기*/
+                fnSaveAnswer() {
+                    let self = this;
+                    let param = {
+                        inquiryNo: self.inquiryDetails.inquiryNo,
+                        answerContents: self.inquiryAnswer.answerContents,
+                        ansUserId: self.inquiryAnswer.ansUserId,
+                        inquiryAns : self.inquiryDetails.inquiryAns
+                    };
+                    console.log(param);
+                    $.ajax({
+                        url: "/addProductInquiryAnswer.dox",
+                        dataType: "json",
+                        type: "POST",
+                        data: param,
+                        success: function (data) {
+                            console.log(data);
+                            //답변이 등록되면서 답변여부가 업데이트 된다
+                            if(data.result === 'success'){
+                                alert("답변이 등록되었습니다!");
+                                self.page1 = 'main';
+                            } else{
+                                alert("서버 오류!");
+                            }
+                        }
+                    });
+                }
             }, // methods
 
 

@@ -24,6 +24,15 @@ public interface CompanyMapper {
 	//<select id="selectInquiryProductList" parameterType="map"
 //	resultType="com.example.demo.company.model.Company">
 	
+	/* 넘어온 inquiry_no = 6으로 문의 번호, 문의에 답변여부, 답변번호, 답변컨텐츠, 답변자명을 조회하기. */
+	Company selectInquiryAnsYn(HashMap<String, Object> map);
+	
+	/* 문의에 답변하면 답변테이블에 insert 됨*/
+	int insertProductInquiryAnswer(HashMap<String, Object> map);
+
+	/* 답변했으니까 inquiry_ans 업데이트해준다 */
+	int updateInquiryAnsStatus(HashMap<String, Object> map);
+	
 	List<Company> selectInquiryProductList(HashMap<String, Object> map);
 	
 	int insertInquiryProduct(HashMap<String, Object> map);

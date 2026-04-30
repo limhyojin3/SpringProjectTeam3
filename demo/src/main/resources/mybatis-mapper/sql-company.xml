@@ -280,12 +280,14 @@
 		</if>
 
 	</insert>
+	<!-- 사용자가 문의할떄 -->
 	<insert id="insertInquiryProduct" parameterType="map">
 		insert into inquiry_product
 		values(null, #{userId}, #{companyNo}, #{productNo}, #{inquiryTitle},
-		#{inquiryContents})
+		#{inquiryContents}, 0)
 
 	</insert>
+	<!-- 컴퍼니가 문의 내역 리스트 갖고올때 -->
 	<select id="selectInquiryProductList" parameterType="map"
 		resultType="com.example.demo.company.model.Company">
 		select
@@ -303,7 +305,8 @@
 		p.deposit,
 		c.company_no,
 		c.com_name,
-		c.com_intro
+		c.com_intro,
+		ip.inquiry_ans
 		from inquiry_product ip
 		left join product p on ip.product_no = p.product_no
 		left join company c on p.company_no = c.company_no
@@ -312,5 +315,25 @@
 		)
 
 	</select>
-
+	<!-- 문의에 답변작성해서 테이블에 insert 됨 -->
+	<insert id="insertProductInquiryAnswer" parameterType="map">
+		insert into inquiry_product_answer 
+		values(null, #{inquiryNo}, #{answerContents}, #{ansUserId})
+	</insert>
+	<!-- 답변했으니까 inquiry_ans 업데이트해준다 -->
+	<update id="updateInquiryAnsStatus" parameterType="map">
+		update inquiry_product
+			set inquiry_ans = 1
+		where inquiry_no = #{inquiryNo}
+		
+	</update>
+	<!-- 넘어온 inquiry_no = 6으로 문의 번호, 문의에 답변여부, 답변번호, 답변컨텐츠, 답변자명을 조회하기. -->
+	<select id="selectInquiryAnsYn" parameterType="map"
+		resultType="com.example.demo.company.model.Company">
+		select ip.inquiry_no, ip.inquiry_ans, ipa.answer_no, 
+		ipa.answer_contents, ipa.ans_user_id from inquiry_product ip
+		left join inquiry_product_answer ipa 
+		on ip.inquiry_no = ipa.inquiry_no where ip.inquiry_no = #{inquiryNo}
+	</select>
+	
 </mapper>

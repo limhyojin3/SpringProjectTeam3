@@ -281,4 +281,23 @@ public class CompanyController {
 
 		return new Gson().toJson(resultMap);
 	}
+	
+	//문의 내용에 답변
+	//public HashMap<String, Object> addProductInquiryAnswer(HashMap<String, Object> map)
+	@RequestMapping(value = "/addProductInquiryAnswer.dox", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
+	@ResponseBody
+	public String tess0990(@RequestParam HashMap<String, Object> map) throws Exception {
+		HashMap<String, Object> resultMap = companyService.addProductInquiryAnswer(map);
+
+		return new Gson().toJson(resultMap);
+	}
+	/* 넘어온 inquiry_no = 6으로 문의 번호, 문의에 답변여부, 답변번호, 답변컨텐츠, 답변자명을 조회하기. */
+	//public HashMap<String, Object> getInquiryAnsYn(HashMap<String, Object> map) 
+	@RequestMapping(value = "/getInquiryAnsYn.dox", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
+	@ResponseBody
+	public String tess09901(@RequestParam HashMap<String, Object> map) throws Exception {
+		HashMap<String, Object> resultMap = companyService.getInquiryAnsYn(map);
+
+		return new Gson().toJson(resultMap); 
+	}
 }

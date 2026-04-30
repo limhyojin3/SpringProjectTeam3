@@ -566,4 +566,75 @@ public class CompanyService {
 		}
 		return resultMap;
 	}
+	//int insertProductInquiryAnswer(HashMap<String, Object> map);
+	//문의 내용에 답변 & 답변했으니까 inquiry_ans 를 업데이트 해준다
+	@Transactional(rollbackFor = Exception.class)
+	public HashMap<String, Object> addProductInquiryAnswer(HashMap<String, Object> map) {
+		HashMap<String, Object> resultMap = new HashMap<String, Object>();
+		try {
+//			List<User> list = defaultMapper.selectUserList(map);
+//			User info = defaultMapper.selectUser(map);
+//			int result = defaultMapper.updateXXX(map);
+
+//			resultMap.put("list", list);
+			
+			//문의 내용에 답변 & 답변했으니까 inquiry_ans 를 업데이트 해준다
+			
+			//1.문의 내용에 답변한적 없는 경우
+			if("0".equals(String.valueOf(map.get("inquiryAns")))) {
+				
+				int result = companyMapper.insertProductInquiryAnswer(map);
+				int result1 = companyMapper.updateInquiryAnsStatus(map);
+
+				if(result > 0 && result1 > 0) {
+					resultMap.put("result", "success");
+					resultMap.put("message", Message.MSG_ADD);
+				}
+			} 
+			//2. 문의 내용에 답변한적 있는 경우
+			else {
+				
+				
+				
+			}
+			
+			
+						
+			
+			
+		} catch (Exception e) {
+			// TODO: handle exception
+			System.out.println(e.getMessage());
+			resultMap.put("result", "fail");
+			resultMap.put("message", Message.MSG_SERVER_ERR);
+		}
+		return resultMap;
+	}
+	
+	/* 넘어온 inquiry_no = 6으로 문의 번호, 문의에 답변여부, 답변번호, 답변컨텐츠, 답변자명을 조회하기. */
+	public HashMap<String, Object> getInquiryAnsYn(HashMap<String, Object> map) {
+		HashMap<String, Object> resultMap = new HashMap<String, Object>();
+		try {
+//			List<User> list = defaultMapper.selectUserList(map);
+//			User info = defaultMapper.selectUser(map);
+//			int result = defaultMapper.updateXXX(map);
+
+//			resultMap.put("list", list);
+			
+
+			Company info = companyMapper.selectInquiryAnsYn(map);
+
+			resultMap.put("info", info);
+			resultMap.put("result", "success");
+			resultMap.put("message", Message.MSG_ADD);
+			
+			
+		} catch (Exception e) {
+			// TODO: handle exception
+			System.out.println(e.getMessage());
+			resultMap.put("result", "fail");
+			resultMap.put("message", Message.MSG_SERVER_ERR);
+		}
+		return resultMap;
+	}
 }
