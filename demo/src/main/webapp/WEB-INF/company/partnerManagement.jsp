@@ -1380,7 +1380,7 @@
                                 </template>
 
 
-
+    
 
                                 <!--page1이 main이 아닌 경우-->
                                 <template v-else> <!--page1 != 'main'-->

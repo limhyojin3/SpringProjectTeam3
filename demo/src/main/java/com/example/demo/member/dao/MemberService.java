@@ -381,7 +381,7 @@ public class MemberService {
 	    map.put("pageSize", 6);
 	    map.put("offset", (page - 1) * 6);
 	    return memberMapper.selectMyFreeReviewList(map);
-	}
+	}  
 	// 페이지 사이징
 	public int getMyFreeReviewCount(String userId) {
 	    return memberMapper.selectMyFreeReviewCount(userId);
