@@ -24,6 +24,9 @@ public interface CompanyMapper {
 	//<select id="selectInquiryProductList" parameterType="map"
 //	resultType="com.example.demo.company.model.Company">
 	
+	/* 프론트에서 inquiryNo을 넘겨주면, 문의 답변중에 ip.inquiry_no, c.user_id,
+	 *  ipa.answer_contents 를 얻어오는거 */
+	Company selectInquiry1Answer(HashMap<String, Object> map);
 	
 	/* 내가 문의한 내역 불러오는 쿼리 */
 	List<Company> selectMyInquiryList(HashMap<String, Object> map);

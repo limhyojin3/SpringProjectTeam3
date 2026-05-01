@@ -671,4 +671,33 @@ public class CompanyService {
 		}
 		return resultMap;
 	}
+	
+	/* 프론트에서 inquiryNo을 넘겨주면, 문의 답변중에 ip.inquiry_no, c.user_id,
+	 *  ipa.answer_contents 를 얻어오는거 */
+//	Company selectInquiry1Answer(HashMap<String, Object> map);
+	public HashMap<String, Object> getInquiry1Answer(HashMap<String, Object> map) {
+		HashMap<String, Object> resultMap = new HashMap<String, Object>();
+		try {
+//			List<User> list = defaultMapper.selectUserList(map);
+//			User info = defaultMapper.selectUser(map);
+//			int result = defaultMapper.updateXXX(map);
+
+//			resultMap.put("list", list);
+			
+
+			Company info = companyMapper.selectInquiry1Answer(map);
+
+			resultMap.put("info", info);
+			resultMap.put("result", "success");
+			resultMap.put("message", Message.MSG_ADD);
+			
+			
+		} catch (Exception e) {
+			// TODO: handle exception
+			System.out.println(e.getMessage());
+			resultMap.put("result", "fail");
+			resultMap.put("message", Message.MSG_SERVER_ERR);
+		}
+		return resultMap;
+	}
 }

@@ -364,4 +364,16 @@
 		left join product p on ip.product_no = p.product_no
 		where ip.user_id = #{userId}
 	</select>
+	
+	<!-- 인쿼리프로덕트랑 컴퍼니랑 인쿼리프로덕트앤서랑 조인한거 중에 ip.inquiry_no, c.user_id, 
+		ipa.answer_contents 만 셀렉트한거 그리고 where 조건절이 inquiry_no = #{inquiryNo} 인거 -->
+	<select id="selectInquiry1Answer" parameterType="map"
+		resultType="com.example.demo.company.model.Company">
+	
+		select ip.inquiry_no, c.user_id, ipa.answer_contents from inquiry_product ip
+		left join company c on ip.company_no = c.company_no
+		left join inquiry_product_answer ipa on ip.inquiry_no = ipa.inquiry_no
+		where ip.inquiry_no = #{inquiryNo}
+	
+	</select>
 </mapper>
