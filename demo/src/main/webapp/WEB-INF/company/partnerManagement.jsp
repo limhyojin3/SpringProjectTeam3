@@ -269,7 +269,7 @@
             }
 
             /* 리뷰 섹션 공통 */
-            .review-header-info {
+            /*.review-header-info {
                 display: flex;
                 align-items: center;
                 gap: 20px;
@@ -278,7 +278,26 @@
                 border-radius: 8px;
                 margin-bottom: 20px;
                 border: 1px solid #eee;
+            }*/
+            .review-header-info {
+                display: flex;
+                align-items: center;
+                gap: 16px;
+                background: white;
+                border: 1px solid #e0e0e0;
+                border-radius: 10px;
+                padding: 16px;
+                margin-bottom: 12px;
+                cursor: pointer;
+                transition: 0.2s;
+                position: relative;
             }
+            .review-header-info:hover {
+                border-color: #9b8fd4;
+                box-shadow: 0 4px 12px rgba(155, 143, 212, 0.15);
+                transform: translateY(-2px);
+            }
+
 
             .review-thumb-box {
                 width: 80px;
@@ -1196,7 +1215,7 @@
                                             :alt="res.productName"
                                             v-if="productList3.find(p => p.productName === res.productName)?.imgUrl">
                                         <div class="ticket-info">
-                                            <div class="ticket-no">No. {{ idx + 1 }}</div>
+                                            <div class="ticket-no">No. {{ reservationList.length - ((resCurrentPage - 1) * 5 + idx ) }}</div>
                                             <div class="ticket-name">{{ res.productName }}</div>
                                             <div class="ticket-date">예약 날짜/시간 : {{ res.useDate }} {{ res.useTime }}</div>
                                             <div style="margin-top:6px;">
@@ -1420,14 +1439,14 @@
                                     <!-- 유료 리뷰 탭 -->
                                         <h3>유료 리뷰 내역 : <span style="color: #ff1493;">새 리뷰 {{newReviewCnt}}건</span></h3>
                                         <template v-for="w in pagedProductList3" :key="w.productName">
-                                            <div class="review-header-info" style="margin-bottom: 10px;">
+                                            <div class="review-header-info" style="margin-bottom: 10px;" @click="fnReviewDetails3(w)">
                                                 <div class="review-thumb-box">
                                                     <img :src="w.imgUrl"
                                                         style="width: 100%; height: 100%; object-fit: cover; border-radius: 10px;">
                                                 </div>
                                                 <div class="review-product-name">
                                                     <a href="javascript:;" style="text-decoration: none; color:#0b3f8e;"
-                                                        @click="fnReviewDetails3(w)"><strong>{{w.productName}}</strong></a>
+                                                        ><strong>{{w.productName}}</strong></a>
                                                 </div>
                                                 <div class="review-count-badge">리뷰 갯수: {{w.reviewCount}}개 </div>
                                             </div>
@@ -1450,7 +1469,7 @@
 
                                         <template v-for="w in pagedProductList4" :key="w.productName">
 
-                                            <div class="review-header-info" style="margin-bottom: 10px;">
+                                            <div class="review-header-info" style="margin-bottom: 10px;" @click="fnSimpleReviewDetails3(w)">
                                                 <div class="review-thumb-box">
                                                     <img :src="w.imgUrl"
                                                         style="width: 100%; height: 100%; object-fit: cover; border-radius: 10px;">
@@ -1458,7 +1477,7 @@
                                                 <div class="review-product-name">
                                                     <!--totalSimpleReviewCnt-->
                                                     <a href="javascript:;" style="text-decoration: none; color:#0b3f8e;"
-                                                        @click="fnSimpleReviewDetails3(w)"><strong>{{w.productName}}</strong></a>
+                                                        ><strong>{{w.productName}}</strong></a>
 
                                                 </div>
                                                 <div class="review-count-badge">리뷰 갯수: {{w.reviewCount}}개 </div>
@@ -1502,8 +1521,8 @@
                                                             style="position: absolute; top: -5px; left: -5px;">NEW
                                                         </span>
                                                         <div class="review-photo">
-                                                            <img :src="rev.imgUrl" :alt="rev.imgDescription"
-                                                                style="width: 100%; height: 100%; object-fit: cover;">
+                                                            <img :src="rev.imgUrl" :alt="rev.imgDescription" 
+                                                                style="width: 100%; height: 100%; object-fit: cover; border-radius: 10px;">
                                                         </div>
                                                     </div>
                                                     <div style="flex: 1; line-height: 1.6; color: #444;">
@@ -1519,7 +1538,7 @@
                                             <div class="pagination1">
                                                 <span v-for="num in totalPages" :key="num">
                                                     <a @click="fnPageChange2(num)" href="javascript:;"
-                                                        :style="page === num ? 'color: #ff1493; border: 1px solid #ff1493;' : ''">
+                                                        :style="page === num ? 'color: #9b8fd4; border:1px solid #9b8fd4;' : ''">
                                                         {{num}}
                                                     </a>
                                                 </span>
@@ -1537,6 +1556,8 @@
 
                                     <!--reviewTab === 'simple' 인 경우-->
                                     <template v-else-if="reviewTab === 'simple'">
+                                        <button class="btn-back" @click="fnGoBackToList()">← 목록으로</button>
+
                                         <template v-if="simpleReviews && simpleReviews.length > 0">
 
 
@@ -1571,7 +1592,7 @@
                                             <div class="pagination1">
                                                 <span v-for="num in totalSimplePages" :key="num">
                                                     <a @click="page = num" href="javascript:;"
-                                                        :style="page === num ? 'color: #ff1493; border: 1px solid #ff1493;' : ''">
+                                                        :style="page === num ? 'color: #9b8fd4; border:1px solid #9b8fd4;' : ''">
                                                         {{num}}
                                                     </a>
                                                 </span> <!-- num 에 해당하는 페이지가 뜨고 그 페이지에 자료가 5개씩 표시되도록( )-->
@@ -1736,9 +1757,6 @@
                         { id: 9, product: '스몰 웨딩', content: '레스토랑 웨딩 식순 문의입니다.', resDate: '26.03.25', useDate: '26.04.28 17:00PM', name: '윤소식', contact: '010-3333-4444', price: '30,000원' },
                         { id: 10, product: '동화같은 분위기', content: '파스텔 톤 생화 장식 상담입니다.', resDate: '26.03.28', useDate: '26.05.02 12:00PM', name: '조전통', contact: '010-6666-7777', price: '50,000원' },
                         { id: 11, product: '화려하게', content: '대형 웨딩홀 촬영 스케줄 문의입니다.', resDate: '26.04.01', useDate: '26.05.05 14:00PM', name: '한찬란', contact: '010-8888-9999', price: '100,000원' }
-                    ],
-                    inquiry: [
-                        { id: 1, }
                     ],
                     category: ["스튜디오", "드레스", "메이크업"],
                     selectedItems: [],
@@ -1959,6 +1977,8 @@
                     });
                 },
                 fnProductList: function () {
+                    this.productCurrentPage = 1;
+
                     let self = this;
                     let param = {
                         userid: "${sessionScope.sessionId}"
@@ -2367,6 +2387,9 @@
                     });
                 },
                 fnReservationList: function () {
+
+                    this.resCurrentPage = 1;
+
                     let self = this;
                     let param = {
                         userId: "${sessionScope.sessionId}"
@@ -2524,6 +2547,9 @@
                     this.product2.deposit = 0;
                 },
                 fnInquiryProduct() {
+
+
+
                     let self = this;
                     let param = {
                         userId: "${sessionScope.sessionId}"

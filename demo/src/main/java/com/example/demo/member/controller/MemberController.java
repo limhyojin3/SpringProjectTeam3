@@ -645,7 +645,7 @@ public class MemberController {
 		    model.addAttribute("kakaoMapKey", kakaoMapKey);
 		    return "/common/home-about2";
 		}
-	 
+	  
 	// 최근 리뷰
 		@GetMapping("/mainReviewList.dox")
 		@ResponseBody
