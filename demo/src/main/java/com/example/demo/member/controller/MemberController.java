@@ -637,7 +637,7 @@ public class MemberController {
 		    return "/common/home-about";
 		}
 	// 찾아오시는 길 페이지
-		@Value("${kakao.map.key}")
+		@Value("${kakao.map.key:none}")
 		private String kakaoMapKey;
 
 		@GetMapping("/location.do")

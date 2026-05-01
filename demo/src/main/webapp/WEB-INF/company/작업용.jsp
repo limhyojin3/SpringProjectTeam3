@@ -2326,29 +2326,3 @@
 
         app.mount('#app');
     </script>
-
-
-
-
-    <div v-if="page === 'main'">
-
-        <div v-if="menu === 'main'">
-
-
-
-
-        </div>
-
-
-        <div v-if="menu === 'detail'">
-
-            <button @click=""></button>
-            
-        </div>
-
-        <div v-if="menu === 'simple'">
-
-
-
-        </div>
-    </div>

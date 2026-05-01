@@ -1435,8 +1435,8 @@
                                         <!-- 페이징 추가 -->
                                         <div class="pagination1">
                                             <span v-for="num in totalReviewListPages3" :key="num">
-                                                <a @click="currentPage = num" href="javascript:;"
-                                                    :style="currentPage === num ? 'color: #9b8fd4; border:1px solid #9b8fd4;' : ''">
+                                                <a @click="reviewListPage = num" href="javascript:;"
+                                                    :style="reviewListPage === num ? 'color: #9b8fd4; border:1px solid #9b8fd4;' : ''">
                                                     {{ num }}
                                                 </a>
                                             </span>
@@ -1453,7 +1453,7 @@
                                             <div class="review-header-info" style="margin-bottom: 10px;">
                                                 <div class="review-thumb-box">
                                                     <img :src="w.imgUrl"
-                                                        style="width: 100%; height: 100%; object-fit: cover;">
+                                                        style="width: 100%; height: 100%; object-fit: cover; border-radius: 10px;">
                                                 </div>
                                                 <div class="review-product-name">
                                                     <!--totalSimpleReviewCnt-->
@@ -1467,8 +1467,8 @@
                                         <!-- 페이징 추가 -->
                                         <div class="pagination1">
                                             <span v-for="num in totalReviewListPages4" :key="num">
-                                                <a @click="currentPage = num" href="javascript:;"
-                                                    :style="currentPage === num ? 'color: #9b8fd4; border:1px solid #9b8fd4;' : ''">
+                                                <a @click="reviewListPage = num" href="javascript:;"
+                                                    :style="reviewListPage === num ? 'color: #9b8fd4; border:1px solid #9b8fd4;' : ''">
                                                     {{ num }}
                                                 </a>
                                             </span>
@@ -1607,8 +1607,10 @@
 
     <script>
         const app = Vue.createApp({
+            el: '#app',
             data() {
                 return {
+                    currentMenu: 'main',
                     // 리뷰 내역 페이지 사이징
                     reviewListPage: 1,   // 리뷰 상품 목록 페이지
                     reviewListPageSize: 5,
@@ -2383,7 +2385,7 @@
                 },
                 fnReview() {
                     this.reviewTab = 'detail';
-                    this.reviewListPage = '1';
+                    this.reviewListPage = 1;
                     let self = this;
                     let param = {
                         userId: "${sessionScope.sessionId}"
@@ -2411,7 +2413,7 @@
                 },
                 fnSimple() {
                     this.reviewTab = 'simple';
-                    this.reviewListPage = '1';
+                    this.reviewListPage = 1;
                     let self = this;
                     let param = {
                         userId: "${sessionScope.sessionId}"
@@ -2611,7 +2613,11 @@
                 self.fnReservationList();
                 self.fnSimple();
                 self.fnReview();
-
+                const urlParams = new URLSearchParams(window.location.search);
+                const menu = urlParams.get('menu');
+                if (menu) {
+                    this.currentMenu = menu;
+                }
             }
 
 
