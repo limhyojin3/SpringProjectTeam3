@@ -60,6 +60,20 @@ public interface CompanyMapper {
 	
 	List<Company> selectMyReservationList(HashMap<String, Object> map);
 	
+	/* resNoList를 가져온다.(일반유저가 로그인했을때)*/
+	List<Integer> selectResNoList(HashMap<String, Object> map);
+	
+	/* resNoList를 가져온다. (업체유저가 로그인했을때) */
+	List<Integer> selectResNoListForCompanyUser(HashMap<String, Object> map);
+	
+	/* 쿼리문에서 분기처리 한거임..*/
+	/* 나의 예약내역리스트로 갈때 내 예약상태를 업데이트한다. DONE 또는 CANCEL이 보이도록 */
+	/* update 한후 결과값은 int result = 1 또는 0 */
+	int updateReservationStatus(HashMap<String, Object> map);
+	
+	/* 업체 입장에서 예약내역 리스트로 갈때 예약상태를 업데이트 해보자. DONE 또는 CANCEL이 보이도록 */
+	int updateReservationStatusForCompany(HashMap<String, Object> map);
+	
 	int insertReservation(HashMap<String, Object> map);
 	
 	List<String> selectBookedTimes(HashMap<String, Object> map);

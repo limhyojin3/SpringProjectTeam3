@@ -2328,10 +2328,25 @@
             },
             watch: {
                 selectedDate(newVal) {
-                    if (newVal) {
+
+                    const today = new Date();
+                    const tomorrow = new Date(today);
+                    tomorrow.setDate(today.getDate() + 1);
+
+                    tomorrow.setHours(0,0,0,0);
+                    const selected = new Date(newVal);
+                    selected.setHours(0,0,0,0);
+
+                    /* 선택된 날짜를 감시 - 잘못된 날짜가 올 경우 알림을 띄운다.*/
+                    if(selected < tomorrow){
+                        alert("날짜는 내일 이후부터 선택 가능합니다!");
+
+                        this.selectedDate = '';
+                    } else{  /* 제대로 된 날짜가 올경우 함수를 호출한다.*/
                         this.fnGetBookedTimes();
                     }
-                }
+
+                },
             },
             methods: {
                 // 함수(메소드) - (key : function())
