@@ -1033,10 +1033,12 @@
 	
 	<select id="selectRegistrationPaymentList" parameterType="hashmap" resultType="com.example.demo.admin.model.Admin">
 	    SELECT
+	    p.user_id AS userId,
 	    p.pay_no AS payNo,
         p.amount AS amount,
         p.pay_date AS payDate,
-        c.com_name AS comName
+        c.com_name AS comName,
+        c.registration_fee AS registrationFee
 	    FROM payment p
 	    JOIN payment_resistration pr ON p.pay_no = pr.pay_no
 	    JOIN company c ON pr.company_no = c.company_no
@@ -1388,5 +1390,16 @@
 	    WHERE U.user_id = #{userId}
 	</select>
 	
+	<!-- 제휴 등록 -->
+	<update id="updateCompanyReg" parameterType="hashmap">
+		UPDATE member
+		SET role = 'PARTNER'
+		WHERE user_id = #{userId}
+	</update>
+	<update id="updateCompanyRegPaid" parameterType="hashmap">
+		UPDATE company
+		SET registration_fee = 'PAID'
+		WHERE user_id = #{userId}
+	</update>
 	
 </mapper>

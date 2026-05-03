@@ -169,4 +169,7 @@ public interface AdminMapper {
     int selectMyPassCount(HashMap<String, Object> map);
     int selectMyWallet(HashMap<String, Object> map);
     
+    // 제휴 등록
+    int updateCompanyReg(HashMap<String, Object> map);
+    int updateCompanyRegPaid(HashMap<String, Object> map);
 }

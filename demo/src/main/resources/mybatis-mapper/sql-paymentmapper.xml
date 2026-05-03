@@ -249,6 +249,14 @@
     WHERE user_id = #{userId}
       AND coupon_code = #{couponCode}
       AND status = 'UNUSED'
-</update>
+</update> 
+
+<!-- 등록 회사 번호 조회-->
+<select id="selectCompanyInfo" parameterType="hashmap"
+        resultType="int">
+    SELECT company_no AS companyNo
+    FROM company
+    WHERE user_id = #{userId}
+</select>
 
 </mapper>

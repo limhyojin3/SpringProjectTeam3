@@ -72,9 +72,10 @@ public class PaymentService {
 	@Transactional
 	public void completeRegistrationPayment(HashMap<String,Object> map){
 
-	    //paymentMapper.insertPayment(map); // 공통 결제
-
-	    //paymentMapper.insertPaymentRegistration(map); // 상세
+	    paymentMapper.insertPayment(map); // 공통 결제
+	    int companyNo = paymentMapper.selectCompanyInfo(map);
+	    map.put("companyNo", companyNo);
+	    paymentMapper.insertPaymentRegistration(map); // 상세
 	    
 	}
 
@@ -108,7 +109,13 @@ public class PaymentService {
 				return result;
 			}
 			
-			int passNo = Integer.parseInt(map.get("passNo").toString());
+			Object passNoObj = map.get("passNo");
+
+			if (passNoObj == null) {
+			    throw new IllegalArgumentException("passNo가 없습니다.");
+			}
+
+			int passNo = Integer.parseInt(passNoObj.toString());
 			int basePrice = paymentMapper.selectPassPrice(passNo);
 			
 			int finalAmount = basePrice;   // 기본값
@@ -223,7 +230,79 @@ public class PaymentService {
 
 		return result;
 	}
+	public HashMap<String, Object> verifyPayment2(HashMap<String, Object> map) {
+		System.out.println("넘어온 값 : " + map);
+		HashMap<String, Object> result = new HashMap<>();
 
+		try {
+
+			// 프론트에서 받은 값
+			String impUid = map.get("imp_uid").toString();
+			String merchantUid = map.get("merchant_uid") == null
+			        ? ""
+			        : map.get("merchant_uid").toString();
+			int reqAmount = Integer.parseInt(map.get("amount").toString());
+
+			// 1. 포트원 토큰 발급
+			String token = getToken();
+
+			// 2. 실제 결제정보 조회
+			HashMap<String, Object> payInfo = getPaymentInfo(token, impUid);
+
+			double realAmount = Integer.parseInt(payInfo.get("amount").toString());
+
+			String status = payInfo.get("status").toString();
+			
+			// 3. 결제 상태 확인
+			if (!status.equals("paid")) {
+				result.put("result", "fail");
+				result.put("message", "결제 미완료");
+				return result;
+			}
+			
+			int finalAmount = 1000;   // 기본값
+			// 4. 금액 검증
+			if (realAmount != finalAmount) {
+				cancelPayment(token, impUid);
+				result.put("result", "fail");
+				result.put("message", "금액 위조 의심");
+				return result;
+			}
+
+			// 5. DB 저장
+			map.put("pay_status", "paid");
+			map.put("finalAmount", finalAmount);
+
+			String type = map.get("type").toString();
+
+	
+			completeRegistrationPayment(map);
+		
+			result.put("result", "success");
+			result.put("payNo", map.get("payNo"));
+			result.put("message", "결제 완료");
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			//예외 발생시 환불
+			try {
+				String impUid = map.get("imp_uid").toString();
+
+	            if (impUid != null) {
+	                String token = getToken();
+	                cancelPayment(token, impUid);
+	            }
+	        } catch (Exception ex) {
+	            ex.printStackTrace();
+	        }
+			
+			result.put("result", "fail");
+			result.put("message", "서버 오류");
+			
+		}
+
+		return result;
+	}
 	// =========================
 	// 토큰 발급
 	// =========================

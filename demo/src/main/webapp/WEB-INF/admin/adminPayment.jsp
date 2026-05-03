@@ -218,18 +218,24 @@
                         <table v-if="activeTab === 'registration'" class="payment-table">
                             <thead>
                                 <tr>
+                                    <th>아이디</th>
                                     <th>결제번호</th>
                                     <th>업체명</th>
                                     <th>금액</th>
                                     <th>결제일</th>
+                                    <th>상태</th>
+                                    <th>등록</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <tr v-for="c in list" :key="c.payNo">
+                                    <td>{{ c.userId }}</td>
                                     <td>{{ c.payNo }}</td>
                                     <td>{{ c.comName }}</td>
                                     <td>{{ c.amount }}</td>
                                     <td>{{ formatDate(c.payDate) }}</td>
+                                    <td>{{ c.registrationFee === "PAID"? "제휴" : "일반" }}</td>
+                                    <td><button @click="fnRegistration(c)">등록</button></td>
                                 </tr>
                             </tbody>
                         </table>
@@ -252,6 +258,7 @@
                 data() {
                     return {
                         // 변수 - (key : value)
+                        sessionId: "${sessionScope.sessionId}",
                         activeMenu: "",
                         activeTab: "pass",
                         list: [],
@@ -351,6 +358,31 @@
                             complete: function () {
                                 console.log("AJAX 종료");
                             }
+                        });
+                    },
+                    fnRegistration:function(c){
+                        if (!confirm("정말 등록하시겠습니까?")) {
+                            return;
+                        }
+
+                        $.ajax({
+                            url: "${pageContext.request.contextPath}/adminRegistration.dox",
+                            type: "POST",
+                            dataType: "json",
+                            data: {
+                                userId: c.userId
+                            },
+                            success: function (data) {
+                                console.log("성공", data);
+                                if (data.result == "success") {
+                                    alert(data.message);
+                                } else {
+                                    alert(data.message);
+                                }
+                            },
+                            error: function ( err) {
+                                alert("error");
+                            },
                         });
                     }
 

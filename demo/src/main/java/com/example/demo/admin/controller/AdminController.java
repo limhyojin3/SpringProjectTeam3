@@ -587,18 +587,11 @@ public class AdminController {
 		return adminService.getMyPassList(map);
 	}
 	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
+	@RequestMapping("/adminRegistration.dox")
+	@ResponseBody
+	public HashMap<String, Object> adminRegistration(@RequestParam HashMap<String, Object> map) {
+		return adminService.editCompanyReg(map);
+	}
 	
 	
 	

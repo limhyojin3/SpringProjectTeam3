@@ -937,4 +937,24 @@ System.out.println(resultMap);
 		}
 		return resultMap;
 	}
+	
+	//제휴 등록
+	@Transactional
+	public HashMap<String, Object> editCompanyReg(HashMap<String, Object> map) {
+
+		HashMap<String, Object> resultMap = new HashMap<>();
+
+		try {
+			adminMapper.updateCompanyReg(map);
+			adminMapper.updateCompanyRegPaid(map);
+			resultMap.put("result", "success");
+
+		} catch (Exception e) {
+			System.out.println(e.getMessage());
+			resultMap.put("result", "fail");
+			throw e; // 트랜잭션 롤백
+		}
+
+		return resultMap;
+	}
 }

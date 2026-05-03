@@ -48,4 +48,6 @@ public interface PaymentMapper {
 	int selectPassPrice(int passNo);
 	// 쿠폰 사용 수정
 	int updateUsedCoupon(HashMap<String, Object> map);
+	
+	int selectCompanyInfo(HashMap<String, Object> map);
 }

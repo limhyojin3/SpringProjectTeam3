@@ -18,4 +18,7 @@ public class Payment {
 	String dday;
 	String status;
 	
+	Integer passNo;
+	
+	String registrationFee;
 }
