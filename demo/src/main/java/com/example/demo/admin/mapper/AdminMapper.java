@@ -85,7 +85,7 @@ public interface AdminMapper {
 	
 	// 일괄 신고
 	public void batchApproveReport(HashMap<String, Object> map);
-	
+	public void batchReject(HashMap<String, Object> map);
 	// 단일 신고
 	public void updateReportApprove(HashMap<String, Object> map);
 	
@@ -97,10 +97,12 @@ public interface AdminMapper {
 	
 	// 신고 누적 횟수
 	public int selectReportHistory(HashMap<String, Object> map);
+	// 전체 회원 신고 3회이상 검색
+	public List<Admin> selectKillHistory(HashMap<String, Object> map);
 	
 	// 댓글로 게시판 추적
 	Integer selectCommentPostNo(HashMap<String, Object> map);
-
+	Integer selectComentReviewNo(HashMap<String, Object> map);
 	Integer selectParentCommentPostNo(HashMap<String, Object> map);
 
 	
@@ -160,4 +162,11 @@ public interface AdminMapper {
     HashMap<String, Object> selectReservationPayment(HashMap<String, Object> map);
 
     HashMap<String, Object> selectRegistrationPayment(HashMap<String, Object> map);
+    
+    
+    // 마이 패스 페이지
+    List<Admin> selectMyPassList(HashMap<String, Object> map);
+    int selectMyPassCount(HashMap<String, Object> map);
+    int selectMyWallet(HashMap<String, Object> map);
+    
 }

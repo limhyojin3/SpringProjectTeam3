@@ -15,7 +15,7 @@
 		)
 		VALUES (
 		#{userId},
-		#{amount},
+		#{finalAmount},
 		'SUCCESS',
 		NOW(),
 		#{imp_uid},
@@ -164,4 +164,91 @@
 		WHERE pay_no=#{payNo}
 	</update>
 	
+	<!-- 쿠폰 만료 자동 처리-->
+	<update id="updateExpiredCoupon" parameterType="hashmap">
+	UPDATE user_coupon
+	SET status = 'EXPIRED'
+	WHERE user_id = #{userId}
+	AND status = 'UNUSED'
+	AND	expired_at &lt; CURRENT_TIMESTAMP
+	</update>	
+	
+<!-- 유저 잔여 쿠폰 조회-->	
+	<select id="selectCouponUseList" parameterType="hashmap" 
+	resultType="com.example.demo.admin.model.Payment">
+		SELECT
+		U.coupon_code AS couponCode,
+		C.coupon_name AS couponName,
+		C.discount_rate AS discountRate,
+		U.issued_at AS issuedAt,
+		U.expired_at AS expiredAt,
+		U.status AS status,
+		DATEDIFF(U.expired_at, CURRENT_TIMESTAMP) AS dday
+		FROM user_coupon U
+		JOIN coupon C
+		ON U.coupon_code = C.coupon_code
+		WHERE 1=1
+		AND U.user_id = #{userId}
+		<if test="status != null and status !='ALL'">
+			AND U.status = #{status}
+		</if>
+		AND U.expired_at &gt; CURRENT_TIMESTAMP
+		ORDER BY U.expired_at ASC
+	</select>
+	
+	<!-- 유저 쿠폰 페이지네이션 -->
+	<select id="selectMyCouponCount" parameterType="hashmap" 
+	resultType="int">
+		SELECT IFNULL(COUNT(*), 0)
+		FROM user_coupon U
+		JOIN coupon C
+		ON U.coupon_code = C.coupon_code
+		WHERE 1=1
+		AND U.user_id = #{userId}
+		<if test="status != null and status !='ALL'">
+			AND U.status = #{status}
+		</if>
+		AND U.expired_at &gt; CURRENT_TIMESTAMP
+		ORDER BY U.expired_at ASC
+		LIMIT #{pageSize} OFFSET #{offSet}
+	</select>
+	
+	<!-- 쿠폰 검증 -->
+	<select id="selectCouponInfo" parameterType="hashmap"
+        resultType="com.example.demo.admin.model.Payment">
+    SELECT
+        U.coupon_code AS couponCode,
+        C.coupon_name AS couponName,
+        C.discount_rate AS discountRate,
+        U.issued_at AS issuedAt,
+        U.expired_at AS expiredAt,
+        U.status AS status,
+        DATEDIFF(U.expired_at, CURRENT_TIMESTAMP) AS dday
+    FROM user_coupon U
+    JOIN coupon C
+        ON U.coupon_code = C.coupon_code
+    WHERE U.user_id = #{userId}
+      AND U.coupon_code = #{couponCode}
+      AND U.status = 'UNUSED'
+      AND U.expired_at > CURRENT_TIMESTAMP
+    ORDER BY U.expired_at ASC
+</select>
+<!-- 패스 가격 디비에서 조회-->
+<select id="selectPassPrice" parameterType="hashmap"
+        resultType="int">
+    SELECT price
+    FROM pass_product
+    WHERE pass_no = #{passNo}
+</select>
+<!-- 쿠폰 사용됨 수정-->
+<update id="updateUsedCoupon" parameterType="hashmap">
+    UPDATE user_coupon
+    SET status = 'USED',
+        used_at = NOW(),
+        pay_no = #{payNo}
+    WHERE user_id = #{userId}
+      AND coupon_code = #{couponCode}
+      AND status = 'UNUSED'
+</update>
+
 </mapper>

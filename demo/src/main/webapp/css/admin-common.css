@@ -1,0 +1,108 @@
+* {
+	box-sizing: border-box;
+	margin: 0;
+	padding: 0;
+}
+
+body {
+	font-family: 'Noto Sans KR',
+		sans-serif;
+	background-color: #f9f9f9;
+	color: #333;
+}
+
+.middle {
+	width: 100%;
+	display: grid;
+	grid-template-areas: "nav main";
+	grid-template-columns: 300px 1fr;
+}
+
+.main {
+	grid-area: main;
+	padding: 20px;
+	display: flex;
+	gap: 20px;
+	align-items: flex-start;
+}
+
+button {
+	border: none;
+	background: #eef1f6;
+	padding: 5px 10px;
+	border-radius: 6px;
+	font-size: 12px;
+	font-weight: 600;
+	cursor: pointer;
+	transition: .2s;
+}
+
+/* 탭 */
+.tab-menu {
+	display: flex;
+	gap: 12px;
+	margin-bottom: 25px;
+	flex-wrap: wrap;
+}
+
+.tab-menu button {
+	border: none;
+	background: #eef1f6;
+	color: #555;
+	padding: 12px 24px;
+	border-radius: 12px;
+	font-size: 15px;
+	font-weight: 600;
+	transition: all .25s ease;
+	cursor: pointer;
+}
+
+.tab-menu button:hover {
+	background: #dbe7ff;
+	color: #2b62ff;
+	transform: translateY(-2px);
+}
+
+.tab-menu button.active {
+	background: linear-gradient(135deg, #4a7dff, #275df7);
+	color: white;
+	box-shadow: 0 6px 14px rgba(39, 93, 247, 0.25);
+}
+
+/*페이지네이션관련*/
+
+.page-box {
+	margin-top: 25px;
+	display: flex;
+	justify-content: center;
+	gap: 8px;
+	flex-wrap: wrap;
+
+}
+
+.page-box button {
+	min-width: 30px;
+}
+
+.page-box button:hover {
+	background: #dbe7ff;
+	color: #2b62ff;
+}
+
+.page-box button.active {
+	background: #275df7;
+	color: white;
+	transform: scale(1.1);
+
+}
+
+.page-box button:disabled {
+	opacity: .4;
+	cursor: not-allowed;
+}
+
+/*빈 행 처리*/
+
+.empty-row {
+	pointer-events: none;
+}

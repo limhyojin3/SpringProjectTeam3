@@ -411,22 +411,24 @@ public class AdminService {
 			adminMapper.updateReportApprove(map);
 
 			// 2. 신고 누적 수 조회 (승인된 것만)
-			int count = adminMapper.selectReportHistory(map);
-
+//			int count = adminMapper.selectReportHistory(map);
+			// 신고수 1이상인 회원 조회
+			List<Admin> killList = adminMapper.selectKillHistory(map);
+			resultMap.put("killList", killList);
+			
 			// 3. 3회 이상이면 자동 정지
-			if (count >= 3) {
-
-				map.put("status", "STOP");
-				adminMapper.updateMemberStatus(map);
-
-				// 이력 기록
-				map.put("action_type", "AUTO_BAN");
-				map.put("reason", "신고 누적 3회 자동 정지");
-
-				adminMapper.insertBanHistory(map);
-			}
-
-			resultMap.put("count", count);
+//			if (count >= 3) {
+//
+//				map.put("status", "STOP");
+//				adminMapper.updateMemberStatus(map);
+//
+//				// 이력 기록
+//				map.put("action_type", "BAN");
+//				map.put("reason", "신고 누적 3회 자동 정지");
+//
+//				adminMapper.insertBanHistory(map);
+//			}
+//			resultMap.put("count", count);
 			resultMap.put("result", "success");
 
 		} catch (Exception e) {
@@ -467,7 +469,10 @@ public class AdminService {
 		try {
 			// 1. 신고 일괄 처리
 			adminMapper.batchApproveReport(map);
-
+			// 2. 신고 누적 수 조회 (신고게시판 전체)
+			List<Admin> killList = adminMapper.selectKillHistory(map);
+			
+			resultMap.put("killList", killList);
 			resultMap.put("result", "success");
 			resultMap.put("message", Message.MSG_EDIT);
 
@@ -479,6 +484,19 @@ public class AdminService {
 		}
 
 		return resultMap;
+	}
+	
+	public HashMap<String, Object> reportBatchReject(HashMap<String, Object> map) {
+	    HashMap<String, Object> result = new HashMap<>();
+
+	    try {
+	        adminMapper.batchReject(map);
+	        result.put("result", "success");
+	    } catch (Exception e) {
+	        result.put("result", "fail");
+	    }
+
+	    return result;
 	}
 
 	// 신고 상세 조회
@@ -527,15 +545,15 @@ public class AdminService {
 			Integer postNo = adminMapper.selectCommentPostNo(map);
 
 			if (postNo == null) {
-				postNo = adminMapper.selectParentCommentPostNo(map);
+				Integer reviewNo = adminMapper.selectComentReviewNo(map);
+//				postNo = adminMapper.selectParentCommentPostNo(map);
+				resultMap.put("result", "success");
+				resultMap.put("reviewNo", reviewNo);
 			}
 
 			if (postNo != null) {
 				resultMap.put("result", "success");
 				resultMap.put("postNo", postNo);
-			} else {
-				resultMap.put("result", "fail");
-				resultMap.put("message", "대상 게시글 없음");
 			}
 
 		} catch (Exception e) {
@@ -543,7 +561,7 @@ public class AdminService {
 			resultMap.put("result", "fail");
 			resultMap.put("message", "조회 실패");
 		}
-
+System.out.println(resultMap);
 		return resultMap;
 	}
 	
@@ -895,6 +913,28 @@ public class AdminService {
 			resultMap.put("message", "오류 발생");
 		}
 
+		return resultMap;
+	}
+	
+	// 마이 패스 페이지
+	public HashMap<String, Object> getMyPassList(HashMap<String, Object> map) {
+		HashMap<String, Object> resultMap = new HashMap<String, Object>();
+		try {
+			List<Admin> list = adminMapper.selectMyPassList(map);
+			int totalCount = adminMapper.selectMyPassCount(map);
+			int remainingCount = adminMapper.selectMyWallet(map);
+
+			resultMap.put("list", list);
+			resultMap.put("totalCount", totalCount);
+			resultMap.put("remainingCount", remainingCount);
+			resultMap.put("result", "success");
+			resultMap.put("message", Message.MSG_SEARCH);
+		} catch (Exception e) {
+			// TODO: handle exception
+			System.out.println(e.getMessage());
+			resultMap.put("result", "fail");
+			resultMap.put("message", Message.MSG_SERVER_ERR);
+		}
 		return resultMap;
 	}
 }

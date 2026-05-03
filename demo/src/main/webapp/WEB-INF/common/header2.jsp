@@ -17,7 +17,6 @@
             position: relative;
             z-index: 1000;
             background-color: white !important;
-            position: sticky;
         }
 
         /* 2. 메인 메뉴(1차) 링크 스타일 */
@@ -165,8 +164,7 @@
                 <li class="nav-item has-dropdown">
                     <a class="nav-link custom-nav-link" href="${pageContext.request.contextPath}/adminPass.do">패스구매</a>
                     <ul class="dropdown-contents">
-                        <li><a href="${pageContext.request.contextPath}/adminPass.do">패스상품보기</a></li>
-                        <li><a href="${pageContext.request.contextPath}/adminMyPass.do">내 패스 조회</a></li>
+                        <li><a href="${pageContext.request.contextPath}/adminPass.do">패스구매</a></li>
                     </ul>
                 </li>
 
@@ -193,16 +191,22 @@
                                     <a class="nav-link custom-nav-link" href="${pageContext.request.contextPath}/partnerManagement.do">업체페이지 <i class="fas fa-chevron-right arrow-icon"></i></a>
                                     <ul class="dropdown-contents">
                                         <li><a href="${pageContext.request.contextPath}/partnerManagement.do">업체페이지 홈</a></li>
+                                        <li><a href="${pageContext.request.contextPath}/.do">상품관리</a></li>
+                                        <li><a href="${pageContext.request.contextPath}/.do">예약관리</a></li>
+                                        <li><a href="${pageContext.request.contextPath}/.do">문의내역</a></li>
+                                        <li><a href="${pageContext.request.contextPath}/.do">리뷰내역</a></li>
                                     </ul>
+                                    <!-- </ul>  04/30 현재 업체 페이지 기능들이 한 페이지에 합쳐져 있어서 일단 나중에 주소만 넣어도 연결할수 있도록 해놨습니다-->
                                 </c:when>
                                 <c:when test="${sessionScope.sessionRole == 'ADMIN'}">
                                     <a class="nav-link custom-nav-link" href="${pageContext.request.contextPath}/adminMain.do">관리자페이지 <i class="fas fa-chevron-right arrow-icon"></i></a>
                                     <ul class="dropdown-contents">
-                                        <li style="display: flex; align-items: center"><a href="${pageContext.request.contextPath}/adminMain.do">관리자</a> / <a href="${pageContext.request.contextPath}/adminStatistics.do">통계</a></li> 
-                                        <li style="display: flex; align-items: center"><a href="${pageContext.request.contextPath}/adminUser.do">회원</a> / <a href="${pageContext.request.contextPath}/adminCompany.do">업체</a></li>
-                                        <li style="display: flex; align-items: center"><a href="${pageContext.request.contextPath}/adminBoard.do">게시판</a> / <a href="${pageContext.request.contextPath}/adminReview.do">리뷰</a></li>
-                                        <li style="display: flex; align-items: center"><a href="${pageContext.request.contextPath}/adminPayment.do">결제</a> / <a href="${pageContext.request.contextPath}/adminProduct.do">상품</a></li>
-                                        <li style="display: flex; align-items: center"><a href="${pageContext.request.contextPath}/adminReport.do">신고</a> / <a href="${pageContext.request.contextPath}/adminInquiry.do">문의</a></li>
+                                        <li><a href="${pageContext.request.contextPath}/adminMain.do">🛠️관리자페이지 홈</a></li>
+                                        <li style="display: flex; align-items: center"><a href="${pageContext.request.contextPath}/adminUser.do">회원</a><a href="${pageContext.request.contextPath}/adminCompany.do">업체</a></li>
+                                        <li style="display: flex; align-items: center"><a href="${pageContext.request.contextPath}/adminBoard.do">게시판</a><a href="${pageContext.request.contextPath}/adminReview.do">리뷰</a></li>
+                                        <li style="display: flex; align-items: center"><a href="${pageContext.request.contextPath}/adminPayment.do">결제</a><a href="${pageContext.request.contextPath}/adminProduct.do">상품</a></li>
+                                        <li style="display: flex; align-items: center"><a href="${pageContext.request.contextPath}/adminReport.do">신고</a><a href="${pageContext.request.contextPath}/adminInquiry.do">문의</a></li>
+                                        <li style="display: flex; align-items: center"><a href="${pageContext.request.contextPath}/adminStatistics.do">통계</a>
                                     </ul>                             
                                 </c:when>
                             </c:choose>

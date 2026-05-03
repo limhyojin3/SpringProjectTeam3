@@ -28,6 +28,44 @@ public class PaymentController {
 	@Autowired
 	PaymentService paymentService;
 
+	@RequestMapping("/history.do")
+	public String history1(Model model) throws Exception {
+		return "admin/history";
+	}
+	
+	@RequestMapping("/history2.do")
+	public String history2(Model model) throws Exception {
+		return "admin/history2";
+	}
+	
+	@RequestMapping("/history3.do")
+	public String history3(Model model) throws Exception {
+		return "admin/history3";
+	}
+	
+	@RequestMapping("/history4.do")
+	public String history4(Model model) throws Exception {
+		return "admin/history4";
+	}
+	
+	@RequestMapping("/history5.do")
+	public String history5(Model model) throws Exception {
+		return "admin/history5";
+	}
+	
+	@RequestMapping("/history6.do")
+	public String history6(Model model) throws Exception {
+		return "admin/history6";
+	}
+	
+	@RequestMapping("/history7.do")
+	public String history7(Model model) throws Exception {
+		return "admin/history7";
+	}
+	
+	
+	
+
 	@RequestMapping("/payment.do")
 	public String adminPass(Model model) throws Exception {
 		return "admin/payment";
@@ -75,6 +113,15 @@ public class PaymentController {
 	    HashMap<String, Object> resultMap = paymentService.refundPass(map);
 
 	    return new Gson().toJson(resultMap);
+	}
+	
+	// 쿠폰 조회
+	@RequestMapping(value="/couponUseList.dox", method=RequestMethod.POST)
+	@ResponseBody
+	public String couponUseList(@RequestParam HashMap<String,Object> map){
+		map.put("pageSize", Integer.parseInt(map.get("pageSize").toString()));
+		map.put("offSet", Integer.parseInt(map.get("offSet").toString()));
+	    return new Gson().toJson(paymentService.getCouponUseList(map));
 	}
 	
 	

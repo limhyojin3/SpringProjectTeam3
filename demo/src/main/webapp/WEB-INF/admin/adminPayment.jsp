@@ -14,73 +14,15 @@
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
         <link rel="stylesheet" href="${pageContext.request.contextPath}/css/common.css">
         <link rel="stylesheet" href="${pageContext.request.contextPath}/css/adminNavi.css">
+        <link rel="stylesheet" href="${pageContext.request.contextPath}/css/admin-common.css">
         <style>
-            body {
-                background: #f8f9fc;
-                font-size: 14px;
-                color: #333;
-            }
-
-            .middle {
-                width: 100%;
-                display: grid;
-                grid-template-areas: "nav main";
-                grid-template-columns: 300px 1fr;
-                min-height: calc(100vh - 160px);
-            }
-
-            .main {
-                grid-area: main;
-                padding: 35px;
-            }
-
             /* 메인 카드 */
-            .content-box {
-                width: 100%;
+            .payment-container {
+                width: 1040px;
                 background: #fff;
-                border-radius: 18px;
-                box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
-                padding: 30px;
-            }
-
-            /* 제목 */
-            .page-title {
-                font-size: 26px;
-                font-weight: 700;
-                color: #222;
-                margin-bottom: 25px;
-            }
-
-            /* 탭 */
-            .tab-menu {
-                display: flex;
-                gap: 12px;
-                margin-bottom: 25px;
-                flex-wrap: wrap;
-            }
-
-            .tab-menu button {
-                border: none;
-                background: #eef1f6;
-                color: #555;
-                padding: 12px 24px;
-                border-radius: 12px;
-                font-size: 15px;
-                font-weight: 600;
-                transition: all .25s ease;
-                cursor: pointer;
-            }
-
-            .tab-menu button:hover {
-                background: #dbe7ff;
-                color: #2b62ff;
-                transform: translateY(-2px);
-            }
-
-            .tab-menu button.active {
-                background: linear-gradient(135deg, #4a7dff, #275df7);
-                color: white;
-                box-shadow: 0 6px 14px rgba(39, 93, 247, 0.25);
+                border-radius: 10px;
+                box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+                padding: 20px;
             }
 
             /* 테이블 */
@@ -148,29 +90,6 @@
                 color: #c62828;
             }
 
-            /* 페이징 */
-            .page-box {
-                margin-top: 25px;
-                display: flex;
-                justify-content: center;
-                gap: 8px;
-                flex-wrap: wrap;
-            }
-
-            .page-box button {
-                min-width: 42px;
-            }
-
-            .page-box button.active {
-                background: #275df7;
-                color: white;
-            }
-
-            .page-box button:disabled {
-                opacity: .4;
-                cursor: not-allowed;
-            }
-
             /* 상태 뱃지 */
             .badge-success {
                 display: inline-block;
@@ -220,108 +139,109 @@
             <div class="middle">
                 <jsp:include page="/WEB-INF/admin/adminNavi.jsp" />
                 <div class="main">
-                    <div class="tab-menu">
-                        <button :class="{active: activeTab === 'pass'}" @click="fnChangeTab('pass')">패스권결제</button>
-                        <button :class="{active: activeTab === 'reservation'}"
-                            @click="fnChangeTab('reservation')">예약결제</button>
-                        <button :class="{active: activeTab === 'registration'}"
-                            @click="fnChangeTab('registration')">등록결제</button>
-                    </div>
+                    <div class="payment-container">
+                        <div class="tab-menu">
+                            <button :class="{active: activeTab === 'pass'}" @click="fnChangeTab('pass')">패스권결제</button>
+                            <button :class="{active: activeTab === 'reservation'}"
+                                @click="fnChangeTab('reservation')">예약결제</button>
+                            <button :class="{active: activeTab === 'registration'}"
+                                @click="fnChangeTab('registration')">등록결제</button>
+                        </div>
 
-                    <!-- 패스권 결제 -->
-                    <table v-if="activeTab === 'pass'" class="payment-table">
-                        <thead>
-                            <tr>
-                                <th>결제번호</th>
-                                <th>유저</th>
-                                <th>패스권</th>
-                                <th>금액</th>
-                                <th>상태</th>
-                                <th>날짜</th>
-                                <th>환불</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr v-for="p in list" :key="p.payNo">
-                                <td>{{ p.payNo }}</td>
-                                <td>{{ p.userId }}</td>
-                                <td>{{ p.passName }}</td>
-                                <td>{{ p.amount }}</td>
-                                <td>{{ p.payStatus }}</td>
-                                <td>{{ formatDate(p.payDate) }}</td>
-                                <td>
-                                    <button v-if="p.payStatus == 'SUCCESS'" class="btn-refund"
-                                        @click="fnRefund(p.payNo)">
-                                        환불
-                                    </button>
+                        <!-- 패스권 결제 -->
+                        <table v-if="activeTab === 'pass'" class="payment-table">
+                            <thead>
+                                <tr>
+                                    <th>결제번호</th>
+                                    <th>유저</th>
+                                    <th>패스권</th>
+                                    <th>금액</th>
+                                    <th>상태</th>
+                                    <th>날짜</th>
+                                    <th>환불</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr v-for="p in list" :key="p.payNo">
+                                    <td>{{ p.payNo }}</td>
+                                    <td>{{ p.userId }}</td>
+                                    <td>{{ p.passName }}</td>
+                                    <td>{{ p.amount }}</td>
+                                    <td>{{ p.payStatus }}</td>
+                                    <td>{{ formatDate(p.payDate) }}</td>
+                                    <td>
+                                        <button v-if="p.payStatus == 'SUCCESS'" class="btn-refund"
+                                            @click="fnRefund(p.payNo)">
+                                            환불
+                                        </button>
 
-                                    <span v-else class="badge-danger">환불완료</span>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
+                                        <span v-else class="badge-danger">환불완료</span>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
 
-                    <!-- 예약 결제 -->
-                    <table v-if="activeTab === 'reservation'" class="payment-table">
-                        <thead>
-                            <tr>
-                                <th>결제번호</th>
-                                <th>유저</th>
-                                <th>예약번호</th>
-                                <th>상품명</th>
-                                <th>예약금</th>
-                                <th>결제여부</th>
-                                <th>진행여부</th>
-                                <th>결제일</th>
-                                <!-- <th>관리</th> -->
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr v-for="r in list" :key="r.payNo">
-                                <td>{{ r.payNo }}</td>
-                                <td>{{ r.userId }}</td>
-                                <td>{{ r.resNo }}</td>
-                                <td>{{ r.productName }}</td>
-                                <td>{{ r.amount }}</td>
-                                <td>{{ r.payStatus }}</td>
-                                <td>{{ r.resStatus }}</td>
-                                <td>{{ formatDate(r.payDate) }}</td>
-                                <!-- <td>
+                        <!-- 예약 결제 -->
+                        <table v-if="activeTab === 'reservation'" class="payment-table">
+                            <thead>
+                                <tr>
+                                    <th>결제번호</th>
+                                    <th>유저</th>
+                                    <th>예약번호</th>
+                                    <th>상품명</th>
+                                    <th>예약금</th>
+                                    <th>결제여부</th>
+                                    <th>진행여부</th>
+                                    <th>결제일</th>
+                                    <!-- <th>관리</th> -->
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr v-for="r in list" :key="r.payNo">
+                                    <td>{{ r.payNo }}</td>
+                                    <td>{{ r.userId }}</td>
+                                    <td>{{ r.resNo }}</td>
+                                    <td>{{ r.productName }}</td>
+                                    <td>{{ r.amount }}</td>
+                                    <td>{{ r.payStatus }}</td>
+                                    <td>{{ r.resStatus }}</td>
+                                    <td>{{ formatDate(r.payDate) }}</td>
+                                    <!-- <td>
                                     <button @click="fnRefund(r)">환불
                                     </button>
                                 </td> -->
-                            </tr>
-                        </tbody>
-                    </table>
+                                </tr>
+                            </tbody>
+                        </table>
 
-                    <!-- 등록 결제 -->
-                    <table v-if="activeTab === 'registration'" class="payment-table">
-                        <thead>
-                            <tr>
-                                <th>결제번호</th>
-                                <th>업체명</th>
-                                <th>금액</th>
-                                <th>결제일</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr v-for="c in list" :key="c.payNo">
-                                <td>{{ c.payNo }}</td>
-                                <td>{{ c.comName }}</td>
-                                <td>{{ c.amount }}</td>
-                                <td>{{ formatDate(c.payDate) }}</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                    <div class="page-box" v-if="list.length > 0">
-                        <button @click="fnPageMove(currentPage-1)">
-                            < </button>
+                        <!-- 등록 결제 -->
+                        <table v-if="activeTab === 'registration'" class="payment-table">
+                            <thead>
+                                <tr>
+                                    <th>결제번호</th>
+                                    <th>업체명</th>
+                                    <th>금액</th>
+                                    <th>결제일</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr v-for="c in list" :key="c.payNo">
+                                    <td>{{ c.payNo }}</td>
+                                    <td>{{ c.comName }}</td>
+                                    <td>{{ c.amount }}</td>
+                                    <td>{{ formatDate(c.payDate) }}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <div class="page-box" v-if="list.length > 0">
+                            <button @click="fnPageMove(currentPage-1)" :disabled="currentPage===1">‹</button>
 
-                                <button v-for="n in index" @click="fnPageMove(n)" :class="{active: currentPage==n}">
-                                    {{n}}
-                                </button>
+                            <button v-for="p in index" :key="p" @click="fnPageMove(p)" :class="{active: currentPage==p}">
+                                {{p}}
+                            </button>
 
-                                <button @click="fnPageMove(currentPage+1)"> > </button>
+                            <button @click="fnPageMove(currentPage+1)" :disabled="currentPage===index">›</button>
+                        </div>
                     </div>
                 </div>
             </div>

@@ -14,43 +14,18 @@
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
         <link rel="stylesheet" href="${pageContext.request.contextPath}/css/common.css">
         <link rel="stylesheet" href="${pageContext.request.contextPath}/css/adminNavi.css">
+        <link rel="stylesheet" href="${pageContext.request.contextPath}/css/admin-common.css">
+
         <style>
-            body {
-                background-color: #f5f6f7;
-                font-size: 14px;
-                color: #333;
-            }
-
-            .middle {
-                width: 100%;
-                display: grid;
-                grid-template-areas: "nav main";
-                grid-template-columns: 300px 1fr;
-                gap: 5px;
-            }
-
-            .main {
-                grid-area: main;
-                background: #f5f6f7;
-                padding: 20px;
-                display: flex;
-                gap: 20px;
-                align-items: flex-start;
-            }
-
             .inquiry-container {
-
+                width: 1200px;
                 padding: 20px;
                 background: #fff;
                 border-radius: 10px;
                 box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
             }
 
-            .inquiry-container h2 {
-                margin-bottom: 18px;
-                font-size: 24px;
-                font-weight: 700;
-            }
+
 
             /* 상단 헤더 */
             .inquiry-header {
@@ -108,7 +83,7 @@
 
             /* 테이블 */
             .inquiry-table {
-                width: 1000px;
+                width:100%;
                 border-collapse: collapse;
                 background: #fff;
                 overflow: hidden;
@@ -127,7 +102,7 @@
             }
 
             .inquiry-table td {
-                padding: 12px 10px;
+                padding: 10px;
                 border-bottom: 1px solid #f1f1f1;
                 font-size: 13px;
                 color: #333;
@@ -187,7 +162,9 @@
 
             .pagination-wrap {
                 display: flex;
+                justify-content: flex-end;
                 gap: 5px;
+                margin-top: 10px;
             }
 
             .pagination-wrap button {
@@ -195,6 +172,8 @@
                 background: #fff;
                 padding: 5px 10px;
                 border-radius: 6px;
+                transition: all 0.2s;
+
             }
 
             .pagination-wrap button.active {
@@ -339,14 +318,16 @@
                                     </td>
 
                                 </tr>
-
+                                <tr v-for="n in emptyRows" class="empty-row">
+                                    <td colspan="7">&nbsp;</td>
+                                </tr>
                                 <tr v-if="inquirylist.length == 0">
                                     <td colspan="6">문의 내역 없음</td>
                                 </tr>
                             </tbody>
                         </table>
                         <!-- 페이징  -->
-                        <div class="pagination-wrap">
+                        <div class="page-box">
                             <button @click="fnPageMove(currentPage-1)" :disabled="currentPage==1">‹</button>
 
                             <button v-for="p in index" :key="p" @click="fnPageMove(p)"
@@ -432,9 +413,11 @@
                             answerContent: "",
                             status: "ALL",
                             sortType: "latest",
-                            pageSize: 5,
+                            pageSize: 8,
                             index: 1,
-                            currentPage: 1
+                            currentPage: 1,
+                            emptyRows: 0,
+
                         };
                     },
                     methods: {
@@ -473,6 +456,7 @@
                                 success: function (data) {
                                     self.inquirylist = data.list || [];
                                     self.index = Math.ceil(data.totalCount / self.pageSize);
+                                    self.emptyRows = 8 - data.list.length;
                                 }
                             });
                         },

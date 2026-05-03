@@ -15,52 +15,16 @@
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
         <link rel="stylesheet" href="${pageContext.request.contextPath}/css/common.css">
         <link rel="stylesheet" href="${pageContext.request.contextPath}/css/adminNavi.css">
+        <link rel="stylesheet" href="${pageContext.request.contextPath}/css/admin-common.css">
         <style>
-            .middle {
-                width: 100%;
-                /* 화면 전체 높이를 사용하되, 헤더/푸터 제외한 나머지는 유연하게(1fr) */
-                display: grid;
-                grid-template-areas:
-                    "nav main";
-                /* 높이 고정 (쉼표 없음) */
-                grid-template-columns: 300px 1fr;
-                /* 너비 고정 */
-                gap: 5px;
-            }
-
-            .main {
-                grid-area: main;
-                padding: 20px;
-                display: flex;
-                gap: 20px;
-                /* 카드 사이 간격 */
-                align-items: flex-start;
-                /* 카드들이 위쪽에 고정되도록 */
-            }
-
-            .tab-buttons {
-                display: flex;
-                gap: 10px;
-                margin-bottom: 20px;
-            }
-
-            .tab-buttons button {
-                padding: 10px 15px;
-                border: none;
-                background: #eee;
-                cursor: pointer;
-                border-radius: 5px;
-            }
-
-            .tab-buttons button:hover {
-                background: #ff6b6b;
-                color: white;
-            }
-
-            .chart-area {
+            .dashboard-container{
+                width: 1200px;
                 background: #fff;
                 padding: 20px;
                 border-radius: 10px;
+            }
+            .chart-area {
+                
             }
 
             .chart-area div {
@@ -79,27 +43,27 @@
                 <div class="main">
                     <div class="dashboard-container">
                         <!-- 버튼 영역 -->
-                        <div class="tab-buttons">
-                            <button @click="selectedTab = 'sales'; fnGetSales();">월별 매출 현황</button>
-                            <button @click="selectedTab = 'users'; fnGetUsers('USER');">일반 회원 등록수</button>
-                            <button @click="selectedTab = 'companys'; fnGetUsers('NPARTNER');">일반 업체 등록수</button>
-                            <button @click="selectedTab = 'partners'; fnGetUsers('PARTNER')">제휴업체 등록수</button>
+                        <div class="tab-menu">
+                            <button :class="{active: activeTab === 'sales'}"@click="activeTab = 'sales'; fnGetSales();">월별 매출 현황</button>
+                            <button :class="{active: activeTab === 'users'}"@click="activeTab = 'users'; fnGetUsers('USER');">일반 회원 등록수</button>
+                            <button :class="{active: activeTab === 'companys'}"@click="activeTab = 'companys'; fnGetUsers('NPARTNER');">일반 업체 등록수</button>
+                            <button :class="{active: activeTab === 'partners'}"@click="activeTab = 'partners'; fnGetUsers('PARTNER')">제휴업체 등록수</button>
                         </div>
                         <!-- 차트 영역 -->
                         <div class="chart-area">
-                            <div v-if="selectedTab === 'sales'">
+                            <div v-if="activeTab === 'sales'">
                                 <h3>월별 매출 현황</h3>
                                 <div id="chart-sales"></div>
                             </div>
-                            <div v-if="selectedTab === 'users'">
+                            <div v-if="activeTab === 'users'">
                                 <h3>일반 회원 등록수</h3>
                                 <div id="chart-users"></div>
                             </div>
-                            <div v-if="selectedTab === 'companys'">
+                            <div v-if="activeTab === 'companys'">
                                 <h3>일반 업체 등록수</h3>
                                 <div id="chart-companys"></div>
                             </div>
-                            <div v-if="selectedTab === 'partners'">
+                            <div v-if="activeTab === 'partners'">
                                 <h3>제휴 업체 등록수</h3>
                                 <div id="chart-partners"></div>
                             </div>
@@ -114,7 +78,7 @@
                 data() {
                     return {
                         // 변수 - (key : value)
-                        selectedTab: "sales",
+                        activeTab: "sales",
                         list: [],
                         priceList: [],
                         monthList: [],

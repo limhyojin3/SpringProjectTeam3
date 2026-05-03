@@ -26,7 +26,7 @@ public class AdminController {
 
 	@Autowired
 	AdminService adminService;
-
+	
 	@RequestMapping("/adminMain.do")
 	public String main(Model model) throws Exception {
 		return "admin/adminMain";
@@ -121,6 +121,11 @@ public class AdminController {
 	@RequestMapping("/adminRegistration.do")
 	public String adminRegistration(Model model) {
 		return "admin/adminRegistration";
+	}
+	
+	@RequestMapping("/adminMyPass.do")
+	public String adminMyPass(Model model) {
+		return "admin/adminMyPass";
 	}
 
 	@RequestMapping(value = "/sales.dox", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
@@ -332,6 +337,20 @@ public class AdminController {
 	    resultMap = adminService.batchApproveReport(map);
 
 	    return new Gson().toJson(resultMap);
+	}
+	@RequestMapping(value = "/reportBatchReject.dox", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
+	@ResponseBody
+	public String reportBatchReject(Model model, @RequestParam(value="reportNos") List<Integer> reportNos,
+			@RequestParam String rejectReason) throws Exception{
+		HashMap<String, Object> map = new HashMap<>();
+
+		map.put("reportNos", reportNos);
+	    map.put("rejectReason", rejectReason);
+
+
+	    map = adminService.reportBatchReject(map);
+
+	    return new Gson().toJson(map);
 	}
 		
 		// 신고 단일 승인
@@ -559,7 +578,14 @@ public class AdminController {
 	    return adminService.removePass(map);
 	}
 	
-	
+	// 마이 패스 조회
+	@RequestMapping("/MyPassList.dox")
+	@ResponseBody
+	public HashMap<String, Object> getMyPassList(@RequestParam HashMap<String, Object> map) {
+		map.put("pageSize", Integer.parseInt(map.get("pageSize").toString()));
+		map.put("offSet", Integer.parseInt(map.get("offSet").toString()));
+		return adminService.getMyPassList(map);
+	}
 	
 	
 	

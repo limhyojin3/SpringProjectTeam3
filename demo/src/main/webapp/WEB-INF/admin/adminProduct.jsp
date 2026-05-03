@@ -14,31 +14,17 @@
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
         <link rel="stylesheet" href="${pageContext.request.contextPath}/css/common.css">
         <link rel="stylesheet" href="${pageContext.request.contextPath}/css/adminNavi.css">
+        <link rel="stylesheet" href="${pageContext.request.contextPath}/css/admin-common.css">
+
         <style>
-            /* 전체 레이아웃 */
-            .middle {
-                width: 100%;
-                display: grid;
-                grid-template-areas: "nav main";
-                grid-template-columns: 300px 1fr;
-                min-height: calc(100vh - 160px);
-                background: #f8f9fc;
-            }
-
-            .main {
-                grid-area: main;
-                padding: 35px;
-            }
-
-            /* 카드 박스 */
             .content-box {
+                width: 1040px;
                 background: #fff;
-                border-radius: 18px;
-                box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
-                padding: 30px;
+                border-radius: 10px;
+                box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+                padding: 20px;
             }
 
-            /* 상단 타이틀 */
             .page-title {
                 font-size: 26px;
                 font-weight: 700;
@@ -152,41 +138,6 @@
                     padding: 20px;
                 }
             }
-
-            .page-box {
-                margin-top: 25px;
-                display: flex;
-                justify-content: center;
-                gap: 8px;
-                flex-wrap: wrap;
-            }
-
-            .page-box button {
-                border: none;
-                background: #eef1f6;
-                padding: 10px 14px;
-                min-width: 42px;
-                border-radius: 10px;
-                font-weight: 600;
-                color: #555;
-                cursor: pointer;
-                transition: .2s;
-            }
-
-            .page-box button:hover {
-                background: #dbe7ff;
-                color: #2b62ff;
-            }
-
-            .page-box button.active {
-                background: #275df7;
-                color: white;
-            }
-
-            .page-box button:disabled {
-                opacity: .4;
-                cursor: not-allowed;
-            }
         </style>
     </head>
 
@@ -255,21 +206,24 @@
                                         <!-- <button class="btn btn-sm btn-danger" @click="fnDelete(p.productNo)">삭제</button> -->
                                     </td>
                                 </tr>
+                                <tr v-for="n in emptyRows" class="empty-row">
+                                    <td colspan="7">&nbsp;</td>
+                                </tr>
                             </tbody>
                         </table>
                         <div v-if="activeTab === 'product'" class="page-box">
 
                             <button @click="fnPageMove(currentPage - 1)" :disabled="currentPage == 1">
-                                < </button>
+                            </button>
 
-                                    <button v-for="n in index" :key="n" @click="fnPageMove(n)"
-                                        :class="{active : currentPage == n}">
-                                        {{n}}
-                                    </button>
+                            <button v-for="n in index" :key="n" @click="fnPageMove(n)"
+                                :class="{active : currentPage == n}">
+                                {{n}}
+                            </button>
 
-                                    <button @click="fnPageMove(currentPage + 1)" :disabled="currentPage == index">
-                                        >
-                                    </button>
+                            <button @click="fnPageMove(currentPage + 1)" :disabled="currentPage == index">
+                                >
+                            </button>
 
                         </div>
                         <!-- 쿠폰 -->
@@ -318,8 +272,8 @@
                                 style="width:220px;">
 
                             <select v-model="status" class="form-control" style="width:140px;">
-                                <option value="">전체상태</option>
-                                <option value="1">사용중</option>
+                                <option value="">판매상태</option>
+                                <option value="1">판매중</option>
                                 <option value="0">중지</option>
                             </select>
 
@@ -357,7 +311,7 @@
                                         </button>
 
                                         <button v-else class="btn btn-sm btn-success" @click="fnPassStatus(p.passNo,1)">
-                                            재사용
+                                            재판매
                                         </button>
 
                                         <button class="btn btn-sm btn-danger" @click="fnDeletePass(p.passNo)">
@@ -425,7 +379,6 @@
                                     </div>
 
                                     <div class="modal-body">
-
                                         <div class="form-group">
                                             <label>패스명</label>
                                             <input type="text" v-model="passForm.passName" class="form-control">
@@ -448,7 +401,10 @@
                                                 <option value="0">중지</option>
                                             </select>
                                         </div>
-
+                                        <div class="form-group">
+                                            <label>설명</label>
+                                            <textarea v-model="passForm.description" placeholder="패스 설명 입력"></textarea>
+                                        </div>
                                     </div>
 
                                     <div class="modal-footer">
@@ -483,6 +439,7 @@
                         pageSize: 5,
                         currentPage: 1,
                         index: 1,
+                        emptyRows: 0,
                         coupon: {
                             couponCode: "",
                             couponName: "",
@@ -545,6 +502,7 @@
                                 console.log("list =", res.list);
                                 self.list = res.list || [];
                                 self.index = Math.ceil((res.totalCount || 0) / self.pageSize);
+                                self.emptyRows = 5 - data.list.length;
                             },
                         });
                     },
@@ -736,7 +694,7 @@
                     fnPassStatus(no, status) {
 
                         let self = this;
-                        let msg = status == 1 ? "재사용 하시겠습니까?" : "중지 하시겠습니까?";
+                        let msg = status == 1 ? "재판매 하시겠습니까?" : "중지 하시겠습니까?";
                         if (!confirm(msg)) {
                             return;
                         }

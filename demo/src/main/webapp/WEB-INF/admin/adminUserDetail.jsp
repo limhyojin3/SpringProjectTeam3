@@ -304,7 +304,7 @@
 
                         fnBanUser() {
                             let self = this;
-
+                            if(!confirm("정지하시겠습니까?")){return}
                             $.ajax({
                                 url: "http://localhost:8080/editMemberBan.dox",
                                 type: "POST",
@@ -325,7 +325,7 @@
 
                         fnUnbanUser() {
                             let self = this;
-
+                            if(!confirm("정지해제하시겠습니까?")){return}
                             $.ajax({
                                 url: "http://localhost:8080/editMemberBan.dox",
                                 type: "POST",
