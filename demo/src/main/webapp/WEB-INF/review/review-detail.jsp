@@ -313,7 +313,7 @@
                                 :src="src" 
                                 class="review-img single-img shadow-sm mb-2" 
                                 style="max-height: 300px; width: auto; cursor: pointer;"
-                                @click="window.open(src)">
+                                @click="fnOpenImage(src)">
                             <p class="small text-muted mt-2">이미지를 클릭하면 크게 볼 수 있습니다.</p>
                         </div>
                         <div v-else class="text-center py-4 text-muted">
@@ -332,12 +332,7 @@
                             <span class="text-muted small">리뷰 번호</span>
                             <span># {{ reviewNo }}</span>
                         </div>
-                        <div class="admin-info-item">
-                            <span class="text-muted small">결제 여부</span>
-                            <span :class="info.isPaid == 1 ? 'text-danger' : 'text-primary'">
-                                {{ info.isPaid == 1 ? '유료(포인트 지급됨)' : '무료' }}
-                            </span>
-                        </div>
+                        
                         <!-- 추가적으로 관리자가 알아야 할 DB 정보가 있다면 여기에 배치 -->
                     </div>
                 </div>
@@ -772,6 +767,11 @@
                         contentType: "application/json",
                         success: () => { this.replyTo = null; this.fnGetComments(); }
                     });
+                },
+                fnOpenImage(url) {
+                    if (url) {
+                        window.open(url, '_blank');
+                    }
                 }
             },
             mounted() { this.fnGetDetail(); }
