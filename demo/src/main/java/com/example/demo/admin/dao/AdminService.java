@@ -948,10 +948,14 @@ System.out.println(resultMap);
 			adminMapper.updateCompanyReg(map);
 			adminMapper.updateCompanyRegPaid(map);
 			resultMap.put("result", "success");
+			resultMap.put("message", "제휴 업체 등록에 성공했습니다");
+
 
 		} catch (Exception e) {
 			System.out.println(e.getMessage());
 			resultMap.put("result", "fail");
+			resultMap.put("message", "제휴 업체 등록에 실패했습니다");
+
 			throw e; // 트랜잭션 롤백
 		}
 

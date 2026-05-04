@@ -512,7 +512,12 @@ public class CompanyService {
 //			List<User> list = defaultMapper.selectUserList(map);
 //			User info = defaultMapper.selectUser(map);
 //			List<String> list = companyMapper.selectBookedTimes(map);
-
+	        String impUid = map.get("imp_uid").toString();
+	        String merchantUid = map.get("merchant_uid").toString();
+	        map.put("impUid", impUid);
+	        map.put("merchantUid", merchantUid);
+	        System.out.println(map.get("impUid"));
+	        System.out.println(map.get("merchantUid"));
 			int result1 = companyMapper.insertPaymentFinal(map);
 
 			System.out.println(map.get("payDate"));// 2026-04-27T03:05:39

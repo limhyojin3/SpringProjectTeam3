@@ -1237,10 +1237,8 @@
                     <main>
                         <div v-if="currentMenu === 'main' && productPage === 'list'">
                             <div style="text-align: right; flex-direction: column;">
-                                <button @click="goMyResPage" style="padding: 8px 15px; cursor: pointer; 
-                                border: 1px solid #ccc; background: #fff; border-radius: 4px; margin-right: 10px; margin-bottom: 10px;">나의 예약 보러가기</button>
-                                <button @click="goMyInquiryPage" style="padding: 8px 15px; cursor: pointer; 
-                                border: 1px solid #ccc; background: #fff; border-radius: 4px; margin-bottom: 10px;">나의 문의 보러가기</button>
+                                <button @click="goMyResPage">나의 예약 보러가기</button>
+                                <button @click="goMyInquiryPage">나의 문의 보러가기</button>
 
 
                             </div>
@@ -1280,10 +1278,8 @@
                         </div>
 
                         <div v-if="currentMenu === 'main' && productPage === 'detail'">
-                            <!-- {{product1}} -->
-                            <button @click="fnBack()" style="padding: 8px 15px; cursor: pointer; 
-                                border: 1px solid #ccc; background: #fff; border-radius: 4px;
-                                 margin-right: 10px; margin-bottom: 10px;">← 뒤로가기</button>
+                            {{product1}}
+                            <button @click="fnBack()" style="margin-bottom:10px;">← 뒤로가기</button>
 
                             <div class="detail-container">
                                 <div class="detail-left">
@@ -1386,7 +1382,7 @@
 
                             <div class="reservation-ticket">
                                 <div class="ticket-header">
-                                    <span class="ticket-brand">MARRY VIEW RESERVATION</span>
+                                    <span class="ticket-brand">MERRY VIEW RESERVATION</span>
                                     <span class="ticket-type">OFFICIAL TICKET</span>
                                 </div>
                                 <!-- {{product1}}
@@ -1395,9 +1391,9 @@
                                 <!-- <div style="text-align: right;">
                                     <img :src="product1.thumbnail" style="max-height: 200px; margin-top: 10px; margin-right: 20px;">
                                 </div> -->
-                                <!-- {{product1}}
+                                {{product1}}
                                 {{"${sessionScope.sessionId}"}}
-                                {{inquiry}} -->
+                                {{inquiry}}
 
                                 <div class="ticket-body">
                                     <div class="ticket-info">
@@ -1474,7 +1470,7 @@
 
                             <div class="reservation-ticket">
                                 <div class="ticket-header">
-                                    <span class="ticket-brand">MARRY VIEW RESERVATION</span>
+                                    <span class="ticket-brand">MERRY VIEW RESERVATION</span>
                                     <span class="ticket-type">OFFICIAL TICKET</span>
                                 </div>
                                 <!-- {{product1}}
@@ -1565,9 +1561,7 @@
                         </div> -->
                         <div v-if="currentMenu === 'main' && productPage === 'resultOfReservation'"
                             class="my-res-container">
-                            <button @click="fnBack()" style="padding: 8px 15px; cursor: pointer; 
-                                border: 1px solid #ccc; background: #fff; border-radius: 4px;
-                                 margin-right: 10px; margin-bottom: 10px;">← 뒤로가기</button>
+                            <button @click="fnBack()" style="margin-bottom:10px;">← 뒤로가기</button>
 
                             <h2 class="list-title">나의 예약 내역</h2>
 
@@ -1614,7 +1608,7 @@
 
                             <div class="reservation-ticket">
                                 <div class="ticket-header">
-                                    <span class="ticket-brand">MARRY VIEW RESERVATION</span>
+                                    <span class="ticket-brand">MERRY VIEW RESERVATION</span>
                                     <span class="ticket-type">OFFICIAL TICKET</span>
                                 </div>
                                 <!-- {{product1}}
@@ -1711,8 +1705,8 @@
                             style="max-width: 900px; margin: 20px auto; padding: 20px;">
                             <!-- <button @click="productPage = 'list'">뒤로가기</button> -->
                             <!-- {{product1}}여기서는 사용 ㄴㄴ -->
-                            <!-- {{"${sessionScope.sessionId}"}}
-                            {{myInquiryList}} -->
+                            {{"${sessionScope.sessionId}"}}
+                            {{myInquiryList}}
 
                             <!-- 헤더 영역 -->
                             <div
@@ -1727,7 +1721,7 @@
                             <!-- 문의 리스트 반복문 -->
                             <div v-if="myInquiryList && myInquiryList.length > 0">
 
-                                <!-- {{myInquiry1}} -->
+                                {{myInquiry1}}
 
                                 <div v-for="(inquiry, index) in myInquiryList" :key="index"
                                     @click="fnInquiryAnswerDetails(inquiry)" class="inquiryTicket"
@@ -1787,7 +1781,7 @@
                             style="max-width: 800px; margin: 0 auto; padding: 20px; font-family: 'Noto Sans KR', sans-serif;">
                             <!-- <button @click="productPage = 'myRealInquiryList'">뒤로 가기</button> -->
 
-                            <!-- {{myInquiry1}} -->
+                            {{myInquiry1}}
                             <!-- <div>문의내역 상세보기</div>
                             <hr>
                             <div>내가 문의한 제목</div>
@@ -1847,13 +1841,13 @@
                                     <!-- 데이터에 답변 필드명이 'answerContents'라고 가정했습니다 -->
                                     <div
                                         style="line-height: 1.6; color: #333; white-space: pre-wrap; font-size: 1.05rem; margin-bottom: 20px;">
-                                        {{ myInquiry1.answerContents || '답변 내용을 불러오는 중입니다.' }}
-                                        <!-- 답변 내용을 불러오는 중입니다. -->
+                                        <!-- {{ myInquiry1.answerContents || '답변 내용을 불러오는 중입니다.' }} -->
+                                        답변 내용을 불러오는 중입니다.
                                     </div>
                                     <div
                                         style="text-align: right; font-size: 0.9rem; color: #999; border-top: 1px solid #f4f4f4; padding-top: 15px;">
-                                        답변자: {{ myInquiry1.ansCompany || '관리자' }}
-                                        <!-- 답변자 : 관리자 -->
+                                        <!-- 답변자: {{ myInquiry1.ansUserId || '관리자' }} -->
+                                        답변자 : 관리자
                                     </div>
                                 </div>
                             </div>
@@ -1864,7 +1858,7 @@
                                 <div style="font-size: 1.5rem; margin-bottom: 10px;">⏳</div>
                                 답변을 기다리고 있습니다. 조금만 더 기다려 주세요!
                             </div>
- 
+
                         </div>
 
             </div>
@@ -2334,25 +2328,10 @@
             },
             watch: {
                 selectedDate(newVal) {
-
-                    const today = new Date();
-                    const tomorrow = new Date(today);
-                    tomorrow.setDate(today.getDate() + 1);
-
-                    tomorrow.setHours(0,0,0,0);
-                    const selected = new Date(newVal);
-                    selected.setHours(0,0,0,0);
-
-                    /* 선택된 날짜를 감시 - 잘못된 날짜가 올 경우 알림을 띄운다.*/
-                    if(selected < tomorrow){
-                        alert("날짜는 내일 이후부터 선택 가능합니다!");
-
-                        this.selectedDate = '';
-                    } else{  /* 제대로 된 날짜가 올경우 함수를 호출한다.*/
+                    if (newVal) {
                         this.fnGetBookedTimes();
                     }
-
-                },
+                }
             },
             methods: {
                 // 함수(메소드) - (key : function())
@@ -2980,13 +2959,15 @@
                         alert("취소되었습니다.");
                     }
                 },
-                fnPaymentFinal2() {
+                fnPaymentFinal2(res) {
                     // myReservation1.deposit 은 예약금을 의미함.
                     let self = this;
                     let param = {
                         userId: "${sessionScope.sessionId}",
                         amount: self.myReservation1.deposit,
-                        resNo: self.myReservation1.resNo
+                        resNo: self.myReservation1.resNo,
+                        imp_uid: res.impUid,
+                        merchant_uid: res.merchantUid
                     };
 
                     console.log(param);
@@ -3024,7 +3005,7 @@
                         {
                             channelKey: "channel-key-1ebd3d65-20bd-412e-83f3-b7e0c3b368ff",
                             pay_method: "card",
-                            merchant_uid: "order_" + self.sessionId + "_" + new Date().getTime(), // 주문 고유 번호
+                            merchant_uid: "order_" + "${sessionScope.sessionId}" + "_" + new Date().getTime(), // 주문 고유 번호
                             name: self.myReservation1.productName,
                             amount: self.myReservation1.deposit,      //제품 가격
                         },
@@ -3044,7 +3025,7 @@
                                 // 페이지 이동 필요하면 페이지 이동 (메인 or 마이)
                                 // 결제 성공 후 서버 검증
                                 console.log("imp_uid:", response.imp_uid);
-                                self.fnVerifyPayment(response.imp_uid, response.merchant_uid);
+                                self.fnVerifyPayment(response);
                             } else {
                                 console.log("에러내용: " + response.error_msg);
                                 // self.isPaying = false;
@@ -3054,34 +3035,39 @@
                     );
                 },
 
-                fnVerifyPayment(imp_uid, merchant_uid) {
+                fnVerifyPayment(response) {
                     let self = this
-                    console.log("서버로 보내는 imp_uid:", imp_uid);
+                    console.log("서버로 보내는 imp_uid:", response.imp_uid);
+                    console.log("서버로 보내는 merchant_uid:", response.merchant_uid);
+
                     $.ajax({
                         url: "http://localhost:8080/verifyPayment3.dox",
                         type: "POST",
                         data: {
                             userId: "${sessionScope.sessionId}",     // 로그인 아이디
-                            imp_uid: imp_uid,           // 결제 고유 값(중복)
-                            merchant_uid: merchant_uid,
+                            imp_uid: response.imp_uid,           // 결제 고유 값(중복)
+                            merchant_uid: response.merchant_uid,
                             amount: self.myReservation1.deposit,
-                            
+                            type: "RES"
                         },
                         success: function (res) {
                             console.log(res);
                             if (res.result == "success") {
-                                console.log("포트원 번호: " + res.imp_uid);
-
+                                console.log("포트원 번호: " + res.impUid);
+                                console.log("포트원 번호: " + res.merchantUid);
                                 // self.isModalOpen = false; 모달 끄기
                                 // location.href = "/adminPayFinish.do?payNo=" + res.pay_no + "&type=PASS";
                                 //예약이면 &type=RES 등록이면 &type=REG
-                                self.fnPaymentFinal2();
+                                self.fnPaymentFinal2(res);
                             } else {
                                 console.log("에러내용: " + res.error_msg);
                                 self.isPaying = false;
                                 alert("결제 검증 실패");
                             }
                         }, error: function (xhr, status, err) {
+                            console.log("ERROR:", xhr.responseText);
+                            console.log("STATUS:", status);
+                            console.log("ERR:", err);
                             self.isPaying = false;
                             alert("서버 통신 오류");
                             console.log(xhr);
@@ -3145,41 +3131,13 @@
                         }
                     });
                 },
-                //특정 문의를 클릭하면 실행되는거// 문의내용 상세보기로 간다
+                //특정 문의를 클릭하면 실행되는거
                 fnInquiryAnswerDetails(inquiry) {
 
                     //특정 문의에 대한걸 복사해서 변수에 담는다.
                     this.myInquiry1 = { ...inquiry };
 
-                    this.productPage = 'inquiry1Details'; //문의내용상세보기
-
-                    //여기서 통신한다.
-                    let self = this;
-                    let param = {
-                        inquiryNo: self.myInquiry1.inquiryNo
-                    };
-
-                    console.log(param);
-                    $.ajax({
-                        url: "/getInquiry1Answer.dox",
-                        dataType: "json",
-                        type: "POST",
-                        data: param,
-                        success: function (data) {
-                            console.log(data);
-
-                            if(data.result === "success"){
-                                self.myInquiry1.answerContents = data.info.answerContents;
-                                self.myInquiry1.ansCompany = data.info.userId;
-                                
-                            } else{
-                                alert("서버 오류!");
-                            }
-                            
-                        }
-                    });
-
-
+                    this.productPage = 'inquiry1Details';
 
                 }
 

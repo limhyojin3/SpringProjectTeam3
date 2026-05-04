@@ -75,8 +75,6 @@ public class PaymentController {
 	@PostMapping("/verifyPayment3.dox")
 	@ResponseBody
 	public HashMap<String, Object> verifyPayment3(@RequestParam HashMap<String, Object> map) {
-
-		String type = String.valueOf(map.get("type"));
 		
 		return paymentService.verifyPayment3(map);
 	}
