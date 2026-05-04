@@ -1,32 +1,61 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
-    <div class="navi">
-        <button type="button" :class="['navi-btn', activeMenu === 'main' ? 'activebtn' : '']"
-            @click="fnPage('/adminMain.do')">관리자 메인 페이지</button>
+    </head>
 
-        <button type="button" :class="['navi-btn', activeMenu === 'user' ? 'activebtn' : '']"
-            @click="fnPage('/adminUser.do')">회원 관리</button>
+    <body>
 
-        <button type="button" :class="['navi-btn', activeMenu === 'company' ? 'activebtn' : '']"
-            @click="fnPage('/adminCompany.do')">업체 관리</button>
+        <div class="admin-side">
 
-        <button type="button" :class="['navi-btn', activeMenu === 'board' ? 'activebtn' : '']"
-            @click="fnPage('/adminBoard.do')">게시판 관리</button>
+            
+            <a class="admin-title" href="${pageContext.request.contextPath}/adminMain.do">관리자페이지</a>
+          
 
-        <button type="button" :class="['navi-btn', activeMenu === 'review' ? 'activebtn' : '']"
-            @click="fnPage('/adminReview.do')">리뷰 관리</button>
+            <!-- 계정관리 -->
+            <div class="menu-box">
+                <div class="default-view">계정 관리
+                    <a href="${pageContext.request.contextPath}/adminUser.do"></a>
+                </div>
+                <div class="hover-view">
+                    <a href="${pageContext.request.contextPath}/adminUser.do">회원</a>
+                    <a href="${pageContext.request.contextPath}/adminCompany.do">업체</a>
+                </div>
+            </div>
 
-        <button type="button" :class="['navi-btn', activeMenu === 'payment' ? 'activebtn' : '']"
-            @click="fnPage('/adminPayment.do')">결제 관리</button>
+            <!-- 콘텐츠관리 -->
+            <div class="menu-box">
+                <div class="default-view">콘텐츠 관리
+                    <a href="${pageContext.request.contextPath}/adminBoard.do"></a>
+                </div>
+                <div class="hover-view">
+                    <a href="${pageContext.request.contextPath}/adminBoard.do">게시판</a>
+                    <a href="${pageContext.request.contextPath}/adminReview.do">리뷰</a>
+                </div>
+            </div>
 
-        <button type="button" :class="['navi-btn', activeMenu === 'product' ? 'activebtn' : '']"
-            @click="fnPage('/adminProduct.do')">상품 관리</button>
+            <!-- 매출관리 -->
+            <div class="menu-box">
+                <div class="default-view">매출 관리
+                    <a href="${pageContext.request.contextPath}/adminPayment.do"></a>
+                </div>
+                <div class="hover-view">
+                    <a href="${pageContext.request.contextPath}/adminPayment.do">결제</a>
+                    <a href="${pageContext.request.contextPath}/adminProduct.do">상품</a>
+                </div>
+            </div>
 
-        <button type="button" :class="['navi-btn', activeMenu === 'report' ? 'activebtn' : '']"
-            @click="fnPage('/adminReport.do')">신고 관리</button>
+            <!-- 고객센터 -->
+            <div class="menu-box">
+                <div class="default-view">고객센터
+                    <a href="${pageContext.request.contextPath}/adminReport.do"></a>
+                </div>
+                <div class="hover-view">
+                    <a href="${pageContext.request.contextPath}/adminReport.do">신고</a>
+                    <a href="${pageContext.request.contextPath}/adminInquiry.do">문의</a>
+                </div>
+            </div>
 
-        <button type="button" :class="['navi-btn', activeMenu === 'inquiry' ? 'activebtn' : '']"
-            @click="fnPage('/adminInquiry.do')">문의 관리</button>
+            <!-- 통계 -->
+            <a href="${pageContext.request.contextPath}/adminStatistics.do" class="single-btn">
+                통계 보기
+            </a>
 
-        <button type="button" :class="['navi-btn', activeMenu === 'stats' ? 'activebtn' : '']"
-            @click="fnPage('/adminStatistics.do')">통계</button>
-    </div>
+        </div>

@@ -17,7 +17,6 @@
             position: relative;
             z-index: 1000;
             background-color: white !important;
-            position: sticky;
         }
 
         /* 2. 메인 메뉴(1차) 링크 스타일 */
@@ -128,45 +127,43 @@
         <div class="collapse navbar-collapse">
             <ul class="navbar-nav ml-auto" style="align-items: center; overflow: visible !important;">
                 <li class="nav-item has-dropdown">
-                    <a class="nav-link custom-nav-link" href="${pageContext.request.contextPath}/about.do">회사소개 </a>
+                    <a class="nav-link custom-nav-link" href="javascript:void(0)">회사소개 </a>
                     <ul class="dropdown-contents">
                         <li><a href="/about.do">메리뷰 소개</a></li>
                         <li><a href="/location.do">찾아오시는 길</a></li>
-                        <li><a href="/history.do">회사 연혁</a></li>
                     </ul>
                 </li>
 
                 <li class="nav-item has-dropdown">
-                    <a class="nav-link custom-nav-link" href="${pageContext.request.contextPath}/productCategoryTag.do">상품목록</a>
+                    <a class="nav-link custom-nav-link" href="javascript:void(0)">상품목록</a>
                     <ul class="dropdown-contents">
                         <li><a href="${pageContext.request.contextPath}/productCategoryTag.do">상품 찾기</a></li>
                     </ul>
                 </li>
 
                 <li class="nav-item has-dropdown">
-                    <a class="nav-link custom-nav-link" href="${pageContext.request.contextPath}/api/community/list.do">커뮤니티</a>
+                    <a class="nav-link custom-nav-link" href="javascript:void(0)">커뮤니티</a>
                     <ul class="dropdown-contents">
                         <li><a href="${pageContext.request.contextPath}/api/community/list.do">전체 보기</a></li>
                         <li><a href="${pageContext.request.contextPath}/api/community/list.do?category=자유">자유글</a></li>
                         <li><a href="${pageContext.request.contextPath}/api/community/list.do?category=질문">질문글</a></li>
-                        <li><a href="${pageContext.request.contextPath}/api/community/list.do?category=정보">정보공유글</a></li>
+                        <li><a href="${pageContext.request.contextPath}/api/community/list.do?category=정보공유">정보공유글</a></li>
                     </ul>
                 </li>
 
                 <li class="nav-item has-dropdown">
-                    <a class="nav-link custom-nav-link" href="${pageContext.request.contextPath}/api/review/list.do">리얼리뷰</a>
+                    <a class="nav-link custom-nav-link" href="javascript:void(0)">리얼리뷰</a>
                     <ul class="dropdown-contents">
                         <li><a href="${pageContext.request.contextPath}/api/review/list.do">전체보기</a></li>
-                        <li><a href="${pageContext.request.contextPath}/api/review/list.do?isPaid=1">💎 유료 리뷰</a></li>
-                        <li><a href="${pageContext.request.contextPath}/api/review/list.do?isPaid=0">🎁 무료 리뷰</a></li>
+                        <li><a href="/api/review/list.do?isPaid=1">💎 유료 리뷰</a></li>
+                        <li><a href="/api/review/list.do?isPaid=0">🎁 무료 리뷰</a></li>
                     </ul>
                 </li>
 
                 <li class="nav-item has-dropdown">
-                    <a class="nav-link custom-nav-link" href="${pageContext.request.contextPath}/adminPass.do">패스구매</a>
+                    <a class="nav-link custom-nav-link" href="javascript:void(0)">패스구매</a>
                     <ul class="dropdown-contents">
-                        <li><a href="${pageContext.request.contextPath}/adminPass.do">패스상품보기</a></li>
-                        <li><a href="${pageContext.request.contextPath}/adminMyPass.do">내 패스 조회</a></li>
+                        <li><a href="${pageContext.request.contextPath}/adminPass.do">패스구매</a></li>
                     </ul>
                 </li>
 
@@ -177,7 +174,7 @@
                             <c:choose>
                                 <%-- 2. 일반 사용자(USER)인 경우만 드롭다운 메뉴 포함 --%>
                                 <c:when test="${sessionScope.sessionRole == 'USER'}">
-                                    <a class="nav-link custom-nav-link" href="${pageContext.request.contextPath}/userMyPage.do">마이페이지</a>
+                                    <a class="nav-link custom-nav-link" href="javascript:void(0);">마이페이지</a>
                                     <ul class="dropdown-contents">
                                         <li><a href="${pageContext.request.contextPath}/userMyPage.do">마이페이지 홈</a></li>
                                         <li><a href="${pageContext.request.contextPath}/userMyPage-pay.do">결제 멤버십 내역</a></li>
@@ -190,24 +187,10 @@
 
                                 <%-- 3. 파트너/관리자 등은 드롭다운 없이 단일 링크로 유지 --%>
                                 <c:when test="${sessionScope.sessionRole == 'PARTNER' or sessionScope.sessionRole == 'NPARTNER'}">
-                                    <a class="nav-link custom-nav-link" href="javascript:void(0)">업체페이지</a>
-                                    <ul class="dropdown-contents">
-                                        <li><a href="${pageContext.request.contextPath}/partnerManagement.do">업체페이지 홈</a></li>
-                                        <li><a href="${pageContext.request.contextPath}/partnerManagement.do?menu=product">상품 관리</a></li>
-                                        <li><a href="${pageContext.request.contextPath}/partnerManagement.do?menu=reservation">예약 관리</a></li>
-                                        <li><a href="${pageContext.request.contextPath}/partnerManagement.do?menu=inquiry">문의 내역</a></li>
-                                        <li><a href="${pageContext.request.contextPath}/partnerManagement.do?menu=review">리뷰 내역</a></li>
-                                    </ul>
+                                    <a class="nav-link custom-nav-link" href="${pageContext.request.contextPath}/partnerManagement.do">업체페이지 <i class="fas fa-chevron-right arrow-icon"></i></a>
                                 </c:when>
                                 <c:when test="${sessionScope.sessionRole == 'ADMIN'}">
                                     <a class="nav-link custom-nav-link" href="${pageContext.request.contextPath}/adminMain.do">관리자페이지 <i class="fas fa-chevron-right arrow-icon"></i></a>
-                                    <ul class="dropdown-contents">
-                                        <li style="display: flex; align-items: center"><a href="${pageContext.request.contextPath}/adminMain.do">관리자</a> / <a href="${pageContext.request.contextPath}/adminStatistics.do">통계</a></li> 
-                                        <li style="display: flex; align-items: center"><a href="${pageContext.request.contextPath}/adminUser.do">회원</a> / <a href="${pageContext.request.contextPath}/adminCompany.do">업체</a></li>
-                                        <li style="display: flex; align-items: center"><a href="${pageContext.request.contextPath}/adminBoard.do">게시판</a> / <a href="${pageContext.request.contextPath}/adminReview.do">리뷰</a></li>
-                                        <li style="display: flex; align-items: center"><a href="${pageContext.request.contextPath}/adminPayment.do">결제</a> / <a href="${pageContext.request.contextPath}/adminProduct.do">상품</a></li>
-                                        <li style="display: flex; align-items: center"><a href="${pageContext.request.contextPath}/adminReport.do">신고</a> / <a href="${pageContext.request.contextPath}/adminInquiry.do">문의</a></li>
-                                    </ul>                             
                                 </c:when>
                             </c:choose>
                         </c:when>
@@ -223,7 +206,7 @@
                 
                 <c:if test="${sessionRole != 'ADMIN'}">
                     <li class="nav-item">
-                        <a class="nav-link" href="${sessionRole == 'USER' ? 'userMyPage.do' : '/partnerManagement.do'}" style="color: #ff4d6d !important; padding: 0 10px !important;">
+                        <a class="nav-link" href="${sessionRole == 'COMPANY' ? '#' : '/userMyPage-cs.do'}" style="color: #ff4d6d !important; padding: 0 10px !important;">
                             <i class="fas fa-headset" style="font-size: 1.3rem !important;"></i>
                         </a>
                     </li>
@@ -258,97 +241,52 @@
 <script>
 document.addEventListener('DOMContentLoaded', function() {
 
-    // 1. 헤더 드롭다운 활성화
+    // ── 1. 헤더 드롭다운 (기존 방식 유지) ──────────────────
     const header = document.querySelector('.dropdown-header-wrap');
     if (header) {
         header.addEventListener('mouseenter', () => header.classList.add('is-active'));
         header.addEventListener('mouseleave', () => header.classList.remove('is-active'));
     }
 
-    // 2. URL 파라미터에 따른 자동 탭 클릭 함수
+    // ── 2. URL 파라미터 탭 클릭 처리 ──────────────────────
     function handleTabClick() {
         const urlParams = new URLSearchParams(window.location.search);
         const categoryParam = urlParams.get('category');
         const isPaidParam   = urlParams.get('isPaid');
-        const menuParam     = urlParams.get('menu'); 
 
-        // A. 업체 관리 페이지 (v-if currentMenu 제어)
-        if (menuParam) {
-            const vueApp = window.app || window.vm; 
-
-            // 1) Vue 인스턴스의 currentMenu를 직접 변경
-            if (vueApp && vueApp.currentMenu !== undefined) {
-                vueApp.currentMenu = menuParam; 
-            } 
-            
-            // 2) UI 강조를 위해 버튼도 클릭 (딜레이 필요)
-            setTimeout(() => {
-                const navBtns = document.querySelectorAll('.nav-btn');
-                const menuMap = {
-                    'product': '상품 관리',
-                    'reservation': '예약 관리',
-                    'inquiry': '문의 내역',
-                    'review': '리뷰 내역'
-                };
-                navBtns.forEach(btn => {
-                    if (btn.innerText.trim() === menuMap[menuParam]) {
-                        btn.click();
-                    }
-                });
-            }, 200);
-        } // [수정] menuParam if문 닫기
-
-        // B. 유료/무료 리뷰 탭 클릭
+        // A. 유료/무료 리뷰 탭
         if (isPaidParam !== null) {
-            const reviewTabs = document.querySelectorAll('.tab-menu button, .review-tabs .tab-item');
-            reviewTabs.forEach(tab => {
-                const text = tab.innerText.trim();
-                if ((isPaidParam === '1' && text.includes('유료')) ||
-                    (isPaidParam === '0' && text.includes('무료'))) {
+            document.querySelectorAll('.review-tabs .tab-item').forEach(tab => {
+                if ((isPaidParam === '1' && tab.innerText.includes('유료')) ||
+                    (isPaidParam === '0' && tab.innerText.includes('무료'))) {
                     tab.click();
                 }
             });
         }
 
-        // C. 커뮤니티 카테고리 탭 클릭
+        // B. 카테고리 탭 (자유글, 질문글, 정보공유글 등)
         if (categoryParam) {
-            const categoryTabs = document.querySelectorAll('.tab-menu button, .tab-item');
-            categoryTabs.forEach(btn => {
+            document.querySelectorAll('button, .tab-item').forEach(btn => {
                 const btnText = btn.innerText.replace(/[^가-힣a-zA-Z]/g, '').trim();
-                if (btnText === categoryParam.trim()) {
+                if (btnText.includes(categoryParam.trim())) {
                     btn.click();
                 }
             });
         }
-    } // [수정] handleTabClick 함수 닫기
+    }
 
-    // 3. Vue 렌더링 감지
-    const observer = new MutationObserver((mutations) => {
-        const targetExist = document.querySelector('.tab-menu button, .nav-btn, .tab-item');
-        if (targetExist) {
-            setTimeout(() => {
-                handleTabClick();
-            }, 150); 
+    // Vue 마운트 완료 후 실행
+    const observer = new MutationObserver(() => {
+        const tabs = document.querySelectorAll('.review-tabs .tab-item, .tab-item, button');
+        if (tabs.length > 0) {
             observer.disconnect();
+            handleTabClick();
         }
     });
-
     observer.observe(document.body, { childList: true, subtree: true });
 
-    // 초기 실행
+    // 이미 렌더링 완료된 경우 바로 실행
     handleTabClick();
-});
 
-// 4. 이미지 콤마 처리 전역 함수 (Vue 밖에서도 사용 가능)
-function getFirstImg(imgUrls) {
-    if (!imgUrls) return '/resources/img/no-image.png'; 
-    
-    // 대괄호 [ ] 가 포함되어 있다면 제거
-    let cleanUrl = imgUrls.replace(/[\[\]]/g, ''); 
-    
-    if (typeof cleanUrl === 'string' && cleanUrl.includes(',')) {
-        return cleanUrl.split(',')[0].trim();
-    }
-    return cleanUrl;
-}
+});
 </script>

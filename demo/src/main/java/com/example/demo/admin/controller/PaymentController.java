@@ -28,6 +28,11 @@ public class PaymentController {
 	@Autowired
 	PaymentService paymentService;
 
+	@RequestMapping("/history.do")
+	public String history1(Model model) throws Exception {
+		return "admin/history";
+	}
+
 	@RequestMapping("/payment.do")
 	public String adminPass(Model model) throws Exception {
 		return "admin/payment";
@@ -58,7 +63,14 @@ public class PaymentController {
 		}
 		return paymentService.verifyPayment(map);
 	}
-	
+	@PostMapping("/verifyPayment2.dox")
+	@ResponseBody
+	public HashMap<String, Object> verifyPayment2(@RequestParam HashMap<String, Object> map) {
+
+		String type = String.valueOf(map.get("type"));
+		
+		return paymentService.verifyPayment2(map);
+	}
 	//환불
 //	@RequestMapping(value = "/refundPayment.dox", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
 //	@ResponseBody
@@ -75,6 +87,15 @@ public class PaymentController {
 	    HashMap<String, Object> resultMap = paymentService.refundPass(map);
 
 	    return new Gson().toJson(resultMap);
+	}
+	
+	// 쿠폰 조회
+	@RequestMapping(value="/couponUseList.dox", method=RequestMethod.POST)
+	@ResponseBody
+	public String couponUseList(@RequestParam HashMap<String,Object> map){
+		map.put("pageSize", Integer.parseInt(map.get("pageSize").toString()));
+		map.put("offSet", Integer.parseInt(map.get("offSet").toString()));
+	    return new Gson().toJson(paymentService.getCouponUseList(map));
 	}
 	
 	

@@ -14,29 +14,8 @@
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
         <link rel="stylesheet" href="${pageContext.request.contextPath}/css/common.css">
         <link rel="stylesheet" href="${pageContext.request.contextPath}/css/adminNavi.css">
+        <link rel="stylesheet" href="${pageContext.request.contextPath}/css/admin-common.css">
         <style>
-            body {
-                background-color: #f5f6f7;
-                font-size: 14px;
-                color: #333;
-            }
-
-            .middle {
-                width: 100%;
-                display: grid;
-                grid-template-areas: "nav main";
-                grid-template-columns: 300px 1fr;
-            }
-
-            .main {
-                grid-area: main;
-                background: #f5f6f7;
-                padding: 20px;
-                display: flex;
-                gap: 20px;
-                align-items: flex-start;
-            }
-
             .board-container {
                 padding: 20px;
                 background: #fff;
@@ -145,30 +124,6 @@
                 padding: 3px 8px;
                 font-size: 12px;
             }
-
-            button {
-                border: 1px solid #ddd;
-                background: #fff;
-                padding: 5px 10px;
-                font-size: 12px;
-                border-radius: 6px;
-                cursor: pointer;
-            }
-
-            button:hover {
-                background: #f8f9fa;
-            }
-
-            .pagination-wrap {
-                display: flex;
-                gap: 5px;
-            }
-
-            .pagination-wrap button.active {
-                background: #007bff;
-                color: #fff;
-                transform: scale(1.1);
-            }
         </style>
     </head>
 
@@ -197,7 +152,7 @@
                             </div>
                             <div class="filter-group">
                                 <select v-model="category" @change="fnGetBoardList">
-                                    <option value="ALL">분류 전체</option>
+                                    <option value="ALL">분류</option>
                                     <option value="자유">자유</option>
                                     <option value="질문">질문</option>
                                     <option value="정보">정보</option>
@@ -243,9 +198,13 @@
                                         </button>
                                     </td>
                                 </tr>
+                                <tr v-for="n in emptyRows" class="empty-row" style="height: 56.5px !important;">
+                                    <td colspan="5">&nbsp;</td>
+                                </tr>
+
                             </tbody>
                         </table>
-                        <div class="pagination-wrap">
+                        <div class="page-box">
                             <button @click="fnPageMove(currentPage-1)" :disabled="currentPage===1">‹</button>
 
                             <button v-for="p in index" :key="p" @click="fnPageMove(p)"
@@ -274,9 +233,11 @@
                         keyword: "",
                         sortType: "latest",
                         selectedBoard: null,
-                        pageSize: 10,
+                        pageSize: 8,
                         index: 1,
                         currentPage: 1,
+                        emptyRows: 0,
+
                     };
                 },
                 methods: {
@@ -317,12 +278,14 @@
                                 console.log(data.list);
                                 self.boardList = data.list || [];
                                 self.index = Math.ceil(data.totalCount / self.pageSize);
+                                self.emptyRows = 8 - data.list.length;
+
                             }
                         });
                     },
 
                     fnSelectBoard(board) {
-                        window.open('http://localhost:8080/api/community/detail.do?postNo=' + board.postNo, '_blank', 'width=1000, height=1000');
+                        window.open('http://localhost:8080/api/community/detail.do?postNo=' + board.postNo, '_blank', 'width=1200, height=1000');
                     },
 
                     fnToggleBoard(board) {

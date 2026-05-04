@@ -14,27 +14,8 @@
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
         <link rel="stylesheet" href="${pageContext.request.contextPath}/css/common.css">
         <link rel="stylesheet" href="${pageContext.request.contextPath}/css/adminNavi.css">
+        <link rel="stylesheet" href="${pageContext.request.contextPath}/css/admin-common.css">
         <style>
-            .middle {
-                width: 100%;
-                /* 화면 전체 높이를 사용하되, 헤더/푸터 제외한 나머지는 유연하게(1fr) */
-                display: grid;
-                grid-template-areas:
-                    "nav main";
-                grid-template-columns: 300px 1fr;
-                /* 너비 고정 */
-            }
-
-            .main {
-                grid-area: main;
-                padding: 20px;
-                display: flex;
-                gap: 20px;
-                /* 카드 사이 간격 */
-                align-items: flex-start;
-                /* 카드들이 위쪽에 고정되도록 */
-            }
-
             /* 대시보드 카드 개별 박스 */
             .dashboard-card {
                 flex: 1;
@@ -129,13 +110,25 @@
             .detail-btn:hover {
                 background-color: #333;
             }
+
+            button {
+                border: none;
+                background: #eef1f6;
+                padding: 8px 14px;
+                border-radius: 10px;
+                font-size: 13px;
+                font-weight: 600;
+                cursor: pointer;
+                transition: .2s;
+            }
+
         </style>
     </head>
 
     <body>
         <jsp:include page="/WEB-INF/common/header.jsp" />
         <div id="app">
-            
+
             <div class="middle">
                 <jsp:include page="/WEB-INF/admin/adminNavi.jsp" />
                 <div class="main">
@@ -161,13 +154,13 @@
                                         <td>{{item.postDay}}</td>
                                     </tr>
                                 </table>
-                                <div class="pagination-wrap">
+                                <div class="page-box">
                                     <button @click="fnReviewPageMove(reviewCurrentPage-1)"
                                         :disabled="reviewCurrentPage===1">‹</button>
 
-                                    <button v-for="p in reviewIndex" :key="p" @click="fnReviewPageMove(p)"
-                                        :class="{active: reviewCurrentPage === p}">
-                                        {{ p }}
+                                    <button v-for="r in reviewIndex" :key="r" @click="fnReviewPageMove(r)"
+                                        :class="{active: reviewCurrentPage === r}">
+                                        {{ r }}
                                     </button>
 
                                     <button @click="fnReviewPageMove(reviewCurrentPage+1)"
@@ -199,7 +192,7 @@
                                     </tr>
                                 </table>
                             </div>
-                            <div class="pagination-wrap">
+                            <div class="page-box">
                                 <button @click="fnPageMove(currentPage-1)" :disabled="currentPage===1">‹</button>
 
                                 <button v-for="p in index" :key="p" @click="fnPageMove(p)"
@@ -210,6 +203,7 @@
                                 <button @click="fnPageMove(currentPage+1)" :disabled="currentPage===index">›</button>
                             </div>
                         </div>
+
                         <button @click="fnPage('/adminReport.do')" type="button" class="detail-btn">상세보기</button>
                     </div>
 
@@ -356,7 +350,7 @@
                         this.fnGetReportList();
                     },
                     fnReviewPageMove(p) {
-                        if (p < 1 || p > this.index) return;
+                        if (p < 1 || p > this.reviewIndex) return;
                         this.reviewCurrentPage = p;
                         this.fnGetReviewList();
                     },

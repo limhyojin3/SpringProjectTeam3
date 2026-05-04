@@ -5,6 +5,8 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.sql.Date;
+import java.sql.Timestamp;
 import java.util.HashMap;
 
 import org.cloudinary.json.JSONObject;
@@ -13,13 +15,14 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.example.demo.admin.mapper.PaymentMapper;
+import com.example.demo.admin.model.Payment;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Value;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-	
+import java.time.LocalDateTime;
 @Service
 public class PaymentService {
 
@@ -69,9 +72,10 @@ public class PaymentService {
 	@Transactional
 	public void completeRegistrationPayment(HashMap<String,Object> map){
 
-	    //paymentMapper.insertPayment(map); // 공통 결제
-
-	    //paymentMapper.insertPaymentRegistration(map); // 상세
+	    paymentMapper.insertPayment(map); // 공통 결제
+	    int companyNo = paymentMapper.selectCompanyInfo(map);
+	    map.put("companyNo", companyNo);
+	    paymentMapper.insertPaymentRegistration(map); // 상세
 	    
 	}
 
@@ -97,16 +101,72 @@ public class PaymentService {
 			double realAmount = Integer.parseInt(payInfo.get("amount").toString());
 
 			String status = payInfo.get("status").toString();
-
+			
 			// 3. 결제 상태 확인
 			if (!status.equals("paid")) {
 				result.put("result", "fail");
 				result.put("message", "결제 미완료");
 				return result;
 			}
+			
+			Object passNoObj = map.get("passNo");
 
+			if (passNoObj == null) {
+			    throw new IllegalArgumentException("passNo가 없습니다.");
+			}
+
+			int passNo = Integer.parseInt(passNoObj.toString());
+			int basePrice = paymentMapper.selectPassPrice(passNo);
+			
+			int finalAmount = basePrice;   // 기본값
+	        int discount = 0;
+	        
+	        Object obj = map.get("couponCode");
+	        String couponCode = (obj == null) ? null : obj.toString();
+	        
+	        if (couponCode != null && !couponCode.isEmpty()) {
+
+	            map.put("couponCode", couponCode);
+
+	            Payment coupon = paymentMapper.selectCouponInfo(map);
+
+	            if (coupon == null) {
+	            	cancelPayment(token, impUid);
+	                result.put("result", "fail");
+	                result.put("message", "쿠폰 없음");
+	                return result;
+	            }
+
+	            if (!"UNUSED".equals(coupon.getStatus())) {
+	            	cancelPayment(token, impUid);
+	                result.put("result", "fail");
+	                result.put("message", "이미 사용된 쿠폰");
+	                return result;
+	            }
+	            
+	            Timestamp now = new Timestamp(System.currentTimeMillis());
+
+	            Timestamp expiredAt = coupon.getExpiredAt();
+	            if (expiredAt != null && expiredAt.before(now)) {
+	            	cancelPayment(token, impUid);
+	                result.put("result", "fail");
+	                result.put("message", "만료된 쿠폰입니다.");
+	                return result;
+	            }
+	            int rate = coupon.getDiscountRate();
+
+	            discount = (basePrice * rate) / 100;
+
+	            finalAmount = basePrice - discount;
+
+	            if (finalAmount < 0) {
+	                finalAmount = 0;
+	            }
+	        }
+			
 			// 4. 금액 검증
-			if (realAmount != reqAmount) {
+			if (realAmount != finalAmount) {
+				cancelPayment(token, impUid);
 				result.put("result", "fail");
 				result.put("message", "금액 위조 의심");
 				return result;
@@ -114,6 +174,8 @@ public class PaymentService {
 
 			// 5. DB 저장
 			map.put("pay_status", "paid");
+			map.put("discountAmount", discount);
+			map.put("finalAmount", finalAmount);
 
 			String type = map.get("type").toString();
 
@@ -122,6 +184,7 @@ public class PaymentService {
 					HashMap<String, Object> chk = adminService.getPassInfo(map);
 
 					if (chk.get("info") != null) {
+						cancelPayment(token, impUid);
 						result.put("result", "fail");
 						result.put("message", "체험권은 1회만 구매 가능합니다.");
 						System.out.println("체험용 패스 여부 : " + chk);
@@ -131,13 +194,16 @@ public class PaymentService {
 				updateWalletCount(map);
 				completePassPayment(map);
 				
+				if (couponCode != null && !couponCode.isEmpty()) {
+	                paymentMapper.updateUsedCoupon(map); // 쿠폰 USED 처리
+	            }
+				
 			}else if(type.equals("RES")){
-			    // completeReservationPayment(map);
+	// 이미 다른곳에서 구현됨 completeReservationPayment(map);
 
 			}else if(type.equals("REG")){
 			    completeRegistrationPayment(map);
 			}
-//			completePassPayment(map);
 
 			result.put("result", "success");
 			result.put("payNo", map.get("payNo"));
@@ -145,14 +211,98 @@ public class PaymentService {
 
 		} catch (Exception e) {
 			e.printStackTrace();
+			//예외 발생시 환불
+			try {
+				String impUid = map.get("imp_uid").toString();
 
+	            if (impUid != null) {
+	                String token = getToken();
+	                cancelPayment(token, impUid);
+	            }
+	        } catch (Exception ex) {
+	            ex.printStackTrace();
+	        }
+			
 			result.put("result", "fail");
 			result.put("message", "서버 오류");
+			
 		}
 
 		return result;
 	}
+	public HashMap<String, Object> verifyPayment2(HashMap<String, Object> map) {
+		System.out.println("넘어온 값 : " + map);
+		HashMap<String, Object> result = new HashMap<>();
 
+		try {
+
+			// 프론트에서 받은 값
+			String impUid = map.get("imp_uid").toString();
+			String merchantUid = map.get("merchant_uid") == null
+			        ? ""
+			        : map.get("merchant_uid").toString();
+			int reqAmount = Integer.parseInt(map.get("amount").toString());
+
+			// 1. 포트원 토큰 발급
+			String token = getToken();
+
+			// 2. 실제 결제정보 조회
+			HashMap<String, Object> payInfo = getPaymentInfo(token, impUid);
+
+			double realAmount = Integer.parseInt(payInfo.get("amount").toString());
+
+			String status = payInfo.get("status").toString();
+			
+			// 3. 결제 상태 확인
+			if (!status.equals("paid")) {
+				result.put("result", "fail");
+				result.put("message", "결제 미완료");
+				return result;
+			}
+			
+			int finalAmount = reqAmount;
+			// 4. 금액 검증
+			if (realAmount != finalAmount) {
+				cancelPayment(token, impUid);
+				result.put("result", "fail");
+				result.put("message", "금액 위조 의심");
+				return result;
+			}
+
+			// 5. DB 저장
+			map.put("pay_status", "paid");
+			map.put("finalAmount", finalAmount);
+
+			String type = map.get("type").toString();
+
+	
+			completeRegistrationPayment(map);
+		
+			result.put("result", "success");
+			result.put("payNo", map.get("payNo"));
+			result.put("message", "결제 완료");
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			//예외 발생시 환불
+			try {
+				String impUid = map.get("imp_uid").toString();
+
+	            if (impUid != null) {
+	                String token = getToken();
+	                cancelPayment(token, impUid);
+	            }
+	        } catch (Exception ex) {
+	            ex.printStackTrace();
+	        }
+			
+			result.put("result", "fail");
+			result.put("message", "서버 오류");
+			
+		}
+
+		return result;
+	}
 	// =========================
 	// 토큰 발급
 	// =========================
@@ -385,4 +535,50 @@ public class PaymentService {
 	               .get("access_token")
 	               .getAsString();
 	}
+	
+	// 쿠폰 조회
+	// 쿠폰 조회
+	public HashMap<String, Object> getCouponUseList(HashMap<String, Object> map) {
+
+	    HashMap<String, Object> resultMap = new HashMap<>();
+
+	    try {
+
+	        // 만료된 UNUSED 쿠폰 자동 EXPIRED 처리 (선택사항)
+	        paymentMapper.updateExpiredCoupon(map);
+	        // 페이지네이션
+	        int totalCount = paymentMapper.selectMyCouponCount(map);
+	        // 사용 가능한 쿠폰 조회
+	        resultMap.put("list", paymentMapper.selectCouponUseList(map));
+			resultMap.put("totalCount", totalCount);
+	        resultMap.put("result", "success");
+
+	    } catch (Exception e) {
+	        e.printStackTrace();
+
+	        resultMap.put("result", "fail");
+	        resultMap.put("list", null);
+	        resultMap.put("message", "쿠폰 조회 실패");
+	    }
+
+	    return resultMap;
+	}
+	
+	// 쿠폰 검증
+//	public void validateCoupon(Map map) {
+//
+//	    // 1. 쿠폰 조회
+//	    Coupon c = mapper.selectUserCoupon(map);
+//
+//	    if (c == null) throw new RuntimeException("쿠폰 없음");
+//
+//	    // 2. 사용 여부
+//	    if (!"UNUSED".equals(c.getStatus()))
+//	        throw new RuntimeException("이미 사용된 쿠폰");
+//
+//	    // 3. 만료 체크
+//	    if (c.getExpiredAt().isBefore(LocalDateTime.now()))
+//	        throw new RuntimeException("쿠폰 만료");
+//
+//	}
 }

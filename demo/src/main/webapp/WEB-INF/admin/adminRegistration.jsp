@@ -342,13 +342,13 @@
                         let self = this
                         console.log("서버로 보내는 imp_uid:", imp_uid);
                         $.ajax({
-                            url: "http://localhost:8080/verifyPayment.dox",
+                            url: "http://localhost:8080/verifyPayment2.dox",
                             type: "POST",
                             data: {
                                 userId: this.sessionId,     // 로그인 아이디
                                 imp_uid: imp_uid,           // 결제 고유 값(중복)
                                 amount: 1000,
-                                itemName: "등록비",
+                                itemName: "제휴등록비",
                                 type: "REG"
 
 
