@@ -299,7 +299,7 @@
                                     <td>
                                         <button @click="fnSelectReview(r.reviewNo)">보기</button>
                                         <button @click="fnApprove(r)">승인</button>
-                                        <button @click="fnReject(r)">반려</button>
+                                        <button style="color:red;" @click="fnReject(r)">반려</button>
                                     </td>
                                 </tr>
                                 <tr v-for="n in emptyRows" class="empty-row" style="height: 56.5px !important;">

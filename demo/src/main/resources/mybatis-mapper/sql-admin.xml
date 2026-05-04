@@ -1017,6 +1017,7 @@
 	    r.user_id AS userId,
 	    r.pay_no AS payNo,
 	    r.res_status AS resStatus,
+	    r.use_date AS useDate,
 	    p.product_name AS productName,
 	    pr.amount AS amount,
 	    pr.pay_status AS payStatus,
@@ -1058,8 +1059,9 @@
 	
 	<select id="selectReservationPaymentCount" parameterType="hashmap" resultType="int">
 	    SELECT COUNT(*)
-	    FROM payment P
-	    JOIN payment_reservation R ON P.pay_no = R.pay_no
+	    FROM reservation r
+	    join payment_reservation pr on r.pay_no = pr.pay_no
+	    left join product p on r.product_no = p.product_no
 	</select>
 
 	<select id="selectRegistrationPaymentCount" parameterType="hashmap" resultType="int">
