@@ -2175,6 +2175,15 @@
                         input4: '',
                         input5: ''
                     }
+
+                    this.product2.productName = '',
+                    this.product2.proType = [],
+                    this.product2.productDetails = '',
+                    this.product2.originalPrice = '',
+                    this.product2.deposit = 0
+
+
+
                     this.productPage = 'reg';
 
                     let self = this;
