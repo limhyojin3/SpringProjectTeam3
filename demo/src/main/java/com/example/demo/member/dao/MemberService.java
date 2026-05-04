@@ -302,8 +302,12 @@ public class MemberService {
 	    return resultMap;
     }
 	// 회원 쿠폰 조회
-	public List<HashMap<String, Object>> getUserCouponList(String userId) {
-	    return memberMapper.selectUserCouponList(userId);
+	public List<HashMap<String, Object>> getUserCouponList(Map<String, Object> param) {
+	    return memberMapper.selectUserCouponList(param);
+	}
+	// 회원 쿠폰 개수
+	public int getUserCouponCount(String userId) {
+	    return memberMapper.selectUserCouponCount(userId);
 	}
 	// 쿠폰 유효성 조회 & 쿠폰 중복 발급 여부 조회 & 쿠폰 등록
 	@Transactional
@@ -354,12 +358,20 @@ public class MemberService {
 	    return result;
 	}
 	// 멤버십 결제 내역 조회
-	public List<Member> getPassWalletList(String userId) {
-		return memberMapper.selectPassWalletList(userId);
+	public List<Member> getPassWalletList(Map<String, Object> param) {
+	    return memberMapper.selectPassWalletList(param);
+	}
+	// 멤버십 결제 내역 개수
+	public int getPassWalletCount(String userId) {
+	    return memberMapper.selectPassWalletCount(userId);
 	}
 	// 내 예약 목록 조회
-	public List<Member> getMyReservationList(String userId) {
-	    return memberMapper.selectMyReservationList(userId);
+	public List<Member> getMyReservationList(Map<String, Object> param) {
+	    return memberMapper.selectMyReservationList(param);
+	}
+	// 내 예약 전체 개수
+	public int getMyReservationCount(String userId) {
+	    return memberMapper.selectMyReservationCount(userId);
 	}
 	// 내가 산 리뷰 (구매 : 유료/무료) 조회 
 	// 유료
@@ -502,14 +514,23 @@ public class MemberService {
 	    return memberMapper.deleteMyReviewLike(map);
 	}
 	
-	
 	// 내 문의 내역 조회
-	public List<Member> getMyInquiryList(String userId) {
-	    return memberMapper.selectMyInquiryList(userId);
+	public List<Member> getMyInquiryList(Map<String, Object> param) {
+	    return memberMapper.selectMyInquiryList(param);
+	}
+
+	// 내 문의 내역 개수
+	public int getMyInquiryCount(String userId) {
+	    return memberMapper.selectMyInquiryCount(userId);
 	}
 	// 내 신고 내역 조회
-	public List<Member> getMyReportList(String userId) {
-	    return memberMapper.selectMyReportList(userId);
+	public List<Member> getMyReportList(Map<String, Object> param) {
+	    return memberMapper.selectMyReportList(param);
+	}
+
+	// 내 신고 개수
+	public int getMyReportCount(String userId) {
+	    return memberMapper.selectMyReportCount(userId);
 	}
 	
 	// * 유료 리뷰 열람 시 열람권 차감 *

@@ -119,24 +119,54 @@
             margin-top: 20px;
         }
 
+        .review-index-wrap {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-top: 20px;
+            gap: 6px;
+        }
+
         .btn-review-index {
-            padding: 6px 12px;
-            background-color: #9b8fd4;
-            color: white;
-            border: none;
+            height: 34px;
+            min-width: 34px;
+            padding: 0 10px;
+            background-color: #fff;
+            color: #f4a096;
+            border: 1.5px solid #f4a096;
             border-radius: 6px;
             cursor: pointer;
-            font-size: 14px;
+            font-size: 13px;
+            font-weight: 500;
             transition: 0.2s;
-            margin: 0 3px;  /* 버튼 간격 */
         }
 
         .btn-review-index:hover {
-            background-color: #7b6db4;
+            background-color: #f4a096;
+            color: white;
         }
-        /* 활성 페이지 버튼 스타일 */
+
         .btn-review-index.active-page {
-            background-color: #7b6db4;
+            background-color: #f4a096;
+            color: white;
+            font-weight: bold;
+        }
+
+        .btn-review-index:disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+        }
+
+        .thumbnail-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .empty-msg {
+            text-align: center;
+            padding: 40px 0;
+            color: #999;
         }
 
     </style>
@@ -159,28 +189,33 @@
 
                     <!-- 유료 리뷰 목록 -->
                     <div v-if="reviewTab === 'paid'">
-                        <div class="review-list" >
+                        <div class="review-list" v-if="paidReviewList.length > 0">
                             <div class="review-card" v-for="review in paidReviewList" :key="review.reviewNo"
                                 @click="fnGoReview(review.reviewNo)">
                                 <div class="review-thumbnail">
                                     <img v-if="review.imgUrl && !review.imgUrl.endsWith('.zip')"
                                         :src="review.imgUrl.split(',')[0]"
-                                        style="width:100%; height:100%; object-fit:cover;"
+                                        class="thumbnail-img"
                                         @error="handleImgError">
                                     <span v-else>썸네일</span>
                                 </div>
-                                <div class="review-card-title">{{ review.title }}</div> <!--제목-->
-                                <div class="review-card-title">{{ review.comName }}</div> <!--업체 명-->
+                                <div class="review-card-title">{{ review.title }}</div>
+                                <div class="review-card-title">{{ review.comName }}</div>
                             </div>
+                        </div>
+                        <div class="empty-msg" v-else>
+                            열람 기록이 없습니다.
                         </div>
                          <!-- 페이지 인덱스 -->
                         <div class="review-index-wrap">
+                            <button class="btn-review-index" @click="fetchPaidReviews(paidCurrentPage - 1)" :disabled="paidCurrentPage === 1">이전</button>
                             <button class="btn-review-index"
                                 v-for="p in Math.ceil(paidTotalCount / pageSize)" :key="p"
                                 :class="p === paidCurrentPage ? 'active-page' : ''"
                                 @click="fetchPaidReviews(p)">
-                            {{ p }}
+                                {{ p }}
                             </button>
+                            <button class="btn-review-index" @click="fetchPaidReviews(paidCurrentPage + 1)" :disabled="paidCurrentPage === Math.ceil(paidTotalCount / pageSize)">다음</button>
                         </div>
                     </div>
                     
@@ -202,12 +237,14 @@
                         </div>
                         <!-- 페이지 -->
                         <div class="review-index-wrap">
+                            <button class="btn-review-index" @click="fetchFreeReviews(freeCurrentPage - 1)" :disabled="freeCurrentPage === 1">이전</button>
                             <button class="btn-review-index"
-                                    v-for="p in Math.ceil(freeTotalCount / pageSize)" :key="p"
-                                    :class="p === freeCurrentPage ? 'active-page' : ''"
-                                    @click="fetchFreeReviews(p)">
+                                v-for="p in Math.ceil(freeTotalCount / pageSize)" :key="p"
+                                :class="p === freeCurrentPage ? 'active-page' : ''"
+                                @click="fetchFreeReviews(p)">
                                 {{ p }}
                             </button>
+                            <button class="btn-review-index" @click="fetchFreeReviews(freeCurrentPage + 1)" :disabled="freeCurrentPage === Math.ceil(freeTotalCount / pageSize)">다음</button>
                         </div>
                     </div>
                 </div>

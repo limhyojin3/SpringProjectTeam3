@@ -28,7 +28,6 @@
         .badge-wait { background-color: #ffeeba; color: #856404; padding: 5px 10px; border-radius: 4px; font-size: 12px; }
         .badge-done { background-color: #d4edda; color: #155724; padding: 5px 10px; border-radius: 4px; font-size: 12px; }
 
-        .report-bottom { display: flex; justify-content: center; margin-top: 20px; }
         .btn-back { padding: 10px 30px; background-color: #9b8fd4; color: white; border: none; border-radius: 6px; cursor: pointer; }
 
         .filter-area { display: flex; justify-content: flex-end; gap: 8px; margin-bottom: 15px; }
@@ -40,6 +39,65 @@
         
         .pagination .page-item.active .page-link { background-color: #9b8fd4; border-color: #9b8fd4; color: white; }
         .pagination .page-link { color: #9b8fd4; }
+
+        .pagination-wrap {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-top: 20px;
+            gap: 6px;
+        }
+
+        .btn-page-arrow,
+        .btn-page-num {
+            height: 34px;
+            min-width: 34px;
+            padding: 0 10px;
+            background-color: #fff;
+            color: #f4a096;
+            border: 1.5px solid #f4a096;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 500;
+            transition: 0.2s;
+        }
+
+        .btn-page-arrow:hover,
+        .btn-page-num:hover {
+            background-color: #f4a096;
+            color: white;
+        }
+
+        .btn-page-num.active-page {
+            background-color: #f4a096;
+            color: white;
+            font-weight: bold;
+        }
+
+        .btn-page-arrow:disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+        }
+
+        .btn-back {
+            padding: 0 20px;
+            height: 34px;
+            background-color: #fff;
+            color: #f4a096;
+            border: 1.5px solid #f4a096;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 500;
+            transition: 0.2s;
+        }
+
+        .btn-back:hover {
+            background-color: #f4a096;
+            color: white;
+        }
+
     </style>
 </head>
 <body>
@@ -100,21 +158,22 @@
                         </tbody>
                     </table>
 
-                    <nav v-if="totalCount > 0">
-                        <ul class="pagination justify-content-center">
-                            <li class="page-item" :class="{disabled: currentPage === 1}">
-                                <a class="page-link" @click="fnGetReportList(currentPage - 1)" href="javascript:;">이전</a>
-                            </li>
-                            <li class="page-item" v-for="page in totalPages" :key="page" :class="{active: currentPage === page}">
-                                <a class="page-link" @click="fnGetReportList(page)" href="javascript:;">{{ page }}</a>
-                            </li>
-                            <li class="page-item" :class="{disabled: currentPage === totalPages}">
-                                <a class="page-link" @click="fnGetReportList(currentPage + 1)" href="javascript:;">다음</a>
-                            </li>
-                        </ul>
-                    </nav>
+                    <div class="pagination-wrap">
+                        <button class="btn-page-arrow"
+                                @click="fnGetReportList(currentPage - 1)"
+                                :disabled="currentPage === 1">이전</button>
+                        <button class="btn-page-num"
+                                v-for="p in totalPages" :key="p"
+                                :class="p === currentPage ? 'active-page' : ''"
+                                @click="fnGetReportList(p)">
+                            {{ p }}
+                        </button>
+                        <button class="btn-page-arrow"
+                                @click="fnGetReportList(currentPage + 1)"
+                                :disabled="currentPage === totalPages">다음</button>
+                    </div>
 
-                    <div class="report-bottom">
+                    <div style="margin-top: 15px;">
                         <button class="btn-back" onclick="location.href='/userMyPage.do'">마이페이지로 돌아가기</button>
                     </div>
                 </div>

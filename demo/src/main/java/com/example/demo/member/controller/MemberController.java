@@ -310,19 +310,35 @@ public class MemberController {
 	// 3-15. 회원 쿠폰 조회
 	@RequestMapping("/myCouponPage.do")
 	public String myCouponPage() {
-	    return "/member/user-mypage-coupon"; // 쿠폰 조회를 위한 JSP 파일 경로
+	    return "/member/user-mypage-coupon";
 	}
+
 	@ResponseBody
 	@GetMapping("/api/myCoupons.do")
-	public List<HashMap<String, Object>> getMyCoupons(HttpSession session) {
-	    // 세션에서 로그인한 아이디 가져오기
+	public Map<String, Object> getMyCoupons(HttpSession session,
+	                                         @RequestParam(defaultValue = "1") int currentPage) {
 	    String userId = (String) session.getAttribute("sessionId");
-	    
-	    if (userId == null) {
-	        return null; // 또는 에러 처리
-	    }
-	    
-	    return memberService.getUserCouponList(userId);
+
+	    if (userId == null) return null;
+
+	    int pageSize = 5;
+	    int offset = (currentPage - 1) * pageSize;
+
+	    Map<String, Object> param = new HashMap<>();
+	    param.put("userId", userId);
+	    param.put("pageSize", pageSize);
+	    param.put("offset", offset);
+
+	    int totalCount = memberService.getUserCouponCount(userId);
+	    int totalPages = (int) Math.ceil((double) totalCount / pageSize);
+	    List<HashMap<String, Object>> list = memberService.getUserCouponList(param);
+
+	    Map<String, Object> result = new HashMap<>();
+	    result.put("list", list);
+	    result.put("totalPages", totalPages);
+	    result.put("currentPage", currentPage);
+
+	    return result;
 	}
 	// 3-16. 쿠폰 등록
 	    @PostMapping("/coupon/register.do")
@@ -380,9 +396,28 @@ public class MemberController {
 	// 3-18. 멤버십 결제 내역 조회
 	@GetMapping("/myPassWalletList.dox")
 	@ResponseBody
-	public List<Member> getPassWalletList(HttpSession session) {
-		String userId = (String) session.getAttribute("sessionId");
-		return memberService.getPassWalletList(userId);
+	public Map<String, Object> getPassWalletList(HttpSession session,
+	       @RequestParam(defaultValue = "1") int currentPage) {
+	    String userId = (String) session.getAttribute("sessionId");
+
+	    int pageSize = 3;
+	    int offset = (currentPage - 1) * pageSize;
+
+	    Map<String, Object> param = new HashMap<>();
+	    param.put("userId", userId);
+	    param.put("pageSize", pageSize);
+	    param.put("offset", offset);
+
+	    int totalCount = memberService.getPassWalletCount(userId);
+	    int totalPages = (int) Math.ceil((double) totalCount / pageSize);
+	    List<Member> list = memberService.getPassWalletList(param);
+
+	    Map<String, Object> result = new HashMap<>();
+	    result.put("list", list);
+	    result.put("totalPages", totalPages);
+	    result.put("currentPage", currentPage);
+
+	    return result;
 	}
 	// 3-19. 내 예약 목록 조회
 	@GetMapping("/myReservation.do")
@@ -393,9 +428,28 @@ public class MemberController {
 	}
 	@GetMapping("/myReservationList.dox")
 	@ResponseBody
-	public List<Member> getMyReservationList(HttpSession session) {
+	public Map<String, Object> getMyReservationList(HttpSession session,
+	                                                  @RequestParam(defaultValue = "1") int currentPage,
+	                                                  @RequestParam(defaultValue = "3") int pageSize) {
 	    String userId = (String) session.getAttribute("sessionId");
-	    return memberService.getMyReservationList(userId);
+
+	    int offSet = (currentPage - 1) * pageSize;
+
+	    Map<String, Object> param = new HashMap<>();
+	    param.put("userId", userId);
+	    param.put("pageSize", pageSize);
+	    param.put("offSet", offSet);
+
+	    int totalCount = memberService.getMyReservationCount(userId);
+	    int totalPages = (int) Math.ceil((double) totalCount / pageSize);
+	    List<Member> list = memberService.getMyReservationList(param);
+
+	    Map<String, Object> result = new HashMap<>();
+	    result.put("list", list);
+	    result.put("totalPages", totalPages);
+	    result.put("currentPage", currentPage);
+
+	    return result;
 	}
 	// 3-20. 내가 구매한 리뷰 목록 조회(유료/무료)
 	@GetMapping("/myPaidReviewList.dox")
@@ -580,19 +634,56 @@ public class MemberController {
 	// 내 문의 내역 조회
 	@GetMapping("/myInquiryList.dox")
 	@ResponseBody
-	public List<Member> getMyInquiryList(HttpSession session) {
+	public Map<String, Object> getMyInquiryList(HttpSession session,
+	                                              @RequestParam(defaultValue = "1") int currentPage) {
 	    String userId = (String) session.getAttribute("sessionId");
-	    return memberService.getMyInquiryList(userId);
+
+	    int pageSize = 5;
+	    int offset = (currentPage - 1) * pageSize;
+
+	    Map<String, Object> param = new HashMap<>();
+	    param.put("userId", userId);
+	    param.put("pageSize", pageSize);
+	    param.put("offset", offset);
+
+	    int totalCount = memberService.getMyInquiryCount(userId);
+	    int totalPages = (int) Math.ceil((double) totalCount / pageSize);
+	    List<Member> list = memberService.getMyInquiryList(param);
+
+	    Map<String, Object> result = new HashMap<>();
+	    result.put("list", list);
+	    result.put("totalPages", totalPages);
+	    result.put("currentPage", currentPage);
+
+	    return result;
 	}
 	// 내 신고 내역 조회
 	@GetMapping("/myReportList.dox")
 	@ResponseBody
-	public List<Member> getMyReportList(HttpSession session) {
+	public Map<String, Object> getMyReportList(HttpSession session,
+	                                             @RequestParam(defaultValue = "1") int currentPage) {
 	    String userId = (String) session.getAttribute("sessionId");
-	    return memberService.getMyReportList(userId);
+
+	    int pageSize = 10;
+	    int startIndex = (currentPage - 1) * pageSize;
+
+	    Map<String, Object> param = new HashMap<>();
+	    param.put("reporterId", userId);
+	    param.put("pageSize", pageSize);
+	    param.put("startIndex", startIndex);
+
+	    int totalCount = memberService.getMyReportCount(userId);
+	    int totalPages = (int) Math.ceil((double) totalCount / pageSize);
+	    List<Member> list = memberService.getMyReportList(param);
+
+	    Map<String, Object> result = new HashMap<>();
+	    result.put("list", list);
+	    result.put("totalCount", totalCount);
+	    result.put("totalPages", totalPages);
+	    result.put("currentPage", currentPage);
+
+	    return result;
 	}
-	
-	
 	
 	// * 휴대전화 번호 인증 * 
 	// 인증번호 발송
