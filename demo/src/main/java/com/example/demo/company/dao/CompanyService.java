@@ -27,6 +27,23 @@ public class CompanyService {
 	// User info = defaultMapper.selectUser();
 	// 수정, 삭제, 삽입 -> updateXXX, deleteXXX, insertXXX
 	// int result = defaultMapper.updateXXX();
+	
+	
+//	#결제 검증, 환불, 조회할 때 필요한 포트원 키 입니다 프로퍼티에 복사하시면 결제기능 됩니다 
+//	#
+//	#그리고 만약 결제 검증, 환불, 조회 기능을 따로 만드실거면 쓰시는 서비스에 
+//	#
+//	#import org.springframework.beans.factory.annotation.Value;
+//	#
+//	#이거 임포트하시고 서비스 안쪽에 
+//	#
+//	#@Value("${iamport.imp_key}")
+//	#private String impKey;
+//	#
+//	#@Value("${iamport.imp_secret}")
+//	#private String impSecret;
+//	#
+//	#이거 넣어 주시면 됩니다
  
 	public HashMap<String, Object> getCompany(HashMap<String, Object> map) {
 		HashMap<String, Object> resultMap = new HashMap<String, Object>();
