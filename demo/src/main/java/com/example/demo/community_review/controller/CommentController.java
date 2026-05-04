@@ -77,7 +77,7 @@ public class CommentController {
         resultMap.put("result", n > 0 ? "success" : "fail");
         return new Gson().toJson(resultMap);
     }
-
+ 
     // 삭제
     @PostMapping("/remove.dox")
     public String removeComment(@RequestBody Map<String, Object> map) {
