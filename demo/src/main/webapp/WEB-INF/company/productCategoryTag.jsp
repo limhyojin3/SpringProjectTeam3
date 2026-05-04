@@ -1237,8 +1237,10 @@
                     <main>
                         <div v-if="currentMenu === 'main' && productPage === 'list'">
                             <div style="text-align: right; flex-direction: column;">
-                                <button @click="goMyResPage">나의 예약 보러가기</button>
-                                <button @click="goMyInquiryPage">나의 문의 보러가기</button>
+                                <button @click="goMyResPage" style="padding: 8px 15px; cursor: pointer; 
+                                border: 1px solid #ccc; background: #fff; border-radius: 4px; margin-right: 10px; margin-bottom: 10px;">나의 예약 보러가기</button>
+                                <button @click="goMyInquiryPage" style="padding: 8px 15px; cursor: pointer; 
+                                border: 1px solid #ccc; background: #fff; border-radius: 4px; margin-bottom: 10px;">나의 문의 보러가기</button>
 
 
                             </div>
@@ -1278,8 +1280,10 @@
                         </div>
 
                         <div v-if="currentMenu === 'main' && productPage === 'detail'">
-                            {{product1}}
-                            <button @click="fnBack()" style="margin-bottom:10px;">← 뒤로가기</button>
+                            <!-- {{product1}} -->
+                            <button @click="fnBack()" style="padding: 8px 15px; cursor: pointer; 
+                                border: 1px solid #ccc; background: #fff; border-radius: 4px;
+                                 margin-right: 10px; margin-bottom: 10px;">← 뒤로가기</button>
 
                             <div class="detail-container">
                                 <div class="detail-left">
@@ -1391,9 +1395,9 @@
                                 <!-- <div style="text-align: right;">
                                     <img :src="product1.thumbnail" style="max-height: 200px; margin-top: 10px; margin-right: 20px;">
                                 </div> -->
-                                {{product1}}
+                                <!-- {{product1}}
                                 {{"${sessionScope.sessionId}"}}
-                                {{inquiry}}
+                                {{inquiry}} -->
 
                                 <div class="ticket-body">
                                     <div class="ticket-info">
@@ -1561,7 +1565,9 @@
                         </div> -->
                         <div v-if="currentMenu === 'main' && productPage === 'resultOfReservation'"
                             class="my-res-container">
-                            <button @click="fnBack()" style="margin-bottom:10px;">← 뒤로가기</button>
+                            <button @click="fnBack()" style="padding: 8px 15px; cursor: pointer; 
+                                border: 1px solid #ccc; background: #fff; border-radius: 4px;
+                                 margin-right: 10px; margin-bottom: 10px;">← 뒤로가기</button>
 
                             <h2 class="list-title">나의 예약 내역</h2>
 
@@ -1705,8 +1711,8 @@
                             style="max-width: 900px; margin: 20px auto; padding: 20px;">
                             <!-- <button @click="productPage = 'list'">뒤로가기</button> -->
                             <!-- {{product1}}여기서는 사용 ㄴㄴ -->
-                            {{"${sessionScope.sessionId}"}}
-                            {{myInquiryList}}
+                            <!-- {{"${sessionScope.sessionId}"}}
+                            {{myInquiryList}} -->
 
                             <!-- 헤더 영역 -->
                             <div
@@ -1721,7 +1727,7 @@
                             <!-- 문의 리스트 반복문 -->
                             <div v-if="myInquiryList && myInquiryList.length > 0">
 
-                                {{myInquiry1}}
+                                <!-- {{myInquiry1}} -->
 
                                 <div v-for="(inquiry, index) in myInquiryList" :key="index"
                                     @click="fnInquiryAnswerDetails(inquiry)" class="inquiryTicket"
@@ -1781,7 +1787,7 @@
                             style="max-width: 800px; margin: 0 auto; padding: 20px; font-family: 'Noto Sans KR', sans-serif;">
                             <!-- <button @click="productPage = 'myRealInquiryList'">뒤로 가기</button> -->
 
-                            {{myInquiry1}}
+                            <!-- {{myInquiry1}} -->
                             <!-- <div>문의내역 상세보기</div>
                             <hr>
                             <div>내가 문의한 제목</div>
