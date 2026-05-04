@@ -98,7 +98,33 @@
 
     /* 이미지가 없을 때 로고 설정 */
     .default-logo, .no-img-default { object-fit: contain !important; padding: 20px; background-color: #f8f9fa; }
-        
+    .user-nickname{
+        font-weight: bold;
+    }
+
+    /* 프리미엄 배지 스타일 */
+    .badge-premium {
+        background: linear-gradient(45deg, #f093fb 0%, #f5576c 100%); /* 화려한 그라데이션 */
+        color: white;
+        padding: 3px 8px;
+        border-radius: 4px;
+        font-weight: bold;
+        font-size: 0.75rem;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+    /* 블러 처리 스타일 */
+    .is-blurred {
+        filter: blur(10px) grayscale(30%); /* 블러와 약간의 회색조 */
+        transition: filter 0.3s ease;
+        pointer-events: none; /* 블러된 상태에서 내부 요소 클릭 방지 선택 사항 */
+    }
+
+    /* 카드 이미지 컨테이너 상대 위치 설정 (배지 위치용) */
+    .card-img-box, .best-img-box {
+        position: relative;
+        overflow: hidden;
+    }
         
     </style>
 </head>
@@ -169,14 +195,18 @@
                         <div class="rank-label" :class="'rank-' + (index + 1)">{{index + 1}}</div>
                         
                         <div class="best-img-box">
-                            <!-- 1순위: 썸네일(본문이미지), 2순위: 기본 로고 -->
+                            <!-- [추가] 프리미엄 배지 (유료글이면 항상 노출) -->
+                            <span v-if="best.isPaid == 1" class="badge-premium" style="position:absolute; top:12px; right:12px; z-index:10;">PREMIUM</span>
+
+                            <!-- [수정] 조건부 블러 클래스 적용 -->
                             <img :src="best.thumbnailUrl || '/images/marryviewlogo_v3.png'" 
-                                :class="{'no-img-default': !best.thumbnailUrl}"
+                                :class="{'no-img-default': !best.thumbnailUrl, 'is-blurred': shouldBlur(best)}"
                                 @error="(e) => e.target.src = '/images/marryviewlogo_v3.png'">
                         </div>
 
                         <div class="best-info">
                             <span class="company-tag">{{best.comName}}</span>
+                            <div class="user-nickname"> {{ best.nickname }} 님</div>
                             <h3 class="title-text">{{best.title}}</h3>
                             <div class="best-meta">
                                 <span><i class="fas fa-heart"></i> {{best.likeCnt}}</span>
@@ -192,17 +222,18 @@
             <div class="review-grid">
                 <div v-for="item in list" :key="item.reviewNo" class="review-card" @click="fnDetail(item)">
                     <div class="card-badges">
-                        <span v-if="item.viewCnt >= 100 || item.likeCnt >= 10" class="badge-best">BEST</span>
+                        <span v-if="item.viewCnt >= 100 || item.likeCnt >= 50" class="badge-best">BEST</span>
                         <span v-if="item.isPaid == 1" class="badge badge-paid">유료</span>
                         <span v-else class="badge badge-free">무료</span>
+                        <!-- [추가] 프리미엄 배지 -->
+                      <span v-if="item.isPaid == 1" class="badge-premium">PREMIUM</span>
                     </div>
 
                     <div class="card-img-box">
-                        <!-- 본문에서 추출한 썸네일이 있으면 보여주고, 없으면 로고 출력 -->
-                        <img :src="item.thumbnailUrl || '/images/marryviewlogo_v3.png'" 
-                            :class="{'default-logo': !item.thumbnailUrl}"
-                            @error="(e) => e.target.src = '/images/marryviewlogo_v3.png'"
-                            alt="리뷰 썸네일">
+                       <img :src="item.thumbnailUrl || '/images/marryviewlogo_v3.png'" 
+                        :class="{'default-logo': !item.thumbnailUrl, 'is-blurred': shouldBlur(item)}"
+                        @error="(e) => e.target.src = '/images/marryviewlogo_v3.png'"
+                        alt="리뷰 썸네일">
                     </div>
 
                     <div class="card-body-custom">
@@ -418,7 +449,25 @@
                     this.orderType = type;
                     this.currentPage = 1;
                     this.fnList();
-                }
+                },
+                // 블러 처리 여부를 결정하는 핵심 로직
+                shouldBlur(item) {
+                    // 1. 관리자(ADMIN)는 절대 블러 안 함
+                    if (this.sessionRole === 'ADMIN') return false;
+                    
+                    // 2. 유료 리뷰(isPaid == 1)가 아니면 블러 안 함
+                    if (item.isPaid != 1) return false;
+                    
+                    // 3. 내가 쓴 리뷰(userId가 일치)면 블러 안 함
+                    if (this.sessionId === item.userId) return false;
+                    
+                    // 4. 이미 열람권을 사용해 구매한 이력이 있다면 블러 안 함
+                    // (이 데이터는 DB에서 'isViewed' 같은 컬럼으로 가져온다고 가정)
+                    if (item.viewStatus === 'ALREADY_VIEWED') return false;
+
+                    // 위 조건에 모두 해당하지 않는 유료 리뷰만 블러 처리
+                    return true;
+                },
             },
             mounted() {
                 this.fnList();

@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -28,7 +27,7 @@ import jakarta.servlet.http.HttpSession;
 @Controller
 @RequestMapping("/api/review")
 public class ReviewController {
-    
+     
     @Autowired
     private ReviewService reviewService;
 
@@ -102,9 +101,17 @@ public class ReviewController {
 
     @PostMapping("/list.dox")
     @ResponseBody
-    public String getReviewList(@RequestBody HashMap<String, Object> map) {
+    public String getReviewList(@RequestBody HashMap<String, Object> map,HttpServletRequest request) {
         HashMap<String, Object> resultMap = new HashMap<>();
         try {
+        	
+        	// 1. 세션에서 로그인한 사용자의 ID를 꺼냅니다.
+            HttpSession session = request.getSession();
+            String sessionId = (String) session.getAttribute("sessionId");
+            
+            // 2. 쿼리에서 사용할 수 있도록 map에 "sessionId"라는 키로 저장합니다.
+            // (이 값이 있어야 MyBatis의 #{sessionId} 부분에 데이터가 들어갑니다.)
+            map.put("sessionId", sessionId);
             int count = reviewService.getReviewCount(map);
             List<HashMap<String, Object>> list = reviewService.selectReviewList(map);
             List<HashMap<String, Object>> bestList = reviewService.selectBestReviewList(map);

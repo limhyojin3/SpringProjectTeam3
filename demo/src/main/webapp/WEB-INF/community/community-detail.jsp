@@ -193,11 +193,22 @@
                                     <span class="text-muted" style="font-style: italic;">탈퇴한 사용자의 댓글입니다.</span>
                                 </template>
                                 <template v-else>
-                                    {{ item.content }}
+                                    <!-- [수정 기능 추가] 수정 모드가 아닐 때 -->
+                                    <div v-if="!item.isEdit">
+                                        {{ item.content }}
+                                    </div>
+                                    <!-- [수정 기능 추가] 수정 모드일 때 -->
+                                    <div v-else class="edit-box">
+                                        <textarea v-model="item.content" class="form-control mb-2" rows="2"></textarea>
+                                        <div class="text-right">
+                                            <button class="btn btn-xs btn-light border mr-1" @click="item.isEdit = false">취소</button>
+                                            <button class="btn btn-xs btn-dark" @click="fnUpdateComment(item)">수정완료</button>
+                                        </div>
+                                    </div>
                                 </template>
                             </div>
 
-                            <div class="comment-footer" v-if="item.isDeleted == 0">
+                            <div class="comment-footer" v-if="item.isDeleted == 0 && !item.isEdit">
                                 <template v-if="post.nickname !== '탈퇴회원' && item.nickname !== '탈퇴회원'">
                                     <span class="comment-like-btn" @click="fnCommentLike(item)">
                                         <i :class="item.isLiked > 0 ? 'fas fa-heart text-danger' : 'far fa-heart'"></i>
@@ -213,6 +224,7 @@
                                     </span>
                                 </template>
 
+                                <span class="action-link" v-if="item.userId === sessionId" @click="fnEditMode(item)">수정</span>
                                 <span class="action-link" v-if="item.userId === sessionId || sessionRole === 'ADMIN'" @click="fnRemoveComment(item.commentNo)">삭제</span>
                             </div>
 
@@ -345,13 +357,13 @@
                 },
                 fnGetComments() {
                     $.ajax({
-                        url: "/api/comment/Comm-list.dox",
+                        url: "/api/comment/comm-list.dox",
                         type: "POST",
                         contentType: "application/json",
                         data: JSON.stringify({ postNo: this.postNo, userId: this.sessionId }),
                         success: (res) => {
                             const data = (typeof res === "string") ? JSON.parse(res) : res;
-                            this.commentList = data.list.map(c => ({...c, showReply: false, replyContent: ""}));
+                            this.commentList = data.list.map(c => ({...c, showReply: false, replyContent: "", isEdit:false}));
                         }
                     });
                 },
@@ -359,7 +371,7 @@
                     const content = parentItem ? parentItem.replyContent : this.newComment;
                     if(!content) return alert("내용을 입력하세요.");
                     $.ajax({
-                        url: "/api/comment/Comm-add.dox",
+                        url: "/api/comment/comm-add.dox",
                         type: "POST",
                         contentType: "application/json",
                         data: JSON.stringify({
@@ -431,7 +443,57 @@
                 },
                 fnEdit() {
                     location.href = "/api/community/edit.do?postNo=" + this.postNo; 
+                },
+                fnEditMode(item) {
+                    // 1. 모든 댓글의 수정 모드를 해제 (한 번에 하나만 수정 가능하게 설정)
+                    this.commentList.forEach(c => {
+                        c.isEdit = false;
+                    });
+
+                    // 2. 현재 클릭한 댓글만 수정 모드로 전환
+                    // Vue 3에서는 직접 할당해도 화면이 바로 바뀝니다.
+                    item.isEdit = true;
+                    
+                    // 3. (선택사항) 취소 시 복구를 위해 기존 내용을 저장해둡니다.
+                    item.oldContent = item.content;
+                },
+
+                // 2. 수정 완료 처리
+                fnUpdateComment(item) {
+                    console.log("보내는 데이터:", { commentNo: item.commentNo, content: item.content }); // 이 로그가 찍히는지 확인
+                    if (!item.content.trim()) {
+                        alert("수정할 내용을 입력해 주세요.");
+                        return;
+                    }
+
+                    var self = this;
+                    var nparmap = {
+                        commentNo: item.commentNo,
+                        content: item.content
+                    };
+
+                    // 기존 리뷰 수정 API 주소 확인 후 변경 필요 (.dox 등)
+                    $.ajax({
+                        url: "/api/comment/update.dox", // 커뮤니티 댓글 전용 수정 경로
+                        type: "POST",
+                        data: JSON.stringify(nparmap),
+                        contentType: "application/json",
+                        success: function(res) {
+                            // 1. 만약 응답이 문자열로 왔다면 객체로 변환 (이미 객체라면 그대로 사용)
+                            const data = (typeof res === "string") ? JSON.parse(res) : res;
+                            
+                            console.log("변환된 데이터:", data);
+                            if (data.result === "success") {
+                                alert("댓글이 수정되었습니다.");
+                                item.isEdit = false; // 수정 모드 해제
+                                self.fnGetComments();
+                            } else {
+                                alert("수정에 실패했습니다.");
+                            }
+                        }
+                    });
                 }
+                
             },
             mounted() { this.fnGetDetail(); }
         }).mount('#app');

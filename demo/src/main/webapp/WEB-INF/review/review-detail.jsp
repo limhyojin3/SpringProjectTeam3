@@ -580,7 +580,7 @@
                 },
                 fnGetComments() {
                     $.ajax({
-                        url: "/api/comment/Review-list.dox",
+                        url: "/api/comment/review-list.dox",
                         type: "POST",
                         data: JSON.stringify({ reviewNo: this.reviewNo, userId: this.sessionId }),
                         contentType: "application/json",
@@ -692,7 +692,7 @@
                     if (!this.newComment.trim()) return alert("내용을 입력해주세요.");
                     if (!this.sessionId || this.sessionId === 'null') return alert("로그인이 필요합니다.");
                     $.ajax({
-                        url: "/api/comment/Review-add.dox",
+                        url: "/api/comment/review-add.dox",
                         type: "POST",
                         data: JSON.stringify({ reviewNo: this.reviewNo, userId: this.sessionId, content: this.newComment }),
                         contentType: "application/json",
@@ -761,7 +761,7 @@
                     if (!this.sessionId || this.sessionId === 'null') return alert("로그인이 필요합니다.");
                     if(this.replyContent.trim() === "") return alert("답글 내용을 입력해주세요.");
                     $.ajax({
-                        url: "/api/comment/Review-add.dox",
+                        url: "/api/comment/review-add.dox",
                         type: "POST",
                         data: JSON.stringify({ reviewNo: this.reviewNo, content: this.replyContent, parentNo: parentNo, userId: this.sessionId }),
                         contentType: "application/json",
