@@ -44,7 +44,7 @@ public class CompanyService {
 //	#private String impSecret;
 //	#
 //	#이거 넣어 주시면 됩니다
- 
+  
 	public HashMap<String, Object> getCompany(HashMap<String, Object> map) {
 		HashMap<String, Object> resultMap = new HashMap<String, Object>();
 		try {
