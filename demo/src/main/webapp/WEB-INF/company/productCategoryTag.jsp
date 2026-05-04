@@ -1386,7 +1386,7 @@
 
                             <div class="reservation-ticket">
                                 <div class="ticket-header">
-                                    <span class="ticket-brand">MERRY VIEW RESERVATION</span>
+                                    <span class="ticket-brand">MARRY VIEW RESERVATION</span>
                                     <span class="ticket-type">OFFICIAL TICKET</span>
                                 </div>
                                 <!-- {{product1}}
@@ -1474,7 +1474,7 @@
 
                             <div class="reservation-ticket">
                                 <div class="ticket-header">
-                                    <span class="ticket-brand">MERRY VIEW RESERVATION</span>
+                                    <span class="ticket-brand">MARRY VIEW RESERVATION</span>
                                     <span class="ticket-type">OFFICIAL TICKET</span>
                                 </div>
                                 <!-- {{product1}}
@@ -1614,7 +1614,7 @@
 
                             <div class="reservation-ticket">
                                 <div class="ticket-header">
-                                    <span class="ticket-brand">MERRY VIEW RESERVATION</span>
+                                    <span class="ticket-brand">MARRY VIEW RESERVATION</span>
                                     <span class="ticket-type">OFFICIAL TICKET</span>
                                 </div>
                                 <!-- {{product1}}

@@ -13,7 +13,7 @@ import com.example.demo.company.model.Company;
 import com.example.demo.company.model.Review;
 
 @Service
-public class CompanyService {
+public class CompanyService { 
 	@Autowired
 	CompanyMapper companyMapper;
 
