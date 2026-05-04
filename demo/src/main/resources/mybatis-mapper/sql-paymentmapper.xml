@@ -297,10 +297,4 @@
 		WHERE pay_no = #{payNo}
 	</update>
 	
-	<update id="updateRefundReservation3" parameterType="hashmap">
-		UPDATE payment
-		SET 
-		    pay_status = 'CANCEL'
-		WHERE imp_uid = #{impUid}
-	</update>
 </mapper>

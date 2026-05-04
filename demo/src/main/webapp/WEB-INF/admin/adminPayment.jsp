@@ -185,9 +185,9 @@
                         <table v-if="activeTab === 'reservation'" class="payment-table">
                             <thead>
                                 <tr>
-                                    <th>결제번호</th>
-                                    <th>유저</th>
+                                    <!-- <th>결제번호</th> -->
                                     <th>예약번호</th>
+                                    <th>유저</th>
                                     <th>상품명</th>
                                     <th>예약금</th>
                                     <th>예약일</th>
@@ -199,24 +199,24 @@
                             </thead>
                             <tbody>
                                 <tr v-for="r in list" :key="r.payNo">
-                                    <td>{{ r.payNo }}</td>
-                                    <td>{{ r.userId }}</td>
+                                    <!-- <td>{{ r.payNo }}</td> -->
                                     <td>{{ r.resNo }}</td>
+                                    <td>{{ r.userId }}</td>
                                     <td>{{ r.productName }}</td>
                                     <td>{{ r.amount }}</td>
                                     <td>{{ r.useDate }}</td>
                                     <td>{{ r.payStatus }}</td>
                                     <td>{{ r.resStatus }}</td>
                                     <td>{{ formatDate(r.payDate) }}</td>
-                                    <!-- <td>
-                                    <button @click="fnRefund2(r.payNo)">환불
-                                    </button>
-                                </td> -->
+                                    <td>
+                                        <button @click="fnRefund2(r.payNo)">환불
+                                        </button>
+                                    </td>
                                 </tr>
                             </tbody>
                         </table>
 
-                         <!-- 등록 결제 -->
+                        <!-- 등록 결제 -->
                         <table v-if="activeTab === 'registration'" class="payment-table">
                             <thead>
                                 <tr>
@@ -250,7 +250,7 @@
                             </button>
 
                             <button @click="fnPageMove(currentPage+1)" :disabled="currentPage===index">›</button>
-                        </div> 
+                        </div>
                     </div>
                 </div>
             </div>
@@ -344,7 +344,7 @@
                                 console.log("성공", data);
                                 if (data.result == "success") {
                                     alert(data.message);
-                                    location.reload();
+                                    self.fnGetList;
                                 } else {
                                     alert(data.message);
                                 }
@@ -364,7 +364,7 @@
                         });
                     },
                     fnRefund2(payNo) {
-
+                        let self = this;
                         console.log("환불 클릭", payNo);
 
                         if (!confirm("정말 환불하시겠습니까?\n환불 후 복구할 수 없습니다.")) {
@@ -385,7 +385,7 @@
                                 console.log("성공", data);
                                 if (data.result == "success") {
                                     alert(data.message);
-                                    location.reload();
+                                    self.fnGetList();
                                 } else {
                                     alert(data.message);
                                 }
@@ -405,6 +405,7 @@
                         });
                     },
                     fnRegistration: function (c) {
+                        let self = this;
                         if (!confirm("정말 등록하시겠습니까?")) {
                             return;
                         }
@@ -420,6 +421,7 @@
                                 console.log("성공", data);
                                 if (data.result == "success") {
                                     alert(data.message);
+                                    self.fnGetList;
                                 } else {
                                     alert(data.message);
                                 }
