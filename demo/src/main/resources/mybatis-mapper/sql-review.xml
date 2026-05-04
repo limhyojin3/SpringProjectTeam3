@@ -172,6 +172,7 @@
 	        r.img_url AS imgUrl,
 	        r.like_cnt AS likeCnt,
 	        r.view_cnt AS viewCnt,
+	        r.is_paid AS isPaid,
 	        IFNULL(c.com_name, '일반 리뷰') AS comName,
 	        CASE 
 	            WHEN (r.img_url IS NOT NULL AND r.img_url != '') 
