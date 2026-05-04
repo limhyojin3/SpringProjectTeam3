@@ -296,8 +296,18 @@
 	</update>
 
 	<insert id="insertPaymentFinal" parameterType="map"> insert into
-		payment_reservation values(null, #{userId}, #{amount}, 'SUCCESS', NOW(),
-		#{resNo}, 0, null) <selectKey keyProperty="payDate,payNo"
+		payment_reservation(
+			pay_no,
+			user_id,
+			amount,
+			pay_status,
+			pay_date,
+			res_no,
+			refund,
+			refund_date,
+			imp_uid,
+			merchant_uid) values(null, #{userId}, #{amount}, 'SUCCESS', NOW(),
+		#{resNo}, 0, null, #{impUid}, #{merchantUid}) <selectKey keyProperty="payDate,payNo"
 			resultType="map" order="AFTER">
 			SELECT
 			pay_date AS payDate,
