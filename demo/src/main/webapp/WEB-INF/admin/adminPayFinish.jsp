@@ -241,6 +241,36 @@
                         height: 180px;
                     }
                 }
+
+                .type-text {
+                    display: flex;
+                    flex-direction: column;
+                    gap: 6px;
+                }
+
+                /* 상단 강조 문구 */
+                .type-label {
+                    font-size: 18px;
+                    font-weight: 700;
+                    color: #e77988;
+                    letter-spacing: -0.3px;
+                }
+
+                /* 상품명 줄 */
+                .type-name {
+                    font-size: 17px;
+                    color: #666;
+                    font-weight: 500;
+                }
+
+                /* 상품명 강조 */
+                .type-name span {
+                    color: #222;
+                    font-weight: 700;
+                    background: linear-gradient(transparent 60%, #ffe4ea 0%);
+                    padding: 0 4px;
+                    border-radius: 6px;
+                }
             </style>
         </head>
 
@@ -278,7 +308,7 @@
 
                                 <div class="info-row">
                                     <span class="info-title">결제상태</span>
-                                    <span class="info-value success">${payment.pay_status}</span>
+                                    <span class="info-value success">${payment.pay_status == "SUCCESS" ? "결제성공" : "결제실패"}</span>
                                 </div>
 
                                 <div class="info-row">
@@ -292,10 +322,10 @@
                                 <div class="type-box">
                                     <div class="type-left">
                                         <div class="type-icon">♡</div>
-                                        <div class="type-text">
-                                            패스권 구매 완료<br>
-                                            상품명 : ${payment.pass_name}
-                                        </div>
+                                    </div>
+                                    <div class="type-text">
+                                        <div class="type-label">패스권 구매 완료</div>
+                                        <div class="type-name">상품명 : <span>${payment.pass_name}</span></div>
                                     </div>
                                     <div class="type-check">✔</div>
                                 </div>
@@ -305,10 +335,10 @@
                                 <div class="type-box">
                                     <div class="type-left">
                                         <div class="type-icon">♡</div>
-                                        <div class="type-text">
-                                            예약 결제 완료<br>
-                                            예약번호 : ${payment.res_no}
-                                        </div>
+                                    </div>
+                                    <div class="type-text">
+                                        <div class="type-label">예약 결제 완료</div>
+                                        <div class="type-name">예약번호 : <span>${payment.res_no}</span></div>
                                     </div>
                                     <div class="type-check">✔</div>
                                 </div>

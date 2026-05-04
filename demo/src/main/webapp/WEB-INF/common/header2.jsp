@@ -17,7 +17,6 @@
             position: relative;
             z-index: 1000;
             background-color: white !important;
-            position: sticky;
         }
 
         /* 2. 메인 메뉴(1차) 링크 스타일 */
@@ -128,23 +127,22 @@
         <div class="collapse navbar-collapse">
             <ul class="navbar-nav ml-auto" style="align-items: center; overflow: visible !important;">
                 <li class="nav-item has-dropdown">
-                    <a class="nav-link custom-nav-link" href="${pageContext.request.contextPath}/about.do">회사소개 </a>
+                    <a class="nav-link custom-nav-link" href="javascript:void(0)">회사소개 </a>
                     <ul class="dropdown-contents">
                         <li><a href="/about.do">메리뷰 소개</a></li>
                         <li><a href="/location.do">찾아오시는 길</a></li>
-                        <li><a href="/history.do">회사 연혁</a></li>
                     </ul>
                 </li>
 
                 <li class="nav-item has-dropdown">
-                    <a class="nav-link custom-nav-link" href="${pageContext.request.contextPath}/productCategoryTag.do">상품목록</a>
+                    <a class="nav-link custom-nav-link" href="javascript:void(0)">상품목록</a>
                     <ul class="dropdown-contents">
                         <li><a href="${pageContext.request.contextPath}/productCategoryTag.do">상품 찾기</a></li>
                     </ul>
                 </li>
 
                 <li class="nav-item has-dropdown">
-                    <a class="nav-link custom-nav-link" href="${pageContext.request.contextPath}/api/community/list.do">커뮤니티</a>
+                    <a class="nav-link custom-nav-link" href="javascript:void(0)">커뮤니티</a>
                     <ul class="dropdown-contents">
                         <li><a href="${pageContext.request.contextPath}/api/community/list.do">전체 보기</a></li>
                         <li><a href="${pageContext.request.contextPath}/api/community/list.do?category=자유">자유글</a></li>
@@ -154,7 +152,7 @@
                 </li>
 
                 <li class="nav-item has-dropdown">
-                    <a class="nav-link custom-nav-link" href="${pageContext.request.contextPath}/api/review/list.do">리얼리뷰</a>
+                    <a class="nav-link custom-nav-link" href="javascript:void(0)">리얼리뷰</a>
                     <ul class="dropdown-contents">
                         <li><a href="${pageContext.request.contextPath}/api/review/list.do">전체보기</a></li>
                         <li><a href="/api/review/list.do?isPaid=1">💎 유료 리뷰</a></li>
@@ -163,10 +161,9 @@
                 </li>
 
                 <li class="nav-item has-dropdown">
-                    <a class="nav-link custom-nav-link" href="${pageContext.request.contextPath}/adminPass.do">패스구매</a>
+                    <a class="nav-link custom-nav-link" href="javascript:void(0)">패스구매</a>
                     <ul class="dropdown-contents">
-                        <li><a href="${pageContext.request.contextPath}/adminPass.do">패스상품보기</a></li>
-                        <li><a href="${pageContext.request.contextPath}/adminMyPass.do">내 패스 조회</a></li>
+                        <li><a href="${pageContext.request.contextPath}/adminPass.do">패스구매</a></li>
                     </ul>
                 </li>
 
@@ -177,7 +174,7 @@
                             <c:choose>
                                 <%-- 2. 일반 사용자(USER)인 경우만 드롭다운 메뉴 포함 --%>
                                 <c:when test="${sessionScope.sessionRole == 'USER'}">
-                                    <a class="nav-link custom-nav-link" href="${pageContext.request.contextPath}/userMyPage.do">마이페이지</a>
+                                    <a class="nav-link custom-nav-link" href="javascript:void(0);">마이페이지</a>
                                     <ul class="dropdown-contents">
                                         <li><a href="${pageContext.request.contextPath}/userMyPage.do">마이페이지 홈</a></li>
                                         <li><a href="${pageContext.request.contextPath}/userMyPage-pay.do">결제 멤버십 내역</a></li>
@@ -194,13 +191,6 @@
                                 </c:when>
                                 <c:when test="${sessionScope.sessionRole == 'ADMIN'}">
                                     <a class="nav-link custom-nav-link" href="${pageContext.request.contextPath}/adminMain.do">관리자페이지 <i class="fas fa-chevron-right arrow-icon"></i></a>
-                                    <ul class="dropdown-contents">
-                                        <li style="display: flex; align-items: center"><a href="${pageContext.request.contextPath}/adminMain.do">관리자</a> / <a href="${pageContext.request.contextPath}/adminStatistics.do">통계</a></li> 
-                                        <li style="display: flex; align-items: center"><a href="${pageContext.request.contextPath}/adminUser.do">회원</a> / <a href="${pageContext.request.contextPath}/adminCompany.do">업체</a></li>
-                                        <li style="display: flex; align-items: center"><a href="${pageContext.request.contextPath}/adminBoard.do">게시판</a> / <a href="${pageContext.request.contextPath}/adminReview.do">리뷰</a></li>
-                                        <li style="display: flex; align-items: center"><a href="${pageContext.request.contextPath}/adminPayment.do">결제</a> / <a href="${pageContext.request.contextPath}/adminProduct.do">상품</a></li>
-                                        <li style="display: flex; align-items: center"><a href="${pageContext.request.contextPath}/adminReport.do">신고</a> / <a href="${pageContext.request.contextPath}/adminInquiry.do">문의</a></li>
-                                    </ul>                             
                                 </c:when>
                             </c:choose>
                         </c:when>
@@ -216,7 +206,7 @@
                 
                 <c:if test="${sessionRole != 'ADMIN'}">
                     <li class="nav-item">
-                        <a class="nav-link" href="${sessionRole == 'USER' ? 'userMyPage.do' : '/partnerManagement.do'}" style="color: #ff4d6d !important; padding: 0 10px !important;">
+                        <a class="nav-link" href="${sessionRole == 'COMPANY' ? '#' : '/userMyPage-cs.do'}" style="color: #ff4d6d !important; padding: 0 10px !important;">
                             <i class="fas fa-headset" style="font-size: 1.3rem !important;"></i>
                         </a>
                     </li>

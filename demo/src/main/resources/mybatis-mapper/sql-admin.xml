@@ -160,6 +160,7 @@
 		CASE WHEN TARGET_TYPE = 'MEMBER' THEN
 		TARGET_USER_ID ELSE CAST(TARGET_ID AS CHAR) 
 		END AS UNI_TARGET_ID,
+		TARGET_USER_ID AS targetUserId,
 	REPORT_TITLE, REPORT_CONTENT, ANSWER_STATUS, ACTION_STATUS, REG_DATE,
 	COUNT(*) OVER() AS REPORT_WAIT, DATE_FORMAT(REG_DATE, '%Y-%m-%d') AS
 	REPORT_DAY FROM REPORT WHERE 1=1
@@ -202,16 +203,16 @@
 				AND action_status = 0
 			</when>
 			<!-- 답변대기: 조치는 했지만 답변(통보)은 안 나간 상태 -->
-			<when test="processStatus == 'WAIT_ANSWER'">
+			<!--<when test="processStatus == 'WAIT_ANSWER'">
 				AND action_status = 1 AND answer_status = 0
-			</when>
+			</when>-->
 			<!-- 처리완료: 조치와 답변 모두 끝난 상태 -->
 			<when test="processStatus == 'COMPLETED'">
-				AND action_status = 1 AND answer_status = 1
+				AND action_status = 1 <!-- AND answer_status = 1-->
 			</when>
 			<!-- 반려: 반려 조치-->
 			<when test="processStatus == 'REJECTED'">
-				AND action_status = 2 AND answer_status = 0
+				AND action_status = 2 <!--AND answer_status = 0-->
 			</when>
 		</choose>
 	</if>
@@ -227,7 +228,6 @@
 			ORDER BY REG_DATE DESC
 		</otherwise>
 	</choose>
-	
 	LIMIT #{pageSize} OFFSET #{offSet}
 </select>
 
@@ -239,8 +239,18 @@
     SELECT post_no
     FROM comment
     WHERE comment_no = #{commentNo}
-
 </select>
+
+<!-- 댓글로 리뷰 추적-->
+<select id="selectComentReviewNo"
+        parameterType="hashmap"
+        resultType="int">
+
+    SELECT review_no
+    FROM comment
+    WHERE comment_no = #{commentNo}
+</select>
+
 <!--대댓글추적-->
 <select id="selectParentCommentPostNo"
         parameterType="hashmap"
@@ -324,7 +334,8 @@
 		PRICE,
 		REVIEW_CNT,
 		IS_ACTIVE,
-		REG_DATE
+		REG_DATE,
+		description
 		FROM PASS_PRODUCT
 		WHERE IS_ACTIVE = 1
 	</select>
@@ -483,7 +494,9 @@
 		test="status != null and status != 'ALL'">
 		AND status = #{status}
 	</if>
-	
+	<if test="sort == 'report'">
+		ORDER BY reportCount DESC
+	</if>
 	LIMIT #{pageSize} OFFSET #{offSet}
 	</select>
 
@@ -840,7 +853,17 @@
     WHERE TARGET_USER_ID = #{target_id}
     AND ACTION_STATUS = 1
 	</select>
-
+	<!-- 신고게시판 전 회원 1회이상 조회 -->
+	<select id="selectKillHistory" parameterType="hashmap" resultType="com.example.demo.admin.model.Admin">
+		select target_user_id AS targetUserId, r.killCount
+		from(
+		SELECT target_user_id, COUNT(*) AS killCount
+		FROM REPORT
+		WHERE ACTION_STATUS = 1
+		GROUP BY target_user_id) r
+		where killCount &gt; 1
+	</select>
+	
 	<!-- 회원 상세 신고 이력 조회 -->
 	<select id="selectReportInfoList" parameterType="hashmap" resultType="com.example.demo.admin.model.Admin">
 		SELECT
@@ -860,6 +883,7 @@
 		SELECT
 		REPORT_NO,
 		REPORTER_ID,
+		TARGET_USER_ID AS targetUserId,
 		TARGET_TYPE,
 		CASE
 		WHEN TARGET_TYPE = 'MEMBER' THEN TARGET_USER_ID
@@ -922,6 +946,16 @@
     <foreach collection="reportNos" item="no" open="(" separator="," close=")">
         #{no}
     </foreach>
+	</update>
+
+	<update id="batchReject" parameterType="hashmap">
+	    UPDATE report
+	    SET action_status = 2,
+	        reject_reason = #{rejectReason}
+	    WHERE report_no IN
+	    <foreach collection="reportNos" item="no" open="(" separator="," close=")">
+	        #{no}
+	    </foreach>
 	</update>
 
 	<!-- 단일 신고 승인-->
@@ -999,10 +1033,12 @@
 	
 	<select id="selectRegistrationPaymentList" parameterType="hashmap" resultType="com.example.demo.admin.model.Admin">
 	    SELECT
+	    p.user_id AS userId,
 	    p.pay_no AS payNo,
         p.amount AS amount,
         p.pay_date AS payDate,
-        c.com_name AS comName
+        c.com_name AS comName,
+        c.registration_fee AS registrationFee
 	    FROM payment p
 	    JOIN payment_resistration pr ON p.pay_no = pr.pay_no
 	    JOIN company c ON pr.company_no = c.company_no
@@ -1242,14 +1278,16 @@
 	        pass_name,
 	        price,
 	        review_cnt,
-	        is_active
+	        is_active,
+	        description
 	    )
 	    VALUES
 	    (
 	        #{passName},
 	        #{price},
 	        #{reviewCnt},
-	        #{isActive}
+	        #{isActive},
+	        #{description}
 	    )
 	</insert>
 
@@ -1270,7 +1308,7 @@
 		    p.user_id,
 		    p.amount,
 		    p.pay_status,
-		    p.pay_date,
+		    DATE_FORMAT(p.pay_date, '%Y-%m-%d %H:%i:%s') AS pay_date,
 		    pp.pass_no,
 		    pp.item_name,
 		    pr.pass_name
@@ -1311,4 +1349,57 @@
 		JOIN payment_resistration pr ON p.pay_no = pr.pay_no
 		WHERE p.pay_no = #{payNo}
 	</select>
+	
+<!-- 마이 패스 페이지-->
+	<!-- 패스 결제 내역 조회 -->
+	<select id="selectMyPassList" parameterType="hashmap"
+	    resultType="com.example.demo.admin.model.Admin">
+	    SELECT 
+	    	P.pay_no AS payNo,
+	    	P.amount AS amount,
+	        PP.pass_no AS passNo,
+	        PP.item_name AS itemName,
+	        P.pay_date AS payDate,
+	        P.pay_status AS payStatus,
+	        PPP.review_cnt AS reviewCnt
+	    FROM payment P
+	    JOIN payment_pass PP ON P.pay_no = PP.pay_no
+	    JOIN pass_product PPP ON PP.pass_no = PPP.pass_no
+	    WHERE P.user_id = #{userId}
+	    <if test="payStatus != null and payStatus != 'ALL'">
+	    	AND P.pay_status = #{payStatus}
+	    </if>
+	    ORDER BY P.pay_date DESC
+	    LIMIT #{pageSize} OFFSET #{offSet}
+	</select>
+		<!-- 페이지네이션-->
+	<select id="selectMyPassCount" parameterType="hashmap"
+	    resultType="int">
+	    SELECT COUNT(*)
+	    FROM payment P
+	    JOIN payment_pass PP ON P.pay_no = PP.pay_no
+	    WHERE P.user_id = #{userId}
+	</select>
+		<!-- 열람권 잔여 횟수 -->
+	<select id="selectMyWallet" parameterType="String" 
+		resultType="int">
+	    SELECT 
+	        U.remaining_count AS remainingCount
+	    FROM user_pass_wallet U
+	    JOIN pass_product P ON U.pass_no = P.pass_no
+	    WHERE U.user_id = #{userId}
+	</select>
+	
+	<!-- 제휴 등록 -->
+	<update id="updateCompanyReg" parameterType="hashmap">
+		UPDATE member
+		SET role = 'PARTNER'
+		WHERE user_id = #{userId}
+	</update>
+	<update id="updateCompanyRegPaid" parameterType="hashmap">
+		UPDATE company
+		SET registration_fee = 'PAID'
+		WHERE user_id = #{userId}
+	</update>
+	
 </mapper>

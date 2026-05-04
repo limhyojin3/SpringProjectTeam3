@@ -14,29 +14,8 @@
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
         <link rel="stylesheet" href="${pageContext.request.contextPath}/css/common.css">
         <link rel="stylesheet" href="${pageContext.request.contextPath}/css/adminNavi.css">
+        <link rel="stylesheet" href="${pageContext.request.contextPath}/css/admin-common.css">
         <style>
-            body {
-                background-color: #f5f6f7;
-                font-size: 14px;
-                color: #333;
-            }
-
-            .middle {
-                width: 100%;
-                display: grid;
-                grid-template-areas: "nav main";
-                grid-template-columns: 300px 1fr;
-            }
-
-            .main {
-                grid-area: main;
-                background: #f5f6f7;
-                padding: 20px;
-                display: flex;
-                gap: 20px;
-                align-items: flex-start;
-            }
-
             .user-container {
                 padding: 20px;
                 background: #fff;
@@ -149,30 +128,6 @@
                 padding: 3px 8px;
                 font-size: 12px;
             }
-
-            button {
-                border: 1px solid #ddd;
-                background: #fff;
-                padding: 5px 10px;
-                font-size: 12px;
-                border-radius: 6px;
-                cursor: pointer;
-            }
-
-            button:hover {
-                background: #f8f9fa;
-            }
-
-            .pagination-wrap {
-                display: flex;
-                gap: 5px;
-            }
-
-            .pagination-wrap button.active {
-                background: #007bff;
-                color: #fff;
-                transform: scale(1.1);
-            }
         </style>
     </head>
 
@@ -200,8 +155,9 @@
                                 <button @click="fnGetUserList">검색</button>
                             </div>
                             <div class="filter-group">
+                                <button @click="fnReport">신고수정렬</button>
                                 <select v-model="statusFilter" @change="fnGetUserList">
-                                    <option value="ALL">상태 전체</option>
+                                    <option value="ALL">활동상태</option>
                                     <option value="ACTIVE">활동</option>
                                     <option value="STOP">정지</option>
                                     <option value="DORMANT">휴면</option>
@@ -250,9 +206,12 @@
                                     <td>{{ formatDate(user.lastLogin) }}</td>
                                     <td>{{ formatDate(user.regDate) }}</td>
                                 </tr>
+                                <tr v-for="n in emptyRows" class="empty-row">
+                                    <td colspan="7">&nbsp;</td>
+                                </tr>
                             </tbody>
                         </table>
-                        <div class="pagination-wrap">
+                        <div class="page-box">
                             <button @click="fnPageMove(currentPage-1)" :disabled="currentPage===1">‹</button>
 
                             <button v-for="p in index" :key="p" @click="fnPageMove(p)"
@@ -283,6 +242,8 @@
                         pageSize: 10,
                         index: 1,
                         currentPage: 1,
+                        emptyRows: 0,
+
                     };
                 },
                 methods: {
@@ -290,7 +251,10 @@
                     fnPage: function (url) {
                         location.href = url;
                     },
+                    fnReport: function(){
+                        this.sort = "reprot";
 
+                    },
                     fnPageMove(p) {
                         if (p < 1 || p > this.index) return;
                         this.currentPage = p;
@@ -309,6 +273,7 @@
                             status: self.statusFilter,
                             pageSize: self.pageSize,
                             offSet: self.pageSize * (self.currentPage - 1),
+                            sort:"",
                         };
                         $.ajax({
                             url: "http://localhost:8080/userList.dox",
@@ -319,6 +284,7 @@
                                 console.log(data);
                                 self.userList = data.list || [];
                                 self.index = Math.ceil(data.totalCount / self.pageSize);
+                                self.emptyRows = 10 - data.list.length;
                             }
                         });
                     },

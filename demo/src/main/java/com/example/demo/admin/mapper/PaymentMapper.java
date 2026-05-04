@@ -6,6 +6,8 @@ import java.util.List;
 import org.apache.ibatis.annotations.Mapper;
 
 import com.example.demo.admin.model.Admin;
+import com.example.demo.admin.model.Payment;
+
 import java.util.Map;
 
 //PaymentMapper.java
@@ -34,4 +36,18 @@ public interface PaymentMapper {
 	int updateWalletCnt(HashMap<String, Object> map);
 	
 	int insertWalletCnt(HashMap<String, Object> map);
+	
+	// 쿠폰 조회
+	List<Payment> selectCouponUseList(HashMap<String, Object> map);
+	int selectMyCouponCount(HashMap<String, Object> map);
+
+	int updateExpiredCoupon(HashMap<String, Object> map);
+	// 쿠폰 검증
+	Payment selectCouponInfo(HashMap<String, Object> map);
+	// 서버 가격 조회
+	int selectPassPrice(int passNo);
+	// 쿠폰 사용 수정
+	int updateUsedCoupon(HashMap<String, Object> map);
+	
+	int selectCompanyInfo(HashMap<String, Object> map);
 }

@@ -26,9 +26,10 @@
 
             .main {
                 grid-area: main;
-                padding: 30px;
-                background-color: #f8f9fa;
-                width: 100%;
+                padding: 20px;
+                display: flex;
+                gap: 20px;
+                align-items: flex-start;
             }
 
             .card {
@@ -334,7 +335,7 @@
 
                     fnBanUser() {
                         let self = this;
-
+                        if(!confirm("정지하시겠습니까?")){return}
                         $.ajax({
                             url: "http://localhost:8080/editMemberBan.dox",
                             type: "POST",
@@ -355,7 +356,7 @@
 
                     fnUnbanUser() {
                         let self = this;
-
+                        if(!confirm("정지해제하시겠습니까?")){return}
                         $.ajax({
                             url: "http://localhost:8080/editMemberBan.dox",
                             type: "POST",

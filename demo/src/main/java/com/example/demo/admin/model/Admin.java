@@ -40,7 +40,8 @@ public class Admin {
 	int reportWait;
 	int reportCount;
 	String targetUserId; 			//신고테이블. 회원 상세 신고 이력
-	
+	String rejectReason;
+	int killCount;
 	
 	// 문의목록
 	int inquiryNo; 			//문의 번호
@@ -133,7 +134,9 @@ public class Admin {
 	int price;
 	int reviewCnt;
 //	int isActive;
-
+	String description;
+	String itemName;
+	
 	// ===== 정지/해제 관련 =====
 	String targetId;     // user_id or company_id
 	String actionType;   // BAN / UNBAN
