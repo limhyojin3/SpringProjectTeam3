@@ -31,7 +31,9 @@ public interface MemberMapper {
 	// 유저 탈퇴 (status 상태를 WITHDRAWN로 변경)
 	public int updateUserStatus(HashMap<String, Object> map);
 	// 유저 쿠폰 조회
-	List<HashMap<String, Object>> selectUserCouponList(String userId);
+	List<HashMap<String, Object>> selectUserCouponList(Map<String, Object> param);
+	// 유저 쿠폰 개수
+	int selectUserCouponCount(String userId);
 	// 쿠폰 유효성 조회
 	Map<String, Object> checkValidCoupon(HashMap<String, Object> map);
 	// 쿠폰 중복 발급 조회
@@ -41,9 +43,12 @@ public interface MemberMapper {
 	// 열람권 잔여 횟수 조회
 	Member selectPassWallet(String userId);
 	// 멤버십 결제 내역 조회
-	List<Member> selectPassWalletList(String userId);
+	List<Member> selectPassWalletList(Map<String, Object> param);
+	int selectPassWalletCount(String userId);
 	// 내 예약 목록 조회
-	List<Member> selectMyReservationList(String userId);
+	List<Member> selectMyReservationList(Map<String, Object> param);
+	// 내 예약 목록 갯수
+	int selectMyReservationCount(String userId);
 	// 유료 리뷰 조회
 	List<Member> selectMyPaidReviewList(HashMap<String, Object> map);
 	int selectMyPaidReviewCount(String userId);
@@ -81,9 +86,13 @@ public interface MemberMapper {
 	// 리뷰 좋아요 취소
 	int deleteMyReviewLike(HashMap<String, Object> map);
 	// 내 문의 내역 조회
-	List<Member> selectMyInquiryList(String userId);
+	List<Member> selectMyInquiryList(Map<String, Object> param);
+	// 내 문의 내역 개수
+	int selectMyInquiryCount(String userId);
 	// 내 신고 내역 조회
-	List<Member> selectMyReportList(String userId);
+	List<Member> selectMyReportList(Map<String, Object> param);
+	// 내 신고 개수
+	int selectMyReportCount(String userId);
 			
 	// * 유료리뷰 열람 시 *
 	// 열람 기록 확인

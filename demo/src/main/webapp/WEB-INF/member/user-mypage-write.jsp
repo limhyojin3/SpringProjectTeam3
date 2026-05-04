@@ -102,32 +102,37 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            margin-top: 20px;
-            gap: 10px;
+            gap: 6px;
         }
 
         .btn-review-index {
-            height: 32px;
-            width: 32px;
-            padding: 6px 12px;
-            background-color: #9b8fd4;
-            color: white;
-            border: none;
+            height: 34px;
+            min-width: 34px;
+            padding: 0 10px;
+            background-color: #fff;
+            color: #f4a096;
+            border: 1.5px solid #f4a096;
             border-radius: 6px;
             cursor: pointer;
-            font-size: 14px;
+            font-size: 13px;
+            font-weight: 500;
             transition: 0.2s;
-            margin: 0 3px;  /* 버튼 간격 */
         }
 
         .btn-review-index:hover {
-            background-color: #7b6db4;
+            background-color: #f4a096;
+            color: white;
         }
         /* 활성 페이지 버튼 스타일 */
         .btn-review-index.active-page {
-            background-color: #7b6db4;
+            background-color: #f4a096;
             color: white;
             font-weight: bold;
+        }
+
+        .btn-review-index:disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
         }
 
         .btn-select-all {
@@ -218,7 +223,7 @@
                             </thead>
                             <tbody>
                                 <tr v-if="postList.length === 0">
-                                    <td colspan="5">작성한 글이 없습니다.</td>
+                                    <td colspan="6">작성한 글이 없습니다.</td>
                                 </tr>
                                 <tr v-for="post in postList" :key="post.postNo"
                                     @click="fnGoPost(post.postNo)">
@@ -249,7 +254,7 @@
                             </thead>
                             <tbody>
                                 <tr v-if="reviewList.length === 0">
-                                    <td colspan="5">작성한 리뷰가 없습니다.</td>
+                                    <td colspan="6">작성한 리뷰가 없습니다.</td>
                                 </tr>
                                 <tr v-for="review in reviewList" :key="review.reviewNo"
                                     @click="fnGoReview(review.reviewNo)">
@@ -277,7 +282,7 @@
                             </thead>
                             <tbody>
                                 <tr v-if="commentList.length === 0">
-                                    <td colspan="3">작성한 댓글이 없습니다.</td>
+                                    <td colspan="4">작성한 댓글이 없습니다.</td>
                                 </tr>
                                 <tr v-for="comment in commentList" :key="comment.commentNo"
                                     @click="comment.postNo ? fnGoPost(comment.postNo) : fnGoReview(comment.reviewNo)">
@@ -297,29 +302,47 @@
                         <div class="review-index-wrap">
                             <template v-if="reviewTab === 'post'">
                                 <button class="btn-review-index"
+                                        @click="fetchPostList(postCurrentPage - 1)"
+                                        :disabled="postCurrentPage === 1">이전</button>
+                                <button class="btn-review-index"
                                         v-for="p in Math.ceil(postTotalCount / pageSize)" :key="'post-'+p"
                                         :class="p === postCurrentPage ? 'active-page' : ''"
                                         @click="fetchPostList(p)">
                                     {{ p }}
                                 </button>
+                                <button class="btn-review-index"
+                                        @click="fetchPostList(postCurrentPage + 1)"
+                                        :disabled="postCurrentPage === Math.ceil(postTotalCount / pageSize)">다음</button>
                             </template>
 
                             <template v-else-if="reviewTab === 'review'">
+                                <button class="btn-review-index"
+                                        @click="fetchReviewList(reviewCurrentPage - 1)"
+                                        :disabled="reviewCurrentPage === 1">이전</button>
                                 <button class="btn-review-index"
                                         v-for="p in Math.ceil(reviewTotalCount / pageSize)" :key="'review-'+p"
                                         :class="p === reviewCurrentPage ? 'active-page' : ''"
                                         @click="fetchReviewList(p)">
                                     {{ p }}
                                 </button>
+                                <button class="btn-review-index"
+                                        @click="fetchReviewList(reviewCurrentPage + 1)"
+                                        :disabled="reviewCurrentPage === Math.ceil(reviewTotalCount / pageSize)">다음</button>
                             </template>
 
                             <template v-else-if="reviewTab === 'comment'">
+                                <button class="btn-review-index"
+                                        @click="fetchCommentList(commentCurrentPage - 1)"
+                                        :disabled="commentCurrentPage === 1">이전</button>
                                 <button class="btn-review-index"
                                         v-for="p in Math.ceil(commentTotalCount / pageSize)" :key="'comment-'+p"
                                         :class="p === commentCurrentPage ? 'active-page' : ''"
                                         @click="fetchCommentList(p)">
                                     {{ p }}
                                 </button>
+                                <button class="btn-review-index"
+                                        @click="fetchCommentList(commentCurrentPage + 1)"
+                                        :disabled="commentCurrentPage === Math.ceil(commentTotalCount / pageSize)">다음</button>
                             </template>
                         </div>
                     </div>

@@ -98,8 +98,8 @@
 	</update>
 	
 	<!-- 쿠폰 조회 -->
-	<select id="selectUserCouponList" parameterType="string" resultType="hashmap">
-	    SELECT 
+	<select id="selectUserCouponList" parameterType="hashmap" resultType="hashmap">
+	    SELECT
 	        UC.coupon_code as couponCode,
 	        C.coupon_name as couponName,
 	        C.discount_rate as discountRate,
@@ -110,6 +110,15 @@
 	    JOIN Coupon C ON UC.coupon_code = C.coupon_code
 	    WHERE UC.user_id = #{userId}
 	    ORDER BY UC.issued_at DESC
+	    LIMIT #{pageSize} OFFSET #{offset}
+	</select>
+	
+	<!-- 쿠폰 개수 -->
+	<select id="selectUserCouponCount" parameterType="String" resultType="int">
+	    SELECT COUNT(*)
+	    FROM User_Coupon UC
+	    JOIN Coupon C ON UC.coupon_code = C.coupon_code
+	    WHERE UC.user_id = #{userId}
 	</select>
 	<!-- 쿠폰 유효성 조회 -->
 	<select id="checkValidCoupon" resultType="map">
@@ -158,9 +167,9 @@
 	    WHERE UPW.user_id = #{userId}
 	</select>
 	<!-- 멤버십 결제 내역 조회 -->
-	<select id="selectPassWalletList" parameterType="String"
+	<select id="selectPassWalletList" parameterType="hashmap"
 	    resultType="com.example.demo.member.model.Member">
-	    SELECT 
+	    SELECT
 	        PP.pass_no,
 	        PP.item_name,
 	        P.pay_date,
@@ -168,8 +177,16 @@
 	        UPW.remaining_count
 	    FROM payment P
 	    JOIN payment_pass PP ON P.pay_no = PP.pay_no
-	    JOIN user_pass_wallet UPW ON P.user_id = UPW.user_id 
+	    JOIN user_pass_wallet UPW ON P.user_id = UPW.user_id
 	        AND PP.pass_no = UPW.pass_no
+	    WHERE P.user_id = #{userId}
+	    LIMIT #{pageSize} OFFSET #{offset}
+	</select>
+	<!-- 결제 내역 페이지 사이징 -->
+	<select id="selectPassWalletCount" parameterType="String" resultType="int">
+	    SELECT COUNT(*)
+	    FROM payment P
+	    JOIN payment_pass PP ON P.pay_no = PP.pay_no
 	    WHERE P.user_id = #{userId}
 	</select>
 	<!-- 유료 리뷰 열람 시 -->
@@ -194,8 +211,8 @@
 	</insert>
 	
 	<!-- 내 예약 목록 조회 -->
-	<select id="selectMyReservationList" parameterType="String" resultType="com.example.demo.member.model.Member">
-	    SELECT 
+	<select id="selectMyReservationList" parameterType="map" resultType="com.example.demo.member.model.Member">
+	    SELECT
 	        R.res_no,
 	        R.res_date,
 	        R.res_time,
@@ -208,6 +225,14 @@
 	    LEFT JOIN company C ON P.company_no = C.company_no
 	    WHERE R.user_id = #{userId}
 	    ORDER BY R.res_date DESC
+	    LIMIT #{pageSize} OFFSET #{offSet}
+	</select>
+	
+	<!-- 내 예약 전체 개수 -->
+	<select id="selectMyReservationCount" parameterType="String" resultType="int">
+	    SELECT COUNT(*)
+	    FROM reservation R
+	    WHERE R.user_id = #{userId}
 	</select>
 	
 	<!-- 내 리뷰 조회 내역 -->
@@ -449,11 +474,10 @@
 	    AND user_id = #{userId}
 	</delete>
 	
-	
 	<!-- 내 문의 내역 조회 -->
-	<select id="selectMyInquiryList" parameterType="String"
+	<select id="selectMyInquiryList" parameterType="hashmap"
 	    resultType="com.example.demo.member.model.Member">
-	    SELECT 
+	    SELECT
 	        inquiry_no,
 	        inquiry_type,
 	        title,
@@ -462,20 +486,36 @@
 	    FROM inquiry
 	    WHERE user_id = #{userId}
 	    ORDER BY reg_date DESC
+	    LIMIT #{pageSize} OFFSET #{offset}
+	</select>
+	
+	<!-- 내 문의 내역 개수 -->
+	<select id="selectMyInquiryCount" parameterType="String" resultType="int">
+	    SELECT COUNT(*)
+	    FROM inquiry
+	    WHERE user_id = #{userId}
 	</select>
 	
 	<!-- 내 신고 내역 조회 -->
-	<select id="selectMyReportList" parameterType="String"
+	<select id="selectMyReportList" parameterType="hashmap"
 	    resultType="com.example.demo.member.model.Member">
-	    SELECT 
+	    SELECT
 	        report_no,
 	        target_type,
 	        report_title,
 	        answer_status,
 	        reg_date
 	    FROM report
-	    WHERE reporter_id = #{userId}
+	    WHERE reporter_id = #{reporterId}
 	    ORDER BY reg_date DESC
+	    LIMIT #{pageSize} OFFSET #{startIndex}
+	</select>
+	
+	<!-- 내 신고 개수 -->
+	<select id="selectMyReportCount" parameterType="String" resultType="int">
+	    SELECT COUNT(*)
+	    FROM report
+	    WHERE reporter_id = #{userId}
 	</select>
 	
 	<!-- 구분선  -->
