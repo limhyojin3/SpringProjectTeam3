@@ -2980,15 +2980,13 @@
                         alert("취소되었습니다.");
                     }
                 },
-                fnPaymentFinal2(res) {
+                fnPaymentFinal2() {
                     // myReservation1.deposit 은 예약금을 의미함.
                     let self = this;
                     let param = {
                         userId: "${sessionScope.sessionId}",
                         amount: self.myReservation1.deposit,
-                        resNo: self.myReservation1.resNo,
-                        imp_uid: res.impUid,
-                        merchant_uid: res.merchantUid
+                        resNo: self.myReservation1.resNo
                     };
 
                     console.log(param);
@@ -3026,7 +3024,7 @@
                         {
                             channelKey: "channel-key-1ebd3d65-20bd-412e-83f3-b7e0c3b368ff",
                             pay_method: "card",
-                            merchant_uid: "order_" + "${sessionScope.sessionId}" + "_" + new Date().getTime(), // 주문 고유 번호
+                            merchant_uid: "order_" + self.sessionId + "_" + new Date().getTime(), // 주문 고유 번호
                             name: self.myReservation1.productName,
                             amount: self.myReservation1.deposit,      //제품 가격
                         },
@@ -3046,7 +3044,7 @@
                                 // 페이지 이동 필요하면 페이지 이동 (메인 or 마이)
                                 // 결제 성공 후 서버 검증
                                 console.log("imp_uid:", response.imp_uid);
-                                self.fnVerifyPayment(response);
+                                self.fnVerifyPayment(response.imp_uid, response.merchant_uid);
                             } else {
                                 console.log("에러내용: " + response.error_msg);
                                 // self.isPaying = false;
@@ -3056,38 +3054,34 @@
                     );
                 },
 
-                fnVerifyPayment(response) {
-                    let self = this;
-                    console.log("서버로 보내는 imp_uid:", response.imp_uid);
-                    console.log("서버로 보내는 merchant_uid:", response.merchant_uid);
+                fnVerifyPayment(imp_uid, merchant_uid) {
+                    let self = this
+                    console.log("서버로 보내는 imp_uid:", imp_uid);
                     $.ajax({
                         url: "http://localhost:8080/verifyPayment3.dox",
                         type: "POST",
                         data: {
                             userId: "${sessionScope.sessionId}",     // 로그인 아이디
-                            imp_uid: response.imp_uid,           // 결제 고유 값(중복)
-                            merchant_uid: response.merchant_uid,
+                            imp_uid: imp_uid,           // 결제 고유 값(중복)
+                            merchant_uid: merchant_uid,
                             amount: self.myReservation1.deposit,
-                            type: "RES"
+                            
                         },
                         success: function (res) {
                             console.log(res);
                             if (res.result == "success") {
-                                console.log("포트원 번호: " + res.impUid);
-                                console.log("포트원 번호: " + res.merchantUid);
+                                console.log("포트원 번호: " + res.imp_uid);
+
                                 // self.isModalOpen = false; 모달 끄기
                                 // location.href = "/adminPayFinish.do?payNo=" + res.pay_no + "&type=PASS";
                                 //예약이면 &type=RES 등록이면 &type=REG
-                                self.fnPaymentFinal2(res);
+                                self.fnPaymentFinal2();
                             } else {
                                 console.log("에러내용: " + res.error_msg);
                                 self.isPaying = false;
                                 alert("결제 검증 실패");
                             }
                         }, error: function (xhr, status, err) {
-                            console.log("ERROR:", xhr.responseText);
-                            console.log("STATUS:", status);
-                            console.log("ERR:", err);
                             self.isPaying = false;
                             alert("서버 통신 오류");
                             console.log(xhr);
