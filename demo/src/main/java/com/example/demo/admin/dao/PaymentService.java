@@ -72,9 +72,14 @@ public class PaymentService {
 	@Transactional
 	public void completeRegistrationPayment(HashMap<String,Object> map){
 
-	    paymentMapper.insertPayment(map); // 공통 결제
-	    int companyNo = paymentMapper.selectCompanyInfo(map);
+	    Integer companyNo = paymentMapper.selectCompanyInfo(map);
+	    if (companyNo == null) {
+	        throw new RuntimeException("회사 정보 없음");
+	    }
+
+	   
 	    map.put("companyNo", companyNo);
+	    paymentMapper.insertPayment(map); // 공통 결제
 	    paymentMapper.insertPaymentRegistration(map); // 상세
 	    
 	}
@@ -273,7 +278,7 @@ public class PaymentService {
 			map.put("pay_status", "paid");
 			map.put("finalAmount", finalAmount);
 
-			String type = map.get("type").toString();
+			
 
 	
 			completeRegistrationPayment(map);
@@ -581,7 +586,7 @@ public class PaymentService {
 //	        throw new RuntimeException("쿠폰 만료");
 //
 //	}
-	
+	@Transactional
 	public HashMap<String, Object> refundAdminReservation(HashMap<String, Object> map) {
 
 	    HashMap<String, Object> resultMap = new HashMap<>();
@@ -624,12 +629,17 @@ public class PaymentService {
 	        }
 
 	        // 5. DB 업데이트
+	        
+
 	        map.put("refundAmount", refundAmount);
 	        map.put("refundType", refundType);
+	        map.put("impUid", impUid);
+
 
 	        paymentMapper.updateRefundReservation(map);
 	        paymentMapper.updateRefundReservation2(map);
-
+	        paymentMapper.updateRefundReservation3(map);
+	        
 	        resultMap.put("result", "success");
 	        resultMap.put("refundAmount", refundAmount);
 	        resultMap.put("refundType", refundType);
@@ -642,5 +652,56 @@ public class PaymentService {
 	    }
 
 	    return resultMap;
+	}
+	
+	//예약 결제
+	public HashMap<String, Object> verifyPayment3(HashMap<String, Object> map) {
+
+	    HashMap<String, Object> result = new HashMap<>();
+
+	    try {
+
+	        String impUid = map.get("imp_uid").toString();
+	        int reqAmount = Integer.parseInt(map.get("amount").toString());
+
+	        String token = getToken();
+	        HashMap<String, Object> payInfo = getPaymentInfo(token, impUid);
+
+	        int realAmount = Integer.parseInt(payInfo.get("amount").toString());
+	        String status = payInfo.get("status").toString();
+
+	        if (!status.equals("paid")) {
+	            result.put("result", "fail");
+	            result.put("message", "결제 미완료");
+	            return result;
+	        }
+
+	        if (realAmount != reqAmount) {
+	            cancelPayment(token, impUid);
+	            result.put("result", "fail");
+	            result.put("message", "금액 위조 의심");
+	            return result;
+	        }
+	        
+	        String merchantUid = map.get("merchant_uid").toString();
+	        result.put("result", "success");
+	        result.put("impUid", impUid);
+	        result.put("amount", realAmount);
+	        map.put("merchantUid", merchantUid);
+	        map.put("impUid", impUid);
+
+	        
+	        paymentMapper.insertPaymentReservation(map);
+	        
+	        result.put("result", "success");
+	        result.put("payNo", map.get("payNo"));
+	        result.put("message", "결제 완료");
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	        result.put("result", "fail");
+	        result.put("message", "서버 오류");
+	    }
+
+	    return result;
 	}
 }

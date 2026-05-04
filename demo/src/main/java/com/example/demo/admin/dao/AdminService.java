@@ -922,11 +922,11 @@ System.out.println(resultMap);
 		try {
 			List<Admin> list = adminMapper.selectMyPassList(map);
 			int totalCount = adminMapper.selectMyPassCount(map);
-			int remainingCount = adminMapper.selectMyWallet(map);
+			Integer remainingCount = adminMapper.selectMyWallet(map);
 
 			resultMap.put("list", list);
 			resultMap.put("totalCount", totalCount);
-			resultMap.put("remainingCount", remainingCount);
+			resultMap.put("remainingCount", remainingCount != null ? remainingCount : 0);
 			resultMap.put("result", "success");
 			resultMap.put("message", Message.MSG_SEARCH);
 		} catch (Exception e) {

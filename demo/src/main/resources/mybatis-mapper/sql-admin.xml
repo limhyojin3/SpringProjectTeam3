@@ -1385,8 +1385,7 @@
 		<!-- 열람권 잔여 횟수 -->
 	<select id="selectMyWallet" parameterType="String" 
 		resultType="int">
-	    SELECT 
-	        U.remaining_count AS remainingCount
+	    SELECT COALESCE(U.remaining_count, 0) AS remainingCount
 	    FROM user_pass_wallet U
 	    JOIN pass_product P ON U.pass_no = P.pass_no
 	    WHERE U.user_id = #{userId}

@@ -144,8 +144,8 @@
                             <button :class="{active: activeTab === 'pass'}" @click="fnChangeTab('pass')">패스권결제</button>
                             <button :class="{active: activeTab === 'reservation'}"
                                 @click="fnChangeTab('reservation')">예약결제</button>
-                            <button :class="{active: activeTab === 'registration'}"
-                                @click="fnChangeTab('registration')">등록결제</button>
+                            <!-- <button :class="{active: activeTab === 'registration'}"
+                                @click="fnChangeTab('registration')">등록결제</button> -->
                         </div>
 
                         <!-- 패스권 결제 -->
@@ -209,14 +209,14 @@
                                     <td>{{ r.resStatus }}</td>
                                     <td>{{ formatDate(r.payDate) }}</td>
                                     <!-- <td>
-                                    <button @click="fnRefund(r)">환불
+                                    <button @click="fnRefund2(r.payNo)">환불
                                     </button>
                                 </td> -->
                                 </tr>
                             </tbody>
                         </table>
 
-                        <!-- 등록 결제 -->
+                        <!-- 등록 결제
                         <table v-if="activeTab === 'registration'" class="payment-table">
                             <thead>
                                 <tr>
@@ -250,7 +250,7 @@
                             </button>
 
                             <button @click="fnPageMove(currentPage+1)" :disabled="currentPage===index">›</button>
-                        </div>
+                        </div> -->
                     </div>
                 </div>
             </div>
@@ -363,7 +363,7 @@
                             }
                         });
                     },
-                    fnRefund(payNo2) {
+                    fnRefund2(payNo) {
 
                         console.log("환불 클릭", payNo);
 
