@@ -13,7 +13,7 @@ import com.example.demo.company.model.Company;
 import com.example.demo.company.model.Review;
 
 @Service
-public class CompanyService {
+public class CompanyService { 
 	@Autowired
 	CompanyMapper companyMapper;
 
@@ -27,7 +27,7 @@ public class CompanyService {
 	// User info = defaultMapper.selectUser();
 	// 수정, 삭제, 삽입 -> updateXXX, deleteXXX, insertXXX
 	// int result = defaultMapper.updateXXX();
-
+ 
 	public HashMap<String, Object> getCompany(HashMap<String, Object> map) {
 		HashMap<String, Object> resultMap = new HashMap<String, Object>();
 		try {
@@ -253,7 +253,22 @@ public class CompanyService {
 			List<Company> list = companyMapper.selectReservation(map);
 			// String selectNewResCnt(HashMap<String, Object> map);
 			String newResCnt = companyMapper.selectNewResCnt(map);
-
+			
+			///
+			/* resNoList(예약내역리스트 중에 resNo 리스트)를 가져온다. (업체유저가 로그인했을때) */
+			List<Integer> resNoList = companyMapper.selectResNoListForCompanyUser(map);
+			
+			/* DB에서 가져온 리스트를 map에 담는다. */
+			map.put("resNoList", resNoList);
+			
+			/**/
+			/* 업체 입장에서 예약내역 리스트로 갈때 예약상태를 업데이트 해보자. DONE 또는 CANCEL이 보이도록 */
+			int result = companyMapper.updateReservationStatusForCompany(map);
+			
+			
+			
+			
+			resultMap.put("resNoList", resNoList);
 			resultMap.put("newResCnt", newResCnt);
 			resultMap.put("list", list);
 			resultMap.put("result", "success");
@@ -443,8 +458,18 @@ public class CompanyService {
 			// int result30 = companyMapper.checkOver30minute(map);
 
 			List<Company> list = companyMapper.selectMyReservationList(map);
-
+			
+			/* resNoList를 가져온다. String타입으로 이루어진 리스트 */
+			List<Integer> resNoList = companyMapper.selectResNoList(map);
+			map.put("resNoList", resNoList);
+			
+			/* 쿼리문에서 분기처리 한거임..*/
+			/* 나의 예약내역리스트로 갈때 내 예약상태를 업데이트한다. DONE 또는 CANCEL이 보이도록 */
+			/* update 한후 결과값은 int result = 1 또는 0 */
+			int result = companyMapper.updateReservationStatus(map);
+			
 			// resultMap.put("result30", result30);
+			resultMap.put("resNoList", resNoList);
 			resultMap.put("list", list);
 			resultMap.put("result", "success");
 			resultMap.put("message", Message.MSG_REMOVE);
@@ -670,5 +695,34 @@ public class CompanyService {
 			resultMap.put("message", Message.MSG_SERVER_ERR);
 		}
 		return resultMap;
+	}
+	
+	/* 프론트에서 inquiryNo을 넘겨주면, 문의 답변중에 ip.inquiry_no, c.user_id,
+	 *  ipa.answer_contents 를 얻어오는거 */
+//	Company selectInquiry1Answer(HashMap<String, Object> map);
+	public HashMap<String, Object> getInquiry1Answer(HashMap<String, Object> map) {
+		HashMap<String, Object> resultMap = new HashMap<String, Object>();
+		try {
+//			List<User> list = defaultMapper.selectUserList(map);
+//			User info = defaultMapper.selectUser(map);
+//			int result = defaultMapper.updateXXX(map);
+
+//			resultMap.put("list", list);
+			
+
+			Company info = companyMapper.selectInquiry1Answer(map);
+
+			resultMap.put("info", info);
+			resultMap.put("result", "success");
+			resultMap.put("message", Message.MSG_ADD);
+			
+			
+		} catch (Exception e) {
+			// TODO: handle exception
+			System.out.println(e.getMessage());
+			resultMap.put("result", "fail");
+			resultMap.put("message", Message.MSG_SERVER_ERR);
+		}
+		return resultMap; 
 	}
 }
