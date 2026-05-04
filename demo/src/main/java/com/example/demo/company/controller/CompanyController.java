@@ -310,4 +310,14 @@ public class CompanyController {
 
 		return new Gson().toJson(resultMap);
 	}
+	/* 프론트에서 inquiryNo을 넘겨주면, 문의 답변중에 ip.inquiry_no, c.user_id,
+	 *  ipa.answer_contents 를 얻어오는거 */
+	//public HashMap<String, Object> getInquiry1Answer(HashMap<String, Object> map)
+	@RequestMapping(value = "/getInquiry1Answer.dox", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
+	@ResponseBody
+	public String test037(@RequestParam HashMap<String, Object> map) throws Exception {
+		HashMap<String, Object> resultMap = companyService.getInquiry1Answer(map);
+
+		return new Gson().toJson(resultMap);
+	}
 }

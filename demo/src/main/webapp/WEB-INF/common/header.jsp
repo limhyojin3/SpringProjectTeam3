@@ -149,7 +149,7 @@
                         <li><a href="${pageContext.request.contextPath}/api/community/list.do">전체 보기</a></li>
                         <li><a href="${pageContext.request.contextPath}/api/community/list.do?category=자유">자유글</a></li>
                         <li><a href="${pageContext.request.contextPath}/api/community/list.do?category=질문">질문글</a></li>
-                        <li><a href="${pageContext.request.contextPath}/api/community/list.do?category=정보공유">정보공유글</a></li>
+                        <li><a href="${pageContext.request.contextPath}/api/community/list.do?category=정보">정보공유글</a></li>
                     </ul>
                 </li>
 
@@ -157,8 +157,8 @@
                     <a class="nav-link custom-nav-link" href="${pageContext.request.contextPath}/api/review/list.do">리얼리뷰</a>
                     <ul class="dropdown-contents">
                         <li><a href="${pageContext.request.contextPath}/api/review/list.do">전체보기</a></li>
-                        <li><a href="/api/review/list.do?isPaid=1">💎 유료 리뷰</a></li>
-                        <li><a href="/api/review/list.do?isPaid=0">🎁 무료 리뷰</a></li>
+                        <li><a href="${pageContext.request.contextPath}/api/review/list.do?isPaid=1">💎 유료 리뷰</a></li>
+                        <li><a href="${pageContext.request.contextPath}/api/review/list.do?isPaid=0">🎁 무료 리뷰</a></li>
                     </ul>
                 </li>
 
@@ -190,7 +190,14 @@
 
                                 <%-- 3. 파트너/관리자 등은 드롭다운 없이 단일 링크로 유지 --%>
                                 <c:when test="${sessionScope.sessionRole == 'PARTNER' or sessionScope.sessionRole == 'NPARTNER'}">
-                                    <a class="nav-link custom-nav-link" href="${pageContext.request.contextPath}/partnerManagement.do">업체페이지 <i class="fas fa-chevron-right arrow-icon"></i></a>
+                                    <a class="nav-link custom-nav-link" href="javascript:void(0)">업체페이지</a>
+                                    <ul class="dropdown-contents">
+                                        <li><a href="${pageContext.request.contextPath}/partnerManagement.do">업체페이지 홈</a></li>
+                                        <li><a href="${pageContext.request.contextPath}/partnerManagement.do?menu=product">상품 관리</a></li>
+                                        <li><a href="${pageContext.request.contextPath}/partnerManagement.do?menu=reservation">예약 관리</a></li>
+                                        <li><a href="${pageContext.request.contextPath}/partnerManagement.do?menu=inquiry">문의 내역</a></li>
+                                        <li><a href="${pageContext.request.contextPath}/partnerManagement.do?menu=review">리뷰 내역</a></li>
+                                    </ul>
                                 </c:when>
                                 <c:when test="${sessionScope.sessionRole == 'ADMIN'}">
                                     <a class="nav-link custom-nav-link" href="${pageContext.request.contextPath}/adminMain.do">관리자페이지 <i class="fas fa-chevron-right arrow-icon"></i></a>
@@ -251,52 +258,97 @@
 <script>
 document.addEventListener('DOMContentLoaded', function() {
 
-    // ── 1. 헤더 드롭다운 (기존 방식 유지) ──────────────────
+    // 1. 헤더 드롭다운 활성화
     const header = document.querySelector('.dropdown-header-wrap');
     if (header) {
         header.addEventListener('mouseenter', () => header.classList.add('is-active'));
         header.addEventListener('mouseleave', () => header.classList.remove('is-active'));
     }
 
-    // ── 2. URL 파라미터 탭 클릭 처리 ──────────────────────
+    // 2. URL 파라미터에 따른 자동 탭 클릭 함수
     function handleTabClick() {
         const urlParams = new URLSearchParams(window.location.search);
         const categoryParam = urlParams.get('category');
         const isPaidParam   = urlParams.get('isPaid');
+        const menuParam     = urlParams.get('menu'); 
 
-        // A. 유료/무료 리뷰 탭
+        // A. 업체 관리 페이지 (v-if currentMenu 제어)
+        if (menuParam) {
+            const vueApp = window.app || window.vm; 
+
+            // 1) Vue 인스턴스의 currentMenu를 직접 변경
+            if (vueApp && vueApp.currentMenu !== undefined) {
+                vueApp.currentMenu = menuParam; 
+            } 
+            
+            // 2) UI 강조를 위해 버튼도 클릭 (딜레이 필요)
+            setTimeout(() => {
+                const navBtns = document.querySelectorAll('.nav-btn');
+                const menuMap = {
+                    'product': '상품 관리',
+                    'reservation': '예약 관리',
+                    'inquiry': '문의 내역',
+                    'review': '리뷰 내역'
+                };
+                navBtns.forEach(btn => {
+                    if (btn.innerText.trim() === menuMap[menuParam]) {
+                        btn.click();
+                    }
+                });
+            }, 200);
+        } // [수정] menuParam if문 닫기
+
+        // B. 유료/무료 리뷰 탭 클릭
         if (isPaidParam !== null) {
-            document.querySelectorAll('.review-tabs .tab-item').forEach(tab => {
-                if ((isPaidParam === '1' && tab.innerText.includes('유료')) ||
-                    (isPaidParam === '0' && tab.innerText.includes('무료'))) {
+            const reviewTabs = document.querySelectorAll('.tab-menu button, .review-tabs .tab-item');
+            reviewTabs.forEach(tab => {
+                const text = tab.innerText.trim();
+                if ((isPaidParam === '1' && text.includes('유료')) ||
+                    (isPaidParam === '0' && text.includes('무료'))) {
                     tab.click();
                 }
             });
         }
 
-        // B. 카테고리 탭 (자유글, 질문글, 정보공유글 등)
+        // C. 커뮤니티 카테고리 탭 클릭
         if (categoryParam) {
-            document.querySelectorAll('button, .tab-item').forEach(btn => {
+            const categoryTabs = document.querySelectorAll('.tab-menu button, .tab-item');
+            categoryTabs.forEach(btn => {
                 const btnText = btn.innerText.replace(/[^가-힣a-zA-Z]/g, '').trim();
-                if (btnText.includes(categoryParam.trim())) {
+                if (btnText === categoryParam.trim()) {
                     btn.click();
                 }
             });
         }
-    }
+    } // [수정] handleTabClick 함수 닫기
 
-    // Vue 마운트 완료 후 실행
-    const observer = new MutationObserver(() => {
-        const tabs = document.querySelectorAll('.review-tabs .tab-item, .tab-item, button');
-        if (tabs.length > 0) {
+    // 3. Vue 렌더링 감지
+    const observer = new MutationObserver((mutations) => {
+        const targetExist = document.querySelector('.tab-menu button, .nav-btn, .tab-item');
+        if (targetExist) {
+            setTimeout(() => {
+                handleTabClick();
+            }, 150); 
             observer.disconnect();
-            handleTabClick();
         }
     });
+
     observer.observe(document.body, { childList: true, subtree: true });
 
-    // 이미 렌더링 완료된 경우 바로 실행
+    // 초기 실행
     handleTabClick();
-
 });
+
+// 4. 이미지 콤마 처리 전역 함수 (Vue 밖에서도 사용 가능)
+function getFirstImg(imgUrls) {
+    if (!imgUrls) return '/resources/img/no-image.png'; 
+    
+    // 대괄호 [ ] 가 포함되어 있다면 제거
+    let cleanUrl = imgUrls.replace(/[\[\]]/g, ''); 
+    
+    if (typeof cleanUrl === 'string' && cleanUrl.includes(',')) {
+        return cleanUrl.split(',')[0].trim();
+    }
+    return cleanUrl;
+}
 </script>

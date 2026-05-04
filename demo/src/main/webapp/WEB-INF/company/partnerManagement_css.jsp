@@ -1,7 +1,5 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
-
-    <!-- <%-- 1. JSTL 코어 태그 라이브러리를 사용하겠다고 선언합니다 --%>
-<%@ taglib prefix="c" uri="jakarta.tags.core" %> -->
+<%@ taglib prefix="c" uri="jakarta.tags.core" %>
     <!DOCTYPE html>
     <html lang="en">
 
@@ -17,9 +15,9 @@
 
         <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
         <script src="https://cdn.quilljs.com/1.3.6/quill.min.js"></script>
-        <link rel="stylesheet" href="${pageContext.request.contextPath}/css/common.css">
+        <link rel="stylesheet" href="/css/common.css">
         <style>
-           /* 기본 레이아웃 */
+            /* 기본 레이아웃 */
             /*body {
                 font-family: 'Malgun Gothic', sans-serif;
                 margin: 0;
@@ -269,7 +267,7 @@
             }
 
             /* 리뷰 섹션 공통 */
-            /*.review-header-info {
+            .review-header-info {
                 display: flex;
                 align-items: center;
                 gap: 20px;
@@ -278,26 +276,7 @@
                 border-radius: 8px;
                 margin-bottom: 20px;
                 border: 1px solid #eee;
-            }*/
-            .review-header-info {
-                display: flex;
-                align-items: center;
-                gap: 16px;
-                background: white;
-                border: 1px solid #e0e0e0;
-                border-radius: 10px;
-                padding: 16px;
-                margin-bottom: 12px;
-                cursor: pointer;
-                transition: 0.2s;
-                position: relative;
             }
-            .review-header-info:hover {
-                border-color: #9b8fd4;
-                box-shadow: 0 4px 12px rgba(155, 143, 212, 0.15);
-                transform: translateY(-2px);
-            }
-
 
             .review-thumb-box {
                 width: 80px;
@@ -351,7 +330,7 @@
                 border: 1px solid #ffe0e6;
             }
 
-           /* 페이징 */
+            /* 페이징 */
             .pagination1 {
                 text-align: center;
                 margin-top: 25px;
@@ -366,15 +345,15 @@
                 border-radius: 4px;
                 transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
                 cursor: pointer;
-                border: 1px solid transparent;
+                border: none !important;    /* ← !important 추가 */
                 font-weight: 500;
             }
 
             .pagination1 a:hover {
-                background: #ccc2ff;
+                background: #9b8fd4;
                 color: white;
                 transform: translateY(-2px);
-                box-shadow: 0 4px 12px #9285d1;
+                box-shadow: 0 4px 12px rgba(255, 124, 159, 0.3);
             }
 
             .pagination1 a:active {
@@ -816,13 +795,10 @@
             /* 상태별 배지 스타일 (선택사항) */
             /* td 내부에 span 등으로 감싸져 있다면 더 좋지만, 
             현재 구조에서 글자색만으로도 충분히 세련되어 보일 거예요. */
-
-            
         </style>
     </head>
 
     <body>
-        <jsp:include page="/WEB-INF/common/header.jsp" />
         <div id="app">
             <!-- html 코드는 id가 app인 태그 안에서 작업 -->
             <div id="wrapper">
@@ -893,18 +869,19 @@
 
                         <main>
                             <div v-if="currentMenu === 'main'">
-                                <h2>안녕하세요, '{{ user.name }}'님!</h2>
-                                <div class="section-title" v-if="user.grade === 'PARTNER'">제휴업체</div>
-                                <div class="section-title" v-else-if="user.grade === 'NPARTNER'">일반업체</div>
+                                <div class="main-welcome-card">
+                                    <p>안녕하세요, <strong>'{{ user.name }}'</strong>님!</p>
+                                    <span class="grade-badge partner" v-if="user.grade === 'PARTNER'">제휴업체</span>
+                                    <span class="grade-badge npartner" v-else-if="user.grade === 'NPARTNER'">일반업체</span>
+                                </div>
                                 <div class="content-card">
-                                    <h3><span v-if="user.grade === '제휴업체'">제휴업체</span> 등록 일자</h3>
+                                    <h3>등록 일자</h3>
                                     <p style="text-align: right; font-size: 20px;">{{ user.regDate }}</p>
                                 </div>
                                 <div class="content-card">
                                     <h3>마지막 결제 수단</h3>
                                     <p style="text-align: right; font-size: 20px;">{{ user.lastPayment }}</p>
                                 </div>
-                                <!-- <button style="float: right;" @click="withdraw">탈퇴하기</button> -->
                             </div>
 
 
@@ -913,13 +890,14 @@
 
                                 <div v-if="productPage === 'list'">
                                     <!-- db 랑 연결한 곳 -->
-                                     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; padding-left: 10px;">
+                                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; padding-left: 10px;">
                                         <div class="section-header">
                                             <h2>등록한 상품({{ productList3.length }})</h2>
                                         </div>
                                             <button @click="goRegPage2"class="btn-product-reg">상품등록</button>
                                     </div>
-                                     <div v-for="i in fnPaginatedProductList" class="content-card"
+                                    <!-- productList3 -> fnPaginatedProductList 로 변경했어요. 페이지 사이징 때문에. -->
+                                    <div v-for="i in fnPaginatedProductList" class="content-card"
                                         style="display: flex; align-items: center; padding: 15px;">
                                         <div
                                             style="width: 100px; height: 100px;  display: flex; align-items: center; justify-content: center; margin-right: 20px;">
@@ -936,11 +914,17 @@
                                     <div class="pagination1">
                                         <span v-for="num in totalProductPages" :key="num">
                                             <a @click="productCurrentPage = num" href="javascript:;"
-                                                :style="productCurrentPage === num ? 'color: #9b8fd4; border: 1px solid #9b8fd4;' : ''">
+                                                :style="productCurrentPage === num ? 'color: #9b8fd4; border:none ;' : ''">
                                                 {{ num }}
                                             </a>
                                         </span>
                                     </div>
+<!-- 
+                                    <div style="text-align: center;">
+                                        <button @click="goRegPage2"
+                                            style="background: #ffb400; padding: 15px 40px; border: none; border-radius: 10px; font-weight: bold; cursor: pointer;">상품
+                                            등록</button>
+                                    </div> -->
 
 
                                     <!-- 여기는 프론트만으로 되는 곳-->
@@ -1001,12 +985,17 @@
                                                     </div>
                                                 </div>
                                                 <div class="form-group">
-                                                    <label class="form-label">상품 태그</label>
-                                                    <input type="text" placeholder="첫번째 태그" v-model="tagMap.input1">
-                                                    <input type="text" placeholder="두번째 태그" v-model="tagMap.input2">
-                                                    <input type="text" placeholder="세번째 태그" v-model="tagMap.input3">
-                                                    <input type="text" placeholder="네번째 태그" v-model="tagMap.input4">
-                                                    <input type="text" placeholder="다섯번째 태그" v-model="tagMap.input5">
+                                                    <label class="form-label">상품 태그</label>                                        
+                                                        <input type="text" placeholder="첫번째 태그"
+                                                            v-model="tagMap.input1">
+                                                        <input type="text" placeholder="두번째 태그"
+                                                            v-model="tagMap.input2">
+                                                        <input type="text" placeholder="세번째 태그"
+                                                            v-model="tagMap.input3">
+                                                        <input type="text" placeholder="네번째 태그"
+                                                            v-model="tagMap.input4">
+                                                        <input type="text" placeholder="다섯번째 태그"
+                                                            v-model="tagMap.input5">
                                                 </div>
                                                 <!-- {{tagMap}}
                                                 {{tagMapToList}} -->
@@ -1022,7 +1011,7 @@
                                                 </div>
 
                                                 <div class="form-group">
-
+                                                    
                                                     <label class="form-label"><span class="form-info-label">예상
                                                             견적</span></label>
                                                     <div class="form-info-box">
@@ -1032,8 +1021,7 @@
                                                     </div>
                                                 </div>
                                                 <div class="form-group">
-                                                    <label class="form-label"><span
-                                                            class="form-info-label">예약금</span></label>
+                                                    <label class="form-label"><span class="form-info-label">예약금</span></label>
                                                     <div class="form-info-box">
                                                         <input placeholder="여기에 예약금을 적어주세요." type="text"
                                                             style="width: 200px; padding: 10px; border: 1px solid #ddd; border-radius: 4px;"
@@ -1115,12 +1103,17 @@
                                                 </div>
 
                                                 <div class="form-group">
-                                                    <label class="form-label">상품 태그</label>
-                                                    <input type="text" placeholder="첫번째 태그" v-model="tagMap.input1">
-                                                    <input type="text" placeholder="두번째 태그" v-model="tagMap.input2">
-                                                    <input type="text" placeholder="세번째 태그" v-model="tagMap.input3">
-                                                    <input type="text" placeholder="네번째 태그" v-model="tagMap.input4">
-                                                    <input type="text" placeholder="다섯번째 태그" v-model="tagMap.input5">
+                                                    <label class="form-label">상품 태그</label>                                        
+                                                        <input type="text" placeholder="첫번째 태그"
+                                                            v-model="tagMap.input1">
+                                                        <input type="text" placeholder="두번째 태그"
+                                                            v-model="tagMap.input2">
+                                                        <input type="text" placeholder="세번째 태그"
+                                                            v-model="tagMap.input3">
+                                                        <input type="text" placeholder="네번째 태그"
+                                                            v-model="tagMap.input4">
+                                                        <input type="text" placeholder="다섯번째 태그"
+                                                            v-model="tagMap.input5">
                                                 </div>
                                                 <!-- {{tagMap}}
                                                 {{tagMapToList}}
@@ -1149,8 +1142,7 @@
                                                 </div>
 
                                                 <div class="form-group">
-                                                    <label class="form-label"><span
-                                                            class="form-info-label">예약금</span></label>
+                                                    <label class="form-label"><span class="form-info-label">예약금</span></label>
                                                     <div class="form-info-box">
                                                         <input placeholder="여기에 예약금을 적어주세요." type="text"
                                                             style="width: 200px; padding: 10px; border: 1px solid #ddd; border-radius: 4px;"
@@ -1162,7 +1154,6 @@
                                         </div>
 
                                         <div class="product-form-section">
-                                            <div class="form-title-box">상품 이미지</div>
                                             <div class="form-content-box">
                                                 <div class="form-group">
                                                     <div style="margin-bottom: 10px; font-weight: bold;">기존 이미지 : </div>
@@ -1205,7 +1196,9 @@
                             <div v-if="currentMenu === 'reservation'">
                                 <div class="section-header">
                                     <h2>예약 관리 : <span style="color:#9b8fd4;">새 예약 {{ resCount }}건</span></h2>
-                                </div><!-- 티켓 목록 -->
+                                </div>
+
+                                <!-- 티켓 목록 -->
                                 <template v-if="!selectedRes">
                                     <div class="ticket-card"
                                         v-for="(res, idx) in pagedResList" :key="idx"
@@ -1215,13 +1208,13 @@
                                             :alt="res.productName"
                                             v-if="productList3.find(p => p.productName === res.productName)?.imgUrl">
                                         <div class="ticket-info">
-                                            <div class="ticket-no">No. {{ reservationList.length - ((resCurrentPage - 1) * 5 + idx ) }}</div>
+                                            <div class="ticket-no">No. {{ idx + 1 }}</div>
                                             <div class="ticket-name">{{ res.productName }}</div>
                                             <div class="ticket-date">예약 날짜/시간 : {{ res.useDate }} {{ res.useTime }}</div>
                                             <div style="margin-top:6px;">
                                                 <span class="ticket-status"
                                                     :class="res.resStatus === 'WAIT' ? 'wait' : res.resStatus === 'CANCEL' ? 'cancel' : 'done'">
-                                                    {{ res.resStatus === 'CONFIRM' ? '✅ 예약이 확정되었습니다.' : res.resStatus === 'CANCEL' ? '❌ 취소된 예약입니다.' : res.resStatus === 'DONE' ? '만료된 예약입니다.' : res.resStatus === 'WAIT' ? '결제 대기 상태입니다.' : res.resStatus}}
+                                                    {{ res.resStatus === 'WAIT' ? '✅ 예약이 확정되었습니다.' : res.resStatus === 'CANCEL' ? '❌ 취소된 예약입니다.' : res.resStatus }}
                                                 </span>
                                             </div>
                                         </div>
@@ -1232,14 +1225,12 @@
                                     <div class="pagination1">
                                         <span v-for="num in totalResPageCount" :key="num">
                                             <a @click="resCurrentPage = num" href="javascript:;"
-                                                :style="resCurrentPage === num ? 'color: #9b8fd4; border:1px solid  \#9b8fd4 ;' : ''">
+                                                :style="resCurrentPage === num ? 'color:#9b8fd4; border:1px solid #9b8fd4;' : 'border:none;'">
                                                 {{ num }}
                                             </a>
                                         </span>
                                     </div>
                                 </template>
-
-
                                 <template v-else>
                                     <button class="btn-back" @click="selectedRes = null">← 목록으로</button>
                                     <table>
@@ -1264,165 +1255,60 @@
                                         <a @click="fnPageChange(num)" href="javascript:;"
                                             :style="currentPage === num ? 'color: #ff1493; border: 1px solid #ff1493;' : ''">
                                             {{num}}
-                                        </a> 
+                                        </a>
                                     </span>
                                 </div> -->
                             </div>
 
                             <div v-if="currentMenu === 'inquiry'">
-                                <!-- {{productPage}}
-                                {{page1}} -->
                                 <template v-if="page1 === 'main'">
-                                    <div class="section-header">
-                                    <h2>문의 관리 : <span style="color:#9b8fd4;">전체 문의 {{inquiryList.length}}건</span></h2>
+                               <div class="section-header">
+                                    <h2>문의 관리 : <span style="color:#9b8fd4;">새 문의 {{inquiryList.length}}건</span></h2>
                                 </div>
-                                    <div class="content-card" v-for="i in fnPaginatedInquiry" :key="i">
+                                <div class="content-card" v-for="i in fnPaginatedInquiry" :key="i">
 
-                                        <div style="display: flex;">
-                                            <div
-                                                style="width: 100px; height: 100px;  margin-right: 20px; text-align: center;">
-                                                <img :src="fnThumbnail(i)" :alt="i.productName"
-                                                    style="width: 100%; height: 100%; object-fit: cover; border-radius: 10px;">
-
-                                            </div>
-                                            <h3>상품명 : <span style="color: #d6336c;">{{i.productName}}</span> </h3>
-
-                                        </div>
-                                        <table>
-                                            <tr>
-                                                <th>제목</th>
-                                                <td>{{i.inquiryTitle}}</td>
-                                            </tr>
-                                            <tr>
-                                                <th>작성자</th>
-                                                <td>{{i.userId}}</td>
-                                            </tr>
-                                            <tr>
-                                                <th>내용</th>
-                                                <td>{{i.inquiryContents}}</td>
-                                            </tr>
-                                        </table>
-                                        <!-- {{page1}} -->
-                                        <button class="btn-reply" @click="fnAnswerToProductInquiry(i)">답변하기</button>
-
-                                    </div>
-                                    <div class="pagination1">
-                                        <span v-for="num in inquiryList.length" :key="num">
-                                            <a @click="currentPage = num" href="javascript:;"
-                                                :style="currentPage === num ? 'color: #9b8fd4; border:1px solid #9b8fd4;' : ''">
-                                                {{num}}
-                                            </a> <!-- 1,2-->
-                                        </span>
-                                    </div>
-
-                                </template>
-                                <template v-if="page1 === 'answer'">
-                                    <!-- <button @click="fnBacktoInquiry">뒤로가기</button> -->
-                                    <!-- 답변대상
-                                    답변제목
-                                    답변내용
-                                    {{inquiryDetails}} -->
-                                    <div
-                                        style="padding: 20px; border: 1px solid #ddd; border-radius: 8px; background-color: #fff; max-width: 800px; margin: 0 auto;">
-
+                                    <div style="display: flex;">
                                         <div
-                                            style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; padding-bottom: 10px; border-bottom: 2px solid #333;">
-                                            <h2 style="margin: 0; font-size: 1.5rem; color: #333;">문의 답변 등록</h2>
-                                            <button @click="fnBacktoInquiry"
-                                                style="padding: 8px 16px; background-color: #f4f4f4; border: 1px solid #ccc; border-radius: 4px; cursor: pointer; font-size: 0.9rem;">
-                                                ← 리스트로 돌아가기
-                                            </button>
+                                            style="width: 100px; height: 100px;  margin-right: 20px; text-align: center;">
+                                            <img :src="fnThumbnail(i)" :alt="i.product"
+                                                style="width: 100%; height: 100%; object-fit: cover; border-radius: 10px;">
+
                                         </div>
-
-                                        <div
-                                            style="margin-bottom: 30px; padding: 15px; background-color: #f9f9f9; border-radius: 4px; border: 1px solid #eaeaea;">
-                                            <h3
-                                                style="margin-top: 0; color: #555; border-bottom: 1px solid #ddd; padding-bottom: 8px;">
-                                                원본 문의 내용</h3>
-
-                                            <table
-                                                style="width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 0.95rem;">
-                                                <colgroup>
-                                                    <col style="width: 20%; background-color: #eee;">
-                                                    <col style="width: 30%;">
-                                                    <col style="width: 20%; background-color: #eee;">
-                                                    <col style="width: 30%;">
-                                                </colgroup>
-                                                <tr>
-                                                    <th
-                                                        style="padding: 10px; border: 1px solid #ddd; text-align: left;">
-                                                        문의 번호</th>
-                                                    <td style="padding: 10px; border: 1px solid #ddd;">{{
-                                                        inquiryDetails.inquiryNo }}</td>
-                                                    <th
-                                                        style="padding: 10px; border: 1px solid #ddd; text-align: left;">
-                                                        작성자 ID</th>
-                                                    <td style="padding: 10px; border: 1px solid #ddd;">{{
-                                                        inquiryDetails.userId }}</td>
-                                                </tr>
-                                                <tr>
-                                                    <th
-                                                        style="padding: 10px; border: 1px solid #ddd; text-align: left;">
-                                                        문의 제목</th>
-                                                    <td colspan="3"
-                                                        style="padding: 10px; border: 1px solid #ddd; font-weight: bold;">
-                                                        {{ inquiryDetails.inquiryTitle }}</td>
-                                                </tr>
-                                                <tr>
-                                                    <th
-                                                        style="padding: 10px; border: 1px solid #ddd; text-align: left; vertical-align: top;">
-                                                        문의 내용</th>
-                                                    <td colspan="3"
-                                                        style="padding: 10px; border: 1px solid #ddd; min-height: 100px; white-space: pre-wrap;">
-                                                        {{ inquiryDetails.inquiryContents }}</td>
-                                                </tr>
-                                            </table>
-                                        </div>
-
-                                        <div>
-                                            <h3 style="margin-top: 0; color: #333;">답변 달기</h3>
-                                            <!-- {{inquiryAnswer}} -->
-
-                                            <div style="margin-top: 15px;">
-                                                <label
-                                                    style="display: block; margin-bottom: 8px; font-weight: bold; color: #555;">답변자</label>
-                                                <input v-model="inquiryAnswer.ansUserId" placeholder="답변을 작성한 담당자명을 입력해주세요."
-                                                    style="width: 50%; padding: 12px; border: 1px solid #ccc; border-radius: 4px; resize: vertical; font-family: inherit; font-size: 1rem; box-sizing: border-radius;">
-                                            </div>
-
-
-                                            <div style="margin-top: 15px;">
-                                                <label
-                                                    style="display: block; margin-bottom: 8px; font-weight: bold; color: #555;">답변
-                                                    내용</label>
-                                                <textarea v-model="inquiryAnswer.answerContents" placeholder="문의에 대한 정성스러운 답변을 작성해 주세요."
-                                                    style="width: 100%; height: 200px; padding: 12px; border: 1px solid #ccc; border-radius: 4px; resize: vertical; font-family: inherit; font-size: 1rem; box-sizing: border-radius;"></textarea>
-                                            </div>
-
-                                            <div
-                                                style="margin-top: 25px; text-align: center; display: flex; justify-content: center; gap: 15px;">
-                                                <button @click="fnBacktoInquiry"
-                                                    style="padding: 12px 24px; background-color: #fff; border: 1px solid #ccc; border-radius: 4px; cursor: pointer; font-size: 1rem; color: #333;">
-                                                    취소
-                                                </button>
-                                                <button @click="fnSaveAnswer"
-                                                    style="padding: 12px 24px; background-color: #ff1493; border: none; border-radius: 4px; cursor: pointer; font-size: 1rem; color: #fff; font-weight: bold;">
-                                                    <span v-if="inquiryAnswer.inquiryAns === '0'">답변 등록하기</span>
-                                                    <span v-else>답변 수정하기</span>
-                                                </button>
-                                                
-                                            </div>
-                                        </div>
+                                        <h3>상품명 : <span style="color: #d6336c;">{{i.product}}</span> </h3>
 
                                     </div>
 
-                                </template>
+                                    <table>
+                                        <tr>
+                                            <th>제목</th>
+                                            <td>{{i.title}}</td>
+                                        </tr>
+                                        <tr>
+                                            <th>작성자</th>
+                                            <td>{{i.userid}}</td>
+                                        </tr>
+                                        <tr>
+                                            <th>내용</th>
+                                            <td>{{i.content}}</td>
+                                        </tr>
+                                    </table>
 
+                                    <button class="btn-reply" @click="fnAnswerToProductInquiry(i)" >답변하기</button>
+
+                                </div>
+                                <div class="pagination1">
+                                    <span v-for="num in inquiryList.length" :key="num">
+                                        <a @click="currentPage = num" href="javascript:;"
+                                            :style="currentPage === num ? 'color: #9b8fd4; border: 1px solid #ff1493;' : 'border:none;'">
+                                            {{num}}
+                                        </a> <!-- 1,2-->
+                                    </span>
+                                </div>
                             </div>
+                            </template>
 
+                            <!-- 리뷰 내역 페이지 -->
                             <div v-if="currentMenu === 'review'">
-
-
                                 <!--page1 이 main인경우-->
                                 <template v-if="page1 === 'main'">
                                     <div class="tab-menu">
@@ -1436,48 +1322,45 @@
                                     </div>
 
                                     <div v-if="reviewTab === 'detail'" class="content-card">
-                                    <!-- 유료 리뷰 탭 -->
                                         <h3>유료 리뷰 내역 : <span style="color: #ff1493;">새 리뷰 {{newReviewCnt}}건</span></h3>
                                         <template v-for="w in pagedProductList3" :key="w.productName">
-                                            <div class="review-header-info" style="margin-bottom: 10px;" @click="fnReviewDetails3(w)">
+                                            <div class="review-header-info" style="margin-bottom: 10px;">
                                                 <div class="review-thumb-box">
-                                                    <img :src="w.imgUrl"
-                                                        style="width: 100%; height: 100%; object-fit: cover; border-radius: 10px;">
+                                                    <img :src="w.imgUrl" style="width: 100%; height: 100%; object-fit: cover; border-radius: 10px;">
                                                 </div>
                                                 <div class="review-product-name">
                                                     <a href="javascript:;" style="text-decoration: none; color:#0b3f8e;"
-                                                        ><strong>{{w.productName}}</strong></a>
+                                                        @click="fnReviewDetails3(w)"><strong>{{w.productName}}</strong></a>
                                                 </div>
-                                                <div class="review-count-badge">리뷰 갯수: {{w.reviewCount}}개 </div>
+                                                <div class="review-count-badge">리뷰 갯수: {{w.reviewCount}}개</div>
                                             </div>
                                         </template>
-                                        <!-- 페이징 추가 -->
                                         <div class="pagination1">
                                             <span v-for="num in totalReviewListPages3" :key="num">
                                                 <a @click="reviewListPage = num" href="javascript:;"
-                                                    :style="reviewListPage === num ? 'color: #9b8fd4; border:1px solid #9b8fd4;' : ''">
+                                                    :style="reviewListPage === num ? 'color:#9b8fd4; border:1px solid #9b8fd4;' : 'border:none;'">
                                                     {{ num }}
                                                 </a>
                                             </span>
                                         </div>
                                     </div>
-                                    <!-- 무료 리뷰 탭 -->
+
                                     <div v-if="reviewTab === 'simple'" class="content-card">
 
                                         <h3>무료 리뷰 내역 : <span style="color: #ff1493;">새 리뷰 {{newUnpaidReviewCnt}}건</span>
                                         </h3>
 
-                                        <template v-for="w in pagedProductList4" :key="w.productName">
+                                        <template v-for="w in pagedProductList4 " :key="w.productName">
 
-                                            <div class="review-header-info" style="margin-bottom: 10px;" @click="fnSimpleReviewDetails3(w)">
+                                            <div class="review-header-info" style="margin-bottom: 10px;">
                                                 <div class="review-thumb-box">
                                                     <img :src="w.imgUrl"
-                                                        style="width: 100%; height: 100%; object-fit: cover; border-radius: 10px;">
+                                                        style="width: 100%; height: 100%; object-fit: cover;">
                                                 </div>
                                                 <div class="review-product-name">
                                                     <!--totalSimpleReviewCnt-->
                                                     <a href="javascript:;" style="text-decoration: none; color:#0b3f8e;"
-                                                        ><strong>{{w.productName}}</strong></a>
+                                                        @click="fnSimpleReviewDetails3(w)"><strong>{{w.productName}}</strong></a>
 
                                                 </div>
                                                 <div class="review-count-badge">리뷰 갯수: {{w.reviewCount}}개 </div>
@@ -1487,7 +1370,7 @@
                                         <div class="pagination1">
                                             <span v-for="num in totalReviewListPages4" :key="num">
                                                 <a @click="reviewListPage = num" href="javascript:;"
-                                                    :style="reviewListPage === num ? 'color: #9b8fd4; border:1px solid #9b8fd4;' : ''">
+                                                    :style="reviewListPage === num ? 'color:#9b8fd4; border:1px solid #9b8fd4;' : 'border:none;'">
                                                     {{ num }}
                                                 </a>
                                             </span>
@@ -1506,7 +1389,7 @@
                             {{reviews}} -->
                                     <!-- reviewTab === 'detail' 인 경우-->
                                     <template v-if="reviewTab === 'detail'">
-                                        <button class="btn-back" @click="fnGoBackToList()">← 목록으로</button>
+
                                         <template v-if="reviews && reviews.length > 0">
 
                                             <template v-for="rev in paginatedReviews" :key="rev"
@@ -1521,8 +1404,8 @@
                                                             style="position: absolute; top: -5px; left: -5px;">NEW
                                                         </span>
                                                         <div class="review-photo">
-                                                            <img :src="rev.imgUrl" :alt="rev.imgDescription" 
-                                                                style="width: 100%; height: 100%; object-fit: cover; border-radius: 10px;">
+                                                            <img :src="rev.imgUrl" :alt="rev.imgDescription"
+                                                                style="width: 100%; height: 100%; object-fit: cover;">
                                                         </div>
                                                     </div>
                                                     <div style="flex: 1; line-height: 1.6; color: #444;">
@@ -1538,7 +1421,7 @@
                                             <div class="pagination1">
                                                 <span v-for="num in totalPages" :key="num">
                                                     <a @click="fnPageChange2(num)" href="javascript:;"
-                                                        :style="page === num ? 'color: #9b8fd4; border:1px solid #9b8fd4;' : ''">
+                                                        :style="page === num ? 'color: #ff1493; border: 1px solid #ff1493;' : ''">
                                                         {{num}}
                                                     </a>
                                                 </span>
@@ -1556,8 +1439,6 @@
 
                                     <!--reviewTab === 'simple' 인 경우-->
                                     <template v-else-if="reviewTab === 'simple'">
-                                        <button class="btn-back" @click="fnGoBackToList()">← 목록으로</button>
-
                                         <template v-if="simpleReviews && simpleReviews.length > 0">
 
 
@@ -1592,7 +1473,7 @@
                                             <div class="pagination1">
                                                 <span v-for="num in totalSimplePages" :key="num">
                                                     <a @click="page = num" href="javascript:;"
-                                                        :style="page === num ? 'color: #9b8fd4; border:1px solid #9b8fd4;' : ''">
+                                                        :style="page === num ? 'color: #ff1493; border: 1px solid #ff1493;' : ''">
                                                         {{num}}
                                                     </a>
                                                 </span> <!-- num 에 해당하는 페이지가 뜨고 그 페이지에 자료가 5개씩 표시되도록( )-->
@@ -1616,7 +1497,29 @@
             </div>
         </div>
 
-        <jsp:include page="/WEB-INF/common/footer.jsp" />
+        
+<footer class="footer">
+    <div class="footer-top">
+        <div style="font-weight: bold; font-size: 20px; color: #222;">MARRYVIEW</div>
+        <div class="footer-links">
+            <a href="/about.do">회사소개</a>
+            <a href="javascript:;" class="bold-link">개인정보처리방침</a>
+            <a href="javascript:;">이용약관</a>
+            <a href="javascript:;">파트너 입점문의</a>
+        </div>
+        <div>고객센터 <span style="font-weight: bold; color: #ff6b6b; font-size: 16px;">1588-0000</span></div>
+    </div>
+    <div class="footer-bottom">
+        <span>(주)메리뷰</span>
+        <span>대표: 김메리</span>
+        <span>사업자등록번호: 123-45-67890</span><br>
+        <span>주소: 서울특별시 강남구 테헤란로 77길 11, 메리타워 15층</span>
+        <span>이메일: help@marryview.com</span>
+    </div>
+    <div style="font-size: 11px; color: #bbb; margin-top: 20px;">
+        © 2026 MarryView Inc. All Rights Reserved.
+    </div>
+</footer>
 
 
 
@@ -1628,10 +1531,8 @@
 
     <script>
         const app = Vue.createApp({
-            el: '#app',
             data() {
                 return {
-                    currentMenu: 'main',
                     // 리뷰 내역 페이지 사이징
                     reviewListPage: 1,   // 리뷰 상품 목록 페이지
                     reviewListPageSize: 5,
@@ -1643,15 +1544,6 @@
                     productCurrentPage: 1,
                     productPageSize: 5,   // 한 페이지에 보여줄 상품 수
                     //
-                    /*문의 답변과 관련된 맵*/
-                    inquiryAnswer:{
-                        inquiryNo: '',
-                        ansUserId:'',
-                        answerNo: '',
-                        answerContents:'',
-                        inquiryAns: ''
-                    },
-                    inquiryDetails: {},
                     resCount: '',
                     newReviewCnt: 0,
                     newUnpaidReviewCnt: 0,
@@ -1758,6 +1650,9 @@
                         { id: 10, product: '동화같은 분위기', content: '파스텔 톤 생화 장식 상담입니다.', resDate: '26.03.28', useDate: '26.05.02 12:00PM', name: '조전통', contact: '010-6666-7777', price: '50,000원' },
                         { id: 11, product: '화려하게', content: '대형 웨딩홀 촬영 스케줄 문의입니다.', resDate: '26.04.01', useDate: '26.05.05 14:00PM', name: '한찬란', contact: '010-8888-9999', price: '100,000원' }
                     ],
+                    inquiry: [
+                        { id: 1, }
+                    ],
                     category: ["스튜디오", "드레스", "메이크업"],
                     selectedItems: [],
                     productForm: {
@@ -1784,11 +1679,11 @@
                         tag: []
                     },
                     tagMap: {
-                        input1: '',
-                        input2: '',
-                        input3: '',
-                        input4: '',
-                        input5: ''
+                        input1:'',
+                        input2:'',
+                        input3:'',
+                        input4:'',
+                        input5:''
                     },
                     serverTagList: [],
                 }
@@ -1799,21 +1694,21 @@
                 //     return this.reservationList.length;
                 // }
                 //,
-                tagMapToList() {
+                tagMapToList(){
                     const filteredtagArray = Object.values(this.tagMap).filter(tag => tag.trim() !== "");
 
                     //console.log(filteredtagArray);
                     return filteredtagArray;
                 },
-                newTagsOnly() {
-                    if (!this.serverTagList) {
+                newTagsOnly(){
+                    if(!this.serverTagList) {
                         return tagMapToList();
                     }
-
+                    
                     return this.tagMapToList.filter(t => !this.serverTagList.includes(t));
 
                 },
-
+                
 
                 revCnt() {
                     return this.reviews.filter(r => r.updated === 'new').length
@@ -1938,14 +1833,9 @@
                 totalReviewListPages4() {
                     return Math.ceil(this.productList4.length / this.reviewListPageSize);
                 },
-
-
             },
             methods: {
                 // 함수(메소드) - (key : function())
-                fnGoBackToList : function(){
-                    this.page1 = 'main';
-                },
                 fnPageChange(num) {
                     this.currentPage = num;
 
@@ -1957,7 +1847,7 @@
                 fnCom: function () {
                     let self = this;
                     let param = {
-                        userid: "${sessionScope.sessionId}" //이거 맞다
+                        userid: "sunsu09" //이거 맞다
                     };
                     $.ajax({
                         url: "http://localhost:8080/company.dox",
@@ -1977,11 +1867,9 @@
                     });
                 },
                 fnProductList: function () {
-                    this.productCurrentPage = 1;
-
                     let self = this;
                     let param = {
-                        userid: "${sessionScope.sessionId}"
+                        userid: "sunsu09"
                     };
                     $.ajax({
                         url: "http://localhost:8080/productList.dox",
@@ -2017,7 +1905,7 @@
                     self.productPage = 'edit';
 
                     let param = {
-                        userid: "${sessionScope.sessionId}",
+                        userid: "sunsu09",
                         productNo: item.productNo //파라미터로 보내주면되는구나~
                     };
                     $.ajax({
@@ -2031,7 +1919,7 @@
                             self.product1 = data.info;//덮어씌우기
                             self.serverTagList = data.tagList;
 
-
+                            
 
                             //
                             // 2. 문자열로 들어온 proType을 실제 배열로 변환합니다.
@@ -2056,7 +1944,7 @@
                                     self.product1.proType = [];
                                 }
                             }
-                            if (typeof self.product1.tag === 'string') {
+                            if(typeof self.product1.tag === 'string'){
                                 try {
                                     let rawArry = JSON.parse(self.product1.tag);
 
@@ -2067,7 +1955,7 @@
                                     self.tagMap.input3 = self.product1.tag[2] || "";
                                     self.tagMap.input4 = self.product1.tag[3] || "";
                                     self.tagMap.input5 = self.product1.tag[4] || "";
-                                } catch (e) {
+                                } catch(e){
                                     self.product1.tag = [];
                                 }
                             }
@@ -2161,7 +2049,7 @@
                             self.serverTagList = data.tagList;
                         }
                     });
-
+                    
 
 
                 },
@@ -2203,11 +2091,14 @@
 
                 },
                 fnThumbnail(i) {    //fnThumbnail(개별문의) 해변스냅
-                    return this.inquiryList.find(p => p.productName === i.productName).imgUrl;
+                    return this.inquiryList.find(p => p.product === i.product).imgUrl;
                     //return this.productList3.find(p => p.productName === inquiry.product).imgUrl;
                 }
                 ,
                 handleMenuClick(menuId) {   //main,product,reservation,inquiry,review,customer
+                    this.selectedRes = null;      // ← 추가
+                    this.resCurrentPage = 1;
+                    this.productCurrentPage = 1;
                     this.currentMenu = menuId;
                     this.productPage = 'list';
                     this.page = 1;
@@ -2226,8 +2117,6 @@
 
                         this.fnSimple();
                         this.fnReview();
-                    } else if (menuId === 'inquiry') {
-                        this.fnInquiryProduct();
                     }
                 },
 
@@ -2265,7 +2154,7 @@
                     formData.append("originalPrice", this.product1.originalPrice);
 
                     formData.append("deposit", this.product1.deposit);
-                    formData.append("tag", JSON.stringify([...new Set(this.tagMapToList)]));
+                    formData.append("tag",JSON.stringify([...new Set(this.tagMapToList)]));
 
                     formData.append("proType", JSON.stringify(this.product1.proType));
 
@@ -2317,9 +2206,9 @@
                     //
                     formData.append("deposit", this.product2.deposit);
                     formData.append("proType", JSON.stringify(this.product2.proType));
-                    formData.append("userId", "${sessionScope.sessionId}");
-
-                    formData.append("tag", JSON.stringify([...new Set(this.tagMapToList)]));
+                    formData.append("userId", "sunsu09");
+                    
+                    formData.append("tag",JSON.stringify([...new Set(this.tagMapToList)]));
                     formData.append("uniqueNewTagsOnly", this.uniqueNewTagsOnly());
 
                     $.ajax({
@@ -2387,12 +2276,9 @@
                     });
                 },
                 fnReservationList: function () {
-
-                    this.resCurrentPage = 1;
-
                     let self = this;
                     let param = {
-                        userId: "${sessionScope.sessionId}"
+                        userId: "sunsu09"
                     };
                     $.ajax({
                         url: "/ReservationList.dox",
@@ -2407,11 +2293,12 @@
                     });
                 },
                 fnReview() {
-                    this.reviewTab = 'detail';
-                    this.reviewListPage = 1;
+                    this.reviewTab = 'detail'
+                    this.reviewListPage = 1
+
                     let self = this;
                     let param = {
-                        userId: "${sessionScope.sessionId}"
+                        userId: "sunsu09"
                     };
                     $.ajax({
                         url: "/getReviewCnt.dox",
@@ -2435,11 +2322,12 @@
                     });
                 },
                 fnSimple() {
-                    this.reviewTab = 'simple';
-                    this.reviewListPage = 1;
+                    this.reviewTab = 'simple'
+                    this.reviewListPage = 1
+
                     let self = this;
                     let param = {
-                        userId: "${sessionScope.sessionId}"
+                        userId: "sunsu09"
                     };
                     $.ajax({
                         url: "/getSimpleReviewCnt.dox",
@@ -2469,7 +2357,7 @@
 
                     let self = this;
                     let param = {
-                        userId: "${sessionScope.sessionId}", //${sessionScope.sessionId}
+                        userId: "sunsu09", //sunsu09
                         productNo: w.productNo
                     };
                     console.log(param.productNo);
@@ -2495,7 +2383,7 @@
 
                     let self = this;
                     let param = {
-                        userId: "${sessionScope.sessionId}",
+                        userId: "sunsu09",
                         productNo: w.productNo
                     };
 
@@ -2537,19 +2425,16 @@
                     }
                 },
 
-                uniqueNewTagsOnly() {
+                uniqueNewTagsOnly(){
                     return [...new Set(this.newTagsOnly)];
                 },
-                fnBack3() {
+                fnBack3(){
                     this.tagMap = {};
                     //this.tagMapToList = [];
                     this.productPage = 'list'
                     this.product2.deposit = 0;
                 },
-                fnInquiryProduct() {
-
-
-
+            fnInquiryProduct() {
                     let self = this;
                     let param = {
                         userId: "${sessionScope.sessionId}"
@@ -2639,11 +2524,7 @@
                 self.fnReservationList();
                 self.fnSimple();
                 self.fnReview();
-                const urlParams = new URLSearchParams(window.location.search);
-                const menu = urlParams.get('menu');
-                if (menu) {
-                    this.currentMenu = menu;
-                }
+
             }
 
 
