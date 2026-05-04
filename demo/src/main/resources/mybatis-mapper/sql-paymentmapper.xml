@@ -67,24 +67,24 @@
 		WHERE user_id = #{userId}
 	</update>
 
-	<!--<insert id="insertPaymentReservation" parameterType="map">
-		INSERT INTO payment_reservation (
-			pay_no,
+	<insert id="insertPaymentReservation" parameterType="map">
+		INSERT INTO payment (
 			user_id,
 			amount,
 			pay_status,
 			pay_date,
-			res_no
+			imp_uid,
+			merchant_uid
 		)
 		VALUES (
-			#{payNo},
 			#{userId},
 			#{amount},
-			'PAID',				#{payStatus},
-			NOW(),				#{payDate},
-			#{resNo}
+			'SUCCESS',
+			NOW(),			
+			#{impUid},
+	 		#{merchantUid}
 		)
-	</insert>-->
+	</insert>
 
 	<insert id="insertPaymentRegistration" parameterType="map">
 		INSERT INTO payment_resistration (
@@ -254,7 +254,7 @@
 <!-- 등록 회사 번호 조회-->
 <select id="selectCompanyInfo" parameterType="hashmap"
         resultType="int">
-    SELECT company_no AS companyNo
+    SELECT COALESCE(company_no, 0) AS companyNo
     FROM company
     WHERE user_id = #{userId}
 </select>
@@ -285,7 +285,7 @@
 	<update id="updateRefundReservation" parameterType="hashmap">
 		UPDATE reservation
 		SET 
-		    status = 'CANCEL',
+		    res_status = 'CANCEL'
 		WHERE pay_no = #{payNo}
 	</update>
 	<update id="updateRefundReservation2" parameterType="hashmap">
@@ -296,5 +296,11 @@
 		    refund_date = NOW()
 		WHERE pay_no = #{payNo}
 	</update>
-
+	
+	<update id="updateRefundReservation3" parameterType="hashmap">
+		UPDATE payment
+		SET 
+		    pay_status = 'CANCEL'
+		WHERE imp_uid = #{impUid}
+	</update>
 </mapper>

@@ -3058,14 +3058,14 @@
                     let self = this
                     console.log("서버로 보내는 imp_uid:", imp_uid);
                     $.ajax({
-                        url: "http://localhost:8080/verifyPayment.dox",
+                        url: "http://localhost:8080/verifyPayment3.dox",
                         type: "POST",
                         data: {
-                            userId: self.sessionId,     // 로그인 아이디
+                            userId: "${sessionScope.sessionId}",     // 로그인 아이디
                             imp_uid: imp_uid,           // 결제 고유 값(중복)
                             merchant_uid: merchant_uid,
                             amount: self.myReservation1.deposit,
-                            type: "RES"
+                            
                         },
                         success: function (res) {
                             console.log(res);

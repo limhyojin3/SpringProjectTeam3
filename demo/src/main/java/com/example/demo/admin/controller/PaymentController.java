@@ -71,6 +71,15 @@ public class PaymentController {
 		
 		return paymentService.verifyPayment2(map);
 	}
+	
+	@PostMapping("/verifyPayment3.dox")
+	@ResponseBody
+	public HashMap<String, Object> verifyPayment3(@RequestParam HashMap<String, Object> map) {
+
+		String type = String.valueOf(map.get("type"));
+		
+		return paymentService.verifyPayment3(map);
+	}
 	//환불
 //	@RequestMapping(value = "/refundPayment.dox", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
 //	@ResponseBody
@@ -94,7 +103,7 @@ public class PaymentController {
 		@ResponseBody
 		public String refundAdminReservation(@RequestParam HashMap<String, Object> map){
 
-		    HashMap<String, Object> resultMap = paymentService.refundPass(map);
+		    HashMap<String, Object> resultMap = paymentService.refundAdminReservation(map);
 
 		    return new Gson().toJson(resultMap);
 		}

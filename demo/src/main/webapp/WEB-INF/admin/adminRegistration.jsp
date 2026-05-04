@@ -305,6 +305,7 @@
                         // 변수 - (key : value)
                         activeMenu: "",
                         sessionId: "${sessionId}",
+                        sessionRole: "${sessionScope.sessionRole}",
                         isModalOpen: false,
                         paymentMethod: "",
                         //전체 동의
@@ -326,6 +327,10 @@
                         let self = this;
                         if (!(this.agreeRequired1 && this.agreeRequired2)) {
                             alert("필수 약관에 동의해주세요");
+                            return;
+                        }
+                        if(self.sessionRole == "COMPANY"){
+                            alert("기업 회원만 가능합니다!")
                             return;
                         }
                         IMP.request_pay(
