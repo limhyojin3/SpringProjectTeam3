@@ -146,14 +146,12 @@ public class ReviewController {
             if (receiptFile != null && !receiptFile.isEmpty()) {
                 Map<String, String> fileInfo = fileService.uploadFile(receiptFile);
                 if (fileInfo != null) {
-                    // 유료 리뷰일 경우에만 메인 이미지 컬럼들에 정보 채움
-                    if ("1".equals(String.valueOf(review.getIsPaid()))) {
-                        review.setOriginalName(fileInfo.get("originalName"));
-                        review.setStoredName(fileInfo.get("storedName"));
-                        review.setImgUrl(fileInfo.get("imgUrl"));
-                    } 
+                  review.setOriginalName(fileInfo.get("originalName"));
+                  review.setStoredName(fileInfo.get("storedName"));
+                  review.setImgUrl(fileInfo.get("imgUrl"));
+                    
                     // 공통 영수증 증빙 정보 저장
-                    review.setReceiptName(fileInfo.get("storedName")); 
+                  review.setReceiptName(fileInfo.get("storedName")); 
                 }
             }
             
