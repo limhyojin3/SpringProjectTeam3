@@ -12,6 +12,7 @@
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
         <link rel="stylesheet" href="${pageContext.request.contextPath}/css/common.css">
         <link rel="stylesheet" href="${pageContext.request.contextPath}/css/adminNavi.css">
+        <link rel="stylesheet" href="${pageContext.request.contextPath}/css/admin-common.css">
 
         <style>
             .middle {
@@ -145,7 +146,7 @@
                                 <div class="col-3">
                                     <div class="summary-box">
                                         <div class="summary-title">계정 상태</div>
-                                        <div>{{ selectedUser.status }}</div>
+                                        <div>{{ getStatusInfo(selectedUser.status)?.text }}</div>
                                     </div>
                                 </div>
                             </div>
@@ -243,7 +244,9 @@
                         getStatusInfo(status) {
                             const map = {
                                 ACTIVE: { text: "활동" },
-                                STOP: { text: "정지" }
+                                STOP: { text: "정지" },
+                                DORMANT: { text: "휴면" },
+                                WITHDRAWN: { text: "탈퇴" }
                             };
                             return map[status] || { text: "기타" };
                         },
@@ -304,7 +307,7 @@
 
                         fnBanUser() {
                             let self = this;
-                            if(!confirm("정지하시겠습니까?")){return}
+                            if (!confirm("정지하시겠습니까?")) { return }
                             $.ajax({
                                 url: "http://localhost:8080/editMemberBan.dox",
                                 type: "POST",
@@ -325,7 +328,7 @@
 
                         fnUnbanUser() {
                             let self = this;
-                            if(!confirm("정지해제하시겠습니까?")){return}
+                            if (!confirm("정지해제하시겠습니까?")) { return }
                             $.ajax({
                                 url: "http://localhost:8080/editMemberBan.dox",
                                 type: "POST",

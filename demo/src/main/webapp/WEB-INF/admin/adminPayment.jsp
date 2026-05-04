@@ -190,6 +190,7 @@
                                     <th>예약번호</th>
                                     <th>상품명</th>
                                     <th>예약금</th>
+                                    <th>예약일</th>
                                     <th>결제여부</th>
                                     <th>진행여부</th>
                                     <th>결제일</th>
@@ -203,6 +204,7 @@
                                     <td>{{ r.resNo }}</td>
                                     <td>{{ r.productName }}</td>
                                     <td>{{ r.amount }}</td>
+                                    <td>{{ r.useDate }}</td>
                                     <td>{{ r.payStatus }}</td>
                                     <td>{{ r.resStatus }}</td>
                                     <td>{{ formatDate(r.payDate) }}</td>
@@ -242,7 +244,8 @@
                         <div class="page-box" v-if="list.length > 0">
                             <button @click="fnPageMove(currentPage-1)" :disabled="currentPage===1">‹</button>
 
-                            <button v-for="p in index" :key="p" @click="fnPageMove(p)" :class="{active: currentPage==p}">
+                            <button v-for="p in index" :key="p" @click="fnPageMove(p)"
+                                :class="{active: currentPage==p}">
                                 {{p}}
                             </button>
 
@@ -360,7 +363,48 @@
                             }
                         });
                     },
-                    fnRegistration:function(c){
+                    fnRefund(payNo2) {
+
+                        console.log("환불 클릭", payNo);
+
+                        if (!confirm("정말 환불하시겠습니까?\n환불 후 복구할 수 없습니다.")) {
+                            return;
+                        }
+
+                        $.ajax({
+                            url: "/refundAdminReservation.dox",
+                            type: "POST",
+                            dataType: "json",
+                            data: { payNo: payNo },
+
+                            beforeSend: function () {
+                                console.log("AJAX 시작");
+                            },
+
+                            success: function (data) {
+                                console.log("성공", data);
+                                if (data.result == "success") {
+                                    alert(data.message);
+                                    location.reload();
+                                } else {
+                                    alert(data.message);
+                                }
+                            },
+
+                            error: function (xhr, status, err) {
+                                console.log("에러");
+                                console.log(xhr.responseText);
+                                console.log(status);
+                                console.log(err);
+                                alert("error");
+                            },
+
+                            complete: function () {
+                                console.log("AJAX 종료");
+                            }
+                        });
+                    },
+                    fnRegistration: function (c) {
                         if (!confirm("정말 등록하시겠습니까?")) {
                             return;
                         }
@@ -380,7 +424,7 @@
                                     alert(data.message);
                                 }
                             },
-                            error: function ( err) {
+                            error: function (err) {
                                 alert("error");
                             },
                         });
