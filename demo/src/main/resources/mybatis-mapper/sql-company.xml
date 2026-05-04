@@ -100,7 +100,7 @@
 		WHERE c.user_id = #{userId}
 		order by r.res_date desc, r.res_time desc
 	</select>
-	
+
 	<select id="selectNewResCnt" parameterType="map"
 		resultType="String">
 		SELECT
@@ -239,6 +239,49 @@
 		inner join member m on m.user_id = r.user_id
 		where r.user_id = #{userId}
 	</select>
+	<!-- resNoList를 가져온다.(일반유저가 로그인했을때) -->
+	<select id="selectResNoList" parameterType="map" resultType="integer">
+		select res_no from reservation where user_id = #{userId}
+	</select>
+	
+	<!-- resNoList 를 가져온다. (업체유저가 로그인했을때) -->
+	<select id="selectResNoListForCompanyUser" parameterType="map" resultType="integer">
+		select res_no from reservation where company_no = (
+		select company_no from company where user_id = #{userId}
+		)
+	</select>
+
+	<!-- 쿼리문에서 분기처리 한거임.. -->
+	<!--나의 예약내역리스트로 갈때(사용자 입장에서) 내 예약상태를 업데이트한다. DONE 또는 CANCEL이 보이도록 -->
+	<!-- update 한후 결과값은 int result = 1 또는 0 -->
+	<update id="updateReservationStatus" parameterType="hashmap">
+		<if test="resNoList != null and resNoList.size > 0">
+			<foreach collection="resNoList" item="resNo" separator=";"> 
+				UPDATE reservation 
+				SET res_status = IF(pay_no IS NOT NULL, 'DONE', 'CANCEL')
+				WHERE res_no = #{resNo} 
+				AND user_id = #{userId} 
+				AND NOW() > STR_TO_DATE(CONCAT(use_date, ' ', use_time), '%Y-%m-%d 
+				%H:%i:%s') 
+			</foreach>
+		</if>
+	</update>
+	
+	<!-- 업체 입장에서 예약내역 리스트로 갈때 예약상태를 업데이트 해보자. DONE 또는 CANCEL이 보이도록 -->
+	<update id="updateReservationStatusForCompany" parameterType="hashmap">
+		<if test="resNoList != null and resNoList.size() > 0">
+			<foreach collection="resNoList" item="resNo" separator=";">
+				update reservation
+				set res_status = IF(pay_no is not null, 'DONE', 'CANCEL')
+				where res_no = #{resNo}
+				and NOW() > STR_TO_DATE(CONCAT(use_date, ' ', use_time), '%Y-%m-%d 
+				%H:%i:%s') 
+			</foreach>
+		
+		</if>
+	</update>
+	
+
 
 	<!--int result = companyMapper.checkOver30minute(map);-->
 	<update id="checkOver30minute" parameterType="map">
@@ -363,5 +406,18 @@
 		FROM inquiry_product ip
 		left join product p on ip.product_no = p.product_no
 		where ip.user_id = #{userId}
+	</select>
+
+	<!-- 인쿼리프로덕트랑 컴퍼니랑 인쿼리프로덕트앤서랑 조인한거 중에 ip.inquiry_no, c.user_id, 
+		ipa.answer_contents 만 셀렉트한거 그리고 where 조건절이 inquiry_no = #{inquiryNo} 인거 -->
+	<select id="selectInquiry1Answer" parameterType="map"
+		resultType="com.example.demo.company.model.Company">
+
+		select ip.inquiry_no, c.user_id, ipa.answer_contents from
+		inquiry_product ip
+		left join company c on ip.company_no = c.company_no
+		left join inquiry_product_answer ipa on ip.inquiry_no = ipa.inquiry_no
+		where ip.inquiry_no = #{inquiryNo}
+
 	</select>
 </mapper>

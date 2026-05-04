@@ -637,7 +637,7 @@ public class MemberController {
 		    return "/common/home-about";
 		}
 	// 찾아오시는 길 페이지
-		@Value("${kakao.map.key}")
+		@Value("${kakao.map.key:none}")
 		private String kakaoMapKey;
 
 		@GetMapping("/location.do")
@@ -645,7 +645,7 @@ public class MemberController {
 		    model.addAttribute("kakaoMapKey", kakaoMapKey);
 		    return "/common/home-about2";
 		}
-	 
+	  
 	// 최근 리뷰
 		@GetMapping("/mainReviewList.dox")
 		@ResponseBody

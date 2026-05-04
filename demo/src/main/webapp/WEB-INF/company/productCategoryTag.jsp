@@ -1841,13 +1841,13 @@
                                     <!-- 데이터에 답변 필드명이 'answerContents'라고 가정했습니다 -->
                                     <div
                                         style="line-height: 1.6; color: #333; white-space: pre-wrap; font-size: 1.05rem; margin-bottom: 20px;">
-                                        <!-- {{ myInquiry1.answerContents || '답변 내용을 불러오는 중입니다.' }} -->
-                                        답변 내용을 불러오는 중입니다.
+                                        {{ myInquiry1.answerContents || '답변 내용을 불러오는 중입니다.' }}
+                                        <!-- 답변 내용을 불러오는 중입니다. -->
                                     </div>
                                     <div
                                         style="text-align: right; font-size: 0.9rem; color: #999; border-top: 1px solid #f4f4f4; padding-top: 15px;">
-                                        <!-- 답변자: {{ myInquiry1.ansUserId || '관리자' }} -->
-                                        답변자 : 관리자
+                                        답변자: {{ myInquiry1.ansCompany || '관리자' }}
+                                        <!-- 답변자 : 관리자 -->
                                     </div>
                                 </div>
                             </div>
@@ -2328,10 +2328,25 @@
             },
             watch: {
                 selectedDate(newVal) {
-                    if (newVal) {
+
+                    const today = new Date();
+                    const tomorrow = new Date(today);
+                    tomorrow.setDate(today.getDate() + 1);
+
+                    tomorrow.setHours(0,0,0,0);
+                    const selected = new Date(newVal);
+                    selected.setHours(0,0,0,0);
+
+                    /* 선택된 날짜를 감시 - 잘못된 날짜가 올 경우 알림을 띄운다.*/
+                    if(selected < tomorrow){
+                        alert("날짜는 내일 이후부터 선택 가능합니다!");
+
+                        this.selectedDate = '';
+                    } else{  /* 제대로 된 날짜가 올경우 함수를 호출한다.*/
                         this.fnGetBookedTimes();
                     }
-                }
+
+                },
             },
             methods: {
                 // 함수(메소드) - (key : function())
@@ -3124,13 +3139,41 @@
                         }
                     });
                 },
-                //특정 문의를 클릭하면 실행되는거
+                //특정 문의를 클릭하면 실행되는거// 문의내용 상세보기로 간다
                 fnInquiryAnswerDetails(inquiry) {
 
                     //특정 문의에 대한걸 복사해서 변수에 담는다.
                     this.myInquiry1 = { ...inquiry };
 
-                    this.productPage = 'inquiry1Details';
+                    this.productPage = 'inquiry1Details'; //문의내용상세보기
+
+                    //여기서 통신한다.
+                    let self = this;
+                    let param = {
+                        inquiryNo: self.myInquiry1.inquiryNo
+                    };
+
+                    console.log(param);
+                    $.ajax({
+                        url: "/getInquiry1Answer.dox",
+                        dataType: "json",
+                        type: "POST",
+                        data: param,
+                        success: function (data) {
+                            console.log(data);
+
+                            if(data.result === "success"){
+                                self.myInquiry1.answerContents = data.info.answerContents;
+                                self.myInquiry1.ansCompany = data.info.userId;
+                                
+                            } else{
+                                alert("서버 오류!");
+                            }
+                            
+                        }
+                    });
+
+
 
                 }
 
