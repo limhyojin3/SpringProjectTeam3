@@ -897,13 +897,20 @@
                                 <div class="section-title" v-if="user.grade === 'PARTNER'">제휴업체</div>
                                 <div class="section-title" v-else-if="user.grade === 'NPARTNER'">일반업체</div>
                                 <div class="content-card">
-                                    <h3><span v-if="user.grade === '제휴업체'">제휴업체</span> 등록 일자</h3>
-                                    <p style="text-align: right; font-size: 20px;">{{ user.regDate }}</p>
+                                    <h3><span v-if="user.grade === 'PARTNER'">제휴업체 등록(결제) 일자</span></h3>
+                                    <h3><span v-if="user.grade === 'NPARTNER'">일반업체 등록 일자</span></h3>
+                                    <p v-if="user.grade === 'PARTNER'" style="text-align: right; font-size: 20px;">{{ user.payDate }}</p>
+                                    <p v-if="user.grade === 'NPARTNER'" style="text-align: right; font-size: 20px;">{{ user.regDate }}</p>
+                                    
                                 </div>
-                                <div class="content-card">
+                                <!-- <div class="content-card">
                                     <h3>마지막 결제 수단</h3>
                                     <p style="text-align: right; font-size: 20px;">{{ user.lastPayment }}</p>
+                                </div> -->
+                                <div v-if="user.grade === 'NPARTNER'" style="text-align: right;">
+                                    <button class="btn-product-reg" @click="fnRegPTN">제휴 업체로 등록하기</button>
                                 </div>
+                                <div><span v-if="user.grade === 'NPARTNER'">*관리자가 승인후 제휴업체 등급이 됩니다!</span></div>
                                 <!-- <button style="float: right;" @click="withdraw">탈퇴하기</button> -->
                             </div>
 
@@ -1990,9 +1997,10 @@
                             console.log(data); //info,result,message
 
                             self.user.name = data.info.comName;
-                            self.user.regDate = data.info.regDate;
+                            self.user.payDate = data.info.payDate;
                             self.user.grade = data.info.role;
                             self.user.lastPayment = data.info.previousPayment;
+                            self.user.regDate = data.info.regDate;
 
                             //console.log(self.user);
                         }
@@ -2668,6 +2676,10 @@
                             }
                         }
                     });
+                },
+                /* 제휴업체로 등록하러가기 */
+                fnRegPTN(){
+                    location.href="/adminRegistration.do"
                 }
             }, // methods
 
