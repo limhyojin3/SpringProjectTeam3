@@ -74,7 +74,8 @@ public class Admin {
 	String impUid;
 	int chargeCount;
 	
-	
+	//예약
+	String useDate;
 
 	// 회원목록
 	String userMonth;

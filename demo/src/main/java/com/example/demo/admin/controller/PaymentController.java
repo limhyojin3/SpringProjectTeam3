@@ -89,6 +89,16 @@ public class PaymentController {
 	    return new Gson().toJson(resultMap);
 	}
 	
+	// 예약 환불
+		@RequestMapping(value="/refundAdminReservation.dox", method=RequestMethod.POST, produces="application/json;charset=UTF-8")
+		@ResponseBody
+		public String refundAdminReservation(@RequestParam HashMap<String, Object> map){
+
+		    HashMap<String, Object> resultMap = paymentService.refundPass(map);
+
+		    return new Gson().toJson(resultMap);
+		}
+	
 	// 쿠폰 조회
 	@RequestMapping(value="/couponUseList.dox", method=RequestMethod.POST)
 	@ResponseBody
