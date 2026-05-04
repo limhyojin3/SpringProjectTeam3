@@ -278,10 +278,10 @@ public class CompanyService {
 			/* DB에서 가져온 리스트를 map에 담는다. */
 			map.put("resNoList", resNoList);
 			
-			/**/
 			/* 업체 입장에서 예약내역 리스트로 갈때 예약상태를 업데이트 해보자. DONE 또는 CANCEL이 보이도록 */
-			int result = companyMapper.updateReservationStatusForCompany(map);
-			
+			if (resNoList != null && !resNoList.isEmpty()) {
+			    companyMapper.updateReservationStatusForCompany(map);
+			}
 			
 			
 			

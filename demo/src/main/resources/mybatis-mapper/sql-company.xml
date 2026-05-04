@@ -11,8 +11,9 @@
 	<!-- 한개 검색 -->
 	<select id="selectCompany" parameterType="hashmap"
 		resultType="com.example.demo.company.model.Company">
-		select m.*, c.com_name from member m
+		select m.*, c.com_name, p.pay_date from member m
 		left join company c on m.user_id = c.user_id
+		left join payment p on m.user_id = p.user_id
 		where m.user_id = #{userid}
 	</select>
 
