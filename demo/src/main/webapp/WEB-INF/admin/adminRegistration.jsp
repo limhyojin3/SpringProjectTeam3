@@ -15,199 +15,221 @@
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
         <link rel="stylesheet" href="${pageContext.request.contextPath}/css/common.css">
         <style>
-            .main {
-                grid-area: main;
-                border: 1px solid #ffc7c2;
+            /* 전체 배경 */
+            body {
+                background:
+                    radial-gradient(circle at top left, #ffe4ec 0%, transparent 40%),
+                    radial-gradient(circle at bottom right, #e8f0ff 0%, transparent 35%),
+                    linear-gradient(180deg, #f7f8fb, #f4f6fa);
+            }
+
+            /* 컨테이너 */
+            .pay-container {
+                max-width: 700px;
+                margin: 40px auto;
                 padding: 20px;
-                gap: 20px;
             }
 
-            :root {
-                --primary-color: #4a90e2;
-                --bg-color: #f8f9fa;
-            }
-
-            .regi-container {
-                max-width: 600px;
-                margin: 50px auto;
-                padding: 0 20px;
-                font-family: 'Pretendard', sans-serif;
-            }
-
-            .regi-header {
+            /* 헤더 */
+            .pay-header {
                 text-align: center;
-                margin-bottom: 40px;
-            }
-
-            .regi-header h2 {
-                font-size: 2rem;
-                color: #333;
-            }
-
-            .regi-header p {
-                color: #666;
-            }
-
-            .regi-grid {
-                display: grid;
-                grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-                gap: 20px;
-            }
-
-            .regi-card {
-                background: white;
-                border: 1px solid #ddd;
-                border-radius: 12px;
-                padding: 30px 20px;
-                text-align: center;
-                transition: transform 0.3s ease;
-                position: relative;
-            }
-
-            .regi-card:hover {
-                transform: translateY(-10px);
-                box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
-            }
-
-            /* 추천 카드 강조 */
-            .regi-card.highlight {
-                border: 2px solid var(--primary-color);
-            }
-
-            .badge {
-                position: absolute;
-                top: -12px;
-                left: 50%;
-                transform: translateX(-50%);
-                background: var(--primary-color);
-                color: white;
-                padding: 4px 12px;
-                border-radius: 20px;
-                font-size: 0.8rem;
-            }
-
-            .regi-name {
-                font-size: 2rem;
-                font-weight: bold;
-                margin-bottom: 15px;
-            }
-
-            .regi-price {
-                font-size: 2rem;
-                font-weight: 800;
-                color: #333;
-                margin-bottom: 5px;
-            }
-
-            .regi-price span {
-                font-size: 1rem;
-                font-weight: normal;
-            }
-
-            .regi-review {
-                font-size: 0.9rem;
-                color: #888;
-                margin-bottom: 20px;
-            }
-
-            .regi-features {
-                list-style: none;
-                padding: 0;
                 margin-bottom: 30px;
-                text-align: left;
             }
 
-            .regi-features li {
-                margin-bottom: 10px;
-                color: #555;
-                font-size: 0.95rem;
+            .brand-title {
+                font-family: 'Great Vibes', cursive;
+                font-size: 64px;
+                background: linear-gradient(90deg, #c89a3e, #fff7c9, #d7aa45);
+                -webkit-background-clip: text;
+                -webkit-text-fill-color: transparent;
             }
 
-            .regi-features li::before {
-                content: '✓';
-                color: var(--primary-color);
-                margin-right: 8px;
-                font-weight: bold;
+            .sub-text {
+                color: #777;
+                margin-top: 6px;
             }
 
-            .regi-button {
-                width: 100%;
-                padding: 12px;
-                background: var(--primary-color);
-                color: white;
-                border: none;
-                border-radius: 8px;
-                cursor: pointer;
-                font-weight: bold;
-                transition: background 0.2s;
+            /* 박스 */
+            /* 기본 박스 (연한 컬러) */
+            .pay-box {
+                background: rgba(255, 255, 255, 0.65);
+                backdrop-filter: blur(10px);
+                border-radius: 18px;
+                padding: 20px;
+                margin-bottom: 18px;
+                border: 1px solid rgba(255, 255, 255, 0.4);
+                box-shadow: 0 8px 20px rgba(0, 0, 0, .04);
             }
 
-            .regi-button:hover {
-                background: #357abd;
+            /* 강조 박스 (가격) */
+            .highlight-box {
+                background: linear-gradient(135deg, #fff, #fff7fb);
+                border: 1px solid rgba(232, 138, 162, 0.25);
+                box-shadow: 0 18px 40px rgba(232, 138, 162, 0.12);
             }
 
-            .modal-overlay {
-                position: fixed;
-                top: 0;
-                left: 0;
-                width: 100%;
-                height: 100%;
-                background: rgba(0, 0, 0, 0.5);
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                z-index: 1000;
+            /* 타이틀 */
+            .box-title {
+                font-weight: 800;
+                margin-bottom: 12px;
+                color: #333;
             }
 
-            .modal-content {
-                background: white;
-                padding: 30px;
-                border-radius: 15px;
-                width: 400px;
-                text-align: center;
+            /* 가격 */
+            .price {
+                font-size: 40px;
+                font-weight: 900;
+                color: #d86f8c;
             }
 
-            .order-info {
-                margin: 20px 0;
-                text-align: left;
-                background: #f8f9fa;
-                padding: 15px;
-                border-radius: 8px;
+            .price span {
+                font-size: 16px;
+                margin-left: 4px;
             }
 
-            .regi-methods {
+            /* 설명 */
+            .info-text {
+                font-size: 14px;
+                color: #666;
+                line-height: 1.6;
+                margin-top: 10px;
+            }
+
+            /* 체크박스 */
+            .check-item {
+                display: block;
+                margin: 10px 0;
+                font-size: 14px;
+            }
+
+            /* 버튼 박스 */
+            .button-box {
                 display: flex;
                 gap: 10px;
-                margin-bottom: 20px;
             }
 
-            .regi-methods button {
+            /* 버튼 */
+            .btn-pay,
+            .btn-cancel {
                 flex: 1;
-                padding: 10px;
-                border: 1px solid #ddd;
+                height: 52px;
+                border-radius: 14px;
+                border: none;
+                font-weight: 800;
                 cursor: pointer;
-                border-radius: 5px;
             }
 
-            .regi-methods button.active {
-                border-color: var(--primary-color);
-                background: #eef5ff;
-                color: var(--primary-color);
-                font-weight: bold;
+            .btn-pay {
+                background: linear-gradient(90deg, #e88aa2, #d86f8c);
+                color: #fff;
+                box-shadow: 0 10px 18px rgba(232, 138, 162, .3);
             }
 
-            .modal-btns {
-                display: flex;
-                gap: 10px;
+            .btn-pay:disabled {
+                opacity: 0.5;
+                cursor: not-allowed;
             }
 
             .btn-cancel {
-                flex: 1;
-                padding: 12px;
-                background: #ccc;
-                border: none;
-                border-radius: 8px;
-                cursor: pointer;
+                background: #eee;
+                color: #555;
+            }
+
+            .glass-card {
+                max-width: 520px;
+                margin: 40px auto;
+                padding: 28px;
+
+                background: rgba(255, 255, 255, 0.65);
+                backdrop-filter: blur(18px);
+
+                border-radius: 26px;
+                border: 1px solid rgba(255, 255, 255, 0.4);
+
+                box-shadow:
+                    0 25px 60px rgba(0, 0, 0, 0.10),
+                    0 10px 25px rgba(232, 138, 162, 0.12);
+
+                transform: translateY(0);
+                transition: 0.3s ease;
+            }
+
+            /* 떠있는 느낌 */
+            .glass-card:hover {
+                transform: translateY(-6px);
+                box-shadow:
+                    0 35px 80px rgba(0, 0, 0, 0.12),
+                    0 15px 35px rgba(232, 138, 162, 0.18);
+            }
+
+            /* ===== 금빛 글로우 + 반짝임 핵심 ===== */
+            .brand-title {
+                position: relative;
+                display: inline-block;
+            }
+
+            /* 금빛 흐르는 광택 */
+            .brand-title {
+                background: linear-gradient(90deg,
+                        #8b6524 0%,
+                        #c89a3e 20%,
+                        #fff3b0 40%,
+                        #d7aa45 60%,
+                        #9d6e1f 100%);
+                background-size: 300% auto;
+
+                -webkit-background-clip: text;
+                -webkit-text-fill-color: transparent;
+                background-clip: text;
+
+                animation: goldMove 4s linear infinite;
+            }
+
+            /* 반짝이 2개 포인트 */
+            .brand-title::before,
+            .brand-title::after {
+                content: "✦";
+                position: absolute;
+                color: #ffe89a;
+                text-shadow: 0 0 15px rgba(255, 232, 138, 0.9);
+                animation: sparkle 2s infinite ease-in-out;
+            }
+
+            .brand-title::before {
+                top: 10px;
+                right: -10px;
+            }
+
+            .brand-title::after {
+                bottom: 12px;
+                left: -12px;
+                animation-delay: 0.6s;
+            }
+
+            /* 금빛 이동 */
+            @keyframes goldMove {
+                0% {
+                    background-position: 0% center;
+                }
+
+                100% {
+                    background-position: 300% center;
+                }
+            }
+
+            /* 반짝임 */
+            @keyframes sparkle {
+
+                0%,
+                100% {
+                    opacity: 0.3;
+                    transform: scale(0.8) rotate(0deg);
+                }
+
+                50% {
+                    opacity: 1;
+                    transform: scale(1.3) rotate(15deg);
+                }
             }
         </style>
     </head>
@@ -217,58 +239,56 @@
         <div id="app">
             <div class="middle">
                 <div class="main">
-                    <div class="regi-content">
-                        <!-- 제목 -->
-                        <div class="regi-header">
-                            <h2>제휴 등록</h2>
+                    <div class="glass-card">
+
+                        <!-- 타이틀 -->
+                        <div class="pay-header" style="margin-bottom:20px;">
+                            <h2 class="brand-title" style="font-size:48px;">MerryView</h2>
+                            <p class="sub-text">제휴 등록 결제</p>
                         </div>
 
-                        <!-- 카드 -->
-                        <div class="regi-card highlight">
+                        <!-- 가격 -->
+                        <div class="price" style="text-align:center;">
+                            1,000<span>원</span>
+                        </div>
 
-                            <!-- 예약 정보 -->
-                            <div class="regi-name">결제 정보</div>
+                        <!-- 안내 -->
+                        <div class="info-text" style="text-align:center; margin:15px 0;">
+                            결제 후 즉시 제휴 등록이 진행됩니다.
+                        </div>
 
+                        <!-- 약관 -->
+                        <div class="pay-box" style="background:rgba(255,255,255,0.6);">
+                            <label class="check-item">
+                                <input type="checkbox" v-model="agreeAll" @change="toggleAll">
+                                전체 동의
+                            </label>
 
-                            <!-- 금액 -->
-                            <div class="regi-price">
-                                <span>1000원</span>
-                            </div>
+                            <label class="check-item">
+                                <input type="checkbox" v-model="agreeRequired1" @change="updateAll">
+                                (필수) 결제 및 이용약관
+                            </label>
 
-                            <!-- 약관 -->
-                            <div class="text-left mt-4">
-                                <label class="d-block">
-                                    <input type="checkbox" v-model="agreeAll" @change="toggleAll">
-                                    전체 동의
-                                </label>
-                                <hr>
+                            <label class="check-item">
+                                <input type="checkbox" v-model="agreeRequired2" @change="updateAll">
+                                (필수) 개인정보 수집 및 이용
+                            </label>
 
-                                <label class="d-block">
-                                    <input type="checkbox" v-model="agreeRequired1" @change="updateAll">
-                                    (필수) 결제 및 이용약관 동의
-                                </label>
+                            <label class="check-item">
+                                <input type="checkbox" v-model="agreeOptional1" @change="updateAll">
+                                (선택) 마케팅 수신
+                            </label>
+                        </div>
 
-                                <label class="d-block">
-                                    <input type="checkbox" v-model="agreeRequired2" @change="updateAll">
-                                    (필수) 개인정보 수집 및 이용 동의
-                                </label>
+                        <!-- 버튼 -->
+                        <div class="button-box" style="margin-top:18px;">
+                            <button class="btn-cancel" onclick="history.back()">
+                                취소
+                            </button>
 
-                                <label class="d-block">
-                                    <input type="checkbox" v-model="agreeOptional1" @change="updateAll">
-                                    (선택) 마케팅 정보 수신 동의
-                                </label>
-                            </div>
-
-                            <!-- 버튼 -->
-                            <div class="mt-4">
-                                <button class="btn btn-secondary mr-2" onclick="history.back()">취소</button>
-
-                                <button class="btn btn-primary" @click="fnPayment"
-                                    :disabled="!(agreeRequired1 && agreeRequired2)">
-                                    결제하기
-                                </button>
-                            </div>
-
+                            <button class="btn-pay" @click="fnPayment" :disabled="!(agreeRequired1 && agreeRequired2)">
+                                결제하기
+                            </button>
                         </div>
 
                     </div>

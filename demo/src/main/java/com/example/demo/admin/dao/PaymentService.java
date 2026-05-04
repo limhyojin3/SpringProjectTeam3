@@ -581,4 +581,66 @@ public class PaymentService {
 //	        throw new RuntimeException("쿠폰 만료");
 //
 //	}
+	
+	public HashMap<String, Object> refundAdminReservation(HashMap<String, Object> map) {
+
+	    HashMap<String, Object> resultMap = new HashMap<>();
+
+	    try {
+
+	        // 1. 예약 + 결제 정보 조회
+	        HashMap<String, Object> reservation = paymentMapper.selectAdminReservation(map);
+
+	        if (reservation == null) {
+	            resultMap.put("result", "fail");
+	            resultMap.put("msg", "예약 정보 없음");
+	            return resultMap;
+	        }
+
+	        int dday = Integer.parseInt(String.valueOf(reservation.get("dday")));
+	        int payAmount = Integer.parseInt(String.valueOf(reservation.get("amount")));
+	        String impUid = String.valueOf(reservation.get("imp_uid"));
+
+	        int refundAmount = 0;
+	        String refundType = "";
+
+	        // 2. 환불 정책 (스드메 기준)
+	        if (dday < 7) {
+	            resultMap.put("result", "fail");
+	            resultMap.put("msg", "환불 불가 (기간초과)");
+	            return resultMap;
+	        }
+
+	        // 3. 토큰 발급 (이미 존재 메소드)
+	        String token = getToken();
+
+	        // 4. 결제 취소 (이미 존재 메소드 재사용)
+	        boolean cancelResult = cancelPayment(token, impUid);
+
+	        if (!cancelResult) {
+	            resultMap.put("result", "fail");
+	            resultMap.put("msg", "결제 취소 실패");
+	            return resultMap;
+	        }
+
+	        // 5. DB 업데이트
+	        map.put("refundAmount", refundAmount);
+	        map.put("refundType", refundType);
+
+	        paymentMapper.updateRefundReservation(map);
+	        paymentMapper.updateRefundReservation2(map);
+
+	        resultMap.put("result", "success");
+	        resultMap.put("refundAmount", refundAmount);
+	        resultMap.put("refundType", refundType);
+	        resultMap.put("msg", "환불 완료");
+
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	        resultMap.put("result", "error");
+	        resultMap.put("msg", "서버 오류 발생");
+	    }
+
+	    return resultMap;
+	}
 }

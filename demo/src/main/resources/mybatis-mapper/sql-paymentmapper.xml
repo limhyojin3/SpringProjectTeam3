@@ -259,4 +259,42 @@
     WHERE user_id = #{userId}
 </select>
 
+<!-- 예약 환불시 조회 -->
+<select id="selectAdminReservation" parameterType="hashmap" resultType="hashmap">
+		SELECT
+		    p.pay_no AS payNo,
+		    p.user_id AS userId,
+		    p.amount AS amount,
+		    p.pay_status AS payStatus,
+		    p.pay_date AS payDate,
+		    r.res_no AS resNo,
+		    r.res_date AS resDate,
+		    r.res_time AS resTime,
+		    r.use_date AS useDate,
+		    r.use_time AS useTime,
+		    r.res_status AS resStatus,
+		    p.imp_uid AS impUid,
+			p.user_id AS userId,
+		    DATEDIFF(r.use_date, NOW()) AS dday
+		FROM payment p
+		JOIN payment_reservation pr ON p.pay_no = pr.pay_no
+		JOIN reservation r ON pr.res_no = r.res_no
+		WHERE p.pay_no = #{payNo}
+	</select>
+	<!-- 예약 환불 -->
+	<update id="updateRefundReservation" parameterType="hashmap">
+		UPDATE reservation
+		SET 
+		    status = 'CANCEL',
+		WHERE pay_no = #{payNo}
+	</update>
+	<update id="updateRefundReservation2" parameterType="hashmap">
+		UPDATE payment_reservation
+		SET 
+		    pay_status = 'CANCEL',
+		    refund = 1,
+		    refund_date = NOW()
+		WHERE pay_no = #{payNo}
+	</update>
+
 </mapper>
