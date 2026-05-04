@@ -3,7 +3,7 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>리뷰 작성 - MerryView</title>
+    <title>리뷰 작성 - MarryView</title>
     <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
     <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
@@ -150,7 +150,7 @@
                     <span>⚠️ 등록 전 꼭 확인해 주세요!</span>
                 </div>
                 <ul>
-                    <li>MerryView는 투명한 리뷰 문화를 위해 <strong>등록 후 수정 및 삭제가 불가능</strong>합니다.</li>
+                    <li>MarryView는 투명한 리뷰 문화를 위해 <strong>등록 후 수정 및 삭제가 불가능</strong>합니다.</li>
                     <li>영수증과 방문 정보가 일치하지 않을 경우 리뷰 승인이 거절될 수 있습니다.</li>
                     <li>허위 사실 유포나 비속어 포함 시 운영 정책에 따라 비공개 처리됩니다.</li>
                 </ul>
