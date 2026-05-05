@@ -213,8 +213,7 @@
                         </table>
                         <div v-if="activeTab === 'product'" class="page-box">
 
-                            <button @click="fnPageMove(currentPage - 1)" :disabled="currentPage == 1">
-                            </button>
+                            <button @click="fnPageMove(currentPage - 1)" :disabled="currentPage == 1"><</button>
 
                             <button v-for="n in index" :key="n" @click="fnPageMove(n)"
                                 :class="{active : currentPage == n}">

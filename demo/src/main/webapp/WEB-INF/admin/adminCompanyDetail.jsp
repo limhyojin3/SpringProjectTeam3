@@ -223,7 +223,7 @@
                         <!-- ===== 5. 제재 처리 ===== -->
                         <div class="card p-3 mb-3" v-if="company.status !== 'STOP'">
                             <h5 class="text-danger">🚫 정지 처리</h5>
-                            <input class="form-control mb-2" v-model="banReason" placeholder="정지 사유 입력" />
+                            <input class="form-control mb-2" v-model="banReason" placeholder="정지 사유 입력" @keyup.enter="fnBanUser"/>
                             <button class="btn btn-danger btn-block" @click="fnBanUser">정지</button>
                         </div>
 
@@ -299,6 +299,7 @@
                             success: function (res) {
                                 console.log(res);
                                 self.company = res.company;
+                                self.fnGetBanHistory(userId, res.company.targetType);
                             }
                         });
                     },

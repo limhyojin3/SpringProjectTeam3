@@ -269,6 +269,22 @@ public class AdminService {
 		}
 		return resultMap;
 	}
+	
+	public HashMap<String, Object> editAnswerStatus(HashMap<String, Object> map) {
+		HashMap<String, Object> resultMap = new HashMap<String, Object>();
+		try {
+			
+			adminMapper.updateInquiryStatus(map);
+			resultMap.put("message", Message.MSG_EDIT);
+			
+		} catch (Exception e) {
+			// TODO: handle exception
+			System.out.println(e.getMessage());
+			resultMap.put("result", "fail");
+			resultMap.put("message", Message.MSG_SERVER_ERR);
+		}
+		return resultMap;
+	}
 
 	// 관리자 전체 회원목록 페이지
 	public HashMap<String, Object> getUserList(HashMap<String, Object> map) {
