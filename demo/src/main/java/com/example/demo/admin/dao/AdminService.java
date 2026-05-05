@@ -922,11 +922,12 @@ System.out.println(resultMap);
 		try {
 			List<Admin> list = adminMapper.selectMyPassList(map);
 			int totalCount = adminMapper.selectMyPassCount(map);
-			int remainingCount = adminMapper.selectMyWallet(map);
+
+			Integer remainingCount = adminMapper.selectMyWallet(map);
 
 			resultMap.put("list", list);
 			resultMap.put("totalCount", totalCount);
-			resultMap.put("remainingCount", remainingCount);
+			resultMap.put("remainingCount", remainingCount != null ? remainingCount : 0);
 			resultMap.put("result", "success");
 			resultMap.put("message", Message.MSG_SEARCH);
 		} catch (Exception e) {
@@ -948,10 +949,14 @@ System.out.println(resultMap);
 			adminMapper.updateCompanyReg(map);
 			adminMapper.updateCompanyRegPaid(map);
 			resultMap.put("result", "success");
+			resultMap.put("message", "제휴 업체 등록에 성공했습니다");
+
 
 		} catch (Exception e) {
 			System.out.println(e.getMessage());
 			resultMap.put("result", "fail");
+			resultMap.put("message", "제휴 업체 등록에 실패했습니다");
+
 			throw e; // 트랜잭션 롤백
 		}
 

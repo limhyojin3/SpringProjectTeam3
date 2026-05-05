@@ -60,11 +60,19 @@
 	            WHEN r.stored_name IS NOT NULL OR (r.img_url IS NOT NULL AND r.img_url != '') THEN 'Y'
 	            ELSE 'N'
 	        END AS hasImg,
-	        DATE_FORMAT(r.reg_date, '%Y-%m-%d') AS regDate
+	        DATE_FORMAT(r.reg_date, '%Y-%m-%d') AS regDate,
+	        <!-- [추가] 열람 기록 확인 로직 -->
+	        CASE 
+	            WHEN p.review_no IS NOT NULL THEN 'ALREADY_VIEWED'
+	            ELSE 'NOT_VIEWED'
+	        END AS viewStatus
+	        
 	    FROM Review r
 	    LEFT OUTER JOIN Company c ON r.company_no = c.company_no
 	    LEFT JOIN MEMBER m ON r.user_id = m.user_id
 	    LEFT JOIN USER_DETAIL d ON r.user_id = d.user_id
+	    <!-- [추가] 사용자의 열람 로그 조인 (sessionId가 있을 때만 유효하게 작동) -->
+    	LEFT OUTER JOIN Pass_Usage_Log p ON r.review_no = p.review_no AND p.user_id = #{sessionId}
 	    WHERE r.approval_status = 'APPROVED'
 	
 	    <if test="isPaid != null and isPaid != '' or isPaid == 0">
@@ -164,22 +172,35 @@
 	</select>
 	
 	<!-- 베스트 리뷰 3개 -->
+	
 	<select id="selectBestReviewList" resultType="hashmap">
 	    SELECT 
 	        r.review_no AS reviewNo,
+	        r.user_id AS userId,              <!-- 유효성 로직용 아이디 -->
+	        u.nickname AS nickname,           <!-- 화면 출력용 닉네임 -->
 	        r.title,
 	        IFNULL(r.thumbnail_url, r.img_url) AS thumbnailUrl,
 	        r.img_url AS imgUrl,
 	        r.like_cnt AS likeCnt,
 	        r.view_cnt AS viewCnt,
+	        r.is_paid AS isPaid,
 	        IFNULL(c.com_name, '일반 리뷰') AS comName,
 	        CASE 
 	            WHEN (r.img_url IS NOT NULL AND r.img_url != '') 
 	                 OR (r.stored_name IS NOT NULL AND r.stored_name != '') THEN 'Y'
 	            ELSE 'N'
-	        END AS hasImg
+	        END AS hasImg,
+	        <!-- [추가] 열람 기록 확인 로직 -->
+	        CASE 
+	            WHEN p.review_no IS NOT NULL THEN 'ALREADY_VIEWED'
+	            ELSE 'NOT_VIEWED'
+	        END AS viewStatus
+	        
 	    FROM Review r
 	    LEFT OUTER JOIN Company c ON r.company_no = c.company_no
+	    LEFT OUTER JOIN user_detail u ON r.user_id = u.user_id  <!-- 유저 테이블 조인 추가 -->
+	    <!-- [추가] 열람 로그 조인 -->
+    	LEFT OUTER JOIN Pass_Usage_Log p ON r.review_no = p.review_no AND p.user_id = #{sessionId}
 	    WHERE r.approval_status = 'APPROVED'
 	    ORDER BY r.like_cnt DESC, r.view_cnt DESC
 	    LIMIT 3

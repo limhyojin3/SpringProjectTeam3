@@ -10,6 +10,7 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/common.css">
     
     <style>
         .detail-container { 
@@ -208,6 +209,42 @@
             color: #bbb !important;
             transform: none !important;
         }
+
+        /* 관리자 전용 섹션 스타일 */
+        .admin-only-box {
+            background-color: #f8faff; /* 연한 파란색 배경으로 일반 영역과 차별화 */
+            border: 2px dashed #4d7cff; /* 대시 테두리로 '관리용' 느낌 강조 */
+            border-radius: 20px;
+            padding: 25px;
+            margin: 30px 0;
+            position: relative;
+        }
+
+        .admin-badge {
+            position: absolute;
+            top: -12px;
+            left: 20px;
+            background: #4d7cff;
+            color: white;
+            padding: 4px 12px;
+            border-radius: 50px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .admin-info-item {
+            display: flex;
+            justify-content: space-between;
+            border-bottom: 1px solid #e1e8f5;
+            padding: 10px 0;
+        }
+
+        .admin-receipt-title {
+            font-size: 16px;
+            font-weight: 700;
+            color: #333;
+            margin-bottom: 15px;
+        }
     </style>
 </head>
 <body>
@@ -262,11 +299,43 @@
                 </div>
             </div>
 
-            <div v-if="imgList.length > 0 && sessionRole === 'ADMIN'" class="img-wrapper">
-                <img v-for="(src, index) in imgList" 
-                    :key="index" 
-                    :src="src" 
-                    :class="['review-img', imgList.length > 1 ? 'multi-img' : 'single-img']">
+            <!-- 관리자 전용 정보 박스 (영수증 및 관리 데이터) -->
+            <div v-if="sessionRole === 'ADMIN'" class="admin-only-box">
+                <span class="admin-badge"><i class="fas fa-user-shield"></i> 관리자 전용 확인란</span>
+                
+                <div class="row">
+                    <!-- 왼쪽: 영수증 이미지 -->
+                    <div class="col-md-6 border-right">
+                        <h6 class="admin-receipt-title"><i class="fas fa-receipt mr-2"></i>첨부 영수증 내역</h6>
+                        <div v-if="imgList.length > 0" class="img-wrapper text-center">
+                            <img v-for="(src, index) in imgList" 
+                                :key="index" 
+                                :src="src" 
+                                class="review-img single-img shadow-sm mb-2" 
+                                style="max-height: 300px; width: auto; cursor: pointer;"
+                                @click="fnOpenImage(src)">
+                            <p class="small text-muted mt-2">이미지를 클릭하면 크게 볼 수 있습니다.</p>
+                        </div>
+                        <div v-else class="text-center py-4 text-muted">
+                            첨부된 영수증 이미지가 없습니다.
+                        </div>
+                    </div>
+
+                    <!-- 오른쪽: 관리용 세부 정보 -->
+                    <div class="col-md-6">
+                        <h6 class="admin-receipt-title"><i class="fas fa-database mr-2"></i>시스템 관리 정보</h6>
+                        <div class="admin-info-item">
+                            <span class="text-muted small">작성자 고유 ID</span>
+                            <span class="font-weight-bold">{{ info.userId }}</span>
+                        </div>
+                        <div class="admin-info-item">
+                            <span class="text-muted small">리뷰 번호</span>
+                            <span># {{ reviewNo }}</span>
+                        </div>
+                        
+                        <!-- 추가적으로 관리자가 알아야 할 DB 정보가 있다면 여기에 배치 -->
+                    </div>
+                </div>
             </div>
 
             <div class="review-content" v-html="info.content"></div>
@@ -449,6 +518,7 @@
                 </div>
             </div>
         </div>
+        <jsp:include page="/WEB-INF/common/footer.jsp" />
     </div>
 
     <script>
@@ -510,7 +580,7 @@
                 },
                 fnGetComments() {
                     $.ajax({
-                        url: "/api/comment/Review-list.dox",
+                        url: "/api/comment/review-list.dox",
                         type: "POST",
                         data: JSON.stringify({ reviewNo: this.reviewNo, userId: this.sessionId }),
                         contentType: "application/json",
@@ -622,7 +692,7 @@
                     if (!this.newComment.trim()) return alert("내용을 입력해주세요.");
                     if (!this.sessionId || this.sessionId === 'null') return alert("로그인이 필요합니다.");
                     $.ajax({
-                        url: "/api/comment/Review-add.dox",
+                        url: "/api/comment/review-add.dox",
                         type: "POST",
                         data: JSON.stringify({ reviewNo: this.reviewNo, userId: this.sessionId, content: this.newComment }),
                         contentType: "application/json",
@@ -691,12 +761,17 @@
                     if (!this.sessionId || this.sessionId === 'null') return alert("로그인이 필요합니다.");
                     if(this.replyContent.trim() === "") return alert("답글 내용을 입력해주세요.");
                     $.ajax({
-                        url: "/api/comment/Review-add.dox",
+                        url: "/api/comment/review-add.dox",
                         type: "POST",
                         data: JSON.stringify({ reviewNo: this.reviewNo, content: this.replyContent, parentNo: parentNo, userId: this.sessionId }),
                         contentType: "application/json",
                         success: () => { this.replyTo = null; this.fnGetComments(); }
                     });
+                },
+                fnOpenImage(url) {
+                    if (url) {
+                        window.open(url, '_blank');
+                    }
                 }
             },
             mounted() { this.fnGetDetail(); }

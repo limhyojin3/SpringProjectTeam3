@@ -39,6 +39,64 @@
         /* 페이징 스타일 */
         .pagination .page-item.active .page-link { background-color: #f4a096; border-color: #f4a096; color: white; }
         .pagination .page-link { color: #f4a096; }
+        
+        .pagination-wrap {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-top: 20px;
+            gap: 6px;
+        }
+
+        .btn-page-arrow,
+        .btn-page-num {
+            height: 34px;
+            min-width: 34px;
+            padding: 0 10px;
+            background-color: #fff;
+            color: #f4a096;
+            border: 1.5px solid #f4a096;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 500;
+            transition: 0.2s;
+        }
+
+        .btn-page-arrow:hover,
+        .btn-page-num:hover {
+            background-color: #f4a096;
+            color: white;
+        }
+
+        .btn-page-num.active-page {
+            background-color: #f4a096;
+            color: white;
+            font-weight: bold;
+        }
+
+        .btn-page-arrow:disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+        }
+
+        .btn-back {
+            padding: 10px 30px;
+            background-color: #fff;
+            color: #f4a096;
+            border: 1.5px solid #f4a096;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 500;
+            transition: 0.2s;
+        }
+
+        .btn-back:hover {
+            background-color: #f4a096;
+            color: white;
+        }
+
     </style>
 </head>
 <body>
@@ -96,22 +154,23 @@
                         </tbody>
                     </table>
 
-                    <nav v-if="totalCount > 0">
-                        <ul class="pagination justify-content-center">
-                            <li class="page-item" :class="{disabled: currentPage === 1}">
-                                <a class="page-link" @click="fnGetList(currentPage - 1)" href="javascript:;">이전</a>
-                            </li>
-                            <li class="page-item" v-for="page in totalPages" :key="page" :class="{active: currentPage === page}">
-                                <a class="page-link" @click="fnGetList(page)" href="javascript:;">{{ page }}</a>
-                            </li>
-                            <li class="page-item" :class="{disabled: currentPage === totalPages}">
-                                <a class="page-link" @click="fnGetList(currentPage + 1)" href="javascript:;">다음</a>
-                            </li>
-                        </ul>
-                    </nav>
+                    <div class="pagination-wrap">
+                        <button class="btn-page-arrow"
+                                @click="fnGetList(currentPage - 1)"
+                                :disabled="currentPage === 1">이전</button>
+                        <button class="btn-page-num"
+                                v-for="p in totalPages" :key="p"
+                                :class="p === currentPage ? 'active-page' : ''"
+                                @click="fnGetList(p)">
+                            {{ p }}
+                        </button>
+                        <button class="btn-page-arrow"
+                                @click="fnGetList(currentPage + 1)"
+                                :disabled="currentPage === totalPages">다음</button>
+                    </div>
 
                     <div class="cs-list-bottom">
-                        <button class="btn-review-index" onclick="location.href='/userMyPage.do'">마이페이지 메인</button>
+                        <button class="btn-back" onclick="location.href='/userMyPage.do'">마이페이지 메인</button>
                         <button class="btn-cs-write" @click="fnOpenWriteModal()">새 문의 작성</button>
                     </div>
                 </div>

@@ -32,39 +32,6 @@ public class PaymentController {
 	public String history1(Model model) throws Exception {
 		return "admin/history";
 	}
-	
-	@RequestMapping("/history2.do")
-	public String history2(Model model) throws Exception {
-		return "admin/history2";
-	}
-	
-	@RequestMapping("/history3.do")
-	public String history3(Model model) throws Exception {
-		return "admin/history3";
-	}
-	
-	@RequestMapping("/history4.do")
-	public String history4(Model model) throws Exception {
-		return "admin/history4";
-	}
-	
-	@RequestMapping("/history5.do")
-	public String history5(Model model) throws Exception {
-		return "admin/history5";
-	}
-	
-	@RequestMapping("/history6.do")
-	public String history6(Model model) throws Exception {
-		return "admin/history6";
-	}
-	
-	@RequestMapping("/history7.do")
-	public String history7(Model model) throws Exception {
-		return "admin/history7";
-	}
-	
-	
-	
 
 	@RequestMapping("/payment.do")
 	public String adminPass(Model model) throws Exception {
@@ -104,6 +71,14 @@ public class PaymentController {
 		
 		return paymentService.verifyPayment2(map);
 	}
+	
+	@PostMapping("/verifyPayment3.dox")
+	@ResponseBody
+	public HashMap<String, Object> verifyPayment3(@RequestParam HashMap<String, Object> map) {
+		
+		return paymentService.verifyPayment3(map);
+	}
+	
 	//환불
 //	@RequestMapping(value = "/refundPayment.dox", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
 //	@ResponseBody
@@ -121,6 +96,16 @@ public class PaymentController {
 
 	    return new Gson().toJson(resultMap);
 	}
+	
+	// 예약 환불
+		@RequestMapping(value="/refundAdminReservation.dox", method=RequestMethod.POST, produces="application/json;charset=UTF-8")
+		@ResponseBody
+		public String refundAdminReservation(@RequestParam HashMap<String, Object> map){
+
+		    HashMap<String, Object> resultMap = paymentService.refundAdminReservation(map);
+
+		    return new Gson().toJson(resultMap);
+		}
 	
 	// 쿠폰 조회
 	@RequestMapping(value="/couponUseList.dox", method=RequestMethod.POST)

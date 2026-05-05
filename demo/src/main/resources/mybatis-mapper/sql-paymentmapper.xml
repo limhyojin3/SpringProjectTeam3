@@ -67,24 +67,24 @@
 		WHERE user_id = #{userId}
 	</update>
 
-	<!--<insert id="insertPaymentReservation" parameterType="map">
-		INSERT INTO payment_reservation (
-			pay_no,
+	<insert id="insertPaymentReservation" parameterType="map">
+		INSERT INTO payment (
 			user_id,
 			amount,
 			pay_status,
 			pay_date,
-			res_no
+			imp_uid,
+			merchant_uid
 		)
 		VALUES (
-			#{payNo},
 			#{userId},
 			#{amount},
-			'PAID',				#{payStatus},
-			NOW(),				#{payDate},
-			#{resNo}
+			'SUCCESS',
+			NOW(),			
+			#{impUid},
+	 		#{merchantUid}
 		)
-	</insert>-->
+	</insert>
 
 	<insert id="insertPaymentRegistration" parameterType="map">
 		INSERT INTO payment_resistration (
@@ -254,9 +254,46 @@
 <!-- 등록 회사 번호 조회-->
 <select id="selectCompanyInfo" parameterType="hashmap"
         resultType="int">
-    SELECT company_no AS companyNo
+    SELECT COALESCE(company_no, 0) AS companyNo
     FROM company
     WHERE user_id = #{userId}
 </select>
+
+<!-- 예약 환불시 조회 -->
+<select id="selectAdminReservation" parameterType="hashmap" resultType="hashmap">
+		SELECT
+		    pr.pay_no AS payNo,
+		    pr.user_id AS userId,
+		    pr.amount AS amount,
+		    pr.pay_status AS payStatus,
+		    pr.pay_date AS payDate,
+		    r.res_no AS resNo,
+		    r.res_date AS resDate,
+		    r.res_time AS resTime,
+		    r.use_date AS useDate,
+		    r.use_time AS useTime,
+		    r.res_status AS resStatus,
+		    pr.imp_uid AS impUid,
+			pr.user_id AS userId,
+		    DATEDIFF(r.use_date, NOW()) AS dday
+		FROM payment_reservation pr
+		JOIN reservation r ON pr.res_no = r.res_no
+		WHERE pr.pay_no = #{payNo}
+	</select>
+	<!-- 예약 환불 -->
+	<update id="updateRefundReservation" parameterType="hashmap">
+		UPDATE reservation
+		SET 
+		    res_status = 'CANCEL'
+		WHERE pay_no = #{payNo}
+	</update>
+	<update id="updateRefundReservation2" parameterType="hashmap">
+		UPDATE payment_reservation
+		SET 
+		    pay_status = 'CANCEL',
+		    refund = 1,
+		    refund_date = NOW()
+		WHERE pay_no = #{payNo}
+	</update>
 
 </mapper>

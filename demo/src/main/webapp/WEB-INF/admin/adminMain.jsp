@@ -16,39 +16,72 @@
         <link rel="stylesheet" href="${pageContext.request.contextPath}/css/adminNavi.css">
         <link rel="stylesheet" href="${pageContext.request.contextPath}/css/admin-common.css">
         <style>
-            /* 대시보드 카드 개별 박스 */
+            .main {
+                display: grid;
+                grid-template-columns: 1fr 1fr 0.8fr;
+                gap: 20px;
+            }
+
+            /* 카드 */
             .dashboard-card {
-                flex: 1;
-                /* 가로 크기 균등 분할 */
-                max-width: 300px;
-                /* 너무 넓어지지 않게 제한 */
-                border: 1px solid #ccc;
-                border-radius: 8px;
-                padding: 15px;
-                background-color: #fff;
-                text-align: center;
-                box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.05);
+                display: flex;
+                flex-direction: column;
+                height: 600px;
+                /* 🔥 핵심: 높이 고정 */
+                background: #fff;
+                border-radius: 14px;
+                overflow: hidden;
+                box-shadow: 0 6px 18px rgba(0, 0, 0, 0.06);
             }
 
             .dashboard-card h4 {
-                margin-top: 0;
-                margin-bottom: 15px;
+                margin: 0;
+                padding: 14px;
+                font-size: 15px;
+                font-weight: 700;
+                color: #fff;
             }
 
-            /* 세로가 가로보다 2배 긴 박스 */
+            /* 카드별 컬러 */
+            .dashboard-card:nth-child(1) h4 {
+                background: #4f46e5;
+            }
+
+            .dashboard-card:nth-child(2) h4 {
+                background: #ef4444;
+            }
+
+            .dashboard-card:nth-child(3) h4 {
+                background: #10b981;
+            }
+
+
             .data-box {
-                width: 100%;
-                aspect-ratio: 1 / 2;
-                /* 가로 1 : 세로 2 비율 유지 */
-                background-color: #f1f1f1;
-                border: 1px dashed #bbb;
-                margin-bottom: 15px;
+                flex: 1;
+                /* 🔥 남은 영역 다 먹기 */
+                padding: 12px;
+                overflow: hidden;
                 display: flex;
                 flex-direction: column;
-                align-items: center;
-                justify-content: space-around;
-                color: #888;
             }
+            .data-statstic{
+                text-align: center;
+            }
+            /* 테이블 영역 스크롤 */
+            .reviewTable,
+            .reportTable {
+                flex: 1;
+                overflow-y: auto;
+            }
+
+            /* 버튼 항상 아래 고정 */
+            .detail-btn {
+                margin: 10px;
+                border-radius: 8px;
+                background: #4f46e5;
+                color: #fff;
+            }
+
 
             .reviewTable table {
                 table-layout: fixed;
@@ -95,33 +128,6 @@
             .down::before {
                 content: "▼ ";
             }
-
-            /* 상세보기 버튼 (적당히 작은 크기) */
-            .detail-btn {
-                padding: 6px 12px;
-                font-size: 12px;
-                background-color: #555;
-                color: white;
-                border: none;
-                border-radius: 4px;
-                cursor: pointer;
-            }
-
-            .detail-btn:hover {
-                background-color: #333;
-            }
-
-            button {
-                border: none;
-                background: #eef1f6;
-                padding: 8px 14px;
-                border-radius: 10px;
-                font-size: 13px;
-                font-weight: 600;
-                cursor: pointer;
-                transition: .2s;
-            }
-
         </style>
     </head>
 
@@ -210,42 +216,44 @@
                     <!-- 통계 카드 -->
                     <div class="dashboard-card">
                         <h4>통계</h4>
-                        <div class="data-box">
+                        <div class="data-box data-statstic">
                             <div>
-                                매출 현황<br>{{salesNow.toLocaleString()}} 원<br>
+                                <h4 style="border-radius: 14px;">매출 현황</h4>{{salesNow.toLocaleString()}} 원<br>
                                 전월대비
                                 <span :class="salesGrowthRate === 0 ? 'same' : (salesGrowthRate < 0 ? 'down' : 'up')">
                                     {{formatPercent(salesGrowthRate)}}%
                                 </span>
                             </div>
-                            <div>일반 회원 등록수<br>{{userNow}} 명<br>
+                            <div>
+                                <h4 style="border-radius: 14px;">일반 회원 등록</h4>{{userNow}} 명<br>
                                 전월대비
                                 <span :class="userGrowthRate === 0 ? 'same' : (userGrowthRate < 0 ? 'down' : 'up')">
                                     {{formatPercent(userGrowthRate)}}%
                                 </span>
                             </div>
                             <div>
-                                <div>일반업체 등록수<br>{{nPartnerNow}} 곳<br>
+                                <div>
+                                   <h4 style="border-radius: 14px;">일반업체 등록</h4>{{nPartnerNow}} 곳<br>
                                     전월대비
                                     <span
                                         :class="nPartnerGrowthRate === 0 ? 'same' : (nPartnerGrowthRate < 0 ? 'down' : 'up')">
                                         {{formatPercent(nPartnerGrowthRate)}}%
                                     </span>
                                 </div>
-                                <br>
-                                <div>제휴업체 등록수<br>{{partnerNow}} 곳<br>
+                                <div>
+                                    <h4 style="border-radius: 14px;">제휴업체 등록</h4>{{partnerNow}} 곳<br>
                                     전월대비
                                     <span
                                         :class="partnerGrowthRate === 0 ? 'same' : (partnerGrowthRate < 0 ? 'down' : 'up')">
                                         {{formatPercent(partnerGrowthRate)}}%
                                     </span>
                                     <br>
-                                    <br>
                                     업체 제휴율 : {{formatPercent(affRate)}}%
                                 </div>
                             </div>
                             <div>
-                                전체 신규 등록 수 : {{newCommer}}
+                                <h4 style="border-radius: 14px;">전체 신규 등록 </h4> 
+                                {{newCommer}}
                             </div>
                         </div>
                         <button @click="fnPage('/adminStatistics.do')" type="button" class="detail-btn">상세보기</button>
@@ -292,10 +300,10 @@
                         newCommer: 0,
                         affRate: 0,
                         processStatus: "WAIT_ACTION",
-                        pageSize: 6,
+                        pageSize: 15,
                         index: 1,
                         currentPage: 1,
-                        reviewPageSize: 6,
+                        reviewPageSize: 15,
                         reviewIndex: 1,
                         reviewCurrentPage: 1,
                     };

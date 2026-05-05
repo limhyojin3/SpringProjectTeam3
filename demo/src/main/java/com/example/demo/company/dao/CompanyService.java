@@ -13,7 +13,7 @@ import com.example.demo.company.model.Company;
 import com.example.demo.company.model.Review;
 
 @Service
-public class CompanyService {
+public class CompanyService { 
 	@Autowired
 	CompanyMapper companyMapper;
 
@@ -27,7 +27,24 @@ public class CompanyService {
 	// User info = defaultMapper.selectUser();
 	// 수정, 삭제, 삽입 -> updateXXX, deleteXXX, insertXXX
 	// int result = defaultMapper.updateXXX();
-
+	
+	
+//	#결제 검증, 환불, 조회할 때 필요한 포트원 키 입니다 프로퍼티에 복사하시면 결제기능 됩니다 
+//	#
+//	#그리고 만약 결제 검증, 환불, 조회 기능을 따로 만드실거면 쓰시는 서비스에 
+//	#
+//	#import org.springframework.beans.factory.annotation.Value;
+//	#
+//	#이거 임포트하시고 서비스 안쪽에 
+//	#
+//	#@Value("${iamport.imp_key}")
+//	#private String impKey;
+//	#
+//	#@Value("${iamport.imp_secret}")
+//	#private String impSecret;
+//	#
+//	#이거 넣어 주시면 됩니다
+   
 	public HashMap<String, Object> getCompany(HashMap<String, Object> map) {
 		HashMap<String, Object> resultMap = new HashMap<String, Object>();
 		try {
@@ -253,7 +270,22 @@ public class CompanyService {
 			List<Company> list = companyMapper.selectReservation(map);
 			// String selectNewResCnt(HashMap<String, Object> map);
 			String newResCnt = companyMapper.selectNewResCnt(map);
-
+			
+			///
+			/* resNoList(예약내역리스트 중에 resNo 리스트)를 가져온다. (업체유저가 로그인했을때) */
+			List<Integer> resNoList = companyMapper.selectResNoListForCompanyUser(map);
+			
+			/* DB에서 가져온 리스트를 map에 담는다. */
+			map.put("resNoList", resNoList);
+			
+			/* 업체 입장에서 예약내역 리스트로 갈때 예약상태를 업데이트 해보자. DONE 또는 CANCEL이 보이도록 */
+			if (resNoList != null && !resNoList.isEmpty()) {
+			    companyMapper.updateReservationStatusForCompany(map);
+			}
+			
+			
+			
+			resultMap.put("resNoList", resNoList);
 			resultMap.put("newResCnt", newResCnt);
 			resultMap.put("list", list);
 			resultMap.put("result", "success");
@@ -443,8 +475,18 @@ public class CompanyService {
 			// int result30 = companyMapper.checkOver30minute(map);
 
 			List<Company> list = companyMapper.selectMyReservationList(map);
-
+			
+			/* resNoList를 가져온다. String타입으로 이루어진 리스트 */
+			List<Integer> resNoList = companyMapper.selectResNoList(map);
+			map.put("resNoList", resNoList);
+			
+			/* 쿼리문에서 분기처리 한거임..*/
+			/* 나의 예약내역리스트로 갈때 내 예약상태를 업데이트한다. DONE 또는 CANCEL이 보이도록 */
+			/* update 한후 결과값은 int result = 1 또는 0 */
+			int result = companyMapper.updateReservationStatus(map);
+			
 			// resultMap.put("result30", result30);
+			resultMap.put("resNoList", resNoList);
 			resultMap.put("list", list);
 			resultMap.put("result", "success");
 			resultMap.put("message", Message.MSG_REMOVE);
@@ -470,7 +512,12 @@ public class CompanyService {
 //			List<User> list = defaultMapper.selectUserList(map);
 //			User info = defaultMapper.selectUser(map);
 //			List<String> list = companyMapper.selectBookedTimes(map);
-
+	        String impUid = map.get("imp_uid").toString();
+	        String merchantUid = map.get("merchant_uid").toString();
+	        map.put("impUid", impUid);
+	        map.put("merchantUid", merchantUid);
+	        System.out.println(map.get("impUid"));
+	        System.out.println(map.get("merchantUid"));
 			int result1 = companyMapper.insertPaymentFinal(map);
 
 			System.out.println(map.get("payDate"));// 2026-04-27T03:05:39
@@ -670,5 +717,34 @@ public class CompanyService {
 			resultMap.put("message", Message.MSG_SERVER_ERR);
 		}
 		return resultMap;
+	}
+	
+	/* 프론트에서 inquiryNo을 넘겨주면, 문의 답변중에 ip.inquiry_no, c.user_id,
+	 *  ipa.answer_contents 를 얻어오는거 */
+//	Company selectInquiry1Answer(HashMap<String, Object> map);
+	public HashMap<String, Object> getInquiry1Answer(HashMap<String, Object> map) {
+		HashMap<String, Object> resultMap = new HashMap<String, Object>();
+		try {
+//			List<User> list = defaultMapper.selectUserList(map);
+//			User info = defaultMapper.selectUser(map);
+//			int result = defaultMapper.updateXXX(map);
+
+//			resultMap.put("list", list);
+			
+
+			Company info = companyMapper.selectInquiry1Answer(map);
+
+			resultMap.put("info", info);
+			resultMap.put("result", "success");
+			resultMap.put("message", Message.MSG_ADD);
+			
+			
+		} catch (Exception e) {
+			// TODO: handle exception
+			System.out.println(e.getMessage());
+			resultMap.put("result", "fail");
+			resultMap.put("message", Message.MSG_SERVER_ERR);
+		}
+		return resultMap; 
 	}
 }

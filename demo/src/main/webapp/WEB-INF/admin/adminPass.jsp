@@ -722,7 +722,7 @@
                 <div class="main">
                     <div class="pass-container">
                         <div class="pass-header">
-                            <h2 class="brand-title">MerryViewPass</h2>
+                            <h2 class="brand-title">MarryViewPass</h2>
                         </div>
                         <div class="pass-description">
                             {{ hoverText }}
@@ -777,7 +777,7 @@
 
                         <div class="coupon-row">
                             <select v-model="selectedCoupon">
-                                <option value="">쿠폰을 선택해주세요</option>
+                                <option :value="null">쿠폰을 선택해주세요</option>
                                 <option v-for="coupon in couponList" :value="coupon">
                                     {{ coupon.couponName }}
                                     ({{ coupon.discountRate }}% 할인 / D-{{ coupon.dday }})
@@ -895,8 +895,8 @@
                         // 선택 동의
                         agreeOptional1: false,
                         isPaying: false,
-                        hoverText: "실제 신부들의 진짜 경험만 담았습니다.후회 없는 스드메 선택, MerryViewPass에서 시작하세요",
-                        defaultText: "실제 신부들의 진짜 경험만 담았습니다.후회 없는 스드메 선택, MerryViewPass에서 시작하세요",
+                        hoverText: "실제 신부들의 진짜 경험만 담았습니다.후회 없는 스드메 선택, MarryViewPass에서 시작하세요",
+                        defaultText: "실제 신부들의 진짜 경험만 담았습니다.후회 없는 스드메 선택, MarryViewPass에서 시작하세요",
                         couponList: [],
                         selectedCoupon: null,
                         isCouponApplied: false,
@@ -1111,7 +1111,7 @@
                         self.agreeRequired1 = false;
                         self.agreeRequired2 = false;
                         self.agreeOptional1 = false;
-                        self.selectedCoupon = "";
+                        self.selectedCoupon = null;
                         self.discountAmount = 0;
                         self.finalPrice = pass.price;
                         self.couponCode = "";

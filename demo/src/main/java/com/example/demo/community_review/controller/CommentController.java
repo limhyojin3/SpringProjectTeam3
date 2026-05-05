@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.RestController;
 import com.example.demo.community_review.dao.CommentService;
 import com.google.gson.Gson;
 
+import jakarta.servlet.http.HttpSession;
+
 @RestController
 @RequestMapping("/api/comment")
 public class CommentController {
@@ -22,7 +24,7 @@ public class CommentController {
     private final Gson gson = new Gson(); 
     
     //  리뷰 댓글 목록 조회
-    @PostMapping("/Review-list.dox")
+    @PostMapping("/review-list.dox")
     public String selectReviewCommentList(@RequestBody Map<String, Object> map) {
         Map<String, Object> resultMap = new HashMap<>();
         // Service에서 목록을 가져옵니다.
@@ -32,7 +34,7 @@ public class CommentController {
     }
  
     // 리뷰 댓글 등록
-    @PostMapping("/Review-add.dox")
+    @PostMapping("/review-add.dox")
     public String addReviewComment(@RequestBody Map<String, Object> map) {
         int n = commentService.addReviewComment(map);
         Map<String, Object> resultMap = new HashMap<>();
@@ -41,7 +43,7 @@ public class CommentController {
     }
     
     //  커뮤 댓글 목록 조회
-    @PostMapping("/Comm-list.dox")
+    @PostMapping("/comm-list.dox")
     public String selectCommunityCommentList(@RequestBody Map<String, Object> map) {
         Map<String, Object> resultMap = new HashMap<>();
         // Service에서 목록을 가져옵니다.
@@ -51,7 +53,7 @@ public class CommentController {
     }
  
     // 커뮤 댓글 등록
-    @PostMapping("/Comm-add.dox")
+    @PostMapping("/comm-add.dox")
     public String addCommunityComment(@RequestBody Map<String, Object> map) {
         int n = commentService.addCommunityComment(map);
         Map<String, Object> resultMap = new HashMap<>();
@@ -61,13 +63,21 @@ public class CommentController {
 
     // 수정
     @PostMapping("/update.dox")
-    public String updateComment(@RequestBody Map<String, Object> map) {
+    public String updateComment(@RequestBody Map<String, Object> map, HttpSession session) {
+    	
+    	// 1. 세션에서 현재 로그인한 사용자의 아이디를 가져옵니다.
+        String sessionId = (String) session.getAttribute("sessionId");
+       
+        
+        // 2. XML 매퍼의 #{userId}와 일치하도록 map에 담아줍니다.
+        map.put("userId", sessionId);
+        
         int n = commentService.editComment(map);
         Map<String, Object> resultMap = new HashMap<>();
         resultMap.put("result", n > 0 ? "success" : "fail");
         return new Gson().toJson(resultMap);
     }
-
+ 
     // 삭제
     @PostMapping("/remove.dox")
     public String removeComment(@RequestBody Map<String, Object> map) {

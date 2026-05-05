@@ -72,9 +72,14 @@ public class PaymentService {
 	@Transactional
 	public void completeRegistrationPayment(HashMap<String,Object> map){
 
-	    paymentMapper.insertPayment(map); // 공통 결제
-	    int companyNo = paymentMapper.selectCompanyInfo(map);
+	    Integer companyNo = paymentMapper.selectCompanyInfo(map);
+	    if (companyNo == null) {
+	        throw new RuntimeException("회사 정보 없음");
+	    }
+
+	   
 	    map.put("companyNo", companyNo);
+	    paymentMapper.insertPayment(map); // 공통 결제
 	    paymentMapper.insertPaymentRegistration(map); // 상세
 	    
 	}
@@ -260,7 +265,7 @@ public class PaymentService {
 				return result;
 			}
 			
-			int finalAmount = 1000;   // 기본값
+			int finalAmount = reqAmount;
 			// 4. 금액 검증
 			if (realAmount != finalAmount) {
 				cancelPayment(token, impUid);
@@ -273,9 +278,6 @@ public class PaymentService {
 			map.put("pay_status", "paid");
 			map.put("finalAmount", finalAmount);
 
-			String type = map.get("type").toString();
-
-	
 			completeRegistrationPayment(map);
 		
 			result.put("result", "success");
@@ -423,13 +425,13 @@ public class PaymentService {
 
 			if (info == null) {
 				resultMap.put("result", "fail");
-				resultMap.put("msg", "결제정보 없음");
+				resultMap.put("message", "결제정보 없음");
 				return resultMap;
 			}
 
 			if ("REFUND".equals(String.valueOf(info.get("pay_status")))) {
 				resultMap.put("result", "fail");
-				resultMap.put("msg", "이미 환불된 결제입니다.");
+				resultMap.put("message", "이미 환불된 결제입니다.");
 				return resultMap;
 			}
 
@@ -439,7 +441,7 @@ public class PaymentService {
 			// 사용했으면 환불 불가
 			if (remain < reviewCnt) {
 				resultMap.put("result", "fail");
-				resultMap.put("msg", "이미 사용한 열람권이 있어 환불 불가합니다.");
+				resultMap.put("message", "이미 패스권보다 많은 열람권을 사용하여 환불 불가합니다.");
 				return resultMap;
 			}
 			System.out.println("1. 환불 시작");
@@ -466,12 +468,12 @@ public class PaymentService {
 			paymentMapper.updateRefundPass(map);
 
 			resultMap.put("result", "success");
-			resultMap.put("msg", "패스권 환불 완료");
+			resultMap.put("message", "패스권 환불 완료");
 
 		} catch (Exception e) {
 			e.printStackTrace();
 			resultMap.put("result", "fail");
-			resultMap.put("msg", "서버 오류");
+			resultMap.put("message", "서버 오류");
 		}
 
 		return resultMap;
@@ -581,4 +583,121 @@ public class PaymentService {
 //	        throw new RuntimeException("쿠폰 만료");
 //
 //	}
+	
+	@Transactional
+	public HashMap<String, Object> refundAdminReservation(HashMap<String, Object> map) {
+
+	    HashMap<String, Object> resultMap = new HashMap<>();
+
+	    try {
+
+	        // 1. 예약 + 결제 정보 조회
+	        HashMap<String, Object> reservation = paymentMapper.selectAdminReservation(map);
+
+	        if (reservation == null) {
+	            resultMap.put("result", "fail");
+	            resultMap.put("message", "예약 정보 없음");
+	            return resultMap;
+	        }
+
+	        int dday = Integer.parseInt(String.valueOf(reservation.get("dday")));
+	        int payAmount = Integer.parseInt(String.valueOf(reservation.get("amount")));
+	        String impUid = String.valueOf(reservation.get("impUid"));
+
+	        int refundAmount = payAmount;
+
+	        // 2. 환불 정책 (스드메 기준)
+	        if (dday < 7) {
+	            resultMap.put("result", "fail");
+	            resultMap.put("message", "환불 불가 (기간초과)");
+	            return resultMap;
+	        }
+
+	        // 3. 토큰 발급 (이미 존재 메소드)
+	        String token = getToken();
+
+	        // 4. 결제 취소 (이미 존재 메소드 재사용)
+	        boolean cancelResult = cancelPayment(token, impUid);
+
+	        if (!cancelResult) {
+	            resultMap.put("result", "fail");
+	            resultMap.put("message", "결제 취소 실패");
+	            return resultMap;
+	        }
+
+	        // 5. DB 업데이트
+	        
+
+	        map.put("refundAmount", refundAmount);
+	        map.put("impUid", impUid);
+
+
+	        paymentMapper.updateRefundReservation(map);
+	        paymentMapper.updateRefundReservation2(map);
+	        
+	        resultMap.put("impUid", impUid);
+	        resultMap.put("result", "success");
+	        resultMap.put("refundAmount", refundAmount);
+	        resultMap.put("message", "환불 완료");
+
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	        resultMap.put("result", "error");
+	        resultMap.put("message", "서버 오류 발생");
+	    }
+
+	    return resultMap;
+	}
+	
+	//예약 결제
+	public HashMap<String, Object> verifyPayment3(HashMap<String, Object> map) {
+		System.out.println("전달받은 맵: " + map);
+	    HashMap<String, Object> result = new HashMap<>();
+		
+
+	    try {
+
+	        String impUid = map.get("imp_uid").toString();
+	        int reqAmount = Integer.parseInt(map.get("amount").toString());
+
+	        String token = getToken();
+	        HashMap<String, Object> payInfo = getPaymentInfo(token, impUid);
+
+	        int realAmount = (int) payInfo.get("amount"); 
+	        String status = payInfo.get("status").toString();
+
+	        if (!status.equals("paid")) {
+	            result.put("result", "fail");
+	            result.put("message", "결제 미완료");
+	            return result;
+	        }
+
+	        if (realAmount != reqAmount) {
+	            cancelPayment(token, impUid);
+	            result.put("result", "fail");
+	            result.put("message", "금액 위조 의심");
+	            return result;
+	        }
+	        
+	        String merchantUid = map.get("merchant_uid").toString();
+	        result.put("result", "success");
+	        result.put("impUid", impUid);
+	        result.put("message", "결제 완료");
+	        result.put("amount", realAmount);
+	        
+	        System.out.println(map);
+	        result.put("merchantUid", merchantUid);
+	        result.put("impUid", impUid);
+	        System.out.println(map);
+	        
+	        result.put("result", "success");
+	        result.put("message", "결제 완료");
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	        result.put("result", "fail");
+	        result.put("message", "서버 오류");
+	    }
+
+	    return result;
+	}
 }

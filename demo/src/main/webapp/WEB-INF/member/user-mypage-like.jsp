@@ -90,23 +90,37 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            margin-top: 20px;
+            gap: 6px;
         }
 
         .btn-review-index {
-             padding: 6px 12px;
-            background-color: #9b8fd4;
-            color: white;
-            border: none;
+            height: 34px;
+            min-width: 34px;
+            padding: 0 10px;
+            background-color: #fff;
+            color: #f4a096;
+            border: 1.5px solid #f4a096;
             border-radius: 6px;
             cursor: pointer;
-            font-size: 14px;
+            font-size: 13px;
+            font-weight: 500;
             transition: 0.2s;
-            margin: 0 3px;  /* 버튼 간격 */
         }
 
         .btn-review-index:hover {
-            background-color: #7b6db4;
+            background-color: #f4a096;
+            color: white;
+        }
+
+        .btn-review-index.active-page {
+            background-color: #f4a096;
+            color: white;
+            font-weight: bold;
+        }
+
+        .btn-review-index:disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
         }
 
         .btn-select-all {
@@ -184,7 +198,7 @@
                                 <tr>
                                     <th class="col-check"><input type="checkbox" @click="selectAllCompanyLikes()"></th>
                                     <th class="col-no">번호</th>
-                                    <th class="col-title">상품명</th>
+                                    <th class="col-title">업체명</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -215,7 +229,7 @@
                             </thead>
                             <tbody>
                                 <tr v-if="postLikeList.length === 0">
-                                    <td colspan="5">좋아요한 글이 없습니다.</td>
+                                    <td colspan="6">좋아요한 글이 없습니다.</td>
                                 </tr>
                                 <tr v-for="like in postLikeList" :key="like.likeNo"
                                     @click="fnGoPost(like.postNo)">
@@ -258,34 +272,51 @@
                         </table>
                     </div>
                     <!-- 하단 버튼 -->
-                    <div class="bottom-controls">
-                        <button class="btn-delete" @click="deleteLikeSelected()">삭제</button>
-                        <div class="review-index-wrap">
-                            <template v-if="reviewTab === 'company'">
-                                <button class="btn-review-index"
-                                        v-for="p in Math.ceil(companyTotalCount / pageSize)" :key="'company-'+p"
-                                        :class="p === companyCurrentPage ? 'active-page' : ''"
-                                        @click="fetchCompanyLikeList(p)">
-                                    {{ p }}
-                                </button>
-                            </template>
-                            <template v-else-if="reviewTab === 'post'">
-                                <button class="btn-review-index"
-                                        v-for="p in Math.ceil(postTotalCount / pageSize)" :key="'post-'+p"
-                                        :class="p === postCurrentPage ? 'active-page' : ''"
-                                        @click="fetchPostLikeList(p)">
-                                    {{ p }}
-                                </button>
-                            </template>
-                            <template v-else-if="reviewTab === 'review'">
-                                <button class="btn-review-index"
-                                        v-for="p in Math.ceil(reviewTotalCount / pageSize)" :key="'review-'+p"
-                                        :class="p === reviewCurrentPage ? 'active-page' : ''"
-                                        @click="fetchReviewLikeList(p)">
-                                    {{ p }}
-                                </button>
-                            </template>
-                        </div>
+                    <div class="review-index-wrap">
+                        <template v-if="reviewTab === 'company'">
+                            <button class="btn-review-index"
+                                    @click="fetchCompanyLikeList(companyCurrentPage - 1)"
+                                    :disabled="companyCurrentPage === 1">이전</button>
+                            <button class="btn-review-index"
+                                    v-for="p in Math.ceil(companyTotalCount / pageSize)" :key="'company-'+p"
+                                    :class="p === companyCurrentPage ? 'active-page' : ''"
+                                    @click="fetchCompanyLikeList(p)">
+                                {{ p }}
+                            </button>
+                            <button class="btn-review-index"
+                                    @click="fetchCompanyLikeList(companyCurrentPage + 1)"
+                                    :disabled="companyCurrentPage === Math.ceil(companyTotalCount / pageSize)">다음</button>
+                        </template>
+
+                        <template v-else-if="reviewTab === 'post'">
+                            <button class="btn-review-index"
+                                    @click="fetchPostLikeList(postCurrentPage - 1)"
+                                    :disabled="postCurrentPage === 1">이전</button>
+                            <button class="btn-review-index"
+                                    v-for="p in Math.ceil(postTotalCount / pageSize)" :key="'post-'+p"
+                                    :class="p === postCurrentPage ? 'active-page' : ''"
+                                    @click="fetchPostLikeList(p)">
+                                {{ p }}
+                            </button>
+                            <button class="btn-review-index"
+                                    @click="fetchPostLikeList(postCurrentPage + 1)"
+                                    :disabled="postCurrentPage === Math.ceil(postTotalCount / pageSize)">다음</button>
+                        </template>
+
+                        <template v-else-if="reviewTab === 'review'">
+                            <button class="btn-review-index"
+                                    @click="fetchReviewLikeList(reviewCurrentPage - 1)"
+                                    :disabled="reviewCurrentPage === 1">이전</button>
+                            <button class="btn-review-index"
+                                    v-for="p in Math.ceil(reviewTotalCount / pageSize)" :key="'review-'+p"
+                                    :class="p === reviewCurrentPage ? 'active-page' : ''"
+                                    @click="fetchReviewLikeList(p)">
+                                {{ p }}
+                            </button>
+                            <button class="btn-review-index"
+                                    @click="fetchReviewLikeList(reviewCurrentPage + 1)"
+                                    :disabled="reviewCurrentPage === Math.ceil(reviewTotalCount / pageSize)">다음</button>
+                        </template>
                     </div>
                 </div>
             </div>

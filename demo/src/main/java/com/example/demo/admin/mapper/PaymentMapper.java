@@ -18,7 +18,7 @@ public interface PaymentMapper {
 
 	int insertPaymentPass(HashMap<String, Object> map);
 	
-	//int insertPaymentReservation(HashMap<String, Object> map);
+	int insertPaymentReservation(HashMap<String, Object> map);
 	HashMap<String, Object> selectRefundPassInfo(HashMap<String, Object> map);
 
 	int minusWallet(HashMap<String,Object> map);
@@ -49,5 +49,10 @@ public interface PaymentMapper {
 	// 쿠폰 사용 수정
 	int updateUsedCoupon(HashMap<String, Object> map);
 	
-	int selectCompanyInfo(HashMap<String, Object> map);
+	Integer selectCompanyInfo(HashMap<String, Object> map);
+	
+	//예약 환불 조회
+	HashMap<String, Object> selectAdminReservation(HashMap<String, Object> map);
+	int updateRefundReservation(HashMap<String, Object> map);
+	int updateRefundReservation2(HashMap<String, Object> map);
 }

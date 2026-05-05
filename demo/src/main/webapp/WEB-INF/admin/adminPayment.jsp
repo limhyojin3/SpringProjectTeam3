@@ -166,7 +166,7 @@
                                     <td>{{ p.payNo }}</td>
                                     <td>{{ p.userId }}</td>
                                     <td>{{ p.passName }}</td>
-                                    <td>{{ p.amount }}</td>
+                                    <td>{{ p.amount.toLocaleString() }}</td>
                                     <td>{{ p.payStatus }}</td>
                                     <td>{{ formatDate(p.payDate) }}</td>
                                     <td>
@@ -185,31 +185,33 @@
                         <table v-if="activeTab === 'reservation'" class="payment-table">
                             <thead>
                                 <tr>
-                                    <th>결제번호</th>
-                                    <th>유저</th>
+                                    <!-- <th>결제번호</th> -->
                                     <th>예약번호</th>
+                                    <th>유저</th>
                                     <th>상품명</th>
                                     <th>예약금</th>
+                                    <th>예약일</th>
                                     <th>결제여부</th>
                                     <th>진행여부</th>
                                     <th>결제일</th>
-                                    <!-- <th>관리</th> -->
+                                    <th>관리</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <tr v-for="r in list" :key="r.payNo">
-                                    <td>{{ r.payNo }}</td>
-                                    <td>{{ r.userId }}</td>
+                                    <!-- <td>{{ r.payNo }}</td> -->
                                     <td>{{ r.resNo }}</td>
+                                    <td>{{ r.userId }}</td>
                                     <td>{{ r.productName }}</td>
-                                    <td>{{ r.amount }}</td>
+                                    <td>{{ r.amount.toLocaleString() }}</td>
+                                    <td>{{ r.useDate }}</td>
                                     <td>{{ r.payStatus }}</td>
                                     <td>{{ r.resStatus }}</td>
                                     <td>{{ formatDate(r.payDate) }}</td>
-                                    <!-- <td>
-                                    <button @click="fnRefund(r)">환불
-                                    </button>
-                                </td> -->
+                                    <td>
+                                        <button @click="fnRefund2(r.payNo)">환불
+                                        </button>
+                                    </td>
                                 </tr>
                             </tbody>
                         </table>
@@ -232,7 +234,7 @@
                                     <td>{{ c.userId }}</td>
                                     <td>{{ c.payNo }}</td>
                                     <td>{{ c.comName }}</td>
-                                    <td>{{ c.amount }}</td>
+                                    <td>{{ c.amount.toLocaleString() }}</td>
                                     <td>{{ formatDate(c.payDate) }}</td>
                                     <td>{{ c.registrationFee === "PAID"? "제휴" : "일반" }}</td>
                                     <td><button @click="fnRegistration(c)">등록</button></td>
@@ -242,7 +244,8 @@
                         <div class="page-box" v-if="list.length > 0">
                             <button @click="fnPageMove(currentPage-1)" :disabled="currentPage===1">‹</button>
 
-                            <button v-for="p in index" :key="p" @click="fnPageMove(p)" :class="{active: currentPage==p}">
+                            <button v-for="p in index" :key="p" @click="fnPageMove(p)"
+                                :class="{active: currentPage==p}">
                                 {{p}}
                             </button>
 
@@ -341,7 +344,7 @@
                                 console.log("성공", data);
                                 if (data.result == "success") {
                                     alert(data.message);
-                                    location.reload();
+                                    self.fnGetList();
                                 } else {
                                     alert(data.message);
                                 }
@@ -360,7 +363,49 @@
                             }
                         });
                     },
-                    fnRegistration:function(c){
+                    fnRefund2(payNo) {
+                        let self = this;
+                        console.log("환불 클릭", payNo);
+
+                        if (!confirm("정말 환불하시겠습니까?\n환불 후 복구할 수 없습니다.")) {
+                            return;
+                        }
+
+                        $.ajax({
+                            url: "/refundAdminReservation.dox",
+                            type: "POST",
+                            dataType: "json",
+                            data: { payNo: payNo },
+
+                            beforeSend: function () {
+                                console.log("AJAX 시작");
+                            },
+
+                            success: function (data) {
+                                console.log("성공", data);
+                                if (data.result == "success") {
+                                    alert(data.message);
+                                    self.fnGetList();
+                                } else {
+                                    alert(data.message);
+                                }
+                            },
+
+                            error: function (xhr, status, err) {
+                                console.log("에러");
+                                console.log(xhr.responseText);
+                                console.log(status);
+                                console.log(err);
+                                alert("error");
+                            },
+
+                            complete: function () {
+                                console.log("AJAX 종료");
+                            }
+                        });
+                    },
+                    fnRegistration: function (c) {
+                        let self = this;
                         if (!confirm("정말 등록하시겠습니까?")) {
                             return;
                         }
@@ -376,11 +421,12 @@
                                 console.log("성공", data);
                                 if (data.result == "success") {
                                     alert(data.message);
+                                    self.fnGetList;
                                 } else {
                                     alert(data.message);
                                 }
                             },
-                            error: function ( err) {
+                            error: function (err) {
                                 alert("error");
                             },
                         });

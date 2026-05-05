@@ -303,7 +303,7 @@
         <div class="scroll-line"></div>
         </div>
 
-        <p class="deco-text">© 2026 MerryView</p>
+        <p class="deco-text">© 2026 MarryView</p>
     </div>
 </body>
 <script>

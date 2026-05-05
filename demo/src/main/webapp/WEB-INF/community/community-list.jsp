@@ -3,7 +3,7 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>커뮤니티 목록 - MerryView</title>
+    <title>커뮤니티 목록 - MarryView</title>
     <!-- 라이브러리 로드 -->
     <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
     <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
@@ -124,7 +124,7 @@
         <main class="main-content">
             <!-- 상단 헤더 -->
             <header class="header-area">
-                <h2>💬 Merry Community</h2>
+                <h2>💬 Marry Community</h2>
                 <p>예비 부부들의 생생한 이야기와 꿀팁을 확인하세요.</p>
             </header>
 
