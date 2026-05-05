@@ -189,10 +189,22 @@
 
 	<select id="selectBookedTimes" parameterType="map"
 		resultType="String">
+		
 		SELECT r.use_time FROM reservation r
-		where r.product_no = #{productNo} and r.res_status = 'WAIT' and
-		r.use_date =
-		#{useDate};
+		where r.product_no = #{productNo} 
+		and r.res_status = 'WAIT'
+		<choose>
+			<!-- useDate가 있을 때만 조건을 추가 -->
+			<when test="useDate != null and useDate != ''">
+				and r.use_date =#{useDate}
+			</when>
+			<!-- useDate가 없으면 결과를 반환하지 않도록 설정 -->
+			<otherwise>
+				and 1=0
+			</otherwise>
+		</choose>
+		
+		 
 	</select>
 	<insert id="insertReservation"
 		parameterType="map">

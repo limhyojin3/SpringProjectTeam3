@@ -1372,7 +1372,8 @@
                                     </div>
 
                                     <button class="btn-reserve" @click="fnReserve">예약하기</button>
-                                    <button class="btn-inquiry" @click="productPage = 'inquiry'">상품 문의하기</button>
+                                    <button class="btn-inquiry" @click="goInquiry()">상품 문의하기</button>
+                                    
                                 </div>
                             </div>
                         </div>
@@ -2763,6 +2764,13 @@
                 },
                 fnSaveReservation(user) {  //user
 
+                    let loginId = "${sessionScope.sessionId}";
+
+                    if (!loginId || loginId === "") {
+                        alert("로그인 해주세요!");
+                        return;
+
+                    }
 
                     if (confirm("예약사항을 모두 확인하셨습니까?")) {
 
@@ -3095,6 +3103,14 @@
                     });
                 },
                 fnInquiryAboutProduct() {
+
+                    let loginId = "${sessionScope.sessionId}";
+
+                    if (!loginId || loginId === "") {
+                        alert("로그인 해주세요!");
+                        return;
+
+                    }
                     let self = this;
                     let param = {
                         userId: "${sessionScope.sessionId}",
@@ -3126,6 +3142,14 @@
                 },
                 //나의 문의내역 보러가기
                 goMyInquiryPage() {
+
+                    let loginId = "${sessionScope.sessionId}";
+
+                    if (!loginId || loginId === "") {
+                        alert("로그인 해주세요!");
+                        return;
+
+                    }
 
                     //페이지 변경
                     this.productPage = 'myRealInquiryList';
@@ -3184,8 +3208,12 @@
                             
                         }
                     });
-
-
+                },
+                //상품 문의하기로 넘어갈때 내용 초기화도 함께 함.
+                goInquiry(){
+                    this.inquiry.title = '';
+                    this.inquiry.contents = '';
+                    this.productPage = 'inquiry';
 
                 }
 
