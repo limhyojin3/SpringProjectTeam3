@@ -134,7 +134,7 @@ https://github.com/user-attachments/assets/a00ba838-6ce2-4335-ac79-0b14a1077616
  ### 안혜진
 - **작업 페이지:**
 
-마이페이지 전체, 대문(INTRO), 메인 홈, 로그인, 회원가입, AI 챗봇
+   - 마이페이지 전체, 대문(INTRO), 메인 홈, 헤더 백엔드, 로그인, 회원가입, AI 챗봇
 
 - **구현 주요 기능:**
 
@@ -177,6 +177,15 @@ https://github.com/user-attachments/assets/a00ba838-6ce2-4335-ac79-0b14a1077616
 ## 📝 발표 PPT
 
 ## 🎥 시연 영상
-![시연영상](assets/demo.gif)
+▶ [메리뷰 핵심 기능 시연 영상](https://drive.google.com/file/d/1PQtufmiq9gaYdykkWbmdVv_DbtJwfpLv/view?usp=drive_link)
 
----
+[팀원별 페이지 시연 영상]
+
+▶ [임효진](https://drive.google.com/file/d/1bbniE5zir9vcVys8eJ6LSA_GX7GaB4tO/view?usp=drive_link)
+
+▶ [안혜진](https://drive.google.com/file/d/1-sA4meMwrF-o_rPlQGhg24-d-XDc3RGp/view?usp=drive_link)
+
+▶ [이태화](링크)
+
+▶ [최제현](링크)
+
