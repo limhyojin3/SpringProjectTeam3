@@ -11,6 +11,7 @@ https://github.com/user-attachments/assets/a00ba838-6ce2-4335-ac79-0b14a1077616
 6. [역할 분담](#-역할-분담)
 7. [발표 PPT](#-발표-ppt)
 8. [시연 영상](#-시연-영상)
+9. [프로젝트 자료 모음](#-프로젝트-자료-모음)
 
 ---
 
@@ -189,3 +190,12 @@ https://github.com/user-attachments/assets/a00ba838-6ce2-4335-ac79-0b14a1077616
 
 ▶ [최제현](링크)
 
+---
+
+## 📂 프로젝트 자료 모음
+
+| 분류 | 링크 |
+|------|------|
+| 📋 회의록 | [회의록 보기](https://drive.google.com/drive/folders/1fGEhyE5Tf5JI_LVZ8f9topqmcFG7Td0O?usp=drive_link) |
+| 📊 설계 자료 | [설계 보기](https://drive.google.com/drive/folders/1KnTR-GPw67oNPN7pkzJrcK5pyN8dBjaK?usp=drive_link) |
+| 📚 공통 문서 | [공통 문서 보기](https://drive.google.com/drive/folders/1o8RTFEo0e9tSL0cwIc8kyLVvHyuDhvC8?usp=drive_link) |
