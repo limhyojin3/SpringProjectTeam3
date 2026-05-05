@@ -206,7 +206,7 @@
         <!-- 히어로 -->
         <div class="about-hero">
             <div class="about-hero-overlay">
-                <h1>MerryView</h1>
+                <h1>MarryView</h1>
                 <p>결혼을 준비하는 모든 순간을 함께하는 웨딩 리뷰 전문 플랫폼</p>
             </div>
         </div>
@@ -216,7 +216,7 @@
             <!-- 소개 -->
             <div class="about-intro">
                 <div class="about-intro-text">
-                    <h2>메리뷰 (MerryView) 소개</h2>
+                    <h2>메리뷰 (MarryView) 소개</h2>
                     <p>메리뷰는 결혼을 준비하는 모든 순간을 함께하는 웨딩 리뷰 전문 플랫폼입니다.</p>
                     <br>
                     <p>'Marry(결혼)'와 'View(보다/리뷰)'를 결합한 이름처럼, 예비 부부들이 웨딩 업체에 대한 솔직한 후기를 나누고 현명한 선택을 할 수 있도록 돕습니다.</p>

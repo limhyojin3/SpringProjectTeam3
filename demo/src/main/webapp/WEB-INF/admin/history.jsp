@@ -248,7 +248,7 @@
             <!-- 히어로 -->
             <div class="about-hero">
                 <div class="about-hero-overlay">
-                    <h1>MerryViewHistory</h1>
+                    <h1>MarryViewHistory</h1>
                     <p>더 나은 출발을 꿈꾸는 수많은 목소리를 담아, 메리뷰만의 정직한 길을 만들었습니다</p>
                 </div>
             </div>
@@ -266,7 +266,7 @@
                                 <div class="history-content">
                                     <span class="year">2024</span>
                                     <h3>서비스 기획 시작</h3>
-                                    <p>웨딩 리뷰 기반 플랫폼인 MerryView 프로젝트는</p>
+                                    <p>웨딩 리뷰 기반 플랫폼인 MarryView 프로젝트는</p>
                                     <p>웨딩 산업 내 정보 비대칭 문제 해결을 목표로 시작되었습니다</p>
                                 </div>
                             </div>

@@ -583,6 +583,7 @@ public class PaymentService {
 //	        throw new RuntimeException("쿠폰 만료");
 //
 //	}
+	
 	@Transactional
 	public HashMap<String, Object> refundAdminReservation(HashMap<String, Object> map) {
 
@@ -601,10 +602,9 @@ public class PaymentService {
 
 	        int dday = Integer.parseInt(String.valueOf(reservation.get("dday")));
 	        int payAmount = Integer.parseInt(String.valueOf(reservation.get("amount")));
-	        String impUid = String.valueOf(reservation.get("imp_uid"));
+	        String impUid = String.valueOf(reservation.get("impUid"));
 
-	        int refundAmount = 0;
-	        String refundType = "";
+	        int refundAmount = payAmount;
 
 	        // 2. 환불 정책 (스드메 기준)
 	        if (dday < 7) {
@@ -629,16 +629,15 @@ public class PaymentService {
 	        
 
 	        map.put("refundAmount", refundAmount);
-	        map.put("refundType", refundType);
 	        map.put("impUid", impUid);
 
 
 	        paymentMapper.updateRefundReservation(map);
 	        paymentMapper.updateRefundReservation2(map);
 	        
+	        resultMap.put("impUid", impUid);
 	        resultMap.put("result", "success");
 	        resultMap.put("refundAmount", refundAmount);
-	        resultMap.put("refundType", refundType);
 	        resultMap.put("message", "환불 완료");
 
 	    } catch (Exception e) {

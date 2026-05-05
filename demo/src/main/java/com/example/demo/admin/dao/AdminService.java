@@ -922,6 +922,7 @@ System.out.println(resultMap);
 		try {
 			List<Admin> list = adminMapper.selectMyPassList(map);
 			int totalCount = adminMapper.selectMyPassCount(map);
+
 			Integer remainingCount = adminMapper.selectMyWallet(map);
 
 			resultMap.put("list", list);

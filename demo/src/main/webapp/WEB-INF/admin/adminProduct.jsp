@@ -188,7 +188,7 @@
                                     <td>{{ p.productNo }}</td>
                                     <td>{{ p.comName}}</td>
                                     <td>{{ p.productName }}</td>
-                                    <td>{{ p.originalPrice }}</td>
+                                    <td>{{ p.originalPrice.toLocaleString() }}</td>
                                     <td>
                                         <span :class="p.isActive === '1' ? 'badge-on' : 'badge-off'">
                                             {{ p.isActive === '1' ? '판매중' : '중지' }}
@@ -297,7 +297,7 @@
                                 <tr v-for="p in list" :key="p.passNo">
                                     <td>{{ p.passNo }}</td>
                                     <td>{{ p.passName }}</td>
-                                    <td>{{ p.price }}</td>
+                                    <td>{{ p.price.toLocaleString() }}</td>
                                     <td>{{ p.reviewCnt }}</td>
                                     <td>
                                         <span :class="p.isActive === '1' ? 'badge-on' : 'badge-off'">

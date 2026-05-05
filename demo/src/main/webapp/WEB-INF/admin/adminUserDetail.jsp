@@ -113,7 +113,7 @@
                             <div class="row">
                                 <div class="col-4"><b>ID</b><br>{{ selectedUser.userId }}</div>
                                 <div class="col-4"><b>이름</b><br>{{ selectedUser.name }}</div>
-                                <div class="col-4"><b>닉네임</b><br>{{ selectedUser.nickname || '-' }}</div>
+                                <div class="col-4"><b>닉네임</b><br>{{ selectedUser.nickName || '-' }}</div>
 
                                 <div class="col-4 mt-3"><b>이메일</b><br>{{ selectedUser.userEmail }}</div>
                                 <div class="col-4 mt-3"><b>전화번호</b><br>{{ selectedUser.tel || '-' }}</div>

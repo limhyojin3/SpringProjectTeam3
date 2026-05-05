@@ -55,4 +55,4 @@ public interface PaymentMapper {
 	HashMap<String, Object> selectAdminReservation(HashMap<String, Object> map);
 	int updateRefundReservation(HashMap<String, Object> map);
 	int updateRefundReservation2(HashMap<String, Object> map);
-}		
+}

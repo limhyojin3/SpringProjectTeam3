@@ -166,7 +166,7 @@
                                     <td>{{ p.payNo }}</td>
                                     <td>{{ p.userId }}</td>
                                     <td>{{ p.passName }}</td>
-                                    <td>{{ p.amount }}</td>
+                                    <td>{{ p.amount.toLocaleString() }}</td>
                                     <td>{{ p.payStatus }}</td>
                                     <td>{{ formatDate(p.payDate) }}</td>
                                     <td>
@@ -194,7 +194,7 @@
                                     <th>결제여부</th>
                                     <th>진행여부</th>
                                     <th>결제일</th>
-                                    <!-- <th>관리</th> -->
+                                    <th>관리</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -203,7 +203,7 @@
                                     <td>{{ r.resNo }}</td>
                                     <td>{{ r.userId }}</td>
                                     <td>{{ r.productName }}</td>
-                                    <td>{{ r.amount }}</td>
+                                    <td>{{ r.amount.toLocaleString() }}</td>
                                     <td>{{ r.useDate }}</td>
                                     <td>{{ r.payStatus }}</td>
                                     <td>{{ r.resStatus }}</td>
@@ -234,7 +234,7 @@
                                     <td>{{ c.userId }}</td>
                                     <td>{{ c.payNo }}</td>
                                     <td>{{ c.comName }}</td>
-                                    <td>{{ c.amount }}</td>
+                                    <td>{{ c.amount.toLocaleString() }}</td>
                                     <td>{{ formatDate(c.payDate) }}</td>
                                     <td>{{ c.registrationFee === "PAID"? "제휴" : "일반" }}</td>
                                     <td><button @click="fnRegistration(c)">등록</button></td>
@@ -344,7 +344,7 @@
                                 console.log("성공", data);
                                 if (data.result == "success") {
                                     alert(data.message);
-                                    self.fnGetList;
+                                    self.fnGetList();
                                 } else {
                                     alert(data.message);
                                 }

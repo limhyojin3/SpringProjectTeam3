@@ -237,6 +237,7 @@
                         sessionRole: "${sessionScope.sessionRole}",
                         searchType: "all",
                         keyword: "",
+                        sort:"",
                         statusFilter: "ALL",
                         selectedUser: null,
                         pageSize: 10,
@@ -252,8 +253,8 @@
                         location.href = url;
                     },
                     fnReport: function(){
-                        this.sort = "reprot";
-
+                        this.sort = "report";
+                        this.fnGetUserList();
                     },
                     fnPageMove(p) {
                         if (p < 1 || p > this.index) return;
@@ -273,7 +274,7 @@
                             status: self.statusFilter,
                             pageSize: self.pageSize,
                             offSet: self.pageSize * (self.currentPage - 1),
-                            sort:"",
+                            sort:self.sort,
                         };
                         $.ajax({
                             url: "http://localhost:8080/userList.dox",
@@ -319,7 +320,9 @@
                         this.page = 1;
                         this.searchType = "all";
                         this.statusFilter = "ALL";
+                        this.sort = "";
                         this.fnGetUserList();
+                       
                     },
 
                 }, // methods

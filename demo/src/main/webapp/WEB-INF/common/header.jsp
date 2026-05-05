@@ -223,7 +223,8 @@
                 
                 <c:if test="${sessionRole != 'ADMIN'}">
                     <li class="nav-item">
-                        <a class="nav-link" href="${sessionRole == 'USER' ? 'userMyPage.do' : '/partnerManagement.do'}" style="color: #ff4d6d !important; padding: 0 10px !important;">
+                        <a class="nav-link" href="${sessionRole == 'USER' ? '/userMyPage-cs.do' : sessionRole == 'ADMIN' ? '/adminMain.do': (sessionRole == 'PARTNER' || sessionRole == 'NPARTNER') ? '/partnerManagement.do' : 'javascript:void(0)'}"
+                        style="color: #ff4d6d !important; padding: 0 10px !important;">
                             <i class="fas fa-headset" style="font-size: 1.3rem !important;"></i>
                         </a>
                     </li>

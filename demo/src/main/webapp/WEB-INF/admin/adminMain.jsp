@@ -218,40 +218,42 @@
                         <h4>통계</h4>
                         <div class="data-box data-statstic">
                             <div>
-                                매출 현황<br>{{salesNow.toLocaleString()}} 원<br>
+                                <h4 style="border-radius: 14px;">매출 현황</h4>{{salesNow.toLocaleString()}} 원<br>
                                 전월대비
                                 <span :class="salesGrowthRate === 0 ? 'same' : (salesGrowthRate < 0 ? 'down' : 'up')">
                                     {{formatPercent(salesGrowthRate)}}%
                                 </span>
                             </div>
-                            <div>일반 회원 등록수<br>{{userNow}} 명<br>
+                            <div>
+                                <h4 style="border-radius: 14px;">일반 회원 등록</h4>{{userNow}} 명<br>
                                 전월대비
                                 <span :class="userGrowthRate === 0 ? 'same' : (userGrowthRate < 0 ? 'down' : 'up')">
                                     {{formatPercent(userGrowthRate)}}%
                                 </span>
                             </div>
                             <div>
-                                <div>일반업체 등록수<br>{{nPartnerNow}} 곳<br>
+                                <div>
+                                   <h4 style="border-radius: 14px;">일반업체 등록</h4>{{nPartnerNow}} 곳<br>
                                     전월대비
                                     <span
                                         :class="nPartnerGrowthRate === 0 ? 'same' : (nPartnerGrowthRate < 0 ? 'down' : 'up')">
                                         {{formatPercent(nPartnerGrowthRate)}}%
                                     </span>
                                 </div>
-                                <br>
-                                <div>제휴업체 등록수<br>{{partnerNow}} 곳<br>
+                                <div>
+                                    <h4 style="border-radius: 14px;">제휴업체 등록</h4>{{partnerNow}} 곳<br>
                                     전월대비
                                     <span
                                         :class="partnerGrowthRate === 0 ? 'same' : (partnerGrowthRate < 0 ? 'down' : 'up')">
                                         {{formatPercent(partnerGrowthRate)}}%
                                     </span>
                                     <br>
-                                    <br>
                                     업체 제휴율 : {{formatPercent(affRate)}}%
                                 </div>
                             </div>
                             <div>
-                                전체 신규 등록 수 : {{newCommer}}
+                                <h4 style="border-radius: 14px;">전체 신규 등록 </h4> 
+                                {{newCommer}}
                             </div>
                         </div>
                         <button @click="fnPage('/adminStatistics.do')" type="button" class="detail-btn">상세보기</button>
@@ -298,10 +300,10 @@
                         newCommer: 0,
                         affRate: 0,
                         processStatus: "WAIT_ACTION",
-                        pageSize: 10,
+                        pageSize: 15,
                         index: 1,
                         currentPage: 1,
-                        reviewPageSize: 6,
+                        reviewPageSize: 15,
                         reviewIndex: 1,
                         reviewCurrentPage: 1,
                     };

@@ -78,6 +78,7 @@ public class PaymentController {
 		
 		return paymentService.verifyPayment3(map);
 	}
+	
 	//환불
 //	@RequestMapping(value = "/refundPayment.dox", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
 //	@ResponseBody
