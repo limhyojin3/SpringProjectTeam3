@@ -1693,7 +1693,7 @@
                                         <button class="btn-back" @click="fnGoBackToList()">← 목록으로</button>
                                         <template v-if="reviews && reviews.length > 0">
 
-                                            <template v-for="rev in paginatedReviews" :key="rev"
+                                            <div v-for="(rev, idx) in paginatedReviews" :key="idx" @click="rev.isExpanded = !rev.isExpanded" style="cursor: pointer; margin-bottom: 20px; border-bottom: 1px solid #eee; padding-bottom: 15px;"
                                                 class="detail-review-item">
                                                 <!-- {{rev}} -->
                                                 <div class="star-rating">평점 : {{rating2(rev)}}</div>
@@ -1709,8 +1709,12 @@
                                                                 style="width: 100%; height: 100%; object-fit: cover; border-radius: 10px;">
                                                         </div>
                                                     </div>
-                                                    <div class="review-text-limit" style="color: #666; font-size: 15px;" > 
+                                                    <div :class="{ 'review-text-limit' : !rev.isExpanded }" style="color: #666; font-size: 15px;" > 
                                                         {{cleanText(rev.content)}}
+                                                    </div>
+
+                                                    <div style="margin-top: 5px; color: #9a8cff; font-size: 13px; font-weight: bold;">
+                                                        {{ rev.isExpanded ? '접기 ▲' : '더보기 ▼' }}
                                                     </div>
                                                 </div>
                                                 <div
@@ -1718,7 +1722,7 @@
                                                     작성자: <strong>{{rev.userId}}</strong> | 작성일자: {{rev.regDate}}
                                                 </div>
                                                 <hr>
-                                            </template>
+                                            </div>
                                             <div class="pagination1">
                                                 <span v-for="num in totalPages" :key="num">
                                                     <a @click="fnPageChange2(num)" href="javascript:;"
@@ -2683,6 +2687,7 @@
                         success: function (data) {
                             //console.log(data);
                             self.reviews = data.list;
+                            self.reviews = self.reviews.map(r => ({...r, isExpanded: false})); //추가된부분
                             
                             //console.log(self.reviews);
 

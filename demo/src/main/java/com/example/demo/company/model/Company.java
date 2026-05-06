@@ -18,7 +18,7 @@ public class Company {
 	String comTel;
 	String registrationFee;
 
-
+ 
 	String comEmail;
 	String usePeriod;
 	String grade;
