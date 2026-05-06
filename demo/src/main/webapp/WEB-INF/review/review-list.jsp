@@ -453,7 +453,7 @@
                 // 블러 처리 여부를 결정하는 핵심 로직
                 shouldBlur(item) {
                     // 1. 관리자(ADMIN)는 절대 블러 안 함
-                    if (this.sessionRole === 'ADMIN') return false;
+                    if (this.userRole === 'ADMIN') return false;
                     
                     // 2. 유료 리뷰(isPaid == 1)가 아니면 블러 안 함
                     if (item.isPaid != 1) return false;
