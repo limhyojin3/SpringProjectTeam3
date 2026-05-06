@@ -185,7 +185,7 @@ https://github.com/user-attachments/assets/a00ba838-6ce2-4335-ac79-0b14a1077616
 
 ▶ [안혜진](https://drive.google.com/file/d/1-sA4meMwrF-o_rPlQGhg24-d-XDc3RGp/view?usp=drive_link)
 
-▶ [이태화](https://drive.google.com/file/d/1fyoiYbIDpqTPHPTuVTmuU5fe-Uw3Ij1d/view?usp=drive_link)
+▶ [이태화](https://drive.google.com/file/d/1-XY3k0rVkkrs7dE2O4IUwk0qvDdag8NQ/view?usp=drive_link)
 
 ▶ [최제현](https://drive.google.com/file/d/1lw3ZzKL4NRQQaqHIAFlAdRI_CjF7fx98/view?usp=drive_link)
 
