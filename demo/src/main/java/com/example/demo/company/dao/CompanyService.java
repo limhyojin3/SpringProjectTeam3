@@ -483,7 +483,10 @@ public class CompanyService {
 			/* 쿼리문에서 분기처리 한거임..*/
 			/* 나의 예약내역리스트로 갈때 내 예약상태를 업데이트한다. DONE 또는 CANCEL이 보이도록 */
 			/* update 한후 결과값은 int result = 1 또는 0 */
-			int result = companyMapper.updateReservationStatus(map);
+			if(resNoList != null && !resNoList.isEmpty()) {
+				int result = companyMapper.updateReservationStatus(map);	
+			}
+			
 			
 			// resultMap.put("result30", result30);
 			resultMap.put("resNoList", resNoList);
