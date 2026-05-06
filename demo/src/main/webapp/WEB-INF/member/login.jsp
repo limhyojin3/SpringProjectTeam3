@@ -361,8 +361,8 @@
             fnFilterId(type) {
                 if (type === 'user') {
                     this.userId = this.userId.replace(/[^a-zA-Z0-9]/g, '');
-                } else {
-                    this.companyId = this.companyId.replace(/[^a-zA-Z0-9]/g, '');
+                } else { // 업체 아이디는 _ 허용
+                    this.companyId = this.companyId.replace(/[^a-zA-Z0-9_]/g, '');
                 }
             },
         },
