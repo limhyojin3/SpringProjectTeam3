@@ -453,5 +453,5 @@
 	    SET updated = 0
 	    WHERE DATEDIFF(NOW(), reg_date) >= 3
 	      AND updated = 1
-	</update>
+	</update> 
 </mapper>
