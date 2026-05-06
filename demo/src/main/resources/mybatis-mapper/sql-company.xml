@@ -126,6 +126,7 @@
 		where p.company_no = (
 		select company_no cmpNo from company c where c.user_id = #{userId})
 		group by p.product_no, p.product_name, p.img_url
+		order by p.reg_date desc
 	</select>
 
 	<select id="selectSimpleReviewCnt" parameterType="map"
@@ -136,6 +137,7 @@
 		where p.company_no = (
 		select company_no cmpNo from company c where c.user_id = #{userId})
 		group by p.product_no, p.product_name, p.img_url
+		order by p.reg_date desc 
 	</select>
 
 	<select id="selectNewReviewCnt" parameterType="map"
