@@ -251,7 +251,7 @@
         <!-- 일반 로그인 폼 -->
         <div v-show="tab === 'user'">
             <div class="input-group">
-                <input type="text" v-model="userId" placeholder="아이디">
+                <input type="text" v-model="userId" @input="fnFilterId('user')" placeholder="아이디">
                 <input type="password" v-model="userPwd" @keyup.enter="fnLogin()" placeholder="비밀번호">
             </div>
         </div>
@@ -259,7 +259,7 @@
         <!-- 업체 로그인 폼 -->
         <div v-show="tab === 'company'">
             <div class="input-group">
-                <input type="text" v-model="companyId" placeholder="기업 아이디">
+                <input type="text" v-model="companyId" @input="fnFilterId('company')" placeholder="기업 아이디">
                 <input type="password" v-model="companyPwd" @keyup.enter="fnLogin()" placeholder="비밀번호">
             </div>
         </div>
@@ -356,7 +356,15 @@
             },
             FnswitchTab(type) {
                 this.tab = type;
-            }
+            },
+            // 영문 + 숫자만 허용
+            fnFilterId(type) {
+                if (type === 'user') {
+                    this.userId = this.userId.replace(/[^a-zA-Z0-9]/g, '');
+                } else {
+                    this.companyId = this.companyId.replace(/[^a-zA-Z0-9]/g, '');
+                }
+            },
         },
         mounted() {
             this.FnswitchTab('user');
