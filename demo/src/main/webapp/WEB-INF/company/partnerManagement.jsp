@@ -1334,11 +1334,20 @@
                                                     </label>
                                                     <div class="image-editor-box">
 
+                                                        <div v-if="previewUrl === null" style="margin-top: 10px;">
+                                                            <p>선택된 이미지 미리보기:</p>
+                                                            
+                                                            <img :src="product1.imgUrl"
+                                                                style="max-width: 80%; border: 1px solid #ccc;">
+                                                        </div>
+
                                                         <div v-if="previewUrl" style="margin-top: 10px;">
                                                             <p>선택된 이미지 미리보기:</p>
+                                                            
                                                             <img :src="previewUrl"
                                                                 style="max-width: 80%; border: 1px solid #ccc;">
                                                         </div>
+                                                        
                                                     </div>
 
                                                 </div>
