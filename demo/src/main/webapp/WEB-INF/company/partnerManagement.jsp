@@ -1490,6 +1490,11 @@
                                                 <th>내용</th>
                                                 <td>{{i.inquiryContents}}</td>
                                             </tr>
+                                            <tr>
+                                                <th>답변 여부</th>
+                                                <td v-if="i.inquiryAns === '1'" style="color:#0099ff">답변 완료</td>
+                                                <td v-else>아직 답변하지 않음</td>
+                                            </tr>
                                         </table>
                                         <!-- {{page1}} -->
                                         <button class="btn-reply" @click="fnAnswerToProductInquiry(i)">답변하기</button>
@@ -1714,7 +1719,7 @@
                                                             style="position: absolute; top: -5px; left: -5px;">NEW
                                                         </span>
                                                         <div class="review-photo">
-                                                            <img :src="rev.imgUrl" :alt="rev.imgDescription"
+                                                            <img :src="rev.thumbnailUrl" :alt="rev.imgDescription"
                                                                 style="width: 100%; height: 100%; object-fit: cover; border-radius: 10px;">
                                                         </div>
                                                     </div>
@@ -2694,7 +2699,7 @@
                         type: "POST",
                         data: param,
                         success: function (data) {
-                            //console.log(data);
+                            console.log(data);
                             self.reviews = data.list;
                             self.reviews = self.reviews.map(r => ({...r, isExpanded: false})); //추가된부분
                             
@@ -2822,6 +2827,18 @@
                 },
                 /*상품문의에 답변하기*/
                 fnSaveAnswer() {
+
+                    if (!this.inquiryAnswer.ansUserId || this.inquiryAnswer.ansUserId.trim() === '') {
+                        alert("답변자를 작성해주세요!");
+                        return;
+                    }
+
+                    if(!this.inquiryAnswer.answerContents || this.inquiryAnswer.answerContents.trim() === ''){
+                        alert("답변내용을 작성해주세요!");
+                        return;
+                    } 
+
+
                     let self = this;
                     let param = {
                         inquiryNo: self.inquiryAnswer.inquiryNo,

@@ -124,7 +124,7 @@
 		left join review r on p.product_no = r.product_no and r.is_paid = 1
 		where p.company_no = (
 		select company_no cmpNo from company c where c.user_id = #{userId})
-		group by p.product_no, p.product_name, p.img_url;
+		group by p.product_no, p.product_name, p.img_url
 	</select>
 
 	<select id="selectSimpleReviewCnt" parameterType="map"
@@ -134,7 +134,7 @@
 		left join review r on p.product_no = r.product_no and r.is_paid = 0
 		where p.company_no = (
 		select company_no cmpNo from company c where c.user_id = #{userId})
-		group by p.product_no, p.product_name, p.img_url;
+		group by p.product_no, p.product_name, p.img_url
 	</select>
 
 	<select id="selectNewReviewCnt" parameterType="map"
@@ -155,7 +155,7 @@
 	<select id="selectReviewDetails3" parameterType="map"
 		resultType="com.example.demo.company.model.Review">
 		select r.reg_date, r.img_description, r.is_paid, r.review_no, r.user_id,
-		r.company_no, r.product_no, r.rating, r.content, r.img_url, r.updated
+		r.company_no, r.product_no, r.rating, r.content, r.thumbnail_url, r.updated
 		from review r
 		where is_paid = 1 and product_no = #{productNo}
 		order by r.reg_date desc;
@@ -379,7 +379,7 @@
 		left join company c on p.company_no = c.company_no
 		where c.company_no = (
 		select c1.company_no from company c1 where c1.user_id = #{userId}
-		)
+		) 
 
 	</select>
 	<!-- 문의에 답변작성해서 테이블에 insert 됨 -->
@@ -443,4 +443,12 @@
 		where ip.inquiry_no = #{inquiryNo}
 
 	</select>
+	
+	<!-- 리뷰 라벨 업데이트 (현재시점에서 3일이상 지난거 0으로)-->
+	<update id="updateOldNewLabels" parameterType="map">
+	    UPDATE review
+	    SET updated = 0
+	    WHERE DATEDIFF(NOW(), reg_date) >= 3
+	      AND updated = 1
+	</update>
 </mapper>
