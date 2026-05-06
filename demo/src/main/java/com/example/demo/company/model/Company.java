@@ -18,12 +18,12 @@ public class Company {
 	String comTel;
 	String registrationFee;
 
-
+ 
 	String comEmail;
 	String usePeriod;
 	String grade;
 	String lastPayment;
-	
+	 
 	String productNo;
 	String productName;
 	String productDetails;
