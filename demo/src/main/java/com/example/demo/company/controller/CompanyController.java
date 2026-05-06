@@ -228,7 +228,7 @@ public class CompanyController {
 
 		return new Gson().toJson(resultMap);
 	}
-	
+	 
 	//public HashMap<String, Object> addReservation(HashMap<String, Object> map)
 	@RequestMapping(value = "/addReservation.dox", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
 	@ResponseBody
