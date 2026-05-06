@@ -83,7 +83,7 @@
 
             /* 테이블 */
             .inquiry-table {
-                width:100%;
+                width: 100%;
                 border-collapse: collapse;
                 background: #fff;
                 overflow: hidden;
@@ -470,16 +470,16 @@
 
                         fnchangeStatus(status) {
                             let self = this;
-
+                            let param = {
+                                inquiryNo: self.selected.inquiryNo,
+                                answerContent: self.answerContent,
+                                status: status
+                            }
                             $.ajax({
-                                url: "http://localhost:8080/inquiryAnswer.dox",
+                                url: "http://localhost:8080/changeAnswer.dox",
                                 type: "POST",
                                 dataType: "json",
-                                data: {
-                                    inquiryNo: self.selected.inquiryNo,
-                                    answerContent: self.answerContent,
-                                    status: status
-                                },
+                                data: param,
                                 success: function (res) {
                                     self.selected.status = status;
                                     self.fnGetList(); // 왼쪽 리스트 갱신

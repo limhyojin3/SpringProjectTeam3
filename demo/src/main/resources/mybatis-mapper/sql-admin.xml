@@ -432,7 +432,7 @@
 
 	<update id="updateInquiryStatus" parameterType="hashmap">
 		UPDATE inquiry
-		SET status = 'DONE'
+		SET status = #{status}
 		WHERE inquiry_no = #{inquiryNo}
 	</update>
 
