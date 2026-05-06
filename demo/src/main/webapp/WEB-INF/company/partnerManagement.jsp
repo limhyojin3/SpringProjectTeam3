@@ -19,7 +19,7 @@
         <script src="https://cdn.quilljs.com/1.3.6/quill.min.js"></script>
         <link rel="stylesheet" href="${pageContext.request.contextPath}/css/common.css">
         <style>
-           /* 기본 레이아웃 */
+            /* 기본 레이아웃 */
             /*body {
                 font-family: 'Malgun Gothic', sans-serif;
                 margin: 0;
@@ -133,18 +133,21 @@
                 border-radius: 10px;
                 padding: 24px 28px;
                 margin-bottom: 16px;
-                box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+                box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
                 border-left: 4px solid #9b8fd4;
             }
+
             .main-welcome-card p {
                 font-size: 15px;
                 color: #333;
                 line-height: 1.8;
             }
+
             .main-welcome-card strong {
                 color: #9b8fd4;
                 font-weight: 700;
             }
+
             .grade-badge {
                 display: inline-block;
                 padding: 4px 12px;
@@ -154,10 +157,16 @@
                 color: white;
                 margin-top: 10px;
             }
-            .grade-badge.partner  { background: #ffb400; }
-            .grade-badge.npartner { background: #f4a096; }
 
-            
+            .grade-badge.partner {
+                background: #ffb400;
+            }
+
+            .grade-badge.npartner {
+                background: #f4a096;
+            }
+
+
             .content-card {
                 background-color: white;
                 border: 1px solid #eee;
@@ -165,7 +174,7 @@
                 border-radius: 10px;
                 margin-bottom: 20px;
                 position: relative;
-                box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+                box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
             }
 
             .section-title {
@@ -182,8 +191,10 @@
                 padding-left: 12px;
                 margin-bottom: 20px;
             }
+
             .section-header h2 {
-                border: none;      /* 기존 h2 border-left 덮어쓰기 */
+                border: none;
+                /* 기존 h2 border-left 덮어쓰기 */
                 padding: 0;
                 margin: 0;
                 font-size: 1.3rem;
@@ -219,7 +230,7 @@
             }
 
             /* 탭 버튼 */
-            
+
 
             .tab-menu button {
                 padding: 10px 20px;
@@ -236,10 +247,13 @@
             }
 
             .tab-menu button:first-child {
-                border-radius: 8px 0 0 0px;   /* 왼쪽 위아래만 */
+                border-radius: 8px 0 0 0px;
+                /* 왼쪽 위아래만 */
             }
+
             .tab-menu button:last-child {
-                border-radius: 0 8px 0px 0;   /* 오른쪽 위아래만 */
+                border-radius: 0 8px 0px 0;
+                /* 오른쪽 위아래만 */
             }
 
             /* 푸터 */
@@ -292,6 +306,7 @@
                 transition: 0.2s;
                 position: relative;
             }
+
             .review-header-info:hover {
                 border-color: #9b8fd4;
                 box-shadow: 0 4px 12px rgba(155, 143, 212, 0.15);
@@ -351,7 +366,7 @@
                 border: 1px solid #ffe0e6;
             }
 
-           /* 페이징 */
+            /* 페이징 */
             .pagination1 {
                 text-align: center;
                 margin-top: 25px;
@@ -596,6 +611,7 @@
 
 
             }
+
             /* 네비게이션바 hover 효과 추가*/
             .nav-btn:hover {
                 background: #9b8fd4;
@@ -636,12 +652,15 @@
                 font-size: 13px;
                 font-weight: 500;
                 transition: 0.2s;
-                margin-left: 10px;   /* ← 추가 */
+                margin-left: 10px;
+                /* ← 추가 */
             }
+
             .btn-edit:hover {
                 background: white;
                 color: #9b8fd4;
             }
+
             /* 삭제하기 버튼 */
             .btn-delete {
                 padding: 6px 14px;
@@ -653,12 +672,15 @@
                 font-size: 13px;
                 font-weight: 500;
                 transition: 0.2s;
-                margin-left: 10px;   /* ← 추가 */
+                margin-left: 10px;
+                /* ← 추가 */
             }
+
             .btn-delete:hover {
                 background: white;
                 color: #f4a096;
             }
+
             /* 상품관리 페이지의 상품 등록 버튼 */
             .btn-product-reg {
                 background: #ffb400;
@@ -671,6 +693,7 @@
                 font-size: 14px;
                 transition: 0.2s;
             }
+
             .btn-product-reg:hover {
                 background: #e0a500;
                 transform: translateY(-2px);
@@ -692,11 +715,13 @@
                 transition: 0.2s;
                 position: relative;
             }
+
             .ticket-card:hover {
                 border-color: #9b8fd4;
                 box-shadow: 0 4px 12px rgba(155, 143, 212, 0.15);
                 transform: translateY(-2px);
             }
+
             .ticket-img {
                 width: 80px;
                 height: 80px;
@@ -704,33 +729,51 @@
                 object-fit: cover;
                 flex-shrink: 0;
             }
+
             .ticket-info {
                 flex: 1;
             }
+
             .ticket-no {
                 font-size: 11px;
                 color: #aaa;
                 margin-bottom: 4px;
             }
+
             .ticket-name {
                 font-size: 15px;
                 font-weight: 700;
                 color: #333;
                 margin-bottom: 6px;
             }
+
             .ticket-date {
                 font-size: 13px;
                 color: #888;
             }
+
             .ticket-status {
                 font-size: 12px;
                 font-weight: 700;
                 padding: 4px 10px;
                 border-radius: 20px;
             }
-            .ticket-status.wait   { background: #eef0ff; color: #3714ff; }
-            .ticket-status.cancel { background: #fff0f0; color: red; }
-            .ticket-status.done   { background: #f0fff4; color: green; }
+
+            .ticket-status.wait {
+                background: #eef0ff;
+                color: #3714ff;
+            }
+
+            .ticket-status.cancel {
+                background: #fff0f0;
+                color: red;
+            }
+
+            .ticket-status.done {
+                background: #f0fff4;
+                color: green;
+            }
+
             .ticket-detail-label {
                 writing-mode: vertical-rl;
                 font-size: 11px;
@@ -753,6 +796,7 @@
                 margin-bottom: 20px;
                 transition: 0.2s;
             }
+
             .btn-back:hover {
                 background: #9b8fd4;
                 color: white;
@@ -773,11 +817,12 @@
                 font-weight: 500;
                 transition: 0.2s;
             }
+
             .btn-reply:hover {
                 background: #e0a500;
                 transform: translateY(-2px);
                 box-shadow: 0 4px 12px rgba(240, 180, 41, 0.3);
-            } 
+            }
 
             /*.main-content{
                 background-color: #fff9f9; 
@@ -817,7 +862,21 @@
             /* td 내부에 span 등으로 감싸져 있다면 더 좋지만, 
             현재 구조에서 글자색만으로도 충분히 세련되어 보일 거예요. */
 
-            
+            .review-text-limit {
+                /* 여러 줄 말줄임표를 위한 필수 속성 */
+                display: -webkit-box;
+                -webkit-line-clamp: 5;
+                /* 보여줄 줄 수 (5줄) */
+                -webkit-box-orient: vertical;
+
+                /* 레이아웃 유지 */
+                overflow: hidden;
+                text-overflow: ellipsis;
+                line-height: 1.6;
+                /* 줄 간격에 따라 높이가 결정되므로 적절히 조절 */
+                max-height: 8em;
+                /* line-height * 줄 수 (1.6 * 5)로 안전하게 높이 제한 */
+            }
         </style>
     </head>
 
@@ -899,9 +958,11 @@
                                 <div class="content-card">
                                     <h3><span v-if="user.grade === 'PARTNER'">제휴업체 등록(결제) 일자</span></h3>
                                     <h3><span v-if="user.grade === 'NPARTNER'">일반업체 등록 일자</span></h3>
-                                    <p v-if="user.grade === 'PARTNER'" style="text-align: right; font-size: 20px;">{{ user.payDate }}</p>
-                                    <p v-if="user.grade === 'NPARTNER'" style="text-align: right; font-size: 20px;">{{ user.regDate }}</p>
-                                    
+                                    <p v-if="user.grade === 'PARTNER'" style="text-align: right; font-size: 20px;">{{
+                                        user.payDate }}</p>
+                                    <p v-if="user.grade === 'NPARTNER'" style="text-align: right; font-size: 20px;">{{
+                                        user.regDate }}</p>
+
                                 </div>
                                 <!-- <div class="content-card">
                                     <h3>마지막 결제 수단</h3>
@@ -920,13 +981,14 @@
 
                                 <div v-if="productPage === 'list'">
                                     <!-- db 랑 연결한 곳 -->
-                                     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; padding-left: 10px;">
+                                    <div
+                                        style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; padding-left: 10px;">
                                         <div class="section-header">
                                             <h2>등록한 상품({{ productList3.length }})</h2>
                                         </div>
-                                            <button @click="goRegPage2"class="btn-product-reg">상품등록</button>
+                                        <button @click="goRegPage2" class="btn-product-reg">상품등록</button>
                                     </div>
-                                     <div v-for="i in fnPaginatedProductList" class="content-card"
+                                    <div v-for="i in fnPaginatedProductList" class="content-card"
                                         style="display: flex; align-items: center; padding: 15px;">
                                         <div
                                             style="width: 100px; height: 100px;  display: flex; align-items: center; justify-content: center; margin-right: 20px;">
@@ -973,19 +1035,28 @@
 
                                 <!-- 상품 등록 폼 -->
                                 <div v-else-if="productPage === 'reg'">
-                                    <div class="product-form-wrapper" style="max-width: 900px; margin: 20px auto; padding: 40px; background-color: #ffffff; border-radius: 15px; box-shadow: 0 10px 30px rgba(106, 90, 205, 0.1); font-family: 'Pretendard', sans-serif;">
+                                    <div class="product-form-wrapper"
+                                        style="max-width: 900px; margin: 20px auto; padding: 40px; background-color: #ffffff; border-radius: 15px; box-shadow: 0 10px 30px rgba(106, 90, 205, 0.1); font-family: 'Pretendard', sans-serif;">
                                         <!-- {{serverTagList}}
                                         {{newTagsOnly}}
                                         {{uniqueNewTagsOnly()}} -->
-                                        <h2 style="color: #6a5acd; margin-bottom: 30px; font-weight: 800; border-left: 5px solid #9a8cff; padding-left: 15px;">상품 등록하기</h2>
+                                        <h2
+                                            style="color: #6a5acd; margin-bottom: 30px; font-weight: 800; border-left: 5px solid #9a8cff; padding-left: 15px;">
+                                            상품 등록하기</h2>
 
-                                        <div class="product-form-section" style="margin-bottom: 35px; border: 1px solid #e0d7ff; border-radius: 10px; overflow: hidden;">
-                                            <div class="form-title-box" style="background-color: #9a8cff; color: white; padding: 12px 20px; font-weight: bold; font-size: 16px;">상품 기본 정보</div>
-                                            <div class="form-content-box" style="padding: 30px; background-color: #faf9ff;">
+                                        <div class="product-form-section"
+                                            style="margin-bottom: 35px; border: 1px solid #e0d7ff; border-radius: 10px; overflow: hidden;">
+                                            <div class="form-title-box"
+                                                style="background-color: #9a8cff; color: white; padding: 12px 20px; font-weight: bold; font-size: 16px;">
+                                                상품 기본 정보</div>
+                                            <div class="form-content-box"
+                                                style="padding: 30px; background-color: #faf9ff;">
 
 
                                                 <div class="form-group" style="margin-bottom: 25px;">
-                                                    <label class="form-label" style="display: block; font-weight: 600; color: #444; margin-bottom: 10px; font-size: 15px;">상품 이름</label>
+                                                    <label class="form-label"
+                                                        style="display: block; font-weight: 600; color: #444; margin-bottom: 10px; font-size: 15px;">상품
+                                                        이름</label>
                                                     <div class="form-info-box">
                                                         <input type="text" placeholder="여기에 상품 이름을 적어주세요."
                                                             style="width: 100%; max-width: 400px; padding: 12px; border: 1px solid #d1ccff; border-radius: 8px; outline: none; font-size: 14px;"
@@ -997,34 +1068,49 @@
 
 
                                                 <div class="form-group" style="margin-bottom: 25px;">
-                                                    <label class="form-label" style="display: block; font-weight: 600; color: #444; margin-bottom: 10px; font-size: 15px;">카테고리</label>
-                                                    <div class="category-group" style="display: flex; gap: 20px; flex-wrap: wrap; background: white; padding: 15px; border-radius: 8px; border: 1px solid #d1ccff;"> <!--border: 1px solid #d1ccff; border-radius: 8px; outline: none; resize: none; font-size: 14px;-->
+                                                    <label class="form-label"
+                                                        style="display: block; font-weight: 600; color: #444; margin-bottom: 10px; font-size: 15px;">카테고리</label>
+                                                    <div class="category-group"
+                                                        style="display: flex; gap: 20px; flex-wrap: wrap; background: white; padding: 15px; border-radius: 8px; border: 1px solid #d1ccff;">
+                                                        <!--border: 1px solid #d1ccff; border-radius: 8px; outline: none; resize: none; font-size: 14px;-->
                                                         <div class="category-item" v-for="item in category" :key="item">
-                                                            <label style="cursor: pointer; font-size: 14px; color: #666; display: flex; align-items: center; gap: 5px;">
-                                                                <input type="checkbox" :value="item" style="accent-color: #6a5acd;"
+                                                            <label
+                                                                style="cursor: pointer; font-size: 14px; color: #666; display: flex; align-items: center; gap: 5px;">
+                                                                <input type="checkbox" :value="item"
+                                                                    style="accent-color: #6a5acd;"
                                                                     v-model="product2.proType">{{item}}
                                                             </label>
                                                         </div>
                                                     </div>
                                                 </div>
                                                 <div class="form-group" style="margin-bottom: 25px;">
-                                                    <label class="form-label" style="display: block; font-weight: 600; color: #444; margin-bottom: 10px; font-size: 15px;">상품 태그</label>
-                                                    <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 10px;">
-                                                        <input type="text" placeholder="첫번째 태그" v-model="tagMap.input1" style="padding: 10px; border: 1px solid #d1ccff; border-radius: 6px; outline: none;">
-                                                        <input type="text" placeholder="두번째 태그" v-model="tagMap.input2" style="padding: 10px; border: 1px solid #d1ccff; border-radius: 6px; outline: none;">
-                                                        <input type="text" placeholder="세번째 태그" v-model="tagMap.input3" style="padding: 10px; border: 1px solid #d1ccff; border-radius: 6px; outline: none;">
-                                                        <input type="text" placeholder="네번째 태그" v-model="tagMap.input4" style="padding: 10px; border: 1px solid #d1ccff; border-radius: 6px; outline: none;">
-                                                        <input type="text" placeholder="다섯번째 태그" v-model="tagMap.input5" style="padding: 10px; border: 1px solid #d1ccff; border-radius: 6px; outline: none;">
+                                                    <label class="form-label"
+                                                        style="display: block; font-weight: 600; color: #444; margin-bottom: 10px; font-size: 15px;">상품
+                                                        태그</label>
+                                                    <div
+                                                        style="display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 10px;">
+                                                        <input type="text" placeholder="첫번째 태그" v-model="tagMap.input1"
+                                                            style="padding: 10px; border: 1px solid #d1ccff; border-radius: 6px; outline: none;">
+                                                        <input type="text" placeholder="두번째 태그" v-model="tagMap.input2"
+                                                            style="padding: 10px; border: 1px solid #d1ccff; border-radius: 6px; outline: none;">
+                                                        <input type="text" placeholder="세번째 태그" v-model="tagMap.input3"
+                                                            style="padding: 10px; border: 1px solid #d1ccff; border-radius: 6px; outline: none;">
+                                                        <input type="text" placeholder="네번째 태그" v-model="tagMap.input4"
+                                                            style="padding: 10px; border: 1px solid #d1ccff; border-radius: 6px; outline: none;">
+                                                        <input type="text" placeholder="다섯번째 태그" v-model="tagMap.input5"
+                                                            style="padding: 10px; border: 1px solid #d1ccff; border-radius: 6px; outline: none;">
                                                     </div>
-                                                    
-                                                    
+
+
                                                 </div>
                                                 <!-- {{tagMap}}
                                                 {{tagMapToList}} -->
 
                                                 <div class="form-group" style="margin-bottom: 25px;">
 
-                                                    <label class="form-label" style="display: block; font-weight: 600; color: #444; margin-bottom: 10px; font-size: 15px;">상품 설명</label>
+                                                    <label class="form-label"
+                                                        style="display: block; font-weight: 600; color: #444; margin-bottom: 10px; font-size: 15px;">상품
+                                                        설명</label>
                                                     <div class="form-info-box">
                                                         <textarea placeholder="상품에 대한 자세한 설명을 입력하세요."
                                                             v-model="product2.productDetails"
@@ -1034,8 +1120,9 @@
                                                 <div style="display: flex; gap: 20px;">
                                                     <div class="form-group" style="flex: 1;">
 
-                                                        <label class="form-label" style="display: block; font-weight: 600; color: #444; margin-bottom: 10px; font-size: 15px;"><span
-                                                             class="form-info-label">예상
+                                                        <label class="form-label"
+                                                            style="display: block; font-weight: 600; color: #444; margin-bottom: 10px; font-size: 15px;"><span
+                                                                class="form-info-label">예상
                                                                 견적</span></label>
                                                         <div class="form-info-box">
                                                             <input placeholder="여기에 견적을 적어주세요." type="text"
@@ -1044,7 +1131,8 @@
                                                         </div>
                                                     </div>
                                                     <div class="form-group" style="flex: 1;">
-                                                        <label class="form-label" style="display: block; font-weight: 600; color: #444; margin-bottom: 10px; font-size: 15px;"><span
+                                                        <label class="form-label"
+                                                            style="display: block; font-weight: 600; color: #444; margin-bottom: 10px; font-size: 15px;"><span
                                                                 class="form-info-label">예약금</span></label>
                                                         <div class="form-info-box">
                                                             <input placeholder="여기에 예약금을 적어주세요." type="text"
@@ -1056,18 +1144,23 @@
 
 
                                                 </div>
-                                                
+
                                                 <!-- {{product2.deposit}} -->
                                             </div>
                                         </div>
 
-                                        <div class="product-form-section" style="margin-bottom: 35px; border: 1px solid #e0d7ff; border-radius: 10px; overflow: hidden;">
-                                            <div class="form-title-box" style="background-color: #9a8cff; color: white; padding: 12px 20px; font-weight: bold; font-size: 16px;">상품 이미지</div>
-                                            <div class="form-content-box" style="padding: 30px; background-color: #faf9ff;">
+                                        <div class="product-form-section"
+                                            style="margin-bottom: 35px; border: 1px solid #e0d7ff; border-radius: 10px; overflow: hidden;">
+                                            <div class="form-title-box"
+                                                style="background-color: #9a8cff; color: white; padding: 12px 20px; font-weight: bold; font-size: 16px;">
+                                                상품 이미지</div>
+                                            <div class="form-content-box"
+                                                style="padding: 30px; background-color: #faf9ff;">
                                                 <div class="form-group">
 
 
-                                                    <div style="margin-bottom: 15px; font-weight: bold; color: #444;">등록할 이미지 :
+                                                    <div style="margin-bottom: 15px; font-weight: bold; color: #444;">
+                                                        등록할 이미지 :
                                                     </div>
 
                                                     <label
@@ -1097,18 +1190,27 @@
 
                                 <!-- 상품 수정 폼 -->
                                 <div v-else-if="productPage === 'edit'">
-                                    <div class="product-form-wrapper" style="max-width: 900px; margin: 20px auto; padding: 40px; background-color: #ffffff; border-radius: 15px; box-shadow: 0 10px 30px rgba(106, 90, 205, 0.1); font-family: 'Pretendard', sans-serif;">
+                                    <div class="product-form-wrapper"
+                                        style="max-width: 900px; margin: 20px auto; padding: 40px; background-color: #ffffff; border-radius: 15px; box-shadow: 0 10px 30px rgba(106, 90, 205, 0.1); font-family: 'Pretendard', sans-serif;">
                                         <!-- {{serverTagList}}
                                         {{newTagsOnly}}
                                         {{uniqueNewTagsOnly()}} -->
-                                        <h2 style="color: #6a5acd; margin-bottom: 30px; font-weight: 800; border-left: 5px solid #9a8cff; padding-left: 15px;">상품 수정하기</h2>
+                                        <h2
+                                            style="color: #6a5acd; margin-bottom: 30px; font-weight: 800; border-left: 5px solid #9a8cff; padding-left: 15px;">
+                                            상품 수정하기</h2>
 
-                                        <div class="product-form-section" style="margin-bottom: 35px; border: 1px solid #e0d7ff; border-radius: 10px; overflow: hidden;">
-                                            <div class="form-title-box" style="background-color: #9a8cff; color: white; padding: 12px 20px; font-weight: bold; font-size: 16px;">상품 기본 정보</div>
-                                            <div class="form-content-box" style="padding: 30px; background-color: #faf9ff;">
+                                        <div class="product-form-section"
+                                            style="margin-bottom: 35px; border: 1px solid #e0d7ff; border-radius: 10px; overflow: hidden;">
+                                            <div class="form-title-box"
+                                                style="background-color: #9a8cff; color: white; padding: 12px 20px; font-weight: bold; font-size: 16px;">
+                                                상품 기본 정보</div>
+                                            <div class="form-content-box"
+                                                style="padding: 30px; background-color: #faf9ff;">
 
                                                 <div class="form-group" style="margin-bottom: 25px;">
-                                                    <label class="form-label" style="display: block; font-weight: 600; color: #444; margin-bottom: 10px; font-size: 15px;">상품 이름</label>
+                                                    <label class="form-label"
+                                                        style="display: block; font-weight: 600; color: #444; margin-bottom: 10px; font-size: 15px;">상품
+                                                        이름</label>
                                                     <div class="form-info-box">
                                                         <input type="text" placeholder="여기에 상품 이름을 적어주세요."
                                                             style="width: 100%; max-width: 400px; padding: 12px; border: 1px solid #d1ccff; border-radius: 8px; outline: none; font-size: 14px;"
@@ -1120,31 +1222,43 @@
 
 
                                                 <div class="form-group" style="margin-bottom: 25px;">
-                                                    <label class="form-label" style="display: block; font-weight: 600; color: #444; margin-bottom: 10px; font-size: 15px;">카테고리</label>
-                                                    <div class="category-group" style="display: flex; gap: 20px; flex-wrap: wrap; background: white; padding: 15px; border-radius: 8px; border: 1px solid #d1ccff;">
+                                                    <label class="form-label"
+                                                        style="display: block; font-weight: 600; color: #444; margin-bottom: 10px; font-size: 15px;">카테고리</label>
+                                                    <div class="category-group"
+                                                        style="display: flex; gap: 20px; flex-wrap: wrap; background: white; padding: 15px; border-radius: 8px; border: 1px solid #d1ccff;">
 
 
                                                         <div class="category-item" v-for="item in category" :key="item">
-                                                            <label style="cursor: pointer; font-size: 14px; color: #666; display: flex; align-items: center; gap: 5px;">
-                                                                <input type="checkbox" :value="item" style="accent-color: #6a5acd;"
-                                                                v-model="product1.proType">{{item}}
+                                                            <label
+                                                                style="cursor: pointer; font-size: 14px; color: #666; display: flex; align-items: center; gap: 5px;">
+                                                                <input type="checkbox" :value="item"
+                                                                    style="accent-color: #6a5acd;"
+                                                                    v-model="product1.proType">{{item}}
                                                             </label>
-                                                            
+
                                                         </div>
                                                     </div>
                                                 </div>
 
                                                 <div class="form-group" style="margin-bottom: 25px;">
-                                                    <label class="form-label" style="display: block; font-weight: 600; color: #444; margin-bottom: 10px; font-size: 15px;">상품 태그</label>
-                                                    
-                                                    <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 10px;">
-                                                        <input type="text" placeholder="첫번째 태그" v-model="tagMap.input1" style="padding: 10px; border: 1px solid #d1ccff; border-radius: 6px; outline: none;">
-                                                        <input type="text" placeholder="두번째 태그" v-model="tagMap.input2" style="padding: 10px; border: 1px solid #d1ccff; border-radius: 6px; outline: none;">
-                                                        <input type="text" placeholder="세번째 태그" v-model="tagMap.input3" style="padding: 10px; border: 1px solid #d1ccff; border-radius: 6px; outline: none;">
-                                                        <input type="text" placeholder="네번째 태그" v-model="tagMap.input4" style="padding: 10px; border: 1px solid #d1ccff; border-radius: 6px; outline: none;">
-                                                        <input type="text" placeholder="다섯번째 태그" v-model="tagMap.input5" style="padding: 10px; border: 1px solid #d1ccff; border-radius: 6px; outline: none;">
+                                                    <label class="form-label"
+                                                        style="display: block; font-weight: 600; color: #444; margin-bottom: 10px; font-size: 15px;">상품
+                                                        태그</label>
+
+                                                    <div
+                                                        style="display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 10px;">
+                                                        <input type="text" placeholder="첫번째 태그" v-model="tagMap.input1"
+                                                            style="padding: 10px; border: 1px solid #d1ccff; border-radius: 6px; outline: none;">
+                                                        <input type="text" placeholder="두번째 태그" v-model="tagMap.input2"
+                                                            style="padding: 10px; border: 1px solid #d1ccff; border-radius: 6px; outline: none;">
+                                                        <input type="text" placeholder="세번째 태그" v-model="tagMap.input3"
+                                                            style="padding: 10px; border: 1px solid #d1ccff; border-radius: 6px; outline: none;">
+                                                        <input type="text" placeholder="네번째 태그" v-model="tagMap.input4"
+                                                            style="padding: 10px; border: 1px solid #d1ccff; border-radius: 6px; outline: none;">
+                                                        <input type="text" placeholder="다섯번째 태그" v-model="tagMap.input5"
+                                                            style="padding: 10px; border: 1px solid #d1ccff; border-radius: 6px; outline: none;">
                                                     </div>
-                                                    
+
                                                 </div>
                                                 <!-- {{tagMap}}
                                                 {{tagMapToList}}
@@ -1162,45 +1276,53 @@
                                                 </div>
                                                 <div style="display: flex; gap: 20px;">
                                                     <div class="form-group" style="flex: 1;">
-                                                        <label class="form-label" style="display: block; font-weight: 600; color: #444; margin-bottom: 10px; font-size: 15px;"><span class="form-info-label">예상
+                                                        <label class="form-label"
+                                                            style="display: block; font-weight: 600; color: #444; margin-bottom: 10px; font-size: 15px;"><span
+                                                                class="form-info-label">예상
                                                                 견적</span></label>
                                                         <div class="form-info-box">
 
-                                                            <input type="text"
-                                                                placeholder="여기에 견적을 적어주세요."
+                                                            <input type="text" placeholder="여기에 견적을 적어주세요."
                                                                 style="width: 100%; padding: 12px; border: 1px solid #d1ccff; border-radius: 8px; outline: none;"
                                                                 v-model="product1.originalPrice">
                                                         </div>
                                                     </div>
 
                                                     <div class="form-group" style="flex: 1;">
-                                                        <label class="form-label" style="display: block; font-weight: 600; color: #444; margin-bottom: 10px; font-size: 15px;"><span
+                                                        <label class="form-label"
+                                                            style="display: block; font-weight: 600; color: #444; margin-bottom: 10px; font-size: 15px;"><span
                                                                 class="form-info-label">예약금</span></label>
                                                         <div class="form-info-box">
                                                             <input placeholder="여기에 예약금을 적어주세요." type="text"
                                                                 style="width: 100%; padding: 12px; border: 1px solid #d1ccff; border-radius: 8px; outline: none;"
                                                                 v-model="product1.deposit">
                                                         </div>
-                                                </div>
+                                                    </div>
 
 
                                                 </div>
-                                                
+
                                                 <!-- {{product1.deposit}} -->
                                             </div>
                                         </div>
 
-                                        <div class="product-form-section" style="margin-bottom: 35px; border: 1px solid #e0d7ff; border-radius: 10px; overflow: hidden;">
-                                            <div class="form-title-box" style="background-color: #9a8cff; color: white; padding: 12px 20px; font-weight: bold; font-size: 16px;">상품 이미지</div>
-                                            <div class="form-content-box" style="padding: 30px; background-color: #faf9ff;">
+                                        <div class="product-form-section"
+                                            style="margin-bottom: 35px; border: 1px solid #e0d7ff; border-radius: 10px; overflow: hidden;">
+                                            <div class="form-title-box"
+                                                style="background-color: #9a8cff; color: white; padding: 12px 20px; font-weight: bold; font-size: 16px;">
+                                                상품 이미지</div>
+                                            <div class="form-content-box"
+                                                style="padding: 30px; background-color: #faf9ff;">
                                                 <div class="form-group">
-                                                    <div style="margin-bottom: 15px; font-weight: bold; color: #444;">기존 이미지 : </div>
+                                                    <div style="margin-bottom: 15px; font-weight: bold; color: #444;">기존
+                                                        이미지 : </div>
                                                     <div class="image-editor-box">
                                                         <img :src="product1.imgUrl"
                                                             style="max-width: 500px; max-height: 500px;">
                                                     </div>
                                                     <br>
-                                                    <div style="margin-bottom: 15px; font-weight: bold; color: #444;">수정할 이미지 :
+                                                    <div style="margin-bottom: 15px; font-weight: bold; color: #444;">
+                                                        수정할 이미지 :
                                                     </div>
                                                     <!-- 이미지 첨부 -->
                                                     <label
@@ -1236,21 +1358,22 @@
                                     <h2>예약 관리 : <span style="color:#9b8fd4;">새 예약 {{ resCount }}건</span></h2>
                                 </div><!-- 티켓 목록 -->
                                 <template v-if="!selectedRes">
-                                    <div class="ticket-card"
-                                        v-for="(res, idx) in pagedResList" :key="idx"
+                                    <div class="ticket-card" v-for="(res, idx) in pagedResList" :key="idx"
                                         @click="selectedRes = res">
                                         <img class="ticket-img"
                                             :src="productList3.find(p => p.productName === res.productName)?.imgUrl"
                                             :alt="res.productName"
                                             v-if="productList3.find(p => p.productName === res.productName)?.imgUrl">
                                         <div class="ticket-info">
-                                            <div class="ticket-no">No. {{ reservationList.length - ((resCurrentPage - 1) * 5 + idx ) }}</div>
+                                            <div class="ticket-no">No. {{ reservationList.length - ((resCurrentPage - 1)
+                                                * 5 + idx ) }}</div>
                                             <div class="ticket-name">{{ res.productName }}</div>
-                                            <div class="ticket-date">예약 날짜/시간 : {{ res.useDate }} {{ res.useTime }}</div>
+                                            <div class="ticket-date">예약 날짜/시간 : {{ res.useDate }} {{ res.useTime }}
+                                            </div>
                                             <div style="margin-top:6px;">
                                                 <span class="ticket-status"
                                                     :class="res.resStatus === 'WAIT' ? 'wait' : res.resStatus === 'CANCEL' ? 'cancel' : 'done'">
-                                                    {{ res.resStatus === 'CONFIRM' ? '✅ 예약이 확정되었습니다.' : res.resStatus === 'CANCEL' ? '❌ 취소된 예약입니다.' : res.resStatus === 'DONE' ? '만료된 예약입니다.' : res.resStatus === 'WAIT' ? '결제 대기 상태입니다.' : res.resStatus}}
+                                                    {{ getResStatusText(res.resStatus)}}
                                                 </span>
                                             </div>
                                         </div>
@@ -1272,17 +1395,44 @@
                                 <template v-else>
                                     <button class="btn-back" @click="selectedRes = null">← 목록으로</button>
                                     <table>
-                                        <tr><th>예약 상품</th><td>{{ selectedRes.productName }}</td></tr>
-                                        <tr><th>예약 내용/요청 사항</th><td>{{ selectedRes.resContent === '' ? '요청사항 없음' : selectedRes.resContent }}</td></tr>
-                                        <tr><th>예약저장</th><td>{{ selectedRes.resDate }} {{ selectedRes.resTime }}</td></tr>
-                                        <tr><th>예약결제</th><td>{{ selectedRes.payDate === undefined ? '(미결제)' : '(결제완료)' + selectedRes.payDate }}</td></tr>
-                                        <tr><th>예약 날짜/시간</th><td>{{ selectedRes.useDate }} {{ selectedRes.useTime }}</td></tr>
-                                        <tr><th>예약자명</th><td>{{ selectedRes.resUserId }}</td></tr>
-                                        <tr><th>연락처</th><td>{{ selectedRes.tel }}</td></tr>
-                                        <tr><th>예약금</th><td>{{ Number(selectedRes.deposit).toLocaleString() }}원</td></tr>
+                                        <tr>
+                                            <th>예약 상품</th>
+                                            <td>{{ selectedRes.productName }}</td>
+                                        </tr>
+                                        <tr>
+                                            <th>예약 내용/요청 사항</th>
+                                            <td>{{ selectedRes.resContent === '' ? '요청사항 없음' : selectedRes.resContent }}
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <th>예약저장</th>
+                                            <td>{{ selectedRes.resDate }} {{ selectedRes.resTime }}</td>
+                                        </tr>
+                                        <tr>
+                                            <th>예약결제</th>
+                                            <td>{{ selectedRes.payDate === undefined ? '(미결제)' : '(결제완료)' +
+                                                selectedRes.payDate }}</td>
+                                        </tr>
+                                        <tr>
+                                            <th>예약 날짜/시간</th>
+                                            <td>{{ selectedRes.useDate }} {{ selectedRes.useTime }}</td>
+                                        </tr>
+                                        <tr>
+                                            <th>예약자명</th>
+                                            <td>{{ selectedRes.resUserId }}</td>
+                                        </tr>
+                                        <tr>
+                                            <th>연락처</th>
+                                            <td>{{ selectedRes.tel }}</td>
+                                        </tr>
+                                        <tr>
+                                            <th>예약금</th>
+                                            <td>{{ Number(selectedRes.deposit).toLocaleString() }}원</td>
+                                        </tr>
                                         <tr>
                                             <th>예약 처리상태</th>
-                                            <td :style="selectedRes.resStatus === 'WAIT' ? 'color:#3714ff;' : selectedRes.resStatus === 'CANCEL' ? 'color:red;' : ''">
+                                            <td
+                                                :style="selectedRes.resStatus === 'WAIT' ? 'color:#3714ff;' : selectedRes.resStatus === 'CANCEL' ? 'color:red;' : ''">
                                                 {{ selectedRes.resStatus }}
                                             </td>
                                         </tr>
@@ -1303,8 +1453,9 @@
                                 {{page1}} -->
                                 <template v-if="page1 === 'main'">
                                     <div class="section-header">
-                                    <h2>문의 관리 : <span style="color:#9b8fd4;">전체 문의 {{inquiryList.length}}건</span></h2>
-                                </div>
+                                        <h2>문의 관리 : <span style="color:#9b8fd4;">전체 문의 {{inquiryList.length}}건</span>
+                                        </h2>
+                                    </div>
                                     <div class="content-card" v-for="i in fnPaginatedInquiry" :key="i">
 
                                         <div style="display: flex;">
@@ -1415,7 +1566,8 @@
                                             <div style="margin-top: 15px;">
                                                 <label
                                                     style="display: block; margin-bottom: 8px; font-weight: bold; color: #555;">답변자</label>
-                                                <input v-model="inquiryAnswer.ansUserId" placeholder="답변을 작성한 담당자명을 입력해주세요."
+                                                <input v-model="inquiryAnswer.ansUserId"
+                                                    placeholder="답변을 작성한 담당자명을 입력해주세요."
                                                     style="width: 50%; padding: 12px; border: 1px solid #ccc; border-radius: 4px; resize: vertical; font-family: inherit; font-size: 1rem; box-sizing: border-radius;">
                                             </div>
 
@@ -1424,7 +1576,8 @@
                                                 <label
                                                     style="display: block; margin-bottom: 8px; font-weight: bold; color: #555;">답변
                                                     내용</label>
-                                                <textarea v-model="inquiryAnswer.answerContents" placeholder="문의에 대한 정성스러운 답변을 작성해 주세요."
+                                                <textarea v-model="inquiryAnswer.answerContents"
+                                                    placeholder="문의에 대한 정성스러운 답변을 작성해 주세요."
                                                     style="width: 100%; height: 200px; padding: 12px; border: 1px solid #ccc; border-radius: 4px; resize: vertical; font-family: inherit; font-size: 1rem; box-sizing: border-radius;"></textarea>
                                             </div>
 
@@ -1439,7 +1592,7 @@
                                                     <span v-if="inquiryAnswer.inquiryAns === '0'">답변 등록하기</span>
                                                     <span v-else>답변 수정하기</span>
                                                 </button>
-                                                
+
                                             </div>
                                         </div>
 
@@ -1465,17 +1618,18 @@
                                     </div>
 
                                     <div v-if="reviewTab === 'detail'" class="content-card">
-                                    <!-- 유료 리뷰 탭 -->
+                                        <!-- 유료 리뷰 탭 -->
                                         <h3>유료 리뷰 내역 : <span style="color: #ff1493;">새 리뷰 {{newReviewCnt}}건</span></h3>
                                         <template v-for="w in pagedProductList3" :key="w.productName">
-                                            <div class="review-header-info" style="margin-bottom: 10px;" @click="fnReviewDetails3(w)">
+                                            <div class="review-header-info" style="margin-bottom: 10px;"
+                                                @click="fnReviewDetails3(w)">
                                                 <div class="review-thumb-box">
                                                     <img :src="w.imgUrl"
                                                         style="width: 100%; height: 100%; object-fit: cover; border-radius: 10px;">
                                                 </div>
                                                 <div class="review-product-name">
-                                                    <a href="javascript:;" style="text-decoration: none; color:#0b3f8e;"
-                                                        ><strong>{{w.productName}}</strong></a>
+                                                    <a href="javascript:;"
+                                                        style="text-decoration: none; color:#0b3f8e;"><strong>{{w.productName}}</strong></a>
                                                 </div>
                                                 <div class="review-count-badge">리뷰 갯수: {{w.reviewCount}}개 </div>
                                             </div>
@@ -1498,15 +1652,16 @@
 
                                         <template v-for="w in pagedProductList4" :key="w.productName">
 
-                                            <div class="review-header-info" style="margin-bottom: 10px;" @click="fnSimpleReviewDetails3(w)">
+                                            <div class="review-header-info" style="margin-bottom: 10px;"
+                                                @click="fnSimpleReviewDetails3(w)">
                                                 <div class="review-thumb-box">
                                                     <img :src="w.imgUrl"
                                                         style="width: 100%; height: 100%; object-fit: cover; border-radius: 10px;">
                                                 </div>
                                                 <div class="review-product-name">
                                                     <!--totalSimpleReviewCnt-->
-                                                    <a href="javascript:;" style="text-decoration: none; color:#0b3f8e;"
-                                                        ><strong>{{w.productName}}</strong></a>
+                                                    <a href="javascript:;"
+                                                        style="text-decoration: none; color:#0b3f8e;"><strong>{{w.productName}}</strong></a>
 
                                                 </div>
                                                 <div class="review-count-badge">리뷰 갯수: {{w.reviewCount}}개 </div>
@@ -1550,12 +1705,12 @@
                                                             style="position: absolute; top: -5px; left: -5px;">NEW
                                                         </span>
                                                         <div class="review-photo">
-                                                            <img :src="rev.imgUrl" :alt="rev.imgDescription" 
+                                                            <img :src="rev.imgUrl" :alt="rev.imgDescription"
                                                                 style="width: 100%; height: 100%; object-fit: cover; border-radius: 10px;">
                                                         </div>
                                                     </div>
-                                                    <div style="flex: 1; line-height: 1.6; color: #444;">
-                                                        {{rev.content}}
+                                                    <div class="review-text-limit" style="color: #666; font-size: 15px;" > 
+                                                        {{cleanText(rev.content)}}
                                                     </div>
                                                 </div>
                                                 <div
@@ -1608,7 +1763,7 @@
                                                         <tr>
                                                             <td>{{ (page - 1) * 5 + idx + 1 }} <span class="new-label"
                                                                     v-if="rev.updated === '1'">NEW</span></td>
-                                                            <td>{{rev.content}}</td>
+                                                            <td class="review-text-limit" style="color: #666; font-size: 15px;">{{cleanText(rev.content)}}</td>
                                                             <td>{{rev.userId}}</td>
                                                             <td><span
                                                                     style="color: #ff6a00;">{{rev.rating}}</span><span>/5</span>
@@ -1673,11 +1828,11 @@
                     productPageSize: 5,   // 한 페이지에 보여줄 상품 수
                     //
                     /*문의 답변과 관련된 맵*/
-                    inquiryAnswer:{
+                    inquiryAnswer: {
                         inquiryNo: '',
-                        ansUserId:'',
+                        ansUserId: '',
                         answerNo: '',
-                        answerContents:'',
+                        answerContents: '',
                         inquiryAns: ''
                     },
                     inquiryDetails: {},
@@ -1951,7 +2106,7 @@
                 totalResPageCount() {
                     return Math.ceil(this.reservationList.length / this.resPageSize);
                 },
-                
+
                 // 리뷰 내역 페이지
                 pagedProductList3() {
                     const start = (this.reviewListPage - 1) * this.reviewListPageSize;
@@ -1972,7 +2127,7 @@
             },
             methods: {
                 // 함수(메소드) - (key : function())
-                fnGoBackToList : function(){
+                fnGoBackToList: function () {
                     this.page1 = 'main';
                 },
                 fnPageChange(num) {
@@ -2185,10 +2340,10 @@
                     }
 
                     this.product2.productName = '',
-                    this.product2.proType = [],
-                    this.product2.productDetails = '',
-                    this.product2.originalPrice = '',
-                    this.product2.deposit = 0
+                        this.product2.proType = [],
+                        this.product2.productDetails = '',
+                        this.product2.originalPrice = '',
+                        this.product2.deposit = 0
 
 
 
@@ -2528,6 +2683,7 @@
                         success: function (data) {
                             //console.log(data);
                             self.reviews = data.list;
+                            
                             //console.log(self.reviews);
 
 
@@ -2628,7 +2784,7 @@
                         inquiryNo: self.inquiryDetails.inquiryNo
                     };
                     console.log(param);
-                     $.ajax({
+                    $.ajax({
                         url: "/getInquiryAnsYn.dox",
                         dataType: "json",
                         type: "POST",
@@ -2636,7 +2792,7 @@
                         success: function (data) {
                             console.log(data);
 
-                            if(data.result === 'success'){
+                            if (data.result === 'success') {
                                 self.inquiryAnswer.inquiryNo = data.info.inquiryNo || '';
                                 self.inquiryAnswer.ansUserId = data.info.ansUserId || '';
                                 self.inquiryAnswer.answerNo = data.info.answerNo || '';
@@ -2657,7 +2813,7 @@
                         inquiryNo: self.inquiryAnswer.inquiryNo,
                         answerContents: self.inquiryAnswer.answerContents,
                         ansUserId: self.inquiryAnswer.ansUserId,
-                        inquiryAns : self.inquiryAnswer.inquiryAns //0 또는 1
+                        inquiryAns: self.inquiryAnswer.inquiryAns //0 또는 1
                     };
                     console.log(param);
                     $.ajax({
@@ -2668,18 +2824,48 @@
                         success: function (data) {
                             console.log(data);
                             //답변이 등록되면서 답변여부가 업데이트 된다
-                            if(data.result === 'success'){
+                            if (data.result === 'success') {
                                 alert("답변 등록/수정 완료!");
                                 self.page1 = 'main';
-                            } else{
+                            } else {
                                 alert("서버 오류!");
                             }
                         }
                     });
                 },
                 /* 제휴업체로 등록하러가기 */
-                fnRegPTN(){
-                    location.href="/adminRegistration.do"
+                fnRegPTN() {
+                    location.href = "/adminRegistration.do"
+                },
+
+
+
+                // 1. 이미지 제거 정규식
+                removeImages(content) {
+                    const regex = /<img[^>]*>/gi;
+                    return content.replace(regex, "");
+                },
+
+                // 2. 모든 HTML 태그 제거 및 텍스트 추출
+                stripHtml(html) {
+                    let doc = new DOMParser().parseFromString(html, 'text/html');
+                    return doc.body.textContent || "";
+                },
+
+                // 3. 두 기능을 합친 최종 함수
+                cleanText(content) {
+                    // 이미지를 먼저 지운 문자열을 stripHtml에 전달
+                    const noImage = this.removeImages(content);
+                    return this.stripHtml(noImage);
+                },
+                getResStatusText(status) {
+                    switch (status) {
+                        case 'CONFIRM': return '✅ 예약이 확정되었습니다.';
+                        case 'CANCEL': return '❌ 취소된 예약입니다.';
+                        case 'DONE': return '만료된 예약입니다.';
+                        case 'WAIT': return '결제 대기 상태입니다.';
+                        default: return status;
+                    }
                 }
             }, // methods
 
