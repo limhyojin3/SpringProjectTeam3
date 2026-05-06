@@ -988,7 +988,7 @@
                                         </div>
                                         <button @click="goRegPage2" class="btn-product-reg">상품등록</button>
                                     </div>
-                                    <div v-for="i in fnPaginatedProductList" class="content-card"
+                                    <div v-for="(i, idx) in fnPaginatedProductList" :key="idx" class="content-card"
                                         style="display: flex; align-items: center; padding: 15px;">
                                         <div
                                             style="width: 100px; height: 100px;  display: flex; align-items: center; justify-content: center; margin-right: 20px;">
@@ -996,10 +996,18 @@
                                             <img :src="i.imgUrl" :alt="i.productName"
                                                 style="width: 100%; height: 100%; object-fit: cover; border-radius: 10px;">
                                         </div>
-                                        <div style="flex: 1; font-weight: bold;">{{ i.productDetails }}</div>
-                                        <div>{{ Number(i.originalPrice).toLocaleString() }}원</div>
-                                        <button @click="goEditPage(i)" class="btn-edit">수정하기</button>
-                                        <button @click="fnRemove2(i)" class="btn-delete">삭제하기</button>
+                                        <div style="flex: 1; display: flex; flex-direction: column; justify-content: center;">
+                                            <div class="ticket-no">No. {{ productList3.length - ((productCurrentPage - 1)
+                                                * 5 + idx ) }}</div>
+                                            <div style="flex: 1; font-weight: bold;">{{ i.productDetails }}</div>
+                                        </div>
+                                        
+                                        <div style="display: flex; align-items: center; gap: 2px;">
+                                            <div>{{ Number(i.originalPrice).toLocaleString() }}원</div>
+                                            <button @click="goEditPage(i)" class="btn-edit">수정하기</button>
+                                            <button @click="fnRemove2(i)" class="btn-delete">삭제하기</button>
+                                        </div>
+                                        
                                     </div>
                                     <!-- 여기에 페이징이 있어야 해요 -->
                                     <div class="pagination1">

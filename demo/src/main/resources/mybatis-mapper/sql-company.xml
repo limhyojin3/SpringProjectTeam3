@@ -32,13 +32,14 @@
 		P.IMG_URL
 		FROM PRODUCT P
 		LEFT JOIN COMPANY C ON P.COMPANY_NO = C.COMPANY_NO
-		WHERE C.USER_ID = #{userid};
+		WHERE C.USER_ID = #{userid}
+		order by p.reg_date desc
 	</select>
 	<!-- 삽입 -->
 	<update id="updateProduct"
 		parameterType="com.example.demo.company.model.Company">
 		UPDATE PRODUCT
-		SET
+		SET 
 		PRODUCT_NAME = #{productName},
 		PRODUCT_DETAILS = #{productDetails},
 		ORIGINAL_PRICE = #{originalPrice},
@@ -64,13 +65,13 @@
 		WHERE USER_ID = #{userId}
 	</select>
 
-	<!-- 수정 -->
+	<!-- 등록 -->
 	<insert id="insertProduct"
 		parameterType="com.example.demo.company.model.Company">
 		INSERT INTO PRODUCT(PRODUCT_NAME, PRODUCT_DETAILS, ORIGINAL_PRICE,
-		IMG_URL, PRO_TYPE, COMPANY_NO, tag, deposit)
+		IMG_URL, PRO_TYPE, COMPANY_NO, tag, deposit, reg_date)
 		VALUES(#{productName}, #{productDetails}, #{originalPrice}, #{imgUrl},
-		#{proType}, #{companyNo}, #{tag}, #{deposit})
+		#{proType}, #{companyNo}, #{tag}, #{deposit}, now())
 
 	</insert>
 
@@ -184,7 +185,7 @@
 		C.COM_NAME, P.PRODUCT_DETAILS, P.ORIGINAL_PRICE, P.PRO_TYPE, P.TAG,
 		P.DEPOSIT FROM
 		PRODUCT P
-		LEFT JOIN COMPANY C ON P.COMPANY_NO = C.COMPANY_NO;
+		LEFT JOIN COMPANY C ON P.COMPANY_NO = C.COMPANY_NO
 	</select>
 
 	<select id="selectBookedTimes" parameterType="map"
