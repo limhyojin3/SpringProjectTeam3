@@ -139,7 +139,7 @@
 		group by p.product_no, p.product_name, p.img_url
 		order by p.reg_date desc 
 	</select>
-
+ 
 	<select id="selectNewReviewCnt" parameterType="map"
 		resultType="com.example.demo.company.model.Company">
 		select count(company_no) reviewCount from review r where r.is_paid = 1

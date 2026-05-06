@@ -1676,7 +1676,7 @@
                                         <h3>무료 리뷰 내역 : <span style="color: #ff1493;">새 리뷰 {{newUnpaidReviewCnt}}건</span>
                                         </h3>
 
-                                        <template v-for="w in pagedProductList4" :key="w.productName">
+                                        <template v-for="(w,idx) in pagedProductList4" :key="idx">
 
                                             <div class="review-header-info" style="margin-bottom: 10px;"
                                                 @click="fnSimpleReviewDetails3(w)">
@@ -1686,6 +1686,8 @@
                                                 </div>
                                                 <div class="review-product-name">
                                                     <!--totalSimpleReviewCnt-->
+                                                    <div class="ticket-no">No. {{ productList3.length - ((reviewListPage - 1)
+                                                * 5 + idx ) }}</div>
                                                     <a href="javascript:;"
                                                         style="text-decoration: none; color:#0b3f8e;"><strong>{{w.productName}}</strong></a>
 
