@@ -243,7 +243,7 @@
 
                         <!-- 타이틀 -->
                         <div class="pay-header" style="margin-bottom:20px;">
-                            <h2 class="brand-title" style="font-size:48px;">MerryView</h2>
+                            <h2 class="brand-title" style="font-size:48px;">MarryView</h2>
                             <p class="sub-text">제휴 등록 결제</p>
                         </div>
 

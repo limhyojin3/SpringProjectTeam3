@@ -402,7 +402,7 @@
                                         </div>
                                         <div class="form-group">
                                             <label>설명</label>
-                                            <textarea v-model="passForm.description" placeholder="패스 설명 입력"></textarea>
+                                            <textarea class="form-control" v-model="passForm.description" placeholder="패스 설명 입력"></textarea>
                                         </div>
                                     </div>
 

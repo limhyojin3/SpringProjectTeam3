@@ -979,7 +979,7 @@
                                     self.isModalOpen = false;
                                     self.isPaying = false;
                                     console.log("포트원 번호: " + res.imp_uid);
-                                    alert("결제가완료되었습니다");
+                                    alert("결제가 완료 되었습니다");
                                     location.href = "/adminPayFinish.do?payNo=" + res.payNo + "&type=PASS";
                                     //예약이면 &type=RES 등록이면 &type=REG
                                 } else {
