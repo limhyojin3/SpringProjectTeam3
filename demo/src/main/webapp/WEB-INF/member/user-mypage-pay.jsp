@@ -60,21 +60,59 @@
             background-color: #ccc;
             color: #888;
         }
+
+        .pagination-wrap {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-top: 20px;
+            gap: 6px;
+        }
+
+        .btn-page-arrow,
+        .btn-page-num {
+            height: 34px;
+            min-width: 34px;
+            padding: 0 10px;
+            background-color: #fff;
+            color: #f4a096;
+            border: 1.5px solid #f4a096;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 500;
+            transition: 0.2s;
+        }
+
+        .btn-page-arrow:hover,
+        .btn-page-num:hover {
+            background-color: #f4a096;
+            color: white;
+        }
+
+        .btn-page-num.active-page {
+            background-color: #f4a096;
+            color: white;
+            font-weight: bold;
+        }
+
+        .btn-page-arrow:disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+        }
     </style>
 </head>
 <body>
+    <jsp:include page="/WEB-INF/common/header.jsp" />
     <div id="app">
-        <jsp:include page="/WEB-INF/common/header.jsp" />
         <div id="wrapper">
             <div class="main-content">
-
                 <%-- ✅ 사이드바 공용 include --%>
                 <jsp:include page="/WEB-INF/common/mypage-nav.jsp" />
-
                 <div class="right-sections">
                     <section class="pay-section">
                         <p class="pass-title">멤버십 결제 내역</p>
-                        <div v-if="passList.length > 0">
+                        <div v-if="loaded && passList.length > 0">
                             <div v-for="pass in passList" :key="pass.passNo"
                                 :class="pass.remainingCount === 0 ? 'pass-box sold' : 'pass-box'">
                                 <h3>{{ pass.itemName }}</h3>
@@ -83,37 +121,59 @@
                                 </p>
                             </div>
                         </div>
-                        <div class="pass-box" v-else>
+                        <div class="pass-box" v-else-if="loaded">
                             <h3>구매한 패스가 없습니다.</h3>
                         </div>
                     </section>
+                    <!-- 페이징 -->
+                        <div class="pagination-wrap">
+                            <button class="btn-page-arrow" @click="fetchList(currentPage - 1)" :disabled="currentPage === 1">이전</button>
+                            <button class="btn-page-num"
+                                    v-for="p in totalPages" :key="p"
+                                    :class="p === currentPage ? 'active-page' : ''"
+                                    @click="fetchList(p)">
+                                {{ p }}
+                            </button>
+                            <button class="btn-page-arrow" @click="fetchList(currentPage + 1)" :disabled="currentPage === totalPages">다음</button>
+                        </div>
                 </div>
             </div>
-        <jsp:include page="/WEB-INF/common/footer.jsp" />
         </div>
+        <jsp:include page="/WEB-INF/common/footer.jsp" />
     </div>
 </body>
 <script>
     const app = Vue.createApp({
         data() {
             return {
-                passList: []
+                passList: [],
+                currentPage: 1,
+                totalPages: 0,
+                loaded: false
             };
         },
         methods: {
-
-        }, // methods
-        mounted() {
-            let self = this;
-            axios.get("/myPassWalletList.dox")
+            fetchList(page = 1) {
+                let self = this;
+                axios.get("/myPassWalletList.dox", {
+                    params: { currentPage: page }
+                })
                 .then(res => {
-                    self.passList = res.data;
+                    self.passList = res.data.list || [];  // null 방어
+                    self.totalPages = res.data.totalPages || 0;
+                    self.currentPage = res.data.currentPage || 1;
+                    self.loaded = true;
                 })
                 .catch(err => {
                     console.error(err);
+                    self.loaded = true;  // 오류나도 화면 보여주기
                 });
-                }
-            });
+            }
+        }, // methods
+        mounted() {
+            this.fetchList(1);
+        }
+    });
     app.mount('#app');
 </script>
 </body>

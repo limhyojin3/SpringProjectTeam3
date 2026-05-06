@@ -27,7 +27,7 @@ import jakarta.servlet.http.HttpSession;
 @Controller
 @RequestMapping("/api/review")
 public class ReviewController {
-    
+     
     @Autowired
     private ReviewService reviewService;
 
@@ -41,7 +41,6 @@ public class ReviewController {
     @RequestMapping("/list.do")
     public String reviewList(HttpServletRequest request, Model model) {
         HttpSession session = request.getSession();
-        // ✅ MemberController에서 사용하는 "sessionId"로 통일
         String sessionId = (String) session.getAttribute("sessionId");
         model.addAttribute("sessionId", sessionId);
         return "/review/review-list"; 
@@ -59,6 +58,25 @@ public class ReviewController {
     public String goReviewDetail(@RequestParam("reviewNo") String reviewNo, HttpServletRequest request, Model model) {
         HttpSession session = request.getSession();
         String sessionId = (String) session.getAttribute("sessionId");
+        try {
+            HashMap<String, Object> map = new HashMap<>();
+            map.put("reviewNo", reviewNo);
+            
+            HashMap<String, Object> review = reviewService.getReviewDetailInfo(map);
+            
+            if (review != null && sessionId != null) {
+                String isPaid = String.valueOf(review.get("isPaid")); 
+                String writerId = (String) review.get("userId");
+
+                // 무료리뷰이고 본인 글이 아닐 때만 로그 저장
+                if (("0".equals(isPaid) || "N".equals(isPaid) || "false".equals(isPaid)) && !sessionId.equals(writerId)) {
+                    reviewService.saveFreeViewLog(map, sessionId); 
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
         model.addAttribute("reviewNo", reviewNo);
         model.addAttribute("sessionId", sessionId);
         return "/review/review-detail";  
@@ -83,15 +101,25 @@ public class ReviewController {
 
     @PostMapping("/list.dox")
     @ResponseBody
-    public String getReviewList(@RequestBody HashMap<String, Object> map) {
+    public String getReviewList(@RequestBody HashMap<String, Object> map,HttpServletRequest request) {
         HashMap<String, Object> resultMap = new HashMap<>();
         try {
+        	
+        	// 1. 세션에서 로그인한 사용자의 ID를 꺼냅니다.
+            HttpSession session = request.getSession();
+            String sessionId = (String) session.getAttribute("sessionId");
+            
+            // 2. 쿼리에서 사용할 수 있도록 map에 "sessionId"라는 키로 저장합니다.
+            // (이 값이 있어야 MyBatis의 #{sessionId} 부분에 데이터가 들어갑니다.)
+            map.put("sessionId", sessionId);
             int count = reviewService.getReviewCount(map);
             List<HashMap<String, Object>> list = reviewService.selectReviewList(map);
+            List<HashMap<String, Object>> bestList = reviewService.selectBestReviewList(map);
             
             resultMap.put("count", count);
             resultMap.put("list", list);
             resultMap.put("result", "success");
+            resultMap.put("bestList", bestList);
         } catch (Exception e) {
             e.printStackTrace();
             resultMap.put("result", "error");
@@ -100,7 +128,7 @@ public class ReviewController {
     }
     
     /**
-     * 리뷰 저장 (세션 키 "sessionId" 적용)
+     * 리뷰 저장 (썸네일 추출 및 파일 처리 통합)
      */
     @PostMapping("/save.dox")
     @ResponseBody
@@ -113,36 +141,30 @@ public class ReviewController {
             Review review = gson.fromJson(reviewDataJson, Review.class);
             
             HttpSession session = request.getSession();
-            // ✅ "userId" 대신 "sessionId"를 꺼내옵니다.
             String currentId = (String) session.getAttribute("sessionId");
             
-            // 로그인 체크 로직 (DB 에러 방지)
             if (currentId == null) {
                 return "{\"result\":\"fail\", \"message\":\"로그인이 필요합니다.\"}";
             }
             
             review.setUserId(currentId);
 
-         // --- [파일 처리 로직 수정] ---
+            // [영수증 파일 처리]
             if (receiptFile != null && !receiptFile.isEmpty()) {
                 Map<String, String> fileInfo = fileService.uploadFile(receiptFile);
                 if (fileInfo != null) {
-                	// ✅ is_paid가 1(유료)인 경우에만 이미지 컬럼을 채움
-                    // 만약 Review 모델에서 isPaid가 String이면 "1".equals(...) 
-                    // int 타입이면 review.getIsPaid() == 1 로 비교
-                    if ("1".equals(review.getIsPaid()) || Integer.valueOf(1).equals(review.getIsPaid())) {
-                        review.setOriginalName(fileInfo.get("originalName"));
-                        review.setStoredName(fileInfo.get("storedName"));
-                        review.setImgUrl(fileInfo.get("imgUrl"));
-                    } 
+                  review.setOriginalName(fileInfo.get("originalName"));
+                  review.setStoredName(fileInfo.get("storedName"));
+                  review.setImgUrl(fileInfo.get("imgUrl"));
                     
-                    // 무료/유료 공통으로 영수증 증빙 컬럼은 채워줌 (상태 관리용)
-                    // 만약 DB 컬럼명이 receipt_name 이라면 아래와 같이 세팅
-                    review.setReceiptName(fileInfo.get("storedName")); 
+                    // 공통 영수증 증빙 정보 저장
+                  review.setReceiptName(fileInfo.get("storedName")); 
                 }
             }
-            // ---------------------------
             
+            // [핵심: 서비스 호출]
+            // 서비스 내부에서 extractThumbnail(review.getContent())를 호출하여 
+            // review.setThumbnailUrl()이 수행되도록 구현되어 있어야 합니다.
             return reviewService.registerReview(review, receiptFile, reviewFiles);
             
         } catch (Exception e) {
@@ -164,7 +186,7 @@ public class ReviewController {
 
             if (cookies != null) {
                 for (Cookie cookie : cookies) {
-                    if (cookie.getName().equals("viewed_reviews")) {
+                    if ("viewed_reviews".equals(cookie.getName())) {
                         if (cookie.getValue().contains("|" + reviewNo + "|")) {
                             isVisited = true;
                         } else {
@@ -180,7 +202,7 @@ public class ReviewController {
             }
 
             if (!isVisited) {
-                if (cookies == null || java.util.Arrays.stream(cookies).noneMatch(c -> c.getName().equals("viewed_reviews"))) {
+                if (cookies == null || java.util.Arrays.stream(cookies).noneMatch(c -> "viewed_reviews".equals(c.getName()))) {
                     Cookie newCookie = new Cookie("viewed_reviews", "|" + reviewNo + "|");
                     newCookie.setPath("/");
                     newCookie.setMaxAge(60 * 60 * 24);
@@ -208,7 +230,6 @@ public class ReviewController {
         Map<String, Object> resultMap = new HashMap<>();
         try {
             HttpSession session = request.getSession();
-            // ✅ "userId" 대신 "sessionId" 적용
             String currentId = (String) session.getAttribute("sessionId");
             map.put("userId", currentId);
             
@@ -225,26 +246,38 @@ public class ReviewController {
     public String useTicket(HttpServletRequest request, @RequestBody HashMap<String, Object> map) {
         HashMap<String, Object> resultMap = new HashMap<>();
         HttpSession session = request.getSession();
+        
         String sessionId = (String) session.getAttribute("sessionId");
+        String sessionRole = (String) session.getAttribute("sessionRole");
 
         if (sessionId == null) {
             resultMap.put("result", "LOGIN_REQUIRED");
-            return new Gson().toJson(resultMap);
+            return gson.toJson(resultMap);
+        }
+
+        // 관리자 프리패스
+        if ("ADMIN".equals(sessionRole)) {
+            resultMap.put("result", "SUCCESS");
+            resultMap.put("message", "관리자 권한으로 프리패스합니다.");
+            return gson.toJson(resultMap);
+        }
+
+        // 본인 글 체크
+        String writerId = (String) map.get("userId"); 
+        if (sessionId.equals(writerId)) {
+            resultMap.put("result", "SUCCESS");
+            return gson.toJson(resultMap);
         }
 
         map.put("userId", sessionId);
-        
         try {
             resultMap = reviewService.useAccessTicket(map);
         } catch (Exception e) {
             e.printStackTrace();
             resultMap.put("result", "ERROR");
         }
-     // 여기서 확인 가능!
-        System.out.println("프론트에서 온 데이터: " + map); 
-        // 콘솔에 {reviewNo=123, checkOnly=Y, userId=test} 이런 식으로 찍혀야 함
         
-        return new Gson().toJson(resultMap);
+        return gson.toJson(resultMap);
     }
     
     @PostMapping("/getUserAccessCount.dox")
@@ -253,11 +286,24 @@ public class ReviewController {
         HashMap<String, Object> resultMap = new HashMap<>();
         String userId = (String) map.get("userId");
         
-        // 이전에 만든 Mapper의 getUserAccessCount 호출
         Integer count = reviewService.getUserAccessCount(userId); 
         
         resultMap.put("count", count != null ? count : 0);
-        return new Gson().toJson(resultMap);
+        return gson.toJson(resultMap);
     }
     
+    @PostMapping("/productList.dox")
+    @ResponseBody
+    public Map<String, Object> getProductList(@RequestBody Map<String, Object> map) {
+        Map<String, Object> result = new HashMap<>();
+        try {
+            List<Map<String, Object>> list = reviewService.getProductListByCompany(map);
+            result.put("list", list);
+            result.put("result", "success");
+        } catch (Exception e) {
+            e.printStackTrace();
+            result.put("result", "error");
+        }
+        return result;
+    }
 }

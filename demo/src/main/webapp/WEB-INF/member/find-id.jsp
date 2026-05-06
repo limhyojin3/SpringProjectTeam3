@@ -12,182 +12,193 @@
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; }
-        body { background: #f9f9f9; font-family: 'Noto Sans KR', sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; }
 
-        #container {
-            width: 500px;
+        body {
+            background: #fafafa;
+            font-family: 'Noto Sans KR', sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 60px 16px 40px;
+            min-height: 100vh;
+        }
+
+        .logo-wrap {
+            margin-bottom: 28px;
+            cursor: pointer;
+        }
+        .logo-wrap img {
+            height: 80px;
+        }
+
+        .find-card {
+            width: 100%;
+            max-width: 550px;
+            background: #fff;
+            border: 1px solid #e0e0e0;
+            border-radius: 10px;
+            padding: 40px 40px 32px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+        }
+
+        .find-card h2 {
+            font-size: 18px;
+            font-weight: 600;
+            color: #555;
             text-align: center;
+            margin-bottom: 28px;
+        }
+
+        /* 입력 그룹 */
+        .input-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 0;
+        }
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            margin-bottom: 14px;
+        }
+        .input-group .input-row:first-child input {
+            border-radius: 6px 6px 0 0;
+        }
+        .input-group .input-row:not(:first-child):not(:last-child) input {
+            border-radius: 0;
+            border-top: none;         /* ← 중간 행 아래 선 제거 */
+        }
+        .input-group .input-row:last-child input {
+            border-radius: 0 0 6px 6px;
+            border-top: none;
+        }
+        .input-group .input-row:only-child input {
+            border-radius: 6px;
+        }
+
+        .input-row input {
+            flex: 1;
+            height: 56px;
+            padding: 0 14px;
+            font-size: 15px;
+            font-family: 'Noto Sans KR', sans-serif;
+            border: 1px solid #ddd;
+            outline: none;
+            transition: border-color 0.2s;
+            background: #fff;
+        }
+        .input-row input:focus {
+            border-color: #f4a096;
             position: relative;
+            z-index: 1;
         }
 
-        h1 {
-            font-size: 30px;
-            margin-bottom: 20px;
-            color: #333;
+        /* 인증 버튼 */
+        .btn-check {
+            flex-shrink: 0;
+            height: 45px;
+            padding: 0 16px;
+            background: #f0b429;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 14px;
+            font-family: 'Noto Sans KR', sans-serif;
+            font-weight: 500;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: opacity 0.2s;
         }
+        .btn-check:hover { opacity: 0.88; }
 
-        /* 폼 테이블 */
-        th {
+        /* 메인 버튼 */
+        .main-btn {
+            width: 100%;
+            height: 56px;
             background: #f4a096;
             color: white;
-            padding: 0 15px;
-            text-align: left;
-            font-weight: normal;
-            font-size: 14px;
-            width: 140px;
-            border: 1px solid #f4a096;
-            vertical-align: middle;
-        }
-
-        td {
-            border: 1px solid #f4a096;
-            width: 360px;
-            vertical-align: middle;
-        }
-
-        /* 버튼 들어가는 td */
-        .td-btn {
-            position: absolute;
-            width: 100px; /* 버튼 영역 너비 확보 */
-            border: none !important; /* 테이블 테두리 강제 제거 */
-            background: transparent;
-            padding-left: 10px;
-            vertical-align: middle;
-        }
-
-        /* 버튼 사이의 간격을 위해 두 번째 버튼이 있는 tr에 패딩이나 높이 조절 */
-        tr {
-            height: 50px; /* 입력창과 버튼의 높이 정렬을 위해 약간 조정 */
-        }
-
-        /* 테이블 자체의 테두리와 버튼 테두리가 겹치지 않게 설정 */
-        table {
-            border-collapse: collapse; /* 테두리 분리 */
-            border-spacing: 0;
-            width: auto; 
-            margin: 0 auto 20px;
-        }
-
-        td input {
-            width: 100%;
             border: none;
-            outline: none;
-            padding: 0 10px;
-            height: 45px;
-            font-size: 14px;
-            display: block;
-        }
-
-        /* 중복체크, 인증 버튼 */
-        .btn-check {
-            background: #f0b429;
-            color: white;
-            border: none;
-            padding: 8px 12px;
             border-radius: 6px;
+            font-size: 16px;
+            font-family: 'Noto Sans KR', sans-serif;
+            font-weight: 500;
             cursor: pointer;
-            font-size: 13px;
-            white-space: nowrap;
-            width: 100%;
+            transition: opacity 0.2s;
+            margin-top: 8px;
+            margin-bottom: 20px;
         }
+        .main-btn:hover { opacity: 0.88; }
 
-        .btn-check:hover {
-            opacity: 0.85;
-        }
-
-        /* 아이디 찾기 버튼 */
-        .login-btn {
-            width: 150px;
-            padding: 10px 0;
-            background: #f0b429;
-            color: white;
-            border: none;
-            border-radius: 8px;
+        /* 결과 영역 */
+        .result-box {
+            text-align: center;
+            padding: 20px 0 10px;
+            color: #555;
             font-size: 15px;
-            cursor: pointer;
-            margin-bottom: 15px;
+            line-height: 2;
         }
-
-        .login-btn:hover {
-            opacity: 0.85;
+        .result-box strong {
+            color: #f4a096;
+            font-size: 18px;
         }
 
         /* 하단 링크 */
         .link-wrap {
-            font-size: 13px;
-            color: #666;
+            display: flex;
+            justify-content: center;
+            gap: 4px;
         }
-
         .link-wrap a {
-            color: #666;
             text-decoration: none;
+            color: #888;
+            font-size: 13px;
         }
-
-        .link-wrap a:hover {
-            color: #f4a096;
+        .link-wrap span.sep {
+            color: #ccc;
+            font-size: 13px;
         }
-        .logo {
-            box-sizing: border-box;
-            width: 100%;
-            max-width: 300px;  /* ← 크기 제한 */
-            margin: 0 auto 20px;  /* ← 가운데 정렬 */
-            text-align: center;
-            margin-bottom: 15px;
-            cursor: pointer;
-        }
-        .logo img {
-            display: block;
-            margin: 0 auto;
-            width: 350px;
-        }
+        .link-wrap a:hover { color: #f4a096; }
     </style>
 </head>
 <body>
     <div id="app">
-        <div id="container">
-            <div class="logo">
-                <img src="/img/merryview-logo-text.svg" alt="메리뷰 로고" @click="fnMain()">
-            </div>
+        <div class="logo-wrap" @click="fnMain()">
+            <img src="/img/marryview-logo-en.svg" alt="메리뷰 로고">
+        </div>
+        <div class="find-card">
+            <!-- 인증 전 폼 -->
             <div v-if="!isVerified">
-                <h1>아이디 찾기</h1>
-                <table>
-                    <tr>
-                        <th>이름(대표자명)</th>
-                        <td><input type="text" v-model="userName" @input="filterName" placeholder="이름 또는 대표자명"></td>
-                    </tr>
-                    <tr>
-                        <th>핸드폰 번호</th>
-                        <td><input type="text" 
-                            v-model="userTel" 
-                            @input="formatTel" 
-                            maxlength="13"
-                            placeholder="010 1234 5678"></td>
-                        <td class="td-btn"><button class="btn-check" @click="fnCheckUser()">인증 요청</button></td>
-                    </tr>
-                    <!-- 인증번호 입력 -->
-                    <tr>
-                        <th>인증 번호</th>
-                        <td>
-                            <input type="number" v-model="authCode"
-                                maxlength="6"
-                                placeholder="6자리 숫자를 입력하세요">
-                        </td>
-                        <td class="td-btn"><button class="btn-check" @click="fnCheckSms()">인증 확인</button></td>
-                    </tr>
+                <h2>아이디 찾기</h2>
 
-                </table>
+                <div class="input-group">
+                    <div class="input-row">
+                        <input type="text" v-model="userName" @input="filterName" placeholder="이름 또는 대표자명">
+                    </div>
+                    <div class="input-row">
+                        <input type="text" v-model="userTel" @input="formatTel" maxlength="13" placeholder="010-1234-5678">
+                        <button class="btn-check" @click="fnCheckUser()">인증 요청</button>
+                    </div>
+                    <div class="input-row">
+                        <input type="number" v-model="authCode" placeholder="인증번호 6자리">
+                        <button class="btn-check" @click="fnCheckSms()">인증 확인</button>
+                    </div>
+                </div>
             </div>
 
+            <!-- 인증 후 결과 -->
             <div v-if="isVerified">
-                <h1>아이디 찾기</h1>
-                <br>
-                '{{userName}}'님의 아이디는
-                '{{userId}}'입니다.
+                <h2>아이디 찾기</h2>
+                <div class="result-box">
+                    <p>'{{ userName }}'님의 아이디는</p>
+                    <strong>{{ userId }}</strong>
+                    <p>입니다.</p>
+                </div>
             </div>
+
             <div class="link-wrap">
-                <a href="/login.do"><span>로그인 페이지로 돌아가기</span></a>
-                <span>|</span>
-                <a href="/find-pwd.do"><span>비밀번호 변경</span></a>
+                <a href="/login.do">로그인으로 돌아가기</a>
+                <span class="sep">&nbsp;|&nbsp;</span>
+                <a href="/find-pwd.do">비밀번호 변경</a>
             </div>
         </div>
     </div>

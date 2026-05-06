@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>마이페이지</title>
+    <title>예약 목록</title>
     <script src="https://code.jquery.com/jquery-3.7.1.js" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
     <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
     <script src="/js/page-change.js"></script>
@@ -66,11 +66,88 @@
 
         .res-status.done { color: #9b8fd4; }
         .res-status.cancel { color: #ccc; }
+
+        /* 페이지 인덱스 */
+        .review-index-wrap {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-top: 20px;
+            gap: 6px;
+        }
+
+        .btn-review-index {
+            height: 34px;
+            min-width: 34px;
+            padding: 0 10px;
+            background-color: #fff;
+            color: #9b8fd4;
+            border: 1.5px solid #9b8fd4;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 500;
+            transition: 0.2s;
+        }
+
+        .btn-review-index:hover {
+            background-color: #9b8fd4;
+            color: white;
+        }
+
+        .btn-review-index.active-page {
+            background-color: #9b8fd4;
+            color: white;
+            font-weight: bold;
+            border-color: #9b8fd4;
+        }
+
+        .pagination-wrap {
+            text-align: center;
+            margin-top: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .btn-page-arrow,
+        .btn-page-num {
+            height: 34px;
+            min-width: 34px;
+            padding: 0 10px;
+            background-color: #fff;
+            color: #f4a096;
+            border: 1.5px solid #f4a096;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 500;
+            transition: 0.2s;
+        }
+
+        .btn-page-arrow:hover,
+        .btn-page-num:hover {
+            background-color: #f4a096;
+            color: white;
+        }
+
+        .btn-page-num.active-page {
+            background-color: #f4a096;
+            color: white;
+            font-weight: bold;
+        }
+
+        .btn-page-arrow:disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+        }
+
     </style>
 </head>
 <body>
+    <jsp:include page="/WEB-INF/common/header.jsp" />
     <div id="app">
-        <jsp:include page="/WEB-INF/common/header.jsp" />
         <div id="wrapper">
             <div class="main-content">
 
@@ -79,7 +156,7 @@
                     <div class="right-sections">
                         <section class="res-section">
                             <div class="section-header">
-                                <h2>내 예약 목록 ({{ resList.length }}개)</h2>
+                                <h2>내 예약 목록</h2>
                             </div>
 
                             <div class="res-list" v-if="resList.length > 0">
@@ -101,31 +178,57 @@
                                 <p style="text-align:center;">예약 내역이 없습니다.</p>
                             </div>
                         </section>
+                        <!-- 페이징 -->
+                        <div class="pagination-wrap">
+                            <button class="btn-page-arrow" @click="goPage(currentPage - 1)" :disabled="currentPage === 1">이전</button>
+                            <span v-for="p in totalPages" :key="p">
+                                <button class="btn-page-num" :class="p === currentPage ? 'active-page' : ''" @click="goPage(p)">
+                                    {{ p }}
+                                </button>
+                            </span>
+                            <button class="btn-page-arrow" @click="goPage(currentPage + 1)" :disabled="currentPage === totalPages">다음</button>
+                        </div>
                     </div>
-                </div>
-            <jsp:include page="/WEB-INF/common/footer.jsp" />
+            </div>
         </div>
+        <jsp:include page="/WEB-INF/common/footer.jsp" />
     </div>
 </body>
 <script>
     const app = Vue.createApp({
         data() {
             return {
-                resList: []
+                resList: [],
+                currentPage: 1,
+                totalPages: 0,
+                pageSize: 3
             };
         },
         methods: {
-            
-        },
-        mounted() {
-            let self = this;
-            axios.get("/myReservationList.dox")
+            fetchList(page = 1) {
+                let self = this;
+                axios.get("/myReservationList.dox", {
+                    params: {
+                        currentPage: page,
+                        pageSize: self.pageSize
+                    }
+                })
                 .then(res => {
-                    self.resList = res.data;
+                    self.resList = res.data.list;
+                    self.totalPages = res.data.totalPages;
+                    self.currentPage = res.data.currentPage;
                 })
                 .catch(err => {
                     console.error(err);
                 });
+            },
+            goPage(page) {
+                if(page < 1 || page > this.totalPages) return;
+                this.fetchList(page);
+            }
+        },
+        mounted() {
+            this.fetchList(1);
         }
     });
 

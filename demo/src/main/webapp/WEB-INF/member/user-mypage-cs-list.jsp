@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>고객센터 문의 목록</title>
-    <script src="https://code.jquery.com/jquery-3.7.1.js" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
     <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
@@ -21,27 +21,108 @@
         .write-table tr:hover { background-color: #fff0ef; }
         .write-table td.col-title { text-align: left; cursor: pointer; }
         .write-table td.col-title:hover { color: #f4a096; text-decoration: underline; }
-        .col-no { width: 100px; } .col-writer { width: 100px; } .col-status { width: 80px; }
+        .col-no { width: 80px; } .col-writer { width: 120px; } .col-status { width: 100px; }
         .status-wait { color: #f4a096; font-weight: bold; }
         .status-done { color: #9b8fd4; font-weight: bold; }
         .cs-list-bottom { display: flex; justify-content: space-between; align-items: center; margin-top: 20px; }
         .btn-cs-write { padding: 10px 25px; background-color: #f0b429; color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 14px; transition: 0.2s; }
         .btn-cs-write:hover { opacity: 0.85; }
         
+        /* 필터 스타일 */
+        .filter-area { display: flex; justify-content: flex-end; gap: 8px; margin-bottom: 15px; }
+        .filter-select { width: 150px; height: 38px; font-size: 14px; border: 1px solid #ddd; border-radius: 4px; }
+
         /* 모달 내부 스타일 */
         .modal-label { font-weight: bold; color: #333; margin-top: 10px; }
         .answer-box { background-color: #f9f9f9; border-left: 4px solid #9b8fd4; padding: 15px; margin-top: 20px; }
+        
+        /* 페이징 스타일 */
+        .pagination .page-item.active .page-link { background-color: #f4a096; border-color: #f4a096; color: white; }
+        .pagination .page-link { color: #f4a096; }
+        
+        .pagination-wrap {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-top: 20px;
+            gap: 6px;
+        }
+
+        .btn-page-arrow,
+        .btn-page-num {
+            height: 34px;
+            min-width: 34px;
+            padding: 0 10px;
+            background-color: #fff;
+            color: #f4a096;
+            border: 1.5px solid #f4a096;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 500;
+            transition: 0.2s;
+        }
+
+        .btn-page-arrow:hover,
+        .btn-page-num:hover {
+            background-color: #f4a096;
+            color: white;
+        }
+
+        .btn-page-num.active-page {
+            background-color: #f4a096;
+            color: white;
+            font-weight: bold;
+        }
+
+        .btn-page-arrow:disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+        }
+
+        .btn-back {
+            padding: 10px 30px;
+            background-color: #fff;
+            color: #f4a096;
+            border: 1.5px solid #f4a096;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 500;
+            transition: 0.2s;
+        }
+
+        .btn-back:hover {
+            background-color: #f4a096;
+            color: white;
+        }
+
     </style>
 </head>
 <body>
+    <jsp:include page="/WEB-INF/common/header.jsp" />
     <div id="app">
-        <jsp:include page="/WEB-INF/common/header.jsp" />
         <div id="wrapper">
             <div class="main-content">
                 <jsp:include page="/WEB-INF/common/mypage-nav.jsp" />
 
                 <div class="right-sections">
                     <h3 class="cs-list-title">어떤 도움이 필요하세요?</h3>
+
+                    <div class="filter-area">
+                        <select class="filter-select" v-model="searchType" @change="fnGetList(1)">
+                            <option value="">전체 유형</option>
+                            <option value="이용불편">이용불편</option>
+                            <option value="결제문의">결제문의</option>
+                            <option value="계정관련">계정관련</option>
+                            <option value="기타">기타</option>
+                        </select>
+                        <select class="filter-select" v-model="searchStatus" @change="fnGetList(1)">
+                            <option value="">전체 상태</option>
+                            <option value="WAIT">대기</option>
+                            <option value="DONE">완료</option>
+                        </select>
+                    </div>
 
                     <table class="write-table">
                         <thead>
@@ -55,7 +136,7 @@
                         </thead>
                         <tbody>
                             <tr v-for="(item, index) in inquiryList" :key="item.inquiryNo">
-                                <td>{{ inquiryList.length - index }}</td>
+                                <td>{{ totalCount - (currentPage - 1) * pageSize - index }}</td>
                                 <td>{{ item.inquiryType }}</td>
                                 <td class="col-title" @click="fnDetailInquiry(item.inquiryNo)">
                                     {{ item.title }}
@@ -73,8 +154,23 @@
                         </tbody>
                     </table>
 
+                    <div class="pagination-wrap">
+                        <button class="btn-page-arrow"
+                                @click="fnGetList(currentPage - 1)"
+                                :disabled="currentPage === 1">이전</button>
+                        <button class="btn-page-num"
+                                v-for="p in totalPages" :key="p"
+                                :class="p === currentPage ? 'active-page' : ''"
+                                @click="fnGetList(p)">
+                            {{ p }}
+                        </button>
+                        <button class="btn-page-arrow"
+                                @click="fnGetList(currentPage + 1)"
+                                :disabled="currentPage === totalPages">다음</button>
+                    </div>
+
                     <div class="cs-list-bottom">
-                        <button class="btn-review-index" onclick="location.href='/userMyPage.do'">마이페이지 메인</button>
+                        <button class="btn-back" onclick="location.href='/userMyPage.do'">마이페이지 메인</button>
                         <button class="btn-cs-write" @click="fnOpenWriteModal()">새 문의 작성</button>
                     </div>
                 </div>
@@ -128,7 +224,7 @@
                             <span class="badge badge-info">{{ detailItem.inquiryType }}</span>
                             <h4 class="mt-2">{{ detailItem.title }}</h4>
                             <p class="text-muted small">작성일: {{ detailItem.regDate }}</p>
-                            <div class="p-3 border rounded bg-light">{{ detailItem.content }}</div>
+                            <div class="p-3 border rounded bg-light" style="white-space: pre-wrap;">{{ detailItem.content }}</div>
                         </div>
 
                         <div v-if="detailItem.status === 'DONE'" class="answer-box">
@@ -153,28 +249,54 @@
                 sessionId: "${sessionId}",
                 inquiryList: [],
                 newInquiry: { inquiryType: '', title: '', content: '' },
-                detailItem: {}
+                detailItem: {},
+                
+                // 페이징 및 검색 필터 변수
+                searchType: '',
+                searchStatus: '',
+                currentPage: 1,
+                pageSize: 10,
+                totalCount: 0
             };
         },
+        computed: {
+            // 전체 페이지 수 계산
+            totalPages() {
+                return Math.ceil(this.totalCount / this.pageSize);
+            }
+        },
         methods: {
-            // 목록 가져오기
-            fnGetList() {
+            // 목록 가져오기 (필터 및 페이징 적용)
+            fnGetList(page) {
+                if(page < 1 || (this.totalPages > 0 && page > this.totalPages)) return;
+                this.currentPage = page;
+
+                const params = {
+                    userId: this.sessionId,
+                    searchType: this.searchType,
+                    searchStatus: this.searchStatus,
+                    startIndex: (this.currentPage - 1) * this.pageSize,
+                    pageSize: this.pageSize
+                };
+
                 $.ajax({
                     url: "/api/inquiry/list.dox",
                     type: "POST",
                     contentType: "application/json",
-                    data: JSON.stringify({ userId: this.sessionId }),
+                    data: JSON.stringify(params),
                     success: (res) => {
-                        if(res.result === "success") this.inquiryList = res.list;
+                        if(res.result === "success") {
+                            this.inquiryList = res.list;
+                            this.totalCount = res.totalCount; // 서버에서 전체 개수를 같이 보내줘야 합니다.
+                            console.log("전체 개수: ", this.totalCount);
+                        }
                     }
                 });
             },
-            // 작성 모달 열기
             fnOpenWriteModal() {
                 this.newInquiry = { inquiryType: '', title: '', content: '' };
                 $('#writeModal').modal('show');
             },
-            // 문의 제출
             fnSubmitInquiry() {
                 if(!this.newInquiry.inquiryType || !this.newInquiry.title || !this.newInquiry.content) {
                     return alert("모든 항목을 입력해주세요.");
@@ -188,12 +310,11 @@
                         if(res.result === "success") {
                             alert("문의가 성공적으로 접수되었습니다.");
                             $('#writeModal').modal('hide');
-                            this.fnGetList();
+                            this.fnGetList(1); // 첫 페이지로 이동하여 새로고침
                         }
                     }
                 });
             },
-            // 상세 보기
             fnDetailInquiry(no) {
                 $.ajax({
                     url: "/api/inquiry/detail.dox",
@@ -210,7 +331,7 @@
             }
         },
         mounted() {
-            this.fnGetList();
+            this.fnGetList(1);
         }
     });
     app.mount('#app');

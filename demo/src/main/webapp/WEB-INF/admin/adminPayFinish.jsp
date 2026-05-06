@@ -1,194 +1,405 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
-    <!DOCTYPE html>
-    <html lang="en">
+    <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+        <!DOCTYPE html>
+        <html lang="en">
 
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Document</title>
-        <script src="https://code.jquery.com/jquery-3.7.1.js"
-            integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
-        <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
-        <script src="/js/page-change.js"></script>
-        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
-        <link rel="stylesheet" href="${pageContext.request.contextPath}/css/common.css">
-        <style>
-            .middle {
-                width: 100%;
-                /* 화면 전체 높이를 사용하되, 헤더/푸터 제외한 나머지는 유연하게(1fr) */
-                display: grid;
-                grid-template-areas:
-                    "nav main";
-                grid-template-columns: 300px 1fr;
-                /* 너비 고정 */
-            }
+        <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>Document</title>
+            <script src="https://code.jquery.com/jquery-3.7.1.js"
+                integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
+            <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+            <script src="/js/page-change.js"></script>
+            <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+            <link rel="stylesheet" href="${pageContext.request.contextPath}/css/common.css">
+            <style>
+                /* 전체 배경 */
+                .middle {
+                    width: 100%;
+                    min-height: 100vh;
+                    position: relative;
+                    overflow: hidden;
+                    background: linear-gradient(180deg, #fffdfd 0%, #fff6f8 100%);
+                }
 
-            .navi {
-                grid-area: nav;
-                border: 1px solid blue;
-                padding: 20px 10px;
-                display: flex;
-                flex-direction: column;
-                gap: 8px;
-            }
+                /* 꽃 이미지 */
+                .middle::before {
+                    content: '';
+                    position: absolute;
+                    top: 0;
+                    left: 0;
+                    width: 500px;
+                    height: 500px;
+                    background-image: url(../../img/merryViewFlower2.png);
+                    background-size: cover;
+                    border-bottom-right-radius: 220px;
+                }
 
-            .navi-btn {
-                width: 100%;
-                padding: 12px 10px;
-                text-align: left;
-                background-color: white;
-                border: 1px solid #ddd;
-                border-radius: 4px;
-                cursor: pointer;
-                font-size: 14px;
-                font-weight: 500;
-                transition: 0.2s;
-            }
+                .middle::after {
+                    content: '';
+                    position: absolute;
+                    right: 0;
+                    bottom: 0;
+                    width: 500px;
+                    height: 500px;
+                    background-image: url(../../img/merryViewFlower.png);
+                    background-size: cover;
+                    border-top-left-radius: 220px;
+                }
 
-            .navi-btn:hover {
-                background-color: #e3f2fd;
-                border-color: #2196f3;
-                color: #1976d2;
-            }
+                /* 중앙 */
+                .main {
+                    display: flex;
+                    justify-content: center;
+                    padding: 70px 20px;
+                    position: relative;
+                    z-index: 2;
+                }
 
-            .activebtn {
-                background-color: #ff6b6b;
-                color: white;
-                font-weight: bold;
-                border: 1px solid #ff6b6b;
-            }
+                .pay-finish-box {
+                    width: 100%;
+                    max-width: 760px;
+                    background: #ffffffee;
+                    border-radius: 30px;
+                    padding: 30px 48px;
+                    box-shadow: 0 15px 45px rgba(226, 170, 180, .15);
+                    border: 1px solid #f6e4e7;
+                    text-align: center;
+                }
 
-            .main {
-                grid-area: main;
-                border: 1px solid #ffc7c2;
-                padding: 20px;
-                display: flex;
-                gap: 20px;
-                /* 카드 사이 간격 */
-                align-items: flex-start;
-                /* 카드들이 위쪽에 고정되도록 */
-            }
-        </style>
-    </head>
+                /* 제목 */
+                .ring-box {
+                    font-size: 42px;
+                    margin-bottom: 10px;
+                }
 
-    <body>
-        <div id="app">
-            <jsp:include page="/WEB-INF/common/header.jsp" />
-            <div class="middle">
-                <div class="navi">
-                    <button :class="['navi-btn', activeMenu === 'main' ? 'activebtn' : '']"
-                        @click="fnPage('/adminMain.do')">관리자 메인 페이지</button>
+                .pay-title {
+                    font-size: 52px;
+                    font-weight: 300;
+                    color: #222;
+                    margin-bottom: 10px;
+                }
 
-                    <button :class="['navi-btn', activeMenu === 'user' ? 'activebtn' : '']"
-                        @click="fnPage('/adminUser.do')">전체 회원 목록</button>
+                .pay-title span {
+                    color: #ec7f90;
+                    font-weight: 700;
+                }
 
-                    <button :class="['navi-btn', activeMenu === 'company' ? 'activebtn' : '']"
-                        @click="fnPage('/adminCompany.do')">전체 업체 목록</button>
+                .pay-sub {
+                    font-size: 21px;
+                    color: #666;
+                    line-height: 1.8;
+                    margin-bottom: 25px;
+                }
 
-                    <button :class="['navi-btn', activeMenu === 'board' ? 'activebtn' : '']"
-                        @click="fnPage('/adminBoard.do')">전체 게시판/리뷰 목록</button>
+                /* 정보 */
+                .info-head {
+                    display: flex;
+                    align-items: center;
+                    gap: 18px;
+                    font-size: 26px;
+                    font-weight: 700;
+                    margin-bottom: 14px;
+                }
 
-                    <button :class="['navi-btn', activeMenu === 'reviewWait' ? 'activebtn' : '']"
-                        @click="fnPage('/adminReviewWait.do')">승인 대기중인 리뷰</button>
+                .info-head::before,
+                .info-head::after {
+                    content: '';
+                    flex: 1;
+                    height: 1px;
+                    background: #ececec;
+                }
 
-                    <button :class="['navi-btn', activeMenu === 'payment' ? 'activebtn' : '']"
-                        @click="fnPage('/adminPayment.do')">결제 및 상품 관리</button>
+                .info-row {
+                    display: flex;
+                    justify-content: space-between;
+                    padding: 18px 0;
+                    border-bottom: 1px solid #f1f1f1;
+                    font-size: 20px;
+                }
 
-                    <button :class="['navi-btn', activeMenu === 'report' ? 'activebtn' : '']"
-                        @click="fnPage('/adminReport.do')">신고 관리</button>
+                .success {
+                    color: #ec7085;
+                    font-weight: 700;
+                }
 
-                    <button :class="['navi-btn', activeMenu === 'stats' ? 'activebtn' : '']"
-                        @click="fnPage('/adminStatistics.do')">통계</button>
-                </div>
-                <div class="main">
-                    <div v-if="!paymentInfo">
-                        결제 정보를 불러오는 중...
-                    </div>
+                /* 타입박스 */
+                .type-box {
+                    margin-top: 35px;
+                    padding: 22px;
+                    border-radius: 18px;
+                    background: #fff6f7;
+                    border: 1px solid #f5dce0;
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: center;
+                }
 
-                    <div v-else>
-                        <h3>결제가 완료 되었습니다! 🎉</h3>
+                .type-left {
+                    display: flex;
+                    gap: 16px;
+                    align-items: center;
+                }
 
-                        <hr>
+                .type-icon {
+                    width: 54px;
+                    height: 54px;
+                    border-radius: 50%;
+                    background: #ffe8ec;
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                }
 
-                        <p><b>imp_uid:</b> {{ paymentInfo.imp_uid }}</p>
-                        <p><b>주문번호:</b> {{ paymentInfo.merchant_uid }}</p>
-                        <p><b>결제 금액:</b> {{ paymentInfo.amount }}</p>
-                        <p><b>결제 상태:</b> {{ paymentInfo.status }}</p>
-                        <p><b>결제 수단:</b> {{ paymentInfo.pay_method }}</p>
+                .type-check {
+                    width: 44px;
+                    height: 44px;
+                    border-radius: 50%;
+                    background: #efb2bc;
+                    color: #fff;
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                }
 
-                        <button class="btn btn-primary" @click="fnPage('/adminPayment.do')">
-                            결제 관리로 이동
-                        </button>
-                    </div>
+                /* 버튼 */
+                .btn-area {
+                    margin-top: 30px;
+                    display: flex;
+                    gap: 16px;
+                    justify-content: center;
+                    flex-wrap: wrap;
+                }
 
-                </div>
-            </div>
-            <jsp:include page="/WEB-INF/common/footer.jsp" />
-        </div>
-        <script>
-            const IMP_UID = new URLSearchParams(location.search).get("imp_uid");
-            const app = Vue.createApp({
-                data() {
-                    return {
-                        // 변수 - (key : value)
-                        activeMenu: "",
-                        impUid: null,
-                        paymentInfo: null
-                    };
-                },
-                methods: {
-                    // 함수(메소드) - (key : function())
-                    fnPage: function (url) {
-                        location.href = url;
-                    },
-                    fnGetPayment: function () {
-                        let self = this;
+                .btn-main,
+                .btn-sub {
+                    min-width: 230px;
+                    height: 60px;
+                    border-radius: 14px;
+                    font-size: 19px;
+                    font-weight: 700;
+                }
 
-                        $.ajax({
-                            url: "/api/payment/detail",
-                            type: "GET",
-                            data: {
-                                imp_uid: self.impUid
-                            },
-                            success: function (res) {
-                                console.log("결제정보:", res);
-                                self.paymentInfo = res;
-                            },
-                            error: function () {
-                                alert("결제 정보를 불러오지 못했습니다.");
-                            }
-                        });
-                    },
+                .btn-main {
+                    border: none;
+                    color: #fff;
+                    background: linear-gradient(90deg, #ef8e9a, #e96f7f);
+                }
 
-                }, // methods
-                mounted() {
-                    // 처음 시작할 때 실행되는 부분
-                    let self = this;
-                    const path = location.pathname;
+                .btn-sub {
+                    border: 2px solid #f0a8b2;
+                    background: #fff;
+                    color: #e77988;
+                }
 
-                    this.activeMenu =
-                        path.includes('adminMain') ? 'main' :
-                            path.includes('adminUser') ? 'user' :
-                                path.includes('adminCompany') ? 'company' :
-                                    path.includes('adminBoard') ? 'board' :
-                                        path.includes('adminReviewWait') ? 'reviewWait' :
-                                            path.includes('adminPayment') ? 'payment' :
-                                                path.includes('adminReport') ? 'report' :
-                                                    path.includes('adminStatistics') ? 'stats' :
-                                                        '';
-                    // imp_uid 받기
-                    this.impUid = new URLSearchParams(location.search).get("imp_uid");
+                .bottom-msg {
+                    margin-top: 40px;
+                    color: #d58f99;
+                    font-size: 18px;
+                }
 
-                    // 결제 조회 실행
-                    if (this.impUid) {
-                        this.fnGetPayment();
+                /* 반응형 */
+                @media(max-width:768px) {
+
+                    .pay-finish-box {
+                        padding: 35px 20px;
+                    }
+
+                    .pay-title {
+                        font-size: 34px;
+                    }
+
+                    .pay-sub {
+                        font-size: 16px;
+                    }
+
+                    .info-row {
+                        display: flex;
+                        justify-content: space-between;
+                        padding: 12px 0;
+                        /* 기존 18px -> 12px */
+                        border-bottom: 1px solid #f1f1f1;
+                        font-size: 20px;
+                    }
+
+                    .type-box {
+                        flex-direction: column;
+                        gap: 18px;
+                        align-items: flex-start;
+                    }
+
+                    .btn-main,
+                    .btn-sub {
+                        width: 100%;
+                    }
+
+                    .middle::before,
+                    .middle::after {
+                        width: 180px;
+                        height: 180px;
                     }
                 }
-            });
 
-            app.mount('#app');
-        </script>
-    </body>
+                .type-text {
+                    display: flex;
+                    flex-direction: column;
+                    gap: 6px;
+                }
 
-    </html>
+                /* 상단 강조 문구 */
+                .type-label {
+                    font-size: 18px;
+                    font-weight: 700;
+                    color: #e77988;
+                    letter-spacing: -0.3px;
+                }
+
+                /* 상품명 줄 */
+                .type-name {
+                    font-size: 17px;
+                    color: #666;
+                    font-weight: 500;
+                }
+
+                /* 상품명 강조 */
+                .type-name span {
+                    color: #222;
+                    font-weight: 700;
+                    background: linear-gradient(transparent 60%, #ffe4ea 0%);
+                    padding: 0 4px;
+                    border-radius: 6px;
+                }
+            </style>
+        </head>
+
+        <body>
+            <jsp:include page="/WEB-INF/common/header.jsp" />
+            <div id="app">
+                <div class="middle">
+                    <div class="main">
+                        <div class="pay-finish-box">
+
+                            <div class="ring-box">💍</div>
+
+                            <h2 class="pay-title">
+                                결제가 <span>완료</span>되었습니다
+                            </h2>
+
+                            <p class="pay-sub">
+                                소중한 순간을 함께 준비해주셔서 감사합니다.<br>
+                                더 행복한 결혼 준비를 위해 언제나 함께할게요.
+                            </p>
+
+                            <div class="info-head">결제 정보</div>
+
+                            <div class="info-box">
+
+                                <div class="info-row">
+                                    <span class="info-title">결제번호</span>
+                                    <span class="info-value">${payment.pay_no}</span>
+                                </div>
+
+                                <div class="info-row">
+                                    <span class="info-title">결제금액</span>
+                                    <span class="info-value">${payment.amount} 원</span>
+                                </div>
+
+                                <div class="info-row">
+                                    <span class="info-title">결제상태</span>
+                                    <span class="info-value success">${payment.pay_status == "SUCCESS" ? "결제성공" : "결제실패"}</span>
+                                </div>
+
+                                <div class="info-row">
+                                    <span class="info-title">결제일시</span>
+                                    <span class="info-value">${payment.pay_date}</span>
+                                </div>
+
+                            </div>
+
+                            <c:if test="${type eq 'PASS'}">
+                                <div class="type-box">
+                                    <div class="type-left">
+                                        <div class="type-icon">♡</div>
+                                    </div>
+                                    <div class="type-text">
+                                        <div class="type-label">패스권 구매 완료</div>
+                                        <div class="type-name">상품명 : <span>${payment.pass_name}</span></div>
+                                    </div>
+                                    <div class="type-check">✔</div>
+                                </div>
+                            </c:if>
+
+                            <c:if test="${type eq 'RES'}">
+                                <div class="type-box">
+                                    <div class="type-left">
+                                        <div class="type-icon">♡</div>
+                                    </div>
+                                    <div class="type-text">
+                                        <div class="type-label">예약 결제 완료</div>
+                                        <div class="type-name">예약번호 : <span>${payment.res_no}</span></div>
+                                    </div>
+                                    <div class="type-check">✔</div>
+                                </div>
+                            </c:if>
+
+                            <div class="btn-area">
+                                <button class="btn btn-main" onclick="location.href='/merryViewHome.do'">
+                                    홈으로 이동
+                                </button>
+
+                                <button class="btn btn-sub" onclick="location.href='/api/review/list.do'">
+                                    리뷰 게시판
+                                </button>
+                            </div>
+
+                            <div class="bottom-msg">
+                                MARRY VIEW와 함께하는 모든 순간이 특별하길 바랍니다.
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+                <jsp:include page="/WEB-INF/common/footer.jsp" />
+            </div>
+            <script>
+                const IMP_UID = new URLSearchParams(location.search).get("imp_uid");
+                const app = Vue.createApp({
+                    data() {
+                        return {
+                            // 변수 - (key : value)
+                            activeMenu: "",
+                            impUid: null,
+                        };
+                    },
+                    methods: {
+                        // 함수(메소드) - (key : function())
+                        fnPage: function (url) {
+                            location.href = url;
+                        },
+
+                    }, // methods
+                    mounted() {
+                        // 처음 시작할 때 실행되는 부분
+                        let self = this;
+                        const path = location.pathname;
+
+                        this.activeMenu =
+                            path.includes('adminMain') ? 'main' :
+                                path.includes('adminUser') ? 'user' :
+                                    path.includes('adminCompany') ? 'company' :
+                                        path.includes('adminBoard') ? 'board' :
+                                            path.includes('adminReviewWait') ? 'reviewWait' :
+                                                path.includes('adminPayment') ? 'payment' :
+                                                    path.includes('adminReport') ? 'report' :
+                                                        path.includes('adminStatistics') ? 'stats' :
+                                                            '';
+                    }
+                });
+
+                app.mount('#app');
+            </script>
+        </body>
+
+        </html>

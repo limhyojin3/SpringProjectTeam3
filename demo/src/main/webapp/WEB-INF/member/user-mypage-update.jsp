@@ -171,11 +171,44 @@
             color: #bbb;
             border: none;
         }
+        /* 수정하기 버튼 */
+        .btn-update {
+            padding: 10px 25px;
+            background: #f4a096;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: background 0.2s ease;
+        }
+
+        .btn-update:hover {
+            background: #e8897d;
+        }
+
+        /* 취소 버튼 */
+        .btn-cancel {
+            padding: 10px 25px;
+            background: white;
+            color: #888;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            margin-left: 10px;
+        }
+
+        .btn-cancel:hover {
+            background: #f5f5f5;
+            border-color: #bbb;
+        }
     </style>
 </head>
 <body>
+    <jsp:include page="/WEB-INF/common/header.jsp" />
     <div id="app">
-        <jsp:include page="/WEB-INF/common/header.jsp" />
         <div id="wrapper">
             <div class="main-content">
 
@@ -258,7 +291,7 @@
                             <div class="input-wrap">
                                 <div class="form-input">
                                     <input type="text" v-model="info.userTel"
-                                        @input="fnCheckTelChange"
+                                        @input="formatTel(); fnCheckTelChange();"
                                         maxlength="13"
                                         placeholder="010 1234 5678">
                                     <button class="btn-check" v-if="isTelChanged && !isSmsVerified" @click="fnSendSms()">인증 요청</button>
@@ -291,8 +324,8 @@
                                 <div class="msg-box"></div>
                             </div>
                         </div>
-                        <button type="button" @click="fnUserUpdate()">수정하기</button>
-                        <button type="button" @click="fnCancel()">취소</button>
+                        <button type="button" class="btn-update" @click="fnUserUpdate()">수정하기</button>
+                        <button type="button" class="btn-cancel" @click="fnCancel()">취소</button>
                     </div>
                 </div>
 
@@ -408,9 +441,11 @@
                 let self = this;
                 if (self.info.userTel !== self.originTel) {
                     self.isTelChanged = true;
+                    self.isSmsVerified = false;
                 } else {
                     self.isTelChanged = false;
                     self.authNumber = "";
+                    self.isSmsVerified = true;
                 }
             },
             // *이메일*
@@ -500,6 +535,7 @@
                         if(data.result === 'success') {
                             alert("인증이 완료되었습니다!");
                             self.isVerified = true;
+                            self.isSmsVerified = true;
                         } else {
                             alert("인증번호가 틀렸습니다.");
                         }

@@ -86,17 +86,24 @@ public class ReportService {
         return resultMap;
     }
 
-    // 나의 신고 내역 조회
-    public Map<String, Object> getMyReports(HashMap<String, Object> map) {
+    // 내 신고 내역 가공 (목록 + 전체 개수)
+    public Map<String, Object> getMyReportList(HashMap<String, Object> map) {
         Map<String, Object> resultMap = new HashMap<>();
+        
         try {
+            // 1. 목록 조회
             List<Report> list = reportMapper.selectMyReports(map);
+            // 2. 전체 카운트 조회
+            int totalCount = reportMapper.selectReportCount(map);
+            
             resultMap.put("list", list);
+            resultMap.put("totalCount", totalCount);
             resultMap.put("result", "success");
         } catch (Exception e) {
-            resultMap.put("result", "error");
             e.printStackTrace();
+            resultMap.put("result", "error");
         }
+        
         return resultMap;
     }
 }

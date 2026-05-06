@@ -5,341 +5,501 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>MarryView - 회원가입</title>
     <script src="https://code.jquery.com/jquery-3.7.1.js" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
     <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
     <script src="/js/page-change.js"></script>
     <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script> <!--주소 api-->
     <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; }
-        body { background: #f9f9f9; font-family: 'Noto Sans KR', sans-serif; }
-
-        #app {
-            width: 550px;
-            margin: 50px auto;
-            background: white;
-            border-radius: 12px;
-            padding: 30px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+       * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            background: #fafafa;
+            font-family: 'Noto Sans KR', sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px 16px;
+            min-height: 100vh;
         }
-        /* 행 하나 감싸는 컨테이너 */
+
+        .logo-wrap {
+            text-align: center;
+            margin-bottom: 18px;
+            cursor: pointer;
+        }
+        .logo-wrap img { height: 64px; }
+
+        .join-card {
+            width: 100%;
+            max-width: 480px;
+            background: #fff;
+            border: 1px solid #e0e0e0;
+            border-radius: 10px;
+            padding: 20px 24px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+        }
+
+        .join-card h2 {
+            font-size: 16px;
+            font-weight: 600;
+            color: #555;
+            text-align: center;
+            margin-bottom: 18px;
+        }
+
         .form-row {
             display: flex;
-            align-items: flex-start; 
-            margin-bottom: 2px;   
+            align-items: stretch;
+            margin-bottom: 4px;
         }
-        /* 왼쪽 라벨 (핑크 배경) */
+
         .form-label {
             background: #f4a096;
             color: white;
-            width: 120px;
-            min-height: 45px;
-            height: 45px;        /* ← 고정 높이 */
-            align-self: flex-start;  /* ← 위쪽 정렬 */
+            width: 90px;
+            min-width: 90px;
             display: flex;
             align-items: center;
-            padding-left: 15px;
-            font-size: 14px;
-            flex-shrink: 0;
-        }
-        /* 사업장 주소 라벨 (2칸짜리) */
-        .form-label-2 {
-            background: #f4a096;
-            color: white;
-            width: 120px;
-            min-height: 45px;
-            height: 90px;        /* ← 고정 높이 */
-            align-self: flex-start;  /* ← 위쪽 정렬 */
-            display: flex;
-            align-items: center;
-            padding-left: 15px;
-            font-size: 14px;
-            flex-shrink: 0;
+            justify-content: center;
+            text-align: center;
+            padding: 0 8px;
+            font-size: 12px;
+            font-weight: 700;
+            border-radius: 6px 0 0 6px;
+            line-height: 1.4;
         }
 
-        /* 오른쪽 입력 영역 */
-        .form-input {
+        .row-body {
             flex: 1;
-            padding: 0;
+            min-width: 0;
+            display: flex;
+            flex-direction: column;
+            border: 1px solid #f4a096;
+            border-left: none;
+            border-radius: 0 6px 6px 0;
+            overflow: hidden;
+        }
+
+        .has-btn .row-body {
+            border-radius: 0;
+        }
+
+        .form-input {
             display: flex;
             align-items: center;
-            height: 45px;
-            overflow: hidden;
-            border: 1px solid #eee;
+            height: 38px;
+            background: #fff;
         }
-        /* 비활성화 행 */
-        .form-input.disabled {
-            background: #e0e0e0;
+        .form-input + .form-input {
+            border-top: 1px solid #f4a096;
         }
+        .form-input.disabled { background: #f5f5f5; }
+
         input[type="text"],
         input[type="password"],
         input[type="number"] {
-            box-sizing: border-box;
             border: none;
             outline: none;
             flex: 1;
-            font-size: 14px;
-            background: transparent;
-            padding-left: 15px;
-            height: 100%;  
-        }
-        /* 중복체크, 본인인증 버튼 */
-        .btn-check {
-            margin-left: 5px;
-            background: #f0b429;
-            color: white;
-            border: none;
-            padding: 6px 12px;
-            border-radius: 6px;
-            cursor: pointer;
             font-size: 13px;
-            white-space: nowrap;
-            flex-shrink: 0;
-        }
-        /* 가입하기 버튼 */
-        .btn-submit {
-            display: block;
-            margin: 20px auto 0;
-            background: #f0b429;
-            color: white;
-            border: none;
-            padding: 10px 40px;
-            border-radius: 8px;
-            font-size: 15px;
-            cursor: pointer;
-        }
-        /* 버튼에 호버처리 */
-        .btn-submit:hover, .btn-check:hover {
-            box-shadow: 1px 1px 2px gray;
-        }
-        input:disabled {
-            width: 100%;
             background: transparent;
-            cursor: not-allowed;
+            padding: 6px 12px 0;
+            height: 100%;
+            font-family: 'Noto Sans KR', sans-serif;
         }
-        /* 성별 칸처럼 라디오 버튼이 들어가는 경우를 위해 */
-        .form-input input[type="radio"]:first-child {
-            margin-left: 15px; /* 아이디 입력창 글자 위치와 맞추기 위해 15px 추천 */
+        input:disabled { cursor: not-allowed; color: #aaa; }
+
+        select {
+            border: none;
+            outline: none;
+            flex: 1;
+            font-size: 13px;
+            background: transparent;
+            padding: 0 12px;
+            height: 100%;
+            font-family: 'Noto Sans KR', sans-serif;
+            cursor: pointer;
         }
 
-        /* 추가로 버튼과 글자(남, 여) 사이도 너무 붙어 있다면 아래도 살짝 추가 */
         input[type="radio"] {
-            margin-left: 15px;  /* 첫 번째 버튼의 왼쪽 여백 (벽과의 거리) */
-            margin-right: 5px;  /* 버튼과 글자(남, 여) 사이 간격 */
-            vertical-align: middle;
+            margin-left: 12px;
+            margin-right: 4px;
+            accent-color: #f4a096;
         }
-        .msg-box {
-            height: 18px;
-            font-size: 11px;
-            padding-left: 5px;
-            color: transparent;  /* 내용 없을 때 투명 */
+
+        .email-id-input {
+            width: 110px;
+            flex: none !important;
         }
-        .input-wrap {
-            flex: 1;
-            min-width: 0;  /* ← 이게 핵심! flex 안에서 넘치는 거 방지 */
-        }
+
         .email-domain {
             flex: 1;
-            min-width: 0;    /* ← 추가 */
-            max-width: 150px; /* ← 최대 너비 제한 */
+            min-width: 0;
             border: none;
             outline: none;
-            font-size: 14px;
+            font-size: 12px;
             background: transparent;
+            font-family: 'Noto Sans KR', sans-serif;
+            padding-left: 4px;
+            max-width: 100%;
         }
+
         .email-cancel {
             cursor: pointer;
-            padding: 0 5px;
-            color: #999;
+            padding: 0 6px;
+            color: #bbb;
             flex-shrink: 0;
         }
-        .form-input + .form-input {
-            border-top: none;
+
+        .msg-box {
+            font-size: 11px;
+            padding: 3px 10px 4px;
+            min-height: 20px;
+            color: transparent;
+            background: white;
+            line-height: 1.3;
         }
+        .msg-box.show { color: inherit; }
+        .msg-box.disabled { background: #f5f5f5; }
+
+        .btn-check {
+            align-self: stretch;
+            padding: 0 14px;
+            background: #f0b429;
+            color: white;
+            border: none;
+            border-radius: 0 6px 6px 0;
+            font-size: 12px;
+            font-family: 'Noto Sans KR', sans-serif;
+            font-weight: 500;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: opacity 0.2s;
+            flex-shrink: 0;
+        }
+        .btn-check:hover { opacity: 0.88; }
+
+        .btn-submit {
+            width: 100%;
+            height: 48px;
+            background: #f4a096;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 15px;
+            font-family: 'Noto Sans KR', sans-serif;
+            font-weight: 500;
+            cursor: pointer;
+            margin-top: 16px;
+            transition: opacity 0.2s;
+        }
+        .btn-submit:hover { opacity: 0.88; }
+        /* 스텝 인디케이터 */
+        .step-indicator {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 24px;
+            gap: 0;
+        }
+        .step-dot {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: #eee;
+            color: #bbb;
+            font-size: 12px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s;
+        }
+        .step-dot.active {
+            background: #f4a096;
+            color: white;
+        }
+        .step-dot.done {
+            background: #f4a096;
+            color: white;
+            opacity: 0.5;
+        }
+        .step-line {
+            width: 40px;
+            height: 2px;
+            background: #eee;
+            transition: background 0.3s;
+        }
+        .step-line.done {
+            background: #f4a096;
+            opacity: 0.5;
+        }
+        .step-label {
+            font-size: 11px;
+            color: #bbb;
+            text-align: center;
+            margin-top: 4px;
+        }
+
+        /* 스텝 버튼 영역 */
+        .step-btn-wrap {
+            display: flex;
+            gap: 8px;
+            margin-top: 16px;
+        }
+        .btn-prev {
+            flex: 1;
+            height: 48px;
+            background: #eee;
+            color: #888;
+            border: none;
+            border-radius: 6px;
+            font-size: 15px;
+            font-family: 'Noto Sans KR', sans-serif;
+            font-weight: 500;
+            cursor: pointer;
+            transition: opacity 0.2s;
+        }
+        .btn-prev:hover { opacity: 0.8; }
+        .btn-next {
+            flex: 2;
+            height: 48px;
+            background: #f4a096;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 15px;
+            font-family: 'Noto Sans KR', sans-serif;
+            font-weight: 500;
+            cursor: pointer;
+            transition: opacity 0.2s;
+        }
+        .btn-next:hover { opacity: 0.88; }
     </style>
 </head>
 <body>
     <div id="app">
-        <div class="form-row">
-            <div class="form-label">업체명</div>
-            <div class="input-wrap">
-                <div class="form-input">
-                    <input type="text" v-model="info.comName"
-                        :disabled="isComNameAvailable"
-                        @chage="filterComName"
-                        placeholder="정확한 업체명을 입력해주세요.">
+        <div class="logo-wrap" @click="fnMain()">
+            <img src="/img/marryview-logo-en.svg" alt="메리뷰 로고">
+        </div>
+
+        <div class="join-card">
+            <h2>업체 회원가입</h2>
+
+            <!-- 스텝 인디케이터 -->
+            <div>
+                <div class="step-indicator">
+                    <div class="step-dot" :class="{active: step===1, done: step>1}">1</div>
+                    <div class="step-line" :class="{done: step>1}"></div>
+                    <div class="step-dot" :class="{active: step===2, done: step>2}">2</div>
+                    <div class="step-line" :class="{done: step>2}"></div>
+                    <div class="step-dot" :class="{active: step===3}">3</div>
+                </div>
+                <div style="display:flex; justify-content:center; gap:25px; margin-bottom:20px;">
+                    <span class="step-label" :style="{color: step>=1 ? '#f4a096' : '#bbb'}">기본정보</span>
+                    <span class="step-label" :style="{color: step>=2 ? '#f4a096' : '#bbb'}">본인인증</span>
+                    <span class="step-label" :style="{color: step>=3 ? '#f4a096' : '#bbb'}">비밀번호</span>
+                </div>
+            </div>
+
+            <!-- STEP 1: 기본정보 -->
+            <div v-if="step === 1">
+
+                <!-- 업체명 -->
+                <div class="form-row has-btn">
+                    <div class="form-label">업체명</div>
+                    <div class="row-body">
+                        <div class="form-input">
+                            <input type="text" v-model="info.comName"
+                                :disabled="isComNameAvailable"
+                                @change="filterComName"
+                                placeholder="정확한 업체명을 입력해주세요">
+                        </div>
+                        <div class="msg-box" :class="{'show': comNameMsg}"
+                            :style="{color: isComNameAvailable ? 'green' : 'red'}">{{ comNameMsg }}</div>
+                    </div>
                     <button class="btn-check" @click="fnCheckComName()">중복체크</button>
                 </div>
-                <div class="msg-box" :style="{color: isComNameAvailable ? 'green' : 'red'}">
-                    {{ comNameMsg }}
-                </div>
-            </div>
-        </div>
-        <!-- 아이디 -->
-        <div class="form-row">
-            <div class="form-label">아이디</div>
-            <div class="input-wrap">
-                <div class="form-input">
-                    <input type="text" v-model="info.userId"
-                        :disabled="isUserIdAvailable"
-                        @input="filterUserId"
-                        maxlength="20"
-                        placeholder="영문 + 숫자의 조합만 허용합니다.">
+
+                <!-- 아이디 -->
+                <div class="form-row has-btn">
+                    <div class="form-label">아이디</div>
+                    <div class="row-body">
+                        <div class="form-input">
+                            <input type="text" v-model="info.userId"
+                                :disabled="isUserIdAvailable"
+                                @input="filterUserId" maxlength="20"
+                                placeholder="영문 + 숫자 조합">
+                        </div>
+                        <div class="msg-box" :class="{'show': userIdMsg}"
+                            :style="{color: isUserIdAvailable ? 'green' : 'red'}">{{ userIdMsg }}</div>
+                    </div>
                     <button class="btn-check" @click="fnCheckUserId()">중복체크</button>
                 </div>
-                <div class="msg-box" :style="{color: isUserIdAvailable ? 'green' : 'red'}">
-                    {{ userIdMsg }}
-                </div>
-            </div>
-        </div>
 
-        <!-- 이름 -->
-        <div class="form-row">
-            <div class="form-label">대표자명</div>
-            <div class="input-wrap">
-                <div class="form-input">
-                    <input type="text" 
-                        v-model="info.ceoName"
-                        @input="filterName"
-                        placeholder="이름은 한글만 입력 가능합니다.">
+                <!-- 대표자명 -->
+                <div class="form-row">
+                    <div class="form-label">대표자명</div>
+                    <div class="row-body">
+                        <div class="form-input">
+                            <input type="text" v-model="info.ceoName"
+                                @input="filterName" placeholder="한글만 입력 가능합니다">
+                        </div>
+                    </div>
                 </div>
-                <div class="msg-box"></div>
-            </div>
-        </div>
 
-        <!-- 이메일 -->
-        <div class="form-row">
-            <div class="form-label">대표 이메일</div>
-            <div class="input-wrap">
-                <div class="form-input">
-                    <input type="text" v-model="info.emailId" placeholder="이메일 앞부분">
-                    <span>@</span>
-                    <template v-if="emailDomainDirect">
-                        <input type="text" v-model="emailDomain" class="email-domain" 
-                            placeholder="직접입력" @input="filterEmailDomain">
-                        <span @click="fnCancelDirectEmail()" class="email-cancel">✕</span>
-                    </template>
-                    <template v-else>
-                        <select v-model="emailDomain" @change="fnEmailDomainChange" class="email-domain">
-                            <option value="naver.com">naver.com</option>
-                            <option value="gmail.com">gmail.com</option>
-                            <option value="nate.com">nate.com</option>
-                            <option value="kakao.com">kakao.com</option>
-                            <option value="daum.net">daum.net</option>
-                            <option value="direct">직접입력</option>
-                        </select>
-                    </template>
+                <!-- 대표 이메일 -->
+                <div class="form-row has-btn">
+                    <div class="form-label">대표<br>이메일</div>
+                    <div class="row-body">
+                        <div class="form-input">
+                            <input type="text" v-model="info.emailId"
+                                class="email-id-input" placeholder="이메일 앞부분">
+                            <span style="flex-shrink:0; color:#aaa; font-size:13px;">@</span>
+                            <template v-if="emailDomainDirect">
+                                <input type="text" v-model="emailDomain" class="email-domain"
+                                    placeholder="직접입력" @input="filterEmailDomain">
+                                <span @click="fnCancelDirectEmail()" class="email-cancel">✕</span>
+                            </template>
+                            <template v-else>
+                                <select v-model="emailDomain" @change="fnEmailDomainChange" class="email-domain">
+                                    <option value="naver.com">naver.com</option>
+                                    <option value="gmail.com">gmail.com</option>
+                                    <option value="nate.com">nate.com</option>
+                                    <option value="kakao.com">kakao.com</option>
+                                    <option value="daum.net">daum.net</option>
+                                    <option value="direct">직접입력</option>
+                                </select>
+                            </template>
+                        </div>
+                        <div class="msg-box" :class="{'show': emailMsg}"
+                            :style="{color: isEmailAvailable ? 'green' : 'red'}">{{ emailMsg }}</div>
+                    </div>
                     <button class="btn-check" @click="fnCheckEmail()">중복체크</button>
                 </div>
-                <div class="msg-box" :style="{color: isEmailAvailable ? 'green' : 'red'}">
-                    {{ emailMsg }}
+
+                <!-- 업체 분류 -->
+                <div class="form-row">
+                    <div class="form-label">업체 분류</div>
+                    <div class="row-body">
+                        <div class="form-input">
+                            <select v-model="info.comType">
+                                <option value="">선택해주세요</option>
+                                <option value="STUDIO">스튜디오</option>
+                                <option value="DRESS">드레스</option>
+                                <option value="MAKEUP">메이크업</option>
+                                <option value="SNAP">스냅</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="step-btn-wrap">
+                    <button class="btn-next" @click="step=2">다음 →</button>
                 </div>
             </div>
-        </div>
 
-        <!-- 업체 분류 -->
-        <div class="form-row">
-            <div class="form-label">업체 분류</div>
-            <div class="input-wrap">
-                <div class="form-input">
-                    <select v-model="info.comType" class="email-domain">
-                        <option value="">선택해주세요</option>
-                        <option value="STUDIO">스튜디오</option>
-                        <option value="DRESS">드레스</option>
-                        <option value="MAKEUP">메이크업</option>
-                        <option value="SNAP">스냅</option>
-                    </select>
-                </div>
-                <div class="msg-box"></div>
-            </div>
-        </div>
+            <!-- STEP 2: 본인인증 -->
+            <div v-if="step === 2">
 
-        <!-- 전화번호 -->
-        <div class="form-row">
-            <div class="form-label">대표 전화번호</div>
-            <div class="input-wrap">
-                <div class="form-input">
-                    <input type="text" v-model="info.comTel"
-                        @input="formatTel"
-                        maxlength="13"
-                        placeholder="010 1234 5678">
+                <!-- 대표 전화번호 -->
+                <div class="form-row has-btn">
+                    <div class="form-label">대표<br>전화번호</div>
+                    <div class="row-body">
+                        <div class="form-input">
+                            <input type="text" v-model="info.comTel"
+                                @input="formatTel" maxlength="13" placeholder="010-1234-5678">
+                        </div>
+                        <div class="msg-box" :class="{'show': comTelMsg}"
+                            :style="{color: isComTelVerified ? 'green' : 'red'}">{{ comTelMsg }}</div>
+                    </div>
                     <button class="btn-check" @click="fnSendSms()">인증 요청</button>
                 </div>
-                <div class="msg-box"></div>
-            </div>
-        </div>
-        <!-- 인증번호 입력 -->
-        <div class="form-row">
-            <div class="form-label">인증번호</div>
-            <div class="input-wrap">
-                <div class="form-input">
-                    <input type="number" v-model="info.authCode"
-                        @input="formatTel"
-                        maxlength="6"
-                        placeholder="6자리 숫자를 입력하세요">
+
+                <!-- 인증번호 -->
+                <div class="form-row has-btn">
+                    <div class="form-label">인증번호</div>
+                    <div class="row-body">
+                        <div class="form-input">
+                            <input type="number" v-model="info.authCode"
+                                maxlength="6" placeholder="6자리 숫자를 입력하세요">
+                        </div>
+                        <div class="msg-box" :class="{'show': authCodeMsg}"
+                            :style="{color: isVerified ? 'green' : 'red'}">{{ authCodeMsg }}</div>
+                    </div>
                     <button class="btn-check" @click="fnCheckSms()">인증 확인</button>
                 </div>
-                <div class="msg-box"></div>
-            </div> 
-        </div>
 
-        <!-- 사업자 번호 인증 -->
-        <div class="form-row">
-            <div class="form-label">사업자 번호</div>
-            <div class="input-wrap">
-                <div class="form-input">
-                    <input type="text" v-model="info.bizNo"
-                        @input="formatBizNo"
-                        placeholder="000-00-0000">
+                <!-- 사업자 번호 -->
+                <div class="form-row has-btn">
+                    <div class="form-label">사업자<br>번호</div>
+                    <div class="row-body">
+                        <div class="form-input">
+                            <input type="text" v-model="info.bizNo"
+                                @input="formatBizNo" placeholder="000-00-00000">
+                        </div>
+                        <div class="msg-box" :class="{'show': bizMsg}"
+                            :style="{color: isBizVerified ? 'green' : 'red'}">{{ bizMsg }}</div>
+                    </div>
                     <button class="btn-check" @click="fnCheckBizNo()">번호 인증</button>
                 </div>
-                <div class="msg-box"></div>
-            </div>
-        </div>
-        <!-- 비밀번호 -->
-        <div class="form-row">
-            <div class="form-label">비밀번호</div>
-            <div class="input-wrap">
-                <div class="form-input" :class="{'disabled': !(isVerified && isBizVerified)}">
-                    <input type="password" v-model="info.password" 
-                    @input="filterPassword"
-                    :disabled="!(isVerified && isBizVerified)"
-                    placeholder="영문+숫자 조합으로 8자 이상 입력하세요.">
-                </div>
-                <div class="msg-box" :style="{color: isPwdMatch ? 'green' : 'red'}">
-                    {{ pwdMsg }}
-                </div>
-            </div>
-        </div>
 
-        <!-- 비밀번호 확인 -->
-        <div class="form-row">
-            <div class="form-label">비밀번호 확인</div>
-            <div class="input-wrap">
-                <div class="form-input" :class="{'disabled': !(isVerified && isBizVerified)}">
-                    <input type="password" v-model="info.passwordConfirm"
-                    :disabled="!(isVerified && isBizVerified)"
-                    placeholder="비밀번호를 한 번 더 입력하세요.">
+                <div class="step-btn-wrap">
+                    <button class="btn-prev" @click="step=1">← 이전</button>
+                    <button class="btn-next" @click="step=3">다음 →</button>
                 </div>
-                <div class="msg-box"></div>
             </div>
-        </div>
 
-        <!-- 사업장 주소 api -->
-        <div class="form-row">
-            <div class="form-label-2">사업장 주소</div>
-            <div class="input-wrap">
-                <div class="form-input">
-                    <input type="text" v-model="info.comAddress" placeholder="주소 검색 버튼을 눌러주세요." readonly>
-                    <button class="btn-check" @click="fnSearchAddress()">주소 검색</button>
+            <!-- STEP 3: 비밀번호 + 주소 -->
+            <div v-if="step === 3">
+
+                <!-- 비밀번호 + 확인 묶음 -->
+                <div class="form-row">
+                    <div class="form-label">비밀번호</div>
+                    <div class="row-body">
+                        <div class="form-input" :class="{'disabled': !(isVerified && isBizVerified)}">
+                            <input type="password" v-model="info.password"
+                                @input="filterPassword"
+                                :disabled="!(isVerified && isBizVerified)"
+                                placeholder="영문+숫자 8자 이상">
+                        </div>
+                        <div class="form-input" :class="{'disabled': !(isVerified && isBizVerified)}">
+                            <input type="password" v-model="info.passwordConfirm"
+                                :disabled="!(isVerified && isBizVerified)"
+                                placeholder="비밀번호 확인">
+                        </div>
+                        <div class="msg-box"
+                            :class="{'show': pwdMsg, 'disabled': !(isVerified && isBizVerified)}"
+                            :style="{color: isPwdMatch ? 'green' : 'red'}">{{ pwdMsg }}</div>
+                    </div>
                 </div>
-                <div class="form-input">
-                    <input type="text" v-model="info.comAddressDetail" placeholder="상세 주소를 입력해주세요.">
+
+                <!-- 사업장 주소 -->
+                <div class="form-row">
+                    <div class="form-label">사업장<br>주소</div>
+                    <div class="row-body">
+                        <div class="form-input">
+                            <input type="text" v-model="info.comAddress"
+                                placeholder="주소 검색 버튼을 눌러주세요" readonly>
+                            <button class="btn-check" style="border-radius:0;"
+                                @click="fnSearchAddress()">주소 검색</button>
+                        </div>
+                        <div class="form-input">
+                            <input type="text" v-model="info.comAddressDetail"
+                                placeholder="상세 주소를 입력해주세요">
+                        </div>
+                        <div class="msg-box" :class="{'show': addressMsg}"
+                            :style="{color: isAddressMatch ? 'green' : 'red'}">{{ addressMsg }}</div>
+                    </div>
                 </div>
-                <div class="msg-box"></div>
+
+                <div class="step-btn-wrap">
+                    <button class="btn-prev" @click="step=2">← 이전</button>
+                    <button class="btn-next" @click="fnCompanyJoin()">가입하기</button>
+                </div>
             </div>
+
         </div>
-        <button class="btn-submit" @click="fnCompanyJoin()">가입 하기</button>
     </div>
 </body>
 </html>
@@ -349,6 +509,7 @@
         data() {
             return {
                 // 변수 - (key : value)
+                step: 1,
                 info : {
                     // *member table
                     userId : "",
@@ -368,13 +529,21 @@
                     // *번호 인증
                     authCode : ""
                 },
+                authCodeMsg : "",
+
                 isVerified: false,  // 인증 완료 여부
                 isBizVerified: false, // 사업자번호 확인 완료
+                bizMsg: "", 
                 isComNameAvailable: false, // 업체명 중복체크 통과 여부 (true  → 사용 가능한 업체명)
                 comNameMsg: "",            // 아이디 중복체크 결과 메시지
                 isUserIdAvailable: false,  // 아이디 중복체크 통과 여부 (true  → 사용 가능한 아이디)
                 userIdMsg: "",             // 아이디 중복체크 결과 메시지
                 
+                comTypeMsg: "",
+                comTelMsg: "",
+                isComTelVerified: false,  // 전화번호 입력 여부
+                isComTypeSelected: false,  // 업체 분류 선택 여부
+
                 emailDomain: "naver.com",      // 선택된 도메인
                 emailDomainDirect: false,      // 직접입력 여부
                 isEmailAvailable: false,       // 중복체크 결과
@@ -382,10 +551,15 @@
 
                 pwdMsg: "", // 비밀번호 확인
                 isPwdMatch: false, // 비밀번호 일치체크
+
+                addressMsg : "",
+                isAddressMatch:false, // 사업장 위치 입력 여부
             };
         },
         methods: {
-            // 함수(메소드) - (key : function())
+            fnMain() {
+                location.href = '/merryViewHome.do';
+            },
             fnCompanyJoin: function () {
                 let self = this;
                 console.log("comTel 길이:", self.info.comTel.replace(/ /g, '').length);
@@ -393,6 +567,15 @@
                 // 유효성 검사
                 if(!self.info.comName) {
                     alert("업체명을 입력해주세요.");
+                    return;
+                }
+                if(!self.isComNameAvailable) {
+                    alert("업체명 중복체크를 해주세요.");
+                    return;
+                }
+                // 추가
+                if(!self.info.comType) {
+                    alert("업체 분류를 선택해주세요.");
                     return;
                 }
                 if(!self.info.userId) {
@@ -419,8 +602,16 @@
                     alert("전화번호를 입력해주세요.");
                     return;
                 }
+                if(!self.isVerified) {
+                    alert("전화번호 인증을 완료해주세요.");
+                    return;
+                }
                 if(self.info.bizNo.replace(/-/g, '').length !== 10) {
                     alert("사업자 번호를 인증해주세요.");
+                    return;
+                }
+                if(!self.isBizVerified) {
+                    alert("사업자 번호을 완료해주세요.");
                     return;
                 }
                 if(!self.info.password) {
@@ -429,6 +620,15 @@
                 }
                 if(!self.isPwdMatch) {
                     alert("비밀번호가 일치하지 않습니다.");
+                    return;
+                }
+                if(!self.info.comAddress) {
+                    alert("사업장 주소를 입력해주세요.");
+                    return;
+                }
+                // 추가
+                if(!self.info.comAddressDetail) {
+                    alert("상세 주소를 입력해주세요.");
                     return;
                 }
 
@@ -454,7 +654,7 @@
                     success: function (data) {
                         if(data.result === 'success') {
                             alert(self.info.comName + "님 가입을 축하합니다!");
-                            window.location.href = "/company10.do";  // 업체 마이페이지로 이동
+                            window.location.href = "/login.do";  // 로그인으로 이동
                         } else {
                             alert(data.message);
                         }
@@ -520,6 +720,10 @@
                 
                 if(!self.info.userId) {
                     alert("아이디를 입력해주세요.");
+                    return;
+                }
+                if(self.info.userId.length < 6) {
+                    alert("아이디는 6자 이상이어야 합니다.");
                     return;
                 }
                 let hasLetter = /[a-zA-Z]/.test(self.info.userId);
@@ -666,6 +870,8 @@
                 new daum.Postcode({
                     oncomplete: (data) => {
                         this.info.comAddress = data.roadAddress;
+                        this.addressMsg = "✅ 주소가 입력되었습니다.";
+                        this.isAddressMatch = true; 
                     }
                 }).open();
             },
@@ -683,9 +889,10 @@
                     data: { tel: self.info.comTel.replace(/-/g, '') },
                     success: function(data) {
                         if(data.result === 'success') {
-                            alert("인증번호가 발송되었습니다!");
+                            self.comTelMsg = "✅ 인증번호가 발송되었습니다.";  // 추가
+                            self.isComTelVerified = true;  // 추가
                         } else {
-                            alert("발송 실패. 다시 시도해주세요.");
+                            self.comTelMsg = "❌ 발송에 실패했습니다.";  // 추가
                         }
                     }
                 });
@@ -702,10 +909,14 @@
                     },
                     success: function(data) {
                         if(data.result === 'success') {
-                            alert("인증이 완료되었습니다!");
                             self.isVerified = true;
+                            self.comTelMsg = "✅ 인증이 완료되었습니다.";  // 추가
+                            self.isComTelVerified = true;
+                            self.authCodeMsg = "✅ 인증이 완료되었습니다.";
                         } else {
-                            alert("인증번호가 틀렸습니다.");
+                            self.comTelMsg = "❌ 인증번호가 틀렸습니다.";  // 추가
+                            self.isComTelVerified = false;
+                            self.authCodeMsg = "❌ 인증번호가 틀렸습니다."; 
                         }
                     }
                 });
@@ -724,6 +935,7 @@
                 // 형식만 통과시키기
                 alert("사업자번호 인증이 완료되었습니다.");
                 self.isBizVerified = true;
+                self.bizMsg = "✅ 사업자번호 인증이 완료되었습니다.";
             }
         }, // methods
         watch: {

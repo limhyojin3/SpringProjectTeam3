@@ -28,23 +28,102 @@
         .badge-wait { background-color: #ffeeba; color: #856404; padding: 5px 10px; border-radius: 4px; font-size: 12px; }
         .badge-done { background-color: #d4edda; color: #155724; padding: 5px 10px; border-radius: 4px; font-size: 12px; }
 
-        .report-bottom { display: flex; justify-content: center; margin-top: 20px; }
         .btn-back { padding: 10px 30px; background-color: #9b8fd4; color: white; border: none; border-radius: 6px; cursor: pointer; }
+
+        .filter-area { display: flex; justify-content: flex-end; gap: 8px; margin-bottom: 15px; }
+        .filter-select { width: 150px; height: 38px; font-size: 14px; border: 1px solid #ddd; border-radius: 4px; }
 
         .modal-label { font-weight: bold; color: #666; font-size: 13px; margin-bottom: 5px; display: block; }
         .target-box { background: #f1f3f5; padding: 10px 15px; border-radius: 6px; border-left: 4px solid #9b8fd4; margin-bottom: 15px; font-weight: 600; }
         .content-box { background: #f8f9fa; padding: 15px; border-radius: 8px; border: 1px solid #eee; min-height: 100px; white-space: pre-wrap; }
+        
+        .pagination .page-item.active .page-link { background-color: #9b8fd4; border-color: #9b8fd4; color: white; }
+        .pagination .page-link { color: #9b8fd4; }
+
+        .pagination-wrap {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-top: 20px;
+            gap: 6px;
+        }
+
+        .btn-page-arrow,
+        .btn-page-num {
+            height: 34px;
+            min-width: 34px;
+            padding: 0 10px;
+            background-color: #fff;
+            color: #f4a096;
+            border: 1.5px solid #f4a096;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 500;
+            transition: 0.2s;
+        }
+
+        .btn-page-arrow:hover,
+        .btn-page-num:hover {
+            background-color: #f4a096;
+            color: white;
+        }
+
+        .btn-page-num.active-page {
+            background-color: #f4a096;
+            color: white;
+            font-weight: bold;
+        }
+
+        .btn-page-arrow:disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+        }
+
+        .btn-back {
+            padding: 0 20px;
+            height: 34px;
+            background-color: #fff;
+            color: #f4a096;
+            border: 1.5px solid #f4a096;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 500;
+            transition: 0.2s;
+        }
+
+        .btn-back:hover {
+            background-color: #f4a096;
+            color: white;
+        }
+
     </style>
 </head>
 <body>
+    <jsp:include page="/WEB-INF/common/header.jsp" />
     <div id="app">
-        <jsp:include page="/WEB-INF/common/header.jsp" />
         <div id="wrapper">
             <div class="main-content">
                 <jsp:include page="/WEB-INF/common/mypage-nav.jsp" />
 
                 <div class="right-sections">
                     <h3 class="cs-write-title">내 신고 내역</h3>
+                    
+                    <div class="filter-area">
+                        <select class="filter-select" v-model="searchType" @change="fnGetReportList(1)">
+                            <option value="">전체 유형</option>
+                            <option value="POST">커뮤니티</option>
+                            <option value="REVIEW">리뷰</option>
+                            <option value="COMMENT">댓글</option>
+                            <option value="MEMBER">회원</option>
+                        </select>
+                        <select class="filter-select" v-model="searchStatus" @change="fnGetReportList(1)">
+                            <option value="">전체 상태</option>
+                            <option value="0">검토중</option>
+                            <option value="1">처리완료</option>
+                        </select>
+                    </div>
                     
                     <table class="report-table">
                         <thead>
@@ -59,7 +138,7 @@
                         </thead>
                         <tbody>
                             <tr v-for="(item, index) in reportList" :key="item.reportNo">
-                                <td>{{ reportList.length - index }}</td>
+                                <td>{{ totalCount - (currentPage - 1) * pageSize - index }}</td>
                                 <td><span class="text-muted">[{{ fnTranslateType(item.targetType) }}]</span></td>
                                 <td class="col-title ellipsis" @click="fnDetailReport(item.reportNo)" :title="item.reportTitle">
                                     {{ item.reportTitle }}
@@ -79,7 +158,22 @@
                         </tbody>
                     </table>
 
-                    <div class="report-bottom">
+                    <div class="pagination-wrap">
+                        <button class="btn-page-arrow"
+                                @click="fnGetReportList(currentPage - 1)"
+                                :disabled="currentPage === 1">이전</button>
+                        <button class="btn-page-num"
+                                v-for="p in totalPages" :key="p"
+                                :class="p === currentPage ? 'active-page' : ''"
+                                @click="fnGetReportList(p)">
+                            {{ p }}
+                        </button>
+                        <button class="btn-page-arrow"
+                                @click="fnGetReportList(currentPage + 1)"
+                                :disabled="currentPage === totalPages">다음</button>
+                    </div>
+
+                    <div style="margin-top: 15px;">
                         <button class="btn-back" onclick="location.href='/userMyPage.do'">마이페이지로 돌아가기</button>
                     </div>
                 </div>
@@ -95,7 +189,17 @@
                     </div>
                     <div class="modal-body" v-if="detailItem">
                         <label class="modal-label">신고 대상물(제목/내용)</label>
-                        <div class="target-box">{{ detailItem.targetTitle }}</div>
+                        <div class="target-box d-flex justify-content-between align-items-center">
+                            <span class="ellipsis mr-2">{{ detailItem.targetTitle }}</span>
+                            
+                            <button v-if="detailItem.targetType === 'POST' || detailItem.targetType === 'REVIEW'" 
+                                    class="btn btn-sm btn-outline-secondary" 
+                                    @click="fnGoToTarget(detailItem)">
+                                <i class="fas fa-external-link-alt"></i> 원문보기
+                            </button>
+                            
+                            <small v-else class="text-muted">상세보기 미지원</small>
+                        </div>
 
                         <div class="row mb-3">
                             <div class="col-6">
@@ -132,39 +236,84 @@
             return {
                 sessionId: "${sessionId}",
                 reportList: [],
-                detailItem: null
+                detailItem: null,
+                
+                // 페이징 및 필터 변수
+                searchType: '',
+                searchStatus: '',
+                currentPage: 1,
+                pageSize: 10,
+                totalCount: 0
             };
         },
+        computed: {
+            totalPages() {
+                return Math.ceil(this.totalCount / this.pageSize);
+            }
+        },
         methods: {
-            fnGetReportList() {
-                const self = this;
+            fnGetReportList(page) {
+                if(page < 1 || (this.totalPages > 0 && page > this.totalPages)) return;
+                this.currentPage = page;
+
                 $.ajax({
                     url: "/api/report/my-list.dox",
                     type: "POST",
                     contentType: "application/json",
-                    data: JSON.stringify({ reporterId: self.sessionId }),
+                    data: JSON.stringify({ 
+                        reporterId: this.sessionId,
+                        searchType: this.searchType,
+                        searchStatus: this.searchStatus,
+                        startIndex: (this.currentPage - 1) * this.pageSize,
+                        pageSize: this.pageSize
+                    }),
                     success: (res) => {
-                        console.log("전체 응답 데이터:", res);
-                        // res.list.list 구조 대응
-                        if (res.list && res.list.list) {
-                            self.reportList = res.list.list;
-                        } else if (res.list) {
-                            self.reportList = res.list;
-                        } else {
-                            self.reportList = res;
+                        if (res.result === "success") {
+                            this.reportList = res.list;
+                            this.totalCount = res.totalCount;
                         }
-                    },
-                    error: (err) => { console.error("AJAX 에러:", err); }
+                    }
                 });
             },
             fnDetailReport(no) {
                 this.detailItem = this.reportList.find(item => item.reportNo === no);
                 $('#reportDetailModal').modal('show');
             },
+            // 원문 바로가기 로직 (조건 5번 대응)
+            fnGoToTarget(item) {
+                let url = "";
+                
+                switch(item.targetType) {
+                    case 'POST':
+                        url = "/api/community/detail.do?postNo=" + item.targetId;
+                        break;
+                        
+                    case 'REVIEW':
+                        url = "/api/review/detail.do?reviewNo=" + item.targetId;
+                        break;
+                        
+                    case 'COMMENT':
+                        // 만약 targetId가 댓글번호라면, 실제로는 게시글 번호를 알아야 이동 가능합니다.
+                        // 현재 구조상 게시글 번호를 모른다면 알림을 띄우는 것이 안전합니다.
+                        alert("댓글 원문 보기는 해당 게시글 상세 페이지에서 확인 가능합니다.");
+                        return;
+                        
+                    case 'MEMBER':
+                        // 회원은 이동할 상세 페이지가 마땅치 않으므로 리턴
+                        alert("회원 신고는 관리자가 검토 중입니다.");
+                        return;
+                        
+                    default:
+                        alert("상세 페이지를 찾을 수 없거나 삭제된 게시물입니다.");
+                        return;
+                }
+                
+                if(url) location.href = url;
+            },
             fnTranslateType(type) {
                 const types = {
-                    'COMPANY': '업체 신고', 'POST': '커뮤니티 신고',
-                    'MEMBER': '회원 신고', 'REVIEW': '리뷰 신고', 'COMMENT' : '댓글 신고'
+                    'COMPANY': '업체', 'POST': '커뮤니티',
+                    'MEMBER': '회원', 'REVIEW': '리뷰', 'COMMENT' : '댓글'
                 };
                 return types[type] || type;
             },
@@ -176,7 +325,7 @@
         },
         mounted() {
             if(this.sessionId) {
-                this.fnGetReportList();
+                this.fnGetReportList(1);
             } else {
                 alert("로그인이 필요합니다.");
                 location.href = "/login.do";

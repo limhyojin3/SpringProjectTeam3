@@ -26,27 +26,34 @@ public class CompanyController {
 	@Autowired
 	CompanyService companyService;
 
-	@RequestMapping("/company10.do")
+	/* 사용가능 / 이름변경: company10.do -> partnerManagement.do (4/27~) */
+	@RequestMapping("/partnerManagement.do")
 	public String test2(Model model) throws Exception {
-		return "/company/company10";
+		return "/company/partnerManagement";
 	}
-
-	/* 미완성 */
+	
+	/* 상품목록조회(카테고리 / 태그 필터)  + 상품 상세페이지  */
+	/* 이름변경: company2.do -> productCategoryTag.do (4/27~)*/
+	@RequestMapping("/productCategoryTag.do")
+	public String te4(Model model) throws Exception {
+		return "/company/productCategoryTag";
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	/* 로그인 없이 입장용 */
 	@RequestMapping("/company9.do")
 	public String test99(Model model) throws Exception {
-		return "/company/company10";
-	}
-	
-	@RequestMapping("/company1.do")
-	public String te2(Model model) throws Exception {
-		return "/company/company1";
+		return "/company/partnerManagement";
 	}
 	
 	
-	@RequestMapping("/company8.do")
-	public String te(Model model) throws Exception {
-		return "/company/companyBackup0421";
-	}
 
 	@RequestMapping(value = "/company.dox", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
 	@ResponseBody
@@ -102,7 +109,13 @@ public class CompanyController {
 
 		HashMap<String, Object> resultMap = companyService.editProduct(product);
 
+//		System.out.println(product);//uniqueNewTagsOnly=[아름다운, 자유로운]
+		
+		//int insertUniqueNewTagsOnly(Company product);
+		
+//		companyService.addUniqueNewTagsOnly(product);
 		return new Gson().toJson(resultMap);
+//		return null;
 
 	}
 	
@@ -143,8 +156,9 @@ public class CompanyController {
 
 		HashMap<String, Object> resultMap = companyService.addProduct(product);
 
+//		System.out.println(product);
 		return new Gson().toJson(resultMap);
-
+//		return null;
 	}
 	//productRemove.dox
 	@ResponseBody
@@ -154,5 +168,156 @@ public class CompanyController {
 
 		return new Gson().toJson(resultMap);
 	}
+	
+	@RequestMapping(value = "/ReservationList.dox", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
+	@ResponseBody
+	public String test23(@RequestParam HashMap<String, Object> map) throws Exception {
+		HashMap<String, Object> resultMap = companyService.getReservation(map);
 
+		return new Gson().toJson(resultMap);
+	}
+	
+	//public HashMap<String, Object> getReviewCnt(HashMap<String, Object> map)
+	@RequestMapping(value = "/getReviewCnt.dox", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
+	@ResponseBody
+	public String test3(@RequestParam HashMap<String, Object> map) throws Exception {
+		HashMap<String, Object> resultMap = companyService.getReviewCnt(map);
+
+		return new Gson().toJson(resultMap);
+	}
+	
+	@RequestMapping(value = "/getSimpleReviewCnt.dox", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
+	@ResponseBody
+	public String tet3(@RequestParam HashMap<String, Object> map) throws Exception {
+		HashMap<String, Object> resultMap = companyService.getSimpleReviewCnt(map);
+
+		return new Gson().toJson(resultMap);
+	}
+	//public HashMap<String, Object> getReviewDetails3(HashMap<String, Object> map) {
+		
+	@RequestMapping(value = "/ReviewDetails3.dox", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
+	@ResponseBody
+	public String tet33(@RequestParam HashMap<String, Object> map) throws Exception {
+		HashMap<String, Object> resultMap = companyService.getReviewDetails3(map);
+
+		return new Gson().toJson(resultMap);
+	}
+	//public HashMap<String, Object> getSimpleReviewDetails3(HashMap<String, Object> map)
+	@RequestMapping(value = "/SimpleReviewDetails3.dox", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
+	@ResponseBody
+	public String te2t33(@RequestParam HashMap<String, Object> map) throws Exception {
+		HashMap<String, Object> resultMap = companyService.getSimpleReviewDetails3(map);
+
+		return new Gson().toJson(resultMap);
+	}
+	//public HashMap<String, Object> getTagList(HashMap<String, Object> map)
+	@RequestMapping(value = "/getTagAndProductList.dox", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
+	@ResponseBody
+	public String te23t33(@RequestParam HashMap<String, Object> map) throws Exception {
+		HashMap<String, Object> resultMap = companyService.getTagAndProductList(map);
+
+		return new Gson().toJson(resultMap);
+	}
+	
+	//getBookedTimes.dox
+	//public HashMap<String, Object> getBookedTimes(HashMap<String, Object> map) {
+	@RequestMapping(value = "/getBookedTimes.dox", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
+	@ResponseBody
+	public String te23t3(@RequestParam HashMap<String, Object> map) throws Exception {
+		HashMap<String, Object> resultMap = companyService.getBookedTimes(map);
+
+		return new Gson().toJson(resultMap);
+	}
+	 
+	//public HashMap<String, Object> addReservation(HashMap<String, Object> map)
+	@RequestMapping(value = "/addReservation.dox", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
+	@ResponseBody
+	public String test99(@RequestParam HashMap<String, Object> map) throws Exception {
+		HashMap<String, Object> resultMap = companyService.addReservation(map);
+
+		return new Gson().toJson(resultMap);
+	}
+	
+	//public HashMap<String, Object> getMyReservationList(HashMap<String, Object> map)
+	@RequestMapping(value = "/getMyReservationList.dox", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
+	@ResponseBody
+	public String test79(@RequestParam HashMap<String, Object> map) throws Exception {
+		HashMap<String, Object> resultMap = companyService.getMyReservationList(map);
+
+		return new Gson().toJson(resultMap);
+	}
+	
+	//addAndEditPaymentFinal
+	@RequestMapping(value = "/addAndEditPaymentFinal.dox", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
+	@ResponseBody
+	public String test89(@RequestParam HashMap<String, Object> map) throws Exception {
+		HashMap<String, Object> resultMap = companyService.addAndEditPaymentFinal(map);
+
+		return new Gson().toJson(resultMap);
+	}
+	
+	@RequestMapping(value = "/getTagList.dox", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
+	@ResponseBody
+	public String tess89(@RequestParam HashMap<String, Object> map) throws Exception {
+		HashMap<String, Object> resultMap = companyService.getTagList(map);
+
+		return new Gson().toJson(resultMap);
+	}
+	
+//	public HashMap<String, Object> addInquiryProduct(HashMap<String, Object> map)
+	@RequestMapping(value = "/addInquiryProduct.dox", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
+	@ResponseBody
+	public String tess09(@RequestParam HashMap<String, Object> map) throws Exception {
+		HashMap<String, Object> resultMap = companyService.addInquiryProduct(map);
+
+		return new Gson().toJson(resultMap);
+	}
+	
+	//public HashMap<String, Object> getInquiryProductList(HashMap<String, Object> map)
+	@RequestMapping(value = "/getInquiryProductList.dox", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
+	@ResponseBody
+	public String tess099(@RequestParam HashMap<String, Object> map) throws Exception {
+		HashMap<String, Object> resultMap = companyService.getInquiryProductList(map);
+
+		return new Gson().toJson(resultMap);
+	}
+	
+	//문의 내용에 답변
+	//public HashMap<String, Object> addProductInquiryAnswer(HashMap<String, Object> map)
+	@RequestMapping(value = "/addProductInquiryAnswer.dox", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
+	@ResponseBody
+	public String tess0990(@RequestParam HashMap<String, Object> map) throws Exception {
+		HashMap<String, Object> resultMap = companyService.addProductInquiryAnswer(map);
+
+		return new Gson().toJson(resultMap);
+	}
+	/* 넘어온 inquiry_no = 6으로 문의 번호, 문의에 답변여부, 답변번호, 답변컨텐츠, 답변자명을 조회하기. */
+	//public HashMap<String, Object> getInquiryAnsYn(HashMap<String, Object> map) 
+	@RequestMapping(value = "/getInquiryAnsYn.dox", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
+	@ResponseBody
+	public String tess09901(@RequestParam HashMap<String, Object> map) throws Exception {
+		HashMap<String, Object> resultMap = companyService.getInquiryAnsYn(map);
+
+		return new Gson().toJson(resultMap);
+	}
+	
+	/* 내가 문의한 내역 불러오기 */
+	//public HashMap<String, Object> getMyInquiryList(HashMap<String, Object> map)
+	@RequestMapping(value = "/getMyInquiryList.dox", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
+	@ResponseBody
+	public String test03(@RequestParam HashMap<String, Object> map) throws Exception {
+		HashMap<String, Object> resultMap = companyService.getMyInquiryList(map);
+
+		return new Gson().toJson(resultMap);
+	}
+	/* 프론트에서 inquiryNo을 넘겨주면, 문의 답변중에 ip.inquiry_no, c.user_id,
+	 *  ipa.answer_contents 를 얻어오는거 */
+	//public HashMap<String, Object> getInquiry1Answer(HashMap<String, Object> map)
+	@RequestMapping(value = "/getInquiry1Answer.dox", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
+	@ResponseBody
+	public String test037(@RequestParam HashMap<String, Object> map) throws Exception {
+		HashMap<String, Object> resultMap = companyService.getInquiry1Answer(map);
+
+		return new Gson().toJson(resultMap);
+	}
 }

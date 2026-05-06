@@ -14,61 +14,74 @@
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
         <link rel="stylesheet" href="${pageContext.request.contextPath}/css/common.css">
         <link rel="stylesheet" href="${pageContext.request.contextPath}/css/adminNavi.css">
+        <link rel="stylesheet" href="${pageContext.request.contextPath}/css/admin-common.css">
         <style>
-            .middle {
-                width: 100%;
-                /* 화면 전체 높이를 사용하되, 헤더/푸터 제외한 나머지는 유연하게(1fr) */
-                display: grid;
-                grid-template-areas:
-                    "nav main";
-                grid-template-columns: 300px 1fr;
-                /* 너비 고정 */
-            }
-
             .main {
-                grid-area: main;
-                border: 1px solid #ffc7c2;
-                padding: 20px;
-                display: flex;
+                display: grid;
+                grid-template-columns: 1fr 1fr 0.8fr;
                 gap: 20px;
-                /* 카드 사이 간격 */
-                align-items: flex-start;
-                /* 카드들이 위쪽에 고정되도록 */
             }
 
-            /* 대시보드 카드 개별 박스 */
+            /* 카드 */
             .dashboard-card {
-                flex: 1;
-                /* 가로 크기 균등 분할 */
-                max-width: 300px;
-                /* 너무 넓어지지 않게 제한 */
-                border: 1px solid #ccc;
-                border-radius: 8px;
-                padding: 15px;
-                background-color: #fff;
-                text-align: center;
-                box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.05);
+                display: flex;
+                flex-direction: column;
+                height: 600px;
+                /* 🔥 핵심: 높이 고정 */
+                background: #fff;
+                border-radius: 14px;
+                overflow: hidden;
+                box-shadow: 0 6px 18px rgba(0, 0, 0, 0.06);
             }
 
             .dashboard-card h4 {
-                margin-top: 0;
-                margin-bottom: 15px;
+                margin: 0;
+                padding: 14px;
+                font-size: 15px;
+                font-weight: 700;
+                color: #fff;
             }
 
-            /* 세로가 가로보다 2배 긴 박스 */
+            /* 카드별 컬러 */
+            .dashboard-card:nth-child(1) h4 {
+                background: #4f46e5;
+            }
+
+            .dashboard-card:nth-child(2) h4 {
+                background: #ef4444;
+            }
+
+            .dashboard-card:nth-child(3) h4 {
+                background: #10b981;
+            }
+
+
             .data-box {
-                width: 100%;
-                aspect-ratio: 1 / 2;
-                /* 가로 1 : 세로 2 비율 유지 */
-                background-color: #f1f1f1;
-                border: 1px dashed #bbb;
-                margin-bottom: 15px;
+                flex: 1;
+                /* 🔥 남은 영역 다 먹기 */
+                padding: 12px;
+                overflow: hidden;
                 display: flex;
                 flex-direction: column;
-                align-items: center;
-                justify-content: space-around;
-                color: #888;
             }
+            .data-statstic{
+                text-align: center;
+            }
+            /* 테이블 영역 스크롤 */
+            .reviewTable,
+            .reportTable {
+                flex: 1;
+                overflow-y: auto;
+            }
+
+            /* 버튼 항상 아래 고정 */
+            .detail-btn {
+                margin: 10px;
+                border-radius: 8px;
+                background: #4f46e5;
+                color: #fff;
+            }
+
 
             .reviewTable table {
                 table-layout: fixed;
@@ -115,27 +128,13 @@
             .down::before {
                 content: "▼ ";
             }
-
-            /* 상세보기 버튼 (적당히 작은 크기) */
-            .detail-btn {
-                padding: 6px 12px;
-                font-size: 12px;
-                background-color: #555;
-                color: white;
-                border: none;
-                border-radius: 4px;
-                cursor: pointer;
-            }
-
-            .detail-btn:hover {
-                background-color: #333;
-            }
         </style>
     </head>
 
     <body>
+        <jsp:include page="/WEB-INF/common/header.jsp" />
         <div id="app">
-            <jsp:include page="/WEB-INF/common/header.jsp" />
+
             <div class="middle">
                 <jsp:include page="/WEB-INF/admin/adminNavi.jsp" />
                 <div class="main">
@@ -144,7 +143,7 @@
                         <h4>리뷰승인</h4>
                         <div class="data-box">
                             <div class="reviewTable">
-                                <h3>아직 승인되지 않은 리뷰 : {{reviewWait}}</h3>
+                                <h3>아직 검토되지 않은 리뷰 : {{reviewWait}}</h3>
                                 <table>
                                     <tr>
                                         <th>번호</th>
@@ -161,9 +160,21 @@
                                         <td>{{item.postDay}}</td>
                                     </tr>
                                 </table>
+                                <div class="page-box">
+                                    <button @click="fnReviewPageMove(reviewCurrentPage-1)"
+                                        :disabled="reviewCurrentPage===1">‹</button>
+
+                                    <button v-for="r in reviewIndex" :key="r" @click="fnReviewPageMove(r)"
+                                        :class="{active: reviewCurrentPage === r}">
+                                        {{ r }}
+                                    </button>
+
+                                    <button @click="fnReviewPageMove(reviewCurrentPage+1)"
+                                        :disabled="reviewCurrentPage===reviewIndex">›</button>
+                                </div>
                             </div>
                         </div>
-                        <button @click="fnReview" type="button" class="detail-btn">상세보기</button>
+                        <button @click="fnPage('/adminReview.do')" type="button" class="detail-btn">상세보기</button>
                     </div>
 
                     <!-- 신고제보 카드 -->
@@ -187,45 +198,62 @@
                                     </tr>
                                 </table>
                             </div>
+                            <div class="page-box">
+                                <button @click="fnPageMove(currentPage-1)" :disabled="currentPage===1">‹</button>
+
+                                <button v-for="p in index" :key="p" @click="fnPageMove(p)"
+                                    :class="{active: currentPage === p}">
+                                    {{ p }}
+                                </button>
+
+                                <button @click="fnPageMove(currentPage+1)" :disabled="currentPage===index">›</button>
+                            </div>
                         </div>
+
                         <button @click="fnPage('/adminReport.do')" type="button" class="detail-btn">상세보기</button>
                     </div>
 
                     <!-- 통계 카드 -->
                     <div class="dashboard-card">
                         <h4>통계</h4>
-                        <div class="data-box">
+                        <div class="data-box data-statstic">
                             <div>
-                                매출 현황<br>{{salesNow.toLocaleString()}} 원<br>
+                                <h4 style="border-radius: 14px;">매출 현황</h4>{{salesNow.toLocaleString()}} 원<br>
                                 전월대비
                                 <span :class="salesGrowthRate === 0 ? 'same' : (salesGrowthRate < 0 ? 'down' : 'up')">
                                     {{formatPercent(salesGrowthRate)}}%
                                 </span>
                             </div>
-                            <div>일반 회원 등록수<br>{{userNow}} 명<br>
+                            <div>
+                                <h4 style="border-radius: 14px;">일반 회원 등록</h4>{{userNow}} 명<br>
                                 전월대비
                                 <span :class="userGrowthRate === 0 ? 'same' : (userGrowthRate < 0 ? 'down' : 'up')">
                                     {{formatPercent(userGrowthRate)}}%
                                 </span>
                             </div>
-                            <div>일반 업체 등록수<br>{{nPartnerNow}} 곳<br>
-                                전월대비
-                                <span
-                                    :class="nPartnerGrowthRate === 0 ? 'same' : (nPartnerGrowthRate < 0 ? 'down' : 'up')">
-                                    {{formatPercent(nPartnerGrowthRate)}}%
-                                </span>
-                            </div>
-                            <div>제휴업체 등록수<br>{{partnerNow}} 곳<br>
-                                전월대비
-                                <span
-                                    :class="partnerGrowthRate === 0 ? 'same' : (partnerGrowthRate < 0 ? 'down' : 'up')">
-                                    {{formatPercent(partnerGrowthRate)}}%
-                                </span>
+                            <div>
+                                <div>
+                                   <h4 style="border-radius: 14px;">일반업체 등록</h4>{{nPartnerNow}} 곳<br>
+                                    전월대비
+                                    <span
+                                        :class="nPartnerGrowthRate === 0 ? 'same' : (nPartnerGrowthRate < 0 ? 'down' : 'up')">
+                                        {{formatPercent(nPartnerGrowthRate)}}%
+                                    </span>
+                                </div>
+                                <div>
+                                    <h4 style="border-radius: 14px;">제휴업체 등록</h4>{{partnerNow}} 곳<br>
+                                    전월대비
+                                    <span
+                                        :class="partnerGrowthRate === 0 ? 'same' : (partnerGrowthRate < 0 ? 'down' : 'up')">
+                                        {{formatPercent(partnerGrowthRate)}}%
+                                    </span>
+                                    <br>
+                                    업체 제휴율 : {{formatPercent(affRate)}}%
+                                </div>
                             </div>
                             <div>
-                                전체 신규 등록 수 : {{newCommer}}
-                                <br>
-                                업체 제휴율 : {{affRate}}%
+                                <h4 style="border-radius: 14px;">전체 신규 등록 </h4> 
+                                {{newCommer}}
                             </div>
                         </div>
                         <button @click="fnPage('/adminStatistics.do')" type="button" class="detail-btn">상세보기</button>
@@ -271,14 +299,24 @@
                         doneCount: 0,
                         newCommer: 0,
                         affRate: 0,
-                        processStatus: "WAIT_ACTION"
+                        processStatus: "WAIT_ACTION",
+                        pageSize: 15,
+                        index: 1,
+                        currentPage: 1,
+                        reviewPageSize: 15,
+                        reviewIndex: 1,
+                        reviewCurrentPage: 1,
                     };
                 },
                 methods: {
                     // 함수(메소드) - (key : function())
                     fnGetReviewList: function () {
                         let self = this;
-                        let param = {};
+                        let param = {
+                            approvalStatus: "WAIT",
+                            pageSize: self.reviewPageSize,
+                            offSet: self.reviewPageSize * (self.reviewCurrentPage - 1)
+                        };
                         $.ajax({
                             url: "http://localhost:8080/viewReview.dox",
                             dataType: "json",
@@ -288,6 +326,7 @@
                                 console.log(data)
                                 self.reviewList = data.list;
                                 self.reviewWait = self.reviewList.length > 0 ? self.reviewList[0].reviewWait : 0;
+                                self.reviewIndex = Math.ceil(data.totalCount / self.reviewPageSize);
                             }
                         });
                     },
@@ -295,7 +334,9 @@
                     fnGetReportList: function () {
                         let self = this;
                         let param = {
-                            processStatus: self.processStatus
+                            processStatus: self.processStatus,
+                            pageSize: self.pageSize,
+                            offSet: self.pageSize * (self.currentPage - 1)
                         };
                         $.ajax({
                             url: "http://localhost:8080/viewReport.dox",
@@ -306,8 +347,20 @@
                                 console.log(data)
                                 self.reportList = data.list;
                                 self.reportWait = self.reportList.length > 0 ? self.reportList[0].reportWait : 0;
+                                self.index = Math.ceil(data.totalCount / self.pageSize);
                             }
                         });
+                    },
+
+                    fnPageMove(p) {
+                        if (p < 1 || p > this.index) return;
+                        this.currentPage = p;
+                        this.fnGetReportList();
+                    },
+                    fnReviewPageMove(p) {
+                        if (p < 1 || p > this.reviewIndex) return;
+                        this.reviewCurrentPage = p;
+                        this.fnGetReviewList();
                     },
 
                     fnAfterAllDone: function () {
@@ -338,8 +391,14 @@
                             success: function (data) {
                                 console.log(data);
                                 self.list = data.list;
-                                self.salesNow = data.list[data.list.length - 1].totalRevenue;
-                                self.salesBefore = data.list[data.list.length - 2].totalRevenue;
+                                self.salesNow = data.list.length > 0
+                                    ? data.list[data.list.length - 1].totalRevenue
+                                    : 0;
+
+                                self.salesBefore = data.list.length > 1
+                                    ? data.list[data.list.length - 2].totalRevenue
+                                    : 0;
+
                                 self.salesGrowthRate = self.salesBefore === 0
                                     ? 0
                                     : ((self.salesNow - self.salesBefore) / self.salesBefore) * 100;
@@ -358,28 +417,33 @@
                             type: "POST",
                             data: param,
                             success: function (data) {
-                                console.log(data);
+                                let len = data.list.length;
+
+                                let now = len > 0 ? data.list[len - 1].userCount : 0;
+                                let before = len > 1 ? data.list[len - 2].userCount : 0;
+
+                                let growth = before === 0
+                                    ? 0
+                                    : ((now - before) / before) * 100;
+
                                 if (role === "USER") {
-                                    self.userNow = data.list[data.list.length - 1].userCount;
-                                    self.userBefore = data.list[data.list.length - 2].userCount;
-                                    self.userGrowthRate = self.userBefore === 0
-                                        ? 0
-                                        : ((self.userNow - self.userBefore) / self.user.Before) * 100;
+                                    self.userNow = now;
+                                    self.userBefore = before;
+                                    self.userGrowthRate = growth;
                                 }
+
                                 if (role === "NPARTNER") {
-                                    self.nPartnerNow = data.list[data.list.length - 1].userCount;
-                                    self.nPartnerBefore = data.list[data.list.length - 2].userCount;
-                                    self.nPartnerGrowthRate = self.nPartnerBefore === 0
-                                        ? 0
-                                        : ((self.nPartnerNow - self.nPartnerBefore) / self.nPartnerBefore) * 100;
+                                    self.nPartnerNow = now;
+                                    self.nPartnerBefore = before;
+                                    self.nPartnerGrowthRate = growth;
                                 }
+
                                 if (role === "PARTNER") {
-                                    self.partnerNow = data.list[data.list.length - 1].userCount;
-                                    self.partnerBefore = data.list[data.list.length - 2].userCount;
-                                    self.partnerGrowthRate = self.partnerBefore === 0
-                                        ? 0
-                                        : ((self.partnerNow - self.partnerBefore) / self.partnerBefore) * 100;
+                                    self.partnerNow = now;
+                                    self.partnerBefore = before;
+                                    self.partnerGrowthRate = growth;
                                 }
+
                                 self.fnAfterAllDone();
                             }
                         });
@@ -390,12 +454,12 @@
                     let self = this;
                     const path = location.pathname;
 
-                     this.activeMenu =
+                    this.activeMenu =
                         path.includes('adminMain') ? 'main' :
                             path.includes('adminUser') ? 'user' :
                                 path.includes('adminCompany') ? 'company' :
                                     path.includes('adminBoard') ? 'board' :
-                                        path.includes('adminReviewWait') ? 'reviewWait' :
+                                        path.includes('adminReview') ? 'review' :
                                             path.includes('adminPayment') ? 'payment' :
                                                 path.includes('adminReport') ? 'report' :
                                                     path.includes('adminInquiry') ? 'inquiry' :

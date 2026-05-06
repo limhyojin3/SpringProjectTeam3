@@ -1,64 +1,77 @@
 package com.example.demo.community_review.dao;
 
-import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.StandardCopyOption;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.cloudinary.Cloudinary;
+import com.cloudinary.utils.ObjectUtils;
 import com.example.demo.common.Message;
+
+import jakarta.annotation.PostConstruct;
 
 @Service
 public class FileService {
 
-    @Value("${file.upload-dir}")
-    private String uploadPath;
+    @Value("${cloudinary.cloud-name}")
+    private String cloudName;
 
-    /**
-     * 고도화된 파일 업로드 프로세스
-     * 반환값: originalName, storedName, imgUrl 정보를 담은 Map
-     */
+    @Value("${cloudinary.api-key}")
+    private String apiKey;
+
+    @Value("${cloudinary.api-secret}")
+    private String apiSecret;
+
+    private Cloudinary cloudinary;
+
+    @PostConstruct
+    public void init() {
+        // secure 옵션을 true로 주고, 설정을 명확히 잡습니다.
+        this.cloudinary = new Cloudinary(ObjectUtils.asMap(
+            "cloud_name", cloudName,
+            "api_key", apiKey,
+            "api_secret", apiSecret,
+            "secure", true 
+        ));
+    }
+
     public Map<String, String> uploadFile(MultipartFile file) {
         if (file == null || file.isEmpty()) {
             return null;
         }
 
-        // 1. 폴더 생성 (C:/uploads/project/)
-        File folder = new File(uploadPath);
-        if (!folder.exists()) {
-            folder.mkdirs();
-        }
-
-        // 2. 파일명 생성 (원본명, 저장용명)
-        String originalName = file.getOriginalFilename();
-        String uuid = UUID.randomUUID().toString();
-        String extension = originalName.substring(originalName.lastIndexOf("."));
-        String storedName = uuid + extension; // 저장용 이름
-
         try {
-        	// [수정 포인트] transferTo 대신 InputStream을 직접 복사합니다.
-            Path destination = new File(uploadPath + storedName).toPath();
-            Files.copy(file.getInputStream(), destination, StandardCopyOption.REPLACE_EXISTING);
+            // 에러 핵심 해결: 타임스탬프를 서버의 현재 시간으로 직접 생성해서 파라미터로 넘깁니다.
+            // 이렇게 하면 Cloudinary 서버와의 시간 오차로 인한 Signature 에러를 줄일 수 있습니다.
+            Map<String, Object> params = ObjectUtils.asMap(
+                "timestamp", System.currentTimeMillis() / 1000L,
+                "resource_type", "auto"
+            );
 
-            // 4. DB에 저장할 3종 세트 구성 (중요!)
+            // 파일 업로드 실행
+            Map uploadResult = cloudinary.uploader().upload(file.getBytes(), params);
+
+            // 결과 데이터 추출
+            String imgUrl = (String) uploadResult.get("secure_url"); 
+            String publicId = (String) uploadResult.get("public_id"); 
+            String originalName = file.getOriginalFilename();
+
             Map<String, String> fileMap = new HashMap<>();
             fileMap.put("originalName", originalName);
-            fileMap.put("storedName", storedName);
-            // application.properties의 가상경로와 맞춰서 생성
-            fileMap.put("imgUrl", "/uploads/" + storedName); 
+            fileMap.put("storedName", publicId); 
+            fileMap.put("imgUrl", imgUrl); 
             
             return fileMap;
 
-        } catch (IOException e) {
+        } catch (Exception e) { // IOException 외의 에러도 잡기 위해 Exception으로 확대
+            System.err.println("Cloudinary 업로드 중 에러 발생: " + e.getMessage());
             e.printStackTrace();
-            throw new RuntimeException(Message.MSG_SERVER_ERR);
-        }
+            // 에러 발생 시 null을 리턴하거나 예외를 던져서 컨트롤러에서 알 수 있게 합니다.
+            throw new RuntimeException("파일 업로드 실패: " + e.getMessage());
+        } 
     }
 }

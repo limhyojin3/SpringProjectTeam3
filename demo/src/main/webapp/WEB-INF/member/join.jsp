@@ -5,95 +5,182 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>MarryView - 회원가입</title>
     <script src="https://code.jquery.com/jquery-3.7.1.js" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
     <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
     <script src="/js/page-change.js"></script>
     <style>
-        /* 두 박스 감싸는 컨테이너 */
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            background: #fafafa;
+            font-family: 'Noto Sans KR', sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 60px 16px 40px;
+            min-height: 100vh;
+        }
+
+        .logo-wrap {
+            text-align: center;
+            margin-bottom: 28px;
+            cursor: pointer;
+        }
+        .logo-wrap img { height: 80px; }
+
         .signup-container {
             display: flex;
             gap: 20px;
             justify-content: center;
-            padding: 30px;
+            width: 100%;
+            max-width: 800px;
+            margin-bottom: 20px;
         }
 
-        /* 각 박스 */
         .signup-box {
             flex: 1;
-            max-width: 300px;
-            border: 2px solid #ccc;
+            min-width: 240px;
+            background: #fff;
+            border: 1px solid #e0e0e0;
             border-radius: 10px;
-            padding: 30px 20px;
+            padding: 28px 20px;
             text-align: center;
             cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+            transition: transform 0.2s, box-shadow 0.2s;
         }
-        :hover.signup-box{
-            box-shadow: 1px 1px 2px gray;
+        .signup-box:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 20px rgba(244,160,150,0.25);
         }
-        /* 업체 박스 내부 글자 색 */
-        .company-txt-color{
-            color: #a81bff;
+
+        /* 상단 타이틀 배너 */
+        .box-header {
+            width: 100%;
+            border-radius: 6px;
+            padding: 12px;
+            margin-bottom: 4px;
         }
-        /* 업체 박스 내부 글자 색 */
-        .user-txt-color{
-            color: #ff1ba8;
-        }
-        /* 글자 bold 효과 */
-        .txt-bold{
-            font-weight: bold;
-        }
-        /* 일반 회원가입 상단 박스 */
-        #inner-box-user{
-            border-radius: 10px;
-            border: 2px solid black;
-            background-color: #ffada2;
-            box-shadow: 1px 1px 1px gray;
-        }
-        /* 업체 회원가입 상단 박스 */
-        #inner-box-company{
-            border-radius: 10px;
-            border: 2px solid black;
-            background-color: #cc7aff;
-            box-shadow: 1px 1px 1px gray;
-        }
-        .cusor {
-            display: block;
-            text-align: center;
-            margin-top: 20px;
+        .box-header.user    { background: #f4a096; }
+        .box-header.company { background: #9b8fd4; }
+        .box-header h3 {
+            color: white;
             font-size: 15px;
-            color: #666;
-            cursor: pointer;
-            text-decoration: underline;
+            font-weight: 700;
+            letter-spacing: 0.5px;
         }
+
+        /* 내용 */
+        .signup-box-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+            width: 100%;
+        }
+
+        .box-slogan {
+            font-size: 13px;
+            font-weight: 700;
+            color: #f4a096;
+        }
+        .box-slogan.company { color: #9b8fd4; }
+
+        .box-sub {
+            font-size: 13px;
+            color: #666;
+            margin-bottom: 4px;
+        }
+
+        .content-list {
+            width: 100%;
+            text-align: left;
+            border-top: 1px solid #f0f0f0;
+            padding-top: 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 7px;
+        }
+        .content-list p {
+            font-size: 12px;
+            color: #666;
+            line-height: 1.5;
+        }
+        .content-list p.highlight {
+            color: #f4a096;
+            font-weight: 700;
+        }
+        .content-list p.highlight.company { color: #9b8fd4; }
+        .content-list p.muted {
+            color: #aaa;
+            font-size: 11px;
+            padding-left: 4px;
+        }
+
+        /* 하단 링크 */
+        .link-wrap {
+            display: flex;
+            justify-content: center;
+        }
+        .link-login {
+            text-decoration: none;
+            color: #888;
+            font-size: 13px;
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+        .link-login:hover { color: #f4a096; }
     </style>
 </head>
 <body>
     <div id="app">
-        <!-- html 코드는 id가 app인 태그 안에서 작업 -->
+        <div class="logo-wrap" @click="fnMain()">
+            <img src="/img/marryview-logo-en.svg" alt="메리뷰 로고">
+        </div>
         <div class="signup-container">
-        <div class="signup-box user" @click="fnUserJoin()">
-            <div id="inner-box-user">
-                <h3>일반 회원가입</h3>
+            <!-- 일반 회원가입 -->
+            <div class="signup-box" @click="fnUserJoin()">
+                <div class="box-header user">
+                    <h3>일반 회원가입</h3>
+                </div>
+                <div class="signup-box-content">
+                    <p class="box-slogan">♥ 똑똑한 결혼 준비 ♥</p>
+                    <p class="box-sub">메리뷰와 함께 하세요!</p>
+                    <div class="content-list">
+                        <p>✅ 결혼 예정일 입력 시 쿠폰 제공</p>
+                        <p>✅ 결혼 준비 커뮤니티 참여</p>
+                        <p>✅ 내 리뷰 작성으로 얻는 혜택</p>
+                        <p>✅ 솔직한 리얼 후기 열람</p>
+                    </div>
+                </div>
             </div>
-            <p class="txt-bold user-txt-color">똑똑한 결혼 준비</p>
-            <p>메리뷰와 함께 하세요!</p>
-        </div>
-        <div class="signup-box company" @click="fnCompanyJoin()">
-            <div id="inner-box-company">
-                <h3>업체 가입</h3>
-            </div>
-            <p>메리뷰와 제휴를 맺어</p>
-            <p>결혼 준비 파트너가 되어보세요!</p>
-            <div class="company-txt-color">
-                <p>파트너가 되면 이런 혜택을 받을 수 있어요!</p>
-                <p class="txt-bold">예약 수수료 5%</p>
-                <p>일반 업체의 경우 10%</p>
-            </div>
-        </div>
-        </div>
-        <span @click="fnLogin()" class="cusor">로그인 페이지로 돌아가기</span>
 
+            <!-- 업체 가입 -->
+            <div class="signup-box" @click="fnCompanyJoin()">
+                <div class="box-header company">
+                    <h3>업체 가입</h3>
+                </div>
+                <div class="signup-box-content">
+                    <p class="box-slogan company">♥ 결혼 준비 파트너 ♥</p>
+                    <p class="box-sub">메리뷰와 제휴를 맺어보세요!</p>
+                    <div class="content-list">
+                        <p>✅ 파트너 혜택</p>
+                        <p class="highlight company">✅ 예약 수수료 5%</p>
+                        <p class="muted">🔺 일반 업체의 경우 10%</p>
+                        <p>✅ 업체 페이지 무료 등록</p>
+                        <p>✅ 리뷰 관리 시스템 제공</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="link-wrap">
+            <span @click="fnLogin()" class="link-login">로그인 페이지로 돌아가기</span>
+        </div>
     </div>
 </body>
 </html>
@@ -106,7 +193,9 @@
             };
         },
         methods: {
-            // 함수(메소드) - (key : function())
+            fnMain() {
+                location.href = '/merryViewHome.do';
+            },
             fnLogin: function () {
                 window.location.href = '/login.do';
             },

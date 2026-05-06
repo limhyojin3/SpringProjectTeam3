@@ -91,11 +91,52 @@
         .coupon-input-field:focus {
             border-color: #f4a096;
         }
+
+        .pagination-wrap {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-top: 20px;
+            gap: 6px;
+        }
+
+        .btn-page-arrow,
+        .btn-page-num {
+            height: 34px;
+            min-width: 34px;
+            padding: 0 10px;
+            background-color: #fff;
+            color: #f4a096;
+            border: 1.5px solid #f4a096;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 500;
+            transition: 0.2s;
+        }
+
+        .btn-page-arrow:hover,
+        .btn-page-num:hover {
+            background-color: #f4a096;
+            color: white;
+        }
+
+        .btn-page-num.active-page {
+            background-color: #f4a096;
+            color: white;
+            font-weight: bold;
+        }
+
+        .btn-page-arrow:disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+        }
+
     </style>
 </head>
 <body>
+    <jsp:include page="/WEB-INF/common/header.jsp" />
     <div id="app">
-        <jsp:include page="/WEB-INF/common/header.jsp" />
         <div id="wrapper">
             <div class="main-content">
 
@@ -127,7 +168,22 @@
                                    class="coupon-input-field">
                             <button class="btn-register" @click="fnRegisterCoupon()">쿠폰 등록</button>
                         </div>
+                        <!-- 쿠폰 없을 때 -->
+                        <div v-if="couponList.length === 0" style="text-align:center; padding:30px 0; color:#999;">
+                            보유한 쿠폰이 없습니다.
+                        </div>
                     </section>
+                    <!-- 페이징 -->
+                    <div class="pagination-wrap">
+                        <button class="btn-page-arrow" @click="fetchCoupons(currentPage - 1)" :disabled="currentPage === 1">이전</button>
+                        <button class="btn-page-num"
+                                v-for="p in totalPages" :key="p"
+                                :class="p === currentPage ? 'active-page' : ''"
+                                @click="fetchCoupons(p)">
+                            {{ p }}
+                        </button>
+                        <button class="btn-page-arrow" @click="fetchCoupons(currentPage + 1)" :disabled="currentPage === totalPages">다음</button>
+                    </div>
                 </div>
 
             </div>
@@ -140,20 +196,25 @@
         data() {
             return {
                 couponList: [],
-                inputCode: ""
+                inputCode: "",
+                currentPage: 1,
+                totalPages: 0
             };
         },
         methods: {
-            fetchCoupons() {
+            fetchCoupons(page = 1) {
                 let self = this;
-                axios.get('/api/myCoupons.do')
-                    .then(function(response) {
-                        self.couponList = response.data;
-                        console.log("쿠폰 목록 로드 성공:", self.couponList);
-                    })
-                    .catch(function(error) {
-                        console.error("쿠폰 로드 중 에러 발생:", error);
-                    });
+                axios.get('/api/myCoupons.do', {
+                    params: { currentPage: page }
+                })
+                .then(function(response) {
+                    self.couponList = response.data.list || [];
+                    self.totalPages = response.data.totalPages || 0;
+                    self.currentPage = response.data.currentPage || 1;
+                })
+                .catch(function(error) {
+                    console.error("쿠폰 로드 중 에러 발생:", error);
+                });
             },
             fnRegisterCoupon: function() {
                 const self = this;

@@ -20,4 +20,6 @@ public interface InquiryMapper {
 
     // [문의 삭제] 문의글을 삭제 상태로 변경합니다.
     int deleteInquiry(Long inquiryNo);
+    
+    int selectInquiryCount(HashMap<String, Object> map);
 }

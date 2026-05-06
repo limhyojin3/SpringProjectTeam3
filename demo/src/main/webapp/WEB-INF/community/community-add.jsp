@@ -3,68 +3,119 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>새 글 작성 - MerryView</title>
+    <title>새 글 작성 - MarryView</title>
     <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
     <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
     
+    <!-- Quill Editor -->
     <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
     <script src="https://cdn.quilljs.com/1.3.6/quill.min.js"></script>
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/common.css">
 
     <style>
-        :root { --primary-color: #ff4d6d; --dark-color: #1a1a1a; }
-        .main-content { padding: 50px 40px; max-width: 900px; margin: 0 auto; min-height: 800px; }
-        h2 { font-size: 32px; color: var(--dark-color); margin-bottom: 10px; font-weight: 800; }
-        .sub-title { color: #888; margin-bottom: 40px; }
-
-        .write-row { margin-bottom: 25px; }
-        label { display: block; font-weight: 700; margin-bottom: 10px; color: #333; font-size: 16px; }
-        
-        select, input[type="text"] { 
-            width: 100%; padding: 15px; border: 1px solid #eee; 
-            border-radius: 12px; box-sizing: border-box; font-size: 15px;
-            background-color: #f9f9f9; transition: all 0.3s ease;
+        :root { 
+            --primary-color: #ff4d6d; 
+            --secondary-color: #ff85a1;
+            --bg-soft: #fffafa;
+            --dark-text: #2d2d2d;
         }
-        
-        /* 에디터 높이 조절 */
-        #editor { height: 450px; background-color: #fff; border-radius: 0 0 12px 12px; }
-        .ql-toolbar { border-radius: 12px 12px 0 0; background-color: #f9f9f9; }
 
-        .btn-group { text-align: center; margin-top: 50px; padding-bottom: 60px; display: flex; justify-content: center; gap: 15px; }
-        .btn-common { padding: 15px 50px; cursor: pointer; border: none; border-radius: 12px; font-size: 16px; font-weight: 700; transition: 0.3s; }
+        body { 
+            background-color: var(--bg-soft);
+            font-family: 'Pretendard', -apple-system, sans-serif;
+        }
+
+        .main-content { padding: 60px 20px; max-width: 940px; margin: 0 auto; min-height: 100vh; }
+        
+        /* 헤더 섹션 */
+        .write-header { text-align: center; margin-bottom: 40px; }
+        .write-header h2 { font-size: 34px; font-weight: 800; color: var(--dark-text); margin-bottom: 12px; }
+        .write-header .sub-title { color: #999; font-size: 16px; }
+
+        /* 작성 카드 레이아웃 */
+        .write-card { 
+            background: #fff; padding: 45px; border-radius: 24px; 
+            box-shadow: 0 10px 40px rgba(255, 77, 109, 0.08);
+            border: 1px solid rgba(255, 77, 109, 0.1);
+        }
+
+        .write-row { margin-bottom: 30px; }
+        label { display: block; font-weight: 700; margin-bottom: 12px; color: #444; font-size: 16px; }
+        
+        /* 카테고리 칩 UI */
+        .category-group { display: flex; gap: 12px; }
+        .cate-item {
+            padding: 10px 24px; border-radius: 50px; border: 2px solid #f0f0f0;
+            background: #fff; cursor: pointer; font-weight: 600; color: #aaa; transition: 0.3s;
+        }
+        .cate-item:hover { border-color: var(--secondary-color); color: var(--secondary-color); }
+        .cate-item.active { 
+            background: var(--primary-color); border-color: var(--primary-color); color: #fff;
+            box-shadow: 0 4px 12px rgba(255, 77, 109, 0.2);
+        }
+
+        /* 제목 입력창 */
+        .input-title { 
+            width: 100%; padding: 18px 20px; border: 2px solid #f4f4f4; 
+            border-radius: 16px; font-size: 17px; transition: all 0.3s;
+            background-color: #fafafa; outline: none;
+        }
+        .input-title:focus {
+            border-color: var(--primary-color); background-color: #fff;
+            box-shadow: 0 0 0 4px rgba(255, 77, 109, 0.05);
+        }
+
+        /* 에디터 커스텀 */
+        #editor { height: 480px; border: 2px solid #f4f4f4 !important; border-top: none !important; border-radius: 0 0 16px 16px; }
+        .ql-toolbar { border: 2px solid #f4f4f4 !important; border-radius: 16px 16px 0 0; background-color: #fafafa; }
+        .ql-container { font-size: 16px; }
+
+        /* 하단 버튼 */
+        .btn-group { margin-top: 40px; display: flex; justify-content: center; gap: 15px; padding-bottom: 60px; }
+        .btn-common { padding: 18px 65px; cursor: pointer; border: none; border-radius: 16px; font-size: 17px; font-weight: 700; transition: 0.3s; }
         .btn-save { background-color: var(--primary-color); color: white; }
-        .btn-save:hover { background-color: #ff1a4a; transform: translateY(-2px); }
-        .btn-cancel { background-color: #eee; color: #666; }
+        .btn-save:hover { background-color: #ff1a4a; transform: translateY(-3px); box-shadow: 0 8px 20px rgba(255, 77, 109, 0.25); }
+        .btn-cancel { background-color: #eee; color: #777; }
+        .btn-cancel:hover { background-color: #e2e2e2; }
     </style>
 </head>
 <body>
+    <jsp:include page="/WEB-INF/common/header.jsp" />
+    
     <div id="app">
-        <jsp:include page="/WEB-INF/common/header.jsp" />
-
         <main class="main-content">
             <div class="write-header">
                 <h2>✍️ 새 글 작성</h2>
-                <p class="sub-title">메리뷰 가족들에게 에디터로 멋진 글을 남겨보세요.</p>
+                <p class="sub-title">메리뷰 가족들과 소중한 일상과 정보를 공유해보세요.</p>
             </div>
             
-            <div class="write-row">
-                <label>카테고리</label>
-                <select v-model="category">
-                    <option value="자유">🎈 자유게시판</option>
-                    <option value="질문">❓ 질문게시판</option>
-                    <option value="정보">💡 정보공유</option>
-                </select>
-            </div>
+            <div class="write-card">
+                <!-- 카테고리 선택 (칩 방식) -->
+                <div class="write-row">
+                    <label>카테고리</label>
+                    <div class="category-group">
+                        <div v-for="item in categoryList" 
+                             :key="item.value"
+                             class="cate-item" 
+                             :class="{ active: category === item.value }"
+                             @click="category = item.value">
+                            {{ item.label }}
+                        </div>
+                    </div>
+                </div>
 
-            <div class="write-row">
-                <label>제목</label>
-                <input type="text" v-model="title" placeholder="제목을 입력하세요">
-            </div>
+                <!-- 제목 입력 -->
+                <div class="write-row">
+                    <label>제목</label>
+                    <input type="text" class="input-title" v-model="title" placeholder="제목을 입력해 주세요">
+                </div>
 
-            <div class="write-row">
-                <label>내용</label>
-                <div id="editor"></div>
+                <!-- 에디터 영역 -->
+                <div class="write-row">
+                    <label>내용</label>
+                    <div id="editor"></div>
+                </div>
             </div>
 
             <div class="btn-group">
@@ -82,12 +133,16 @@
                 return {
                     title: "",
                     category: "자유",
-                    userId: "${sessionId}", // 세션 아이디 자동 할당
+                    categoryList: [
+                        { label: "🎈 자유게시판", value: "자유" },
+                        { label: "❓ 질문게시판", value: "질문" },
+                        { label: "💡 정보", value: "정보" }
+                    ],
+                    userId: "${sessionId}",
                     quill: null
                 };
             },
             methods: {
-                // 에디터 초기화
                 initEditor() {
                     this.quill = new Quill('#editor', {
                         theme: 'snow',
@@ -96,28 +151,25 @@
                                 [{ 'header': [1, 2, 3, false] }],
                                 ['bold', 'italic', 'underline', 'strike'],
                                 [{ 'color': [] }, { 'background': [] }],
-                                ['blockquote', 'code-block'],
                                 [{ 'list': 'ordered'}, { 'list': 'bullet' }],
-                                ['link', 'image'], // 이미지 버튼 포함
+                                ['link', 'image'],
                                 ['clean']
                             ]
                         },
-                        placeholder: '내용을 입력해주세요 (이미지 삽입 가능)'
+                        placeholder: '메리뷰 가족들에게 전할 따뜻한 내용을 입력해주세요.'
                     });
                 },
                 fnSave() {
-                    // 에디터의 HTML 내용 가져오기
                     const content = this.quill.root.innerHTML;
 
-                    if(!this.title.trim()) { alert("제목을 입력해주세요."); return; }
-                    // 아무것도 안써도 <p><br></p> 가 생기므로 텍스트만 체크
+                    if(!this.title.trim()) { alert("제목을 입력해주세요! ✨"); return; }
                     if(this.quill.getText().trim().length <= 0 && content.indexOf('<img') === -1) { 
-                        alert("내용을 입력해주세요."); return; 
+                        alert("내용을 입력해주세요! ✨"); return; 
                     }
 
                     let param = {
                         title: this.title,
-                        content: content, // HTML 태그가 포함된 내용
+                        content: content,
                         category: this.category,
                         userId: this.userId
                     };
@@ -127,13 +179,12 @@
                         type: "POST",
                         contentType: "application/json",
                         data: JSON.stringify(param),
-                        success: function(data) {
-                            if (typeof data === "string") data = JSON.parse(data);
-                            alert("글이 성공적으로 등록되었습니다."); 
+                        success: (data) => {
+                            alert("글이 성공적으로 등록되었습니다! 🎉"); 
                             location.href = "/api/community/list.do";
                         },
-                        error: function() {
-                            alert("저장 중 오류가 발생했습니다. DB 타입을 확인하세요.");
+                        error: () => {
+                            alert("저장 중 오류가 발생했습니다. 잠시 후 다시 시도해주세요.");
                         }
                     });
                 },
@@ -144,7 +195,7 @@
                 }
             },
             mounted() {
-                this.initEditor(); // 화면이 열리면 에디터 실행
+                this.initEditor();
             }
         });
         app.mount('#app');
