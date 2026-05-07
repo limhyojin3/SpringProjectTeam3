@@ -114,7 +114,7 @@
                             <h5>👤 회원 정보</h5>
                             <div class="row">
                                 <div class="col-4"><b>ID</b><br>{{ company.userId }}</div>
-                                <div class="col-4"><b>유형</b><br>{{ company.role }}</div>
+                                <div class="col-4"><b>유형</b><br>{{ getRoleText(company.role) }}</div>
                                 <div class="col-4"><b>전화</b><br>{{ company.tel }}</div>
 
                                 <div class="col-4 mt-3"><b>가입일</b><br>{{ formatDate(company.regDate) }}</div>
@@ -263,6 +263,14 @@
                         return date ? date.substring(0, 10) : '-';
                     },
 
+                    getRoleText(role) {
+                        const map = {
+                            PARTNER: "제휴",
+                            NPARTNER: "일반"
+                        };
+                        return map[role] || role;
+                    },
+                    
                     getStatusInfo(status) {
                         const map = {
                             ACTIVE: { text: "활동" },
