@@ -87,7 +87,7 @@
 	</insert>
 
 	<insert id="insertPaymentRegistration" parameterType="map">
-		INSERT INTO payment_resistration (
+		INSERT INTO payment_registration (
 		pay_no,
 		company_no
 		)
@@ -164,7 +164,7 @@
 		WHERE pay_no=#{payNo}
 	</update>
 	
-	<!-- 쿠폰 만료 자동 처리-->
+	<!-- 쿠폰 만료 자동 처리 깊티도 같이 처리해도 되는듯 -->
 	<update id="updateExpiredCoupon" parameterType="hashmap">
 	UPDATE user_coupon
 	SET status = 'EXPIRED'
@@ -189,6 +189,7 @@
 		ON U.coupon_code = C.coupon_code
 		WHERE 1=1
 		AND U.user_id = #{userId}
+		AND C.coupon_type = 'COUPON'
 		<if test="status != null and status !='ALL'">
 			AND U.status = #{status}
 		</if>
@@ -205,6 +206,7 @@
 		ON U.coupon_code = C.coupon_code
 		WHERE 1=1
 		AND U.user_id = #{userId}
+		AND C.coupon_type = 'COUPON'
 		<if test="status != null and status !='ALL'">
 			AND U.status = #{status}
 		</if>
@@ -228,6 +230,7 @@
     JOIN coupon C
         ON U.coupon_code = C.coupon_code
     WHERE U.user_id = #{userId}
+    AND C.coupon_type = 'COUPON'
       AND U.coupon_code = #{couponCode}
       AND U.status = 'UNUSED'
       AND U.expired_at > CURRENT_TIMESTAMP

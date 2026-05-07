@@ -264,7 +264,20 @@
                                 </tr>
                             </tbody>
                         </table>
+                        <div v-if="activeTab === 'coupon'" class="page-box">
 
+                            <button @click="fnPageMove(currentPage - 1)" :disabled="currentPage == 1"><</button>
+
+                            <button v-for="n in index" :key="n" @click="fnPageMove(n)"
+                                :class="{active : currentPage == n}">
+                                {{n}}
+                            </button>
+
+                            <button @click="fnPageMove(currentPage + 1)" :disabled="currentPage == index">
+                                >
+                            </button>
+
+                        </div>
                         <!-- 패스 -->
                         <div v-if="activeTab === 'pass'" style="margin-bottom:15px; display:flex; gap:10px;">
                             <input type="text" v-model="keyword" placeholder="패스명 검색" class="form-control"
@@ -497,11 +510,11 @@
                             },
                             success: function (res) {
                                 console.log("응답:", res);
-                                console.log("응답 전체 =", JSON.stringify(res));
+                                // console.log("응답 전체 =", JSON.stringify(res));
                                 console.log("list =", res.list);
                                 self.list = res.list || [];
                                 self.index = Math.ceil((res.totalCount || 0) / self.pageSize);
-                                self.emptyRows = 5 - data.list.length;
+                                self.emptyRows = 5 - res.list.length;
                             },
                         });
                     },

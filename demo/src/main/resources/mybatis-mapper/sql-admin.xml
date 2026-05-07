@@ -629,7 +629,9 @@
 		test="status != null and status != 'ALL'">
 		AND M.STATUS = #{status}
 	</if>
-	
+	<if test="sort == 'report'">
+		ORDER BY reportCount DESC
+	</if>
 	LIMIT #{pageSize} OFFSET #{offSet}
 	</select>
 
@@ -1041,7 +1043,7 @@
         c.com_name AS comName,
         c.registration_fee AS registrationFee
 	    FROM payment p
-	    JOIN payment_resistration pr ON p.pay_no = pr.pay_no
+	    JOIN payment_registration pr ON p.pay_no = pr.pay_no
 	    JOIN company c ON pr.company_no = c.company_no
 	    ORDER BY P.pay_no DESC
 	    LIMIT #{pageSize} OFFSET #{offSet}
@@ -1067,7 +1069,7 @@
 	<select id="selectRegistrationPaymentCount" parameterType="hashmap" resultType="int">
 	    SELECT COUNT(*)
 	    FROM payment p
-	    JOIN payment_resistration pr ON p.pay_no = pr.pay_no
+	    JOIN payment_registration pr ON p.pay_no = pr.pay_no
 	    JOIN company c ON pr.company_no = c.company_no
 	</select>
 
@@ -1348,7 +1350,7 @@
 		    p.pay_date,
 		    pr.company_no
 		FROM payment p
-		JOIN payment_resistration pr ON p.pay_no = pr.pay_no
+		JOIN payment_registration pr ON p.pay_no = pr.pay_no
 		WHERE p.pay_no = #{payNo}
 	</select>
 	
