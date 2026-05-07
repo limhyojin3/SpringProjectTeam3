@@ -40,6 +40,10 @@ public interface MemberMapper {
 	int checkDuplicateCoupon(HashMap<String, Object> map);
 	// 쿠폰 등록
 	int insertUserCoupon(HashMap<String, Object> map);
+	// 기프트콘 조회
+	List<HashMap<String, Object>> selectUserGiftconList(String userId);
+	int checkGiftconByReview(HashMap<String, Object> map);
+	int insertGiftcon(HashMap<String, Object> map);
 	// 열람권 잔여 횟수 조회
 	Member selectPassWallet(String userId);
 	// 멤버십 결제 내역 조회
@@ -93,6 +97,9 @@ public interface MemberMapper {
 	List<Member> selectMyReportList(Map<String, Object> param);
 	// 내 신고 개수
 	int selectMyReportCount(String userId);
+	//결혼 기념일 확인
+	String selectAnniversaryDate(String userId);
+	int checkAnniversaryGiftcon(HashMap<String, Object> map);
 			
 	// * 유료리뷰 열람 시 *
 	// 열람 기록 확인

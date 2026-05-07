@@ -142,12 +142,123 @@
             opacity: 0.3;
             cursor: not-allowed;
         }
+        /* 모달 */
+        .modal-bg {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.5);
+            z-index: 999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-box {
+            background: white;
+            border-radius: 16px;
+            width: 460px;
+            overflow: hidden;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+        }
+
+        .modal-header {
+            background: #f4a096;
+            padding: 16px 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-header span {
+            color: white;
+            font-size: 16px;
+            font-weight: 700;
+        }
+
+        .modal-close {
+            color: white;
+            cursor: pointer;
+            font-size: 18px;
+        }
+
+        .modal-body {
+            padding: 28px 32px;
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+            font-size: 14px;
+            color: #555;
+        }
+
+        .modal-row {
+            display: flex;
+            justify-content: space-between;
+            border-bottom: 1px solid #f5e8e8;
+            padding-bottom: 10px;
+        }
+
+        .modal-label { color: #aaa; }
+        .modal-value { font-weight: 700; color: #333; }
+        .modal-value.price { color: #f4a096; }
+        .modal-value.done  { color: #9b8fd4; }
+        .modal-value.cancel { color: #ccc; }
+
+        .modal-footer {
+            padding: 0 32px 24px;
+            text-align: right;
+        }
+
+        .modal-btn {
+            padding: 10px 28px;
+            background: #f4a096;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-weight: 700;
+            cursor: pointer;
+        }
 
     </style>
 </head>
 <body>
     <jsp:include page="/WEB-INF/common/header.jsp" />
     <div id="app">
+        <div class="modal-bg" v-if="selectedRes" @click.self="selectedRes = null">
+            <div class="modal-box">
+                <div class="modal-header">
+                    <span>📋 예약 상세 정보</span>
+                    <span class="modal-close" @click="selectedRes = null">✕</span>
+                </div>
+                <div class="modal-body">
+                    <div class="modal-row">
+                        <span class="modal-label">상품명</span>
+                        <span class="modal-value">{{ selectedRes.productName }}</span>
+                    </div>
+                    <div class="modal-row">
+                        <span class="modal-label">업체명</span>
+                        <span class="modal-value">{{ selectedRes.comName }}</span>
+                    </div>
+                    <div class="modal-row">
+                        <span class="modal-label">예약일자</span>
+                        <span class="modal-value">{{ selectedRes.resDate }} {{ selectedRes.resTime }}</span>
+                    </div>
+                    <div class="modal-row">
+                        <span class="modal-label">예약금</span>
+                        <span class="modal-value price">{{ selectedRes.originalPrice.toLocaleString() }}원</span>
+                    </div>
+                    <div class="modal-row">
+                        <span class="modal-label">상태</span>
+                        <span class="modal-value"
+                            :class="selectedRes.resStatus === 'DONE' ? 'done' : selectedRes.resStatus === 'CANCEL' ? 'cancel' : ''">
+                            {{ selectedRes.resStatus === 'DONE' ? '완료' : selectedRes.resStatus === 'CANCEL' ? '취소' : '예약중' }}
+                        </span>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="modal-btn" @click="selectedRes = null">닫기</button>
+                </div>
+            </div>
+        </div>
         <div id="wrapper">
             <div class="main-content">
 
@@ -160,7 +271,8 @@
                             </div>
 
                             <div class="res-list" v-if="resList.length > 0">
-                                <div v-for="res in resList" :key="res.resNo" class="res-item">
+                                <div v-for="res in resList" :key="res.resNo" class="res-item"
+                                    @click="openDetail(res)" style="cursor:pointer;">
                                     <p class="res-product-name">{{ res.productName }}</p>
                                     <p>업체명 : {{ res.comName }}</p>
                                     <p>예약일자 : {{ res.resDate }} {{ res.resTime }}</p>
@@ -201,7 +313,8 @@
                 resList: [],
                 currentPage: 1,
                 totalPages: 0,
-                pageSize: 3
+                pageSize: 3,
+                selectedRes: null 
             };
         },
         methods: {
@@ -225,7 +338,10 @@
             goPage(page) {
                 if(page < 1 || page > this.totalPages) return;
                 this.fetchList(page);
-            }
+            },
+            openDetail(res) {
+                this.selectedRes = res;
+            },
         },
         mounted() {
             this.fetchList(1);

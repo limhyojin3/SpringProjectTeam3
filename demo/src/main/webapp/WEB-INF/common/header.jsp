@@ -133,6 +133,7 @@
                         <li><a href="/about.do">메리뷰 소개</a></li>
                         <li><a href="/location.do">찾아오시는 길</a></li>
                         <li><a href="/history.do">회사 연혁</a></li>
+                        <li><a href="/terms.do">이용 약관</a></li>
                     </ul>
                 </li>
 
@@ -140,6 +141,7 @@
                     <a class="nav-link custom-nav-link" href="${pageContext.request.contextPath}/productCategoryTag.do">상품목록</a>
                     <ul class="dropdown-contents">
                         <li><a href="${pageContext.request.contextPath}/productCategoryTag.do">상품 찾기</a></li>
+                        <li><a href="/partner.do">입점 문의</a></li>
                     </ul>
                 </li>
 

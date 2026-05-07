@@ -52,9 +52,9 @@
 
     /* 각 슬라이드 딜레이 (5장 × 5s) */
     .slide:nth-child(1) { animation-delay: 0s;   background-image: url('/img/willyoumarry2.jpg'); }
-    .slide:nth-child(2) { animation-delay: 5s;   background-image: url('/img/willyoumarry5.jpg');}
+    .slide:nth-child(2) { animation-delay: 5s;   background-image: url('/img/makeMemory1.jpg');}
     .slide:nth-child(3) { animation-delay: 10s;  background-image: url('/img/willyoumarry6.jpg');}
-    .slide:nth-child(4) { animation-delay: 15s;  background-image: url('/img/willyoumarry4.jpg');}
+    .slide:nth-child(4) { animation-delay: 15s;  background-image: url('/img/makeMemory4.jpg');}
 
     /* Ken Burns: 페이드인→유지→페이드아웃 + 줌 */
     @keyframes fadeSlide {
