@@ -983,7 +983,7 @@
                                     location.href = "/adminPayFinish.do?payNo=" + res.payNo + "&type=PASS";
                                     //예약이면 &type=RES 등록이면 &type=REG
                                 } else {
-                                    console.log("에러내용: " + res.error_msg);
+                                    console.log("에러내용: " + res.message);
                                     self.isPaying = false;
                                     alert("결제 검증 실패");
                                 }
