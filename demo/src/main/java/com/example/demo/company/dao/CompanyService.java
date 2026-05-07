@@ -308,6 +308,11 @@ public class CompanyService {
 //			User info = defaultMapper.selectUser(map);
 			List<Company> list = companyMapper.selectReviewCnt(map);
 			Company info = companyMapper.selectNewReviewCnt(map);
+			
+			
+			//리뷰 라벨 업데이트 (현재시점에서 3일이상 지난거 0으로)
+			int result = companyMapper.updateOldNewLabels(map);
+			
 			resultMap.put("list", list);
 			resultMap.put("info", info);
 			resultMap.put("result", "success");

@@ -114,4 +114,7 @@ public interface CompanyMapper {
 	Company selectCompany(HashMap<String, Object> map);
 
 	public List<Company> selectProductList(HashMap<String, Object> map);
+	
+	//리뷰 라벨 업데이트 (현재시점에서 3일이상 지난거 0으로)
+	int updateOldNewLabels(HashMap<String, Object> map);
 }
