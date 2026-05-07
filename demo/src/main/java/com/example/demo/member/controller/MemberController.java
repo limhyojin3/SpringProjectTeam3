@@ -385,6 +385,14 @@ public class MemberController {
 	        }
 	        return resultMap;
 	    }
+	 // 기프트콘 조회
+	 @ResponseBody
+	 @GetMapping("/api/myGiftcons.do")
+	 public List<HashMap<String, Object>> getMyGiftcons(HttpSession session) {
+	    String userId = (String) session.getAttribute("sessionId");
+	    if (userId == null) return null;
+	    return memberService.getUserGiftconList(userId);
+	}
 	// 3-17. 열람권 잔여 횟수 조회
 	@GetMapping("/myPassWallet.dox")
 	@ResponseBody
@@ -736,7 +744,22 @@ public class MemberController {
 		    model.addAttribute("kakaoMapKey", kakaoMapKey);
 		    return "/common/home-about2";
 		}
-	  
+	// 이용약관
+		@GetMapping("/terms.do")
+		public String terms() {
+		    return "/common/terms_of_service";
+		}
+	// 개인정보처리방침
+		@GetMapping("/privacy.do")
+		public String privacy() {
+		    return "/common/privacy";
+		}
+	// 개인정보처리방침
+		@GetMapping("/partner.do")
+		public String partner() {
+			return "/common/partner";
+		}
+		
 	// 최근 리뷰
 		@GetMapping("/mainReviewList.dox")
 		@ResponseBody

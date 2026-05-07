@@ -36,4 +36,7 @@ public interface ReviewMapper {
     HashMap<String, Object> selectCompanyDetail(HashMap<String, Object> map);
     List<HashMap<String, Object>> selectActiveCompanyList(HashMap<String, Object> map);
     List<Map<String, Object>> selectProductListByCompany(Map<String, Object> map);
+    
+    /* --- [5] 리뷰와 관련된 기프트콘 --- */
+    Map<String, Object> getReviewInfoForGiftcon(String targetId);
 }

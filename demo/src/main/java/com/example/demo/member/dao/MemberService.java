@@ -17,6 +17,7 @@ import com.example.demo.member.model.ChatLog;
 import com.example.demo.member.model.Member;
 
 import jakarta.servlet.http.HttpSession;
+import java.time.LocalDate;
 
 
 @Service
@@ -88,16 +89,20 @@ public class MemberService {
 	         // url 분기
 	         if(member.getRole().equals("ADMIN")) { // 관리자 role
 	            resultMap.put("url", "/admin/main.do"); 
-	            // 임시페이지 없어서 404 뜨는데 머지->pull 받고 만드신 주소로 수정하겠습니다.
 	         } else if(member.getRole().equals("NPARTNER")) { // 업체롤 role
 	            resultMap.put("url", "/company10.do"); 
-	            // 임시페이지 없어서 404 뜨는데 머지->pull 받고 만드신 주소로 수정하겠습니다.
 	         } else {
-	                resultMap.put("url", "/merryViewHome.do"); // 임시로 /home.jsp 생성했습니다.
+	                resultMap.put("url", "/merryViewHome.do");
 	         }	            
 	            session.setAttribute("sessionId", member.getUserId());
 	            session.setAttribute("sessionName", displayName);
 	            session.setAttribute("sessionRole", member.getRole());
+	            
+	            // ✅ 결혼 기념일 기프트콘 체크 (일반 유저만)
+	            if (member.getRole().equals("USER")) {
+	                giveAnniversaryGiftcon(member.getUserId());
+	            }
+	            
 	         }else {
 	            resultMap.put("loginResult", false);
 	            resultMap.put("message", "비밀번호가 일치하지 않습니다."); // *메세지 부분은 일단 하드코딩 했지만 공용 메세지에 추가 후 변경 예정
@@ -111,6 +116,45 @@ public class MemberService {
 	    return resultMap;
 	}
 	//
+	// *결혼 기념일 기프트콘 발급*
+	private void giveAnniversaryGiftcon(String userId) {
+	    try {
+	        // 기념일 조회
+	        String anniversary = memberMapper.selectAnniversaryDate(userId);
+	        if (anniversary == null) return;
+
+	        // 오늘 날짜와 월/일 비교
+	        LocalDate today = LocalDate.now();
+	        LocalDate anniversaryDate = LocalDate.parse(anniversary);
+
+	        if (today.getMonthValue() != anniversaryDate.getMonthValue() ||
+	            today.getDayOfMonth() != anniversaryDate.getDayOfMonth()) return;
+
+	        // 올해 이미 발급됐는지 체크
+	        HashMap<String, Object> checkMap = new HashMap<>();
+	        checkMap.put("userId", userId);
+	        checkMap.put("couponCode", "GIFT001");
+	        checkMap.put("year", String.valueOf(today.getYear()));
+
+	        int duplicate = memberMapper.checkAnniversaryGiftcon(checkMap);
+	        if (duplicate > 0) return;
+
+	        // 스타벅스 기프트콘 발급
+	        HashMap<String, Object> couponMap = new HashMap<>();
+	        couponMap.put("userId",         userId);
+	        couponMap.put("couponCode",     "GIFT001");
+	        couponMap.put("giftconCode",    "GC-ANNI-" + System.currentTimeMillis());
+	        couponMap.put("giftconBarcode", String.valueOf((long)(Math.random() * 9000000000000L) + 1000000000000L));
+	        couponMap.put("sourceReviewNo", null);
+
+	        memberMapper.insertGiftcon(couponMap);
+	        System.out.println("기념일 기프트콘 발급 완료 → " + userId);
+
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	    }
+	}
+	
 	// * 아이디 중복체크 *
 	public HashMap<String, Object> getUserIdCount(HashMap<String, Object> map) {
 	    HashMap<String, Object> resultMap = new HashMap<String, Object>();
@@ -350,6 +394,10 @@ public class MemberService {
 	    if (duplicate == 0) {
 	        memberMapper.insertUserCoupon(couponMap);
 	    }
+	}
+	// 기프트콘 조회
+	public List<HashMap<String, Object>> getUserGiftconList(String userId) {
+	    return memberMapper.selectUserGiftconList(userId);
 	}
 	// 열람권 잔회 횟수 조회
 	public Member getPassWallet(String userId) {

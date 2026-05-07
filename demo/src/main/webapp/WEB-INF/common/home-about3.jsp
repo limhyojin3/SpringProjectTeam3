@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>메리뷰 소개</title>
+    <title>이용약관</title>
     <script src="https://code.jquery.com/jquery-3.7.1.js" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
     <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
@@ -207,7 +207,7 @@
         <div class="about-hero">
             <div class="about-hero-overlay">
                 <h1>MarryView</h1>
-                <p>행복을 준비하는 모든 순간을 함께하는 가족 행사 & 웨딩 통합 리뷰 플랫폼</p>
+                <p>결혼을 준비하는 모든 순간을 함께하는 웨딩 리뷰 전문 플랫폼</p>
             </div>
         </div>
 
@@ -216,57 +216,51 @@
             <!-- 소개 -->
             <div class="about-intro">
                 <div class="about-intro-text">
-                    <h2>인생의 소중한 모든 순간, 메리뷰 (MarryView)</h2>
-                    <p>메리뷰는 결혼을 준비하는 설렘부터, 가족이 되어가는 모든 행복한 순간을 함께하는 **라이프 이벤트 리뷰 플랫폼**입니다.</p>
+                    <h2>메리뷰 (MarryView) 소개</h2>
+                    <p>메리뷰는 결혼을 준비하는 모든 순간을 함께하는 웨딩 리뷰 전문 플랫폼입니다.</p>
                     <br>
-                    <p>
-                        <strong>"Marry에서 Merry하게!"</strong><br>
-                        결혼(Marry)으로 시작된 인연이 즐거운(Merry) 삶의 기록으로 이어지도록,<br>
-                        메리뷰가 여러분의 소중한 선택을 돕는 든든한 가이드가 되어드립니다.
-                    </p>
+                    <p>'Marry(결혼)'와 'View(보다/리뷰)'를 결합한 이름처럼, 예비 부부들이 웨딩 업체에 대한 솔직한 후기를 나누고 현명한 선택을 할 수 있도록 돕습니다.</p>
                 </div>
             </div>
 
-            <!-- 특별한 이유 (확장된 타겟 반영) -->
+            <!-- 특별한 이유 -->
             <div class="about-special">
                 <h2>✨ 메리뷰가 특별한 이유</h2>
-                <p>단순한 웨딩 후기를 넘어 **아이의 첫 돌잔치, 부모님의 환갑/칠순, 가족 및 우정 사진**까지,<br> 
-                인생의 주요 이벤트를 아우르는 실제 이용자들의 생생한 리뷰를 한곳에서 확인할 수 있습니다.</p>
-                <p>광고성 정보가 아닌 '진짜 경험'을 바탕으로 한 유료/무료 리뷰 시스템을 통해,<br> 
-                정보 불균형을 해소하고 신뢰할 수 있는 업체 선택의 기준을 제시합니다.</p>
+                <p>웨딩홀, 드레스, 메이크업, 스튜디오 등 수많은 제휴 업체 정보와 실제 이용자들의 생생한 리뷰를 한곳에서 확인할 수 있습니다.</p>
+                <p>광고성 정보가 아닌 진짜 경험담을 바탕으로 한 리뷰를 제공하여, 결혼 준비의 불안함을 줄이고 신뢰할 수 있는 선택을 가능하게 합니다.</p>
             </div>
 
-            <!-- 주요 서비스 (서비스 범위 확장) -->
+            <!-- 주요 서비스 -->
             <div class="about-services">
                 <h2>주요 서비스</h2>
                 <div class="service-grid">
                     <div class="service-card">
-                        <div class="service-icon">💍</div>
-                        <h3>웨딩 & 라이프 리뷰</h3>
-                        <p>웨딩홀부터 돌잔치, 가족사진까지<br>검증된 업체의 솔직한 후기</p>
+                        <div class="service-icon">📝</div>
+                        <h3>업체 리뷰</h3>
+                        <p>실제 이용자의 솔직한 웨딩 업체 후기</p>
                     </div>
                     <div class="service-card">
-                        <div class="service-icon">🤝</div>
-                        <h3>경험 공유 커뮤니티</h3>
-                        <p>결혼 선배, 육아 선배들이 들려주는<br>현실적인 정보 공유 공간</p>
+                        <div class="service-icon">💬</div>
+                        <h3>커뮤니티</h3>
+                        <p>예비 부부들이 자유롭게 정보를 나누는 공간</p>
                     </div>
                     <div class="service-card">
-                        <div class="service-icon">💎</div>
-                        <h3>프리미엄 리뷰 패스</h3>
-                        <p>견적서와 꿀팁이 담긴 상세 리뷰를<br>합리적인 가격에 열람</p>
+                        <div class="service-icon">🎟️</div>
+                        <h3>리뷰 열람 패스권</h3>
+                        <p>프리미엄 리뷰를 합리적인 가격에 열람</p>
                     </div>
                     <div class="service-card">
-                        <div class="service-icon">🎁</div>
-                        <h3>리뷰어 보상 시스템</h3>
-                        <p>좋아요를 받을수록 쌓이는 혜택과<br>지속적인 리뷰 수익 창출</p>
+                        <div class="service-icon">❤️</div>
+                        <h3>업체 찜하기</h3>
+                        <p>관심 업체를 저장하고 비교</p>
                     </div>
                 </div>
             </div>
 
             <!-- 약속 -->
             <div class="about-promise">
-                <h3>"Marry to Merry, 당신의 모든 특별한 날과 함께"</h3>
-                <p>결혼이 끝이 아닌 새로운 시작이듯, 메리뷰는 당신의 모든 순간을 응원합니다.</p>
+                <h3>"솔직한 웨딩 리뷰의 모든 것"</h3>
+                <p>결혼을 준비하는 모든 순간, 메리뷰가 함께합니다.</p>
             </div>
 
         </div>

@@ -23,6 +23,29 @@
 <body>
     <jsp:include page="/WEB-INF/common/header.jsp" />
     <div id="app">
+        <div class="event-banner" :class="{ open: isEventOpen }">
+            <div class="event-banner-header" @click="isEventOpen = !isEventOpen">
+                🎉 진행 중인 이벤트
+                <span class="arrow">▼</span>
+            </div>
+            <div class="event-banner-body">
+                <a class="event-item" href="/mypage/info">
+                    <div class="event-img-bridal">
+                        💐
+                        <span class="event-img-label">BRIDAL</span>
+                    </div>
+                    <span class="item-icon">🎀</span>결혼예정일 입력하고<br>브라이덜샤워 혜택 받기
+                </a>
+                <a class="event-item" href="/review/list">
+                    <div class="event-img-baby">
+                        👶
+                        <span class="event-img-label">EVENT</span>
+                    </div>
+                    <span class="item-icon">🍼</span>우리 아이 첫돌 사진<br>리뷰 이벤트
+                </a>
+                <a class="event-more" href="/event">이벤트 더보기 ›</a>
+            </div>
+        </div>
         <div id="wrapper">
             <div class="main-content">
                 <div class="left-banner">
@@ -134,7 +157,8 @@
                         { label: '리뷰 작성법', text: '리뷰 작성은 어떻게 하나요?' },
                         { label: '이벤트 혜택', text: '베스트 리뷰 혜택이 뭐야?' },
                         { label: '준비 순서', text: '결혼 준비 순서 알려줘' }
-                    ]
+                    ],
+                    isEventOpen: false,
                 };
             },
             methods: {
@@ -231,7 +255,7 @@
                         const container = document.getElementById("chatMessages");
                         if(container) container.scrollTop = container.scrollHeight;
                     }, 100);
-                }
+                },
             },
             mounted() {
                 // 초기 데이터 로딩
