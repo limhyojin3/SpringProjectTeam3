@@ -999,7 +999,8 @@
                                         <div style="flex: 1; display: flex; flex-direction: column; justify-content: center;">
                                             <div class="ticket-no">No. {{ productList3.length - ((productCurrentPage - 1)
                                                 * 5 + idx ) }}</div>
-                                            <div style="flex: 1; font-weight: bold;">{{ i.productDetails }}</div>
+                                            <div style="flex: 1; font-weight: bold;">{{ i.productName }}</div>
+                                            <!-- {{i}} -->
                                         </div>
                                         
                                         <div style="display: flex; align-items: center; gap: 2px;">

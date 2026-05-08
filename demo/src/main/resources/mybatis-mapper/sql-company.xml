@@ -446,7 +446,7 @@
 		where ip.inquiry_no = #{inquiryNo}
 
 	</select>
-	
+	 
 	<!-- 리뷰 라벨 업데이트 (현재시점에서 3일이상 지난거 0으로)-->
 	<update id="updateOldNewLabels" parameterType="map">
 	    UPDATE review
