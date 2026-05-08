@@ -173,6 +173,7 @@
                                 <button @click="fnGetCompanyList">검색</button>
                             </div>
                             <div class="filter-group">
+                                <button @click="fnReport">신고수</button>
                                 <div>
                                     유형
                                     <select v-model="role" @change="fnGetCompanyList">
@@ -259,6 +260,7 @@
                         sessionRole: "${sessionScope.sessionRole}",
                         searchType: "all",
                         keyword: "",
+                        sort:"",
                         role: "ALL",
                         statusFilter: "ALL",
                         selectedCompany: null,
@@ -273,7 +275,10 @@
                     fnPage: function (url) {
                         location.href = url;
                     },
-
+                    fnReport: function () {
+                        this.sort = "report";
+                        this.fnGetCompanyList();
+                    },
                     getRoleText(role) {
                         const map = {
                             PARTNER: "제휴",
@@ -305,6 +310,7 @@
                             status: self.statusFilter,
                             pageSize: self.pageSize,
                             offSet: self.pageSize * (self.currentPage - 1),
+                            sort:self.sort,
                         };
                         $.ajax({
                             url: "http://localhost:8080/companyList.dox",

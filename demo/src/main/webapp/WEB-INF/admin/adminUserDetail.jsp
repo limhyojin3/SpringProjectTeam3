@@ -199,13 +199,15 @@
                         <!-- ===== 5. 제재 처리 ===== -->
                         <div class="card p-3 mb-3" v-if="selectedUser.status !== 'STOP'">
                             <h5 class="text-danger">🚫 정지 처리</h5>
-                            <input class="form-control mb-2" v-model="banReason" placeholder="정지 사유 입력" @keyup.enter="fnBanUser"/>
+                            <input class="form-control mb-2" v-model="banReason" placeholder="정지 사유 입력"
+                                @keyup.enter="fnBanUser" />
                             <button class="btn btn-danger btn-block" @click="fnBanUser">정지</button>
                         </div>
 
                         <div class="card p-3" v-if="selectedUser.status === 'STOP'">
                             <h5 class="text-success">✅ 정지 해제</h5>
-                            <input class="form-control mb-2" v-model="unbanReason" placeholder="해제 사유 입력" @keyup.enter="fnUnbanUser"/>
+                            <input class="form-control mb-2" v-model="unbanReason" placeholder="해제 사유 입력"
+                                @keyup.enter="fnUnbanUser" />
                             <button class="btn btn-success btn-block" @click="fnUnbanUser">해제</button>
                         </div>
 
@@ -214,166 +216,167 @@
 
 
             </div>
-            <jsp:include page="/WEB-INF/common/footer.jsp" />
-            <script>
-                const app = Vue.createApp({
-                    data() {
-                        return {
-                            activeMenu: "",
-                            selectedUser: null,
-                            banHistoryList: [],
-                            reportList: [],
-                            reportCount: 0,
-                            banReason: "",
-                            unbanReason: "",
-                            sessionId: "${sessionScope.sessionId}",
-                            sessionRole: "${sessionScope.sessionRole}",
+        </div>
+        <jsp:include page="/WEB-INF/common/footer.jsp" />
+        <script>
+            const app = Vue.createApp({
+                data() {
+                    return {
+                        activeMenu: "",
+                        selectedUser: null,
+                        banHistoryList: [],
+                        reportList: [],
+                        reportCount: 0,
+                        banReason: "",
+                        unbanReason: "",
+                        sessionId: "${sessionScope.sessionId}",
+                        sessionRole: "${sessionScope.sessionRole}",
+                    };
+                },
+
+                methods: {
+
+                    fnPage(url) {
+                        location.href = url;
+                    },
+
+                    formatDate(date) {
+                        return date ? date.substring(0, 10) : '-';
+                    },
+
+                    getStatusInfo(status) {
+                        const map = {
+                            ACTIVE: { text: "활동" },
+                            STOP: { text: "정지" },
+                            DORMANT: { text: "휴면" },
+                            WITHDRAWN: { text: "탈퇴" }
                         };
+                        return map[status] || { text: "기타" };
                     },
 
-                    methods: {
-
-                        fnPage(url) {
-                            location.href = url;
-                        },
-
-                        formatDate(date) {
-                            return date ? date.substring(0, 10) : '-';
-                        },
-
-                        getStatusInfo(status) {
-                            const map = {
-                                ACTIVE: { text: "활동" },
-                                STOP: { text: "정지" },
-                                DORMANT: { text: "휴면" },
-                                WITHDRAWN: { text: "탈퇴" }
-                            };
-                            return map[status] || { text: "기타" };
-                        },
-
-                        getStatusClass(status) {
-                            return status === "STOP" ? "badge-danger" : "badge-success";
-                        },
-
-                        fnGetUserDetail(userId) {
-                            let self = this;
-
-                            $.ajax({
-                                url: "http://localhost:8080/userDetail.dox",
-                                type: "POST",
-                                dataType: "json",
-                                data: { userId: userId },
-                                success: function (res) {
-                                    self.selectedUser = res.user;
-                                    self.fnGetBanHistory(userId, res.user.targetType);
-                                }
-                            });
-                        },
-
-                        fnGetReport(userId) {
-                            let self = this;
-
-                            $.ajax({
-                                url: "http://localhost:8080/reportInfoList.dox",
-                                type: "POST",
-                                dataType: "json",
-                                data: {
-                                    target_id: userId,
-                                },
-                                success: function (res) {
-                                    console.log(res);
-                                    self.reportList = res.list || [];
-                                    self.reportCount = res.count || 0;
-                                }
-                            });
-                        },
-
-                        fnGetBanHistory(userId, targetType) {
-                            let self = this;
-
-                            $.ajax({
-                                url: "http://localhost:8080/banHistory.dox",
-                                type: "POST",
-                                dataType: "json",
-                                data: {
-                                    target_id: userId,
-                                    target_type: targetType
-                                },
-                                success: function (res) {
-                                    self.banHistoryList = res.list || [];
-                                }
-                            });
-                        },
-
-                        fnBanUser() {
-                            let self = this;
-                            if (!confirm("정지하시겠습니까?")) { return }
-                            $.ajax({
-                                url: "http://localhost:8080/editMemberBan.dox",
-                                type: "POST",
-                                dataType: "json",
-                                data: {
-                                    target_id: self.selectedUser.userId,
-                                    target_type: self.selectedUser.targetType,
-                                    action_type: "BAN",
-                                    reason: self.banReason,
-                                    admin_id: self.sessionId
-                                },
-                                success: function () {
-                                    alert("정지 완료");
-                                    self.fnGetUserDetail(self.selectedUser.userId);
-                                }
-                            });
-                        },
-
-                        fnUnbanUser() {
-                            let self = this;
-                            if (!confirm("정지해제하시겠습니까?")) { return }
-                            $.ajax({
-                                url: "http://localhost:8080/editMemberBan.dox",
-                                type: "POST",
-                                dataType: "json",
-                                data: {
-                                    target_id: self.selectedUser.userId,
-                                    target_type: self.selectedUser.targetType,
-                                    action_type: "UNBAN",
-                                    reason: self.unbanReason,
-                                    admin_id: self.sessionId
-                                },
-                                success: function () {
-                                    alert("해제 완료");
-                                    self.fnGetUserDetail(self.selectedUser.userId);
-                                }
-                            });
-                        }
-
+                    getStatusClass(status) {
+                        return status === "STOP" ? "badge-danger" : "badge-success";
                     },
 
-                    mounted() {
-                        const urlParams = new URLSearchParams(location.search);
-                        const userId = urlParams.get("userId");
+                    fnGetUserDetail(userId) {
+                        let self = this;
 
-                        if (userId) {
-                            this.fnGetUserDetail(userId);
-                            this.fnGetReport(userId);
-                        }
-                        const path = location.pathname;
-                        this.activeMenu =
-                            path.includes('adminMain') ? 'main' :
-                                path.includes('adminUser') ? 'user' :
-                                    path.includes('adminCompany') ? 'company' :
-                                        path.includes('adminBoard') ? 'board' :
-                                            path.includes('adminReviewWait') ? 'reviewWait' :
-                                                path.includes('adminPayment') ? 'payment' :
-                                                    path.includes('adminReport') ? 'report' :
-                                                        path.includes('adminInquiry') ? 'inquiry' :
-                                                            path.includes('adminStatistics') ? 'stats' :
-                                                                '';
+                        $.ajax({
+                            url: "http://localhost:8080/userDetail.dox",
+                            type: "POST",
+                            dataType: "json",
+                            data: { userId: userId },
+                            success: function (res) {
+                                self.selectedUser = res.user;
+                                self.fnGetBanHistory(userId, res.user.targetType);
+                            }
+                        });
+                    },
+
+                    fnGetReport(userId) {
+                        let self = this;
+
+                        $.ajax({
+                            url: "http://localhost:8080/reportInfoList.dox",
+                            type: "POST",
+                            dataType: "json",
+                            data: {
+                                target_id: userId,
+                            },
+                            success: function (res) {
+                                console.log(res);
+                                self.reportList = res.list || [];
+                                self.reportCount = res.count || 0;
+                            }
+                        });
+                    },
+
+                    fnGetBanHistory(userId, targetType) {
+                        let self = this;
+
+                        $.ajax({
+                            url: "http://localhost:8080/banHistory.dox",
+                            type: "POST",
+                            dataType: "json",
+                            data: {
+                                target_id: userId,
+                                target_type: targetType
+                            },
+                            success: function (res) {
+                                self.banHistoryList = res.list || [];
+                            }
+                        });
+                    },
+
+                    fnBanUser() {
+                        let self = this;
+                        if (!confirm("정지하시겠습니까?")) { return }
+                        $.ajax({
+                            url: "http://localhost:8080/editMemberBan.dox",
+                            type: "POST",
+                            dataType: "json",
+                            data: {
+                                target_id: self.selectedUser.userId,
+                                target_type: self.selectedUser.targetType,
+                                action_type: "BAN",
+                                reason: self.banReason,
+                                admin_id: self.sessionId
+                            },
+                            success: function () {
+                                alert("정지 완료");
+                                self.fnGetUserDetail(self.selectedUser.userId);
+                            }
+                        });
+                    },
+
+                    fnUnbanUser() {
+                        let self = this;
+                        if (!confirm("정지해제하시겠습니까?")) { return }
+                        $.ajax({
+                            url: "http://localhost:8080/editMemberBan.dox",
+                            type: "POST",
+                            dataType: "json",
+                            data: {
+                                target_id: self.selectedUser.userId,
+                                target_type: self.selectedUser.targetType,
+                                action_type: "UNBAN",
+                                reason: self.unbanReason,
+                                admin_id: self.sessionId
+                            },
+                            success: function () {
+                                alert("해제 완료");
+                                self.fnGetUserDetail(self.selectedUser.userId);
+                            }
+                        });
                     }
-                });
 
-                app.mount('#app');
-            </script>
+                },
+
+                mounted() {
+                    const urlParams = new URLSearchParams(location.search);
+                    const userId = urlParams.get("userId");
+
+                    if (userId) {
+                        this.fnGetUserDetail(userId);
+                        this.fnGetReport(userId);
+                    }
+                    const path = location.pathname;
+                    this.activeMenu =
+                        path.includes('adminMain') ? 'main' :
+                            path.includes('adminUser') ? 'user' :
+                                path.includes('adminCompany') ? 'company' :
+                                    path.includes('adminBoard') ? 'board' :
+                                        path.includes('adminReviewWait') ? 'reviewWait' :
+                                            path.includes('adminPayment') ? 'payment' :
+                                                path.includes('adminReport') ? 'report' :
+                                                    path.includes('adminInquiry') ? 'inquiry' :
+                                                        path.includes('adminStatistics') ? 'stats' :
+                                                            '';
+                }
+            });
+
+            app.mount('#app');
+        </script>
 
     </body>
 

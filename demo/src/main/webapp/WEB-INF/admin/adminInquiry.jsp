@@ -401,144 +401,145 @@
                 </div>
 
             </div>
-            <jsp:include page="/WEB-INF/common/footer.jsp" />
-            <script>
-                const app = Vue.createApp({
-                    data() {
-                        return {
-                            // 변수 - (key : value)
-                            activeMenu: "",
-                            inquirylist: [],
-                            selected: null,
-                            answerContent: "",
-                            status: "ALL",
-                            sortType: "latest",
-                            pageSize: 8,
-                            index: 1,
-                            currentPage: 1,
-                            emptyRows: 0,
+        </div>
+        <jsp:include page="/WEB-INF/common/footer.jsp" />
+        <script>
+            const app = Vue.createApp({
+                data() {
+                    return {
+                        // 변수 - (key : value)
+                        activeMenu: "",
+                        inquirylist: [],
+                        selected: null,
+                        answerContent: "",
+                        status: "ALL",
+                        sortType: "latest",
+                        pageSize: 8,
+                        index: 1,
+                        currentPage: 1,
+                        emptyRows: 0,
 
-                        };
+                    };
+                },
+                methods: {
+                    // 함수(메소드) - (key : function())
+                    fnPage: function (url) {
+                        location.href = url;
                     },
-                    methods: {
-                        // 함수(메소드) - (key : function())
-                        fnPage: function (url) {
-                            location.href = url;
-                        },
 
-                        fnPageMove(p) {
-                            if (p < 1 || p > this.index) return;
+                    fnPageMove(p) {
+                        if (p < 1 || p > this.index) return;
 
-                            this.currentPage = p;
-                            this.fnGetList();
-                        },
+                        this.currentPage = p;
+                        this.fnGetList();
+                    },
 
-                        fnResetSearch() {
-                            this.status = "ALL";
-                            this.sortType = "latest";
-                            this.currentPage = 1;
-                            this.fnGetList();
-                        },
+                    fnResetSearch() {
+                        this.status = "ALL";
+                        this.sortType = "latest";
+                        this.currentPage = 1;
+                        this.fnGetList();
+                    },
 
-                        fnGetList() {
-                            let self = this;
-                            let param = {
-                                status: self.status,
-                                sortType: self.sortType,
-                                pageSize: self.pageSize,
-                                offSet: self.pageSize * (self.currentPage - 1)
-                            };
-                            $.ajax({
-                                url: "http://localhost:8080/inquiry.dox",
-                                type: "POST",
-                                dataType: "json",
-                                data: param,
-                                success: function (data) {
-                                    self.inquirylist = data.list || [];
-                                    self.index = Math.ceil(data.totalCount / self.pageSize);
-                                    self.emptyRows = 8 - data.list.length;
-                                }
-                            });
-                        },
-
-                        fnselectInquiry(item) {
-                            this.selected = item;
-                            this.answerContent = item.answerContent || "";
-                            console.log(this.selected);
-                            $('#inquiryModal').modal('show');
-                        },
-
-                        fnchangeStatus(status) {
-                            let self = this;
-                            let param = {
-                                inquiryNo: self.selected.inquiryNo,
-                                answerContent: self.answerContent,
-                                status: status
+                    fnGetList() {
+                        let self = this;
+                        let param = {
+                            status: self.status,
+                            sortType: self.sortType,
+                            pageSize: self.pageSize,
+                            offSet: self.pageSize * (self.currentPage - 1)
+                        };
+                        $.ajax({
+                            url: "http://localhost:8080/inquiry.dox",
+                            type: "POST",
+                            dataType: "json",
+                            data: param,
+                            success: function (data) {
+                                self.inquirylist = data.list || [];
+                                self.index = Math.ceil(data.totalCount / self.pageSize);
+                                self.emptyRows = 8 - data.list.length;
                             }
-                            $.ajax({
-                                url: "http://localhost:8080/changeAnswer.dox",
-                                type: "POST",
-                                dataType: "json",
-                                data: param,
-                                success: function (res) {
-                                    self.selected.status = status;
-                                    self.fnGetList(); // 왼쪽 리스트 갱신
-                                    alert("상태 변경 완료");
-                                }
-                            });
-                        },
-                        saveAnswer() {
-                            let self = this;
+                        });
+                    },
 
-                            if (!self.answerContent) {
-                                alert("답변 입력하세요");
-                                return;
+                    fnselectInquiry(item) {
+                        this.selected = item;
+                        this.answerContent = item.answerContent || "";
+                        console.log(this.selected);
+                        $('#inquiryModal').modal('show');
+                    },
+
+                    fnchangeStatus(status) {
+                        let self = this;
+                        let param = {
+                            inquiryNo: self.selected.inquiryNo,
+                            answerContent: self.answerContent,
+                            status: status
+                        }
+                        $.ajax({
+                            url: "http://localhost:8080/changeAnswer.dox",
+                            type: "POST",
+                            dataType: "json",
+                            data: param,
+                            success: function (res) {
+                                self.selected.status = status;
+                                self.fnGetList(); // 왼쪽 리스트 갱신
+                                alert("상태 변경 완료");
                             }
+                        });
+                    },
+                    saveAnswer() {
+                        let self = this;
 
-                            $.ajax({
-                                url: "http://localhost:8080/inquiryAnswer.dox",
-                                type: "POST",
-                                dataType: "json",
-                                data: {
-                                    inquiryNo: self.selected.inquiryNo,
-                                    answerContent: self.answerContent,
-                                    status: self.selected.status
-                                },
-                                success: function () {
-                                    alert("저장 완료");
-
-                                    // 목록 새로고침
-                                    self.fnGetList();
-
-                                    // 선택 유지하고 싶으면 아래 유지
-                                    // self.selected.answerContent = self.answerContent;
-                                }
-                            });
+                        if (!self.answerContent) {
+                            alert("답변 입력하세요");
+                            return;
                         }
 
-                    }, // methods
-                    mounted() {
-                        // 처음 시작할 때 실행되는 부분
-                        let self = this;
-                        const path = location.pathname;
-                        this.activeMenu =
-                            path.includes('adminMain') ? 'main' :
-                                path.includes('adminUser') ? 'user' :
-                                    path.includes('adminCompany') ? 'company' :
-                                        path.includes('adminBoard') ? 'board' :
-                                            path.includes('adminReviewWait') ? 'reviewWait' :
-                                                path.includes('adminPayment') ? 'payment' :
-                                                    path.includes('adminReport') ? 'report' :
-                                                        path.includes('adminInquiry') ? 'inquiry' :
-                                                            path.includes('adminStatistics') ? 'stats' :
-                                                                '';
-                        this.fnGetList();
-                    }
-                });
+                        $.ajax({
+                            url: "http://localhost:8080/inquiryAnswer.dox",
+                            type: "POST",
+                            dataType: "json",
+                            data: {
+                                inquiryNo: self.selected.inquiryNo,
+                                answerContent: self.answerContent,
+                                status: self.selected.status
+                            },
+                            success: function () {
+                                alert("저장 완료");
 
-                app.mount('#app');
-            </script>
-            <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
+                                // 목록 새로고침
+                                self.fnGetList();
+
+                                // 선택 유지하고 싶으면 아래 유지
+                                // self.selected.answerContent = self.answerContent;
+                            }
+                        });
+                    }
+
+                }, // methods
+                mounted() {
+                    // 처음 시작할 때 실행되는 부분
+                    let self = this;
+                    const path = location.pathname;
+                    this.activeMenu =
+                        path.includes('adminMain') ? 'main' :
+                            path.includes('adminUser') ? 'user' :
+                                path.includes('adminCompany') ? 'company' :
+                                    path.includes('adminBoard') ? 'board' :
+                                        path.includes('adminReviewWait') ? 'reviewWait' :
+                                            path.includes('adminPayment') ? 'payment' :
+                                                path.includes('adminReport') ? 'report' :
+                                                    path.includes('adminInquiry') ? 'inquiry' :
+                                                        path.includes('adminStatistics') ? 'stats' :
+                                                            '';
+                    this.fnGetList();
+                }
+            });
+
+            app.mount('#app');
+        </script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
     </body>
 
     </html>

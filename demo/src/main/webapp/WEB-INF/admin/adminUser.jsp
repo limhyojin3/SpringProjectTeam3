@@ -155,7 +155,7 @@
                                 <button @click="fnGetUserList">검색</button>
                             </div>
                             <div class="filter-group">
-                                <button @click="fnReport">신고수정렬</button>
+                                <button @click="fnReport">신고수</button>
                                 <select v-model="statusFilter" @change="fnGetUserList">
                                     <option value="ALL">활동상태</option>
                                     <option value="ACTIVE">활동</option>

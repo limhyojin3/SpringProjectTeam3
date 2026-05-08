@@ -203,11 +203,6 @@ public class PaymentService {
 	                paymentMapper.updateUsedCoupon(map); // 쿠폰 USED 처리
 	            }
 				
-			}else if(type.equals("RES")){
-	// 이미 다른곳에서 구현됨 completeReservationPayment(map);
-
-			}else if(type.equals("REG")){
-			    completeRegistrationPayment(map);
 			}
 
 			result.put("result", "success");
@@ -546,7 +541,7 @@ public class PaymentService {
 
 	    try {
 
-	        // 만료된 UNUSED 쿠폰 자동 EXPIRED 처리 (선택사항)
+	        // 만료된 UNUSED 쿠폰 자동 EXPIRED 처리
 	        paymentMapper.updateExpiredCoupon(map);
 	        // 페이지네이션
 	        int totalCount = paymentMapper.selectMyCouponCount(map);
