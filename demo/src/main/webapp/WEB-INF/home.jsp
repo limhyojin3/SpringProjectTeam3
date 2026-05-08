@@ -43,7 +43,7 @@
                     </div>
                     <span class="item-icon">🍼</span>우리 아이 첫돌 사진<br>리뷰 이벤트
                 </a>
-                <a class="event-more" href="/event">이벤트 더보기 ›</a>
+                <a class="event-more" href="/event.do">이벤트 더보기 ›</a>
             </div>
         </div>
         <div id="wrapper">

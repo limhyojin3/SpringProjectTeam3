@@ -759,6 +759,11 @@ public class MemberController {
 		public String partner() {
 			return "/common/partner";
 		}
+	// 개인정보처리방침
+		@GetMapping("/event.do")
+		public String event() {
+			return "/common/event";
+		}
 		
 	// 최근 리뷰
 		@GetMapping("/mainReviewList.dox")
