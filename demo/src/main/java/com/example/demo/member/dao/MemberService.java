@@ -189,6 +189,9 @@ public class MemberService {
 	    if(map.get("weddingDate") != null && map.get("weddingDate").toString().isEmpty()) {
 	        map.put("weddingDate", null);
 	    }
+	    if(map.get("anniversaryDate") != null && map.get("anniversaryDate").toString().isEmpty()) {
+	        map.put("anniversaryDate", null);
+	    }
 		try {
 			map.put("password", passwordEncoder.encode((String)map.get("password")));
 			// member 테이블 INSERT
@@ -212,6 +215,7 @@ public class MemberService {
 			System.out.println(e.getMessage());
 			resultMap.put("result", "fail");
 			resultMap.put("message", Message.MSG_SERVER_ERR);
+			throw new RuntimeException(e);
 		}
 		return resultMap;
 	}

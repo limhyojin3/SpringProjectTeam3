@@ -422,12 +422,36 @@
                     </div>
                 </div>
 
-                <!-- 결혼예정일 -->
+                <!-- 미혼/기혼 선택 -->
                 <div class="form-row">
-                    <div class="form-label">결혼예정일</div>
+                    <div class="form-label">결혼 여부</div>
                     <div class="row-body">
                         <div class="form-input">
-                            <input type="date" v-model="info.weddingDate">
+                            <input type="radio" name="marital" v-model="maritalStatus" value="SINGLE"> 미혼
+                            <input type="radio" name="marital" v-model="maritalStatus" value="MARRIED"> 기혼
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 미혼: 결혼 예정일 (오늘 이후만) -->
+                <div class="form-row" v-if="maritalStatus === 'SINGLE'">
+                    <div class="form-label">결혼<br>예정일</div>
+                    <div class="row-body">
+                        <div class="form-input">
+                            <input type="date" v-model="info.weddingDate" :min="today">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 기혼: 결혼 기념일 (오늘 이전만, 변경 불가 안내) -->
+                <div class="form-row" v-if="maritalStatus === 'MARRIED'">
+                    <div class="form-label">결혼<br>기념일</div>
+                    <div class="row-body">
+                        <div class="form-input">
+                            <input type="date" v-model="info.anniversaryDate" :max="yesterday">
+                        </div>
+                        <div class="msg-box show" style="color:#aaa;">
+                            ※ 결혼 기념일은 입력 후 변경이 불가합니다.
                         </div>
                     </div>
                 </div>
@@ -479,6 +503,10 @@
 
                 pwdMsg: "", // 비밀번호 확인
                 isPwdMatch: false, // 비밀번호 일치체크
+                maritalStatus: "SINGLE",  // SINGLE / MARRIED
+                anniversaryDate: "",
+                today: new Date().toISOString().split('T')[0],
+                yesterday: new Date(Date.now() - 86400000).toISOString().split('T')[0],
             };
         },
         methods: {
@@ -535,7 +563,10 @@
                     name: self.info.userName,
                     gender: self.info.gender,
                     email: self.info.userEmail,
-                    weddingDate: self.info.weddingDate ? self.info.weddingDate : null
+                    weddingDate: self.info.weddingDate ? self.info.weddingDate : null,
+                    maritalStatus: self.maritalStatus,
+                    anniversaryDate: self.maritalStatus === 'MARRIED' ? self.info.anniversaryDate : null,
+                    weddingDate: self.maritalStatus === 'SINGLE' ? self.info.weddingDate : null
                 }
                 $.ajax({
                     url: "http://localhost:8080/joinUser.dox",
