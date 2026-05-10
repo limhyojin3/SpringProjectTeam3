@@ -16,114 +16,6 @@
         <link rel="stylesheet" href="${pageContext.request.contextPath}/css/adminNavi.css">
         <link rel="stylesheet" href="${pageContext.request.contextPath}/css/admin-common.css">
         <style>
-            .board-container {
-                padding: 20px;
-                background: #fff;
-                border-radius: 10px;
-                box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
-            }
-
-            .board-header {
-                display: flex;
-                justify-content: space-between;
-                align-items: center;
-                margin-bottom: 15px;
-                gap: 10px;
-            }
-
-            .board-header input,
-            .board-header select {
-                border: 1px solid #ddd;
-                padding: 6px 10px;
-                border-radius: 6px;
-            }
-
-            .keyword-group input {
-                border: 1px solid #ddd;
-                padding: 6px 10px;
-                border-radius: 6px;
-                outline: none;
-            }
-
-            .keyword-group select {
-                border: 1px solid #ddd;
-                padding: 6px;
-                border-radius: 6px;
-            }
-
-            .filter-group {
-                display: flex;
-                flex-direction: row;
-            }
-
-            .filter-group select {
-                border: 1px solid #ddd;
-                padding: 6px;
-                border-radius: 6px;
-            }
-
-            /* 테이블 */
-            .board-table {
-                width: 1000px;
-                border-collapse: collapse;
-            }
-
-            .board-table th {
-                background: #f1f3f5;
-                padding: 10px;
-                font-size: 13px;
-            }
-
-            .board-table td {
-                padding: 10px;
-                font-size: 13px;
-                border-bottom: 1px solid #eee;
-            }
-
-            .board-table tr:hover {
-                background: #f8f9fa;
-            }
-
-            /* 선택 강조 */
-            .active-row {
-                background: #e7f1ff !important;
-            }
-
-            /* 상태 배지 */
-            .status-badge {
-                padding: 4px 8px;
-                border-radius: 10px;
-                font-size: 12px;
-            }
-
-            .status-active {
-                background: #e6f4ea;
-                color: #2f9e44;
-            }
-
-            .status-stop {
-                background: #fff1f0;
-                color: #d9480f;
-            }
-
-            .status-dormant {
-                background: #f1f3f5;
-                color: #868e96;
-            }
-
-            .status-withdraw {
-                background: #000;
-                color: #fff;
-            }
-
-            /* 신고 수 */
-            .count-badge {
-                background: red;
-                color: white;
-                border-radius: 50%;
-                padding: 3px 8px;
-                font-size: 12px;
-            }
         </style>
     </head>
 
@@ -133,12 +25,12 @@
             <div class="middle">
                 <jsp:include page="/WEB-INF/admin/adminNavi.jsp" />
                 <div class="main">
-                    <div class="board-container">
+                    <div class="container">
 
                         <h2>게시판 관리</h2>
 
                         <!-- 필터 영역 -->
-                        <div class="board-header">
+                        <div class="header">
                             <div class="keyword-group">
                                 <select v-model="searchType">
                                     <option value="all">전체</option>
@@ -158,7 +50,6 @@
                                     <option value="정보">정보</option>
                                 </select>
                                 <div>
-                                    정렬
                                     <select v-model="sortType" @change="fnGetBoardList">
                                         <option value="latest">최신순</option>
                                         <option value="old">오래된순</option>
@@ -169,7 +60,7 @@
                         </div>
 
                         <!-- 테이블 -->
-                        <table class="board-table">
+                        <table class="table">
                             <thead>
                                 <tr>
                                     <th>번호</th>
@@ -192,7 +83,7 @@
                                     <td>
                                         <button @click="fnSelectBoard(board)">보기</button>
                                         <button @click="fnToggleBoard(board)"
-                                            :style="board.isDeleted == 0 ? 'color:red;' : 'color:green;'">
+                                            :class="board.isDeleted == 0 ? 'btn-stop' : 'btn-done'">
 
                                             {{ board.isDeleted == 0 ? '숨김' : '복구' }}
                                         </button>
@@ -205,14 +96,19 @@
                             </tbody>
                         </table>
                         <div class="page-box">
-                            <button @click="fnPageMove(currentPage-1)" :disabled="currentPage===1">‹</button>
-
-                            <button v-for="p in index" :key="p" @click="fnPageMove(p)"
-                                :class="{active: currentPage === p}">
-                                {{ p }}
+                            <button @click="fnPageMove(currentPage-1)" :disabled="currentPage===1">
+                                <i class="fas fa-chevron-left"></i>
                             </button>
-
-                            <button @click="fnPageMove(currentPage+1)" :disabled="currentPage===index">›</button>
+                            <template v-for="p in index">
+                                <button
+                                    v-if="p > Math.floor((currentPage - 1) / 5) * 5 && p <= Math.ceil(currentPage / 5) * 5"
+                                    :key="p" @click="fnPageMove(p)" :class="{active: currentPage === p}">
+                                    {{ p }}
+                                </button>
+                            </template>
+                            <button @click="fnPageMove(currentPage+1)" :disabled="currentPage===index">
+                                <i class="fas fa-chevron-right"></i>
+                            </button>
                         </div>
                     </div>
                 </div>

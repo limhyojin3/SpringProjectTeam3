@@ -24,6 +24,24 @@
 		</if> 
 		GROUP BY USER_MONTH 
 		ORDER BY USER_MONTH ASC; </select>
+		
+	<select id="selectAllClientsCount" parameterType="hashmap"
+		resultType="int">
+		SELECT
+		Count(*)
+		FROM MEMBER
+		WHERE ROLE != "ADMIN"
+		AND status != "WITHDRAWN"
+	</select>
+
+	<select id="selectAllPartnersCount" parameterType="hashmap"
+		resultType="int">
+		SELECT
+		Count(*)
+		FROM MEMBER
+		WHERE ROLE = "PARTNER"
+		AND status != "WITHDRAWN"
+	</select>
 
 <!-- 리뷰게시판 글 목록 -->
 	<select id="selectReviewList" parameterType="hashmap"
@@ -551,8 +569,12 @@
 		M.REG_DATE AS regDate,
 		M.ROLE AS role,
 		M.LAST_LOGIN AS lastLogin,
+		M.previous_payment AS previousPayment,
+		M.out_date AS outDate,
 		U.WEDDING_DATE AS weddingDate,
 		U.GENDER AS gender,
+		U.marital_status AS maritalStatus,
+		U.anniversary_date AS anniversaryDate,
 		CASE
 		WHEN M.ROLE = 'USER' THEN 'USER'
 		WHEN M.ROLE IN ('PARTNER', 'NPARTNER') THEN 'COMPANY'
@@ -855,7 +877,7 @@
     WHERE TARGET_USER_ID = #{target_id}
     AND ACTION_STATUS = 1
 	</select>
-	<!-- 신고게시판 전 회원 1회이상 조회 -->
+	<!-- 신고게시판 전 회원 2회이상 조회 -->
 	<select id="selectKillHistory" parameterType="hashmap" resultType="com.example.demo.admin.model.Admin">
 		select target_user_id AS targetUserId, r.killCount
 		from(
@@ -1209,7 +1231,8 @@
 	        coupon_name,
 	        discount_rate,
 	        issue_type,
-	        max_issue_cnt
+	        max_issue_cnt,
+	        giftcon_image
 	    )
 	    VALUES
 	    (
@@ -1217,7 +1240,8 @@
 	        #{couponName},
 	        #{discountRate},
 	        #{issueType},
-	        #{maxIssueCnt}
+	        #{maxIssueCnt},
+	        #{giftconImage}
 	    )
 	
 	</insert>

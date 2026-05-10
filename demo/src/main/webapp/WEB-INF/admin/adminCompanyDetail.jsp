@@ -15,67 +15,36 @@
         <link rel="stylesheet" href="${pageContext.request.contextPath}/css/admin-common.css">
 
         <style>
-            .middle {
-                width: 100%;
-                /* 화면 전체 높이를 사용하되, 헤더/푸터 제외한 나머지는 유연하게(1fr) */
-                display: grid;
-                grid-template-areas:
-                    "nav main";
-                grid-template-columns: 300px 1fr;
-                /* 너비 고정 */
+            .status-badge {
+                padding: 8px 14px;
+                border-radius: 999px;
+                font-size: 13px;
+                font-weight: 700;
             }
 
-            .main {
-                grid-area: main;
-                padding: 20px;
-                display: flex;
-                gap: 20px;
-                align-items: flex-start;
+            .report-badge {
+                background: #fff3cd;
+                color: #9a6700;
+                padding: 8px 14px;
+                border-radius: 999px;
+                font-size: 13px;
+                font-weight: 700;
             }
 
-            .card {
-                border-radius: 12px;
-                border: none;
-                box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-                margin-bottom: 20px;
+            /* 기존 상태 클래스랑 같이 사용 */
+            .badge-success {
+                background: #e8f8ee;
+                color: #1c8c4c;
             }
 
-            .card-header {
-                font-weight: bold;
-                background-color: #f1f3f5;
-                border-bottom: none;
+            .badge-danger {
+                background: #ffe9e9;
+                color: #d93025;
             }
 
-            .btn-danger,
-            .btn-success {
-                font-weight: bold;
-            }
-
-            input.form-control {
-                border-radius: 8px;
-            }
-
-            .summary-box {
-                background: #f1f3f5;
-                padding: 10px;
-                border-radius: 10px;
-                height: 100%;
-                display: flex;
-                flex-direction: column;
-                justify-content: center;
-                align-items: center;
-            }
-
-            .summary-box.danger {
-                background: #ffe5e5;
-                color: red;
-            }
-
-            .summary-title {
-                font-size: 12px;
+            .badge-secondary {
+                background: #eef1f5;
                 color: #666;
-                margin-bottom: 5px;
-
             }
         </style>
     </head>
@@ -84,31 +53,32 @@
         <jsp:include page="/WEB-INF/common/header.jsp" />
 
         <div id="app">
-
             <div class="middle">
                 <jsp:include page="/WEB-INF/admin/adminNavi.jsp" />
-
                 <div class="main">
-
-                    <!-- 뒤로가기 -->
-                    <button class="btn btn-secondary mb-3" @click="fnPage('/adminCompany.do')">← 목록으로</button>
-
-                    <div v-if="company">
-
+                    <div class="detail-container" v-if="company">
                         <!-- 상단 -->
-                        <div class="d-flex justify-content-between align-items-center mb-4">
-                            <h3 class="mb-0">업체 상세</h3>
-                            <h3>{{ company.comName }}</h3>
-                            <div>
-                                <span :class="['badge mr-2', getStatusClass(company.status)]">
-                                    {{ getStatusInfo(company.status).text }}
-                                </span>
-                                <span class="badge badge-warning">
-                                    신고 {{ reportCount || 0 }}회
-                                </span>
+                        <div class="detail-header">
+                            <div class="detail-top">
+                                <button class="btn-back" @click="fnPage('/adminUser.do')">
+                                    <i class="fas fa-bars"></i>
+                                    <span>목록으로</span>
+                                </button>
+                            </div>
+
+                            <div class="detail-title-row">
+                                <h2>업체 상세</h2>
+                                <div class="detail-badges">
+                                    <span :class="['badge status-badge', getStatusClass(company.status)]">
+                                        {{ getStatusInfo(company.status).text }}
+                                    </span>
+
+                                    <span class="badge report-badge">
+                                        신고 {{ reportCount || 0 }}회
+                                    </span>
+                                </div>
                             </div>
                         </div>
-
                         <!-- ===== 2. 회원 기본 정보 ===== -->
                         <div class="card p-3 mb-3">
                             <h5>👤 회원 정보</h5>
@@ -223,7 +193,8 @@
                         <!-- ===== 5. 제재 처리 ===== -->
                         <div class="card p-3 mb-3" v-if="company.status !== 'STOP'">
                             <h5 class="text-danger">🚫 정지 처리</h5>
-                            <input class="form-control mb-2" v-model="banReason" placeholder="정지 사유 입력" @keyup.enter="fnBanUser"/>
+                            <input class="form-control mb-2" v-model="banReason" placeholder="정지 사유 입력"
+                                @keyup.enter="fnBanUser" />
                             <button class="btn btn-danger btn-block" @click="fnBanUser">정지</button>
                         </div>
 
@@ -270,7 +241,7 @@
                         };
                         return map[role] || role;
                     },
-                    
+
                     getStatusInfo(status) {
                         const map = {
                             ACTIVE: { text: "활동" },

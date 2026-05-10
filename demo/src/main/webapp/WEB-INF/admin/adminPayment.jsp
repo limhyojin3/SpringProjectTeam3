@@ -16,79 +16,6 @@
         <link rel="stylesheet" href="${pageContext.request.contextPath}/css/adminNavi.css">
         <link rel="stylesheet" href="${pageContext.request.contextPath}/css/admin-common.css">
         <style>
-            /* 메인 카드 */
-            .payment-container {
-                width: 1040px;
-                background: #fff;
-                border-radius: 10px;
-                box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
-                padding: 20px;
-            }
-
-            /* 테이블 */
-            .payment-table {
-                width: 100%;
-                border-collapse: collapse;
-                overflow: hidden;
-                border-radius: 14px;
-            }
-
-            .payment-table thead {
-                background: #f4f6fa;
-            }
-
-            .payment-table th {
-                padding: 16px;
-                text-align: center;
-                font-size: 14px;
-                font-weight: 700;
-                color: #444;
-                border-bottom: 1px solid #e6eaf0;
-            }
-
-            .payment-table td {
-                padding: 15px;
-                text-align: center;
-                font-size: 14px;
-                color: #555;
-                border-bottom: 1px solid #f0f2f5;
-            }
-
-            .payment-table tbody tr {
-                transition: .2s;
-            }
-
-            .payment-table tbody tr:hover {
-                background: #f8fbff;
-            }
-
-            /* 공통 버튼 */
-            button {
-                border: none;
-                background: #eef1f6;
-                padding: 8px 14px;
-                border-radius: 10px;
-                font-size: 13px;
-                font-weight: 600;
-                cursor: pointer;
-                transition: .2s;
-            }
-
-            button:hover {
-                background: #dbe7ff;
-                color: #2b62ff;
-            }
-
-            /* 환불 버튼 */
-            .btn-refund {
-                background: #fff0f0;
-                color: #e04a4a;
-            }
-
-            .btn-refund:hover {
-                background: #ffdede;
-                color: #c62828;
-            }
 
             /* 상태 뱃지 */
             .badge-success {
@@ -110,26 +37,7 @@
                 font-size: 13px;
                 font-weight: 600;
             }
-
-            @media (max-width: 1200px) {
-                .middle {
-                    grid-template-columns: 220px 1fr;
-                }
-            }
-
-            @media (max-width: 900px) {
-                .middle {
-                    grid-template-columns: 1fr;
-                }
-
-                .main {
-                    padding: 20px;
-                }
-
-                .tab-menu {
-                    flex-direction: column;
-                }
-            }
+            
         </style>
     </head>
 
@@ -139,7 +47,8 @@
             <div class="middle">
                 <jsp:include page="/WEB-INF/admin/adminNavi.jsp" />
                 <div class="main">
-                    <div class="payment-container">
+                    <div class="container">
+                        <h2>결제 관리</h2>
                         <div class="tab-menu">
                             <button :class="{active: activeTab === 'pass'}" @click="fnChangeTab('pass')">패스권결제</button>
                             <button :class="{active: activeTab === 'reservation'}"
@@ -149,7 +58,7 @@
                         </div>
 
                         <!-- 패스권 결제 -->
-                        <table v-if="activeTab === 'pass'" class="payment-table">
+                        <table v-if="activeTab === 'pass'" class="table">
                             <thead>
                                 <tr>
                                     <th>결제번호</th>
@@ -170,7 +79,7 @@
                                     <td>{{ p.payStatus }}</td>
                                     <td>{{ formatDate(p.payDate) }}</td>
                                     <td>
-                                        <button v-if="p.payStatus == 'SUCCESS'" class="btn-refund"
+                                        <button v-if="p.payStatus == 'SUCCESS'" class="btn-warn"
                                             @click="fnRefund(p.payNo)">
                                             환불
                                         </button>
@@ -178,11 +87,14 @@
                                         <span v-else class="badge-danger">환불완료</span>
                                     </td>
                                 </tr>
+                                <tr v-for="n in emptyRows" class="empty-row">
+                                    <td colspan="7">&nbsp;</td>
+                                </tr>
                             </tbody>
                         </table>
 
                         <!-- 예약 결제 -->
-                        <table v-if="activeTab === 'reservation'" class="payment-table">
+                        <table v-if="activeTab === 'reservation'" class="table">
                             <thead>
                                 <tr>
                                     <!-- <th>결제번호</th> -->
@@ -209,15 +121,18 @@
                                     <td>{{ r.resStatus }}</td>
                                     <td>{{ formatDate(r.payDate) }}</td>
                                     <td>
-                                        <button @click="fnRefund2(r.payNo)">환불
+                                        <button class="btn-warn" @click="fnRefund2(r.payNo)" >환불
                                         </button>
                                     </td>
+                                </tr>
+                                <tr v-for="n in emptyRows" class="empty-row">
+                                    <td colspan="9">&nbsp;</td>
                                 </tr>
                             </tbody>
                         </table>
 
                         <!-- 등록 결제 -->
-                        <table v-if="activeTab === 'registration'" class="payment-table">
+                        <table v-if="activeTab === 'registration'" class="table">
                             <thead>
                                 <tr>
                                     <th>아이디</th>
@@ -237,19 +152,27 @@
                                     <td>{{ c.amount.toLocaleString() }}</td>
                                     <td>{{ formatDate(c.payDate) }}</td>
                                     <td>{{ c.registrationFee === "PAID"? "제휴" : "일반" }}</td>
-                                    <td><button @click="fnRegistration(c)">등록</button></td>
+                                    <td><button class="btn-done" @click="fnRegistration(c)">등록</button></td>
+                                </tr>
+                                <tr v-for="n in emptyRows" class="empty-row">
+                                    <td colspan="7">&nbsp;</td>
                                 </tr>
                             </tbody>
                         </table>
                         <div class="page-box" v-if="list.length > 0">
-                            <button @click="fnPageMove(currentPage-1)" :disabled="currentPage===1">‹</button>
-
-                            <button v-for="p in index" :key="p" @click="fnPageMove(p)"
-                                :class="{active: currentPage==p}">
-                                {{p}}
+                            <button @click="fnPageMove(currentPage-1)" :disabled="currentPage===1">
+                                <i class="fas fa-chevron-left"></i>
                             </button>
-
-                            <button @click="fnPageMove(currentPage+1)" :disabled="currentPage===index">›</button>
+                            <template v-for="p in index">
+                                <button
+                                    v-if="p > Math.floor((currentPage - 1) / 5) * 5 && p <= Math.ceil(currentPage / 5) * 5"
+                                    :key="p" @click="fnPageMove(p)" :class="{active: currentPage === p}">
+                                    {{ p }}
+                                </button>
+                            </template>
+                            <button @click="fnPageMove(currentPage+1)" :disabled="currentPage===index">
+                                <i class="fas fa-chevron-right"></i>
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -267,7 +190,9 @@
                         list: [],
                         pageSize: 5,
                         currentPage: 1,
-                        index: 1
+                        index: 1,
+                        emptyRows: 0,
+
                     };
                 },
                 methods: {
@@ -318,6 +243,7 @@
                                 console.log(res);
                                 self.list = res.list;
                                 self.index = Math.ceil(res.totalCount / self.pageSize);
+                                self.emptyRows = 5 - res.list.length;
                             }
                         });
                     },
