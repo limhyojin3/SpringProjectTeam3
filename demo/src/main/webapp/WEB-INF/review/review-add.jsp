@@ -132,7 +132,78 @@
                     </div>
                 </div>
             </div>
+            <div class="form-group p-3 rounded border mb-4" style="background-color: #fff9f9;">
+            <label class="font-weight-bold d-block mb-3">📍 서비스 상세 평가 <span class="essential">*</span></label>
+            
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label class="small font-weight-bold">드레스/상품 상태</label>
+                    <div class="d-flex mt-1">
+                        <div class="custom-control custom-radio mr-3">
+                            <input type="radio" id="dress_high" v-model="review.dressCondition" value="상" class="custom-control-input" name="dress">
+                            <label class="custom-control-label" for="dress_high">상</label>
+                        </div>
+                        <div class="custom-control custom-radio mr-3">
+                            <input type="radio" id="dress_mid" v-model="review.dressCondition" value="중" class="custom-control-input" name="dress">
+                            <label class="custom-control-label" for="dress_mid">중</label>
+                        </div>
+                        <div class="custom-control custom-radio">
+                            <input type="radio" id="dress_low" v-model="review.dressCondition" value="하" class="custom-control-input" name="dress">
+                            <label class="custom-control-label" for="dress_low">하</label>
+                        </div>
+                    </div>
+                </div>
 
+                <div class="col-md-6 mb-3">
+                    <label class="small font-weight-bold">직원 전문성/친절도</label>
+                    <div class="d-flex mt-1">
+                        <div class="custom-control custom-radio mr-3">
+                            <input type="radio" id="pro_high" v-model="review.professionalism" value="상" class="custom-control-input" name="pro">
+                            <label class="custom-control-label" for="pro_high">상</label>
+                        </div>
+                        <div class="custom-control custom-radio mr-3">
+                            <input type="radio" id="pro_mid" v-model="review.professionalism" value="중" class="custom-control-input" name="pro">
+                            <label class="custom-control-label" for="pro_mid">중</label>
+                        </div>
+                        <div class="custom-control custom-radio">
+                            <input type="radio" id="pro_low" v-model="review.professionalism" value="하" class="custom-control-input" name="pro">
+                            <label class="custom-control-label" for="pro_low">하</label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-6 mb-3">
+                    <label class="small font-weight-bold d-block">대기 시간</label>
+                    <div class="d-flex align-items-center mt-1">
+                        <select class="form-control form-control-sm mr-2" v-model="review.waitingTimeStatus" 
+                        style="width: 150px;"@change="fnCheckWaitingTime">
+                            <option value="N">없음 (바로 진행)</option>
+                            <option value="Y">있음 (지연 발생)</option>
+                        </select>
+                        <select class="form-control form-control-sm" v-if="review.waitingTimeStatus === 'Y'" v-model="review.waitingDuration" style="width: 130px;">
+                            <option value="">시간 선택</option>
+                            <option value="5~10분">5~10분</option>
+                            <option value="20분">20분</option>
+                            <option value="30분 이상">30분 이상</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="col-md-6 mb-3">
+                    <label class="small font-weight-bold">추가금 강요/권유 여부</label>
+                    <div class="d-flex mt-1">
+                        <div class="custom-control custom-radio mr-4">
+                            <input type="radio" id="extra_y" v-model="review.extraChargeForce" value="Y" class="custom-control-input" name="extra">
+                            <label class="custom-control-label" for="extra_y">있음</label>
+                        </div>
+                        <div class="custom-control custom-radio">
+                            <input type="radio" id="extra_n" v-model="review.extraChargeForce" value="N" class="custom-control-input" name="extra">
+                            <label class="custom-control-label" for="extra_n">없음</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
             <div class="form-group">
                 <label class="font-weight-bold">
                     리뷰 내용 <span class="essential">*</span>
@@ -185,7 +256,14 @@
                     companyList: [],
                     categoryList: [],
                     productList: [],
-                    previews: [] 
+                    previews: [] ,
+                    review : {
+                        dressCondition: '상',   // 드레스 상태 (상/중/하)
+                        professionalism: '상',  // 전문성 (상/중/하)
+                        waitingTimeStatus: 'N',// 대기 시간 유무 (Y/N)
+                        waitingDuration: '',  // 대기 시간 상세 (5분, 10분 등)
+                        extraChargeForce: 'N', // 추가금 강요 여부 (Y/N)
+                    }
                 };
             },
             computed: {
@@ -211,7 +289,7 @@
                                     ['clean']
                                 ]
                             },
-                        placeholder: '따뜻한 후기를 남겨주세요.'
+                        placeholder: '계약 과정은 어땠나요? 실제 서비스와 사진/설명의 차이, 직원 응대, 가격 대비 만족도 등 예비 부부에게 추천하고 싶은 점이나 아쉬운 점을 자세히 적어주세요! 사진도 함께 첨부해 주시면 더욱 좋아요 📸'
                     });
                     this.quill.on('text-change', () => {
                         this.textLength = this.quill.getText().trim().length;
@@ -324,7 +402,12 @@
                         isPaid: this.isPaid,
                         title: this.title,
                         bookingSource: this.bookingSource,
-                        totalCost: this.totalCost
+                        totalCost: this.totalCost,
+                        dressCondition: this.review.dressCondition,
+                        professionalism: this.review.professionalism,
+                        waitingTimeStatus: this.review.waitingTimeStatus,
+                        waitingDuration: this.review.waitingDuration,
+                        extraChargeForce: this.review.extraChargeForce
                     };
                     formData.append("reviewData", JSON.stringify(reviewData));
 
@@ -355,7 +438,18 @@
                         if (!confirm("유형 변경 시 내용이 초기화됩니다. 변경하시겠습니까?")) return;
                     }
                     this.isPaid = type;
-                    this.title = ""; this.totalCost = 0; this.quill.root.innerHTML = ""; this.previews = [];
+                    this.title = ""; 
+                    this.totalCost = 0; 
+                    this.quill.root.innerHTML = ""; 
+                    this.previews = [];
+                    this.review = {
+                        dressCondition: '상',   // 기본값으로 복구
+                        professionalism: '상',
+                        waitingTimeStatus: 'N',
+                        waitingDuration: '',
+                        extraChargeForce: 'N'
+                    };
+                    this.textLength = 0;    
                 },
                 fnFileCheck() {
                     const files = this.$refs.reviewFiles.files;
@@ -366,7 +460,14 @@
                         reader.readAsDataURL(file);
                     });
                 },
-                fnBack() { if(confirm("작성 중인 내용이 사라집니다. 돌아가시겠습니까?")) history.back(); }
+                fnBack() { 
+                    if(confirm("작성 중인 내용이 사라집니다. 돌아가시겠습니까?")) history.back(); 
+                },
+                fnCheckWaitingTime() {
+                    if (this.review.waitingTimeStatus === 'N') {
+                        this.review.waitingDuration = ''; // 상태가 N이면 상세 시간 초기화
+                    }
+                },
             },
             mounted() {
                 this.initEditor();

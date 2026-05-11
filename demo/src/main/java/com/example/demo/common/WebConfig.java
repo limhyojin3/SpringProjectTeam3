@@ -29,7 +29,9 @@ public class WebConfig implements WebMvcConfigurer {
                         "/userMyPage*.do",
                         "/company10.do",
                         "/admin*.do",
-                        "/add.do"
+                        "/add.do",
+                        "/api/review/**",
+                        "/api/community/**"
                 ) 
                 .excludePathPatterns(
                         "/merryViewHome.do",
@@ -37,7 +39,16 @@ public class WebConfig implements WebMvcConfigurer {
                         "/join*.do",
                         "/find-*.do",
                         "/css/**", "/js/**", "/img/**", "/images/**",
-                        "/uploads/**" // [중요] 사진 폴더는 로그인 체크에서 제외해야 사진이 뜹니다!
+                        "/uploads/**", // [중요] 사진 폴더는 로그인 체크에서 제외해야 사진이 뜹니다!,
+                        "/api/review/list.do",
+                        "/api/review/list.dox",   // [추가] 리뷰 목록 데이터를 가져오는 API
+                        "/api/review/detail.do",  // [선택] 상세 페이지를 비회원도 보게 하려면 추가
+                        "/api/review/detail.dox", // [선택] 상세 데이터를 가져오는 API
+                        "/api/review/company-list.dox", // [추가] 업체 목록 API (목록 검색용)
+                        "/api/community/list.do",
+                        "/api/community/list.dox",
+                        "/api/community/detail.do",
+                        "/api/community/getPost.dox"
                 );
     }
 
