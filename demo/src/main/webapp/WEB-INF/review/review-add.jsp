@@ -382,7 +382,16 @@
                             if(imgCount < 3) return alert("유료 리뷰는 본문에 사진을 3장 이상 삽입해야 합니다.");
                         } 
                         else {
-                            if(imgCount > 2) return alert("무료 리뷰는 사진을 2장까지만 등록 가능합니다.");
+                            // 무료 리뷰 로직 수정
+                        if(this.textLength > 200) return alert("무료 리뷰는 200자 이내로 작성해주세요.");
+                        
+                        // 사진 최소 1장 ~ 최대 3장 체크
+                        if(imgCount < 1) {
+                            return alert("무료 리뷰는 최소 1장의 사진을 본문에 삽입해야 합니다.");
+                        }
+                        if(imgCount > 3) {
+                            return alert("무료 리뷰는 사진을 최대 3장까지만 등록 가능합니다.");
+                        }
                     }
 
                     const formData = new FormData();
