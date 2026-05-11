@@ -15,66 +15,36 @@
         <link rel="stylesheet" href="${pageContext.request.contextPath}/css/admin-common.css">
 
         <style>
-            .middle {
-                width: 100%;
-                /* 화면 전체 높이를 사용하되, 헤더/푸터 제외한 나머지는 유연하게(1fr) */
-                display: grid;
-                grid-template-areas:
-                    "nav main";
-                grid-template-columns: 300px 1fr;
-                /* 너비 고정 */
+            .status-badge {
+                padding: 8px 14px;
+                border-radius: 999px;
+                font-size: 13px;
+                font-weight: 700;
             }
 
-            .main {
-                grid-area: main;
-                padding: 30px;
-                background-color: #f8f9fa;
-                width: 100%;
+            .report-badge {
+                background: #fff3cd;
+                color: #9a6700;
+                padding: 8px 14px;
+                border-radius: 999px;
+                font-size: 13px;
+                font-weight: 700;
             }
 
-            .card {
-                border-radius: 12px;
-                border: none;
-                box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-                margin-bottom: 20px;
+            /* 기존 상태 클래스랑 같이 사용 */
+            .badge-success {
+                background: #e8f8ee;
+                color: #1c8c4c;
             }
 
-            .card-header {
-                font-weight: bold;
-                background-color: #f1f3f5;
-                border-bottom: none;
+            .badge-danger {
+                background: #ffe9e9;
+                color: #d93025;
             }
 
-            .btn-danger,
-            .btn-success {
-                font-weight: bold;
-            }
-
-            input.form-control {
-                border-radius: 8px;
-            }
-
-            .summary-box {
-                background: #f1f3f5;
-                padding: 10px;
-                border-radius: 10px;
-                height: 100%;
-                display: flex;
-                flex-direction: column;
-                justify-content: center;
-                align-items: center;
-            }
-
-            .summary-box.danger {
-                background: #ffe5e5;
-                color: red;
-            }
-
-            .summary-title {
-                font-size: 12px;
+            .badge-secondary {
+                background: #eef1f5;
                 color: #666;
-                margin-bottom: 5px;
-
             }
         </style>
     </head>
@@ -88,22 +58,27 @@
                 <jsp:include page="/WEB-INF/admin/adminNavi.jsp" />
 
                 <div class="main">
-
-                    <!-- ===== 뒤로가기 ===== -->
-                    <button class="btn btn-secondary mb-3" @click="fnPage('/adminUser.do')">← 목록으로</button>
-
-                    <div v-if="selectedUser">
-
+                    <div class="detail-container" v-if="selectedUser">
                         <!-- 상단 -->
-                        <div class="d-flex justify-content-between align-items-center mb-4">
-                            <h3 class="mb-0">회원 상세</h3>
-                            <div>
-                                <span :class="['badge mr-2', getStatusClass(selectedUser.status)]">
-                                    {{ getStatusInfo(selectedUser.status).text }}
-                                </span>
-                                <span class="badge badge-warning">
-                                    신고 {{ reportCount || 0 }}회
-                                </span>
+                        <div class="detail-header">
+                            <div class="detail-top">
+                                <button class="btn-back" @click="fnPage('/adminUser.do')">
+                                    <i class="fas fa-bars"></i>
+                                    <span>목록으로</span>
+                                </button>
+                            </div>
+
+                            <div class="detail-title-row">
+                                <h2>회원 상세</h2>
+                                <div class="detail-badges">
+                                    <span :class="['badge status-badge', getStatusClass(selectedUser.status)]">
+                                        {{ getStatusInfo(selectedUser.status).text }}
+                                    </span>
+
+                                    <span class="badge report-badge">
+                                        신고 {{ reportCount || 0 }}회
+                                    </span>
+                                </div>
                             </div>
                         </div>
 
@@ -118,6 +93,12 @@
                                 <div class="col-4 mt-3"><b>이메일</b><br>{{ selectedUser.userEmail }}</div>
                                 <div class="col-4 mt-3"><b>전화번호</b><br>{{ selectedUser.tel || '-' }}</div>
                                 <div class="col-4 mt-3"><b>유형</b><br>{{ selectedUser.role }}</div>
+
+                                <div class="col-4 mt-3"><b>성별</b><br>{{ getStatusInfo(selectedUser.gender).text }}</div>
+                                <div class="col-4 mt-3"><b>혼인</b><br>{{ getStatusInfo(selectedUser.maritalStatus).text
+                                    || '-' }}</div>
+                                <div class="col-4 mt-3"><b>결혼기념일/예정일</b><br>{{ selectedUser.anniversaryDate ||
+                                    selectedUser.weddingDate }}</div>
                             </div>
                         </div>
 
@@ -249,7 +230,11 @@
                             ACTIVE: { text: "활동" },
                             STOP: { text: "정지" },
                             DORMANT: { text: "휴면" },
-                            WITHDRAWN: { text: "탈퇴" }
+                            WITHDRAWN: { text: "탈퇴" },
+                            M: { text: "남성" },
+                            F: { text: "여성" },
+                            SINGLE: { text: "미혼" },
+                            MARRIED: { text: "기혼" }
                         };
                         return map[status] || { text: "기타" };
                     },

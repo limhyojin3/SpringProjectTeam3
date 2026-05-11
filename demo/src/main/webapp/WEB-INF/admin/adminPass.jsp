@@ -432,7 +432,7 @@
                 width: 28px;
                 height: 28px;
 
-                background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cpath fill='%23ff7aa8' d='M32 4c4 8 10 10 18 10-8 4-10 10-10 18 4-8 10-10 18-10-8-4-10-10-10-18-4 8-10 10-18 10-8 0-14-2-18-10 8 0 14-2 18-10z'/%3E%3C/svg%3E");
+                background-image: url("../../img/sakura3.png");
                 background-size: contain;
                 background-repeat: no-repeat;
 

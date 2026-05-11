@@ -17,71 +17,6 @@
         <link rel="stylesheet" href="${pageContext.request.contextPath}/css/admin-common.css">
 
         <style>
-            .review-container {
-                padding: 20px;
-                background: #fff;
-                border-radius: 10px;
-                box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
-            }
-
-            .review-header {
-                display: flex;
-                justify-content: space-between;
-                align-items: center;
-                margin-bottom: 15px;
-                gap: 10px;
-            }
-
-            .keyword-group input {
-                border: 1px solid #ddd;
-                padding: 6px 10px;
-                border-radius: 6px;
-                outline: none;
-            }
-
-            .keyword-group select {
-                border: 1px solid #ddd;
-                padding: 6px;
-                border-radius: 6px;
-            }
-
-            .filter-group {
-                display: flex;
-                flex-direction: row;
-            }
-
-            .filter-group select {
-                border: 1px solid #ddd;
-                padding: 6px;
-                border-radius: 6px;
-            }
-
-            .review-table {
-                width: 1000px;
-                border-collapse: collapse;
-                background: #fff;
-                box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-            }
-
-            .review-table th {
-                background: #f1f3f5;
-                font-weight: 600;
-                font-size: 13px;
-                color: #555;
-                border-bottom: 1px solid #eee;
-                padding: 10px;
-            }
-
-            .review-table td {
-                padding: 10px;
-                border-bottom: 1px solid #f1f1f1;
-                font-size: 13px;
-                color: #333;
-            }
-
-            .review-table tr:hover {
-                background: #f8f9fa;
-            }
 
             /* 상태 배지 스타일 */
             .badge {
@@ -133,10 +68,6 @@
                 border-radius: 3px;
             }
 
-            button:hover {
-                background: #f8f9fa;
-            }
-
             .btn-batch {
                 background: #333;
                 color: #fff;
@@ -148,56 +79,6 @@
 
             .btn-batch:hover {
                 background: #222;
-            }
-
-            .type-tag {
-                font-size: 11px;
-                padding: 3px 6px;
-                border-radius: 6px;
-                font-weight: 500;
-            }
-
-            .tag-user {
-                background: #e3f2fd;
-                color: #1976d2;
-            }
-
-            .tag-review {
-                background: #f3e5f5;
-                color: #7b1fa2;
-            }
-
-            .target-id {
-                font-family: 'Courier New', monospace;
-                /* ID임을 강조 */
-                font-size: 13px;
-                color: #333;
-            }
-
-            /* 상태 배지 */
-            .status-badge {
-                padding: 3px 8px;
-                border-radius: 12px;
-                font-size: 11px;
-                font-weight: 500;
-            }
-
-            /* 처리대기 */
-            .waiting {
-                background: #f1f3f5;
-                color: #868e96;
-            }
-
-            /* 승인 */
-            .complete {
-                background: #e6f4ea;
-                color: #2f9e44;
-            }
-
-            /* 반려 */
-            .status-reject {
-                background: #fff1f0;
-                color: #d9480f;
             }
 
             .detail-box p {
@@ -214,24 +95,6 @@
                 resize: none;
             }
 
-            .modal-content {
-                border-radius: 10px;
-                border: none;
-            }
-
-            .modal-header {
-                border-bottom: 1px solid #eee;
-            }
-
-            .modal-body {
-                font-size: 14px;
-            }
-
-            .BatchPaging {
-                display: flex;
-                justify-content: space-between;
-                margin-top: 10px;
-            }
         </style>
     </head>
 
@@ -241,10 +104,10 @@
             <div class="middle">
                 <jsp:include page="/WEB-INF/admin/adminNavi.jsp" />
                 <div class="main">
-                    <div class="review-container">
+                    <div class="container">
                         <!-- 상단 필터 영역 -->
                         <h2>리뷰 관리</h2>
-                        <div class="review-header">
+                        <div class="header">
                             <div class="keyword-group">
                                 <select v-model="searchType">
                                     <option value="all">전체</option>
@@ -256,17 +119,15 @@
                                 <button @click="fnGetReviewList">검색</button>
                             </div>
                             <div class="filter-group">
-                                <div>
-                                    승인
+                                <div>                              
                                     <select v-model="approvalStatus" @change="fnGetReviewList">
-                                        <option value="ALL">전체</option>
+                                        <option value="ALL">상태</option>
                                         <option value="WAIT">대기</option>
                                         <option value="APPROVED">승인</option>
                                         <option value="REJECTED">반려</option>
                                     </select>
                                 </div>
-                                <div>
-                                    정렬
+                                <div>                              
                                     <select v-model="sortType" @change="fnGetReviewList">
                                         <option value="latest">최신순</option>
                                         <option value="old">오래된순</option>
@@ -276,7 +137,7 @@
                             </div>
                         </div>
                         <!-- 리스트 바디 -->
-                        <table class="review-table">
+                        <table class="table">
                             <thead>
                                 <tr>
                                     <th>번호</th>
@@ -294,12 +155,12 @@
                                     <td class="text-left" :title="r.reviewContent">
                                         {{ r.title }}
                                     </td>
-                                    <td>{{ r.approvalStatus }}</td>
+                                    <td class="status-text">{{ getStatusText(r.approvalStatus) }}</td>
                                     <td>{{ formatDate(r.regDate) }}</td>
                                     <td>
                                         <button @click="fnSelectReview(r.reviewNo)">보기</button>
-                                        <button @click="fnApprove(r)">승인</button>
-                                        <button style="color:red;" @click="fnReject(r)">반려</button>
+                                        <button class="btn-done" @click="fnApprove(r)">승인</button>
+                                        <button class="btn-warn" @click="fnReject(r)">반려</button>
                                     </td>
                                 </tr>
                                 <tr v-for="n in emptyRows" class="empty-row" style="height: 56.5px !important;">
@@ -310,14 +171,18 @@
                         </table>
                         <div class="Paging">
                             <div class="page-box">
-                                <button @click="fnPageMove(currentPage-1)" :disabled="currentPage===1">‹</button>
+                                <button @click="fnPageMove(currentPage-1)" :disabled="currentPage===1">
+                                    <i class="fas fa-chevron-left"></i>
+                                </button>
                                 <template v-for="p in index">
-                                    <button v-if="Math.abs(p-currentPage) <= 5" :key="p" @click="fnPageMove(p)"
+                                    <button v-if="p > Math.floor((currentPage - 1) / 5) * 5 && p <= Math.ceil(currentPage / 5) * 5" :key="p" @click="fnPageMove(p)"
                                         :class="{active: currentPage === p}">
                                         {{ p }}
                                     </button>
                                 </template>
-                                <button @click="fnPageMove(currentPage+1)" :disabled="currentPage===index">›</button>
+                                <button @click="fnPageMove(currentPage+1)" :disabled="currentPage===index">
+                                    <i class="fas fa-chevron-right"></i>
+                                </button>
                             </div>
                         </div>
                     </div>
@@ -381,10 +246,12 @@
                     },
 
                     getStatusText(r) {
-                        if (r.actionStatus == 0) return "처리대기";
-                        if (r.actionStatus == 2) return "반려";
-                        if (r.actionStatus == 1 && r.answerStatus == 0) return "답변대기";
-                        return "완료";
+                        const map = {
+                            WAIT : "대기",
+                            APPROVED : "승인",
+                            REJECTED : "반려",
+                        };
+                        return map[r] || r;
                     },
 
                     formatDate(date) {

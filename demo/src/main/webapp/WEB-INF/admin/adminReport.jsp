@@ -16,91 +16,24 @@
         <link rel="stylesheet" href="${pageContext.request.contextPath}/css/adminNavi.css">
         <link rel="stylesheet" href="${pageContext.request.contextPath}/css/admin-common.css">
         <style>
-            .report-container {
-                width: 1200px;
-                padding: 20px;
-                background: #fff;
-                border-radius: 10px;
-                box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
-            }
-
-            .report-header {
-                display: flex;
-                justify-content: space-between;
-                align-items: center;
-                margin-bottom: 15px;
-                gap: 10px;
-            }
-
-            .keyword-group input {
-                border: 1px solid #ddd;
-                padding: 6px 10px;
-                border-radius: 6px;
-                outline: none;
-            }
-
-            .keyword-group select {
-                border: 1px solid #ddd;
-                padding: 6px;
-                border-radius: 6px;
-            }
-
-            .filter-group {
-                display: flex;
-                flex-direction: row;
-            }
-
-            .filter-group select {
-                border: 1px solid #ddd;
-                padding: 6px;
-                border-radius: 6px;
-            }
-
-            .report-table {
-                width: 100%;
-                border-collapse: collapse;
-                background: #fff;
-                box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-            }
-
-            .report-table th {
-                background: #f1f3f5;
-                font-weight: 600;
-                font-size: 13px;
-                color: #555;
-                border-bottom: 1px solid #eee;
-                padding: 10px;
-            }
-
             /* 신고자 */
-            .report-table th:nth-child(3),
-            .report-table td:nth-child(3) {
+            .table th:nth-child(3),
+            .table td:nth-child(3) {
                 width: 100px;
             }
 
             /* 신고 제목 */
-            .report-table th:nth-child(6),
-            .report-table td:nth-child(6) {
+            .table th:nth-child(6),
+            .table td:nth-child(6) {
                 width: 150px;
             }
 
             /* 신고 사유 */
-            .report-table th:nth-child(7),
-            .report-table td:nth-child(7) {
+            .table th:nth-child(7),
+            .table td:nth-child(7) {
                 width: 260px;
                 min-width: 260px;
                 max-width: 260px;
-            }
-
-            .report-table td {
-                padding: 10px;
-                border-bottom: 1px solid #f1f1f1;
-                font-size: 13px;
-                color: #333;
-            }
-
-            .report-table tr:hover {
-                background: #f8f9fa;
             }
 
             /* 상태 배지 스타일 */
@@ -116,28 +49,14 @@
                 color: #d32f2f;
             }
 
-            /* 빨간색 */
             .status-process {
                 background: #fff3e0;
                 color: #f57c00;
             }
 
-            /* 주황색 */
             .status-complete {
                 background: #e8f5e9;
                 color: #388e3c;
-            }
-
-            /* 초록색 */
-
-            /* 강조 항목 */
-            .text-left {
-                text-align: left !important;
-                /*텍스트 왼쪽 정렬인데 최우선 적용*/
-                max-width: 250px;
-                white-space: nowrap;
-                overflow: hidden;
-                text-overflow: ellipsis;
             }
 
             .count-high {
@@ -244,11 +163,11 @@
             <div class="middle">
                 <jsp:include page="/WEB-INF/admin/adminNavi.jsp" />
                 <div class="main">
-                    <div class="report-container">
+                    <div class="container">
                         <!-- 상단 필터 영역 -->
                         <h2>신고 관리</h2>
 
-                        <div class="report-header">
+                        <div class="header">
 
                             <div class="keyword-group">
                                 <select v-model="searchType">
@@ -263,7 +182,7 @@
                             </div>
                             <div class="filter-group">
                                 <button class="btn btn-dark" @click="fnOpenKillModal">
-                                    신고초과
+                                    신고
                                 </button>
                                 <div>
                                     <select v-model="targetType" @change="fnGetReportList">
@@ -287,7 +206,6 @@
                                     </select>
                                 </div>
                                 <div>
-                                    정렬
                                     <select v-model="sortType" @change="fnGetReportList">
                                         <option value="latest">최신순</option>
                                         <option value="old">오래된순</option>
@@ -298,7 +216,7 @@
                         </div>
 
                         <!-- 리스트 바디 -->
-                        <table class="report-table">
+                        <table class="table">
                             <thead>
                                 <tr>
                                     <th><input type="checkbox" v-model="isAllChecked" @change="toggleAll"></th>
@@ -308,7 +226,7 @@
                                     <th>글 번호 OR ID</th>
                                     <th>신고 제목</th>
                                     <th>신고 사유</th>
-                                    <th>일시</th>
+                                    <th>등록일</th>
                                     <th>처리/통보</th>
                                     <th>관리</th>
                                 </tr>
@@ -316,7 +234,7 @@
                             <tbody>
                                 <tr v-for="r in reportList" :key="r.reportNo">
 
-                                    <td><input type="checkbox" :value="r" v-model="selectedReports"></td>
+                                    <td><input type="checkbox" :value="r.reportNo" v-model="selectedReports"></td>
                                     <td>{{ r.reportNo }}</td>
                                     <td>{{ r.targetUserId}}</td>
                                     <td>
@@ -353,14 +271,19 @@
                                 <button @click="fnBatchReject" class="btn btn-danger">일괄 반려</button>
                             </div>
                             <div class="page-box">
-                                <button @click="fnPageMove(currentPage-1)" :disabled="currentPage===1">‹</button>
-
-                                <button v-for="p in index" :key="p" @click="fnPageMove(p)"
-                                    :class="{active: currentPage === p}">
-                                    {{ p }}
+                                <button @click="fnPageMove(currentPage-1)" :disabled="currentPage===1">
+                                    <i class="fas fa-chevron-left"></i>
                                 </button>
-
-                                <button @click="fnPageMove(currentPage+1)" :disabled="currentPage===index">›</button>
+                                <template v-for="p in index">
+                                    <button
+                                        v-if="p > Math.floor((currentPage - 1) / 5) * 5 && p <= Math.ceil(currentPage / 5) * 5"
+                                        :key="p" @click="fnPageMove(p)" :class="{active: currentPage === p}">
+                                        {{ p }}
+                                    </button>
+                                </template>
+                                <button @click="fnPageMove(currentPage+1)" :disabled="currentPage===index">
+                                    <i class="fas fa-chevron-right"></i>
+                                </button>
                             </div>
                         </div>
                         <div class="modal fade" id="reportModal" tabindex="-1">
@@ -523,10 +446,11 @@
                     },
 
                     toggleAll() {
-                        if (this.isAllChecked) {
-                            this.selectedReports = this.reportList;
+                        let self = this;
+                        if (self.isAllChecked) {
+                            self.selectedReports = self.reportList.map(item => item.reportNo);
                         } else {
-                            this.selectedReports = [];
+                            self.selectedReports = [];
                         }
                     },
 
@@ -576,6 +500,8 @@
 
                     fnGetReportList: function () {
                         let self = this;
+                        self.selectedReports = [];
+                        self.isAllChecked = false;
                         let param = {
                             targetType: self.targetType,
                             processStatus: self.processStatus,
@@ -596,6 +522,7 @@
                                 self.reportList = data.list || [];
                                 self.index = Math.ceil(data.totalCount / self.pageSize);
                                 self.emptyRows = 8 - data.list.length;
+                                self.killList = data.killList;
                             }
                         });
                     },
@@ -609,7 +536,7 @@
                     fnBatchApprove() {
                         let self = this;
 
-                        if (self.selectedReports.length === 0) {
+                        if (self.selectedReports.length == 0) {
                             alert("선택된 신고 없음");
                             return;
                         }
@@ -619,29 +546,22 @@
                         };
 
 
-                        let ids = [];
-                        for (let i = 0; i < self.selectedReports.length; i++) {
-                            ids.push(self.selectedReports[i].reportNo);
-                        }
+                        console.log(self.selectedReports);
 
                         $.ajax({
                             url: "http://localhost:8080/reportBatchApprove.dox",
                             type: "POST",
                             traditional: true, // 배열 보낼 때 필요
                             data: {
-                                reportNos: ids,
+                                reportNos: self.selectedReports,
                                 admin_id: self.sessionId
                             },
                             success: function (res) {
                                 alert("일괄 처리 완료");
                                 console.log(res);
-                                self.killList = res.killList || [];
-                                console.log(self.killList.killCount);
-                                console.log(self.killList.targetUserId);
+                                self.selectedReports = [];
+                                self.isAllChecked = false;
                                 self.fnGetReportList();
-                                if(self.killList !=null){
-                                    $("#killModal").modal("show");
-                                }
                             }
                         });
                     },
@@ -657,21 +577,20 @@
                             return;
                         }
 
-                        let ids = [];
-                        for (let i = 0; i < self.selectedReports.length; i++) {
-                            ids.push(self.selectedReports[i].reportNo);
-                        }
+                        console.log(self.selectedReports);
 
                         $.ajax({
                             url: "http://localhost:8080/reportBatchReject.dox",
                             type: "POST",
                             traditional: true,
                             data: {
-                                reportNos: ids,
+                                reportNos: self.selectedReports,
                                 rejectReason: "일괄 반려 처리",
                             },
                             success: function () {
                                 alert("일괄 반려 완료");
+                                self.selectedReports = [];
+                                self.isAllChecked = false;
                                 self.fnGetReportList();
                             }
                         });
@@ -697,10 +616,6 @@
                                 alert("승인 완료");
                                 self.fnGetReportList();
                                 $("#reportModal").modal("hide");
-                                self.killList = res.killList || [];
-                                if(self.killList !=null){
-                                    $("#killModal").modal("show");
-                                }
                             }
                         });
                     },
