@@ -249,7 +249,7 @@
                     },
 
                     fnRefund(payNo) {
-
+                        let self = this;
                         console.log("환불 클릭", payNo);
 
                         if (!confirm("정말 환불하시겠습니까?\n환불 후 복구할 수 없습니다.")) {
@@ -347,7 +347,7 @@
                                 console.log("성공", data);
                                 if (data.result == "success") {
                                     alert(data.message);
-                                    self.fnGetList;
+                                    self.fnGetList();
                                 } else {
                                     alert(data.message);
                                 }
