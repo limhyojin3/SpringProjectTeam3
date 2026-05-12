@@ -60,7 +60,7 @@
                         <!-- 상단 -->
                         <div class="detail-header">
                             <div class="detail-top">
-                                <button class="btn-back" @click="fnPage('/adminUser.do')">
+                                <button class="btn-back" @click="fnPage('/adminCompany.do')">
                                     <i class="fas fa-bars"></i>
                                     <span>목록으로</span>
                                 </button>

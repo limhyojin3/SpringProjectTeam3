@@ -83,7 +83,7 @@
                                     <button @click="fnSearch()">검색</button>
                                 </div>
                                 <div class="filter-group">
-                                    <select v-model="status">
+                                    <select v-model="status" @change="fnGetList">
                                         <option value="">상태</option>
                                         <option value="1">판매중</option>
                                         <option value="0">중지</option>
@@ -215,7 +215,7 @@
                                     <button @click="fnSearch()">검색</button>
                                 </div>
                                 <div class="filter-group">
-                                    <select v-model="status">
+                                    <select v-model="status" @change="fnGetList">
                                         <option value="">판매상태</option>
                                         <option value="1">판매중</option>
                                         <option value="0">중지</option>
@@ -411,7 +411,15 @@
                     fnChangeTab(tab) {
                         console.log(tab);
                         this.activeTab = tab;
+                        this.fnResetSearch();
+                    },
+
+                    fnResetSearch() {
+
+                        this.keyword = "";
+                        this.status = "";
                         this.currentPage = 1;
+
                         this.fnGetList();
                     },
 
