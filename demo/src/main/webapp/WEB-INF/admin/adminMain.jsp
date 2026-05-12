@@ -23,6 +23,12 @@
                 width: 100%;
             }
 
+            .dashboard-grid,
+            .content-grid {
+                width: 80%;
+                /* 부모 너비에 꽉 차도록 명시 */
+            }
+
             /* 상단 카드 grid */
             .dashboard-grid {
                 display: grid;
@@ -104,10 +110,9 @@
             /* 운영 카드 grid */
             .content-grid {
                 display: grid;
-                grid-template-columns: 1.1fr 1.1fr 1.1fr;
+                grid-template-columns: repeat(3, 1fr);
                 gap: 24px;
                 margin-top: 24px;
-                width: 90%;
             }
 
             /* 카드 */
@@ -116,7 +121,7 @@
                 border-radius: 24px;
                 padding: 28px;
                 box-shadow: 0 4px 14px rgba(0, 0, 0, 0.06);
-                
+
                 display: flex;
                 flex-direction: column;
                 transition: 0.2s ease;
@@ -211,6 +216,7 @@
             .dashboard-table tbody tr:hover {
                 background: #f8f9ff;
             }
+
             /* 반응형 */
             @media (max-width: 1200px) {
                 .dashboard-grid {
