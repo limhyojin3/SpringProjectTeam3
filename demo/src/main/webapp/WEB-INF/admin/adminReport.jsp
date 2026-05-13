@@ -16,16 +16,24 @@
         <link rel="stylesheet" href="${pageContext.request.contextPath}/css/adminNavi.css">
         <link rel="stylesheet" href="${pageContext.request.contextPath}/css/admin-common.css">
         <style>
-            /* 신고자 */
+            /* 대상 ID */
             .table th:nth-child(3),
             .table td:nth-child(3) {
+                width: 100px;
+            }
+
+            /* 글 번호 OR ID */
+            .table th:nth-child(5),
+            .table td:nth-child(5) {
                 width: 100px;
             }
 
             /* 신고 제목 */
             .table th:nth-child(6),
             .table td:nth-child(6) {
-                width: 150px;
+                width: 130px;
+                min-width: 130px;
+                max-width: 130px;
             }
 
             /* 신고 사유 */
@@ -173,7 +181,7 @@
                                 <select v-model="searchType">
                                     <option value="all">전체</option>
                                     <option value="reporter">신고자</option>
-                                    <option value="uniTargetId">글 번호 OR ID</option>
+                                    <option value="uniTargetId">글 번호/ID</option>
                                     <option value="title">제목</option>
                                     <option value="content">내용</option>
                                 </select>
@@ -223,7 +231,7 @@
                                     <th>번호</th>
                                     <th>대상 ID</th>
                                     <th>대상(유형)</th>
-                                    <th>글 번호 OR ID</th>
+                                    <th>글 번호/ID</th>
                                     <th>신고 제목</th>
                                     <th>신고 사유</th>
                                     <th>등록일</th>
@@ -243,7 +251,9 @@
                                         </span>
                                     </td>
                                     <td>{{ r.uniTargetId }}</td>
-                                    <td>{{ r.reportTitle }}</td>
+                                    <td class="text-left" :title="r.reportContent">
+                                        {{ r.reportTitle }}
+                                    </td>
                                     <td class="text-left" :title="r.reportContent">
                                         {{ r.reportContent }}
                                     </td>
@@ -341,7 +351,7 @@
                                 <div class="modal-content">
 
                                     <div class="modal-header">
-                                        <h5>신고 초과</h5>
+                                        <h5>신고 2회 이상</h5>
                                         <button class="close" data-dismiss="modal">&times;</button>
                                     </div>
 

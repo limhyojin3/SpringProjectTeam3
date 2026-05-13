@@ -50,20 +50,20 @@
                     <div class="container">
                         <h2>결제 관리</h2>
                         <div class="tab-menu">
-                            <button :class="{active: activeTab === 'pass'}" @click="fnChangeTab('pass')">패스권결제</button>
+                            <button :class="{active: activeTab === 'pass'}" @click="fnChangeTab('pass')">패스결제</button>
                             <button :class="{active: activeTab === 'reservation'}"
                                 @click="fnChangeTab('reservation')">예약결제</button>
                             <button :class="{active: activeTab === 'registration'}"
                                 @click="fnChangeTab('registration')">등록결제</button>
                         </div>
 
-                        <!-- 패스권 결제 -->
+                        <!-- 패스 결제 -->
                         <table v-if="activeTab === 'pass'" class="table">
                             <thead>
                                 <tr>
                                     <th>결제번호</th>
                                     <th>유저</th>
-                                    <th>패스권</th>
+                                    <th>패스</th>
                                     <th>금액</th>
                                     <th>상태</th>
                                     <th>날짜</th>

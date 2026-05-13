@@ -128,7 +128,8 @@ public class Admin {
 	int maxIssueCnt;
 	int remainingCount;  //패스 지갑에 남은 열람권 횟수
 	String giftconImage;
-
+	String couponType;
+	
 	// 패스
 
 	// 패스목록

@@ -233,6 +233,13 @@
                     grid-template-columns: 1fr;
                 }
             }
+
+            .text {
+                max-width: 100px;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+            }
         </style>
     </head>
 
@@ -393,7 +400,7 @@
 
                                 <tbody>
                                     <tr v-for="item in reportList.slice(0,5)">
-                                        <td>{{item.reportTitle}}</td>
+                                        <td class="text" :title="item.reportTitle">{{item.reportTitle}}</td>
                                         <td>{{item.reporterId}}</td>
                                         <td>{{item.reportDay}}</td>
                                     </tr>
