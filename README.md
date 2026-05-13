@@ -188,7 +188,7 @@ https://github.com/user-attachments/assets/a00ba838-6ce2-4335-ac79-0b14a1077616
 
 ▶ [이태화](https://drive.google.com/file/d/1pqQ_pyURBMwpx7uKTF0D3lAdYQb8Qd0c/view?usp=drive_link)
 
-▶ [최제현](https://drive.google.com/file/d/1lw3ZzKL4NRQQaqHIAFlAdRI_CjF7fx98/view?usp=drive_link)
+▶ [최제현](https://drive.google.com/file/d/1cptjY-CzqURMIsnRAyQsBYt6H4_IdXcV/view?usp=sharing)
 
 ---
 
