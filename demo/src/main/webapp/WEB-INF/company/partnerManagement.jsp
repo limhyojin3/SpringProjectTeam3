@@ -1796,7 +1796,16 @@
                                                         <tr>
                                                             <td>{{ (page - 1) * 5 + idx + 1 }} <span class="new-label"
                                                                     v-if="rev.updated === '1'">NEW</span></td>
-                                                            <td class="review-text-limit" style="color: #666; font-size: 15px;">{{cleanText(rev.content)}}</td>
+                                                            <td style="color: #666; font-size: 15px;">
+                                                                <div :class="{ 'review-text-limit' : !rev.isExpanded }" style="color: #666; font-size: 15px;" > 
+                                                                    {{cleanText(rev.content)}}
+                                                                </div>
+
+                                                                <!-- <div style="margin-top: 5px; color: #9a8cff; font-size: 13px; font-weight: bold;">
+                                                                    {{ rev.isExpanded ? '접기 ▲' : '더보기 ▼' }}
+                                                                </div> -->
+
+                                                            </td>
                                                             <td>{{rev.userId}}</td>
                                                             <td><span
                                                                     style="color: #ff6a00;">{{rev.rating}}</span><span>/5</span>
