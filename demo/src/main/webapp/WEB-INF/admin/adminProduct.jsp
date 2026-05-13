@@ -156,6 +156,11 @@
                                     <button @click="fnSearch()">검색</button>
                                 </div>
                                 <div class="filter-group">
+                                    <select v-model="status" @change="fnGetList">
+                                        <option value="">종류</option>
+                                        <option value="COUPON">쿠폰</option>
+                                        <option value="GIFTCON">기프티콘</option>
+                                    </select>
                                     <button class="btn-done" @click="fnCouponModal()">등록</button>
                                     <button @click="fnResetSearch">초기화</button>
                                 </div>
@@ -165,6 +170,7 @@
                             <thead>
                                 <tr>
                                     <th>코드</th>
+                                    <th>종류</th>
                                     <th>이름</th>
                                     <th>할인율</th>
                                     <th>발급방식</th>
@@ -175,6 +181,7 @@
                             <tbody>
                                 <tr v-for="c in list" :key="c.couponCode">
                                     <td>{{ c.couponCode }}</td>
+                                    <td>{{ c.couponType }}</td>
                                     <td>{{ c.couponName }}</td>
                                     <td>{{ c.discountRate }}%</td>
                                     <td>{{ c.issueType }}</td>

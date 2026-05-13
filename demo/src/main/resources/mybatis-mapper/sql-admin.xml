@@ -886,6 +886,7 @@
 		WHERE ACTION_STATUS = 1
 		GROUP BY target_user_id) r
 		where killCount &gt; 1
+		ORDER BY r.killCount DESC
 	</select>
 	
 	<!-- 회원 상세 신고 이력 조회 -->
@@ -1197,7 +1198,8 @@
         coupon_name AS couponName,
         discount_rate AS discountRate,
         issue_type AS issueType,
-        max_issue_cnt AS maxIssueCnt
+        max_issue_cnt AS maxIssueCnt,
+        coupon_type AS couponType
     FROM coupon
     WHERE 1=1
     <if test="keyword != null and keyword != ''">
@@ -1206,6 +1208,9 @@
 	        OR coupon_name LIKE CONCAT('%', #{keyword}, '%')
 	    )
 	</if>
+	<if test="status != null and status != ''">
+            AND coupon_type = #{status}
+    </if>
     ORDER BY coupon_code DESC
     LIMIT #{pageSize} OFFSET #{offSet}
 	</select>
@@ -1219,6 +1224,9 @@
 	        OR coupon_name LIKE CONCAT('%', #{keyword}, '%')
 	    )
 	</if>
+	<if test="status != null and status != ''">
+            AND coupon_type = #{status}
+    </if>
 	</select>
 
 	<!-- 쿠폰 등록 -->
