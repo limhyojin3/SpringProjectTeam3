@@ -6,6 +6,41 @@
 		color: #333;
 		 
 	}
+	[v-cloak] { display: none; }
+	/* 준비중 모달 배경 */
+	.prep-modal-bg {
+	    position: fixed;    /* 화면에 고정 */
+	    top: 0;
+	    left: 0;
+	    width: 100vw;      /* 전체 너비 */
+	    height: 100vh;     /* 전체 높이 */
+	    background-color: rgba(0, 0, 0, 0.5); /* 반투명 검정 배경 */
+	    display: flex;
+	    justify-content: center; /* 가로 중앙 정렬 */
+	    align-items: center;     /* 세로 중앙 정렬 */
+	    z-index: 9999;           /* 어떤 요소보다 위에 있도록 설정 */
+	}
+
+	/* 준비중 모달창 */
+	.prep-modal {
+	    background: white;
+	    padding: 30px;
+	    border-radius: 15px;
+	    text-align: center;
+	    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+	    min-width: 300px;
+	}
+	/* 모달 닫기 버튼 */
+	.prep-modal-btn {
+	    padding: 10px 32px;
+	    background: #f4a096;
+	    color: white;
+	    border: none;
+	    border-radius: 8px;
+	    font-size: 14px;
+	    font-weight: 700;
+	    cursor: pointer;
+	}
 	
 	/* 전체 페이지 레이아웃 */
 	#wrapper {
