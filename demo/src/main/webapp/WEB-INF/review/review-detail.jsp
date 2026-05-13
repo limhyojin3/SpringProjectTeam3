@@ -245,6 +245,46 @@
             color: #333;
             margin-bottom: 15px;
         }
+        /* 전체 카드 컨테이너 */
+.info-card-container {
+    border: 1px dotted #ffc1cc !important; /* 핑크색 점선 테두리 느낌 */
+    background-color: #fff;
+    margin-bottom: 30px;
+}
+
+/* 왼쪽 정보 아이템 간격 줄이기 */
+.info-item {
+    font-size: 0.95rem;
+    color: #333;
+    display: flex;
+    align-items: center;
+}
+
+/* 상세 평가 박스 내부 스타일 */
+.evaluation-card {
+    border: 1px solid #dee2e6 !important;
+    font-size: 0.85rem;
+}
+
+.eval-label {
+    color: #666;
+}
+
+.eval-val {
+    color: #333;
+}
+
+/* 반응형 처리: 화면이 작아지면 위아래로 배치 */
+@media (max-width: 768px) {
+    .info-card-container {
+        flex-direction: column;
+    }
+    .evaluation-box-wrapper {
+        width: 100%;
+        max-width: 100%;
+        margin-top: 20px;
+    }
+}
     </style>
 </head>
 <body>
@@ -274,30 +314,62 @@
                 </div>
             </div>
 
-            <div class="info-card">
-                <div>
-                    <i class="fas fa-store mr-2" style="color:#ff4d6d"></i> 
-                    <b>업체:</b> {{info.comName ||  info.externalName}}
+            <div class="info-card-container d-flex justify-content-between align-items-start p-4 border rounded shadow-sm" style="background-color: #fff;">
+                <div class="info-left-section" style="flex: 1;">
+                    <div class="info-item mb-2">
+                        <i class="fas fa-store mr-2 text-danger"></i> 
+                        <b>업체 : </b>  {{info.comName || info.externalName}}
+                    </div>
+                    <div class="info-item mb-2" v-if="info.productName">
+                        <i class="fas fa-box-open mr-2 text-danger"></i> 
+                        <b>이용 상품 : </b> <span class="text-primary font-weight-bold">{{ info.productName }}</span>
+                    </div>
+                    <div class="info-item mb-2">
+                        <i class="fas fa-won-sign mr-2 text-danger"></i> 
+                        <b>비용 : </b> {{ Number(info.totalCost || 0).toLocaleString() }}원
+                    </div>
+                    <div class="info-item mb-2">
+                        <i class="fas fa-star mr-2 text-warning"></i> 
+                        <b>평점 : </b> {{ info.rating }} / 5
+                    </div>
+                    <div class="info-item">
+                        <i class="fas fa-link mr-2 text-danger"></i> 
+                        <b>경로 : </b> {{ info.bookingSource }}
+                    </div>
                 </div>
 
-                <div v-if="info.companyNo && info.productName">
-                    <i class="fas fa-box-open mr-2" style="color:#ff4d6d"></i> 
-                    <b>이용 상품:</b> <span class="text-primary font-weight-bold">{{ info.productName }}</span>
-                </div>
-
-                <div>
-                    <i class="fas fa-won-sign mr-2" style="color:#ff4d6d"></i> 
-                    <b>비용:</b> {{ Number(info.totalCost || 0).toLocaleString() }}원
-                </div>
-                <div>
-                    <i class="fas fa-star mr-2" style="color:#ffb703"></i> 
-                    <b>평점:</b> {{ info.rating }} / 5
-                </div>
-                <div>
-                    <i class="fas fa-link mr-2" style="color:#ff4d6d"></i> 
-                    <b>경로:</b> {{ info.bookingSource }}
+                <div class="evaluation-box-wrapper" style="flex: 1; max-width: 400px;">
+                    <div class="evaluation-header mb-2">
+                        <i class="fas fa-check-circle text-secondary"></i> 
+                        <span class="font-weight-bold ml-1" style="font-size: 0.9rem; color: #495057;">서비스 상세 평가</span>
+                    </div>
+                    <div class="evaluation-card p-3 border rounded" style="background-color: #fcfcfc;">
+                        <div class="row no-gutters">
+                            <div class="col-6 mb-2">
+                                <span class="eval-label">👗 상품 상태 :</span> 
+                                <span class="eval-val font-weight-bold ml-1">{{ info.dressCondition }}</span>
+                            </div>
+                            <div class="col-6 mb-2">
+                                <span class="eval-label">👨‍🏫 전문성 :</span> 
+                                <span class="eval-val font-weight-bold ml-1">{{ info.professionalism }}</span>
+                            </div>
+                            <div class="col-6">
+                                <span class="eval-label">⏳ 대기 시간 :</span> 
+                                <span class="eval-val font-weight-bold ml-1" :class="info.waitingTimeStatus === 'Y' ? 'text-danger' : '분'">
+                                    {{ info.waitingTimeStatus === 'Y' ? info.waitingDuration : '없음' }}
+                                </span>
+                            </div>
+                            <div class="col-6">
+                                <span class="eval-label">💸 추가금 강요 :</span> 
+                                <span class="eval-val font-weight-bold ml-1" :class="info.extraChargeForce === 'Y' ? 'text-danger' : ''">
+                                    {{ info.extraChargeForce === 'Y' ? '있음' : '없음' }}
+                                </span>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
+            
 
             <!-- 관리자 전용 정보 박스 (영수증 및 관리 데이터) -->
             <div v-if="sessionRole === 'ADMIN'" class="admin-only-box">
@@ -551,7 +623,8 @@
                         "욕설 및 비하 발언",
                         "개인정보 노출",
                         "기타 부적절한 내용"
-                    ]
+                    ],
+                   
                 };
             },
             methods: {
@@ -565,6 +638,7 @@
                             const data = (typeof res === 'string') ? JSON.parse(res) : res;
                             if (data.result === "success") {
                                 this.info = data.info;
+                                
                                 this.reviewDetail = data.info;
                                 if (this.info.imgUrl) {
                                     this.imgList = this.info.imgUrl.split(',').filter(url => url.trim() !== '');
