@@ -128,17 +128,28 @@
                 <div class="right-sections">
                     <div class="greeting">
                         안녕하세요, <strong>{{info.name}}님!</strong><br>
-                        <span v-if="weddingDate">
-                            <span v-if="dDay > 0">본식까지 D-{{dDay}}일 남으셨네요! 🎉</span>
-                            <span v-else-if="dDay === 0">오늘이 본식 날이에요! 축하드려요! 💍</span>
-                            <span v-else>본식 후 {{Math.abs(dDay)}}일이 지났네요! 🥂</span>
+                        <!-- 기념일 있는 사람 (기혼) -->
+                        <span v-if="anniversaryDate">
+                            <span v-if="anniversaryDDay === 0">오늘이 결혼 기념일이에요! 🎊 축하드려요!</span>
+                            <span v-else-if="anniversaryDDay > 0">결혼 기념일까지 D-{{anniversaryDDay}}일 남았어요! 💍</span>
+                            <span v-else>결혼 {{anniversaryYears}}주년을 축하드려요! 🥂</span>
+                            <span v-else>{{anniversaryYears}}주년 기념일이 {{Math.abs(anniversaryDDay)}}일 지났어요! 🥂</span>
                         </span>
+
+                        <!-- 기념일 없는 사람 (미혼) -->
                         <span v-else>
-                            결혼 예정일을 입력하고 쿠폰 받으세요! 🎁
-                            <span @click="fnEdit()" class="weddingDate">예정일 입력하기</span>
+                            <span v-if="weddingDate">
+                                <span v-if="dDay > 0">본식까지 D-{{dDay}}일 남으셨네요! 🎉</span>
+                                <span v-else-if="dDay === 0">오늘이 본식 날이에요! 축하드려요! 💍</span>
+                                <span v-else>본식 후 {{Math.abs(dDay)}}일이 지났네요! 🥂</span>
+                            </span>
+                            <span v-else>
+                                결혼 예정일을 입력하고 쿠폰 받으세요! 🎁
+                                <span @click="fnEdit()" class="weddingDate">예정일 입력하기</span>
+                            </span>
                         </span>
                         <br>
-                        <span v-if="dDayMessage">{{ dDayMessage }}</span>
+                        <span v-if="dDayMessage && !anniversaryDate">{{ dDayMessage }}</span>
                     </div>
                     <div class="shortcut-wrap">
                         <div class="shortcut-btn" @click="fnEdit()">내 정보 수정</div>
@@ -183,10 +194,13 @@
                     userId: "",
                     name: "",
                 },
+                anniversaryDDay: null,
+                anniversaryYears: null,
                 showWithdrawModal: false,
                 withdrawPwd: "",
                 passWallet: null,
                 weddingDate: '${member.weddingDate}',
+                anniversaryDate: '${member.anniversaryDate}' || null,  // ✅ JSP EL로 받기
                 dDay: (() => {
                     const w = '${member.weddingDate}';
                     if (!w) return null;
@@ -248,13 +262,41 @@
                         alert("오류가 발생했습니다.");
                     }
                 });
-            }
+            },
+            fnCalcAnniversary() {
+                if (!this.anniversaryDate) return;
+
+                const today = new Date();
+                today.setHours(0, 0, 0, 0);
+
+                // ✅ 하이픈 대신 슬래시로 파싱 (브라우저 호환성)
+                const parts = this.anniversaryDate.split('-');
+                const anni = new Date(parts[0], parts[1] - 1, parts[2]);
+
+                this.anniversaryYears = today.getFullYear() - anni.getFullYear();
+
+                const thisYearAnniv = new Date(
+                    today.getFullYear(),
+                    anni.getMonth(),
+                    anni.getDate()
+                );
+
+                const diff = Math.ceil((thisYearAnniv - today) / (1000 * 60 * 60 * 24));
+                this.anniversaryDDay = diff;
+                console.log("anniversaryDDay:", this.anniversaryDDay);
+                console.log("anniversaryYears:", this.anniversaryYears);
+            },
         },
         mounted() {
+            console.log("weddingDate:", this.weddingDate);
+            console.log("anniversaryDate:", this.anniversaryDate);
             let self = this;
         
             this.info.userId = "${member.userId}";
             this.info.name = "${member.name}";
+
+            this.anniversaryDate = '${member.anniversaryDate}' || null;
+            this.fnCalcAnniversary();
             
             // 잔여 횟수 조회
             axios.get("/myPassWallet.dox")

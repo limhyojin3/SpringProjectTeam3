@@ -988,7 +988,7 @@
                                         </div>
                                         <button @click="goRegPage2" class="btn-product-reg">상품등록</button>
                                     </div>
-                                    <div v-for="i in fnPaginatedProductList" class="content-card"
+                                    <div v-for="(i, idx) in fnPaginatedProductList" :key="idx" class="content-card"
                                         style="display: flex; align-items: center; padding: 15px;">
                                         <div
                                             style="width: 100px; height: 100px;  display: flex; align-items: center; justify-content: center; margin-right: 20px;">
@@ -996,10 +996,19 @@
                                             <img :src="i.imgUrl" :alt="i.productName"
                                                 style="width: 100%; height: 100%; object-fit: cover; border-radius: 10px;">
                                         </div>
-                                        <div style="flex: 1; font-weight: bold;">{{ i.productDetails }}</div>
-                                        <div>{{ Number(i.originalPrice).toLocaleString() }}원</div>
-                                        <button @click="goEditPage(i)" class="btn-edit">수정하기</button>
-                                        <button @click="fnRemove2(i)" class="btn-delete">삭제하기</button>
+                                        <div style="flex: 1; display: flex; flex-direction: column; justify-content: center;">
+                                            <div class="ticket-no">No. {{ productList3.length - ((productCurrentPage - 1)
+                                                * 5 + idx ) }}</div>
+                                            <div style="flex: 1; font-weight: bold;">{{ i.productName }}</div>
+                                            <!-- {{i}} -->
+                                        </div>
+                                        
+                                        <div style="display: flex; align-items: center; gap: 2px;">
+                                            <div>{{ Number(i.originalPrice).toLocaleString() }}원</div>
+                                            <button @click="goEditPage(i)" class="btn-edit">수정하기</button>
+                                            <button @click="fnRemove2(i)" class="btn-delete">삭제하기</button>
+                                        </div>
+                                        
                                     </div>
                                     <!-- 여기에 페이징이 있어야 해요 -->
                                     <div class="pagination1">
@@ -1334,11 +1343,20 @@
                                                     </label>
                                                     <div class="image-editor-box">
 
+                                                        <div v-if="previewUrl === null" style="margin-top: 10px;">
+                                                            <p>선택된 이미지 미리보기:</p>
+                                                            
+                                                            <img :src="product1.imgUrl"
+                                                                style="max-width: 80%; border: 1px solid #ccc;">
+                                                        </div>
+
                                                         <div v-if="previewUrl" style="margin-top: 10px;">
                                                             <p>선택된 이미지 미리보기:</p>
+                                                            
                                                             <img :src="previewUrl"
                                                                 style="max-width: 80%; border: 1px solid #ccc;">
                                                         </div>
+                                                        
                                                     </div>
 
                                                 </div>
@@ -1481,6 +1499,11 @@
                                                 <th>내용</th>
                                                 <td>{{i.inquiryContents}}</td>
                                             </tr>
+                                            <tr>
+                                                <th>답변 여부</th>
+                                                <td v-if="i.inquiryAns === '1'" style="color:#0099ff">답변 완료</td>
+                                                <td v-else>아직 답변하지 않음</td>
+                                            </tr>
                                         </table>
                                         <!-- {{page1}} -->
                                         <button class="btn-reply" @click="fnAnswerToProductInquiry(i)">답변하기</button>
@@ -1620,17 +1643,21 @@
                                     <div v-if="reviewTab === 'detail'" class="content-card">
                                         <!-- 유료 리뷰 탭 -->
                                         <h3>유료 리뷰 내역 : <span style="color: #ff1493;">새 리뷰 {{newReviewCnt}}건</span></h3>
-                                        <template v-for="w in pagedProductList3" :key="w.productName">
+                                        <template v-for="(w, idx) in pagedProductList3" :key="idx">
                                             <div class="review-header-info" style="margin-bottom: 10px;"
                                                 @click="fnReviewDetails3(w)">
                                                 <div class="review-thumb-box">
                                                     <img :src="w.imgUrl"
                                                         style="width: 100%; height: 100%; object-fit: cover; border-radius: 10px;">
                                                 </div>
+
                                                 <div class="review-product-name">
+                                                    <div class="ticket-no">No. {{ productList3.length - ((reviewListPage - 1)
+                                                * 5 + idx ) }}</div>
                                                     <a href="javascript:;"
                                                         style="text-decoration: none; color:#0b3f8e;"><strong>{{w.productName}}</strong></a>
                                                 </div>
+                                                
                                                 <div class="review-count-badge">리뷰 갯수: {{w.reviewCount}}개 </div>
                                             </div>
                                         </template>
@@ -1650,7 +1677,7 @@
                                         <h3>무료 리뷰 내역 : <span style="color: #ff1493;">새 리뷰 {{newUnpaidReviewCnt}}건</span>
                                         </h3>
 
-                                        <template v-for="w in pagedProductList4" :key="w.productName">
+                                        <template v-for="(w,idx) in pagedProductList4" :key="idx">
 
                                             <div class="review-header-info" style="margin-bottom: 10px;"
                                                 @click="fnSimpleReviewDetails3(w)">
@@ -1660,6 +1687,8 @@
                                                 </div>
                                                 <div class="review-product-name">
                                                     <!--totalSimpleReviewCnt-->
+                                                    <div class="ticket-no">No. {{ productList3.length - ((reviewListPage - 1)
+                                                * 5 + idx ) }}</div>
                                                     <a href="javascript:;"
                                                         style="text-decoration: none; color:#0b3f8e;"><strong>{{w.productName}}</strong></a>
 
@@ -1705,7 +1734,7 @@
                                                             style="position: absolute; top: -5px; left: -5px;">NEW
                                                         </span>
                                                         <div class="review-photo">
-                                                            <img :src="rev.imgUrl" :alt="rev.imgDescription"
+                                                            <img :src="rev.thumbnailUrl" :alt="rev.imgDescription"
                                                                 style="width: 100%; height: 100%; object-fit: cover; border-radius: 10px;">
                                                         </div>
                                                     </div>
@@ -1767,7 +1796,16 @@
                                                         <tr>
                                                             <td>{{ (page - 1) * 5 + idx + 1 }} <span class="new-label"
                                                                     v-if="rev.updated === '1'">NEW</span></td>
-                                                            <td class="review-text-limit" style="color: #666; font-size: 15px;">{{cleanText(rev.content)}}</td>
+                                                            <td style="color: #666; font-size: 15px;">
+                                                                <div :class="{ 'review-text-limit' : !rev.isExpanded }" style="color: #666; font-size: 15px;" > 
+                                                                    {{cleanText(rev.content)}}
+                                                                </div>
+
+                                                                <!-- <div style="margin-top: 5px; color: #9a8cff; font-size: 13px; font-weight: bold;">
+                                                                    {{ rev.isExpanded ? '접기 ▲' : '더보기 ▼' }}
+                                                                </div> -->
+
+                                                            </td>
                                                             <td>{{rev.userId}}</td>
                                                             <td><span
                                                                     style="color: #ff6a00;">{{rev.rating}}</span><span>/5</span>
@@ -2685,7 +2723,7 @@
                         type: "POST",
                         data: param,
                         success: function (data) {
-                            //console.log(data);
+                            console.log(data);
                             self.reviews = data.list;
                             self.reviews = self.reviews.map(r => ({...r, isExpanded: false})); //추가된부분
                             
@@ -2813,6 +2851,18 @@
                 },
                 /*상품문의에 답변하기*/
                 fnSaveAnswer() {
+
+                    if (!this.inquiryAnswer.ansUserId || this.inquiryAnswer.ansUserId.trim() === '') {
+                        alert("답변자를 작성해주세요!");
+                        return;
+                    }
+
+                    if(!this.inquiryAnswer.answerContents || this.inquiryAnswer.answerContents.trim() === ''){
+                        alert("답변내용을 작성해주세요!");
+                        return;
+                    } 
+
+
                     let self = this;
                     let param = {
                         inquiryNo: self.inquiryAnswer.inquiryNo,

@@ -24,6 +24,24 @@
 		</if> 
 		GROUP BY USER_MONTH 
 		ORDER BY USER_MONTH ASC; </select>
+		
+	<select id="selectAllClientsCount" parameterType="hashmap"
+		resultType="int">
+		SELECT
+		Count(*)
+		FROM MEMBER
+		WHERE ROLE != "ADMIN"
+		AND status != "WITHDRAWN"
+	</select>
+
+	<select id="selectAllPartnersCount" parameterType="hashmap"
+		resultType="int">
+		SELECT
+		Count(*)
+		FROM MEMBER
+		WHERE ROLE = "PARTNER"
+		AND status != "WITHDRAWN"
+	</select>
 
 <!-- 리뷰게시판 글 목록 -->
 	<select id="selectReviewList" parameterType="hashmap"
@@ -551,8 +569,12 @@
 		M.REG_DATE AS regDate,
 		M.ROLE AS role,
 		M.LAST_LOGIN AS lastLogin,
+		M.previous_payment AS previousPayment,
+		M.out_date AS outDate,
 		U.WEDDING_DATE AS weddingDate,
 		U.GENDER AS gender,
+		U.marital_status AS maritalStatus,
+		U.anniversary_date AS anniversaryDate,
 		CASE
 		WHEN M.ROLE = 'USER' THEN 'USER'
 		WHEN M.ROLE IN ('PARTNER', 'NPARTNER') THEN 'COMPANY'
@@ -629,7 +651,9 @@
 		test="status != null and status != 'ALL'">
 		AND M.STATUS = #{status}
 	</if>
-	
+	<if test="sort == 'report'">
+		ORDER BY reportCount DESC
+	</if>
 	LIMIT #{pageSize} OFFSET #{offSet}
 	</select>
 
@@ -853,7 +877,7 @@
     WHERE TARGET_USER_ID = #{target_id}
     AND ACTION_STATUS = 1
 	</select>
-	<!-- 신고게시판 전 회원 1회이상 조회 -->
+	<!-- 신고게시판 전 회원 2회이상 조회 -->
 	<select id="selectKillHistory" parameterType="hashmap" resultType="com.example.demo.admin.model.Admin">
 		select target_user_id AS targetUserId, r.killCount
 		from(
@@ -862,6 +886,7 @@
 		WHERE ACTION_STATUS = 1
 		GROUP BY target_user_id) r
 		where killCount &gt; 1
+		ORDER BY r.killCount DESC
 	</select>
 	
 	<!-- 회원 상세 신고 이력 조회 -->
@@ -1041,7 +1066,7 @@
         c.com_name AS comName,
         c.registration_fee AS registrationFee
 	    FROM payment p
-	    JOIN payment_resistration pr ON p.pay_no = pr.pay_no
+	    JOIN payment_registration pr ON p.pay_no = pr.pay_no
 	    JOIN company c ON pr.company_no = c.company_no
 	    ORDER BY P.pay_no DESC
 	    LIMIT #{pageSize} OFFSET #{offSet}
@@ -1067,7 +1092,7 @@
 	<select id="selectRegistrationPaymentCount" parameterType="hashmap" resultType="int">
 	    SELECT COUNT(*)
 	    FROM payment p
-	    JOIN payment_resistration pr ON p.pay_no = pr.pay_no
+	    JOIN payment_registration pr ON p.pay_no = pr.pay_no
 	    JOIN company c ON pr.company_no = c.company_no
 	</select>
 
@@ -1173,7 +1198,8 @@
         coupon_name AS couponName,
         discount_rate AS discountRate,
         issue_type AS issueType,
-        max_issue_cnt AS maxIssueCnt
+        max_issue_cnt AS maxIssueCnt,
+        coupon_type AS couponType
     FROM coupon
     WHERE 1=1
     <if test="keyword != null and keyword != ''">
@@ -1182,6 +1208,9 @@
 	        OR coupon_name LIKE CONCAT('%', #{keyword}, '%')
 	    )
 	</if>
+	<if test="status != null and status != ''">
+            AND coupon_type = #{status}
+    </if>
     ORDER BY coupon_code DESC
     LIMIT #{pageSize} OFFSET #{offSet}
 	</select>
@@ -1195,6 +1224,9 @@
 	        OR coupon_name LIKE CONCAT('%', #{keyword}, '%')
 	    )
 	</if>
+	<if test="status != null and status != ''">
+            AND coupon_type = #{status}
+    </if>
 	</select>
 
 	<!-- 쿠폰 등록 -->
@@ -1207,7 +1239,8 @@
 	        coupon_name,
 	        discount_rate,
 	        issue_type,
-	        max_issue_cnt
+	        max_issue_cnt,
+	        giftcon_image
 	    )
 	    VALUES
 	    (
@@ -1215,7 +1248,8 @@
 	        #{couponName},
 	        #{discountRate},
 	        #{issueType},
-	        #{maxIssueCnt}
+	        #{maxIssueCnt},
+	        #{giftconImage}
 	    )
 	
 	</insert>
@@ -1348,7 +1382,7 @@
 		    p.pay_date,
 		    pr.company_no
 		FROM payment p
-		JOIN payment_resistration pr ON p.pay_no = pr.pay_no
+		JOIN payment_registration pr ON p.pay_no = pr.pay_no
 		WHERE p.pay_no = #{payNo}
 	</select>
 	

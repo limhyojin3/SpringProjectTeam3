@@ -314,12 +314,27 @@
                                 <div class="msg-box"></div>
                             </div>
                         </div>
-                        <!-- 결혼예정일 -->
-                        <div class="form-row">
+                        <!-- 기혼: 결혼기념일 (읽기 전용) -->
+                        <div class="form-row" v-if="maritalStatus === 'MARRIED'">
+                            <div class="form-label">결혼기념일</div>
+                            <div class="input-wrap">
+                                <div class="form-input disabled">
+                                    <span style="padding-left:15px; font-size:14px; color:#999;">
+                                        {{ info.anniversaryDate }} &nbsp;🎊
+                                    </span>
+                                </div>
+                                <div class="msg-box" style="color:#aaa; height:auto; font-size:11px; padding:3px 5px;">
+                                    ※ 결혼 기념일은 변경이 불가합니다.
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 미혼: 결혼예정일 (변경 가능, 오늘 이후만) -->
+                        <div class="form-row" v-else>
                             <div class="form-label">결혼예정일</div>
                             <div class="input-wrap">
                                 <div class="form-input">
-                                    <input type="date" v-model="info.weddingDate">
+                                    <input type="date" v-model="info.weddingDate" :min="today">
                                 </div>
                                 <div class="msg-box"></div>
                             </div>
@@ -352,6 +367,7 @@
                     emailId: "",
                     gender : "M",
                     weddingDate: "",
+                    anniversaryDate: "",
                     nickName : "",
                     // *문자 인증
                     authCode : "" // 인증번호 입력값
@@ -365,6 +381,8 @@
                 emailDomainDirect: false,      // 직접입력 여부
                 isEmailAvailable: false,       // 중복체크 결과
                 emailMsg: "",                  // 이메일 메시지
+                maritalStatus: "", // 기혼,미혼 구분
+                today: new Date().toISOString().split('T')[0],
             };
         },
         methods: {
@@ -402,7 +420,7 @@
                     userTel: self.info.userTel,    // 전화번호 (MEMBER)
                     gender: self.info.gender,      // 성별 (USER_DETAIL)
                     nickName: self.info.nickName,   // 닉네임 (USER_DETAIL)
-                    weddingDate :self.info.weddingDate // 결혼 예정일
+                    weddingDate: self.maritalStatus === 'SINGLE' ? self.info.weddingDate : null // 결혼 예정일
                 };
                 if(!confirm("회원정보를 수정하시겠습니까?")) return;
 
@@ -571,6 +589,8 @@
 
             this.isEmailAvailable = true; 
             this.isSmsVerified = true;
+            this.maritalStatus = "${member.maritalStatus}";
+            this.info.anniversaryDate = "${member.anniversaryDate}";
         }
     });
 

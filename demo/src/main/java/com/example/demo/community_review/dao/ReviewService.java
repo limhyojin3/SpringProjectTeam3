@@ -15,6 +15,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.example.demo.common.Message;
 import com.example.demo.community_review.mapper.ReviewMapper;
 import com.example.demo.community_review.model.Review;
+import com.example.demo.member.mapper.MemberMapper;
 import com.google.gson.Gson;
 
 @Service
@@ -25,6 +26,9 @@ public class ReviewService {
 
     @Autowired
     private FileService fileService;
+    
+    @Autowired
+    private MemberMapper memberMapper; //✅기프트콘 로직 추가✅
     
     private final Gson gson = new Gson();
 
@@ -58,6 +62,26 @@ public class ReviewService {
     @Transactional
     public HashMap<String, Object> toggleReviewLike(HashMap<String, Object> map) {
         HashMap<String, Object> resultMap = new HashMap<>();
+      //✅ 리뷰 정보 조회 (본인 체크 + 좋아요 수 둘 다 여기서)
+        HashMap<String, Object> info = reviewMapper.selectReviewDetail(map);
+//        System.out.println("info 내용: " + info);
+//        System.out.println("map 내용: " + map);
+        
+      // ✅ 본인 리뷰 좋아요 방지
+        String reviewAuthor = String.valueOf(info.get("userId"));
+        String currentUser  = String.valueOf(map.get("userId"));
+        
+     // ✅ 여기에 추가
+//        System.out.println("reviewAuthor: " + reviewAuthor);
+//        System.out.println("currentUser: " + currentUser);
+//        System.out.println("equals: " + reviewAuthor.equals(currentUser));  
+
+        if (reviewAuthor.equals(currentUser)) {
+            resultMap.put("result", "fail");
+            resultMap.put("message", "본인 리뷰에는 좋아요를 누를 수 없습니다.");
+            return resultMap;
+        }
+        
         int count = reviewMapper.checkReviewLike(map);
         
         if (count > 0) {
@@ -70,10 +94,69 @@ public class ReviewService {
         
         reviewMapper.updateReviewLikeCount(map);
         
-        HashMap<String, Object> info = reviewMapper.selectReviewDetail(map);
+        info = reviewMapper.selectReviewDetail(map); 
         resultMap.put("likeCnt", info.get("likeCnt"));
         resultMap.put("result", "success");
+        
+        // ✅ 좋아요 추가일 때만 기프트콘 체크
+        if ((int) map.get("amount") == 1) {
+            checkAndGiveGiftcon(map);
+        }
+
         return resultMap;
+    }
+    
+    //✅ 4-2. 기프트콘 발급 로직
+    private void checkAndGiveGiftcon(HashMap<String, Object> map) {
+        try {
+            String targetId = String.valueOf(map.get("reviewNo"));
+//            System.out.println("targetId: " + targetId); // ✅ 확인
+
+            Map<String, Object> reviewInfo = reviewMapper.getReviewInfoForGiftcon(targetId);
+//            System.out.println("reviewInfo: " + reviewInfo); // ✅ 확인
+            if (reviewInfo == null) return;
+
+            String reviewAuthorId = String.valueOf(reviewInfo.get("userId"));
+            Object isPaidObj = reviewInfo.get("isPaid");
+            int isPaid = 0;
+            if (isPaidObj instanceof Boolean) {
+                isPaid = ((Boolean) isPaidObj) ? 1 : 0;
+            } else {
+                String isPaidStr = String.valueOf(isPaidObj);
+                isPaid = (isPaidStr.equals("true") || isPaidStr.equals("1")) ? 1 : 0;
+            }
+            
+            int likeCnt = Integer.parseInt(String.valueOf(reviewInfo.get("likeCnt")));
+
+            String couponCode = null;
+            if (isPaid == 1 && likeCnt >= 30) {
+                couponCode = "GIFT002"; // 투썸
+            } else if (isPaid == 0 && likeCnt >= 40) {
+                couponCode = "GIFT003"; // CU
+            }
+
+            if (couponCode == null) return;
+
+            // 리뷰 기준 중복 체크
+            HashMap<String, Object> couponMap = new HashMap<>();
+            couponMap.put("reviewNo",   targetId);
+            couponMap.put("couponCode", couponCode);
+
+            int duplicate = memberMapper.checkGiftconByReview(couponMap);
+            if (duplicate > 0) return;
+
+            // 발급
+            couponMap.put("userId",         reviewAuthorId);
+            couponMap.put("giftconCode",    "GC-" + System.currentTimeMillis());
+            couponMap.put("giftconBarcode", String.valueOf((long)(Math.random() * 9000000000000L) + 1000000000000L));
+            couponMap.put("sourceReviewNo", targetId);
+
+            memberMapper.insertGiftcon(couponMap);
+            System.out.println("기프트콘 발급 완료: " + couponCode + " → " + reviewAuthorId);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     // 5. 업체 관련 조회

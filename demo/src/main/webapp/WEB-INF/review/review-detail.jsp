@@ -748,6 +748,8 @@
                             if (data.result === "success") {
                                 this.info.likeCnt = data.likeCnt;
                                 this.info.isLiked = this.info.isLiked > 0 ? 0 : 1;
+                            }else if (data.result === "fail") {  // ✅ 추가
+                                alert(data.message);
                             }
                         }
                     });

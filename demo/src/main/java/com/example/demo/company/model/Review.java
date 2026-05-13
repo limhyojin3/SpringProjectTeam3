@@ -24,6 +24,8 @@ public class Review {
     String regDate;
     String updated;
     
+    String thumbnailUrl;
+    
     long totalCost;
     long viewCnt;
     long likeCnt;

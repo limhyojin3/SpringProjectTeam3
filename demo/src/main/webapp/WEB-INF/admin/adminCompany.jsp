@@ -16,81 +16,8 @@
         <link rel="stylesheet" href="${pageContext.request.contextPath}/css/adminNavi.css">
         <link rel="stylesheet" href="${pageContext.request.contextPath}/css/admin-common.css">
         <style>
-            .company-container {
-                padding: 20px;
-                background: #fff;
-                border-radius: 10px;
-                box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
-            }
-
-            .company-header {
-                display: flex;
-                justify-content: space-between;
-                align-items: center;
-                margin-bottom: 15px;
-                gap: 10px;
-            }
-
-            .company-header input,
-            .company-header select {
-                border: 1px solid #ddd;
-                padding: 6px 10px;
-                border-radius: 6px;
-            }
-
-            .keyword-group input {
-                border: 1px solid #ddd;
-                padding: 6px 10px;
-                border-radius: 6px;
-                outline: none;
-            }
-
-            .keyword-group select {
-                border: 1px solid #ddd;
-                padding: 6px;
-                border-radius: 6px;
-            }
-
-            .filter-group {
-                display: flex;
-                flex-direction: row;
-            }
-
-            .filter-group select {
-                border: 1px solid #ddd;
-                padding: 6px;
-                border-radius: 6px;
-            }
-
-            /* 테이블 */
-            .companytable {
-                width: 1000px;
-                border-collapse: collapse;
-            }
-
-            .companytable tr {
+            .table tr:hover {
                 cursor: pointer;
-            }
-
-            .companytable th {
-                background: #f1f3f5;
-                padding: 10px;
-                font-size: 13px;
-            }
-
-            .companytable td {
-                padding: 10px;
-                font-size: 13px;
-                border-bottom: 1px solid #eee;
-            }
-
-            .companytable tr:hover {
-                background: #f8f9fa;
-            }
-
-            /* 선택 강조 */
-            .active-row {
-                background: #e7f1ff !important;
             }
 
             /* 상태 배지 */
@@ -157,11 +84,11 @@
             <div class="middle">
                 <jsp:include page="/WEB-INF/admin/adminNavi.jsp" />
                 <div class="main">
-                    <div class="company-container">
+                    <div class="container">
 
                         <h2>업체 관리</h2>
                         <!-- 필터 영역 -->
-                        <div class="company-header">
+                        <div class="header">
                             <div class="keyword-group">
                                 <select v-model="searchType">
                                     <option value="all">전체</option>
@@ -173,16 +100,16 @@
                                 <button @click="fnGetCompanyList">검색</button>
                             </div>
                             <div class="filter-group">
+                                <button @click="fnReport">신고수</button>
                                 <div>
-                                    유형
                                     <select v-model="role" @change="fnGetCompanyList">
-                                        <option value="ALL">전체</option>
+                                        <option value="ALL">유형</option>
                                         <option value="PARTNER">제휴</option>
                                         <option value="NPARTNER">일반</option>
                                     </select>
                                 </div>
                                 <select v-model="statusFilter" @change="fnGetCompanyList">
-                                    <option value="ALL">상태 전체</option>
+                                    <option value="ALL">상태</option>
                                     <option value="ACTIVE">활동</option>
                                     <option value="STOP">정지</option>
                                     <option value="DORMANT">휴면</option>
@@ -192,7 +119,7 @@
                             </div>
                         </div>
 
-                        <table class="companytable">
+                        <table class="table">
                             <thead>
                                 <tr>
                                     <th>유형</th>
@@ -234,14 +161,19 @@
                             </tbody>
                         </table>
                         <div class="page-box">
-                            <button @click="fnPageMove(currentPage-1)" :disabled="currentPage===1">‹</button>
-
-                            <button v-for="p in index" :key="p" @click="fnPageMove(p)"
-                                :class="{active: currentPage === p}">
-                                {{ p }}
+                            <button @click="fnPageMove(currentPage-1)" :disabled="currentPage===1">
+                                <i class="fas fa-chevron-left"></i>
                             </button>
-
-                            <button @click="fnPageMove(currentPage+1)" :disabled="currentPage===index">›</button>
+                            <template v-for="p in index">
+                                <button
+                                    v-if="p > Math.floor((currentPage - 1) / 5) * 5 && p <= Math.ceil(currentPage / 5) * 5"
+                                    :key="p" @click="fnPageMove(p)" :class="{active: currentPage === p}">
+                                    {{ p }}
+                                </button>
+                            </template>
+                            <button @click="fnPageMove(currentPage+1)" :disabled="currentPage===index">
+                                <i class="fas fa-chevron-right"></i>
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -259,6 +191,7 @@
                         sessionRole: "${sessionScope.sessionRole}",
                         searchType: "all",
                         keyword: "",
+                        sort: "",
                         role: "ALL",
                         statusFilter: "ALL",
                         selectedCompany: null,
@@ -273,7 +206,10 @@
                     fnPage: function (url) {
                         location.href = url;
                     },
-
+                    fnReport: function () {
+                        this.sort = "report";
+                        this.fnGetCompanyList();
+                    },
                     getRoleText(role) {
                         const map = {
                             PARTNER: "제휴",
@@ -305,6 +241,7 @@
                             status: self.statusFilter,
                             pageSize: self.pageSize,
                             offSet: self.pageSize * (self.currentPage - 1),
+                            sort: self.sort,
                         };
                         $.ajax({
                             url: "http://localhost:8080/companyList.dox",
@@ -326,6 +263,7 @@
                         this.searchType = "all";
                         this.role = "ALL"
                         this.statusFilter = "ALL";
+                        this.sort = "";
                         this.fnGetCompanyList();
                     },
 

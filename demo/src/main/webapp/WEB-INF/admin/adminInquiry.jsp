@@ -15,112 +15,7 @@
         <link rel="stylesheet" href="${pageContext.request.contextPath}/css/common.css">
         <link rel="stylesheet" href="${pageContext.request.contextPath}/css/adminNavi.css">
         <link rel="stylesheet" href="${pageContext.request.contextPath}/css/admin-common.css">
-
         <style>
-            .inquiry-container {
-                width: 1200px;
-                padding: 20px;
-                background: #fff;
-                border-radius: 10px;
-                box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
-            }
-
-
-
-            /* 상단 헤더 */
-            .inquiry-header {
-                display: flex;
-                justify-content: flex-end;
-                margin-bottom: 18px;
-            }
-
-            .inquiry-header h2 {
-                margin: 0;
-                font-size: 26px;
-                font-weight: 700;
-                color: #222;
-            }
-
-            .filter-group {
-                display: flex;
-                align-items: center;
-                gap: 10px;
-            }
-
-            .filter-group div {
-                display: flex;
-                align-items: center;
-                gap: 6px;
-            }
-
-            .filter-group span {
-                font-size: 14px;
-                font-weight: 600;
-                color: #555;
-            }
-
-            .filter-group select {
-                border: 1px solid #ddd;
-                padding: 6px 10px;
-                border-radius: 8px;
-                min-width: 110px;
-                outline: none;
-            }
-
-            .filter-group button {
-                border: none;
-                background: #007bff;
-                color: #fff;
-                padding: 7px 14px;
-                border-radius: 8px;
-                cursor: pointer;
-                font-size: 13px;
-            }
-
-            .filter-group button:hover {
-                background: #0069d9;
-            }
-
-            /* 테이블 */
-            .inquiry-table {
-                width: 100%;
-                border-collapse: collapse;
-                background: #fff;
-                overflow: hidden;
-                box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-
-            }
-
-            .inquiry-table th {
-                background: #f1f3f5;
-                font-weight: 600;
-                font-size: 13px;
-                color: #555;
-                border-bottom: 1px solid #eee;
-                padding: 12px 10px;
-                text-align: center;
-            }
-
-            .inquiry-table td {
-                padding: 10px;
-                border-bottom: 1px solid #f1f1f1;
-                font-size: 13px;
-                color: #333;
-                text-align: center;
-            }
-
-            .inquiry-table tr:hover {
-                background: #f8f9fa;
-            }
-
-            .text-left {
-                text-align: left !important;
-                max-width: 260px;
-                white-space: nowrap;
-                overflow: hidden;
-                text-overflow: ellipsis;
-            }
-
             /* 상태 배지 */
             .status-badge {
                 padding: 4px 9px;
@@ -137,59 +32,6 @@
             .complete {
                 background: #e6f4ea;
                 color: #2f9e44;
-            }
-
-            /* 공통 버튼 */
-            button {
-                border: 1px solid #ddd;
-                background: #fff;
-                padding: 5px 10px;
-                font-size: 12px;
-                border-radius: 6px;
-                cursor: pointer;
-            }
-
-            button:hover {
-                background: #f8f9fa;
-            }
-
-            /* 하단 페이징 */
-            .BatchPaging {
-                display: flex;
-                justify-content: space-between;
-                margin-top: 15px;
-            }
-
-            .pagination-wrap {
-                display: flex;
-                justify-content: flex-end;
-                gap: 5px;
-                margin-top: 10px;
-            }
-
-            .pagination-wrap button {
-                border: 1px solid #ddd;
-                background: #fff;
-                padding: 5px 10px;
-                border-radius: 6px;
-                transition: all 0.2s;
-
-            }
-
-            .pagination-wrap button.active {
-                background: #007bff;
-                color: #fff;
-                border: 1px solid #007bff;
-                font-weight: bold;
-            }
-
-            .pagination-wrap button:hover:not(:disabled) {
-                background: #e6f0ff;
-            }
-
-            .pagination-wrap button:disabled {
-                cursor: not-allowed;
-                opacity: .5;
             }
 
             /* 모달 */
@@ -237,7 +79,7 @@
                         "main";
                 }
 
-                .inquiry-header {
+                .header {
                     flex-direction: column;
                     align-items: flex-start;
                     gap: 10px;
@@ -257,9 +99,9 @@
             <div class="middle">
                 <jsp:include page="/WEB-INF/admin/adminNavi.jsp" />
                 <div class="main">
-                    <div class="inquiry-container">
+                    <div class="container">
                         <h2>문의 관리</h2>
-                        <div class="inquiry-header">
+                        <div class="header">
                             <div class="filter-group">
                                 <div>
                                     <select v-model="status" @change="fnGetList">
@@ -269,7 +111,6 @@
                                     </select>
                                 </div>
                                 <div>
-                                    <span>정렬</span>
                                     <select v-model="sortType" @change="fnGetList">
                                         <option value="latest">최신순</option>
                                         <option value="old">오래된순</option>
@@ -280,7 +121,7 @@
                         </div>
 
                         <!-- 리스트 -->
-                        <table class="inquiry-table">
+                        <table class="table">
                             <thead>
                                 <tr>
                                     <th>번호</th>
@@ -328,14 +169,19 @@
                         </table>
                         <!-- 페이징  -->
                         <div class="page-box">
-                            <button @click="fnPageMove(currentPage-1)" :disabled="currentPage==1">‹</button>
-
-                            <button v-for="p in index" :key="p" @click="fnPageMove(p)"
-                                :class="{active: currentPage==p}">
-                                {{p}}
+                            <button @click="fnPageMove(currentPage-1)" :disabled="currentPage==1">
+                                <i class="fas fa-chevron-left"></i>
                             </button>
-
-                            <button @click="fnPageMove(currentPage+1)" :disabled="currentPage==index">›</button>
+                            <template v-for="p in index">
+                                <button
+                                    v-if="p > Math.floor((currentPage - 1) / 5) * 5 && p <= Math.ceil(currentPage / 5) * 5"
+                                    :key="p" @click="fnPageMove(p)" :class="{active: currentPage === p}">
+                                    {{ p }}
+                                </button>
+                            </template>
+                            <button @click="fnPageMove(currentPage+1)" :disabled="currentPage==index">
+                                <i class="fas fa-chevron-right"></i>
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -401,144 +247,145 @@
                 </div>
 
             </div>
-            <jsp:include page="/WEB-INF/common/footer.jsp" />
-            <script>
-                const app = Vue.createApp({
-                    data() {
-                        return {
-                            // 변수 - (key : value)
-                            activeMenu: "",
-                            inquirylist: [],
-                            selected: null,
-                            answerContent: "",
-                            status: "ALL",
-                            sortType: "latest",
-                            pageSize: 8,
-                            index: 1,
-                            currentPage: 1,
-                            emptyRows: 0,
+        </div>
+        <jsp:include page="/WEB-INF/common/footer.jsp" />
+        <script>
+            const app = Vue.createApp({
+                data() {
+                    return {
+                        // 변수 - (key : value)
+                        activeMenu: "",
+                        inquirylist: [],
+                        selected: null,
+                        answerContent: "",
+                        status: "ALL",
+                        sortType: "latest",
+                        pageSize: 8,
+                        index: 1,
+                        currentPage: 1,
+                        emptyRows: 0,
 
-                        };
+                    };
+                },
+                methods: {
+                    // 함수(메소드) - (key : function())
+                    fnPage: function (url) {
+                        location.href = url;
                     },
-                    methods: {
-                        // 함수(메소드) - (key : function())
-                        fnPage: function (url) {
-                            location.href = url;
-                        },
 
-                        fnPageMove(p) {
-                            if (p < 1 || p > this.index) return;
+                    fnPageMove(p) {
+                        if (p < 1 || p > this.index) return;
 
-                            this.currentPage = p;
-                            this.fnGetList();
-                        },
+                        this.currentPage = p;
+                        this.fnGetList();
+                    },
 
-                        fnResetSearch() {
-                            this.status = "ALL";
-                            this.sortType = "latest";
-                            this.currentPage = 1;
-                            this.fnGetList();
-                        },
+                    fnResetSearch() {
+                        this.status = "ALL";
+                        this.sortType = "latest";
+                        this.currentPage = 1;
+                        this.fnGetList();
+                    },
 
-                        fnGetList() {
-                            let self = this;
-                            let param = {
-                                status: self.status,
-                                sortType: self.sortType,
-                                pageSize: self.pageSize,
-                                offSet: self.pageSize * (self.currentPage - 1)
-                            };
-                            $.ajax({
-                                url: "http://localhost:8080/inquiry.dox",
-                                type: "POST",
-                                dataType: "json",
-                                data: param,
-                                success: function (data) {
-                                    self.inquirylist = data.list || [];
-                                    self.index = Math.ceil(data.totalCount / self.pageSize);
-                                    self.emptyRows = 8 - data.list.length;
-                                }
-                            });
-                        },
-
-                        fnselectInquiry(item) {
-                            this.selected = item;
-                            this.answerContent = item.answerContent || "";
-                            console.log(this.selected);
-                            $('#inquiryModal').modal('show');
-                        },
-
-                        fnchangeStatus(status) {
-                            let self = this;
-                            let param = {
-                                inquiryNo: self.selected.inquiryNo,
-                                answerContent: self.answerContent,
-                                status: status
+                    fnGetList() {
+                        let self = this;
+                        let param = {
+                            status: self.status,
+                            sortType: self.sortType,
+                            pageSize: self.pageSize,
+                            offSet: self.pageSize * (self.currentPage - 1)
+                        };
+                        $.ajax({
+                            url: "http://localhost:8080/inquiry.dox",
+                            type: "POST",
+                            dataType: "json",
+                            data: param,
+                            success: function (data) {
+                                self.inquirylist = data.list || [];
+                                self.index = Math.ceil(data.totalCount / self.pageSize);
+                                self.emptyRows = 8 - data.list.length;
                             }
-                            $.ajax({
-                                url: "http://localhost:8080/changeAnswer.dox",
-                                type: "POST",
-                                dataType: "json",
-                                data: param,
-                                success: function (res) {
-                                    self.selected.status = status;
-                                    self.fnGetList(); // 왼쪽 리스트 갱신
-                                    alert("상태 변경 완료");
-                                }
-                            });
-                        },
-                        saveAnswer() {
-                            let self = this;
+                        });
+                    },
 
-                            if (!self.answerContent) {
-                                alert("답변 입력하세요");
-                                return;
+                    fnselectInquiry(item) {
+                        this.selected = item;
+                        this.answerContent = item.answerContent || "";
+                        console.log(this.selected);
+                        $('#inquiryModal').modal('show');
+                    },
+
+                    fnchangeStatus(status) {
+                        let self = this;
+                        let param = {
+                            inquiryNo: self.selected.inquiryNo,
+                            answerContent: self.answerContent,
+                            status: status
+                        }
+                        $.ajax({
+                            url: "http://localhost:8080/changeAnswer.dox",
+                            type: "POST",
+                            dataType: "json",
+                            data: param,
+                            success: function (res) {
+                                self.selected.status = status;
+                                self.fnGetList(); // 왼쪽 리스트 갱신
+                                alert("상태 변경 완료");
                             }
+                        });
+                    },
+                    saveAnswer() {
+                        let self = this;
 
-                            $.ajax({
-                                url: "http://localhost:8080/inquiryAnswer.dox",
-                                type: "POST",
-                                dataType: "json",
-                                data: {
-                                    inquiryNo: self.selected.inquiryNo,
-                                    answerContent: self.answerContent,
-                                    status: self.selected.status
-                                },
-                                success: function () {
-                                    alert("저장 완료");
-
-                                    // 목록 새로고침
-                                    self.fnGetList();
-
-                                    // 선택 유지하고 싶으면 아래 유지
-                                    // self.selected.answerContent = self.answerContent;
-                                }
-                            });
+                        if (!self.answerContent) {
+                            alert("답변 입력하세요");
+                            return;
                         }
 
-                    }, // methods
-                    mounted() {
-                        // 처음 시작할 때 실행되는 부분
-                        let self = this;
-                        const path = location.pathname;
-                        this.activeMenu =
-                            path.includes('adminMain') ? 'main' :
-                                path.includes('adminUser') ? 'user' :
-                                    path.includes('adminCompany') ? 'company' :
-                                        path.includes('adminBoard') ? 'board' :
-                                            path.includes('adminReviewWait') ? 'reviewWait' :
-                                                path.includes('adminPayment') ? 'payment' :
-                                                    path.includes('adminReport') ? 'report' :
-                                                        path.includes('adminInquiry') ? 'inquiry' :
-                                                            path.includes('adminStatistics') ? 'stats' :
-                                                                '';
-                        this.fnGetList();
-                    }
-                });
+                        $.ajax({
+                            url: "http://localhost:8080/inquiryAnswer.dox",
+                            type: "POST",
+                            dataType: "json",
+                            data: {
+                                inquiryNo: self.selected.inquiryNo,
+                                answerContent: self.answerContent,
+                                status: self.selected.status
+                            },
+                            success: function () {
+                                alert("저장 완료");
 
-                app.mount('#app');
-            </script>
-            <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
+                                // 목록 새로고침
+                                self.fnGetList();
+
+                                // 선택 유지하고 싶으면 아래 유지
+                                // self.selected.answerContent = self.answerContent;
+                            }
+                        });
+                    }
+
+                }, // methods
+                mounted() {
+                    // 처음 시작할 때 실행되는 부분
+                    let self = this;
+                    const path = location.pathname;
+                    this.activeMenu =
+                        path.includes('adminMain') ? 'main' :
+                            path.includes('adminUser') ? 'user' :
+                                path.includes('adminCompany') ? 'company' :
+                                    path.includes('adminBoard') ? 'board' :
+                                        path.includes('adminReviewWait') ? 'reviewWait' :
+                                            path.includes('adminPayment') ? 'payment' :
+                                                path.includes('adminReport') ? 'report' :
+                                                    path.includes('adminInquiry') ? 'inquiry' :
+                                                        path.includes('adminStatistics') ? 'stats' :
+                                                            '';
+                    this.fnGetList();
+                }
+            });
+
+            app.mount('#app');
+        </script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
     </body>
 
     </html>

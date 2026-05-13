@@ -22,7 +22,38 @@
 </style>
 <body>
     <jsp:include page="/WEB-INF/common/header.jsp" />
-    <div id="app">
+    <div id="app" v-cloak>
+        <div class="prep-modal-bg" v-if="showPrep" @click.self="showPrep = false">
+            <div class="prep-modal">
+                <div class="prep-icon">🛠️</div>
+                <h3>이벤트 준비 중입니다!</h3>
+                <p>더 좋은 혜택으로 곧 찾아올게요.<br>조금만 기다려주세요 💕</p>
+                <button class="prep-modal-btn" @click="showPrep = false">확인</button>
+            </div>
+        </div>
+        <div class="event-banner" :class="{ open: isEventOpen }">
+            <div class="event-banner-header" @click="isEventOpen = !isEventOpen">
+                🎉 진행 중인 이벤트
+                <span class="arrow">▼</span>
+            </div>
+            <div class="event-banner-body">
+                <a class="event-item" href="/mypage/info" @click.prevent="showPrep = true">
+                    <div class="event-img-bridal">
+                        💐
+                        <span class="event-img-label" @click.stop.prevent="showPrep = true">BRIDAL</span>
+                    </div>
+                    <span class="item-icon">🎀</span>결혼예정일 입력하고<br>브라이덜샤워 혜택 받기
+                </a>
+                <a class="event-item" href="/review/list" @click.prevent="showPrep = true">
+                    <div class="event-img-baby">
+                        👶
+                        <span class="event-img-label" @click.stop.prevent="showPrep = true">EVENT</span>
+                    </div>
+                    <span class="item-icon">🍼</span>우리 아이 첫돌 사진<br>리뷰 이벤트
+                </a>
+                <a class="event-more" href="/event.do">이벤트 더보기 ›</a>
+            </div>
+        </div>
         <div id="wrapper">
             <div class="main-content">
                 <div class="left-banner">
@@ -134,7 +165,9 @@
                         { label: '리뷰 작성법', text: '리뷰 작성은 어떻게 하나요?' },
                         { label: '이벤트 혜택', text: '베스트 리뷰 혜택이 뭐야?' },
                         { label: '준비 순서', text: '결혼 준비 순서 알려줘' }
-                    ]
+                    ],
+                    isEventOpen: false,
+                    showPrep : false
                 };
             },
             methods: {
@@ -231,7 +264,7 @@
                         const container = document.getElementById("chatMessages");
                         if(container) container.scrollTop = container.scrollHeight;
                     }, 100);
-                }
+                },
             },
             mounted() {
                 // 초기 데이터 로딩

@@ -24,6 +24,8 @@ public class Member {
 	String gender; //성별
 	String email; //이메일 주소
 	String weddingDate; //결혼 예정일
+	String anniversaryDate ; //결혼 기념일
+	String maritalStatus; // 미혼/기혼 구분
 	//
 	//user_pass_wallet table에 있는 컬럼들 입니다.
 	int remainingCount;

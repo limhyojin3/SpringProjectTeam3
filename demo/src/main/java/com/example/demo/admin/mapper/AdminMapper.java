@@ -13,6 +13,8 @@ public interface AdminMapper {
 	public List<Admin> selectSalesList(HashMap<String, Object> map);
 
 	public List<Admin> selectClientsList(HashMap<String, Object> map);
+	public int selectAllClientsCount(HashMap<String, Object> map);
+	public int selectAllPartnersCount(HashMap<String, Object> map);
 
 	public List<Admin> selectReviewList(HashMap<String, Object> map);
 	public int updateReviewApprove(HashMap<String, Object> map);

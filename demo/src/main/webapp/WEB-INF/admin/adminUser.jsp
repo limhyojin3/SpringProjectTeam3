@@ -16,83 +16,10 @@
         <link rel="stylesheet" href="${pageContext.request.contextPath}/css/adminNavi.css">
         <link rel="stylesheet" href="${pageContext.request.contextPath}/css/admin-common.css">
         <style>
-            .user-container {
-                padding: 20px;
-                background: #fff;
-                border-radius: 10px;
-                box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
-            }
-
-            .user-header {
-                display: flex;
-                justify-content: space-between;
-                align-items: center;
-                margin-bottom: 15px;
-                gap: 10px;
-            }
-
-            .user-header input,
-            .user-header select {
-                border: 1px solid #ddd;
-                padding: 6px 10px;
-                border-radius: 6px;
-            }
-
-            .keyword-group input {
-                border: 1px solid #ddd;
-                padding: 6px 10px;
-                border-radius: 6px;
-                outline: none;
-            }
-
-            .keyword-group select {
-                border: 1px solid #ddd;
-                padding: 6px;
-                border-radius: 6px;
-            }
-
-            .filter-group {
-                display: flex;
-                flex-direction: row;
-            }
-
-            .filter-group select {
-                border: 1px solid #ddd;
-                padding: 6px;
-                border-radius: 6px;
-            }
-
-            /* 테이블 */
-            .user-table {
-                width: 1000px;
-                border-collapse: collapse;
-            }
-
-            .user-table tr {
+            .table tr:hover {
                 cursor: pointer;
             }
-
-            .user-table th {
-                background: #f1f3f5;
-                padding: 10px;
-                font-size: 13px;
-            }
-
-            .user-table td {
-                padding: 10px;
-                font-size: 13px;
-                border-bottom: 1px solid #eee;
-            }
-
-            .user-table tr:hover {
-                background: #f8f9fa;
-            }
-
-            /* 선택 강조 */
-            .active-row {
-                background: #e7f1ff !important;
-            }
-
+            
             /* 상태 배지 */
             .status-badge {
                 padding: 4px 8px;
@@ -137,12 +64,12 @@
             <div class="middle">
                 <jsp:include page="/WEB-INF/admin/adminNavi.jsp" />
                 <div class="main">
-                    <div class="user-container">
+                    <div class="container">
 
                         <h2>회원 관리</h2>
 
                         <!-- 필터 영역 -->
-                        <div class="user-header">
+                        <div class="header">
                             <div class="keyword-group">
                                 <select v-model="searchType">
                                     <option value="all">전체</option>
@@ -155,9 +82,9 @@
                                 <button @click="fnGetUserList">검색</button>
                             </div>
                             <div class="filter-group">
-                                <button @click="fnReport">신고수정렬</button>
+                                <button @click="fnReport">신고수</button>
                                 <select v-model="statusFilter" @change="fnGetUserList">
-                                    <option value="ALL">활동상태</option>
+                                    <option value="ALL">상태</option>
                                     <option value="ACTIVE">활동</option>
                                     <option value="STOP">정지</option>
                                     <option value="DORMANT">휴면</option>
@@ -168,7 +95,7 @@
                         </div>
 
                         <!-- 테이블 -->
-                        <table class="user-table">
+                        <table class="table">
                             <thead>
                                 <tr>
                                     <th>ID</th>
@@ -212,14 +139,19 @@
                             </tbody>
                         </table>
                         <div class="page-box">
-                            <button @click="fnPageMove(currentPage-1)" :disabled="currentPage===1">‹</button>
-
-                            <button v-for="p in index" :key="p" @click="fnPageMove(p)"
-                                :class="{active: currentPage === p}">
-                                {{ p }}
+                            <button @click="fnPageMove(currentPage-1)" :disabled="currentPage===1">
+                                <i class="fas fa-chevron-left"></i>
                             </button>
-
-                            <button @click="fnPageMove(currentPage+1)" :disabled="currentPage===index">›</button>
+                            <template v-for="p in index">
+                                <button
+                                    v-if="p > Math.floor((currentPage - 1) / 5) * 5 && p <= Math.ceil(currentPage / 5) * 5"
+                                    :key="p" @click="fnPageMove(p)" :class="{active: currentPage === p}">
+                                    {{ p }}
+                                </button>
+                            </template>
+                            <button @click="fnPageMove(currentPage+1)" :disabled="currentPage===index">
+                                <i class="fas fa-chevron-right"></i>
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -237,7 +169,7 @@
                         sessionRole: "${sessionScope.sessionRole}",
                         searchType: "all",
                         keyword: "",
-                        sort:"",
+                        sort: "",
                         statusFilter: "ALL",
                         selectedUser: null,
                         pageSize: 10,
@@ -252,7 +184,7 @@
                     fnPage: function (url) {
                         location.href = url;
                     },
-                    fnReport: function(){
+                    fnReport: function () {
                         this.sort = "report";
                         this.fnGetUserList();
                     },
@@ -274,7 +206,7 @@
                             status: self.statusFilter,
                             pageSize: self.pageSize,
                             offSet: self.pageSize * (self.currentPage - 1),
-                            sort:self.sort,
+                            sort: self.sort,
                         };
                         $.ajax({
                             url: "http://localhost:8080/userList.dox",
@@ -322,7 +254,7 @@
                         this.statusFilter = "ALL";
                         this.sort = "";
                         this.fnGetUserList();
-                       
+
                     },
 
                 }, // methods

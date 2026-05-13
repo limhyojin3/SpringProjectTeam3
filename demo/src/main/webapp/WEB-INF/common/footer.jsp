@@ -4,9 +4,9 @@
         <div style="font-weight: bold; font-size: 20px; color: #222;">MARRYVIEW</div>
         <div class="footer-links">
             <a href="/about.do">회사소개</a>
-            <a href="javascript:;" class="bold-link">개인정보처리방침</a>
-            <a href="javascript:;">이용약관</a>
-            <a href="javascript:;">파트너 입점문의</a>
+            <a href="/privacy.do">개인정보처리방침</a>
+            <a href="/terms.do">이용약관</a>
+            <a href="/partner.do">파트너 입점문의</a>
         </div>
         <div>고객센터 <span style="font-weight: bold; color: #ff6b6b; font-size: 16px;">1588-0000</span></div>
     </div>

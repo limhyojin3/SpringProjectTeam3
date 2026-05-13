@@ -28,14 +28,19 @@
 
 	<!-- user_detail(유저 상세정보) 테이블 INSERT -->
 	<insert id="insertUserDetail" parameterType="hashmap">
-	    INSERT INTO USER_DETAIL (USER_ID, NAME, NICKNAME, GENDER, EMAIL, WEDDING_DATE)
+	    INSERT INTO USER_DETAIL (
+			USER_ID, NAME, NICKNAME, GENDER, EMAIL, 
+        	WEDDING_DATE, ANNIVERSARY_DATE, MARITAL_STATUS
+        )
 	    VALUES (
 	        #{userId},
 	        #{name},
 	        #{userId},  -- 임시로 아이디를 닉네임으로 사용
 	        #{gender},
 	        #{email},
-	        #{weddingDate,jdbcType=DATE}
+	        #{weddingDate,jdbcType=DATE},
+	        #{anniversaryDate,jdbcType=DATE},
+        	#{maritalStatus}
 	    )
 	</insert>
 	
@@ -63,7 +68,9 @@
 	        /* 닉네임이 null이면 userId를 nickName으로 가져옴 */
 	        IFNULL(D.NICKNAME, M.USER_ID) as nickName,
 	        D.GENDER as gender,
-	        D.WEDDING_DATE as weddingDate
+	        D.WEDDING_DATE as weddingDate,
+	        D.ANNIVERSARY_DATE as anniversaryDate,   <!-- ✅ 추가 -->
+	        D.MARITAL_STATUS as maritalStatus        <!-- ✅ 추가 -->
 	    FROM MEMBER M
 	    LEFT OUTER JOIN USER_DETAIL D ON M.USER_ID = D.USER_ID
 	    WHERE M.USER_ID = #{userId}
@@ -109,8 +116,9 @@
 	    FROM User_Coupon UC
 	    JOIN Coupon C ON UC.coupon_code = C.coupon_code
 	    WHERE UC.user_id = #{userId}
-	    ORDER BY UC.issued_at DESC
-	    LIMIT #{pageSize} OFFSET #{offset}
+	    AND C.coupon_type = 'COUPON' <!-- 쿠폰인지 기프트콘인지 구분-->
+		ORDER BY UC.issued_at DESC
+		LIMIT #{pageSize} OFFSET #{offset}
 	</select>
 	
 	<!-- 쿠폰 개수 -->
@@ -119,6 +127,7 @@
 	    FROM User_Coupon UC
 	    JOIN Coupon C ON UC.coupon_code = C.coupon_code
 	    WHERE UC.user_id = #{userId}
+	    AND C.coupon_type = 'COUPON'
 	</select>
 	<!-- 쿠폰 유효성 조회 -->
 	<select id="checkValidCoupon" resultType="map">
@@ -154,6 +163,44 @@
 	        DATE_ADD(NOW(), INTERVAL 30 DAY) /* 기본 만료일은 발급일로부터 30일로 설정 */
 	    )
 	</insert>
+	<!-- 기프트콘 조회 -->
+	<select id="selectUserGiftconList" parameterType="String" resultType="hashmap">
+	    SELECT
+	        UC.coupon_code      AS couponCode,
+	        C.coupon_name       AS couponName,
+	        C.giftcon_image     AS giftconImage,
+	        UC.giftcon_code     AS giftconCode,
+	        UC.giftcon_barcode  AS giftconBarcode,
+	        UC.status,
+	        DATE_FORMAT(UC.expired_at, '%Y-%m-%d') AS expiredAt
+	    FROM User_Coupon UC
+	    JOIN Coupon C ON UC.coupon_code = C.coupon_code
+	    WHERE UC.user_id = #{userId}
+	    AND C.coupon_type = 'GIFTCON'
+	    ORDER BY UC.issued_at DESC
+	</select>
+	<!-- 리뷰 기준 기프트콘 중복 체크 -->
+		<select id="checkGiftconByReview" parameterType="hashmap" resultType="int">
+		    SELECT COUNT(*)
+		    FROM user_coupon
+		    WHERE source_review_no = #{reviewNo}
+		    AND coupon_code = #{couponCode}
+		</select>
+		
+		<!-- 기프트콘 발급 -->
+		<insert id="insertGiftcon" parameterType="hashmap">
+		    INSERT INTO user_coupon
+		        (user_id, coupon_code, status, giftcon_code, giftcon_barcode,
+		         issued_at, expired_at, source_review_no)
+		    VALUES
+		        (#{userId}, #{couponCode}, 'UNUSED',
+		         #{giftconCode}, #{giftconBarcode},
+		         CURRENT_TIMESTAMP,
+		         DATE_ADD(NOW(), INTERVAL 90 DAY),
+		         #{sourceReviewNo})
+		</insert>
+	
+	
 	<!-- 열람권 잔여 횟수 조회 -->
 	<select id="selectPassWallet" parameterType="String" 
 		resultType="com.example.demo.member.model.Member">
@@ -245,7 +292,8 @@
 	        R.rating,
 	        R.reg_date,
 	        R.img_url,
-	        C.com_name
+	        C.com_name,
+	        R.thumbnail_url
 	    FROM pass_usage_log PUL
 	    JOIN review R ON PUL.review_no = R.review_no
 	    LEFT JOIN company C ON R.company_no = C.company_no
@@ -275,7 +323,8 @@
 	        R.rating,
 	        R.reg_date,
 	        R.img_url,
-	        C.com_name
+	        C.com_name,
+	        R.thumbnail_url
 	    FROM free_view_log FVL  JOIN review R ON FVL.review_no = R.review_no
 	    LEFT JOIN company C ON R.company_no = C.company_no
 	    WHERE FVL.user_id = #{userId}
@@ -516,6 +565,23 @@
 	    SELECT COUNT(*)
 	    FROM report
 	    WHERE reporter_id = #{userId}
+	</select>
+	
+	<!-- 결혼 기념일 조회 -->
+	<select id="selectAnniversaryDate" parameterType="String" resultType="String">
+	    SELECT DATE_FORMAT(anniversary_date, '%Y-%m-%d')
+	    FROM user_detail
+	    WHERE user_id = #{userId}
+	    AND anniversary_date IS NOT NULL
+	</select>
+	
+	<!-- 올해 기념일 기프트콘 중복 체크 -->
+	<select id="checkAnniversaryGiftcon" parameterType="hashmap" resultType="int">
+	    SELECT COUNT(*)
+	    FROM user_coupon
+	    WHERE user_id = #{userId}
+	    AND coupon_code = #{couponCode}
+	    AND YEAR(issued_at) = #{year}
 	</select>
 	
 	<!-- 구분선  -->

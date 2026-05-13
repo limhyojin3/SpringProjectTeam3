@@ -308,6 +308,11 @@ public class CompanyService {
 //			User info = defaultMapper.selectUser(map);
 			List<Company> list = companyMapper.selectReviewCnt(map);
 			Company info = companyMapper.selectNewReviewCnt(map);
+			
+			
+			//리뷰 라벨 업데이트 (현재시점에서 3일이상 지난거 0으로)
+			int result = companyMapper.updateOldNewLabels(map);
+			
 			resultMap.put("list", list);
 			resultMap.put("info", info);
 			resultMap.put("result", "success");
@@ -483,7 +488,10 @@ public class CompanyService {
 			/* 쿼리문에서 분기처리 한거임..*/
 			/* 나의 예약내역리스트로 갈때 내 예약상태를 업데이트한다. DONE 또는 CANCEL이 보이도록 */
 			/* update 한후 결과값은 int result = 1 또는 0 */
-			int result = companyMapper.updateReservationStatus(map);
+			if(resNoList != null && !resNoList.isEmpty()) {
+				int result = companyMapper.updateReservationStatus(map);	
+			}
+			
 			
 			// resultMap.put("result30", result30);
 			resultMap.put("resNoList", resNoList);

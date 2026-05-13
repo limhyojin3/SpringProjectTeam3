@@ -263,7 +263,8 @@
             view_cnt,
             total_cost,
             external_name,
-            thumbnail_url
+            thumbnail_url,
+            updated
            	
         ) VALUES (
             #{userId}, 
@@ -281,7 +282,8 @@
             0,
             #{totalCost},
             #{externalName},
-            #{thumbnailUrl}
+            #{thumbnailUrl},
+            1
             
         )
     </insert>
@@ -350,6 +352,11 @@
 	    WHERE user_id = #{userId} AND review_no = #{reviewNo}
 	</select>
 	
-	
+	<!-- 기프트콘 발급용 리뷰 정보 조회 -->
+	<select id="getReviewInfoForGiftcon" parameterType="String" resultType="hashmap">
+	    SELECT user_id AS userId, is_paid AS isPaid, like_cnt AS likeCnt
+	    FROM review
+	    WHERE review_no = #{value}
+	</select>
 
 </mapper>

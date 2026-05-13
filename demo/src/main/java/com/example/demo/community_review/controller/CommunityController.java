@@ -121,9 +121,10 @@ public class CommunityController {
     public String remove(@RequestBody HashMap<String, Object> map, HttpSession session) {
         HashMap<String, Object> resultMap = new HashMap<>();
         String sessionId = (String) session.getAttribute("sessionId");
+        String sessionRole = (String) session.getAttribute("sessionRole");
         
         String authorId = communityService.getPostAuthor(map);
-        if (sessionId == null || !sessionId.equals(authorId)) {
+        if (sessionId == null || (!"ADMIN".equals(sessionRole) && !sessionId.equals(authorId))) {
             resultMap.put("result", "fail");
             resultMap.put("message", "삭제 권한이 없습니다.");
             return gson.toJson(resultMap);

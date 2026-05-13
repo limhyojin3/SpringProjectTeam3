@@ -17,116 +17,228 @@
         <link rel="stylesheet" href="${pageContext.request.contextPath}/css/admin-common.css">
         <style>
             .main {
-                display: grid;
-                grid-template-columns: 1fr 1fr 0.8fr;
+                display: flex;
+                flex-direction: column;
                 gap: 20px;
+                width: 100%;
+            }
+
+            .dashboard-grid,
+            .content-grid {
+                width: 80%;
+                /* 부모 너비에 꽉 차도록 명시 */
+            }
+
+            /* 상단 카드 grid */
+            .dashboard-grid {
+                display: grid;
+                grid-template-columns: repeat(4, 1fr);
+                gap: 24px;
+            }
+
+            /* 카드 */
+            .summary-card {
+                background: white;
+                border-radius: 24px;
+                padding: 24px;
+                box-shadow: 0 4px 14px rgba(0, 0, 0, 0.06);
+                transition: 0.2s;
+            }
+
+            .summary-card:hover {
+                transform: translateY(-4px);
+            }
+
+            /* 상단 영역 */
+            .summary-top {
+                display: flex;
+                align-items: center;
+                gap: 18px;
+            }
+
+            /* 아이콘 */
+            .summary-icon {
+                width: 64px;
+                height: 64px;
+                border-radius: 18px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 26px;
+                color: white;
+            }
+
+            /* 색상 */
+            .summary-icon.users {
+                background: #4c6ef5;
+            }
+
+            .summary-icon.review {
+                background: #f59f00;
+            }
+
+            .summary-icon.partner {
+                background: #12b886;
+            }
+
+            .summary-icon.sales {
+                background: #fa5252;
+            }
+
+            /* 텍스트 */
+            .summary-title {
+                font-size: 14px;
+                color: #868e96;
+                margin-bottom: 6px;
+            }
+
+            .summary-value {
+                font-size: 30px;
+                font-weight: 700;
+                color: #212529;
+            }
+
+            /* 하단 */
+            .summary-bottom {
+                margin-top: 20px;
+                padding-top: 16px;
+                border-top: 1px solid #f1f3f5;
+                font-size: 13px;
+                color: #868e96;
+            }
+
+            /* 운영 카드 grid */
+            .content-grid {
+                display: grid;
+                grid-template-columns: repeat(3, 1fr);
+                gap: 24px;
+                margin-top: 24px;
             }
 
             /* 카드 */
             .dashboard-card {
+                background: white;
+                border-radius: 24px;
+                padding: 28px;
+                box-shadow: 0 4px 14px rgba(0, 0, 0, 0.06);
+
                 display: flex;
                 flex-direction: column;
-                height: 600px;
-                /* 🔥 핵심: 높이 고정 */
-                background: #fff;
-                border-radius: 14px;
+                transition: 0.2s ease;
+                border: 1px solid #f1f3f5;
+
                 overflow: hidden;
-                box-shadow: 0 6px 18px rgba(0, 0, 0, 0.06);
             }
 
-            .dashboard-card h4 {
-                margin: 0;
-                padding: 14px;
-                font-size: 15px;
+            .dashboard-card:hover {
+                transform: translateY(-4px);
+                box-shadow: 0 10px 24px rgba(0, 0, 0, 0.1);
+            }
+
+            /* 헤더 */
+            .card-header-box {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                margin-bottom: 18px;
+            }
+
+            .card-header-box h3 {
+                font-size: 22px;
                 font-weight: 700;
-                color: #fff;
+                color: #212529;
             }
 
-            /* 카드별 컬러 */
-            .dashboard-card:nth-child(1) h4 {
-                background: #4f46e5;
+            /* 전체보기 버튼 */
+            .more-btn {
+                border: none;
+                background: #edf2ff;
+                color: #4263eb;
+                padding: 8px 14px;
+                border-radius: 12px;
+                font-size: 13px;
+                font-weight: 600;
+                margin-bottom: 25px;
+                cursor: pointer;
+                transition: 0.2s;
             }
 
-            .dashboard-card:nth-child(2) h4 {
-                background: #ef4444;
+            .more-btn:hover {
+                background: #4263eb;
+                color: white;
             }
 
-            .dashboard-card:nth-child(3) h4 {
-                background: #10b981;
+            /* 카운트 */
+            .card-count {
+                margin-bottom: 20px;
+                font-size: 15px;
+                color: #495057;
             }
 
-
-            .data-box {
-                flex: 1;
-                /* 🔥 남은 영역 다 먹기 */
-                padding: 12px;
-                overflow: hidden;
-                display: flex;
-                flex-direction: column;
+            .card-count span {
+                font-size: 26px;
+                font-weight: 700;
+                color: #fa5252;
+                margin-left: 6px;
             }
-            .data-statstic{
+
+            /* 테이블 */
+            .dashboard-table {
+                width: 100%;
+                border-collapse: collapse;
+            }
+
+            .dashboard-table thead {
+                background: #f8f9fa;
+            }
+
+            .dashboard-table th {
+                padding: 14px 10px;
+                font-size: 14px;
+                color: #495057;
+                font-weight: 700;
+                border-bottom: 1px solid #e9ecef;
+            }
+
+            .dashboard-table td {
+                padding: 14px 10px;
+                font-size: 14px;
+                color: #343a40;
+                border-bottom: 1px solid #f1f3f5;
                 text-align: center;
             }
-            /* 테이블 영역 스크롤 */
-            .reviewTable,
-            .reportTable {
-                flex: 1;
-                overflow-y: auto;
+
+            /* hover */
+            .dashboard-table tbody tr {
+                transition: 0.15s;
             }
 
-            /* 버튼 항상 아래 고정 */
-            .detail-btn {
-                margin: 10px;
-                border-radius: 8px;
-                background: #4f46e5;
-                color: #fff;
+            .dashboard-table tbody tr:hover {
+                background: #f8f9ff;
             }
 
+            /* 반응형 */
+            @media (max-width: 1200px) {
+                .dashboard-grid {
+                    grid-template-columns: repeat(2, 1fr);
+                }
 
-            .reviewTable table {
-                table-layout: fixed;
-                width: 100%;
+                .content-grid {
+                    grid-template-columns: 1fr;
+                }
             }
 
-            .reviewTable table th:nth-child(2),
-            .reviewTable table th:nth-child(3),
-            .reviewTable table td:nth-child(2),
-            .reviewTable table td:nth-child(3) {
-                max-width: 150px;
+            @media (max-width: 768px) {
+                .dashboard-grid {
+                    grid-template-columns: 1fr;
+                }
+            }
+
+            .text {
+                max-width: 100px;
                 white-space: nowrap;
                 overflow: hidden;
                 text-overflow: ellipsis;
-            }
-
-            .reportTable table {
-                table-layout: fixed;
-                width: 100%;
-            }
-
-            .reportTable table th:nth-child(2),
-            .reportTable table th:nth-child(3),
-            .reportTable table td:nth-child(2),
-            .reportTable table td:nth-child(3) {
-                max-width: 150px;
-                white-space: nowrap;
-                overflow: hidden;
-                text-overflow: ellipsis;
-            }
-
-            .up {
-                color: #e74c3c;
-            }
-
-            .up::before {
-                content: "▲ ";
-            }
-
-            .down {
-                color: #3498db;
-            }
-
-            .down::before {
-                content: "▼ ";
             }
         </style>
     </head>
@@ -134,130 +246,207 @@
     <body>
         <jsp:include page="/WEB-INF/common/header.jsp" />
         <div id="app">
-
             <div class="middle">
                 <jsp:include page="/WEB-INF/admin/adminNavi.jsp" />
                 <div class="main">
-                    <!-- 리뷰승인 카드 -->
-                    <div class="dashboard-card">
-                        <h4>리뷰승인</h4>
-                        <div class="data-box">
-                            <div class="reviewTable">
-                                <h3>아직 검토되지 않은 리뷰 : {{reviewWait}}</h3>
-                                <table>
-                                    <tr>
-                                        <th>번호</th>
-                                        <th>제목</th>
-                                        <th>작성자</th>
-                                        <th>대기</th>
-                                        <th>작성일</th>
-                                    </tr>
-                                    <tr v-for="item in reviewList">
-                                        <td>{{item.reviewNo}}</td>
-                                        <td>{{item.title}}</td></a>
-                                        <td>{{item.userId}}</td>
-                                        <td>{{item.approvalStatus}}</td>
-                                        <td>{{item.postDay}}</td>
-                                    </tr>
-                                </table>
-                                <div class="page-box">
-                                    <button @click="fnReviewPageMove(reviewCurrentPage-1)"
-                                        :disabled="reviewCurrentPage===1">‹</button>
+                    <!-- 상단 통계 카드 -->
+                    <div class="dashboard-grid">
 
-                                    <button v-for="r in reviewIndex" :key="r" @click="fnReviewPageMove(r)"
-                                        :class="{active: reviewCurrentPage === r}">
-                                        {{ r }}
-                                    </button>
+                        <!-- 전체 회원 -->
+                        <div class="summary-card">
+                            <div class="summary-top">
+                                <div class="summary-icon users">
+                                    <i class="fas fa-users"></i>
+                                </div>
 
-                                    <button @click="fnReviewPageMove(reviewCurrentPage+1)"
-                                        :disabled="reviewCurrentPage===reviewIndex">›</button>
+                                <div class="summary-info">
+                                    <div class="summary-title">전체 회원</div>
+                                    <div class="summary-value">
+                                        {{ allMember }}
+                                    </div>
                                 </div>
                             </div>
+
+                            <div class="summary-bottom">
+                                가입된 전체 회원 수
+                            </div>
                         </div>
-                        <button @click="fnPage('/adminReview.do')" type="button" class="detail-btn">상세보기</button>
+
+                        <!-- 전체 리뷰 -->
+                        <div class="summary-card">
+                            <div class="summary-top">
+                                <div class="summary-icon review">
+                                    <i class="fas fa-star"></i>
+                                </div>
+
+                                <div class="summary-info">
+                                    <div class="summary-title">승인된 리뷰</div>
+                                    <div class="summary-value">
+                                        {{ ApprovedReviews }}
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="summary-bottom">
+                                승인 완료된 리뷰 수
+                            </div>
+                        </div>
+
+                        <!-- 제휴 업체 -->
+                        <div class="summary-card">
+                            <div class="summary-top">
+                                <div class="summary-icon partner">
+                                    <i class="fas fa-store"></i>
+                                </div>
+
+                                <div class="summary-info">
+                                    <div class="summary-title">제휴 업체</div>
+                                    <div class="summary-value">
+                                        {{ allPartners }}
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="summary-bottom">
+                                현재 등록된 업체 수
+                            </div>
+                        </div>
+
+                        <!-- 이번달 매출 -->
+                        <div class="summary-card">
+                            <div class="summary-top">
+                                <div class="summary-icon sales">
+                                    <i class="fas fa-coins"></i>
+                                </div>
+
+                                <div class="summary-info">
+                                    <div class="summary-title">이번달 매출</div>
+                                    <div class="summary-value">
+                                        ₩ {{ salesNow.toLocaleString() }}
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="summary-bottom">
+                                이번달 누적 결제 금액
+                            </div>
+                        </div>
                     </div>
 
-                    <!-- 신고제보 카드 -->
-                    <div class="dashboard-card">
-                        <h4>신고제보</h4>
-                        <div class="data-box">
-                            <div class="reportTable">
-                                <h3>아직 처리되지 않은 신고 : {{reportWait}}</h3>
-                                <table>
+                    <!-- 중단 -->
+                    <!-- 운영 관리 카드 -->
+                    <div class="content-grid">
+
+                        <!-- 리뷰 승인 -->
+                        <div class="dashboard-card">
+
+                            <div class="card-header-box">
+                                <h2>리뷰 승인</h2>
+
+                                <button @click="fnPage('/adminReview.do')" class="more-btn">
+                                    전체보기
+                                </button>
+                            </div>
+
+                            <div class="card-count">
+                                검토 대기 리뷰
+                                <span>{{reviewWait}}</span>
+                            </div>
+
+                            <table class="dashboard-table">
+                                <thead>
                                     <tr>
-                                        <th>번호</th>
                                         <th>제목</th>
                                         <th>작성자</th>
+                                        <th>작성일</th>
+                                    </tr>
+                                </thead>
+
+                                <tbody>
+                                    <tr v-for="item in reviewList.slice(0,5)">
+                                        <td>{{item.title}}</td></a>
+                                        <td>{{item.userId}}</td>
+                                        <td>{{item.postDay}}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+
+                        </div>
+
+                        <!-- 신고 관리 -->
+                        <div class="dashboard-card">
+
+                            <div class="card-header-box">
+                                <h2>신고 관리</h2>
+
+                                <button @click="fnPage('/adminReport.do')" class="more-btn">
+                                    전체보기
+                                </button>
+                            </div>
+
+                            <div class="card-count">
+                                미처리 신고
+                                <span>{{reportWait}}</span>
+                            </div>
+
+                            <table class="dashboard-table">
+                                <thead>
+                                    <tr>
+                                        <th>신고 제목</th>
+                                        <th>신고자</th>
                                         <th>신고일</th>
                                     </tr>
-                                    <tr v-for="item in reportList">
-                                        <td>{{item.reportNo}}</td>
-                                        <td>{{item.reportTitle}}</td>
+                                </thead>
+
+                                <tbody>
+                                    <tr v-for="item in reportList.slice(0,5)">
+                                        <td class="text" :title="item.reportTitle">{{item.reportTitle}}</td>
                                         <td>{{item.reporterId}}</td>
                                         <td>{{item.reportDay}}</td>
                                     </tr>
-                                </table>
-                            </div>
-                            <div class="page-box">
-                                <button @click="fnPageMove(currentPage-1)" :disabled="currentPage===1">‹</button>
+                                </tbody>
+                            </table>
 
-                                <button v-for="p in index" :key="p" @click="fnPageMove(p)"
-                                    :class="{active: currentPage === p}">
-                                    {{ p }}
+                        </div>
+                        <!--  -->
+                        <!-- 문의 관리 -->
+                        <div class="dashboard-card">
+
+                            <div class="card-header-box">
+                                <h2>문의 관리</h2>
+
+                                <button @click="fnPage('/adminInquiry.do')" class="more-btn">
+                                    전체보기
                                 </button>
-
-                                <button @click="fnPageMove(currentPage+1)" :disabled="currentPage===index">›</button>
                             </div>
+
+                            <div class="card-count">
+                                답변 대기 문의
+                                <span>{{inquryCount}}</span>
+                            </div>
+
+                            <table class="dashboard-table">
+                                <thead>
+                                    <tr>
+                                        <th>문의 제목</th>
+                                        <th>작성자</th>
+                                        <th>문의일</th>
+                                    </tr>
+                                </thead>
+
+                                <tbody>
+                                    <tr v-for="item in inquiryList.slice(0,5)">
+                                        <td>{{item.title}}</td>
+                                        <td>{{item.userId}}</td>
+                                        <td>{{item.regDate}}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+
                         </div>
 
-                        <button @click="fnPage('/adminReport.do')" type="button" class="detail-btn">상세보기</button>
                     </div>
 
-                    <!-- 통계 카드 -->
-                    <div class="dashboard-card">
-                        <h4>통계</h4>
-                        <div class="data-box data-statstic">
-                            <div>
-                                <h4 style="border-radius: 14px;">매출 현황</h4>{{salesNow.toLocaleString()}} 원<br>
-                                전월대비
-                                <span :class="salesGrowthRate === 0 ? 'same' : (salesGrowthRate < 0 ? 'down' : 'up')">
-                                    {{formatPercent(salesGrowthRate)}}%
-                                </span>
-                            </div>
-                            <div>
-                                <h4 style="border-radius: 14px;">일반 회원 등록</h4>{{userNow}} 명<br>
-                                전월대비
-                                <span :class="userGrowthRate === 0 ? 'same' : (userGrowthRate < 0 ? 'down' : 'up')">
-                                    {{formatPercent(userGrowthRate)}}%
-                                </span>
-                            </div>
-                            <div>
-                                <div>
-                                   <h4 style="border-radius: 14px;">일반업체 등록</h4>{{nPartnerNow}} 곳<br>
-                                    전월대비
-                                    <span
-                                        :class="nPartnerGrowthRate === 0 ? 'same' : (nPartnerGrowthRate < 0 ? 'down' : 'up')">
-                                        {{formatPercent(nPartnerGrowthRate)}}%
-                                    </span>
-                                </div>
-                                <div>
-                                    <h4 style="border-radius: 14px;">제휴업체 등록</h4>{{partnerNow}} 곳<br>
-                                    전월대비
-                                    <span
-                                        :class="partnerGrowthRate === 0 ? 'same' : (partnerGrowthRate < 0 ? 'down' : 'up')">
-                                        {{formatPercent(partnerGrowthRate)}}%
-                                    </span>
-                                    <br>
-                                    업체 제휴율 : {{formatPercent(affRate)}}%
-                                </div>
-                            </div>
-                            <div>
-                                <h4 style="border-radius: 14px;">전체 신규 등록 </h4> 
-                                {{newCommer}}
-                            </div>
-                        </div>
-                        <button @click="fnPage('/adminStatistics.do')" type="button" class="detail-btn">상세보기</button>
-                    </div>
                 </div>
             </div>
             <jsp:include page="/WEB-INF/common/footer.jsp" />
@@ -296,6 +485,14 @@
                         partnerNow: 1,
                         partnerBefore: 1,
                         partnerGrowthRate: 0,
+                        memberNow: 1,
+                        memberBefore: 1,
+                        memberGrowthRate: 0,
+                        allMember: 0,
+                        ApprovedReviews: 0,
+                        allPartners: 0,
+                        inquiryList: [],
+                        inquryCount: 0,
                         doneCount: 0,
                         newCommer: 0,
                         affRate: 0,
@@ -327,6 +524,25 @@
                                 self.reviewList = data.list;
                                 self.reviewWait = self.reviewList.length > 0 ? self.reviewList[0].reviewWait : 0;
                                 self.reviewIndex = Math.ceil(data.totalCount / self.reviewPageSize);
+                            }
+                        });
+                    },
+
+                    fnGetApprovedReviewList: function () {
+                        let self = this;
+                        let param = {
+                            approvalStatus: "APPROVED",
+                            pageSize: self.reviewPageSize,
+                            offSet: self.reviewPageSize * (self.reviewCurrentPage - 1)
+                        };
+                        $.ajax({
+                            url: "http://localhost:8080/viewReview.dox",
+                            dataType: "json",
+                            type: "POST",
+                            data: param,
+                            success: function (data) {
+                                console.log(data)
+                                self.ApprovedReviews = data.totalCount;
                             }
                         });
                     },
@@ -444,7 +660,60 @@
                                     self.partnerGrowthRate = growth;
                                 }
 
+                                if (role === "ALL") {
+                                    self.memberNow = now;
+                                    self.memberBefore = before;
+                                    self.memberGrowthRate = growth;
+                                }
+
                                 self.fnAfterAllDone();
+                            }
+                        });
+                    },
+
+                    fnGetALLUsers: function () {
+                        let self = this;
+                        let param = {};
+                        $.ajax({
+                            url: "http://localhost:8080/allClients.dox",
+                            dataType: "json",
+                            type: "POST",
+                            data: param,
+                            success: function (data) {
+                                self.allMember = data.count;
+                            }
+                        });
+                    },
+
+                    fnGetAllPartners: function () {
+                        let self = this;
+                        let param = {};
+                        $.ajax({
+                            url: "http://localhost:8080/allPartners.dox",
+                            dataType: "json",
+                            type: "POST",
+                            data: param,
+                            success: function (data) {
+                                self.allPartners = data.count;
+                            }
+                        });
+                    },
+
+                    fnGetInquirys: function (role) {
+                        let self = this;
+                        let param = {
+                            status: "WAIT",
+                            pageSize: self.pageSize,
+                            offSet: self.pageSize * (self.currentPage - 1)
+                        };
+                        $.ajax({
+                            url: "http://localhost:8080/inquiry.dox",
+                            dataType: "json",
+                            type: "POST",
+                            data: param,
+                            success: function (data) {
+                                self.inquiryList = data.list;
+                                self.inquryCount = data.totalCount;
                             }
                         });
                     },
@@ -472,6 +741,10 @@
                     self.fnGetUsers("USER");
                     self.fnGetUsers("NPARTNER");
                     self.fnGetUsers("PARTNER");
+                    self.fnGetALLUsers();
+                    self.fnGetApprovedReviewList();
+                    self.fnGetAllPartners();
+                    self.fnGetInquirys();
                 }
             });
 

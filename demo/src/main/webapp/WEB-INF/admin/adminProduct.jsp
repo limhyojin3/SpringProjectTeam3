@@ -17,90 +17,6 @@
         <link rel="stylesheet" href="${pageContext.request.contextPath}/css/admin-common.css">
 
         <style>
-            .content-box {
-                width: 1040px;
-                background: #fff;
-                border-radius: 10px;
-                box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
-                padding: 20px;
-            }
-
-            .page-title {
-                font-size: 26px;
-                font-weight: 700;
-                color: #222;
-                margin-bottom: 25px;
-            }
-
-            /* 탭 메뉴 */
-            .tab-menu {
-                display: flex;
-                gap: 12px;
-                margin-bottom: 25px;
-                flex-wrap: wrap;
-            }
-
-            .tab-menu button {
-                border: none;
-                background: #eef1f6;
-                color: #555;
-                padding: 12px 24px;
-                border-radius: 12px;
-                font-size: 15px;
-                font-weight: 600;
-                transition: all 0.25s ease;
-                cursor: pointer;
-            }
-
-            .tab-menu button:hover {
-                background: #dbe7ff;
-                color: #2b62ff;
-                transform: translateY(-2px);
-            }
-
-            .tab-menu button.active {
-                background: linear-gradient(135deg, #4a7dff, #275df7);
-                color: #fff;
-                box-shadow: 0 6px 14px rgba(39, 93, 247, 0.25);
-            }
-
-            /* 테이블 */
-            .report-table {
-                width: 100%;
-                border-collapse: collapse;
-                overflow: hidden;
-                border-radius: 14px;
-            }
-
-            .report-table thead {
-                background: #f4f6fa;
-            }
-
-            .report-table th {
-                padding: 16px;
-                text-align: center;
-                font-size: 14px;
-                font-weight: 700;
-                color: #444;
-                border-bottom: 1px solid #e6eaf0;
-            }
-
-            .report-table td {
-                padding: 15px;
-                text-align: center;
-                font-size: 14px;
-                color: #555;
-                border-bottom: 1px solid #f0f2f5;
-            }
-
-            .report-table tbody tr {
-                transition: 0.2s;
-            }
-
-            .report-table tbody tr:hover {
-                background: #f8fbff;
-            }
-
             /* 상태 뱃지 */
             .badge-on {
                 display: inline-block;
@@ -148,31 +64,36 @@
             <div class="middle">
                 <jsp:include page="/WEB-INF/admin/adminNavi.jsp" />
                 <div class="main">
-                    <div class="content-box">
+                    <div class="container">
+
+                        <h2>상품 관리</h2>
                         <div class="tab-menu">
-                            <button :class="{active: activeTab === 'product'}"
+                            <button :class="{active: activeTab == 'product'}"
                                 @click="fnChangeTab('product')">상품관리</button>
-                            <button :class="{active: activeTab === 'coupon'}"
+                            <button :class="{active: activeTab == 'coupon'}"
                                 @click="fnChangeTab('coupon')">쿠폰관리</button>
-                            <button :class="{active: activeTab === 'pass'}" @click="fnChangeTab('pass')">패스관리</button>
+                            <button :class="{active: activeTab == 'pass'}" @click="fnChangeTab('pass')">패스관리</button>
                         </div>
 
                         <!-- 상품 -->
-                        <div v-if="activeTab === 'product'" style="margin-bottom:15px; display:flex; gap:10px;">
-
-                            <input type="text" v-model="keyword" placeholder="상품명 / 업체명 검색" class="form-control"
-                                style="width:250px;">
-
-                            <select v-model="status" class="form-control" style="width:140px;">
-                                <option value="">전체상태</option>
-                                <option value="1">판매중</option>
-                                <option value="0">중지</option>
-                            </select>
-
-                            <button class="btn btn-primary" @click="fnSearch()">검색</button>
-
+                        <div v-if="activeTab == 'product'">
+                            <div class="header">
+                                <div class="keyword-group">
+                                    <input type="text" v-model="keyword" placeholder="상품명 / 업체명 검색">
+                                    <button @click="fnSearch()">검색</button>
+                                </div>
+                                <div class="filter-group">
+                                    <select v-model="status" @change="fnGetList">
+                                        <option value="">상태</option>
+                                        <option value="1">판매중</option>
+                                        <option value="0">중지</option>
+                                    </select>
+                                    <button @click="fnResetSearch">초기화</button>
+                                </div>
+                            </div>
                         </div>
-                        <table v-if="activeTab === 'product'" class="report-table">
+
+                        <table v-if="activeTab == 'product'" class="table">
                             <thead>
                                 <tr>
                                     <th>상품번호</th>
@@ -190,18 +111,17 @@
                                     <td>{{ p.productName }}</td>
                                     <td>{{ p.originalPrice.toLocaleString() }}</td>
                                     <td>
-                                        <span :class="p.isActive === '1' ? 'badge-on' : 'badge-off'">
-                                            {{ p.isActive === '1' ? '판매중' : '중지' }}
+                                        <span :class="p.isActive == '1' ? 'badge-on' : 'badge-off'">
+                                            {{ p.isActive == '1' ? '판매중' : '중지' }}
                                         </span>
                                     </td>
                                     <td>
                                         <!-- <button class="btn btn-sm btn-info" @click="fnView(p.productNo)">상세</button> -->
 
-                                        <button v-if="p.isActive == 1" class="btn btn-sm btn-warning"
+                                        <button v-if="p.isActive == 1" class="btn-stop"
                                             @click="fnStatus(p.productNo,0)">중지</button>
 
-                                        <button v-else class="btn btn-sm btn-success"
-                                            @click="fnStatus(p.productNo,1)">재판매</button>
+                                        <button v-else class="btn-done" @click="fnStatus(p.productNo,1)">재판매</button>
 
                                         <!-- <button class="btn btn-sm btn-danger" @click="fnDelete(p.productNo)">삭제</button> -->
                                     </td>
@@ -211,38 +131,47 @@
                                 </tr>
                             </tbody>
                         </table>
-                        <div v-if="activeTab === 'product'" class="page-box">
+                        <div v-if="activeTab == 'product'" class="page-box">
 
-                            <button @click="fnPageMove(currentPage - 1)" :disabled="currentPage == 1"><</button>
-
-                            <button v-for="n in index" :key="n" @click="fnPageMove(n)"
-                                :class="{active : currentPage == n}">
-                                {{n}}
+                            <button @click="fnPageMove(currentPage - 1)" :disabled="currentPage == 1">
+                                <i class="fas fa-chevron-left"></i>
                             </button>
-
+                            <template v-for="p in index">
+                                <button
+                                    v-if="p > Math.floor((currentPage - 1) / 5) * 5 && p <= Math.ceil(currentPage / 5) * 5"
+                                    :key="p" @click="fnPageMove(p)" :class="{active: currentPage == p}">
+                                    {{ p }}
+                                </button>
+                            </template>
                             <button @click="fnPageMove(currentPage + 1)" :disabled="currentPage == index">
-                                >
+                                <i class="fas fa-chevron-right"></i>
                             </button>
 
                         </div>
                         <!-- 쿠폰 -->
-                        <div v-if="activeTab === 'coupon'" style="margin-bottom:15px; display:flex; gap:10px;">
-
-                            <input type="text" v-model="keyword" placeholder="쿠폰코드 / 쿠폰명 검색" class="form-control"
-                                style="width:250px;">
-
-                            <button class="btn btn-primary" @click="fnSearch()">검색</button>
-
-                            <button class="btn btn-success" @click="fnCouponModal()">
-                                쿠폰등록
-                            </button>
-
+                        <div v-if="activeTab == 'coupon'">
+                            <div class="header">
+                                <div class="keyword-group">
+                                    <input type="text" v-model="keyword" placeholder="코드 / 이름 검색">
+                                    <button @click="fnSearch()">검색</button>
+                                </div>
+                                <div class="filter-group">
+                                    <select v-model="status" @change="fnGetList">
+                                        <option value="">종류</option>
+                                        <option value="COUPON">쿠폰</option>
+                                        <option value="GIFTCON">기프티콘</option>
+                                    </select>
+                                    <button class="btn-done" @click="fnCouponModal()">등록</button>
+                                    <button @click="fnResetSearch">초기화</button>
+                                </div>
+                            </div>
                         </div>
-                        <table v-if="activeTab === 'coupon'" class="report-table">
+                        <table v-if="activeTab == 'coupon'" class="table">
                             <thead>
                                 <tr>
                                     <th>코드</th>
-                                    <th>쿠폰명</th>
+                                    <th>종류</th>
+                                    <th>이름</th>
                                     <th>할인율</th>
                                     <th>발급방식</th>
                                     <th>최대수량</th>
@@ -252,35 +181,58 @@
                             <tbody>
                                 <tr v-for="c in list" :key="c.couponCode">
                                     <td>{{ c.couponCode }}</td>
+                                    <td>{{ c.couponType }}</td>
                                     <td>{{ c.couponName }}</td>
                                     <td>{{ c.discountRate }}%</td>
                                     <td>{{ c.issueType }}</td>
                                     <td>{{ c.maxIssueCnt }}</td>
                                     <td>
-                                        <button class="btn btn-sm btn-danger" @click="fnCouponDelete(c.couponCode)">
+                                        <button class="btn-warn" @click="fnCouponDelete(c.couponCode)">
                                             삭제
                                         </button>
                                     </td>
                                 </tr>
+                                <tr v-for="n in emptyRows" class="empty-row">
+                                    <td colspan="6">&nbsp;</td>
+                                </tr>
                             </tbody>
                         </table>
+                        <div v-if="activeTab == 'coupon'" class="page-box">
 
-                        <!-- 패스 -->
-                        <div v-if="activeTab === 'pass'" style="margin-bottom:15px; display:flex; gap:10px;">
-                            <input type="text" v-model="keyword" placeholder="패스명 검색" class="form-control"
-                                style="width:220px;">
+                            <button @click="fnPageMove(currentPage - 1)" :disabled="currentPage == 1">
+                                <i class="fas fa-chevron-left"></i>
+                            </button>
+                            <template v-for="p in index">
+                                <button
+                                    v-if="p > Math.floor((currentPage - 1) / 5) * 5 && p <= Math.ceil(currentPage / 5) * 5"
+                                    :key="p" @click="fnPageMove(p)" :class="{active: currentPage == p}">
+                                    {{ p }}
+                                </button>
+                            </template>
+                            <button @click="fnPageMove(currentPage + 1)" :disabled="currentPage == index">
+                                <i class="fas fa-chevron-right"></i>
+                            </button>
 
-                            <select v-model="status" class="form-control" style="width:140px;">
-                                <option value="">판매상태</option>
-                                <option value="1">판매중</option>
-                                <option value="0">중지</option>
-                            </select>
-
-                            <button class="btn btn-primary" @click="fnSearch()">검색</button>
-
-                            <button class="btn btn-success" @click="fnOpenPassModal()">패스등록</button>
                         </div>
-                        <table v-if="activeTab === 'pass'" class="report-table">
+                        <!-- 패스 -->
+                        <div v-if="activeTab == 'pass'">
+                            <div class="header">
+                                <div class="keyword-group">
+                                    <input type="text" v-model="keyword" placeholder="패스명 검색">
+                                    <button @click="fnSearch()">검색</button>
+                                </div>
+                                <div class="filter-group">
+                                    <select v-model="status" @change="fnGetList">
+                                        <option value="">판매상태</option>
+                                        <option value="1">판매중</option>
+                                        <option value="0">중지</option>
+                                    </select>
+                                    <button class="btn btn-success" @click="fnOpenPassModal()">패스등록</button>
+                                    <button @click="fnResetSearch">초기화</button>
+                                </div>
+                            </div>
+                        </div>
+                        <table v-if="activeTab == 'pass'" class="table">
                             <thead>
                                 <tr>
                                     <th>번호</th>
@@ -299,57 +251,60 @@
                                     <td>{{ p.price.toLocaleString() }}</td>
                                     <td>{{ p.reviewCnt }}</td>
                                     <td>
-                                        <span :class="p.isActive === '1' ? 'badge-on' : 'badge-off'">
-                                            {{ p.isActive === '1' ? '사용중' : '중지' }}
+                                        <span :class="p.isActive == '1' ? 'badge-on' : 'badge-off'">
+                                            {{ p.isActive == '1' ? '판매중' : '중지' }}
                                         </span>
                                     </td>
                                     <td>
-                                        <button v-if="p.isActive == 1" class="btn btn-sm btn-warning"
+                                        <button v-if="p.isActive == 1" class="btn-stop"
                                             @click="fnPassStatus(p.passNo,0)">
                                             중지
                                         </button>
 
-                                        <button v-else class="btn btn-sm btn-success" @click="fnPassStatus(p.passNo,1)">
+                                        <button v-else class="btn-done" @click="fnPassStatus(p.passNo,1)">
                                             재판매
                                         </button>
 
-                                        <button class="btn btn-sm btn-danger" @click="fnDeletePass(p.passNo)">
+                                        <button class="btn-warn" @click="fnDeletePass(p.passNo)">
                                             삭제
                                         </button>
                                     </td>
                                 </tr>
                             </tbody>
                         </table>
-                        <!-- ========================= -->
                         <!-- 쿠폰 등록 모달 -->
-                        <!-- ========================= -->
                         <div class="modal fade" id="couponModal">
                             <div class="modal-dialog">
                                 <div class="modal-content">
 
                                     <div class="modal-header">
-                                        <h5 class="modal-title">쿠폰 등록</h5>
-                                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                        <h5 class="modal-title">등록</h5>
+                                        <button type="button" class="close" data-dismiss="modal">
+                                            &times;
+                                        </button>
                                     </div>
 
                                     <div class="modal-body">
-
-                                        <input class="form-control mb-2" v-model="coupon.couponCode" placeholder="쿠폰코드">
-
-                                        <input class="form-control mb-2" v-model="coupon.couponName" placeholder="쿠폰명">
-
+                                        코드
+                                        <input class="form-control mb-2" v-model="coupon.couponCode" placeholder="코드">
+                                        이름
+                                        <input class="form-control mb-2" v-model="coupon.couponName" placeholder="이름">
+                                        할인율(%)
                                         <input class="form-control mb-2" v-model="coupon.discountRate"
                                             placeholder="할인율">
-
+                                        발급방식
                                         <select class="form-control mb-2" v-model="coupon.issueType">
 
                                             <option value="AUTO">AUTO</option>
                                             <option value="CODE">CODE</option>
 
                                         </select>
-
-                                        <input class="form-control" v-model="coupon.maxIssueCnt" placeholder="최대 발급 수량">
-
+                                        최대 발급 수
+                                        <input class="form-control mb-2" v-model="coupon.maxIssueCnt"
+                                            placeholder="최대 발급 수량">
+                                        기프티콘 url
+                                        <input class="form-control mb-2" v-model="coupon.giftconImage"
+                                            placeholder="기프티콘 url">
                                     </div>
 
                                     <div class="modal-footer">
@@ -369,7 +324,6 @@
                         <div class="modal fade" id="passModal">
                             <div class="modal-dialog">
                                 <div class="modal-content">
-
                                     <div class="modal-header">
                                         <h5 class="modal-title">패스 등록</h5>
                                         <button type="button" class="close" data-dismiss="modal">
@@ -402,7 +356,8 @@
                                         </div>
                                         <div class="form-group">
                                             <label>설명</label>
-                                            <textarea class="form-control" v-model="passForm.description" placeholder="패스 설명 입력"></textarea>
+                                            <textarea class="form-control" v-model="passForm.description"
+                                                placeholder="패스 설명 입력"></textarea>
                                         </div>
                                     </div>
 
@@ -463,7 +418,15 @@
                     fnChangeTab(tab) {
                         console.log(tab);
                         this.activeTab = tab;
+                        this.fnResetSearch();
+                    },
+
+                    fnResetSearch() {
+
+                        this.keyword = "";
+                        this.status = "";
                         this.currentPage = 1;
+
                         this.fnGetList();
                     },
 
@@ -477,11 +440,11 @@
                         let self = this;
                         let url = "";
 
-                        if (self.activeTab === 'product') {
+                        if (self.activeTab == 'product') {
                             url = "/productAdminList.dox";
-                        } else if (self.activeTab === 'coupon') {
+                        } else if (self.activeTab == 'coupon') {
                             url = "/couponList.dox";
-                        } else if (self.activeTab === 'pass') {
+                        } else if (self.activeTab == 'pass') {
                             url = "/passList.dox";
                         }
 
@@ -497,11 +460,11 @@
                             },
                             success: function (res) {
                                 console.log("응답:", res);
-                                console.log("응답 전체 =", JSON.stringify(res));
+                                // console.log("응답 전체 =", JSON.stringify(res));
                                 console.log("list =", res.list);
                                 self.list = res.list || [];
                                 self.index = Math.ceil((res.totalCount || 0) / self.pageSize);
-                                self.emptyRows = 5 - data.list.length;
+                                self.emptyRows = 5 - res.list.length;
                             },
                         });
                     },
@@ -585,7 +548,7 @@
                         this.coupon = {
                             couponCode: "",
                             couponName: "",
-                            discountRate: 1,
+                            discountRate: 10,
                             issueType: "AUTO",
                             maxIssueCnt: 1
                         };
@@ -596,9 +559,16 @@
 
                     // 쿠폰 저장
                     fnCouponSave() {
-
                         let self = this;
+                        if (!self.coupon.couponCode || self.coupon.couponCode.trim() == "") {
+                            alert("코드를 입력해주세요.");
+                            return; // 저장 로직이 실행되지 않도록 중단
+                        }
 
+                        if (!self.coupon.couponName || self.coupon.couponName.trim() == "") {
+                            alert("이름을 입력해주세요.");
+                            return;
+                        }
                         $.ajax({
                             url: "http://localhost:8080/couponInsert.dox",
                             type: "POST",

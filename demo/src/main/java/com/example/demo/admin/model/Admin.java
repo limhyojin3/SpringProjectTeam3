@@ -90,7 +90,8 @@ public class Admin {
 	String weddingDate;
 	String gender;
 	int count;						//전체 회원목록 페이지 + 신고수  member, user_detail테이블 조인
-	
+	String maritalStatus;
+	String anniversaryDate;
 	
 	// 업체 목록
 	String companyName;
@@ -126,7 +127,9 @@ public class Admin {
 	String issueType;
 	int maxIssueCnt;
 	int remainingCount;  //패스 지갑에 남은 열람권 횟수
-
+	String giftconImage;
+	String couponType;
+	
 	// 패스
 
 	// 패스목록
