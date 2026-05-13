@@ -228,7 +228,7 @@
                         </div>
 
                         <div v-if="detailItem.status === 'DONE'" class="answer-box">
-                            <h6 class="font-weight-bold"><i class="fas fa-reply fa-rotate-180"></i> 관리자 답변 <small class="text-muted ml-2">({{ detailItem.answerDate }})</small></h6>
+                            <h6 class="font-weight-bold"><i class="fas fa-reply fa-rotate-180"></i> 관리자 답변 </h6>
                             <div class="mt-2" style="white-space: pre-wrap;">{{ detailItem.answerContent }}</div>
                         </div>
                         <div v-else class="text-center p-4 border rounded mt-3 text-muted">
