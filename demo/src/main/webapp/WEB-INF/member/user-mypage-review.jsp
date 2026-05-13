@@ -193,11 +193,16 @@
                             <div class="review-card" v-for="review in paidReviewList" :key="review.reviewNo"
                                 @click="fnGoReview(review.reviewNo)">
                                 <div class="review-thumbnail">
-                                    <img v-if="review.imgUrl && !review.imgUrl.endsWith('.zip')"
-                                        :src="review.imgUrl.split(',')[0]"
-                                        class="thumbnail-img"
+                                    <img v-if="review.thumbnailUrl" 
+                                        :src="review.thumbnailUrl" 
+                                        class="thumbnail-img" 
+                                        style="width:100%; height:100%; object-fit:cover;"
                                         @error="handleImgError">
-                                    <span v-else>썸네일</span>
+                                        
+                                    <img v-else 
+                                        src="/img/default_logo.png" 
+                                        class="thumbnail-img"
+                                        style="width:100%; height:100%; object-fit:cover;">
                                 </div>
                                 <div class="review-card-title">{{ review.title }}</div>
                                 <div class="review-card-title">{{ review.comName }}</div>
@@ -225,11 +230,16 @@
                             <div class="review-card" v-for="review in freeReviewList" :key="review.reviewNo"
                                 @click="fnGoReview(review.reviewNo)">
                                 <div class="review-thumbnail">
-                                    <img v-if="review.imgUrl && !review.imgUrl.endsWith('.zip')"
-                                        :src="review.imgUrl.split(',')[0]"
+                                    <img v-if="review.thumbnailUrl" 
+                                        :src="review.thumbnailUrl" 
+                                        class="thumbnail-img" 
                                         style="width:100%; height:100%; object-fit:cover;"
                                         @error="handleImgError">
-                                    <span v-else>썸네일</span>
+                                        
+                                    <img v-else 
+                                        src="/img/default_logo.png" 
+                                        class="thumbnail-img"
+                                        style="width:100%; height:100%; object-fit:cover;">
                                 </div>
                                 <div class="review-card-title">{{ review.title }}</div> <!--제목-->
                                 <div class="review-card-title">{{ review.comName }}</div> <!--업체 명-->
