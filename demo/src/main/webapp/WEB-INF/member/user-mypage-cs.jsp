@@ -81,8 +81,8 @@
                     <div class="cs-card">
                         <h3>어떤 도움이 필요하세요?</h3>
                         <img src="/img/mypage_require_pic.png" class="cs-img">
-                        <button class="cs-btn" @click="fnCsList()">문의하러 가기</button>
-                        <button class="cs-btn" @click="fnReport()">신고하러 가기</button>
+                        <button class="cs-btn" @click="fnCsList()">1대1 문의작성/내역조회</button>
+                        <button class="cs-btn" @click="fnReport()">신고내역조회</button>
                     </div>
                 </div>
 
