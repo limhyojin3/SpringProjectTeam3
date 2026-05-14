@@ -1054,8 +1054,8 @@
                             dataType: "json",
                             data: {
                                 userId: self.sessionId,
-                                pageSize:10,
-                                offSet:0,
+                                pageSize: 10,
+                                offSet: 0,
                                 status: "UNUSED"
                             },
                             success: function (data) {
@@ -1165,14 +1165,7 @@
                             self.closeModal();
                         }
                     });
-                    const maxSakura = 40;
-                    setInterval(() => {
-                        const current = document.querySelectorAll(".sakura").length;
-
-                        if (current >= maxSakura) return;
-
-                        createSakura();
-                    }, 150);
+                    
                     function createSakura() {
                         const current = document.querySelectorAll(".sakura").length;
                         if (current >= maxSakura) return;
@@ -1197,9 +1190,20 @@
 
                         setTimeout(() => {
                             el.remove();
-                        }, duration * 8000);
+                        }, duration * 3000);
                     }
-                    setInterval(createSakura, 200);
+
+                    const maxSakura = 40;
+                    const sakuraInterval = setInterval(() => {
+                        const current = document.querySelectorAll(".sakura").length;
+
+                        if (current >= maxSakura) return;
+
+                        createSakura();
+                    }, 150);
+                    setTimeout(() => {
+                        clearInterval(sakuraInterval);
+                    }, 60000);
 
                     window.addEventListener("beforeunload", () => {
                         clearInterval(sakuraInterval);
