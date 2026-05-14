@@ -12,7 +12,7 @@ body {
 
 .middle {
 	width: 1320px;
-	margin: 0 auto;
+	margin-left: 180px;
 	display: grid;
 	grid-template-areas: "nav main";
 	grid-template-columns: 280px 1fr;
