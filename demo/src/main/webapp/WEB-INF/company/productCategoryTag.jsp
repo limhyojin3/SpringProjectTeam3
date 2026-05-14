@@ -1842,7 +1842,7 @@
                                 style="border: 1px solid #eee; border-radius: 12px; overflow: hidden; background: #fff;">
                                 <div
                                     style="background: #333; padding: 15px 20px; color: #fff; font-weight: bold; display: flex; align-items: center;">
-                                    <span style="margin-right: 10px;">A.</span> 관리자 답변
+                                    <span style="margin-right: 10px;">A.</span> 업체 답변
                                 </div>
                                 <div style="padding: 25px;">
                                     <!-- 데이터에 답변 필드명이 'answerContents'라고 가정했습니다 -->
