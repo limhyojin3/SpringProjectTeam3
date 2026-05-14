@@ -5,17 +5,18 @@
 }
 
 body {
-	font-family: 'Noto Sans KR',
-		sans-serif;
+	font-family: 'Pretendard', -apple-system, sans-serif;
 	background-color: #DBCFBD;
 	color: #333;
 }
 
 .middle {
-	width: 100%;
+	width: 1320px;
+	margin: 0 auto;
 	display: grid;
 	grid-template-areas: "nav main";
 	grid-template-columns: 280px 1fr;
+	
 }
 
 .main {
@@ -27,14 +28,13 @@ body {
 	align-items: flex-start;
 }
 
-.container {
+.main .container {
 	width: 1250px;
 	padding: 20px;
 	background: #fff;
 	border-radius: 10px;
 	box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
-	margin-right: 0;
-	margin-left: 0;
+	
 	max-width: none !important;
 }
 
