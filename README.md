@@ -179,7 +179,7 @@ https://github.com/user-attachments/assets/a00ba838-6ce2-4335-ac79-0b14a1077616
 [MarryView 발표 PPT](https://drive.google.com/file/d/1Gw45xMtioo-JcdS8eHzqLzC5GtPcSJ-G/view?usp=sharing)
 
 ## 🎥 시연 영상
-▶ [메리뷰 핵심 기능 시연 영상](https://drive.google.com/file/d/1PQtufmiq9gaYdykkWbmdVv_DbtJwfpLv/view?usp=drive_link)
+▶ [메리뷰 핵심 기능 시연 영상](https://drive.google.com/file/d/1xKWjmHMs-BAykjPbiLLIfoNGd86FWxuf/view?usp=sharing)
 
 [팀원별 페이지 시연 영상]
 
