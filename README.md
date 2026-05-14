@@ -1,5 +1,5 @@
 # 💟 MarryView 💟 - 웨딩 리뷰 플랫폼
-![MarryView Header](https://capsule-render.vercel.app/api?type=shark&height=300&color=gradient&text=Merry%20View&animation=scaleIn)
+![MarryView Header](https://capsule-render.vercel.app/api?type=shark&height=300&color=gradient&text=Marry%20View&animation=scaleIn)
 
 https://github.com/user-attachments/assets/a00ba838-6ce2-4335-ac79-0b14a1077616
 
@@ -176,7 +176,7 @@ https://github.com/user-attachments/assets/a00ba838-6ce2-4335-ac79-0b14a1077616
 ---
 
 ## 📝 발표 PPT
-[MerryView 발표 PPT](https://drive.google.com/file/d/1Gw45xMtioo-JcdS8eHzqLzC5GtPcSJ-G/view?usp=sharing)
+[MarryView 발표 PPT](https://drive.google.com/file/d/1Gw45xMtioo-JcdS8eHzqLzC5GtPcSJ-G/view?usp=sharing)
 
 ## 🎥 시연 영상
 ▶ [메리뷰 핵심 기능 시연 영상](https://drive.google.com/file/d/1PQtufmiq9gaYdykkWbmdVv_DbtJwfpLv/view?usp=drive_link)
