@@ -16,6 +16,7 @@ public class Review {
     private Long resNo;             // 예약 번호 (Reservation FK)
     private Integer productNo;      // 상품 번호 (Integer: 미선택 가능)
     private String productName;     // 상품명 (조인용)
+    
 
     /* --- [2] 리뷰 본문 및 평점 --- */
     private String title;           // 제목
@@ -24,6 +25,11 @@ public class Review {
     private Long totalCost;         // 결제 금액
     private String bookingSource;   // 예약 출처 (플랫폼 이름 등)
     private Timestamp regDate;      // 등록일시
+    private String dressCondition;	// 드레스 상태
+    private String professionalism;	// 전문성
+    private String waitingTimeStatus;	// 대기 시간 여부
+    private String waitingDuration;		// 대기 시간
+    private String extraChargeForce;	// 추가 요금 여부
 
     /* --- [3] 상태 및 통계 --- */
     private String approvalStatus;  // 승인 상태 (WAIT, APPROVED, REJECTED)

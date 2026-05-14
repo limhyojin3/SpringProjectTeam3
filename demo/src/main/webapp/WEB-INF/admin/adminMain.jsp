@@ -20,12 +20,13 @@
                 display: flex;
                 flex-direction: column;
                 gap: 20px;
-                width: 100%;
+                width: 1270px;
             }
 
             .dashboard-grid,
             .content-grid {
-                width: 80%;
+                width: 100%;
+                max-width: 1250px;
                 /* 부모 너비에 꽉 차도록 명시 */
             }
 
@@ -364,7 +365,7 @@
 
                                 <tbody>
                                     <tr v-for="item in reviewList.slice(0,5)">
-                                        <td>{{item.title}}</td></a>
+                                        <td class="text" :title="item.title">{{item.title}}</td></a>
                                         <td>{{item.userId}}</td>
                                         <td>{{item.postDay}}</td>
                                     </tr>
@@ -436,9 +437,9 @@
 
                                 <tbody>
                                     <tr v-for="item in inquiryList.slice(0,5)">
-                                        <td>{{item.title}}</td>
+                                        <td class="text" :title="item.title">{{item.title}}</td>
                                         <td>{{item.userId}}</td>
-                                        <td>{{item.regDate}}</td>
+                                        <td>{{formatDate(item.regDate)}}</td>
                                     </tr>
                                 </tbody>
                             </table>
@@ -579,6 +580,10 @@
                         this.fnGetReviewList();
                     },
 
+                    formatDate(date) {
+                        return date ? date.substring(0, 10) : '-';
+                    },
+                    
                     fnAfterAllDone: function () {
                         let self = this;
                         self.newCommer = self.userNow + self.nPartnerNow + self.partnerNow;
