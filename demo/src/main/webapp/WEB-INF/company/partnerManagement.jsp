@@ -19,109 +19,27 @@
         <script src="https://cdn.quilljs.com/1.3.6/quill.min.js"></script>
         <link rel="stylesheet" href="${pageContext.request.contextPath}/css/common.css">
         <style>
-            /* 기본 레이아웃 */
-            /*body {
-                font-family: 'Malgun Gothic', sans-serif;
-                margin: 0;
-                padding: 0;
-                background-color: #f9f9f9;
-            }*/
-
             #app {
                 max-width: 1200px;
                 margin: 0 auto;
                 background: transparent;
-                /* border: 1px solid #ddd; */
                 min-height: 100vh;
                 display: flex;
                 flex-direction: column;
             }
-
-            /* 헤더 영역 */
-            /* header {
-                display: flex;
-                justify-content: space-between;
-                align-items: center;
-                padding: 20px;
-                border-bottom: 2px solid #333;
-            }*/
-
-            /*.nav-top button {
-                padding: 8px 15px;
-                margin-right: 5px;
-                border: 1px solid #ff7f9f;
-                background: white;
-                color: #ff7f9f;
-                cursor: pointer;
-                border-radius: 5px;
-            }*/
-
-            /*.user-info {
-                background: #ff7f9f;
-                color: white;
-                padding: 10px 20px;
-                border-radius: 5px;
-            }*/
-
-            /* 메인 바디 레이아웃 */
             .container1 {
                 display: flex;
                 flex: 1;
                 margin-top: 50px;
                 background-color: #f5f2fc;
-                /* border: 1px solid #9b8fd4 ; */
+                
             }
-
-            /* 사이드바 */
-            /*aside {
-                width: 220px;
-                background: #fff0f3;
-                padding: 20px;
-                border-right: 1px solid #ddd;
-            }*/
 
             .left-banner {
                 width: 320px;
                 flex-shrink: 0;
             }
 
-            .menu-item {
-                position: relative;
-                margin-bottom: 10px;
-            }
-
-            .menu-item button {
-                width: 100%;
-                padding: 12px;
-                text-align: center;
-                border: 1px solid #ddd;
-                background: white;
-                cursor: pointer;
-                font-weight: bold;
-            }
-
-            .menu-item button.active {
-                background: #ff1493;
-                color: white;
-                border-color: #ff1493;
-            }
-
-            /* 숫자 배지 */
-            .badge {
-                position: absolute;
-                right: -10px;
-                top: 50%;
-                transform: translateY(-50%);
-                background: #ff1493;
-                color: white;
-                border-radius: 12px;
-                padding: 2px 10px;
-                font-size: 12px;
-                border: 2px solid white;
-                z-index: 10;
-            }
-
-            /* 메인 컨텐츠 */
             main {
                 flex: 1;
                 padding: 30px;
@@ -147,25 +65,6 @@
                 color: #9b8fd4;
                 font-weight: 700;
             }
-
-            .grade-badge {
-                display: inline-block;
-                padding: 4px 12px;
-                border-radius: 4px;
-                font-size: 13px;
-                font-weight: 700;
-                color: white;
-                margin-top: 10px;
-            }
-
-            .grade-badge.partner {
-                background: #ffb400;
-            }
-
-            .grade-badge.npartner {
-                background: #f4a096;
-            }
-
 
             .content-card {
                 background-color: white;
@@ -194,31 +93,36 @@
 
             .section-header h2 {
                 border: none;
-                /* 기존 h2 border-left 덮어쓰기 */
                 padding: 0;
                 margin: 0;
                 font-size: 1.3rem;
             }
 
-            /* 테이블 및 리스트 스타일 */
             table {
                 width: 100%;
                 border-collapse: collapse;
                 margin-top: 15px;
+                border-collapse: separate;
+                border-spacing: 0;
+                margin-bottom: 40px;
+                background-color: #fff;
+                border-radius: 12px;
+                overflow: hidden;
+                box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+                border: 1px solid #edf2f7;
             }
-
-            th,
             td {
                 border: 1px solid #ddd;
                 padding: 12px;
                 text-align: left;
             }
-
             th {
                 background: #fef0f3;
                 width: 120px;
+                border: 1px solid #ddd;
+                padding: 12px;
+                text-align: left;
             }
-
             .new-label {
                 background: #ff7f9f;
                 color: white;
@@ -228,9 +132,6 @@
                 vertical-align: middle;
                 margin-right: 5px;
             }
-
-            /* 탭 버튼 */
-
 
             .tab-menu button {
                 padding: 10px 20px;
@@ -248,51 +149,12 @@
 
             .tab-menu button:first-child {
                 border-radius: 8px 0 0 0px;
-                /* 왼쪽 위아래만 */
             }
 
             .tab-menu button:last-child {
                 border-radius: 0 8px 0px 0;
-                /* 오른쪽 위아래만 */
             }
-
-            /* 푸터 */
-            /* footer {
-                background: #ffc1cc;
-                padding: 20px;
-                text-align: center;
-                font-size: 14px;
-                border-top: 1px solid #ddd;
-            }*/
-
-            /* 플로팅 버튼 */
-            .ai-chatbot {
-                position: fixed;
-                right: 30px;
-                bottom: 100px;
-                background: #0099ff;
-                color: white;
-                width: 70px;
-                height: 70px;
-                border-radius: 50%;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                font-weight: bold;
-                box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-            }
-
-            /* 리뷰 섹션 공통 */
-            /*.review-header-info {
-                display: flex;
-                align-items: center;
-                gap: 20px;
-                background: #f9f9f9;
-                padding: 15px;
-                border-radius: 8px;
-                margin-bottom: 20px;
-                border: 1px solid #eee;
-            }*/
+            
             .review-header-info {
                 display: flex;
                 align-items: center;
@@ -313,11 +175,9 @@
                 transform: translateY(-2px);
             }
 
-
             .review-thumb-box {
                 width: 80px;
                 height: 80px;
-                /*background: #ffcef0;*/
                 display: flex;
                 align-items: center;
                 justify-content: center;
@@ -341,18 +201,15 @@
                 border: 1px solid #ddd;
             }
 
-            /* 상세 리뷰 카드 내부 */
             .detail-review-item {
                 padding: 20px 0;
                 border-bottom: 1px solid #f0f0f0;
             }
-
             .star-rating {
                 color: #ffb400;
                 font-weight: bold;
                 margin-bottom: 10px;
             }
-
             .review-photo {
                 width: 100px;
                 height: 100px;
@@ -366,7 +223,6 @@
                 border: 1px solid #ffe0e6;
             }
 
-            /* 페이징 */
             .pagination1 {
                 text-align: center;
                 margin-top: 25px;
@@ -396,7 +252,6 @@
                 transform: translateY(0px);
             }
 
-            /* 상품 등록/수정 폼 */
             .product-form-wrapper {
                 background: white;
             }
@@ -404,23 +259,6 @@
             .product-form-section {
                 margin-bottom: 25px;
             }
-
-            /*.form-title-box {
-                background: linear-gradient(135deg, #ff7f9f 0%, #ff9fb8 100%);
-                padding: 12px 20px;
-                color: white;
-                font-weight: bold;
-                font-size: 15px;
-                border-radius: 6px 6px 0 0;
-                margin-bottom: 0;
-            }*/
-
-            /*.form-content-box {
-                border: 2px solid #ff7f9f;
-                border-top: none;
-                padding: 25px;
-                border-radius: 0 0 6px 6px;
-            }*/
 
             .form-group {
                 margin-bottom: 20px;
@@ -462,16 +300,6 @@
                 font-size: 14px;
                 color: #555;
             }
-
-            /*.form-info-box {
-                background: #fff9f0;
-                border-left: 4px solid #ffb400;
-                padding: 12px 15px;
-                border-radius: 4px;
-                color: #333;
-                font-size: 14px;
-                line-height: 1.6;
-            }*/
 
             .form-info-label {
                 font-weight: 600;
@@ -537,29 +365,9 @@
                 background: #e8e8e8;
                 border-color: #999;
             }
-
-            /* 테이블 전체 컨테이너 */
-            table {
-                width: 100%;
-                border-collapse: separate;
-                /* 테두리 둥글게 하기 위해 분리 */
-                border-spacing: 0;
-                margin-bottom: 40px;
-                /* 테이블 간 간격 확보 */
-                background-color: #fff;
-                border-radius: 12px;
-                overflow: hidden;
-                box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
-                /* 은은한 그림자 */
-                border: 1px solid #edf2f7;
-            }
-
-            /* 왼쪽 헤더 (th) */
             th {
                 width: 180px;
-                /* 일정한 너비 유지 */
                 background-color: #f9fafb;
-                /* 은은한 회색 배경 */
                 color: #4a5568;
                 font-weight: 600;
                 text-align: left;
@@ -569,32 +377,23 @@
                 font-size: 14px;
             }
 
-            /* 오른쪽 내용 (td) */
             td {
                 padding: 14px 20px;
                 color: #2d3748;
                 border-bottom: 1px solid #edf2f7;
                 font-size: 15px;
+                line-height: 1.6;
             }
 
-            /* 마지막 행은 테두리 제거 */
             tr:last-child th,
             tr:last-child td {
                 border-bottom: none;
             }
 
-            /* 테이블 제목 부분 강조 */
             h2 {
                 font-size: 1.5rem;
                 margin-bottom: 25px;
                 padding-left: 10px;
-                /* border-left: 5px solid #9b8fd4; */
-                /* 메인 컬러 포인트 */
-            }
-
-            /* 삼항 연산자로 들어간 텍스트 강조 (결제완료/미결제 등) */
-            td {
-                line-height: 1.6;
             }
 
             .nav-container {
@@ -607,18 +406,8 @@
                 gap: 10px;
                 border: 1px solid #9b8fd4;
                 min-height: 100vh;
-                /* 부모(.main-content) 높이만큼 꽉 채움 */
-
-
             }
-
-            /* 네비게이션바 hover 효과 추가*/
-            .nav-btn:hover {
-                background: #9b8fd4;
-                color: white;
-                border-color: #9b8fd4;
-            }
-
+            
             .nav-title {
                 background-color: #9b8fd4;
                 color: #fff;
@@ -628,7 +417,6 @@
                 font-weight: bold;
                 margin-bottom: 10px;
             }
-
             .nav-btn {
                 width: 100%;
                 padding: 12px 15px;
@@ -640,8 +428,12 @@
                 font-size: 14px;
                 transition: 0.3s;
             }
+            .nav-btn:hover {
+                background: #9b8fd4;
+                color: white;
+                border-color: #9b8fd4;
+            }
 
-            /* 수정하기 버튼 */
             .btn-edit {
                 padding: 6px 14px;
                 background: #9b8fd4;
@@ -653,7 +445,6 @@
                 font-weight: 500;
                 transition: 0.2s;
                 margin-left: 10px;
-                /* ← 추가 */
             }
 
             .btn-edit:hover {
@@ -661,7 +452,6 @@
                 color: #9b8fd4;
             }
 
-            /* 삭제하기 버튼 */
             .btn-delete {
                 padding: 6px 14px;
                 background: #f4a096;
@@ -673,7 +463,6 @@
                 font-weight: 500;
                 transition: 0.2s;
                 margin-left: 10px;
-                /* ← 추가 */
             }
 
             .btn-delete:hover {
@@ -681,7 +470,6 @@
                 color: #f4a096;
             }
 
-            /* 상품관리 페이지의 상품 등록 버튼 */
             .btn-product-reg {
                 background: #ffb400;
                 padding: 10px 24px;
@@ -700,8 +488,6 @@
                 box-shadow: 0 4px 12px rgba(240, 180, 41, 0.3);
             }
 
-            /* 예약관리 css */
-            /* 티켓 카드 */
             .ticket-card {
                 display: flex;
                 align-items: center;
@@ -783,7 +569,6 @@
                 border-left: 1px solid #eee;
             }
 
-            /* 상세 뒤로가기 버튼 */
             .btn-back {
                 padding: 8px 18px;
                 background: white;
@@ -802,7 +587,6 @@
                 color: white;
             }
 
-            /* 문의 답변 버튼 */
             .btn-reply {
                 background: #ffb400;
                 color: white;
@@ -824,58 +608,14 @@
                 box-shadow: 0 4px 12px rgba(240, 180, 41, 0.3);
             }
 
-            /*.main-content{
-                background-color: #fff9f9; 
-            }*/
-            /*.main-content {
-                display: flex !important;
-                align-items: stretch;
-                /* 사이드바와 콘텐츠 영역 높이를 동일하게 맞춤 */
-            /*min-height: 800px;
-                /* 최소 높이 확보 */
-            /*}*/
-
-            /*#wrapper {
-                max-width: 1300px;
-                margin: 0 auto;
-                /* 상단 마진을 없애거나 조절하여 헤더와 밀착 */
-            /*padding: 50px 20px;
-                /* 내부 여백으로 간격 조절 */
-            /*min-height: 100vh;
-                /* 브라우저 화면 높이만큼 최소 높이 확보 */
-            /*display: flex;
-                flex-direction: column;
-            }*/
-            /*#wrapper {
-                max-width: 1300px;
-                margin: 50px auto;
-                padding: 0 20px;
-                position: relative;
-            }
-                */
-            /* #wrapper {
-                background-color: #f5f2fc;
-            } */
-
-
-            /* 상태별 배지 스타일 (선택사항) */
-            /* td 내부에 span 등으로 감싸져 있다면 더 좋지만, 
-            현재 구조에서 글자색만으로도 충분히 세련되어 보일 거예요. */
-
             .review-text-limit {
-                /* 여러 줄 말줄임표를 위한 필수 속성 */
                 display: -webkit-box;
                 -webkit-line-clamp: 5;
-                /* 보여줄 줄 수 (5줄) */
                 -webkit-box-orient: vertical;
-
-                /* 레이아웃 유지 */
                 overflow: hidden;
                 text-overflow: ellipsis;
                 line-height: 1.6;
-                /* 줄 간격에 따라 높이가 결정되므로 적절히 조절 */
                 max-height: 8em;
-                /* line-height * 줄 수 (1.6 * 5)로 안전하게 높이 제한 */
             }
         </style>
     </head>
@@ -887,9 +627,7 @@
             <div id="wrapper">
                 <div class="main-content">
                     <div class="container1">
-
                         <aside>
-
                             <div class="left-banner">
                                 <div class="nav-container">
                                     <div class="nav-title">업체페이지</div>
@@ -901,55 +639,6 @@
                                 </div>
                             </div>
                         </aside>
-
-
-                        <!-- menuList() {
-                    return [
-                        { id: 'main', name: '마이 페이지', count: 0 },
-                        { id: 'product', name: '상품 관리', count: 0 },
-                        { id: 'reservation', name: '예약 관리', count: this.resCount },
-                        { id: 'inquiry', name: '문의 내역', count: 2 },
-                        { id: 'review', name: '리뷰 내역', count: this.newReviewCnt + this.newUnpaidReviewCnt },
-                        { id: 'customer', name: '고객센터', count: 0 }
-                    ];
-                },
-
-
-                handleMenuClick(menuId) {   //main,product,reservation,inquiry,review,customer
-                    this.currentMenu = menuId;
-                    this.productPage = 'list';
-                    this.page = 1;
-                    this.page1 = 'main';
-                    this.reviewTab = 'detail';
-                    this.currentPage = 1;
-
-                    if (menuId === 'main') {
-                        this.fnCom();
-                    }
-                    else if (menuId === 'product') {
-                        this.fnProductList();
-                    } else if (menuId === 'reservation') {
-                        this.fnReservationList();
-                    } else if (menuId === 'review') {
-
-                        this.fnSimple();
-                        this.fnReview();
-                    }
-                }, -->
-
-
-
-
-
-                        <!-- <aside>
-                    <div class="menu-item" v-for="m in menuList" :key="m.id">
-                        <button :class="{ active: currentMenu === m.id }" @click="handleMenuClick(m.id)">
-                            {{ m.name }}
-                        </button>
-                        <span class="badge" v-if="m.count > 0">{{ m.count }}</span>
-                    </div>
-                </aside> -->
-
                         <main>
                             <div v-if="currentMenu === 'main'">
                                 <h2>안녕하세요, '{{ user.name }}'님!</h2>
@@ -964,29 +653,21 @@
                                         user.regDate }}</p>
 
                                 </div>
-                                <!-- <div class="content-card">
-                                    <h3>마지막 결제 수단</h3>
-                                    <p style="text-align: right; font-size: 20px;">{{ user.lastPayment }}</p>
-                                </div> -->
                                 <div v-if="user.grade === 'NPARTNER'" style="text-align: right;">
                                     <button class="btn-product-reg" @click="fnRegPTN">제휴 업체로 등록하기</button>
                                 </div>
                                 <div><span v-if="user.grade === 'NPARTNER'">*관리자가 승인후 제휴업체 등급이 됩니다!</span></div>
-                                <!-- <button style="float: right;" @click="withdraw">탈퇴하기</button> -->
                             </div>
 
-
-                            <!-- 상품 관리 메뉴 -->
                             <div v-if="currentMenu === 'product'">
 
                                 <div v-if="productPage === 'list'">
-                                    <!-- db 랑 연결한 곳 -->
                                     <div
                                         style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; padding-left: 10px;">
                                         <div class="section-header">
-                                            <h2>등록한 상품({{ productList3.length }})</h2>
+                                            <h2>등록한 상품({{ registeredProductList.length }})</h2>
                                         </div>
-                                        <button @click="goRegPage2" class="btn-product-reg">상품등록</button>
+                                        <button @click="fnRegPage" class="btn-product-reg">상품등록</button>
                                     </div>
                                     <div v-for="(i, idx) in fnPaginatedProductList" :key="idx" class="content-card"
                                         style="display: flex; align-items: center; padding: 15px;">
@@ -997,7 +678,7 @@
                                                 style="width: 100%; height: 100%; object-fit: cover; border-radius: 10px;">
                                         </div>
                                         <div style="flex: 1; display: flex; flex-direction: column; justify-content: center;">
-                                            <div class="ticket-no">No. {{ productList3.length - ((productCurrentPage - 1)
+                                            <div class="ticket-no">No. {{ registeredProductList.length - ((productCurrentPage - 1)
                                                 * 5 + idx ) }}</div>
                                             <div style="flex: 1; font-weight: bold;">{{ i.productName }}</div>
                                             <!-- {{i}} -->
@@ -1005,10 +686,9 @@
                                         
                                         <div style="display: flex; align-items: center; gap: 2px;">
                                             <div>{{ Number(i.originalPrice).toLocaleString() }}원</div>
-                                            <button @click="goEditPage(i)" class="btn-edit">수정하기</button>
-                                            <button @click="fnRemove2(i)" class="btn-delete">삭제하기</button>
+                                            <button @click="fnEditPage(i)" class="btn-edit">수정하기</button>
+                                            <button @click="fnRemoveProduct(i)" class="btn-delete">삭제하기</button>
                                         </div>
-                                        
                                     </div>
                                     <!-- 여기에 페이징이 있어야 해요 -->
                                     <div class="pagination1">
@@ -1020,26 +700,6 @@
                                         </span>
                                     </div>
 
-
-                                    <!-- 여기는 프론트만으로 되는 곳-->
-                                    <!-- <h2>등록한 상품({{ productList.length }})</h2>
-                            <div v-for="i in productList" class="content-card"
-                                style="display: flex; align-items: center; padding: 15px;">
-                                <div
-                                    style="width: 120px; height: 80px; background: #ffcef0; display: flex; align-items: center; justify-content: center; margin-right: 20px;">
-                                    {{ i.thumbnail }} -->
-                                    <!-- <img :src="i.thumbnail" :alt="i.name" style="max-width: 100%; max-height: 100%">
-                                </div>
-                                <div style="flex: 1;">{{ i.content }}</div>
-                                <div>{{ i.price }}</div>
-                                <button @click="goEditPage(i)" style="margin-left: 10px;">수정하기</button>
-                                <button @click="fnRemove(i)" style="margin-left: 10px;">삭제하기</button>
-                            </div>
-                            <div style="text-align: center;">
-                                <button @click="goRegPage"
-                                    style="background: #ffb400; padding: 15px 40px; border: none; font-weight: bold; cursor: pointer;">상품
-                                    등록</button>
-                            </div> -->
                                 </div>
 
                                 <!-- 상품 등록 폼 -->
@@ -1069,7 +729,7 @@
                                                     <div class="form-info-box">
                                                         <input type="text" placeholder="여기에 상품 이름을 적어주세요."
                                                             style="width: 100%; max-width: 400px; padding: 12px; border: 1px solid #d1ccff; border-radius: 8px; outline: none; font-size: 14px;"
-                                                            v-model="product2.productName">
+                                                            v-model="initializedOneProductDetails.productName">
                                                     </div>
                                                 </div>
 
@@ -1081,13 +741,12 @@
                                                         style="display: block; font-weight: 600; color: #444; margin-bottom: 10px; font-size: 15px;">카테고리</label>
                                                     <div class="category-group"
                                                         style="display: flex; gap: 20px; flex-wrap: wrap; background: white; padding: 15px; border-radius: 8px; border: 1px solid #d1ccff;">
-                                                        <!--border: 1px solid #d1ccff; border-radius: 8px; outline: none; resize: none; font-size: 14px;-->
                                                         <div class="category-item" v-for="item in category" :key="item">
                                                             <label
                                                                 style="cursor: pointer; font-size: 14px; color: #666; display: flex; align-items: center; gap: 5px;">
                                                                 <input type="checkbox" :value="item"
                                                                     style="accent-color: #6a5acd;"
-                                                                    v-model="product2.proType">{{item}}
+                                                                    v-model="initializedOneProductDetails.proType">{{item}}
                                                             </label>
                                                         </div>
                                                     </div>
@@ -1122,7 +781,7 @@
                                                         설명</label>
                                                     <div class="form-info-box">
                                                         <textarea placeholder="상품에 대한 자세한 설명을 입력하세요."
-                                                            v-model="product2.productDetails"
+                                                            v-model="initializedOneProductDetails.productDetails"
                                                             style="width: 100%; height: 120px; padding: 15px; border: 1px solid #d1ccff; border-radius: 8px; outline: none; resize: none; font-size: 14px;"></textarea>
                                                     </div>
                                                 </div>
@@ -1136,7 +795,7 @@
                                                         <div class="form-info-box">
                                                             <input placeholder="여기에 견적을 적어주세요." type="text"
                                                                 style="width: 100%; padding: 12px; border: 1px solid #d1ccff; border-radius: 8px; outline: none;"
-                                                                v-model="product2.originalPrice">
+                                                                v-model="initializedOneProductDetails.originalPrice">
                                                         </div>
                                                     </div>
                                                     <div class="form-group" style="flex: 1;">
@@ -1146,15 +805,11 @@
                                                         <div class="form-info-box">
                                                             <input placeholder="여기에 예약금을 적어주세요." type="text"
                                                                 style="width: 100%; padding: 12px; border: 1px solid #d1ccff; border-radius: 8px; outline: none;"
-                                                                v-model="product2.deposit">
+                                                                v-model="initializedOneProductDetails.deposit">
                                                         </div>
                                                     </div>
-
-
-
                                                 </div>
-
-                                                <!-- {{product2.deposit}} -->
+                                                <!-- {{initializedOneProductDetails.deposit}} -->
                                             </div>
                                         </div>
 
@@ -1166,8 +821,6 @@
                                             <div class="form-content-box"
                                                 style="padding: 30px; background-color: #faf9ff;">
                                                 <div class="form-group">
-
-
                                                     <div style="margin-bottom: 15px; font-weight: bold; color: #444;">
                                                         등록할 이미지 :
                                                     </div>
@@ -1191,7 +844,7 @@
                                         </div>
 
                                         <div class="form-button-group">
-                                            <button class="btn-cancel" @click="fnBack3()">취소(돌아가기)</button>
+                                            <button class="btn-cancel" @click="fnBackToList()">취소(돌아가기)</button>
                                             <button class="btn-submit" @click="fnInsertProduct()">상품 등록</button>
                                         </div>
                                     </div>
@@ -1223,28 +876,22 @@
                                                     <div class="form-info-box">
                                                         <input type="text" placeholder="여기에 상품 이름을 적어주세요."
                                                             style="width: 100%; max-width: 400px; padding: 12px; border: 1px solid #d1ccff; border-radius: 8px; outline: none; font-size: 14px;"
-                                                            v-model="product1.productName">
+                                                            v-model="oneProductDetails.productName">
                                                     </div>
                                                 </div>
-
-
-
-
                                                 <div class="form-group" style="margin-bottom: 25px;">
                                                     <label class="form-label"
                                                         style="display: block; font-weight: 600; color: #444; margin-bottom: 10px; font-size: 15px;">카테고리</label>
                                                     <div class="category-group"
                                                         style="display: flex; gap: 20px; flex-wrap: wrap; background: white; padding: 15px; border-radius: 8px; border: 1px solid #d1ccff;">
 
-
                                                         <div class="category-item" v-for="item in category" :key="item">
                                                             <label
                                                                 style="cursor: pointer; font-size: 14px; color: #666; display: flex; align-items: center; gap: 5px;">
                                                                 <input type="checkbox" :value="item"
                                                                     style="accent-color: #6a5acd;"
-                                                                    v-model="product1.proType">{{item}}
+                                                                    v-model="oneProductDetails.proType">{{item}}
                                                             </label>
-
                                                         </div>
                                                     </div>
                                                 </div>
@@ -1271,16 +918,14 @@
                                                 </div>
                                                 <!-- {{tagMap}}
                                                 {{tagMapToList}}
-                                                {{product1}} -->
-
-
+                                                {{oneProductDetails}} -->
                                                 <div class="form-group" style="margin-bottom: 25px;">
                                                     <label class="form-label">상품 설명</label>
                                                     <div class="form-info-box">
                                                         <textarea
                                                             style="width: 100%; height: 120px; padding: 15px; border: 1px solid #d1ccff; border-radius: 8px; outline: none; resize: none; font-size: 14px;"
                                                             placeholder="상품에 대한 자세한 설명을 입력하세요."
-                                                            v-model="product1.productDetails"></textarea>
+                                                            v-model="oneProductDetails.productDetails"></textarea>
                                                     </div>
                                                 </div>
                                                 <div style="display: flex; gap: 20px;">
@@ -1293,7 +938,7 @@
 
                                                             <input type="text" placeholder="여기에 견적을 적어주세요."
                                                                 style="width: 100%; padding: 12px; border: 1px solid #d1ccff; border-radius: 8px; outline: none;"
-                                                                v-model="product1.originalPrice">
+                                                                v-model="oneProductDetails.originalPrice">
                                                         </div>
                                                     </div>
 
@@ -1304,14 +949,11 @@
                                                         <div class="form-info-box">
                                                             <input placeholder="여기에 예약금을 적어주세요." type="text"
                                                                 style="width: 100%; padding: 12px; border: 1px solid #d1ccff; border-radius: 8px; outline: none;"
-                                                                v-model="product1.deposit">
+                                                                v-model="oneProductDetails.deposit">
                                                         </div>
                                                     </div>
-
-
                                                 </div>
-
-                                                <!-- {{product1.deposit}} -->
+                                                <!-- {{oneProductDetails.deposit}} -->
                                             </div>
                                         </div>
 
@@ -1326,7 +968,7 @@
                                                     <div style="margin-bottom: 15px; font-weight: bold; color: #444;">기존
                                                         이미지 : </div>
                                                     <div class="image-editor-box">
-                                                        <img :src="product1.imgUrl"
+                                                        <img :src="oneProductDetails.imgUrl"
                                                             style="max-width: 500px; max-height: 500px;">
                                                     </div>
                                                     <br>
@@ -1346,7 +988,7 @@
                                                         <div v-if="previewUrl === null" style="margin-top: 10px;">
                                                             <p>선택된 이미지 미리보기:</p>
                                                             
-                                                            <img :src="product1.imgUrl"
+                                                            <img :src="oneProductDetails.imgUrl"
                                                                 style="max-width: 80%; border: 1px solid #ccc;">
                                                         </div>
 
@@ -1356,15 +998,13 @@
                                                             <img :src="previewUrl"
                                                                 style="max-width: 80%; border: 1px solid #ccc;">
                                                         </div>
-                                                        
                                                     </div>
-
                                                 </div>
                                             </div>
                                         </div>
 
                                         <div class="form-button-group">
-                                            <button class="btn-cancel" @click="fnBack3()">취소(돌아가기)</button>
+                                            <button class="btn-cancel" @click="fnBackToList()">취소(돌아가기)</button>
                                             <button class="btn-submit" @click="fnUpdateProduct">상품 수정</button>
                                         </div>
                                     </div>
@@ -1379,9 +1019,9 @@
                                     <div class="ticket-card" v-for="(res, idx) in pagedResList" :key="idx"
                                         @click="selectedRes = res">
                                         <img class="ticket-img"
-                                            :src="productList3.find(p => p.productName === res.productName)?.imgUrl"
+                                            :src="registeredProductList.find(p => p.productName === res.productName)?.imgUrl"
                                             :alt="res.productName"
-                                            v-if="productList3.find(p => p.productName === res.productName)?.imgUrl">
+                                            v-if="registeredProductList.find(p => p.productName === res.productName)?.imgUrl">
                                         <div class="ticket-info">
                                             <div class="ticket-no">No. {{ reservationList.length - ((resCurrentPage - 1)
                                                 * 5 + idx ) }}</div>
@@ -1408,7 +1048,6 @@
                                         </span>
                                     </div>
                                 </template>
-
 
                                 <template v-else>
                                     <button class="btn-back" @click="selectedRes = null">← 목록으로</button>
@@ -1456,20 +1095,13 @@
                                         </tr>
                                     </table>
                                 </template>
-                                <!-- <div class="pagination1">
-                                    <span v-for="num in totalPageReservation" :key="num">
-                                        <a @click="fnPageChange(num)" href="javascript:;"
-                                            :style="currentPage === num ? 'color: #ff1493; border: 1px solid #ff1493;' : ''">
-                                            {{num}}
-                                        </a> 
-                                    </span>
-                                </div> -->
+                           
                             </div>
 
                             <div v-if="currentMenu === 'inquiry'">
                                 <!-- {{productPage}}
-                                {{page1}} -->
-                                <template v-if="page1 === 'main'">
+                                {{viewPage}} -->
+                                <template v-if="viewPage === 'main'">
                                     <div class="section-header">
                                         <h2>문의 관리 : <span style="color:#9b8fd4;">전체 문의 {{inquiryList.length}}건</span>
                                         </h2>
@@ -1505,7 +1137,6 @@
                                                 <td v-else>아직 답변하지 않음</td>
                                             </tr>
                                         </table>
-                                        <!-- {{page1}} -->
                                         <button class="btn-reply" @click="fnAnswerToProductInquiry(i)">답변하기</button>
 
                                     </div>
@@ -1519,12 +1150,7 @@
                                     </div>
 
                                 </template>
-                                <template v-if="page1 === 'answer'">
-                                    <!-- <button @click="fnBacktoInquiry">뒤로가기</button> -->
-                                    <!-- 답변대상
-                                    답변제목
-                                    답변내용
-                                    {{inquiryDetails}} -->
+                                <template v-if="viewPage === 'answer'">
                                     <div
                                         style="padding: 20px; border: 1px solid #ddd; border-radius: 8px; background-color: #fff; max-width: 800px; margin: 0 auto;">
 
@@ -1626,10 +1252,8 @@
                             </div>
 
                             <div v-if="currentMenu === 'review'">
-
-
-                                <!--page1 이 main인경우-->
-                                <template v-if="page1 === 'main'">
+                                <!--viewPage 이 main인경우-->
+                                <template v-if="viewPage === 'main'">
                                     <div class="tab-menu">
                                         <button :class="{ active: reviewTab === 'detail' }" @click="fnReview()">유료
                                             리뷰({{totalReviewCnt}})
@@ -1643,16 +1267,16 @@
                                     <div v-if="reviewTab === 'detail'" class="content-card">
                                         <!-- 유료 리뷰 탭 -->
                                         <h3>유료 리뷰 내역 : <span style="color: #ff1493;">새 리뷰 {{newReviewCnt}}건</span></h3>
-                                        <template v-for="(w, idx) in pagedProductList3" :key="idx">
+                                        <template v-for="(w, idx) in pagedRegisteredProductList" :key="idx">
                                             <div class="review-header-info" style="margin-bottom: 10px;"
-                                                @click="fnReviewDetails3(w)">
+                                                @click="fnReviewDetails(w)">
                                                 <div class="review-thumb-box">
                                                     <img :src="w.imgUrl"
                                                         style="width: 100%; height: 100%; object-fit: cover; border-radius: 10px;">
                                                 </div>
 
                                                 <div class="review-product-name">
-                                                    <div class="ticket-no">No. {{ productList3.length - ((reviewListPage - 1)
+                                                    <div class="ticket-no">No. {{ registeredProductList.length - ((reviewListPage - 1)
                                                 * 5 + idx ) }}</div>
                                                     <a href="javascript:;"
                                                         style="text-decoration: none; color:#0b3f8e;"><strong>{{w.productName}}</strong></a>
@@ -1663,7 +1287,7 @@
                                         </template>
                                         <!-- 페이징 추가 -->
                                         <div class="pagination1">
-                                            <span v-for="num in totalReviewListPages3" :key="num">
+                                            <span v-for="num in totalReviewListPages" :key="num">
                                                 <a @click="reviewListPage = num" href="javascript:;"
                                                     :style="reviewListPage === num ? 'color: #9b8fd4; border:1px solid #9b8fd4;' : ''">
                                                     {{ num }}
@@ -1677,17 +1301,17 @@
                                         <h3>무료 리뷰 내역 : <span style="color: #ff1493;">새 리뷰 {{newUnpaidReviewCnt}}건</span>
                                         </h3>
 
-                                        <template v-for="(w,idx) in pagedProductList4" :key="idx">
+                                        <template v-for="(w,idx) in pagedProductListForSimpleReviews" :key="idx">
 
                                             <div class="review-header-info" style="margin-bottom: 10px;"
-                                                @click="fnSimpleReviewDetails3(w)">
+                                                @click="fnSimpleReviewDetails(w)">
                                                 <div class="review-thumb-box">
                                                     <img :src="w.imgUrl"
                                                         style="width: 100%; height: 100%; object-fit: cover; border-radius: 10px;">
                                                 </div>
                                                 <div class="review-product-name">
                                                     <!--totalSimpleReviewCnt-->
-                                                    <div class="ticket-no">No. {{ productList3.length - ((reviewListPage - 1)
+                                                    <div class="ticket-no">No. {{ registeredProductList.length - ((reviewListPage - 1)
                                                 * 5 + idx ) }}</div>
                                                     <a href="javascript:;"
                                                         style="text-decoration: none; color:#0b3f8e;"><strong>{{w.productName}}</strong></a>
@@ -1698,7 +1322,7 @@
                                         </template>
                                         <!-- 페이징 추가 -->
                                         <div class="pagination1">
-                                            <span v-for="num in totalReviewListPages4" :key="num">
+                                            <span v-for="num in totalSimpleReviewListPages" :key="num">
                                                 <a @click="reviewListPage = num" href="javascript:;"
                                                     :style="reviewListPage === num ? 'color: #9b8fd4; border:1px solid #9b8fd4;' : ''">
                                                     {{ num }}
@@ -1708,15 +1332,11 @@
                                     </div>
                                 </template>
 
-
-
-
-                                <!--page1이 main이 아닌 경우-->
-                                <template v-else> <!--page1 != 'main'-->
-
+                                <!--viewPage이 main이 아닌 경우-->
+                                <template v-else> <!--viewPage != 'main'-->
                                     <!-- 1
-                            {{reviewTab}}
-                            {{reviews}} -->
+                                    {{reviewTab}}
+                                    {{reviews}} -->
                                     <!-- reviewTab === 'detail' 인 경우-->
                                     <template v-if="reviewTab === 'detail'">
                                         <button class="btn-back" @click="fnGoBackToList()">← 목록으로</button>
@@ -1725,7 +1345,7 @@
                                             <div v-for="(rev, idx) in paginatedReviews" :key="idx" @click="rev.isExpanded = !rev.isExpanded" style="cursor: pointer; margin-bottom: 20px; border-bottom: 1px solid #eee; padding-bottom: 15px;"
                                                 class="detail-review-item">
                                                 <!-- {{rev}} -->
-                                                <div class="star-rating">평점 : {{rating2(rev)}}</div>
+                                                <div class="star-rating">평점 : {{starRating(rev)}}</div>
                                                 <!-- {{rev.rating}}/5 -->
 
                                                 <div style="display: flex; gap: 20px;">
@@ -1754,8 +1374,8 @@
                                             </div>
                                             <div class="pagination1">
                                                 <span v-for="num in totalPages" :key="num">
-                                                    <a @click="fnPageChange2(num)" href="javascript:;"
-                                                        :style="page === num ? 'color: #9b8fd4; border:1px solid #9b8fd4;' : ''">
+                                                    <a @click="fnPageChange(num)" href="javascript:;"
+                                                        :style="currentPage === num ? 'color: #9b8fd4; border:1px solid #9b8fd4;' : ''">
                                                         {{num}}
                                                     </a>
                                                 </span>
@@ -1768,16 +1388,11 @@
                                         </template>
                                     </template>
 
-
-
-
                                     <!--reviewTab === 'simple' 인 경우-->
                                     <template v-else-if="reviewTab === 'simple'">
                                         <button class="btn-back" @click="fnGoBackToList()">← 목록으로</button>
 
                                         <template v-if="simpleReviews && simpleReviews.length > 0">
-
-
                                             <table>
                                                 <thead>
                                                     <tr>
@@ -1788,22 +1403,17 @@
                                                     </tr>
                                                 </thead>
                                                 <tbody>
-
                                                     <!--self.simpleReviews = data.list; =[]-->
                                                     <template v-for="(rev, idx) in paginatedSimpleReviews"
                                                         :key="rev.reviewNo">
                                                         <!--페이지에 맞는 리뷰 표시-->
                                                         <tr>
-                                                            <td>{{ (page - 1) * 5 + idx + 1 }} <span class="new-label"
+                                                            <td>{{ (currentPage - 1) * 5 + idx + 1 }} <span class="new-label"
                                                                     v-if="rev.updated === '1'">NEW</span></td>
                                                             <td style="color: #666; font-size: 15px;">
                                                                 <div :class="{ 'review-text-limit' : !rev.isExpanded }" style="color: #666; font-size: 15px;" > 
                                                                     {{cleanText(rev.content)}}
                                                                 </div>
-
-                                                                <!-- <div style="margin-top: 5px; color: #9a8cff; font-size: 13px; font-weight: bold;">
-                                                                    {{ rev.isExpanded ? '접기 ▲' : '더보기 ▼' }}
-                                                                </div> -->
 
                                                             </td>
                                                             <td>{{rev.userId}}</td>
@@ -1817,8 +1427,8 @@
                                             </table>
                                             <div class="pagination1">
                                                 <span v-for="num in totalSimplePages" :key="num">
-                                                    <a @click="page = num" href="javascript:;"
-                                                        :style="page === num ? 'color: #9b8fd4; border:1px solid #9b8fd4;' : ''">
+                                                    <a @click="currentPage = num" href="javascript:;"
+                                                        :style="currentPage === num ? 'color: #9b8fd4; border:1px solid #9b8fd4;' : ''">
                                                         {{num}}
                                                     </a>
                                                 </span> <!-- num 에 해당하는 페이지가 뜨고 그 페이지에 자료가 5개씩 표시되도록( )-->
@@ -1830,23 +1440,15 @@
                                             </div>
                                         </template>
                                     </template>
-
-
                                 </template>
                             </div>
                         </main>
                     </div>
-
-
                 </div>
             </div>
         </div>
 
         <jsp:include page="/WEB-INF/common/footer.jsp" />
-
-
-
-        <!-- <div class="ai-chatbot">ai 챗봇</div> -->
         </div>
     </body>
 
@@ -1868,7 +1470,6 @@
                     // 상품관리 페이지 사이징//
                     productCurrentPage: 1,
                     productPageSize: 5,   // 한 페이지에 보여줄 상품 수
-                    //
                     /*문의 답변과 관련된 맵*/
                     inquiryAnswer: {
                         inquiryNo: '',
@@ -1881,124 +1482,27 @@
                     resCount: '',
                     newReviewCnt: 0,
                     newUnpaidReviewCnt: 0,
-                    productNo: '',
                     totalSimpleReviewCnt: 0,
                     // 변수 - (key : value)
                     totalReviewCnt: 0,
-                    productList3: [],
-                    productList4: [],
-                    inquiryList: [
-                        { id: 1, product: '야외 스냅 기본', title: '투어 일정 변경하고 싶습니다.', userid: '김결혼', content: '04.01일 예약했는데 04.08일로 변경하고 싶어요.', imgUrl: "https://i.imgur.com/P4PQtwM.jpeg" },
-                        { id: 2, product: '해변스냅', title: '메이크업 추가되나요?', userid: '아리랑', content: '메이크업 여기서 받고싶어요.', imgUrl: "https://i.imgur.com/rFfGfor.jpeg" },
-                    ],
-                    user: {
-                        id: 1, name: 'ABC 드레스 샵', usePeriod: '25.01.01 ~ 26.01.01', lastPayment: '신협 ***', grade: '제휴업체' /* 일반업체, 제휴업체 구분 변수 */
-                    },
-                    currentMenu: 'main', // 초기 화면
+                    registeredProductList: [],
+                    productListForSimpleReviews: [],
+                    inquiryList: [],
+                    user: {},
                     reviewTab: 'detail',
-
-                    page1: 'main', // 상품별 리뷰 페이지 구분 변수
+                    viewPage: 'main', // 상품별 리뷰 페이지 구분 변수
                     productPage: 'list', //(list: 목록, reg: 등록, edit: 수정)
-
-                    page: 1,
-                    product: '',
-                    product1: {},
-                    proType: [],
-
-                    //product === productList.        v-for = "pro in productList" :key="pro.id"   v-if="product === pro.name" 
-                    productList: [  //상품 리스트
-                        { id: 1, thumbnail: 'https://i.imgur.com/RwwCSsD.jpeg', name: '스몰 웨딩', content: '스몰 웨딩 상품 설명입니다.', price: '1,700,000원', category: ['스튜디오', '드레스'] },
-                        { id: 2, thumbnail: 'https://i.imgur.com/zKxXEJ1.jpeg', name: '화려하게', content: '화려하게 상품 설명입니다.', price: '2,500,000원', category: ['스튜디오', '메이크업'] },
-                        { id: 3, thumbnail: 'https://i.imgur.com/JyVciZk.jpeg', name: '동화같은 분위기', content: '동화같은 분위기 상품 설명입니다.', price: '1,200,000원', category: ['메이크업'] }
-                    ],
-
-
-                    simpleReviews: [
-                        // 1~7: 스몰 웨딩 (7개)
-                        { id: 1, product: '스몰 웨딩', content: '드레스 피팅 때 전문가 포스가 느껴져서 안심됐어요.', userid: '예신이1004', rating: 5, updated: 'new' },
-                        { id: 2, product: '스몰 웨딩', content: '지정했던 드레스가 대여 중이라 다른 걸 입어 아쉬워요.', userid: '드레스투어중', rating: 3, updated: 'new' },
-                        { id: 3, product: '스몰 웨딩', content: '메이크업 지속력이 좀 떨어져서 촬영 중간에 수정했어요.', userid: '수정화장필수', rating: 3, updated: 'new' },
-                        { id: 4, product: '스몰 웨딩', content: '대기 공간이 좁아서 부모님 모시고 가기엔 좀 불편해요.', userid: '효도신부', rating: 2, updated: 'old' },
-                        { id: 5, product: '스몰 웨딩', content: '드레스 상태가 조금 사용감이 느껴져서 아쉬웠습니다.', userid: '꼼꼼한체크', rating: 2, updated: 'old' },
-                        { id: 6, product: '스몰 웨딩', content: '가까운 지인들만 모시는 자리에 딱 맞는 심플한 드레스가 많아요.', userid: '심플리즘', rating: 5, updated: 'old' },
-                        { id: 7, product: '스몰 웨딩', content: '소규모 예식이라 걱정했는데 상담 실장님이 동선까지 잘 짜주셨어요.', userid: '미니멀라이프', rating: 4, updated: 'old' },
-
-                        // 8~12: 화려하게 (5개)
-                        { id: 8, product: '화려하게', content: '헬퍼 이모님이 세심하게 챙겨주셔서 공주 된 기분이었어요.', userid: '행복한웨딩', rating: 5, updated: 'new' },
-                        { id: 9, product: '화려하게', content: '수입 드레스 라인이 정말 독보적이네요. 화려함 끝판왕!', userid: '비즈가좋아', rating: 5, updated: 'new' },
-                        { id: 10, product: '화려하게', content: '실장님이 제 체형에 딱 맞는 드레스를 잘 골라주셨어요.', userid: '체형교정마법', rating: 5, updated: 'old' },
-                        { id: 11, product: '화려하게', content: '야간 촬영 추가했는데 분위기가 정말 환상적이에요.', userid: '밤하늘의별', rating: 5, updated: 'old' },
-                        { id: 12, product: '화려하게', content: '조명 아래서 비즈가 반짝이는 게 너무 예뻐서 눈을 뗄 수가 없었네요.', userid: '반짝이덕후', rating: 5, updated: 'old' },
-
-                        // 13~15: 동화같은 분위기 (3개)
-                        { id: 13, product: '동화같은 분위기', content: '스튜디오 채광이 너무 예뻐서 원본도 만족스러워요.', userid: '촬영끝행복시작', rating: 5, updated: 'old' },
-                        { id: 14, product: '동화같은 분위기', content: '작가님이 긴장을 잘 풀어주셔서 자연스럽게 찍었습니다.', userid: '웃는게어색해', rating: 5, updated: 'old' },
-                        { id: 15, product: '동화같은 분위기', content: '스튜디오 배경이 유행을 좀 탈 것 같지만 사진은 예쁩니다.', userid: '감성신부v', rating: 4, updated: 'old' }
-                    ],
-                    reviews: [
-                        { id: 1, product: '스몰 웨딩', rating: 5, author: '김결혼', content: '웨딩 플래너님이 정말 세심하게 도와주셔서 만족스러웠어요.', date: '26.04.08', updated: 'new' },
-                        { id: 2, product: '스몰 웨딩', rating: 4, author: '김tntn', content: '드레스 퀄리티가 기대 이상이었습니다!', date: '26.04.08', updated: 'new' },
-                        { id: 3, product: '스몰 웨딩', rating: 5, author: '김발랄', content: '스튜디오 촬영 분위기가 너무 좋아서 즐겁게 찍었어요.', date: '26.04.08', updated: 'new' },
-                        { id: 4, product: '스몰 웨딩', rating: 5, author: '김망고', content: '스냅 사진 퀄리티가 정말 좋아요.', date: '26.04.08', updated: 'new' },
-                        { id: 5, product: '스몰 웨딩', rating: 3, author: '김딸기', content: '예식 진행 스태프들이 매우 프로페셔널했습니다.', date: '26.04.07', updated: 'old' },
-                        { id: 6, product: '스몰 웨딩', rating: 4, author: '김포도', content: '예약 과정이 간편해서 좋았어요.', date: '26.04.07', updated: 'old' },
-                        { id: 7, product: '스몰 웨딩', rating: 3, author: '김사과', content: '디테일까지 신경 써주셔서 감동이었습니다.', date: '26.04.07', updated: 'old' },
-                        { id: 8, product: '스몰 웨딩', rating: 3, author: '김오렌지', content: '예산에 맞춰 잘 추천해주셔서 도움이 많이 됐어요.', date: '26.04.06', updated: 'old' },
-                        { id: 9, product: '스몰 웨딩', rating: 5, author: '김자몽', content: '웨딩 촬영 결과물이 정말 만족스러웠습니다.', date: '26.04.05', updated: 'old' },
-                        { id: 10, product: '스몰 웨딩', rating: 3, author: '김레몬', content: '당일 진행이 체계적이라 믿고 맡길 수 있었어요.', date: '26.04.05', updated: 'old' },
-                        { id: 11, product: '스몰 웨딩', rating: 3, author: '김복숭아', content: '친구들에게도 추천하고 싶은 업체입니다.', date: '26.04.02', updated: 'old' },
-                        { id: 12, product: '스몰 웨딩', rating: 5, author: '김수박', content: '상담부터 계약까지 과정이 투명했어요.', date: '26.04.02', updated: 'old' },
-                        { id: 13, product: '스몰 웨딩', rating: 5, author: '김참외', content: '웨딩홀 연출이 너무 아름다웠습니다.', date: '26.04.01', updated: 'old' },
-                        { id: 14, product: '스몰 웨딩', rating: 5, author: '김멜론', content: '가성비 좋은 패키지라 만족해요.', date: '26.04.01', updated: 'old' },
-                        { id: 15, product: '스몰 웨딩', rating: 3, author: '김키위', content: '플래너님 응대가 빠르고 정확했습니다.', date: '26.04.01', updated: 'old' },
-
-                        // 화려하게 (10개)
-                        { id: 16, product: '화려하게', rating: 3, author: '김미미', content: '메이크업이 자연스럽고 예쁘게 잘 되었어요.', date: '26.04.08', updated: 'new' },
-                        { id: 17, product: '화려하게', rating: 5, author: '김sksk', content: '상담부터 진행까지 전반적으로 만족합니다.', date: '26.04.08', updated: 'new' },
-                        { id: 18, product: '화려하게', rating: 5, author: '김하늘', content: '예식 당일 진행이 매끄러워서 걱정 없이 진행했어요.', date: '26.04.08', updated: 'new' },
-                        { id: 19, product: '화려하게', rating: 3, author: '김바다', content: '플래너님 덕분에 준비 과정이 훨씬 수월했습니다.', date: '26.04.05', updated: 'old' },
-                        { id: 20, product: '화려하게', rating: 3, author: '김초코', content: '드레스 종류가 다양해서 선택하기 좋았어요.', date: '26.04.05', updated: 'old' },
-                        { id: 21, product: '화려하게', rating: 5, author: '김쿠키', content: '촬영 작가님이 포즈도 잘 잡아주셔서 만족!', date: '26.04.04', updated: 'old' },
-                        { id: 22, product: '화려하게', rating: 4, author: '김라떼', content: '웨딩홀 분위기가 정말 고급스러웠습니다.', date: '26.04.04', updated: 'old' },
-                        { id: 23, product: '화려하게', rating: 5, author: '김모카', content: '상담이 친절하고 꼼꼼해서 신뢰가 갔어요.', date: '26.04.03', updated: 'old' },
-                        { id: 24, product: '화려하게', rating: 5, author: '김코코', content: '헤어 스타일링이 마음에 쏙 들었습니다.', date: '26.04.02', updated: 'old' },
-                        { id: 25, product: '화려하게', rating: 5, author: '김치즈', content: '전체 패키지 구성이 합리적이었어요.', date: '26.04.02', updated: 'old' },
-
-                        // 동화같은 분위기 (5개)
-                        { id: 26, product: '동화같은 분위기', rating: 5, author: '김파인', content: '드레스 피팅 경험이 정말 좋았어요.', date: '26.04.08', updated: 'new' },
-                        { id: 27, product: '동화같은 분위기', rating: 5, author: '김체리', content: '소소한 요청도 잘 반영해주셔서 감사했습니다.', date: '26.04.08', updated: 'new' },
-                        { id: 28, product: '동화같은 분위기', rating: 5, author: '김블루베리', content: '전체 일정 관리가 체계적이었어요.', date: '26.04.08', updated: 'new' },
-                        { id: 29, product: '동화같은 분위기', rating: 5, author: '김라임', content: '결혼 준비 스트레스가 많이 줄었습니다.', date: '26.04.05', updated: 'old' },
-                        { id: 30, product: '동화같은 분위기', rating: 5, author: '김코코넛', content: '인생에 한 번뿐인 날을 잘 만들어주셔서 감사합니다.', date: '26.04.01', updated: 'old' }
-                    ],
-                    reservationList: [
-                        { id: 1, product: '동화같은 분위기', content: '몽환적인 야외 촬영 희망합니다.', resDate: '26.03.01', useDate: '26.04.01 14:00PM', name: '김결혼', contact: '010-1234-5678', price: '50,000원' },
-                        { id: 2, product: '화려하게', content: '럭셔리한 호텔 연회장 예약 건입니다.', resDate: '26.03.05', useDate: '26.04.05 10:00AM', name: '5월신부', contact: '010-9876-5432', price: '100,000원' },
-                        { id: 3, product: '스몰 웨딩', content: '직계 가족만 모시는 조용한 예식입니다.', resDate: '26.03.10', useDate: '26.04.10 16:00PM', name: '김tntn', contact: '010-5555-6666', price: '30,000원' },
-                        { id: 4, product: '동화같은 분위기', content: '디즈니 컨셉 웨딩 상담 부탁드려요.', resDate: '26.03.12', useDate: '26.04.15 11:00AM', name: '이봄날', contact: '010-2222-3333', price: '50,000원' },
-                        { id: 5, product: '화려하게', content: '조명이 화려한 웨딩홀을 원합니다.', resDate: '26.03.15', useDate: '26.04.18 13:00PM', name: '박정성', contact: '010-4444-5555', price: '100,000원' },
-                        { id: 6, product: '스몰 웨딩', content: '펜션 전체 대관 스몰웨딩 상담입니다.', resDate: '26.03.18', useDate: '26.04.20 09:00AM', name: '최기록', contact: '010-7777-8888', price: '30,000원' },
-                        { id: 7, product: '동화같은 분위기', content: '숲속 컨셉 촬영 예약입니다.', resDate: '26.03.20', useDate: '26.04.22 15:30PM', name: '정반짝', contact: '010-9999-0000', price: '50,000원' },
-                        { id: 8, product: '화려하게', content: '풍성한 비즈 드레스 투어 희망합니다.', resDate: '26.03.22', useDate: '26.04.25 10:30AM', name: '강꽃님', contact: '010-1111-2222', price: '100,000원' },
-                        { id: 9, product: '스몰 웨딩', content: '레스토랑 웨딩 식순 문의입니다.', resDate: '26.03.25', useDate: '26.04.28 17:00PM', name: '윤소식', contact: '010-3333-4444', price: '30,000원' },
-                        { id: 10, product: '동화같은 분위기', content: '파스텔 톤 생화 장식 상담입니다.', resDate: '26.03.28', useDate: '26.05.02 12:00PM', name: '조전통', contact: '010-6666-7777', price: '50,000원' },
-                        { id: 11, product: '화려하게', content: '대형 웨딩홀 촬영 스케줄 문의입니다.', resDate: '26.04.01', useDate: '26.05.05 14:00PM', name: '한찬란', contact: '010-8888-9999', price: '100,000원' }
-                    ],
-                    category: ["스튜디오", "드레스", "메이크업"],
-                    selectedItems: [],
-                    productForm: {
-                        id: "",
-                        thumbnail: "",
-                        name: "",
-                        content: "",
-                        price: "",
-                        category: []
-                    },
-                    pageSize: 0,
                     currentPage: 1,
+                    product: '',
+                    oneProductDetails: {},
+                    productList: [],
+                    simpleReviews: [],
+                    reviews: [],
+                    reservationList: [],
+                    category: ["스튜디오", "드레스", "메이크업"],
                     previewUrl: null, // 미리보기용 URL
                     uploadFile: null,  // 서버로 보낼 실제 파일 객체
-                    product2: {
+                    initializedOneProductDetails: {
                         companyNo: '',
                         productNo: '',
                         proType: [],
@@ -2016,129 +1520,58 @@
                         input4: '',
                         input5: ''
                     },
-                    serverTagList: [],
+                    serverTagList: []
                 }
 
             }, // data
             computed: {
-                // resCount() {
-                //     return this.reservationList.length;
-                // }
-                //,
                 tagMapToList() {
                     const filteredtagArray = Object.values(this.tagMap).filter(tag => tag.trim() !== "");
-
-                    //console.log(filteredtagArray);
                     return filteredtagArray;
                 },
                 newTagsOnly() {
                     if (!this.serverTagList) {
                         return tagMapToList();
                     }
-
                     return this.tagMapToList.filter(t => !this.serverTagList.includes(t));
-
                 },
-
-
-                revCnt() {
-                    return this.reviews.filter(r => r.updated === 'new').length
-                        + this.simpleReviews.filter(r => r.updated === 'new').length;
-                }
-                ,
-                editingProduct() {
-                    // productList에서 이름이 일치하는 녀석을 찾고, 없으면 빈 객체{}를 반환
-                    return this.productList.find(p => p.name === this.product) || {};
-                },
-
-
-                menuList() {
-                    return [
-                        { id: 'main', name: '마이 페이지', count: 0 },
-                        { id: 'product', name: '상품 관리', count: 0 },
-                        { id: 'reservation', name: '예약 관리', count: this.resCount },
-                        { id: 'inquiry', name: '문의 내역', count: 2 },
-                        { id: 'review', name: '리뷰 내역', count: this.newReviewCnt + this.newUnpaidReviewCnt },
-                        { id: 'customer', name: '고객센터', count: 0 }
-                    ];
-                },
-                weddinglist() {
-                    return this.productList.map(product => {
-                        return {
-                            name: product.name,
-                            reviewcount: this.reviews.filter(r => r.product === product.name).length,
-                            thumbnail: product.thumbnail
-                        }
-                    })
-                },
-                simpleweddinglist() {
-                    return this.productList.map(product => {
-                        return {
-                            name: product.name,
-                            reviewcount: this.simpleReviews.filter(r => r.product === product.name).length,
-                            thumbnail: product.thumbnail
-                        }
-                    })
-                },
-
-
                 filteredReviews() {
                     return this.reviews;
-                    //return this.reviews.filter(rev => rev.product === this.page1); // 현재 선택된 상품(page1)에 해당하는 리뷰만 반환 //[] 리스트..
                 },
                 filteredSimpleReviews() {
                     return this.simpleReviews;
-                    //return this.simpleReviews.filter(rev => rev.product === this.page1); // 현재 선택된 상품(page1)에 해당하는 리뷰만 반환 //[] 리스트..
                 },
-
-
-
                 paginatedReviews() {
-                    const start = (this.page - 1) * 5;
+                    const start = (this.currentPage - 1) * 5;
                     const end = start + 5;
                     return this.filteredReviews.slice(start, end); // 페이지에 맞는 리뷰만 반환 (5개씩) (page가 1이면 0~4, page가 2면 5~9) //[] 리스트..
                 },
                 paginatedSimpleReviews() {
-                    const start = (this.page - 1) * 5;
+                    const start = (this.currentPage - 1) * 5;
                     const end = start + 5;
                     return this.filteredSimpleReviews.slice(start, end); // 페이지에 맞는 리뷰만 반환 (5개씩) (page가 1이면 0~4, page가 2면 5~9) //[] 리스트..
                 },
-
-                fnPaginatedReservation() {
-                    let start = (this.currentPage - 1) * 3;
-                    let end = start + 3;
-                    return this.reservationList.slice(start, end);
-                },
-
                 fnPaginatedInquiry() {
                     let start = this.currentPage - 1;
                     let end = start + 1;
                     return this.inquiryList.slice(start, end);
                     //(0, 1), (1, 2)
                 },
-
-
-
                 totalPages() {
                     return Math.ceil(this.filteredReviews.length / 5); // 총 페이지 수 계산 (5개씩 보여줄 때) // 숫자
                 },
                 totalSimplePages() {
                     return Math.ceil(this.filteredSimpleReviews.length / 5); // 총 페이지 수 계산 (5개씩 보여줄 때) // 숫자
-                }
-                ,
-                totalPageReservation() {
-                    return Math.ceil(this.reservationList.length / 3);
                 },
                 // 상품 관리 페이지 사이징
                 fnPaginatedProductList() {
                     const start = (this.productCurrentPage - 1) * this.productPageSize;
                     const end = start + this.productPageSize;
-                    return this.productList3.slice(start, end);
+                    return this.registeredProductList.slice(start, end);
                 },
                 totalProductPages() {
-                    return Math.ceil(this.productList3.length / this.productPageSize);
+                    return Math.ceil(this.registeredProductList.length / this.productPageSize);
                 },
-
                 // 예약관리 페이지
                 pagedResList() {
                     const start = (this.resCurrentPage - 1) * this.resPageSize;
@@ -2148,37 +1581,26 @@
                 totalResPageCount() {
                     return Math.ceil(this.reservationList.length / this.resPageSize);
                 },
-
                 // 리뷰 내역 페이지
-                pagedProductList3() {
+                pagedRegisteredProductList() {
                     const start = (this.reviewListPage - 1) * this.reviewListPageSize;
-                    return this.productList3.slice(start, start + this.reviewListPageSize);
+                    return this.registeredProductList.slice(start, start + this.reviewListPageSize);
                 },
-                pagedProductList4() {
+                pagedProductListForSimpleReviews() {
                     const start = (this.reviewListPage - 1) * this.reviewListPageSize;
-                    return this.productList4.slice(start, start + this.reviewListPageSize);
+                    return this.productListForSimpleReviews.slice(start, start + this.reviewListPageSize);
                 },
-                totalReviewListPages3() {
-                    return Math.ceil(this.productList3.length / this.reviewListPageSize);
+                totalReviewListPages() {
+                    return Math.ceil(this.registeredProductList.length / this.reviewListPageSize);
                 },
-                totalReviewListPages4() {
-                    return Math.ceil(this.productList4.length / this.reviewListPageSize);
-                },
-
-
+                totalSimpleReviewListPages() {
+                    return Math.ceil(this.productListForSimpleReviews.length / this.reviewListPageSize);
+                }
             },
             methods: {
                 // 함수(메소드) - (key : function())
                 fnGoBackToList: function () {
-                    this.page1 = 'main';
-                },
-                fnPageChange(num) {
-                    this.currentPage = num;
-
-                    window.scrollTo({
-                        top: 0,
-                        behavior: 'smooth' // 'smooth'는 부드럽게, 'auto'는 즉시 이동합니다.
-                    });
+                    this.viewPage = 'main';
                 },
                 fnCom: function () {
                     let self = this;
@@ -2193,13 +1615,14 @@
                         success: function (data) {
                             console.log(data); //info,result,message
 
-                            self.user.name = data.info.comName;
-                            self.user.payDate = data.info.payDate;
-                            self.user.grade = data.info.role;
-                            self.user.lastPayment = data.info.previousPayment;
-                            self.user.regDate = data.info.regDate;
-
-                            //console.log(self.user);
+                            self.user = {
+                                ...self.user, // 기존 user의 다른 데이터들을 유지하고 싶을 때 사용
+                                name: data.info.comName,
+                                payDate: data.info.payDate,
+                                grade: data.info.role,
+                                lastPayment: data.info.previousPayment,
+                                regDate: data.info.regDate
+                            };
                         }
                     });
                 },
@@ -2217,29 +1640,11 @@
                         data: param,
                         success: function (data) {
                             //console.log(data);
-
-                            self.productList3 = data.list; //덮어씌우기
-
-
+                            self.registeredProductList = data.list; //덮어씌우기
                         }
                     });
                 },
-
-                withdraw: function () {
-                    if (confirm("정말 탈퇴하시겠습니까?")) {
-                        alert("탈퇴되었습니다.");
-                    } else {
-                        alert("탈퇴가 취소되었습니다.");
-                    }
-                },
-                updateProduct: function () {
-                    alert("상품이 수정되었습니다.");
-
-                    this.productPage = 'list'; // 수정 후 상품 목록으로 돌아가기
-                    // 여기야!!(+)
-                },
-
-                goEditPage(item) {
+                fnEditPage(item) {
                     let self = this;
                     self.productPage = 'edit';
 
@@ -2255,19 +1660,16 @@
                         success: function (data) {
                             console.log(data);
                             // 1. 일단 전체 데이터를 담습니다.
-                            self.product1 = data.info;//덮어씌우기
+                            self.oneProductDetails = data.info;//덮어씌우기
                             self.serverTagList = data.tagList;
 
-
-
-                            //
                             // 2. 문자열로 들어온 proType을 실제 배열로 변환합니다.
                             // 만약 데이터가 '["MAKEUP"]' 형태라면 JSON.parse를 써서 ["MAKEUP"] 배열로 만듭니다.
-                            if (typeof self.product1.proType === 'string') {
+                            if (typeof self.oneProductDetails.proType === 'string') {
                                 try {
-                                    let rawArray = JSON.parse(self.product1.proType);//["MAKEUP" , "STUDIO"]
+                                    let rawArray = JSON.parse(self.oneProductDetails.proType);//["MAKEUP" , "STUDIO"]
 
-                                    self.product1.proType = rawArray.map(val => {
+                                    self.oneProductDetails.proType = rawArray.map(val => {
                                         if (val === 'MAKEUP') {
                                             return '메이크업';
                                         } else if (val === 'DRESS') {
@@ -2276,93 +1678,32 @@
                                             return '스튜디오';
                                         } else {
                                             return val; // 혹시 모르는 값이 들어올 경우 원래 값을 유지
-                                        } //self.product1.proType = ["메이크업", "스튜디오"]
+                                        } //self.oneProductDetails.proType = ["메이크업", "스튜디오"]
                                     })
                                 } catch (e) {
                                     // 혹시 JSON 형식이 아닐 경우를 대비해 빈 배열로 초기화하거나 예외 처리
-                                    self.product1.proType = [];
+                                    self.oneProductDetails.proType = [];
                                 }
                             }
-                            if (typeof self.product1.tag === 'string') {
+                            if (typeof self.oneProductDetails.tag === 'string') {
                                 try {
-                                    let rawArry = JSON.parse(self.product1.tag);
+                                    let rawArry = JSON.parse(self.oneProductDetails.tag);
 
-                                    self.product1.tag = rawArry;
+                                    self.oneProductDetails.tag = rawArry;
 
-                                    self.tagMap.input1 = self.product1.tag[0] || "";
-                                    self.tagMap.input2 = self.product1.tag[1] || "";
-                                    self.tagMap.input3 = self.product1.tag[2] || "";
-                                    self.tagMap.input4 = self.product1.tag[3] || "";
-                                    self.tagMap.input5 = self.product1.tag[4] || "";
+                                    for (let i = 0; i < 5; i++) {
+                                        self.tagMap[`input${i + 1}`] = self.oneProductDetails.tag[i] || "";
+                                    }
                                 } catch (e) {
-                                    self.product1.tag = [];
+                                    self.oneProductDetails.tag = [];
                                 }
                             }
 
                         }
                     });
                 },
-
-                //프론트 만으로 되는거
-                //goEditPage(item) {
-                //    this.productPage = 'edit';
-                //    this.product = item.name;
-                // 중요: [... ]를 써서 원본이 아닌 '복사본'을 바구니에 담습니다.
-                //    this.selectedItems = [...item.category];
-                //},
-
-                // [2] 등록 버튼 누를 때: 바구니 깨끗이 비우기
-                goRegPage() {
-                    this.productPage = 'reg';
-                    this.product = ''; // 수정 대상이 없으므로 비워줍니다.
-                    this.selectedItems = []; // 바구니를 비워야 등록창이 깨끗합니다.
-                },
-
-                // [3] 수정 완료 버튼 (Save)
-                fnSave() {
-                    // 1. 현재 어떤 상품을 찾으려 하는지 확인
-                    console.log("현재 찾으려는 상품명:", this.product);
-                    console.log("현재 바구니(체크된 것):", this.selectedItems);
-
-                    // 2. productList에서 해당 상품 찾기
-                    const item = this.productList.find(p => p.name === this.product);
-
-                    if (item) {
-                        // 3. 찾았다면 데이터 덮어씌우기
-                        item.category = [...this.selectedItems];
-                        console.log("수정 완료된 원본 데이터:", item);
-
-                        alert("수정되었습니다!");
-                        this.productPage = 'list';
-                    } else {
-                        // 4. 만약 못 찾았다면 왜 못 찾았는지 경고!
-                        alert("수정 대상을 찾지 못했습니다. (콘솔창을 확인하세요)");
-                        console.error("productList 안에 '" + this.product + "'와 일치하는 이름이 없습니다.");
-                        console.log("현재 목록들:", this.productList.map(p => p.name));
-                    }
-                },
-                fnAdd() {
-                    const newProduct = {
-                        id: this.productList.length > 0 ?
-                            Math.max(...this.productList.map(p => p.id)) + 1 : 1,
-                        thumbnail: this.productForm.thumbnail || "images/default-thumbnail.png",
-                        name: this.productForm.name,
-                        content: this.productForm.content,
-                        price: this.productForm.price,
-                        category: [...this.selectedItems]
-                    }
-
-                    this.productList.push({ ...newProduct });  //{...newProduct} <- 이게 복사본이야? (+)
-
-                    alert("등록되었습니다!");
-                    this.resetForm();
-
-                    this.productPage = "list";
-
-
-                },
-                goRegPage2() {
-                    this.product1 = {
+                fnRegPage() {
+                    this.oneProductDetails = {
                         productNo: '',
                         proType: [],
                         productName: '',
@@ -2372,29 +1713,21 @@
                         deposit: 0,
                         tag: []
                     }
-
-                    this.tagMap = {
-                        input1: '',
-                        input2: '',
-                        input3: '',
-                        input4: '',
-                        input5: ''
+                    for(let i = 0; i < 5; i++){
+                        this.tagMap[`input${i + 1}`] = '';
                     }
-
-                    this.product2.productName = '',
-                        this.product2.proType = [],
-                        this.product2.productDetails = '',
-                        this.product2.originalPrice = '',
-                        this.product2.deposit = 0
-
-
-
+                    this.initializedOneProductDetails = {
+                        ...this.initializedOneProductDetails,
+                        productName : '',
+                        proType : [],
+                        productDetails : '',
+                        originalPrice : '',
+                        deposit : 0
+                    }
                     this.productPage = 'reg';
 
                     let self = this;
-                    let param = {
-
-                    };
+                    let param = {};
                     $.ajax({
                         url: "/getTagList.dox",
                         dataType: "json",
@@ -2405,59 +1738,16 @@
                             self.serverTagList = data.tagList;
                         }
                     });
-
-
-
-                },
-                resetForm() {
-                    this.productForm = {
-                        id: "",
-                        thumbnail: "",
-                        name: "",
-                        content: "",
-                        price: "",
-                        category: []
-                    }
-
-                    this.selectedItems = [];
-
-                },
-                fnRemove(item) {
-                    //fnRemove(프로덕트 리스트에 있는요소)
-
-                    if (confirm("정말 삭제하시겠습니까?")) {
-
-                        const removed = this.productList.find(p => p.id === item.id);
-                        const index = this.productList.indexOf(removed);
-                        //removed 객체의 인덱스를 구해라. 담아라.
-
-                        if (index !== -1) {
-                            this.productList.splice(index, 1);
-                            //index 위치에서부터1개 데이터 삭제하고 인덱스들을 앞으로 당김.
-
-                            this.reviews = this.reviews.filter(r => r.product !== item.name);
-                            this.simpleReviews = this.simpleReviews.filter(r => r.product !== item.name);
-
-                        }
-
-                        alert("삭제되었습니다.");
-                    } else {
-                        alert("삭제가 취소되었습니다.");
-                    }
-
                 },
                 fnThumbnail(i) {    //fnThumbnail(개별문의) 해변스냅
                     return this.inquiryList.find(p => p.productName === i.productName).imgUrl;
-                    //return this.productList3.find(p => p.productName === inquiry.product).imgUrl;
-                }
-                ,
+                },
                 handleMenuClick(menuId) {   //main,product,reservation,inquiry,review,customer
                     this.currentMenu = menuId;
                     this.productPage = 'list';
-                    this.page = 1;
-                    this.page1 = 'main';
-                    this.reviewTab = 'detail';
                     this.currentPage = 1;
+                    this.viewPage = 'main';
+                    this.reviewTab = 'detail';
 
                     if (menuId === 'main') {
                         this.fnCom();
@@ -2474,10 +1764,6 @@
                         this.fnInquiryProduct();
                     }
                 },
-
-
-
-
                 fnFileChange(event) {
                     // 1. 이벤트가 일어난 대상(input)에서 선택된 파일들 중 첫 번째[0]를 가져와요.
                     const file = event.target.files[0];
@@ -2503,15 +1789,15 @@
                     }
 
                     // 2. 다른 모든 정보들 싹 다 담기(자바의 변수명과 똑같이!)
-                    formData.append("productNo", this.product1.productNo);
-                    formData.append("productName", this.product1.productName);
-                    formData.append("productDetails", this.product1.productDetails);
-                    formData.append("originalPrice", this.product1.originalPrice);
+                    formData.append("productNo", this.oneProductDetails.productNo);
+                    formData.append("productName", this.oneProductDetails.productName);
+                    formData.append("productDetails", this.oneProductDetails.productDetails);
+                    formData.append("originalPrice", this.oneProductDetails.originalPrice);
 
-                    formData.append("deposit", this.product1.deposit);
+                    formData.append("deposit", this.oneProductDetails.deposit);
                     formData.append("tag", JSON.stringify([...new Set(this.tagMapToList)]));
 
-                    formData.append("proType", JSON.stringify(this.product1.proType));
+                    formData.append("proType", JSON.stringify(this.oneProductDetails.proType));
 
                     formData.append("uniqueNewTagsOnly", this.uniqueNewTagsOnly());
 
@@ -2527,8 +1813,6 @@
                             // 만약 data가 JSON 문자열로 넘어왔다면 파싱이 필요할 수도 있어요
                             let res = (typeof data === 'string') ? JSON.parse(data) : data;
                             //data가 string으로 넘어왓다면? 자바스크립트가 읽을수있게 객체로 바꿔주기(parse해주기)
-
-
                             if (res.result === "success") {
                                 alert("상품 정보가 모두 수정되었습니다!");
                                 console.log(res.message1);
@@ -2552,15 +1836,13 @@
                     }
 
                     // 2. 다른 모든 정보들 싹 다 담기(자바의 변수명과 똑같이!)
-                    //formData.append("companyNo", this.product2.companyNo);
-                    formData.append("productNo", this.product2.productNo);
-                    formData.append("productName", this.product2.productName);
-                    formData.append("productDetails", this.product2.productDetails);
-                    formData.append("originalPrice", this.product2.originalPrice);
+                    formData.append("productNo", this.initializedOneProductDetails.productNo);
+                    formData.append("productName", this.initializedOneProductDetails.productName);
+                    formData.append("productDetails", this.initializedOneProductDetails.productDetails);
+                    formData.append("originalPrice", this.initializedOneProductDetails.originalPrice);
 
-                    //
-                    formData.append("deposit", this.product2.deposit);
-                    formData.append("proType", JSON.stringify(this.product2.proType));
+                    formData.append("deposit", this.initializedOneProductDetails.deposit);
+                    formData.append("proType", JSON.stringify(this.initializedOneProductDetails.proType));
                     formData.append("userId", "${sessionScope.sessionId}");
 
                     formData.append("tag", JSON.stringify([...new Set(this.tagMapToList)]));
@@ -2578,8 +1860,6 @@
                             // 만약 data가 JSON 문자열로 넘어왔다면 파싱이 필요할 수도 있어요
                             let res = (typeof data === 'string') ? JSON.parse(data) : data;
                             //data가 string으로 넘어왓다면? 자바스크립트가 읽을수있게 객체로 바꿔주기(parse해주기)
-
-
                             if (res.result === "success") {
                                 alert("상품 정보가 모두 등록되었습니다!");
                                 console.log(res.message1);
@@ -2591,7 +1871,7 @@
                         }
                     })
                 },
-                fnRemove2(item) {  //item in productList
+                fnRemoveProduct(item) {  //item in productList
                     if (confirm("정말 삭제하시겠습니까?")) {
 
                         let self = this;
@@ -2610,25 +1890,9 @@
                                 location.href = "/partnerManagement.do"
                             }
                         });
-
-
-
                     } else {
                         alert("삭제가 취소되었습니다.");
                     }
-                },
-                fnList: function () {
-                    let self = this;
-                    let param = {};
-                    $.ajax({
-                        url: "http://localhost:8080/",
-                        dataType: "json",
-                        type: "POST",
-                        data: param,
-                        success: function (data) {
-
-                        }
-                    });
                 },
                 fnReservationList: function () {
 
@@ -2664,16 +1928,15 @@
                         data: param,
                         success: function (data) {
                             console.log(data);
-                            self.productList3 = data.list;
+                            self.registeredProductList = data.list;
                             self.newReviewCnt = data.info.reviewCount;
 
-                            let reviewCntList = self.productList3.map(p => p.reviewCount); //[3,0,1..];
+                            let reviewCntList = self.registeredProductList.map(p => p.reviewCount); //[3,0,1..];
 
                             let sum = 0;
                             for (let i = 0; i < reviewCntList.length; i++) {
                                 sum += reviewCntList[i];
                             }
-
                             self.totalReviewCnt = sum;
                         }
                     });
@@ -2692,24 +1955,22 @@
                         data: param,
                         success: function (data) {
                             //console.log(data);
-                            self.productList4 = data.list;
+                            self.productListForSimpleReviews = data.list;
                             self.newUnpaidReviewCnt = data.info.reviewCount;
 
-                            let reviewCntList = self.productList4.map(p => p.reviewCount); //[3,0,1..];
-
+                            let reviewCntList = self.productListForSimpleReviews.map(p => p.reviewCount); //[3,0,1..];
                             let sum = 0;
                             for (let i = 0; i < reviewCntList.length; i++) {
                                 sum += reviewCntList[i];
                             }
-
                             self.totalSimpleReviewCnt = sum;
 
                         }
                     });
                 },
-                fnReviewDetails3(w) {
-                    this.page1 = 1;
-                    this.page = 1;
+                fnReviewDetails(w) {
+                    this.viewPage = 1;
+                    this.currentPage = 1;
 
                     let self = this;
                     let param = {
@@ -2726,18 +1987,14 @@
                             console.log(data);
                             self.reviews = data.list;
                             self.reviews = self.reviews.map(r => ({...r, isExpanded: false})); //추가된부분
-                            
                             //console.log(self.reviews);
-
-
                         }
                     });
 
                 },
-                fnSimpleReviewDetails3(w) {
-                    this.page1 = 1;
-                    this.page = 1;
-
+                fnSimpleReviewDetails(w) {
+                    this.viewPage = 1;
+                    this.currentPage = 1;
 
                     let self = this;
                     let param = {
@@ -2758,15 +2015,15 @@
                         }
                     });
                 },
-                fnPageChange2(num) {
-                    this.page = num;
+                fnPageChange(num) {
+                    this.currentPage = num;
 
                     window.scrollTo({
                         top: 0,
                         behavior: 'smooth' // 'smooth'는 부드럽게, 'auto'는 즉시 이동합니다.
                     });
                 },
-                rating2(rev) {
+                starRating(rev) {
 
                     rev.rating = rev.rating + "";
 
@@ -2782,28 +2039,21 @@
                         return '★☆☆☆☆';
                     }
                 },
-
                 uniqueNewTagsOnly() {
                     return [...new Set(this.newTagsOnly)];
                 },
-                fnBack3() {
+                fnBackToList() {
                     this.tagMap = {};
-                    //this.tagMapToList = [];
                     this.productPage = 'list'
-                    this.product2.deposit = 0;
+                    this.initializedOneProductDetails.deposit = 0;
                     this.previewUrl = null;
                 },
                 fnInquiryProduct() {
-
-
-
                     let self = this;
                     let param = {
                         userId: "${sessionScope.sessionId}"
                     };
-
                     console.log(param);
-
                     $.ajax({
                         url: "/getInquiryProductList.dox",
                         dataType: "json",
@@ -2813,13 +2063,12 @@
                             console.log(data);
 
                             self.inquiryList = data.list;
-
                         }
                     });
                 },
                 //문의에 답변하러 넘어가는 타이밍
                 fnAnswerToProductInquiry(i) { //매개변수를 이용!
-                    this.page1 = 'answer';
+                    this.viewPage = 'answer';
                     this.inquiryDetails = i;
 
                     let self = this;
@@ -2846,23 +2095,19 @@
                     });
                 },
                 fnBacktoInquiry() {
-                    this.page1 = 'main';
-                    //console.log(this.page1);
+                    this.viewPage = 'main';
+                    //console.log(this.viewPage);
                 },
                 /*상품문의에 답변하기*/
                 fnSaveAnswer() {
-
                     if (!this.inquiryAnswer.ansUserId || this.inquiryAnswer.ansUserId.trim() === '') {
                         alert("답변자를 작성해주세요!");
                         return;
                     }
-
                     if(!this.inquiryAnswer.answerContents || this.inquiryAnswer.answerContents.trim() === ''){
                         alert("답변내용을 작성해주세요!");
                         return;
                     } 
-
-
                     let self = this;
                     let param = {
                         inquiryNo: self.inquiryAnswer.inquiryNo,
@@ -2881,7 +2126,7 @@
                             //답변이 등록되면서 답변여부가 업데이트 된다
                             if (data.result === 'success') {
                                 alert("답변 등록/수정 완료!");
-                                self.page1 = 'main';
+                                self.viewPage = 'main';
                             } else {
                                 alert("서버 오류!");
                             }
@@ -2892,21 +2137,16 @@
                 fnRegPTN() {
                     location.href = "/adminRegistration.do"
                 },
-
-
-
                 // 1. 이미지 제거 정규식
                 removeImages(content) {
                     const regex = /<img[^>]*>/gi;
                     return content.replace(regex, "");
                 },
-
                 // 2. 모든 HTML 태그 제거 및 텍스트 추출
                 stripHtml(html) {
                     let doc = new DOMParser().parseFromString(html, 'text/html');
                     return doc.body.textContent || "";
                 },
-
                 // 3. 두 기능을 합친 최종 함수
                 cleanText(content) {
                     // 이미지를 먼저 지운 문자열을 stripHtml에 전달
@@ -2923,8 +2163,6 @@
                     }
                 }
             }, // methods
-
-
             mounted() {
                 // 처음 시작할 때 실행되는 부분
                 let self = this;
@@ -2938,9 +2176,6 @@
                     this.currentMenu = menu;
                 }
             }
-
-
         });
-
         app.mount('#app');
     </script>
