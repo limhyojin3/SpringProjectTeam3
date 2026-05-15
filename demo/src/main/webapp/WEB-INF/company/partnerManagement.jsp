@@ -617,6 +617,51 @@
                 line-height: 1.6;
                 max-height: 8em;
             }
+
+            .user-grade{
+                text-align: right;
+                font-size: 20px;
+            }
+            .user-nopartner{
+                text-align: right;
+            }
+            .productlist-productReg{
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                margin-bottom: 20px;
+                padding-left: 10px;
+            }
+            .PaginatedProductList{
+                display: flex;
+                align-items: center;
+                padding: 15px;
+            }
+            .imgUrl{
+                width: 100px; 
+                height: 100px; 
+                display: flex; 
+                align-items: center;
+                justify-content: center; 
+                margin-right: 20px;
+            }
+            .productImg{
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+                border-radius: 10px;
+            }
+            .registeredProductList{
+                flex: 1;
+                display: flex;
+                flex-direction: column; 
+                justify-content: center;
+            }
+            .originalPrice{
+                display: flex;
+                align-items: center;
+                gap: 2px;
+            }
         </style>
     </head>
 
@@ -647,13 +692,13 @@
                                 <div class="content-card">
                                     <h3><span v-if="user.grade === 'PARTNER'">제휴업체 등록(결제) 일자</span></h3>
                                     <h3><span v-if="user.grade === 'NPARTNER'">일반업체 등록 일자</span></h3>
-                                    <p v-if="user.grade === 'PARTNER'" style="text-align: right; font-size: 20px;">{{
+                                    <p v-if="user.grade === 'PARTNER'" class="user-grade">{{
                                         user.payDate }}</p>
-                                    <p v-if="user.grade === 'NPARTNER'" style="text-align: right; font-size: 20px;">{{
+                                    <p v-if="user.grade === 'NPARTNER'" class="user-grade">{{
                                         user.regDate }}</p>
 
                                 </div>
-                                <div v-if="user.grade === 'NPARTNER'" style="text-align: right;">
+                                <div v-if="user.grade === 'NPARTNER'" class="user-nopartner">
                                     <button class="btn-product-reg" @click="fnRegPTN">제휴 업체로 등록하기</button>
                                 </div>
                                 <div><span v-if="user.grade === 'NPARTNER'">*관리자가 승인후 제휴업체 등급이 됩니다!</span></div>
@@ -663,28 +708,27 @@
 
                                 <div v-if="productPage === 'list'">
                                     <div
-                                        style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; padding-left: 10px;">
+                                        class="productlist-productReg">
                                         <div class="section-header">
                                             <h2>등록한 상품({{ registeredProductList.length }})</h2>
                                         </div>
                                         <button @click="fnRegPage" class="btn-product-reg">상품등록</button>
                                     </div>
-                                    <div v-for="(i, idx) in fnPaginatedProductList" :key="idx" class="content-card"
-                                        style="display: flex; align-items: center; padding: 15px;">
+                                    <div v-for="(i, idx) in fnPaginatedProductList" :key="idx" class="content-card PaginatedProductList">
                                         <div
-                                            style="width: 100px; height: 100px;  display: flex; align-items: center; justify-content: center; margin-right: 20px;">
+                                            class="imgUrl">
                                             <!--{{ i.thumbnail }}-->
                                             <img :src="i.imgUrl" :alt="i.productName"
-                                                style="width: 100%; height: 100%; object-fit: cover; border-radius: 10px;">
+                                                class="productImg">
                                         </div>
-                                        <div style="flex: 1; display: flex; flex-direction: column; justify-content: center;">
+                                        <div class="registeredProductList">
                                             <div class="ticket-no">No. {{ registeredProductList.length - ((productCurrentPage - 1)
                                                 * 5 + idx ) }}</div>
                                             <div style="flex: 1; font-weight: bold;">{{ i.productName }}</div>
                                             <!-- {{i}} -->
                                         </div>
                                         
-                                        <div style="display: flex; align-items: center; gap: 2px;">
+                                        <div class="originalPrice">
                                             <div>{{ Number(i.originalPrice).toLocaleString() }}원</div>
                                             <button @click="fnEditPage(i)" class="btn-edit">수정하기</button>
                                             <button @click="fnRemoveProduct(i)" class="btn-delete">삭제하기</button>
@@ -1104,7 +1148,7 @@
                                             <div
                                                 style="width: 100px; height: 100px;  margin-right: 20px; text-align: center;">
                                                 <img :src="fnThumbnail(i)" :alt="i.productName"
-                                                    style="width: 100%; height: 100%; object-fit: cover; border-radius: 10px;">
+                                                    class="productImg">
 
                                             </div>
                                             <h3>상품명 : <span style="color: #d6336c;">{{i.productName}}</span> </h3>
@@ -1264,7 +1308,7 @@
                                                 @click="fnReviewDetails(w)">
                                                 <div class="review-thumb-box">
                                                     <img :src="w.imgUrl"
-                                                        style="width: 100%; height: 100%; object-fit: cover; border-radius: 10px;">
+                                                        class="productImg">
                                                 </div>
 
                                                 <div class="review-product-name">
@@ -1299,7 +1343,7 @@
                                                 @click="fnSimpleReviewDetails(w)">
                                                 <div class="review-thumb-box">
                                                     <img :src="w.imgUrl"
-                                                        style="width: 100%; height: 100%; object-fit: cover; border-radius: 10px;">
+                                                        class="imgUrl">
                                                 </div>
                                                 <div class="review-product-name">
                                                     <!--totalSimpleReviewCnt-->
@@ -1347,7 +1391,7 @@
                                                         </span>
                                                         <div class="review-photo">
                                                             <img :src="rev.thumbnailUrl" :alt="rev.imgDescription"
-                                                                style="width: 100%; height: 100%; object-fit: cover; border-radius: 10px;">
+                                                                class="imgUrl">
                                                         </div>
                                                     </div>
                                                     <div :class="{ 'review-text-limit' : !rev.isExpanded }" style="color: #666; font-size: 15px;" > 
