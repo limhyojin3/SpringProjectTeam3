@@ -101,7 +101,7 @@ public class CompanyService {
 //			resultMap.put("list", list);
 
 			List<String> tagList = companyMapper.selectTagList(map);
-
+ 
 			Company info = companyMapper.selectProduct(map);
 
 			resultMap.put("tagList", tagList);
