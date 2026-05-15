@@ -844,8 +844,8 @@
                                         </div>
 
                                         <div class="form-button-group">
-                                            <button class="btn-cancel" @click="fnBackToList()">취소(돌아가기)</button>
-                                            <button class="btn-submit" @click="fnInsertProduct()">상품 등록</button>
+                                            <button class="btn-cancel" @click="fnBackToList">취소(돌아가기)</button>
+                                            <button class="btn-submit" @click="fnInsertProduct">상품 등록</button>
                                         </div>
                                     </div>
                                 </div>
@@ -996,7 +996,7 @@
                                         </div>
 
                                         <div class="form-button-group">
-                                            <button class="btn-cancel" @click="fnBackToList()">취소(돌아가기)</button>
+                                            <button class="btn-cancel" @click="fnBackToList">취소(돌아가기)</button>
                                             <button class="btn-submit" @click="fnUpdateProduct">상품 수정</button>
                                         </div>
                                     </div>
@@ -1247,11 +1247,11 @@
                                 <!--viewPage 이 main인경우-->
                                 <template v-if="viewPage === 'main'">
                                     <div class="tab-menu">
-                                        <button :class="{ active: reviewTab === 'detail' }" @click="fnReview()">유료
+                                        <button :class="{ active: reviewTab === 'detail' }" @click="fnReview">유료
                                             리뷰({{totalReviewCnt}})
                                         </button>
 
-                                        <button :class="{ active: reviewTab === 'simple' }" @click="fnSimple()">무료
+                                        <button :class="{ active: reviewTab === 'simple' }" @click="fnSimple">무료
                                             리뷰({{totalSimpleReviewCnt}})
                                         </button>
                                     </div>

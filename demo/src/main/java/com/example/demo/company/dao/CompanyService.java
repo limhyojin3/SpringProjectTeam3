@@ -108,7 +108,7 @@ public class CompanyService {
 			resultMap.put("info", info);
 			resultMap.put("result", "success");
 			resultMap.put("message", Message.MSG_ADD);
-		} catch (Exception e) {
+		} catch (Exception e) { 
 			// TODO: handle exception
 			System.out.println(e.getMessage());
 			resultMap.put("result", "fail");
