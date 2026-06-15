@@ -63,27 +63,26 @@
                             <div v-if="currentMenu === 'product'">
 
                                 <div v-if="productPage === 'list'">
-                                    <div
-                                        class="productlist-productReg">
+                                    <div class="productlist-productReg">
                                         <div class="section-header">
                                             <h2>등록한 상품({{ registeredProductList.length }})</h2>
                                         </div>
                                         <button @click="fnRegPage" class="btn-product-reg">상품등록</button>
                                     </div>
-                                    <div v-for="(i, idx) in fnPaginatedProductList" :key="idx" class="content-card PaginatedProductList">
-                                        <div
-                                            class="imgUrl">
+                                    <div v-for="(i, idx) in fnPaginatedProductList" :key="idx"
+                                        class="content-card PaginatedProductList">
+                                        <div class="imgUrl">
                                             <!--{{ i.thumbnail }}-->
-                                            <img :src="i.imgUrl" :alt="i.productName"
-                                                class="productImg">
+                                            <img :src="i.imgUrl" :alt="i.productName" class="productImg">
                                         </div>
                                         <div class="registeredProductList">
-                                            <div class="ticket-no">No. {{ registeredProductList.length - ((productCurrentPage - 1)
+                                            <div class="ticket-no">No. {{ registeredProductList.length -
+                                                ((productCurrentPage - 1)
                                                 * 5 + idx ) }}</div>
                                             <div style="flex: 1; font-weight: bold;">{{ i.productName }}</div>
                                             <!-- {{i}} -->
                                         </div>
-                                        
+
                                         <div class="originalPrice">
                                             <div>{{ Number(i.originalPrice).toLocaleString() }}원</div>
                                             <button @click="fnEditPage(i)" class="btn-edit">수정하기</button>
@@ -104,139 +103,89 @@
 
                                 <!-- 상품 등록 폼 -->
                                 <div v-else-if="productPage === 'reg'">
-                                    <div class="product-form-wrapper"
-                                        style="max-width: 900px; margin: 20px auto; padding: 40px; background-color: #ffffff; border-radius: 15px; box-shadow: 0 10px 30px rgba(106, 90, 205, 0.1); font-family: 'Pretendard', sans-serif;">
-                                        <!-- {{serverTagList}}
-                                        {{newTagsOnly}}
-                                        {{uniqueNewTagsOnly()}} -->
-                                        <h2
-                                            style="color: #6a5acd; margin-bottom: 30px; font-weight: 800; border-left: 5px solid #9a8cff; padding-left: 15px;">
-                                            상품 등록하기</h2>
+                                    <div class="product-form-wrapper">
+                                        <h2>상품 등록하기</h2>
 
-                                        <div class="product-form-section"
-                                            style="margin-bottom: 35px; border: 1px solid #e0d7ff; border-radius: 10px; overflow: hidden;">
-                                            <div class="form-title-box"
-                                                style="background-color: #9a8cff; color: white; padding: 12px 20px; font-weight: bold; font-size: 16px;">
-                                                상품 기본 정보</div>
-                                            <div class="form-content-box"
-                                                style="padding: 30px; background-color: #faf9ff;">
+                                        <div class="product-form-section">
+                                            <div class="form-title-box">상품 기본 정보</div>
+                                            <div class="form-content-box">
 
-
-                                                <div class="form-group" style="margin-bottom: 25px;">
-                                                    <label class="form-label"
-                                                        style="display: block; font-weight: 600; color: #444; margin-bottom: 10px; font-size: 15px;">상품
-                                                        이름</label>
+                                                <div class="form-group">
+                                                    <label class="form-label">상품 이름</label>
                                                     <div class="form-info-box">
                                                         <input type="text" placeholder="여기에 상품 이름을 적어주세요."
-                                                            style="width: 100%; max-width: 400px; padding: 12px; border: 1px solid #d1ccff; border-radius: 8px; outline: none; font-size: 14px;"
                                                             v-model="initializedOneProductDetails.productName">
                                                     </div>
                                                 </div>
 
-
-
-
-                                                <div class="form-group" style="margin-bottom: 25px;">
-                                                    <label class="form-label"
-                                                        style="display: block; font-weight: 600; color: #444; margin-bottom: 10px; font-size: 15px;">카테고리</label>
-                                                    <div class="category-group"
-                                                        style="display: flex; gap: 20px; flex-wrap: wrap; background: white; padding: 15px; border-radius: 8px; border: 1px solid #d1ccff;">
+                                                <div class="form-group">
+                                                    <label class="form-label">카테고리</label>
+                                                    <div class="category-group">
                                                         <div class="category-item" v-for="item in category" :key="item">
-                                                            <label
-                                                                style="cursor: pointer; font-size: 14px; color: #666; display: flex; align-items: center; gap: 5px;">
+                                                            <label>
                                                                 <input type="checkbox" :value="item"
-                                                                    style="accent-color: #6a5acd;"
                                                                     v-model="initializedOneProductDetails.proType">{{item}}
                                                             </label>
                                                         </div>
                                                     </div>
                                                 </div>
-                                                <div class="form-group" style="margin-bottom: 25px;">
-                                                    <label class="form-label"
-                                                        style="display: block; font-weight: 600; color: #444; margin-bottom: 10px; font-size: 15px;">상품
-                                                        태그</label>
-                                                    <div
-                                                        style="display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 10px;">
-                                                        <input type="text" placeholder="첫번째 태그" v-model="tagMap.input1"
-                                                            style="padding: 10px; border: 1px solid #d1ccff; border-radius: 6px; outline: none;">
-                                                        <input type="text" placeholder="두번째 태그" v-model="tagMap.input2"
-                                                            style="padding: 10px; border: 1px solid #d1ccff; border-radius: 6px; outline: none;">
-                                                        <input type="text" placeholder="세번째 태그" v-model="tagMap.input3"
-                                                            style="padding: 10px; border: 1px solid #d1ccff; border-radius: 6px; outline: none;">
-                                                        <input type="text" placeholder="네번째 태그" v-model="tagMap.input4"
-                                                            style="padding: 10px; border: 1px solid #d1ccff; border-radius: 6px; outline: none;">
-                                                        <input type="text" placeholder="다섯번째 태그" v-model="tagMap.input5"
-                                                            style="padding: 10px; border: 1px solid #d1ccff; border-radius: 6px; outline: none;">
+
+                                                <div class="form-group">
+                                                    <label class="form-label">상품 태그</label>
+                                                    <div>
+                                                        <input type="text" placeholder="첫번째 태그" v-model="tagMap.input1">
+                                                        <input type="text" placeholder="두번째 태그" v-model="tagMap.input2">
+                                                        <input type="text" placeholder="세번째 태그" v-model="tagMap.input3">
+                                                        <input type="text" placeholder="네번째 태그" v-model="tagMap.input4">
+                                                        <input type="text" placeholder="다섯번째 태그"
+                                                            v-model="tagMap.input5">
                                                     </div>
-
-
                                                 </div>
-                                                <!-- {{tagMap}}
-                                                {{tagMapToList}} -->
 
-                                                <div class="form-group" style="margin-bottom: 25px;">
-
-                                                    <label class="form-label"
-                                                        style="display: block; font-weight: 600; color: #444; margin-bottom: 10px; font-size: 15px;">상품
-                                                        설명</label>
+                                                <div class="form-group">
+                                                    <label class="form-label">상품 설명</label>
                                                     <div class="form-info-box">
                                                         <textarea placeholder="상품에 대한 자세한 설명을 입력하세요."
-                                                            v-model="initializedOneProductDetails.productDetails"
-                                                            style="width: 100%; height: 120px; padding: 15px; border: 1px solid #d1ccff; border-radius: 8px; outline: none; resize: none; font-size: 14px;"></textarea>
+                                                            v-model="initializedOneProductDetails.productDetails"></textarea>
                                                     </div>
                                                 </div>
-                                                <div style="display: flex; gap: 20px;">
-                                                    <div class="form-group" style="flex: 1;">
 
-                                                        <label class="form-label"
-                                                            style="display: block; font-weight: 600; color: #444; margin-bottom: 10px; font-size: 15px;"><span
-                                                                class="form-info-label">예상
+                                                <div>
+                                                    <div class="form-group">
+                                                        <label class="form-label"><span class="form-info-label">예상
                                                                 견적</span></label>
                                                         <div class="form-info-box">
                                                             <input placeholder="여기에 견적을 적어주세요." type="text"
-                                                                style="width: 100%; padding: 12px; border: 1px solid #d1ccff; border-radius: 8px; outline: none;"
                                                                 v-model="initializedOneProductDetails.originalPrice">
                                                         </div>
                                                     </div>
-                                                    <div class="form-group" style="flex: 1;">
-                                                        <label class="form-label"
-                                                            style="display: block; font-weight: 600; color: #444; margin-bottom: 10px; font-size: 15px;"><span
+                                                    <div class="form-group">
+                                                        <label class="form-label"><span
                                                                 class="form-info-label">예약금</span></label>
                                                         <div class="form-info-box">
                                                             <input placeholder="여기에 예약금을 적어주세요." type="text"
-                                                                style="width: 100%; padding: 12px; border: 1px solid #d1ccff; border-radius: 8px; outline: none;"
                                                                 v-model="initializedOneProductDetails.deposit">
                                                         </div>
                                                     </div>
                                                 </div>
-                                                <!-- {{initializedOneProductDetails.deposit}} -->
+
                                             </div>
                                         </div>
 
-                                        <div class="product-form-section"
-                                            style="margin-bottom: 35px; border: 1px solid #e0d7ff; border-radius: 10px; overflow: hidden;">
-                                            <div class="form-title-box"
-                                                style="background-color: #9a8cff; color: white; padding: 12px 20px; font-weight: bold; font-size: 16px;">
-                                                상품 이미지</div>
-                                            <div class="form-content-box"
-                                                style="padding: 30px; background-color: #faf9ff;">
+                                        <div class="product-form-section">
+                                            <div class="form-title-box">상품 이미지</div>
+                                            <div class="form-content-box">
                                                 <div class="form-group">
-                                                    <div style="margin-bottom: 15px; font-weight: bold; color: #444;">
-                                                        등록할 이미지 :
-                                                    </div>
-
-                                                    <label
-                                                        style="background: #6a5acd; color: white; padding: 10px 25px; cursor: pointer; border-radius: 8px; font-weight: 600; display: inline-block; transition: 0.3s; box-shadow: 0 4px 10px rgba(106, 90, 205, 0.2);">
+                                                    <div>등록할 이미지 :</div>
+                                                    <label>
                                                         사진 선택하기
                                                         <input type="file" @change="fnFileChange" ref="fileInput"
                                                             style="display: none;">
                                                     </label>
                                                     <div class="image-editor-box">
-
-                                                        <div v-if="previewUrl" style="margin-top: 10px;">
+                                                        <div v-if="previewUrl">
                                                             <p>선택된 이미지 미리보기:</p>
-                                                            <img :src="previewUrl"
-                                                                style="max-width: 80%; border: 1px solid #ccc;">
+                                                            <img :src="previewUrl">
                                                         </div>
                                                     </div>
                                                 </div>
@@ -252,143 +201,94 @@
 
                                 <!-- 상품 수정 폼 -->
                                 <div v-else-if="productPage === 'edit'">
-                                    <div class="product-form-wrapper"
-                                        style="max-width: 900px; margin: 20px auto; padding: 40px; background-color: #ffffff; border-radius: 15px; box-shadow: 0 10px 30px rgba(106, 90, 205, 0.1); font-family: 'Pretendard', sans-serif;">
-                                        <!-- {{serverTagList}}
-                                        {{newTagsOnly}}
-                                        {{uniqueNewTagsOnly()}} -->
-                                        <h2
-                                            style="color: #6a5acd; margin-bottom: 30px; font-weight: 800; border-left: 5px solid #9a8cff; padding-left: 15px;">
-                                            상품 수정하기</h2>
+                                    <div class="product-form-wrapper">
+                                        <h2>상품 수정하기</h2>
 
-                                        <div class="product-form-section"
-                                            style="margin-bottom: 35px; border: 1px solid #e0d7ff; border-radius: 10px; overflow: hidden;">
-                                            <div class="form-title-box"
-                                                style="background-color: #9a8cff; color: white; padding: 12px 20px; font-weight: bold; font-size: 16px;">
-                                                상품 기본 정보</div>
-                                            <div class="form-content-box"
-                                                style="padding: 30px; background-color: #faf9ff;">
+                                        <div class="product-form-section">
+                                            <div class="form-title-box">상품 기본 정보</div>
+                                            <div class="form-content-box">
 
-                                                <div class="form-group" style="margin-bottom: 25px;">
-                                                    <label class="form-label"
-                                                        style="display: block; font-weight: 600; color: #444; margin-bottom: 10px; font-size: 15px;">상품
-                                                        이름</label>
+                                                <div class="form-group">
+                                                    <label class="form-label">상품 이름</label>
                                                     <div class="form-info-box">
-                                                        <input type="text" placeholder="여기에 상품 이름을 적어주세요."
-                                                            style="width: 100%; max-width: 400px; padding: 12px; border: 1px solid #d1ccff; border-radius: 8px; outline: none; font-size: 14px;"
+                                                        <input type="text" class="input-product-name"
+                                                            placeholder="여기에 상품 이름을 적어주세요."
                                                             v-model="oneProductDetails.productName">
                                                     </div>
                                                 </div>
-                                                <div class="form-group" style="margin-bottom: 25px;">
-                                                    <label class="form-label"
-                                                        style="display: block; font-weight: 600; color: #444; margin-bottom: 10px; font-size: 15px;">카테고리</label>
-                                                    <div class="category-group"
-                                                        style="display: flex; gap: 20px; flex-wrap: wrap; background: white; padding: 15px; border-radius: 8px; border: 1px solid #d1ccff;">
-
+                                                <div class="form-group">
+                                                    <label class="form-label">카테고리</label>
+                                                    <div class="category-group">
                                                         <div class="category-item" v-for="item in category" :key="item">
-                                                            <label
-                                                                style="cursor: pointer; font-size: 14px; color: #666; display: flex; align-items: center; gap: 5px;">
+                                                            <label>
                                                                 <input type="checkbox" :value="item"
-                                                                    style="accent-color: #6a5acd;"
                                                                     v-model="oneProductDetails.proType">{{item}}
                                                             </label>
                                                         </div>
                                                     </div>
                                                 </div>
 
-                                                <div class="form-group" style="margin-bottom: 25px;">
-                                                    <label class="form-label"
-                                                        style="display: block; font-weight: 600; color: #444; margin-bottom: 10px; font-size: 15px;">상품
-                                                        태그</label>
-
-                                                    <div
-                                                        style="display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 10px;">
-                                                        <input type="text" placeholder="첫번째 태그" v-model="tagMap.input1"
-                                                            style="padding: 10px; border: 1px solid #d1ccff; border-radius: 6px; outline: none;">
-                                                        <input type="text" placeholder="두번째 태그" v-model="tagMap.input2"
-                                                            style="padding: 10px; border: 1px solid #d1ccff; border-radius: 6px; outline: none;">
-                                                        <input type="text" placeholder="세번째 태그" v-model="tagMap.input3"
-                                                            style="padding: 10px; border: 1px solid #d1ccff; border-radius: 6px; outline: none;">
-                                                        <input type="text" placeholder="네번째 태그" v-model="tagMap.input4"
-                                                            style="padding: 10px; border: 1px solid #d1ccff; border-radius: 6px; outline: none;">
-                                                        <input type="text" placeholder="다섯번째 태그" v-model="tagMap.input5"
-                                                            style="padding: 10px; border: 1px solid #d1ccff; border-radius: 6px; outline: none;">
+                                                <div class="form-group">
+                                                    <label class="form-label">상품 태그</label>
+                                                    <div class="tag-grid-container">
+                                                        <input type="text" placeholder="첫번째 태그" v-model="tagMap.input1">
+                                                        <input type="text" placeholder="두번째 태그" v-model="tagMap.input2">
+                                                        <input type="text" placeholder="세번째 태그" v-model="tagMap.input3">
+                                                        <input type="text" placeholder="네번째 태그" v-model="tagMap.input4">
+                                                        <input type="text" placeholder="다섯번째 태그"
+                                                            v-model="tagMap.input5">
                                                     </div>
-
                                                 </div>
-                                                <!-- {{tagMap}}
-                                                {{tagMapToList}}
-                                                {{oneProductDetails}} -->
-                                                <div class="form-group" style="margin-bottom: 25px;">
+                                                <div class="form-group">
                                                     <label class="form-label">상품 설명</label>
                                                     <div class="form-info-box">
-                                                        <textarea
-                                                            style="width: 100%; height: 120px; padding: 15px; border: 1px solid #d1ccff; border-radius: 8px; outline: none; resize: none; font-size: 14px;"
-                                                            placeholder="상품에 대한 자세한 설명을 입력하세요."
+                                                        <textarea placeholder="상품에 대한 자세한 설명을 입력하세요."
                                                             v-model="oneProductDetails.productDetails"></textarea>
                                                     </div>
                                                 </div>
-                                                <div style="display: flex; gap: 20px;">
-                                                    <div class="form-group" style="flex: 1;">
-                                                        <label class="form-label"
-                                                            style="display: block; font-weight: 600; color: #444; margin-bottom: 10px; font-size: 15px;"><span
-                                                                class="form-info-label">예상
-                                                                견적</span></label>
-                                                        <div class="form-info-box">
 
+                                                <div class="form-row">
+                                                    <div class="form-group">
+                                                        <label class="form-label">
+                                                            <span class="form-info-label">예상 견적</span>
+                                                        </label>
+                                                        <div class="form-info-box">
                                                             <input type="text" placeholder="여기에 견적을 적어주세요."
-                                                                style="width: 100%; padding: 12px; border: 1px solid #d1ccff; border-radius: 8px; outline: none;"
                                                                 v-model="oneProductDetails.originalPrice">
                                                         </div>
                                                     </div>
 
-                                                    <div class="form-group" style="flex: 1;">
-                                                        <label class="form-label"
-                                                            style="display: block; font-weight: 600; color: #444; margin-bottom: 10px; font-size: 15px;"><span
-                                                                class="form-info-label">예약금</span></label>
+                                                    <div class="form-group">
+                                                        <label class="form-label">
+                                                            <span class="form-info-label">예약금</span>
+                                                        </label>
                                                         <div class="form-info-box">
                                                             <input placeholder="여기에 예약금을 적어주세요." type="text"
-                                                                style="width: 100%; padding: 12px; border: 1px solid #d1ccff; border-radius: 8px; outline: none;"
                                                                 v-model="oneProductDetails.deposit">
                                                         </div>
                                                     </div>
                                                 </div>
-                                                <!-- {{oneProductDetails.deposit}} -->
                                             </div>
                                         </div>
 
-                                        <div class="product-form-section"
-                                            style="margin-bottom: 35px; border: 1px solid #e0d7ff; border-radius: 10px; overflow: hidden;">
-                                            <div class="form-title-box"
-                                                style="background-color: #9a8cff; color: white; padding: 12px 20px; font-weight: bold; font-size: 16px;">
-                                                상품 이미지</div>
-                                            <div class="form-content-box"
-                                                style="padding: 30px; background-color: #faf9ff;">
+                                        <div class="product-form-section">
+                                            <div class="form-title-box">상품 이미지</div>
+                                            <div class="form-content-box">
                                                 <div class="form-group">
-                                                    <div style="margin-bottom: 15px; font-weight: bold; color: #444;">기존
-                                                        이미지 : </div>
+                                                    <div class="image-status-label">기존 이미지 : </div>
                                                     <div class="image-editor-box">
-                                                        <img :src="oneProductDetails.imgUrl"
-                                                            style="max-width: 500px; max-height: 500px;">
+                                                        <img :src="oneProductDetails.imgUrl">
                                                     </div>
                                                     <br>
-                                                    <div style="margin-bottom: 15px; font-weight: bold; color: #444;">
-                                                        수정할 이미지 :
-                                                    </div>
-                                                    <!-- 이미지 첨부 -->
-                                                    <label
-                                                        style="background: #6a5acd; color: white; padding: 10px 25px; cursor: pointer; border-radius: 8px; font-weight: 600; display: inline-block; transition: 0.3s; box-shadow: 0 4px 10px rgba(106, 90, 205, 0.2);">
+                                                    <div class="image-status-label">수정할 이미지 : </div>
+                                                    <label class="btn-file-select">
                                                         사진 선택하기
-                                                        <input type="file" @change="fnFileChange" ref="fileInput"
-                                                            style="display: none;">
-
+                                                        <input type="file" @change="fnFileChange" ref="fileInput">
                                                     </label>
                                                     <div class="image-editor-box">
-                                                        <div v-if="previewUrl" style="margin-top: 10px;">
+                                                        <div v-if="previewUrl" class="image-preview-wrapper">
                                                             <p>선택된 이미지 미리보기:</p>
-                                                            
-                                                            <img :src="previewUrl"
-                                                                style="max-width: 80%; border: 1px solid #ccc;">
+                                                            <img :src="previewUrl">
                                                         </div>
                                                     </div>
                                                 </div>
@@ -487,7 +387,7 @@
                                         </tr>
                                     </table>
                                 </template>
-                           
+
                             </div>
 
                             <div v-if="currentMenu === 'inquiry'">
@@ -503,8 +403,7 @@
                                         <div style="display: flex;">
                                             <div
                                                 style="width: 100px; height: 100px;  margin-right: 20px; text-align: center;">
-                                                <img :src="fnThumbnail(i)" :alt="i.productName"
-                                                    class="productImg">
+                                                <img :src="fnThumbnail(i)" :alt="i.productName" class="productImg">
 
                                             </div>
                                             <h3>상품명 : <span style="color: #d6336c;">{{i.productName}}</span> </h3>
@@ -543,102 +442,74 @@
 
                                 </template>
                                 <template v-if="viewPage === 'answer'">
-                                    <div
-                                        style="padding: 20px; border: 1px solid #ddd; border-radius: 8px; background-color: #fff; max-width: 800px; margin: 0 auto;">
+                                    <div class="answer-card-container">
 
-                                        <div
-                                            style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; padding-bottom: 10px; border-bottom: 2px solid #333;">
-                                            <h2 style="margin: 0; font-size: 1.5rem; color: #333;">문의 답변 등록</h2>
-                                            <button @click="fnBacktoInquiry"
-                                                style="padding: 8px 16px; background-color: #f4f4f4; border: 1px solid #ccc; border-radius: 4px; cursor: pointer; font-size: 0.9rem;">
+                                        <div class="answer-card-header">
+                                            <h2 class="answer-card-title">문의 답변 등록</h2>
+                                            <button @click="fnBacktoInquiry" class="btn-back-to-list">
                                                 ← 리스트로 돌아가기
                                             </button>
                                         </div>
 
-                                        <div
-                                            style="margin-bottom: 30px; padding: 15px; background-color: #f9f9f9; border-radius: 4px; border: 1px solid #eaeaea;">
-                                            <h3
-                                                style="margin-top: 0; color: #555; border-bottom: 1px solid #ddd; padding-bottom: 8px;">
-                                                원본 문의 내용</h3>
+                                        <div class="original-inquiry-box">
+                                            <h3 class="original-inquiry-title">원본 문의 내용</h3>
 
-                                            <table
-                                                style="width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 0.95rem;">
+                                            <table class="original-inquiry-table">
                                                 <colgroup>
-                                                    <col style="width: 20%; background-color: #eee;">
-                                                    <col style="width: 30%;">
-                                                    <col style="width: 20%; background-color: #eee;">
-                                                    <col style="width: 30%;">
+                                                    <col class="table-col-label">
+                                                    <col class="table-col-content">
+                                                    <col class="table-col-label">
+                                                    <col class="table-col-content">
                                                 </colgroup>
                                                 <tr>
-                                                    <th
-                                                        style="padding: 10px; border: 1px solid #ddd; text-align: left;">
-                                                        문의 번호</th>
-                                                    <td style="padding: 10px; border: 1px solid #ddd;">{{
-                                                        inquiryDetails.inquiryNo }}</td>
-                                                    <th
-                                                        style="padding: 10px; border: 1px solid #ddd; text-align: left;">
-                                                        작성자 ID</th>
-                                                    <td style="padding: 10px; border: 1px solid #ddd;">{{
-                                                        inquiryDetails.userId }}</td>
+                                                    <th>문의 번호</th>
+                                                    <td>{{ inquiryDetails.inquiryNo }}</td>
+                                                    <th>작성자 ID</th>
+                                                    <td>{{ inquiryDetails.userId }}</td>
                                                 </tr>
                                                 <tr>
-                                                    <th
-                                                        style="padding: 10px; border: 1px solid #ddd; text-align: left;">
-                                                        문의 제목</th>
-                                                    <td colspan="3"
-                                                        style="padding: 10px; border: 1px solid #ddd; font-weight: bold;">
-                                                        {{ inquiryDetails.inquiryTitle }}</td>
+                                                    <th>문의 제목</th>
+                                                    <td colspan="3" class="text-bold">
+                                                        {{ inquiryDetails.inquiryTitle }}
+                                                    </td>
                                                 </tr>
                                                 <tr>
-                                                    <th
-                                                        style="padding: 10px; border: 1px solid #ddd; text-align: left; vertical-align: top;">
-                                                        문의 내용</th>
-                                                    <td colspan="3"
-                                                        style="padding: 10px; border: 1px solid #ddd; min-height: 100px; white-space: pre-wrap;">
-                                                        {{ inquiryDetails.inquiryContents }}</td>
+                                                    <th class="valign-top">문의 내용</th>
+                                                    <td colspan="3" class="text-pre-wrap">
+                                                        {{ inquiryDetails.inquiryContents }}
+                                                    </td>
                                                 </tr>
                                             </table>
                                         </div>
 
-                                        <div>
-                                            <h3 style="margin-top: 0; color: #333;">답변 달기</h3>
-                                            <!-- {{inquiryAnswer}} -->
+                                        <div class="answer-write-box">
+                                            <h3 class="answer-write-title">답변 달기</h3>
 
-                                            <div style="margin-top: 15px;">
-                                                <label
-                                                    style="display: block; margin-bottom: 8px; font-weight: bold; color: #555;">답변자</label>
+                                            <div class="form-input-group">
+                                                <label class="form-input-label">답변자</label>
                                                 <input v-model="inquiryAnswer.ansUserId"
-                                                    placeholder="답변을 작성한 담당자명을 입력해주세요."
-                                                    style="width: 50%; padding: 12px; border: 1px solid #ccc; border-radius: 4px; resize: vertical; font-family: inherit; font-size: 1rem; box-sizing: border-radius;">
+                                                    placeholder="답변을 작성한 담당자명을 입력해주세요." class="form-input-text">
                                             </div>
 
-
-                                            <div style="margin-top: 15px;">
-                                                <label
-                                                    style="display: block; margin-bottom: 8px; font-weight: bold; color: #555;">답변
-                                                    내용</label>
+                                            <div class="form-input-group">
+                                                <label class="form-input-label">답변 내용</label>
                                                 <textarea v-model="inquiryAnswer.answerContents"
                                                     placeholder="문의에 대한 정성스러운 답변을 작성해 주세요."
-                                                    style="width: 100%; height: 200px; padding: 12px; border: 1px solid #ccc; border-radius: 4px; resize: vertical; font-family: inherit; font-size: 1rem; box-sizing: border-radius;"></textarea>
+                                                    class="form-textarea-text"></textarea>
                                             </div>
 
-                                            <div
-                                                style="margin-top: 25px; text-align: center; display: flex; justify-content: center; gap: 15px;">
-                                                <button @click="fnBacktoInquiry"
-                                                    style="padding: 12px 24px; background-color: #fff; border: 1px solid #ccc; border-radius: 4px; cursor: pointer; font-size: 1rem; color: #333;">
+                                            <div class="answer-action-buttons">
+                                                <button @click="fnBacktoInquiry" class="btn-action-cancel">
                                                     취소
                                                 </button>
-                                                <button @click="fnSaveAnswer"
-                                                    style="padding: 12px 24px; background-color: #ff1493; border: none; border-radius: 4px; cursor: pointer; font-size: 1rem; color: #fff; font-weight: bold;">
+                                                <button @click="fnSaveAnswer" class="btn-action-submit">
                                                     <span v-if="inquiryAnswer.inquiryAns === '0'">답변 등록하기</span>
                                                     <span v-else>답변 수정하기</span>
                                                 </button>
-
                                             </div>
                                         </div>
 
                                     </div>
-
                                 </template>
 
                             </div>
@@ -663,17 +534,17 @@
                                             <div class="review-header-info" style="margin-bottom: 10px;"
                                                 @click="fnReviewDetails(w)">
                                                 <div class="review-thumb-box">
-                                                    <img :src="w.imgUrl"
-                                                        class="productImg">
+                                                    <img :src="w.imgUrl" class="productImg">
                                                 </div>
 
                                                 <div class="review-product-name">
-                                                    <div class="ticket-no">No. {{ registeredProductList.length - ((reviewListPage - 1)
-                                                * 5 + idx ) }}</div>
+                                                    <div class="ticket-no">No. {{ registeredProductList.length -
+                                                        ((reviewListPage - 1)
+                                                        * 5 + idx ) }}</div>
                                                     <a href="javascript:;"
                                                         style="text-decoration: none; color:#0b3f8e;"><strong>{{w.productName}}</strong></a>
                                                 </div>
-                                                
+
                                                 <div class="review-count-badge">리뷰 갯수: {{w.reviewCount}}개 </div>
                                             </div>
                                         </template>
@@ -698,13 +569,13 @@
                                             <div class="review-header-info" style="margin-bottom: 10px;"
                                                 @click="fnSimpleReviewDetails(w)">
                                                 <div class="review-thumb-box">
-                                                    <img :src="w.imgUrl"
-                                                        class="imgUrl">
+                                                    <img :src="w.imgUrl" class="productImg">
                                                 </div>
                                                 <div class="review-product-name">
                                                     <!--totalSimpleReviewCnt-->
-                                                    <div class="ticket-no">No. {{ registeredProductList.length - ((reviewListPage - 1)
-                                                * 5 + idx ) }}</div>
+                                                    <div class="ticket-no">No. {{ registeredProductList.length -
+                                                        ((reviewListPage - 1)
+                                                        * 5 + idx ) }}</div>
                                                     <a href="javascript:;"
                                                         style="text-decoration: none; color:#0b3f8e;"><strong>{{w.productName}}</strong></a>
 
@@ -725,45 +596,41 @@
                                 </template>
 
                                 <!--viewPage이 main이 아닌 경우-->
-                                <template v-else> <!--viewPage != 'main'-->
-                                    <!-- 1
-                                    {{reviewTab}}
-                                    {{reviews}} -->
-                                    <!-- reviewTab === 'detail' 인 경우-->
-                                    <template v-if="reviewTab === 'detail'">
+                                <template v-else> <template v-if="reviewTab === 'detail'">
                                         <button class="btn-back" @click="fnGoBackToList()">← 목록으로</button>
                                         <template v-if="reviews && reviews.length > 0">
 
-                                            <div v-for="(rev, idx) in paginatedReviews" :key="idx" @click="rev.isExpanded = !rev.isExpanded" style="cursor: pointer; margin-bottom: 20px; border-bottom: 1px solid #eee; padding-bottom: 15px;"
-                                                class="detail-review-item">
-                                                <!-- {{rev}} -->
-                                                <div class="star-rating">평점 : {{starRating(rev)}}</div>
-                                                <!-- {{rev.rating}}/5 -->
+                                            <div v-for="(rev, idx) in paginatedReviews" :key="idx"
+                                                @click="rev.isExpanded = !rev.isExpanded" class="detail-review-item">
 
-                                                <div style="display: flex; gap: 20px;">
-                                                    <div style="position: relative;">
-                                                        <span class="new-label" v-if="rev.updated === '1'"
-                                                            style="position: absolute; top: -5px; left: -5px;">NEW
-                                                        </span>
+                                                <div class="star-rating">평점 : {{starRating(rev)}}</div>
+
+                                                <div class="review-item-flex-row">
+                                                    <div class="review-photo-wrapper">
+                                                        <span class="new-label-absolute"
+                                                            v-if="rev.updated === '1'">NEW</span>
                                                         <div class="review-photo">
                                                             <img :src="rev.thumbnailUrl" :alt="rev.imgDescription"
                                                                 class="imgUrl">
                                                         </div>
                                                     </div>
-                                                    <div :class="{ 'review-text-limit' : !rev.isExpanded }" style="color: #666; font-size: 15px;" > 
+
+                                                    <div :class="{ 'review-text-limit' : !rev.isExpanded }"
+                                                        class="review-item-text">
                                                         {{cleanText(rev.content)}}
                                                     </div>
 
-                                                    <div style="margin-top: 5px; color: #9a8cff; font-size: 13px; font-weight: bold;">
+                                                    <div class="review-toggle-btn">
                                                         {{ rev.isExpanded ? '접기 ▲' : '더보기 ▼' }}
                                                     </div>
                                                 </div>
-                                                <div
-                                                    style="text-align: right; font-size: 13px; color: #888; margin-top: 15px; border-top: 1px dashed #eee; padding-top: 10px;">
+
+                                                <div class="review-item-meta">
                                                     작성자: <strong>{{rev.userId}}</strong> | 작성일자: {{rev.regDate}}
                                                 </div>
                                                 <hr>
                                             </div>
+
                                             <div class="pagination1">
                                                 <span v-for="num in totalPages" :key="num">
                                                     <a @click="fnPageChange(num)" href="javascript:;"
@@ -774,18 +641,17 @@
                                             </div>
                                         </template>
                                         <template v-else>
-                                            <div style="text-align: center; padding: 50px;">
-                                                <h2 style="color: #ccc;">아직 작성된 리뷰가 없습니다!</h2>
+                                            <div class="no-data-box">
+                                                <h2 class="no-data-title">아직 작성된 리뷰가 없습니다!</h2>
                                             </div>
                                         </template>
                                     </template>
 
-                                    <!--reviewTab === 'simple' 인 경우-->
                                     <template v-else-if="reviewTab === 'simple'">
                                         <button class="btn-back" @click="fnGoBackToList()">← 목록으로</button>
 
                                         <template v-if="simpleReviews && simpleReviews.length > 0">
-                                            <table>
+                                            <table class="simple-review-table">
                                                 <thead>
                                                     <tr>
                                                         <th>번호</th>
@@ -795,40 +661,42 @@
                                                     </tr>
                                                 </thead>
                                                 <tbody>
-                                                    <!--self.simpleReviews = data.list; =[]-->
                                                     <template v-for="(rev, idx) in paginatedSimpleReviews"
                                                         :key="rev.reviewNo">
-                                                        <!--페이지에 맞는 리뷰 표시-->
                                                         <tr>
-                                                            <td>{{ (currentPage - 1) * 5 + idx + 1 }} <span class="new-label"
-                                                                    v-if="rev.updated === '1'">NEW</span></td>
-                                                            <td style="color: #666; font-size: 15px;">
-                                                                <div :class="{ 'review-text-limit' : !rev.isExpanded }" style="color: #666; font-size: 15px;" > 
+                                                            <td>
+                                                                {{ (currentPage - 1) * 5 + idx + 1 }}
+                                                                <span class="new-label"
+                                                                    v-if="rev.updated === '1'">NEW</span>
+                                                            </td>
+                                                            <td class="simple-review-text-td">
+                                                                <div :class="{ 'review-text-limit' : !rev.isExpanded }"
+                                                                    class="review-item-text">
                                                                     {{cleanText(rev.content)}}
                                                                 </div>
-
                                                             </td>
                                                             <td>{{rev.userId}}</td>
-                                                            <td><span
-                                                                    style="color: #ff6a00;">{{rev.rating}}</span><span>/5</span>
+                                                            <td>
+                                                                <span
+                                                                    class="rating-num-highlight">{{rev.rating}}</span><span>/5</span>
                                                             </td>
                                                         </tr>
                                                     </template>
-
                                                 </tbody>
                                             </table>
+
                                             <div class="pagination1">
                                                 <span v-for="num in totalSimplePages" :key="num">
                                                     <a @click="currentPage = num" href="javascript:;"
                                                         :style="currentPage === num ? 'color: #9b8fd4; border:1px solid #9b8fd4;' : ''">
                                                         {{num}}
                                                     </a>
-                                                </span> <!-- num 에 해당하는 페이지가 뜨고 그 페이지에 자료가 5개씩 표시되도록( )-->
+                                                </span>
                                             </div>
                                         </template>
                                         <template v-else>
-                                            <div style="text-align: center; padding: 50px;">
-                                                <h2 style="color: #ccc;">아직 작성된 리뷰가 없습니다!</h2>
+                                            <div class="no-data-box">
+                                                <h2 class="no-data-title">아직 작성된 리뷰가 없습니다!</h2>
                                             </div>
                                         </template>
                                     </template>
