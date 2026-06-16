@@ -1,3 +1,9 @@
+// 1. [파일 최상단에 추가] 메인 메뉴 컴포넌트의 명세서 정의
+const MainMenuComponent = {
+    template: '#main-menu-template', // JSP 하단에 만든 template id와 연결
+    props: ['user'] // 부모로부터 넘겨받을 데이터 이름을 지정
+};
+
 const app = Vue.createApp({
     el: '#app',
     data() {
@@ -720,4 +726,8 @@ const app = Vue.createApp({
         }
     }
 });
+
+// 2. [파일 최하단 app.mount 직전에 추가] 앱에 컴포넌트를 장착합니다.
+app.component('main-menu-component', MainMenuComponent);
+
 app.mount('#app');

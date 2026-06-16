@@ -42,22 +42,7 @@
                         </aside>
                         <main>
                             <div v-if="currentMenu === 'main'">
-                                <h2>안녕하세요, '{{ user.name }}'님!</h2>
-                                <div class="section-title" v-if="user.grade === 'PARTNER'">제휴업체</div>
-                                <div class="section-title" v-else-if="user.grade === 'NPARTNER'">일반업체</div>
-                                <div class="content-card">
-                                    <h3><span v-if="user.grade === 'PARTNER'">제휴업체 등록(결제) 일자</span></h3>
-                                    <h3><span v-if="user.grade === 'NPARTNER'">일반업체 등록 일자</span></h3>
-                                    <p v-if="user.grade === 'PARTNER'" class="user-grade">{{
-                                        user.payDate }}</p>
-                                    <p v-if="user.grade === 'NPARTNER'" class="user-grade">{{
-                                        user.regDate }}</p>
-
-                                </div>
-                                <div v-if="user.grade === 'NPARTNER'" class="user-nopartner">
-                                    <button class="btn-product-reg" @click="fnRegPTN">제휴 업체로 등록하기</button>
-                                </div>
-                                <div><span v-if="user.grade === 'NPARTNER'">*관리자가 승인후 제휴업체 등급이 됩니다!</span></div>
+                                <main-menu-component :user="user" @reg-ptn="fnRegPTN"></main-menu-component>
                             </div>
 
                             <div v-if="currentMenu === 'product'">
@@ -707,13 +692,14 @@
                 </div>
             </div>
         </div>
-
+        
         <jsp:include page="/WEB-INF/common/footer.jsp" />
         </div>
     </body>
 
     </html>
 
+    <jsp:include page="/WEB-INF/company/components/mainTemplate.jsp" />
     <script>
         // 💡 중요: 외부 JS 파일이 JSP 세션 ID를 쓸 수 있도록 전역 변수에 먼저 담아줍니다.
         window.SESSION_ID = "${sessionScope.sessionId}";
