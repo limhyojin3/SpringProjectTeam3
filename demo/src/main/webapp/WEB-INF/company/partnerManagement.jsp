@@ -44,27 +44,7 @@
                                 <main-menu-component :user="user" @reg-ptn="fnRegPTN"></main-menu-component>
                             </div>
                             <div v-if="currentMenu === 'product'">
-                                <product-section-component
-                                    :product-page="productPage"
-                                    :registered-product-list="registeredProductList"
-                                    :fn-paginated-product-list="fnPaginatedProductList"
-                                    :product-current-page="productCurrentPage"
-                                    :total-product-pages="totalProductPages"
-                                    :initialized-one-product-details="initializedOneProductDetails"
-                                    :category="category"
-                                    :tag-map="tagMap"
-                                    :preview-url="previewUrl"
-                                    :one-product-details="oneProductDetails"
-                                    
-                                    @reg-page="fnRegPage"
-                                    @edit-page="fnEditPage"
-                                    @remove-product="fnRemoveProduct"
-                                    @change-page="productCurrentPage = $event"
-                                    @file-change="fnFileChange"
-                                    @back-to-list="fnBackToList"
-                                    @insert-product="fnInsertProduct"
-                                    @update-product="fnUpdateProduct"
-                                ></product-section-component>
+                                <product-section-component></product-section-component>
                             </div>
                             <!-- 예약관리 페이지 -->
                             <div v-if="currentMenu === 'reservation'">
@@ -159,4 +139,12 @@
         // 💡 중요: 외부 JS 파일이 JSP 세션 ID를 쓸 수 있도록 전역 변수에 먼저 담아줍니다.
         window.SESSION_ID = "${sessionScope.sessionId}";
     </script>
+    <script src="/js/partner-utils.js"></script>
+    
+    <script src="/js/company-components/main-menu-component.js"></script>
+    <script src="/js/company-components/product-section-component.js"></script>
+    <script src="/js/company-components/reservation-section-component.js"></script>
+    <script src="/js/company-components/inquiry-section-component.js"></script>
+    <script src="/js/company-components/review-section-component.js"></script>
+
     <script src="/js/partner-management.js"></script>

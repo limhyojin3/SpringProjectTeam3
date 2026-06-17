@@ -5,7 +5,7 @@
                 <div class="section-header">
                     <h2>등록한 상품({{ registeredProductList.length }})</h2>
                 </div>
-                <button @click="$emit('reg-page')" class="btn-product-reg">상품등록</button>
+                <button @click="fnRegPage()" class="btn-product-reg">상품등록</button>
             </div>
             <div v-for="(i, idx) in fnPaginatedProductList" :key="idx" class="content-card PaginatedProductList">
                 <div class="imgUrl">
@@ -19,14 +19,14 @@
 
                 <div class="originalPrice">
                     <div>{{ Number(i.originalPrice).toLocaleString() }}원</div>
-                    <button @click="$emit('edit-page', i)" class="btn-edit">수정하기</button>
-                    <button @click="$emit('remove-product', i)" class="btn-delete">삭제하기</button>
+                    <button @click="fnEditPage(i)" class="btn-edit">수정하기</button>
+                    <button @click="fnRemoveProduct(i)" class="btn-delete">삭제하기</button>
                 </div>
             </div>
 
             <div class="pagination1">
                 <span v-for="num in totalProductPages" :key="num">
-                    <a @click="$emit('change-page', num)" href="javascript:;"
+                    <a @click="productCurrentPage = num" href="javascript:;"
                         :style="productCurrentPage === num ? 'color: #9b8fd4; border: 1px solid #9b8fd4;' : ''">
                         {{ num }}
                     </a>
@@ -101,7 +101,7 @@
                             <div>등록할 이미지 :</div>
                             <label>
                                 사진 선택하기
-                                <input type="file" @change="$emit('file-change', $event)" ref="fileInput"
+                                <input type="file" @change="fnFileChange($event)" ref="fileInput"
                                     style="display: none;">
                             </label>
                             <div class="image-editor-box">
@@ -114,8 +114,8 @@
                     </div>
                 </div>
                 <div class="form-button-group">
-                    <button class="btn-cancel" @click="$emit('back-to-list')">취소(돌아가기)</button>
-                    <button class="btn-submit" @click="$emit('insert-product')">상품 등록</button>
+                    <button class="btn-cancel" @click="fnBackToList()">취소(돌아가기)</button>
+                    <button class="btn-submit" @click="fnInsertProduct()">상품 등록</button>
                 </div>
             </div>
         </div>
@@ -192,7 +192,7 @@
                             <div class="image-status-label">수정할 이미지 : </div>
                             <label class="btn-file-select">
                                 사진 선택하기
-                                <input type="file" @change="$emit('file-change', $event)" ref="fileInput">
+                                <input type="file" @change="fnFileChange($event)" ref="fileInput">
                             </label>
                             <div class="image-editor-box">
                                 <div v-if="previewUrl" class="image-preview-wrapper">
@@ -204,8 +204,8 @@
                     </div>
                 </div>
                 <div class="form-button-group">
-                    <button class="btn-cancel" @click="$emit('back-to-list')">취소(돌아가기)</button>
-                    <button class="btn-submit" @click="$emit('update-product')">상품 수정</button>
+                    <button class="btn-cancel" @click="fnBackToList()">취소(돌아가기)</button>
+                    <button class="btn-submit" @click="fnUpdateProduct()">상품 수정</button>
                 </div>
             </div>
         </div>
