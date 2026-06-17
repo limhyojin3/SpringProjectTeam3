@@ -1,4 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
+<link rel="stylesheet" href="${pageContext.request.contextPath}/css/company-css/mainTemplate.css">
+
     <template id="main-menu-template">
         <div>
             <h2>안녕하세요, '{{ user.name }}'님!</h2>

@@ -1,0 +1,62 @@
+@charset "UTF-8";
+
+/* ==========================================================================
+   [mainTemplate.jsp] - 업체 메인 홈 컴포넌트 전용 스타일
+   ========================================================================== */
+
+/* 1. 상단 환영 타이틀 */
+h2 {
+	font-size: 1.5rem;
+	margin-bottom: 25px;
+	padding-left: 10px;
+}
+
+/* 2. 업체 등급 라벨 (제휴업체 / 일반업체) */
+.section-title {
+	background: #ffb400;
+	display: inline-block;
+	padding: 5px 15px;
+	color: white;
+	font-weight: bold;
+	margin-bottom: 15px;
+}
+
+/* 3. 등록 일자 안내 카드 */
+.content-card {
+	background-color: white;
+	border: 1px solid #eee;
+	padding: 30px;
+	border-radius: 10px;
+	margin-bottom: 20px;
+	position: relative;
+	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+}
+
+/* 카드 내부 날짜 텍스트 */
+.user-grade {
+	text-align: right;
+	font-size: 20px;
+}
+
+/* 4. 미제휴 일반업체 전용 레이아웃 및 등록 버튼 */
+.user-nopartner {
+	text-align: right;
+}
+
+.btn-product-reg {
+	background: #ffb400;
+	padding: 10px 24px;
+	border: none;
+	border-radius: 10px;
+	font-weight: bold;
+	cursor: pointer;
+	color: white;
+	font-size: 14px;
+	transition: 0.2s;
+}
+
+.btn-product-reg:hover {
+	background: #e0a500;
+	transform: translateY(-2px);
+	box-shadow: 0 4px 12px rgba(240, 180, 41, 0.3);
+}

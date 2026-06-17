@@ -19,7 +19,7 @@
         <link rel="stylesheet" href="${pageContext.request.contextPath}/css/common.css">
         <link rel="stylesheet" href="${pageContext.request.contextPath}/css/partner-management.css">
     </head>
-
+    
     <body>
         <jsp:include page="/WEB-INF/common/header.jsp" />
         <div id="app">
@@ -46,7 +46,6 @@
                             <div v-if="currentMenu === 'product'">
                                 <product-section-component />
                             </div>
-                            <!-- 예약관리 페이지 -->
                             <div v-if="currentMenu === 'reservation'">
                                 <reservation-section-component :registered-product-list="productList" />
                             </div>

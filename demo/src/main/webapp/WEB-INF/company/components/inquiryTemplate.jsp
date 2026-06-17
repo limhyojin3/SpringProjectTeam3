@@ -1,5 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 
+<link rel="stylesheet" href="${pageContext.request.contextPath}/css/company-css/inquiryTemplate.css">
+
 <template id="inquiry-section-template">
     <div> <div v-if="viewPage === 'main'">
             <div class="section-header">

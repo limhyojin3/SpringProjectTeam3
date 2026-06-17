@@ -1,4 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
+<link rel="stylesheet" href="${pageContext.request.contextPath}/css/company-css/productTemplate.css">
+
     <template id="product-section-template">
         <div v-if="productPage === 'list'">
             <div class="productlist-productReg">
