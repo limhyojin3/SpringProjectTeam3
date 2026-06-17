@@ -48,13 +48,13 @@
                             </div>
                             <!-- 예약관리 페이지 -->
                             <div v-if="currentMenu === 'reservation'">
-                                <reservation-section-component />
+                                <reservation-section-component :registered-product-list="productList" />
                             </div>
                             <div v-if="currentMenu === 'inquiry'">
                                 <inquiry-section-component />
                             </div>
                             <div v-if="currentMenu === 'review'">
-                                <review-section-component>
+                                <review-section-component />
                             </div>
                         </main>
                     </div>

@@ -7,7 +7,7 @@ const app = Vue.createApp({
             user: {},
             product: '',
             productList: [],
-			productCurrentPage: 1
+            productCurrentPage: 1
         }
     }, // data
     methods: {
@@ -58,6 +58,10 @@ const app = Vue.createApp({
             if (menuId === 'main') {
                 this.fnCom();
             }
+            // 💡 예약 관리나 상품 관리 메뉴를 누르면 상품 목록을 새로고침 하도록 설정
+            else if (menuId === 'reservation' || menuId === 'product') {
+                this.fnProductList();
+            }
         },
         /* 제휴업체로 등록하러가기 */
         fnRegPTN() {
@@ -68,6 +72,9 @@ const app = Vue.createApp({
         // 처음 시작할 때 실행되는 부분
         let self = this;
         self.fnCom();
+        // 💡 페이지가 처음 켜질 때 상품 목록도 미리 받아옵니다.
+        self.fnProductList();
+		
         const urlParams = new URLSearchParams(window.location.search);
         const menu = urlParams.get('menu');
         if (menu) {

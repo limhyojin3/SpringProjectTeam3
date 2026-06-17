@@ -1,5 +1,13 @@
 const ReservationSectionComponent = {
     template: '#reservation-section-template',
+	
+	// 💡 부모 컴포넌트로부터 전달받을 변수 선언
+    props: {
+        registeredProductList: {
+            type: Array,
+            default: () => [] // 데이터가 넘어오기 전 초기값은 빈 배열로 설정
+        }
+    },
     
     // 1. 오직 예약 관리에서만 쓰는 독립된 변수들
     data() {

@@ -2,6 +2,7 @@
 
     <template id="reservation-section-template">
         <div>
+            <!-- <pre style="background: #f4f4f4; padding: 10px;">넘겨받은 상품 데이터: {{ registeredProductList }}</pre> -->
             <div class="section-header">
                 <h2>예약 관리 : <span style="color:#9b8fd4;">새 예약 {{ resCount }}건</span></h2>
             </div>
@@ -9,9 +10,9 @@
             <div v-if="!selectedRes">
                 <div class="ticket-card" v-for="(res, idx) in pagedResList" :key="idx" @click="selectedRes = res">
                     <img class="ticket-img"
-                        :src="registeredProductList.find(p => p.productName === res.productName)?.imgUrl"
+                        :src="registeredProductList?.find(p => p.productName === res.productName)?.imgUrl"
                         :alt="res.productName"
-                        v-if="registeredProductList.find(p => p.productName === res.productName)?.imgUrl">
+                        v-if="registeredProductList?.find(p => p.productName === res.productName)?.imgUrl">
                     <div class="ticket-info">
                         <div class="ticket-no">No. {{ reservationList.length - ((resCurrentPage - 1) * 5 + idx ) }}
                         </div>
