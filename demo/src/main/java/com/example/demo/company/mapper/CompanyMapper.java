@@ -10,19 +10,6 @@ import com.example.demo.company.model.Review;
 
 @Mapper
 public interface CompanyMapper {
-	/*
-	 * // 여러개 리턴 -> selectXXXList public List<Company>
-	 * selectUserList(HashMap<String, Object> map); // 한개 리턴 -> selectXXX public
-	 * Company selectUser(HashMap<String, Object> map); // 삭제 public int
-	 * deleteUser(HashMap<String, Object> map); // 수정 public int
-	 * updateUser(HashMap<String, Object> map); // 삽입 public int
-	 * insertUser(HashMap<String, Object> map);
-	 */
-	//updateProduct
-	//selectCompanyByUserId
-	
-	//<select id="selectInquiryProductList" parameterType="map"
-//	resultType="com.example.demo.company.model.Company">
 	
 	/* 프론트에서 inquiryNo을 넘겨주면, 문의 답변중에 ip.inquiry_no, c.user_id,
 	 *  ipa.answer_contents 를 얻어오는거 */
@@ -97,7 +84,6 @@ public interface CompanyMapper {
 	List<Company> selectReviewCnt(HashMap<String, Object> map);
 	
 	List<Company> selectReservation(HashMap<String, Object> map);
-	
 	
 	List<Review> selectPaidReviewList(HashMap<String, Object> map); //이부분 //#{companyNo}
 	

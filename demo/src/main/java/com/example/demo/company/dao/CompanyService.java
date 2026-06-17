@@ -17,50 +17,15 @@ public class CompanyService {
 	@Autowired
 	CompanyMapper companyMapper;
 
-	// 조회 -> get, 수정 -> edit, 삽입 -> add, 삭제 -> remove
-	// ex) 학생목록 : getStudentList, 학생수정 -> editStudent
-
-	// === Mapper 호출 시 ===
-	// 여러개 리턴 -> selectXXXList
-	// List<User> list = defaultMapper.selectUserList();
-	// 한개 리턴 -> selectXXX
-	// User info = defaultMapper.selectUser();
-	// 수정, 삭제, 삽입 -> updateXXX, deleteXXX, insertXXX
-	// int result = defaultMapper.updateXXX();
-	
-	
-//	#결제 검증, 환불, 조회할 때 필요한 포트원 키 입니다 프로퍼티에 복사하시면 결제기능 됩니다 
-//	#
-//	#그리고 만약 결제 검증, 환불, 조회 기능을 따로 만드실거면 쓰시는 서비스에 
-//	#
-//	#import org.springframework.beans.factory.annotation.Value;
-//	#
-//	#이거 임포트하시고 서비스 안쪽에 
-//	#
-//	#@Value("${iamport.imp_key}")
-//	#private String impKey;
-//	#
-//	#@Value("${iamport.imp_secret}")
-//	#private String impSecret;
-//	#
-//	#이거 넣어 주시면 됩니다
-   
 	public HashMap<String, Object> getCompany(HashMap<String, Object> map) {
 		HashMap<String, Object> resultMap = new HashMap<String, Object>();
 		try {
-//			List<User> list = defaultMapper.selectUserList(map);
-//			User info = defaultMapper.selectUser(map);
-//			int result = defaultMapper.updateXXX(map);
-
-//			resultMap.put("list", list);
-
 			Company info = companyMapper.selectCompany(map);
 
 			resultMap.put("info", info);
 			resultMap.put("result", "success");
 			resultMap.put("message", Message.MSG_ADD);
 		} catch (Exception e) {
-			// TODO: handle exception
 			System.out.println(e.getMessage());
 			resultMap.put("result", "fail");
 			resultMap.put("message", Message.MSG_SERVER_ERR);
@@ -71,19 +36,12 @@ public class CompanyService {
 	public HashMap<String, Object> getProductList(HashMap<String, Object> map) {
 		HashMap<String, Object> resultMap = new HashMap<String, Object>();
 		try {
-//			List<User> list = defaultMapper.selectUserList(map);
-//			User info = defaultMapper.selectUser(map);
-//			int result = defaultMapper.updateXXX(map);
-
-//			resultMap.put("list", list);
-
 			List<Company> list = companyMapper.selectProductList(map);
 
 			resultMap.put("list", list);
 			resultMap.put("result", "success");
 			resultMap.put("message", Message.MSG_ADD);
 		} catch (Exception e) {
-			// TODO: handle exception
 			System.out.println(e.getMessage());
 			resultMap.put("result", "fail");
 			resultMap.put("message", Message.MSG_SERVER_ERR);
@@ -94,12 +52,6 @@ public class CompanyService {
 	public HashMap<String, Object> getProduct(HashMap<String, Object> map) {
 		HashMap<String, Object> resultMap = new HashMap<String, Object>();
 		try {
-//			List<User> list = defaultMapper.selectUserList(map);
-//			User info = defaultMapper.selectUser(map);
-//			int result = defaultMapper.updateXXX(map);
-
-//			resultMap.put("list", list);
-
 			List<String> tagList = companyMapper.selectTagList(map);
  
 			Company info = companyMapper.selectProduct(map);
@@ -109,7 +61,6 @@ public class CompanyService {
 			resultMap.put("result", "success");
 			resultMap.put("message", Message.MSG_ADD);
 		} catch (Exception e) { 
-			// TODO: handle exception
 			System.out.println(e.getMessage());
 			resultMap.put("result", "fail");
 			resultMap.put("message", Message.MSG_SERVER_ERR);
@@ -122,12 +73,6 @@ public class CompanyService {
 	public HashMap<String, Object> editProduct(Company product) {
 		HashMap<String, Object> resultMap = new HashMap<String, Object>();
 		try {
-//			List<User> list = defaultMapper.selectUserList(map);
-//			User info = defaultMapper.selectUser(map);
-//			int result = defaultMapper.updateXXX(map);
-
-//			resultMap.put("list", list);
-
 			int result = companyMapper.updateProduct(product);
 			int result1 = 0;
 			//[]
@@ -137,10 +82,7 @@ public class CompanyService {
 				System.out.println("보낼 태그가 없어서 insert를 건너뜁니다!");
 			}
 			
-			
-			
 			if (result > 0) {
-				
 				if(result1 > 0) {
 					resultMap.put("result", "success");
 					resultMap.put("message", Message.MSG_ADD);
@@ -150,55 +92,26 @@ public class CompanyService {
 					resultMap.put("message", Message.MSG_ADD);
 					resultMap.put("message1", "태그는 추가된게 없네요!");
 				}
-				
 			}
-
 		} catch (Exception e) {
-			// TODO: handle exception
 			System.out.println(e.getMessage());
 			resultMap.put("result", "fail");
 			resultMap.put("message", Message.MSG_SERVER_ERR);
 		}
 		return resultMap;
 	}
-
-	// companyService.addUniqueNewTagsOnly(product);
-//	public HashMap<String, Object> addUniqueNewTagsOnly(Company product) {
-//
-//		HashMap<String, Object> resultMap = new HashMap<String, Object>();
-//		try {
-//			int result1 = companyMapper.insertUniqueNewTagsOnly(product);
-//			System.out.println(result1);
-//
-//		} catch (Exception e) {
-//		}
-//		return resultMap;
-//	}
-
 	// insertProduct
 	public HashMap<String, Object> addProduct(Company product) {
 		HashMap<String, Object> resultMap = new HashMap<String, Object>();
 		try {
-//			List<User> list = defaultMapper.selectUserList(map);
-//			User info = defaultMapper.selectUser(map);
-//			int result = defaultMapper.updateXXX(map);
-
-//			resultMap.put("list", list);
-
 			int result = companyMapper.insertProduct(product);
-
 			int result1 = 0;
-			//[]
 			if(product.getUniqueNewTagsOnly() != null && !product.getUniqueNewTagsOnly().isEmpty()) {
 				result1 = companyMapper.insertUniqueNewTagsOnly(product);
 			} else {
 				System.out.println("보낼 태그가 없어서 insert를 건너뜁니다!");
 			}
-			
-			
-			
 			if (result > 0) {
-				
 				if(result1 > 0) {
 					resultMap.put("result", "success");
 					resultMap.put("message", Message.MSG_ADD);
@@ -208,32 +121,22 @@ public class CompanyService {
 					resultMap.put("message", Message.MSG_ADD);
 					resultMap.put("message1", "태그는 추가된게 없네요!");
 				}
-				
 			}
 
 		} catch (Exception e) {
-			// TODO: handle exception
 			System.out.println(e.getMessage());
 			resultMap.put("result", "fail");
 			resultMap.put("message", Message.MSG_SERVER_ERR);
 		}
 		return resultMap;
 	}
-
 	// Company info = companyService.getCompanyInfo(userId);
 	public Company getCompanyInfo(String userId) {
 		try {
-//			List<User> list = defaultMapper.selectUserList(map);
-//			User info = defaultMapper.selectUser(map);
-//			int result = defaultMapper.updateXXX(map);
-
-//			resultMap.put("list", list);
-
 			Company info = companyMapper.selectCompanyByUserId(userId);
 			return info;
 
 		} catch (Exception e) {
-			// TODO: handle exception
 			System.out.println(e.getMessage());
 		}
 		return null;
@@ -243,8 +146,6 @@ public class CompanyService {
 	public HashMap<String, Object> removeProduct(HashMap<String, Object> map) {
 		HashMap<String, Object> resultMap = new HashMap<String, Object>();
 		try {
-//			List<User> list = defaultMapper.selectUserList(map);
-//			User info = defaultMapper.selectUser(map);
 			int result = companyMapper.deleteProduct(map);
 
 			if (result > 0) {
@@ -253,7 +154,6 @@ public class CompanyService {
 			}
 
 		} catch (Exception e) {
-			// TODO: handle exception
 			System.out.println(e.getMessage());
 			resultMap.put("result", "fail");
 			resultMap.put("message", Message.MSG_SERVER_ERR);
@@ -265,13 +165,9 @@ public class CompanyService {
 	public HashMap<String, Object> getReservation(HashMap<String, Object> map) {
 		HashMap<String, Object> resultMap = new HashMap<String, Object>();
 		try {
-//			List<User> list = defaultMapper.selectUserList(map);
-//			User info = defaultMapper.selectUser(map);
 			List<Company> list = companyMapper.selectReservation(map);
-			// String selectNewResCnt(HashMap<String, Object> map);
 			String newResCnt = companyMapper.selectNewResCnt(map);
 			
-			///
 			/* resNoList(예약내역리스트 중에 resNo 리스트)를 가져온다. (업체유저가 로그인했을때) */
 			List<Integer> resNoList = companyMapper.selectResNoListForCompanyUser(map);
 			
@@ -282,9 +178,6 @@ public class CompanyService {
 			if (resNoList != null && !resNoList.isEmpty()) {
 			    companyMapper.updateReservationStatusForCompany(map);
 			}
-			
-			
-			
 			resultMap.put("resNoList", resNoList);
 			resultMap.put("newResCnt", newResCnt);
 			resultMap.put("list", list);
@@ -292,7 +185,6 @@ public class CompanyService {
 			resultMap.put("message", Message.MSG_REMOVE);
 
 		} catch (Exception e) {
-			// TODO: handle exception
 			System.out.println(e.getMessage());
 			resultMap.put("result", "fail");
 			resultMap.put("message", Message.MSG_SERVER_ERR);
@@ -304,12 +196,8 @@ public class CompanyService {
 	public HashMap<String, Object> getReviewCnt(HashMap<String, Object> map) {
 		HashMap<String, Object> resultMap = new HashMap<String, Object>();
 		try {
-//			List<User> list = defaultMapper.selectUserList(map);
-//			User info = defaultMapper.selectUser(map);
 			List<Company> list = companyMapper.selectReviewCnt(map);
 			Company info = companyMapper.selectNewReviewCnt(map);
-			
-			
 			//리뷰 라벨 업데이트 (현재시점에서 3일이상 지난거 0으로)
 			int result = companyMapper.updateOldNewLabels(map);
 			
@@ -319,7 +207,6 @@ public class CompanyService {
 			resultMap.put("message", Message.MSG_REMOVE);
 
 		} catch (Exception e) {
-			// TODO: handle exception
 			System.out.println(e.getMessage());
 			resultMap.put("result", "fail");
 			resultMap.put("message", Message.MSG_SERVER_ERR);
@@ -331,8 +218,6 @@ public class CompanyService {
 	public HashMap<String, Object> getSimpleReviewCnt(HashMap<String, Object> map) {
 		HashMap<String, Object> resultMap = new HashMap<String, Object>();
 		try {
-//			List<User> list = defaultMapper.selectUserList(map);
-//			User info = defaultMapper.selectUser(map);
 			List<Company> list = companyMapper.selectSimpleReviewCnt(map);
 			Company info = companyMapper.selectNewSimpleReviewCnt(map);
 			resultMap.put("list", list);
@@ -341,20 +226,17 @@ public class CompanyService {
 			resultMap.put("message", Message.MSG_REMOVE);
 
 		} catch (Exception e) {
-			// TODO: handle exception
 			System.out.println(e.getMessage());
 			resultMap.put("result", "fail");
 			resultMap.put("message", Message.MSG_SERVER_ERR);
 		}
 		return resultMap;
 	}
-
+	
 	// Review selectReviewDetails3(HashMap<String, Object> map);
 	public HashMap<String, Object> getReviewDetails3(HashMap<String, Object> map) {
 		HashMap<String, Object> resultMap = new HashMap<String, Object>();
 		try {
-//			List<User> list = defaultMapper.selectUserList(map);
-//			User info = defaultMapper.selectUser(map);
 			List<Review> list = companyMapper.selectReviewDetails3(map);
 
 			resultMap.put("list", list);
@@ -362,7 +244,6 @@ public class CompanyService {
 			resultMap.put("message", Message.MSG_REMOVE);
 
 		} catch (Exception e) {
-			// TODO: handle exception
 			System.out.println(e.getMessage());
 			resultMap.put("result", "fail");
 			resultMap.put("message", Message.MSG_SERVER_ERR);
@@ -374,16 +255,12 @@ public class CompanyService {
 	public HashMap<String, Object> getSimpleReviewDetails3(HashMap<String, Object> map) {
 		HashMap<String, Object> resultMap = new HashMap<String, Object>();
 		try {
-//			List<User> list = defaultMapper.selectUserList(map);
-//			User info = defaultMapper.selectUser(map);
 			List<Review> list = companyMapper.selectSimpleReviewDetails3(map);
-
 			resultMap.put("list", list);
 			resultMap.put("result", "success");
 			resultMap.put("message", Message.MSG_REMOVE);
 
 		} catch (Exception e) {
-			// TODO: handle exception
 			System.out.println(e.getMessage());
 			resultMap.put("result", "fail");
 			resultMap.put("message", Message.MSG_SERVER_ERR);
@@ -395,8 +272,6 @@ public class CompanyService {
 	public HashMap<String, Object> getTagAndProductList(HashMap<String, Object> map) {
 		HashMap<String, Object> resultMap = new HashMap<String, Object>();
 		try {
-//			List<User> list = defaultMapper.selectUserList(map);
-//			User info = defaultMapper.selectUser(map);
 			List<String> taglist = companyMapper.selectTagList(map);
 
 			// List<Company> selectProductListForTag(HashMap<String, Object> map);
@@ -406,30 +281,22 @@ public class CompanyService {
 			resultMap.put("taglist", taglist);
 			resultMap.put("result", "success");
 			resultMap.put("message", Message.MSG_REMOVE);
-
 		} catch (Exception e) {
-			// TODO: handle exception
 			System.out.println(e.getMessage());
 			resultMap.put("result", "fail");
 			resultMap.put("message", Message.MSG_SERVER_ERR);
 		}
 		return resultMap;
 	}
-
 	// List<String> selectBookedTimes(HashMap<String, Object> map);
 	public HashMap<String, Object> getBookedTimes(HashMap<String, Object> map) {
 		HashMap<String, Object> resultMap = new HashMap<String, Object>();
 		try {
-//			List<User> list = defaultMapper.selectUserList(map);
-//			User info = defaultMapper.selectUser(map);
 			List<String> list = companyMapper.selectBookedTimes(map);
-
 			resultMap.put("list", list);
 			resultMap.put("result", "success");
 			resultMap.put("message", Message.MSG_REMOVE);
-
 		} catch (Exception e) {
-			// TODO: handle exception
 			System.out.println(e.getMessage());
 			resultMap.put("result", "fail");
 			resultMap.put("message", Message.MSG_SERVER_ERR);
@@ -437,26 +304,15 @@ public class CompanyService {
 		return resultMap;
 	}
 	// int insertReservation(HashMap<String, Object> map);
-
 	public HashMap<String, Object> addReservation(HashMap<String, Object> map) {
-
 		HashMap<String, Object> resultMap = new HashMap<String, Object>();
 		try {
-//			List<User> list = defaultMapper.selectUserList(map);
-//			User info = defaultMapper.selectUser(map);
-//			List<String> list = companyMapper.selectBookedTimes(map);
-
-			// resultMap.put("list", list);
-
 			int result = companyMapper.insertReservation(map);
-
 			if (result > 0) {
 				resultMap.put("result", "success");
 				resultMap.put("message", Message.MSG_REMOVE);
 			}
-
 		} catch (Exception e) {
-			// TODO: handle exception
 			System.out.println(e.getMessage());
 			resultMap.put("result", "fail");
 			resultMap.put("message", Message.MSG_SERVER_ERR);
@@ -466,16 +322,10 @@ public class CompanyService {
 
 	// List<Company> selectMyReservationList(HashMap<String, Object> map);
 	public HashMap<String, Object> getMyReservationList(HashMap<String, Object> map) {
-
 		HashMap<String, Object> resultMap = new HashMap<String, Object>();
 		try {
-//			List<User> list = defaultMapper.selectUserList(map);
-//			User info = defaultMapper.selectUser(map);
-//			List<String> list = companyMapper.selectBookedTimes(map);
-
 			// int checkOver30minute(HashMap<String, Object> map);
 			// resultMap.put("list", list);
-
 			/* 잠시 막아둠. 조회시 30분 지났는지 확인해서 CANCEL 로 바꿔주는거 */
 			// int result30 = companyMapper.checkOver30minute(map);
 
@@ -484,15 +334,13 @@ public class CompanyService {
 			/* resNoList를 가져온다. String타입으로 이루어진 리스트 */
 			List<Integer> resNoList = companyMapper.selectResNoList(map);
 			map.put("resNoList", resNoList);
-			
+
 			/* 쿼리문에서 분기처리 한거임..*/
 			/* 나의 예약내역리스트로 갈때 내 예약상태를 업데이트한다. DONE 또는 CANCEL이 보이도록 */
 			/* update 한후 결과값은 int result = 1 또는 0 */
 			if(resNoList != null && !resNoList.isEmpty()) {
 				int result = companyMapper.updateReservationStatus(map);	
 			}
-			
-			
 			// resultMap.put("result30", result30);
 			resultMap.put("resNoList", resNoList);
 			resultMap.put("list", list);
@@ -500,26 +348,19 @@ public class CompanyService {
 			resultMap.put("message", Message.MSG_REMOVE);
 
 		} catch (Exception e) {
-			// TODO: handle exception
 			System.out.println(e.getMessage());
 			resultMap.put("result", "fail");
 			resultMap.put("message", Message.MSG_SERVER_ERR);
 		}
 		return resultMap;
 	}
-
-//int insertPaymentFinal(HashMap<String, Object> map);
-//	
+	
 //	int updatePaymentFinal(HashMap<String, Object> map);
-
 	@Transactional(rollbackFor = Exception.class)
 	public HashMap<String, Object> addAndEditPaymentFinal(HashMap<String, Object> map) {
 
 		HashMap<String, Object> resultMap = new HashMap<String, Object>();
 		try {
-//			List<User> list = defaultMapper.selectUserList(map);
-//			User info = defaultMapper.selectUser(map);
-//			List<String> list = companyMapper.selectBookedTimes(map);
 	        String impUid = map.get("imp_uid").toString();
 	        String merchantUid = map.get("merchant_uid").toString();
 	        map.put("impUid", impUid);
@@ -530,17 +371,13 @@ public class CompanyService {
 
 			System.out.println(map.get("payDate"));// 2026-04-27T03:05:39
 			System.out.println(map.get("payNo")); // 16
-
 			int result2 = companyMapper.updatePaymentFinal(map);
 
-			// List<Company> list = companyMapper.selectMyReservationList(map);
 			if (result1 > 0 && result2 > 0) {
 				resultMap.put("result", "success");
 				resultMap.put("message", Message.MSG_REMOVE);
 			}
-
 		} catch (Exception e) {
-			// TODO: handle exception
 			System.out.println(e.getMessage());
 			resultMap.put("result", "fail");
 			resultMap.put("message", Message.MSG_SERVER_ERR);
@@ -551,70 +388,46 @@ public class CompanyService {
 	public HashMap<String, Object> getTagList(HashMap<String, Object> map) {
 		HashMap<String, Object> resultMap = new HashMap<String, Object>();
 		try {
-//			List<User> list = defaultMapper.selectUserList(map);
-//			User info = defaultMapper.selectUser(map);
-//			int result = defaultMapper.updateXXX(map);
-
-//			resultMap.put("list", list);
-
 			List<String> tagList = companyMapper.selectTagList(map);
 
 			resultMap.put("tagList", tagList);
 			resultMap.put("result", "success");
 			resultMap.put("message", Message.MSG_ADD);
 		} catch (Exception e) {
-			// TODO: handle exception
 			System.out.println(e.getMessage());
 			resultMap.put("result", "fail");
 			resultMap.put("message", Message.MSG_SERVER_ERR);
 		}
 		return resultMap;
 	}
+	
 	//int insertInquiryProduct(HashMap<String, Object> map);
 	public HashMap<String, Object> addInquiryProduct(HashMap<String, Object> map) {
 		HashMap<String, Object> resultMap = new HashMap<String, Object>();
 		try {
-//			List<User> list = defaultMapper.selectUserList(map);
-//			User info = defaultMapper.selectUser(map);
-//			int result = defaultMapper.updateXXX(map);
-
-//			resultMap.put("list", list);
-
 			int result = companyMapper.insertInquiryProduct(map);
 
 			if(result > 0) {
 				resultMap.put("result", "success");
 				resultMap.put("message", Message.MSG_ADD);
 			}
-			
 		} catch (Exception e) {
-			// TODO: handle exception
 			System.out.println(e.getMessage());
 			resultMap.put("result", "fail");
 			resultMap.put("message", Message.MSG_SERVER_ERR);
 		}
 		return resultMap;
 	}
-	//List<Company> selectInquiryProductList(HashMap<String, Object> map);
 	
+	//List<Company> selectInquiryProductList(HashMap<String, Object> map);
 	public HashMap<String, Object> getInquiryProductList(HashMap<String, Object> map) {
 		HashMap<String, Object> resultMap = new HashMap<String, Object>();
 		try {
-//			List<User> list = defaultMapper.selectUserList(map);
-//			User info = defaultMapper.selectUser(map);
-//			int result = defaultMapper.updateXXX(map);
-
-//			resultMap.put("list", list);
-
 			List<Company> list = companyMapper.selectInquiryProductList(map);
-
 			resultMap.put("list", list);
 			resultMap.put("result", "success");
 			resultMap.put("message", Message.MSG_ADD);
-			
-			
 		} catch (Exception e) {
-			// TODO: handle exception
 			System.out.println(e.getMessage());
 			resultMap.put("result", "fail");
 			resultMap.put("message", Message.MSG_SERVER_ERR);
@@ -627,14 +440,7 @@ public class CompanyService {
 	public HashMap<String, Object> addProductInquiryAnswer(HashMap<String, Object> map) {
 		HashMap<String, Object> resultMap = new HashMap<String, Object>();
 		try {
-//			List<User> list = defaultMapper.selectUserList(map);
-//			User info = defaultMapper.selectUser(map);
-//			int result = defaultMapper.updateXXX(map);
-
-//			resultMap.put("list", list);
-			
 			//문의 내용에 답변 & 답변했으니까 inquiry_ans 를 업데이트 해준다
-			
 			//1.문의 내용에 답변한적 없는 경우
 			if("0".equals(String.valueOf(map.get("inquiryAns")))) {
 				
@@ -650,22 +456,12 @@ public class CompanyService {
 			//answer를 업데이트만 해주기!
 			else {
 				int result = companyMapper.updateProductInquiryAnswer(map);
-				
-				
 				if(result > 0) {
 					resultMap.put("result", "success");
 					resultMap.put("message", Message.MSG_ADD);
 				}
-				
-				
 			}
-			
-			
-						
-			
-			
 		} catch (Exception e) {
-			// TODO: handle exception
 			System.out.println(e.getMessage());
 			resultMap.put("result", "fail");
 			resultMap.put("message", Message.MSG_SERVER_ERR);
@@ -677,22 +473,11 @@ public class CompanyService {
 	public HashMap<String, Object> getInquiryAnsYn(HashMap<String, Object> map) {
 		HashMap<String, Object> resultMap = new HashMap<String, Object>();
 		try {
-//			List<User> list = defaultMapper.selectUserList(map);
-//			User info = defaultMapper.selectUser(map);
-//			int result = defaultMapper.updateXXX(map);
-
-//			resultMap.put("list", list);
-			
-
 			Company info = companyMapper.selectInquiryAnsYn(map);
-
 			resultMap.put("info", info);
 			resultMap.put("result", "success");
 			resultMap.put("message", Message.MSG_ADD);
-			
-			
 		} catch (Exception e) {
-			// TODO: handle exception
 			System.out.println(e.getMessage());
 			resultMap.put("result", "fail");
 			resultMap.put("message", Message.MSG_SERVER_ERR);
@@ -704,22 +489,11 @@ public class CompanyService {
 	public HashMap<String, Object> getMyInquiryList(HashMap<String, Object> map) {
 		HashMap<String, Object> resultMap = new HashMap<String, Object>();
 		try {
-//			List<User> list = defaultMapper.selectUserList(map);
-//			User info = defaultMapper.selectUser(map);
-//			int result = defaultMapper.updateXXX(map);
-
-//			resultMap.put("list", list);
-			
-
 			List<Company> list = companyMapper.selectMyInquiryList(map);
-
 			resultMap.put("list", list);
 			resultMap.put("result", "success");
 			resultMap.put("message", Message.MSG_ADD);
-			
-			
 		} catch (Exception e) {
-			// TODO: handle exception
 			System.out.println(e.getMessage());
 			resultMap.put("result", "fail");
 			resultMap.put("message", Message.MSG_SERVER_ERR);
@@ -733,22 +507,11 @@ public class CompanyService {
 	public HashMap<String, Object> getInquiry1Answer(HashMap<String, Object> map) {
 		HashMap<String, Object> resultMap = new HashMap<String, Object>();
 		try {
-//			List<User> list = defaultMapper.selectUserList(map);
-//			User info = defaultMapper.selectUser(map);
-//			int result = defaultMapper.updateXXX(map);
-
-//			resultMap.put("list", list);
-			
-
 			Company info = companyMapper.selectInquiry1Answer(map);
-
 			resultMap.put("info", info);
 			resultMap.put("result", "success");
 			resultMap.put("message", Message.MSG_ADD);
-			
-			
 		} catch (Exception e) {
-			// TODO: handle exception
 			System.out.println(e.getMessage());
 			resultMap.put("result", "fail");
 			resultMap.put("message", Message.MSG_SERVER_ERR);
