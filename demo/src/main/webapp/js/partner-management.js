@@ -1,3 +1,67 @@
+// 리뷰 관리 컴포넌트 명세서 정의
+const ReviewSectionComponent = {
+    template: '#review-section-template',
+    props: [
+        'viewPage', 'reviewTab', 'totalReviewCnt', 'totalSimpleReviewCnt',
+        'newReviewCnt', 'pagedRegisteredProductList', 'registeredProductList',
+        'reviewListPage', 'totalReviewListPages', 'newUnpaidReviewCnt',
+        'pagedProductListForSimpleReviews', 'totalSimpleReviewListPages',
+        'reviews', 'paginatedReviews', 'currentPage', 'totalPages',
+        'simpleReviews', 'paginatedSimpleReviews', 'totalSimplePages',
+        'fnReview', 'fnSimple', 'fnReviewDetails', 'fnSimpleReviewDetails',
+        'fnGoBackToList', 'starRating', 'cleanText', 'fnPageChange'
+    ]
+};
+
+// 문의 관리 컴포넌트 명세서 정의
+const InquirySectionComponent = {
+    template: '#inquiry-section-template',
+    props: [
+        'viewPage',
+        'inquiryList',
+        'fnPaginatedInquiry',
+        'fnThumbnail',
+        'fnAnswerToProductInquiry',
+        'currentPage',
+        'inquiryDetails',
+        'inquiryAnswer',
+        'fnBacktoInquiry',
+        'fnSaveAnswer'
+    ]
+};
+
+const ReservationSectionComponent = {
+    template: '#reservation-section-template',
+    props: [
+        'resCount', 
+        'selectedRes', 
+        'pagedResList', 
+        'registeredProductList', 
+        'reservationList', 
+        'resCurrentPage', 
+        'totalResPageCount',
+        'getResStatusText'
+    ]
+};
+
+// 1. [파일 최상단] 상품 관리 컴포넌트의 명세서 정의
+const ProductSectionComponent = {
+    template: '#product-section-template',
+    // 자식 컴포넌트 내부에서 사용할 데이터 목록 명시 (부모가 전달해줄 예정)
+    props: [
+        'productPage', 
+        'registeredProductList', 
+        'fnPaginatedProductList', 
+        'productCurrentPage', 
+        'totalProductPages', 
+        'initializedOneProductDetails', 
+        'category', 
+        'tagMap', 
+        'previewUrl', 
+        'oneProductDetails'
+    ]
+};
+
 // 1. [파일 최상단에 추가] 메인 메뉴 컴포넌트의 명세서 정의
 const MainMenuComponent = {
     template: '#main-menu-template', // JSP 하단에 만든 template id와 연결
@@ -729,5 +793,9 @@ const app = Vue.createApp({
 
 // 2. [파일 최하단 app.mount 직전에 추가] 앱에 컴포넌트를 장착합니다.
 app.component('main-menu-component', MainMenuComponent);
+app.component('product-section-component', ProductSectionComponent);
+app.component('reservation-section-component', ReservationSectionComponent);
+app.component('inquiry-section-component', InquirySectionComponent);
+app.component('review-section-component', ReviewSectionComponent);
 
 app.mount('#app');
