@@ -56,14 +56,20 @@ public class Member {
 	String imgUrl;
 	String thumbnailUrl;
 	String approvalStatus;
+	
+	// Review table에 있는 컬럼들 입니다.
+	String userNick;
+	int likeCnt;
+	int viewCnt;
 	//
 	int isPurchased; // 추가
 	
 	// Community_Post table에 있는 컬럼들 입니다.
 	String postNo;
 	String category;
-	int viewCnt;
-	int likeCnt;
+	int viewCnt1;
+	int likeCnt1;
+	
 	// Comment table에 있는 컬럼들 입니다.
 	String commentNo;
 	String content;

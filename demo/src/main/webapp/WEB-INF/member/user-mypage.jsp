@@ -132,7 +132,6 @@
                         <span v-if="anniversaryDate">
                             <span v-if="anniversaryDDay === 0">오늘이 결혼 기념일이에요! 🎊 축하드려요!</span>
                             <span v-else-if="anniversaryDDay > 0">결혼 기념일까지 D-{{anniversaryDDay}}일 남았어요! 💍</span>
-                            <span v-else>결혼 {{anniversaryYears}}주년을 축하드려요! 🥂</span>
                             <span v-else>{{anniversaryYears}}주년 기념일이 {{Math.abs(anniversaryDDay)}}일 지났어요! 🥂</span>
                         </span>
 
@@ -190,6 +189,7 @@
     const app = Vue.createApp({
         data() {
             return {
+                sessionId: '${sessionId}',
                  info: {
                     userId: "",
                     name: "",
@@ -228,7 +228,11 @@
         },
         methods: {
             fnEdit: function() {
-                location.href = "/userMyPage-confirmPw.do";
+                if (this.sessionId && this.sessionId.startsWith('kakao_')) {
+                    location.href = "/myPage-updateForm.do";  // 바로 수정 페이지로
+                } else {
+                    location.href = "/userMyPage-confirmPw.do";  // 일반 유저는 비밀번호 확인
+                }
             },
             fnCoupon: function() {
                 location.href = "/myCouponPage.do";

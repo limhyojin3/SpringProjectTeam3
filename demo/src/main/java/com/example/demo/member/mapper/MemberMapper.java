@@ -136,4 +136,9 @@ public interface MemberMapper {
 	// *챗봇 로그* 
 	int insertChatLog(ChatLog chatLog);
 	
+	// 카카오 로그인
+	Member selectMemberByKakaoId(String kakaoId);
+	void insertKakaoMember(HashMap<String, Object> map);
+	void insertKakaoMemberDetail(HashMap<String, Object> map);
+	
 }

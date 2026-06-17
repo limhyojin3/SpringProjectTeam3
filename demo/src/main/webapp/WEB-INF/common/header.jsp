@@ -3,6 +3,7 @@
 <%@ taglib prefix="c" uri="jakarta.tags.core" %>
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
 <head>
     <style>
        /* 1. 드롭다운 전체 래퍼 및 기본 설정 */
@@ -119,10 +120,11 @@
 </head>
 <nav class="navbar navbar-expand-lg sticky-top bg-white shadow-sm dropdown-header-wrap" style="border-bottom: 2px solid #fff0f3 !important;">
     <div class="container">
-        <a class="navbar-brand font-weight-bold"
-           style="color: #ff4d6d !important; font-size: 1.6rem !important; text-decoration: none !important;"
-           href="${pageContext.request.contextPath}/merryViewHome.do">
-            MARRY VIEW
+        <a class="navbar-brand" href="${pageContext.request.contextPath}/merryViewHome.do"
+            style="text-decoration:none!important; display:flex; align-items:center; gap:10px;">
+            <img src="${pageContext.request.contextPath}/css/marryview-logo.svg"
+                alt="MARRY VIEW" style="height:32px; width:auto;">
+            <span style="font-family:'Playfair Display',Georgia,serif; font-size:22px; font-weight:700; color:#ff4d6d; letter-spacing:0.5px;">MarryView</span>
         </a>
         
         <div class="collapse navbar-collapse">

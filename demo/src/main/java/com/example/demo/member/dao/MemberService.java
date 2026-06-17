@@ -259,10 +259,16 @@ public class MemberService {
 	public HashMap<String, Object> checkPassword(HashMap<String, Object> map) {
 	    HashMap<String, Object> resultMap = new HashMap<String, Object>();
 	    try {
-	        Member member = memberMapper.selectMember(map); 
-	        
+	        // 카카오 유저 체크 먼저! (selectMember 호출 전에)
+	        String userId = (String) map.get("userId");
+	        if (userId != null && userId.startsWith("kakao_")) {
+	            resultMap.put("result", "success");
+	            return resultMap;
+	        }
+
+	        // 일반 유저만 아래 로직 실행
+	        Member member = memberMapper.selectMember(map);
 	        if (member != null) {
-	            // 2. 암호화된 비밀번호 비교
 	            boolean isMatch = passwordEncoder.matches((String)map.get("password"), member.getPassword());
 	            resultMap.put("result", isMatch ? "success" : "fail");
 	        } else {

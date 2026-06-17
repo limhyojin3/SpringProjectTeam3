@@ -69,8 +69,8 @@ public class MemberController {
 	@PostMapping("/find-id-result.dox")
 	@ResponseBody
 	public Map<String, Object> findIdResult(@RequestBody Map<String, Object> map) {
-		System.out.println("userName: " + map.get("userName"));
-	    System.out.println("userTel: " + map.get("userTel"));
+//		System.out.println("userName: " + map.get("userName"));
+//	    System.out.println("userTel: " + map.get("userTel"));
 	    Map<String, Object> resultMap = new HashMap<>();
 	    String userId = memberService.findUserId(map);
 	    if (userId != null) {
@@ -112,9 +112,9 @@ public class MemberController {
         String authUserId = (String) session.getAttribute("authUserId");
         Boolean isVerified = (Boolean) session.getAttribute("isVerified");
 
-        System.out.println("세션 authUserId: " + authUserId);
-        System.out.println("세션 isVerified: " + isVerified);
-        System.out.println("요청 userId: " + map.get("userId"));
+//        System.out.println("세션 authUserId: " + authUserId);
+//        System.out.println("세션 isVerified: " + isVerified);
+//        System.out.println("요청 userId: " + map.get("userId"));
         
         // 세션에 저장된 ID와 요청온 ID가 일치하고, 인증된 상태여야 함
         if (isVerified != null && isVerified && authUserId.equals(map.get("userId"))) {
@@ -262,10 +262,12 @@ public class MemberController {
 	// 3-11. 내 정보 수정(비밀번호 확인페이지)
 	@PostMapping("/myPage-checkPw.do")
 	@ResponseBody
-	public String checkPassword(@RequestParam Map<String, Object> map) {
-	    HashMap<String, Object> serviceResult = memberService.checkPassword((HashMap<String, Object>) map); 
+	public String checkPassword(@RequestParam Map<String, Object> map, HttpSession session) {  // HttpSession 추가
+	    String sessionId = (String) session.getAttribute("sessionId");
+	    map.put("userId", sessionId);
+	    
+	    HashMap<String, Object> serviceResult = memberService.checkPassword((HashMap<String, Object>) map);
 	    String result = (String) serviceResult.get("result");
-	 
 	    return result;
 	}
 	// 3-12. 비밀번호 확인 성공 후 이동할 정보 수정 화면
@@ -273,7 +275,6 @@ public class MemberController {
 	public String myPageUpdateForm(HttpSession session, Model model) throws Exception {
 		// 1. 세션에서 로그인한 사용자의 아이디를 가져옵니다.
 	    String sessionId = (String) session.getAttribute("sessionId");
-	    System.out.println("세션에서 꺼낸 ID: " + sessionId); // <-- 여기가 null이면 로그인이 안 된 상태입니다.
 	    if (sessionId != null) {
 	        Member member = memberService.getMemberInfo(sessionId); 
 	        
@@ -292,7 +293,7 @@ public class MemberController {
 	@RequestMapping(value = "/updateMemberInfo.dox", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
 	@ResponseBody
 	public String editMypage(@RequestParam HashMap<String, Object> map) throws Exception {
-		System.out.println("프론트에서 넘어온 데이터 전체: " + map);
+//		System.out.println("프론트에서 넘어온 데이터 전체: " + map);
 		HashMap<String, Object> resultMap = memberService.EditMemberInfo(map);
 	    return new Gson().toJson(resultMap);
 	}

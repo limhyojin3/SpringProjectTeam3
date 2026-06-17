@@ -16,6 +16,7 @@
     <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script src="/js/page-change.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <style>
     /* 홈 css에 있어요. */
@@ -32,43 +33,64 @@
             </div>
         </div>
         <div class="event-banner" :class="{ open: isEventOpen }">
-            <div class="event-banner-header" @click="isEventOpen = !isEventOpen">
-                🎉 진행 중인 이벤트
-                <span class="arrow">▼</span>
-            </div>
             <div class="event-banner-body">
                 <a class="event-item" href="/mypage/info" @click.prevent="showPrep = true">
                     <div class="event-img-bridal">
-                        💐
-                        <span class="event-img-label" @click.stop.prevent="showPrep = true">BRIDAL</span>
+                        <i class="fa-solid fa-champagne-glasses"></i>
+                        <span class="event-img-label">BRIDAL</span>
                     </div>
-                    <span class="item-icon">🎀</span>결혼예정일 입력하고<br>브라이덜샤워 혜택 받기
+                    <span class="item-icon"><i class="fa-solid fa-ring"></i></span>결혼예정일 입력하고<br>브라이덜샤워 혜택 받기
                 </a>
                 <a class="event-item" href="/review/list" @click.prevent="showPrep = true">
                     <div class="event-img-baby">
-                        👶
-                        <span class="event-img-label" @click.stop.prevent="showPrep = true">EVENT</span>
+                        <i class="fa-solid fa-cake-candles"></i>
+                        <span class="event-img-label">EVENT</span>
                     </div>
-                    <span class="item-icon">🍼</span>우리 아이 첫돌 사진<br>리뷰 이벤트
+                    <span class="item-icon"><i class="fa-solid fa-baby"></i></span>우리 아이 첫돌 사진<br>리뷰 이벤트
                 </a>
                 <a class="event-more" href="/event.do">이벤트 더보기 ›</a>
+            </div>
+            <!-- 탭 헤더를 오른쪽에 세로로 -->
+            <div class="event-banner-header" @click="isEventOpen = !isEventOpen">
+                <i class="fa-solid fa-gift"></i>
+                <span class="tab-text">이벤트 보기</span>
             </div>
         </div>
         <div id="wrapper">
             <div class="main-content">
                 <div class="left-banner">
                     <div class="main-banner-img">
-                        <span class="img-placeholder"></span>
+                        <transition name="fade">
+                            <div class="slide"
+                                :key="currentSlide"
+                                :style="{ backgroundImage: 'url(' + slides[currentSlide].img + ')' }">
+                            </div>
+                        </transition>
                         <div class="banner-overlay">
-                            <h2>당신의 특별한 날,<br>메리뷰와 함께</h2>
-                            <p>솔직한 웨딩 리뷰로<br>현명한 선택을 하세요</p>
+                            <h2>
+                                {{ slides[currentSlide].title1 }}
+                                <br>
+                                {{ slides[currentSlide].title2 }}
+                            </h2>
+                            <p>{{ slides[currentSlide].desc }}</p>
+                        </div>
+                        <!-- 하단 점 인디케이터 -->
+                        <div class="slide-dots">
+                            <span v-for="(s, i) in slides" :key="i"
+                                :class="['dot', { active: i === currentSlide }]"
+                                @click="currentSlide = i">
+                            </span>
                         </div>
                     </div>
                 </div>
                 <div class="right-sections">
                     <section class="review-section">
                         <div class="section-title-wrap">
-                            <h2>이유있는 선택!</h2>
+                            <h2>
+                                <i class="fa-solid fa-gem section-icon"></i>
+                                이유있는 선택!
+                                <i class="fa-solid fa-gem section-icon"></i>
+                            </h2>
                         </div>
                         <div class="hash-tag-wrap">
                             <div class="review-tag tag-pink"><span>#감동</span></div>
@@ -96,6 +118,13 @@
                                         alt="리뷰 썸네일">
                                 </div>
                                 <p class="review-title" style="margin-top: 10px; font-weight: bold;">{{ review.title }}</p>
+                                <div class="review-meta">
+                                    <span class="meta-nick">{{ review.userNick }}</span>
+                                    <div class="meta-stats">
+                                        <span><i class="fa-solid fa-heart like-icon"></i> {{ review.likeCnt }}</span>
+                                        <span><i class="fa-regular fa-eye"></i> {{ review.viewCnt }}</span>
+                                    </div>
+                                </div>    
                             </div>
                         </div>
                         <div class="review-more-wrap">
@@ -104,29 +133,38 @@
                     </section>
                     <section class="community-section">
                         <div class="section-header">
-                            <h2>⭐커뮤니티 인기글⭐</h2>
-                            <a href="/api/community/list.do" class="more-link">더보기 ></a>
+                            <h2>
+                                <i class="fa-solid fa-crown section-icon"></i>
+                                커뮤니티 인기글
+                                <i class="fa-solid fa-crown section-icon"></i>
+                            </h2>
                         </div>
                         <div class="post-grid">
                             <div class="post-card" v-for="post in postList" :key="post.postNo"
                                 @click="fnGoPost(post.postNo)">
                                 <p class="post-text">{{ post.title }}</p>
                                 <div class="post-info">
-                                    <span><i class="icon-thumb">👍</i> {{ post.likeCnt }}</span>
-                                    <span class="post-views">조회 {{ post.viewCnt }}</span>
+                                    <span><i class="fa-solid fa-heart like-icon"></i> {{ post.likeCnt }}</span>
+                                    <span><i class="fa-regular fa-eye"></i> {{ post.viewCnt }}</span>
                                 </div>
                             </div>
+                        </div>
+                        <div class="community-more-wrap">
+                            <a href="/api/community/list.do" class="more-link">더보기 ></a>
                         </div>
                     </section>
                 </div>
             </div>
             <div class="chat-btn" @click="isChatOpen = !isChatOpen">
-                <span v-if="!isChatOpen">💬</span> 
-                <span v-else>✖</span>
+                <i v-if="!isChatOpen" class="fa-solid fa-comment-dots"></i>
+                <i v-else class="fa-solid fa-xmark"></i>
             </div>
             <div class="chatbot-container" v-show="isChatOpen">
                 <div class="chat-header">
-                    <h3>🌸 메리뷰 AI 가이드</h3>
+                    <h3>
+                        <i class="fa-solid fa-wand-magic-sparkles"></i>
+                        메리뷰 AI 가이드
+                    </h3>
                 </div>
                 <div class="chat-messages" id="chatMessages">
                     <div v-for="(msg, index) in messages" :key="index" :class="['message', msg.type]">
@@ -167,7 +205,29 @@
                         { label: '준비 순서', text: '결혼 준비 순서 알려줘' }
                     ],
                     isEventOpen: false,
-                    showPrep : false
+                    showPrep : false,
+                    slides: [
+                        {
+                            img: '/img/left-banner2.jpg',
+                            title1: '당신의 특별한 날,',
+                            title2: '메리하게',
+                            desc: '소중한 웨딩, 진짜 후기로 현명하게 선택하세요'
+                        },
+                        {
+                            img: '/img/left-banner3.jpg',
+                            title1: '설레는 브라이덜 샤워,',
+                            title2 : '메리하게',
+                            desc: '특별한 순간을 더 특별하게'
+                        },
+                        {
+                            img: '/img/left-banner.jpg',
+                            title1: '그날의 감동을 다시,',
+                            title2: '리마인드 웨딩',
+                            desc: '소중한 추억을 다시 한번 메리하게'
+                        },
+                    ],
+                    currentSlide: 0,
+                    slideInterval: null
                 };
             },
             methods: {
@@ -265,11 +325,18 @@
                         if(container) container.scrollTop = container.scrollHeight;
                     }, 100);
                 },
+                startSlide() {
+                    this.slideInterval = setInterval(() => {
+                        this.currentSlide = (this.currentSlide + 1) % this.slides.length;
+                    }, 4000);
+                },
             },
             mounted() {
                 // 초기 데이터 로딩
                 axios.get("/mainReviewList.dox").then(res => { this.reviewList = res.data; });
                 axios.get("/mainPostList.dox").then(res => { this.postList = res.data; });
+
+                this.startSlide();
             }
         });
         app.mount('#app');

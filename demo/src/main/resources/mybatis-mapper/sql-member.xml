@@ -104,6 +104,23 @@
 	    WHERE USER_ID = #{userId}
 	</update>
 	
+	<!-- 카카오 ID로 회원 조회 -->
+	<select id="selectMemberByKakaoId" parameterType="String" resultType="com.example.demo.member.model.Member">
+	    SELECT * FROM member WHERE user_id = #{kakaoId}
+	</select>
+	
+	<!-- 카카오 회원 자동 가입 -->
+	<insert id="insertKakaoMember" parameterType="hashmap">
+	    INSERT INTO member (user_id, password, role, status, reg_date)
+	    VALUES (#{userId}, #{password}, 'USER', 'ACTIVE', NOW())
+	</insert>
+	
+	<!-- 카카오 회원 user_detail insert -->
+	<insert id="insertKakaoMemberDetail" parameterType="hashmap">
+	    INSERT INTO user_detail (user_id, name, nickname, email)
+	    VALUES (#{userId}, #{name}, #{nickname}, #{email})
+	</insert>
+	
 	<!-- 쿠폰 조회 -->
 	<select id="selectUserCouponList" parameterType="hashmap" resultType="hashmap">
 	    SELECT
@@ -684,15 +701,21 @@
 	        R.is_paid,
 	        R.user_id,
 	        IFNULL(R.thumbnail_url, R.img_url) AS thumbnailUrl,
-	        <!-- 추가: 현재 로그인한 유저가 이미 구매한 리뷰인지 여부 -->
-	        CASE WHEN PUL.user_id IS NOT NULL THEN 1 ELSE 0 END AS is_purchased
+	        CASE WHEN PUL.user_id IS NOT NULL THEN 1 ELSE 0 END AS is_purchased,
+	        UD.nickname AS userNick,
+	        COUNT(RL.review_no) AS likeCnt,
+	        IFNULL(R.view_cnt, 0) AS viewCnt
 	    FROM review R
-	    <!-- 추가: pass_usage_log 조인으로 구매 여부 확인 -->
 	    LEFT JOIN pass_usage_log PUL
 	        ON R.review_no = PUL.review_no
 	        AND PUL.user_id = #{userId}
+	    LEFT JOIN user_detail UD
+	        ON R.user_id = UD.user_id
+	    LEFT JOIN review_like RL
+	        ON R.review_no = RL.review_no
 	    WHERE R.approval_status = 'APPROVED'
-	    ORDER BY R.reg_date DESC
+	    GROUP BY R.review_no, R.title, R.img_url, R.reg_date, R.is_paid, R.user_id, R.thumbnail_url, PUL.user_id, UD.nickname, R.view_cnt
+	    ORDER BY likeCnt DESC  <!-- 변경 -->
 	    LIMIT 4
 	</select>
 	

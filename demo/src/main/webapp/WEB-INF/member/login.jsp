@@ -10,6 +10,7 @@
     <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
     <script src="/js/page-change.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -124,7 +125,6 @@
             font-weight: 500;
             cursor: pointer;
             transition: opacity 0.2s;
-            margin-bottom: 20px;
         }
         .login-btn:hover { opacity: 0.88; }
 
@@ -229,6 +229,64 @@
         .footer-wrap .footer-links a:hover {
             color: #f4a096;
         }
+
+        /* 소셜 로그인 */
+        .social-login-wrap {
+            margin-top: 16px;
+            margin-bottom: 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .social-divider {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: #aaa;
+            font-size: 12px;
+        }
+
+        .social-divider::before,
+        .social-divider::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: #eee;
+        }
+
+        .social-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            width: 100%;
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .kakao-btn {
+            background: #FEE500;
+            color: #3C1E1E !important;
+        }
+        .naver-btn {
+            background: #03C75A;
+            color: white !important;
+        }
+
+        .social-btn img {
+            width: 20px;
+            height: 20px;
+            object-fit: contain;
+            flex-shrink: 0; 
+        }
+
+        .kakao-btn:hover { background: #F0D900; }
+        .naver-btn:hover { background: #02B351; }
     </style>
 </head>
 <body>
@@ -266,6 +324,19 @@
 
         <!-- 로그인 버튼 -->
         <button class="login-btn" @click="fnLogin()">로그인</button>
+        <!-- 소셜 로그인 버튼  -->
+        <div class="social-login-wrap">
+            <div class="social-divider"><span>또는</span></div>
+            
+            <a href="/oauth/kakao" class="social-btn kakao-btn">
+                <i class="fa-solid fa-comment" style="font-size:20px;"></i>
+                카카오로 로그인
+            </a>
+            <a href="/oauth/naver" class="social-btn naver-btn">
+                <i class="fa-solid fa-n" style="font-size:20px;"></i>
+                네이버로 로그인
+            </a>
+        </div>
 
         <!-- 하단 링크 -->
         <div class="link-wrap">
