@@ -1,0 +1,485 @@
+@charset "UTF-8";
+
+/* ==========================================================================
+   [productTemplate.jsp] - 상품 관리(목록, 등록, 수정) 컴포넌트 전용 스타일
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   1. 상품 목록 (Product List View)
+   -------------------------------------------------------------------------- */
+.productlist-productReg {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	margin-bottom: 20px;
+	padding-left: 10px;
+}
+
+.section-header {
+	border-left: 4px solid #9b8fd4;
+	padding-left: 12px;
+	margin-bottom: 20px;
+}
+
+.section-header h2 {
+	border: none;
+	padding: 0;
+	margin: 0;
+	font-size: 1.3rem;
+}
+
+.btn-product-reg {
+	background: #ffb400;
+	padding: 10px 24px;
+	border: none;
+	border-radius: 10px;
+	font-weight: bold;
+	cursor: pointer;
+	color: white;
+	font-size: 14px;
+	transition: 0.2s;
+}
+
+.btn-product-reg:hover {
+	background: #e0a500;
+	transform: translateY(-2px);
+	box-shadow: 0 4px 12px rgba(240, 180, 41, 0.3);
+}
+
+.content-card {
+	background-color: white;
+	border: 1px solid #eee;
+	padding: 30px;
+	border-radius: 10px;
+	margin-bottom: 20px;
+	position: relative;
+	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+}
+
+.PaginatedProductList {
+	display: flex;
+	align-items: center;
+	padding: 15px;
+}
+
+.imgUrl {
+	width: 100px;
+	height: 100px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	margin-right: 20px;
+}
+
+.productImg {
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+	border-radius: 10px;
+}
+
+.registeredProductList {
+	flex: 1;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+}
+
+.ticket-no {
+	font-size: 11px;
+	color: #aaa;
+	margin-bottom: 4px;
+}
+
+.originalPrice {
+	display: flex;
+	align-items: center;
+	gap: 2px;
+}
+
+.btn-edit {
+	padding: 6px 14px;
+	background: #9b8fd4;
+	color: white;
+	border: 1px solid #9b8fd4;
+	border-radius: 6px;
+	cursor: pointer;
+	font-size: 13px;
+	font-weight: 500;
+	transition: 0.2s;
+	margin-left: 10px;
+}
+
+.btn-edit:hover {
+	background: white;
+	color: #9b8fd4;
+}
+
+.btn-delete {
+	padding: 6px 14px;
+	background: #f4a096;
+	color: white;
+	border: 1px solid #f4a096;
+	border-radius: 6px;
+	cursor: pointer;
+	font-size: 13px;
+	font-weight: 500;
+	transition: 0.2s;
+	margin-left: 10px;
+}
+
+.btn-delete:hover {
+	background: white;
+	color: #f4a096;
+}
+
+/* --------------------------------------------------------------------------
+   2. 하단 페이지네이션 (Pagination)
+   -------------------------------------------------------------------------- */
+.pagination1 {
+	text-align: center;
+	margin-top: 25px;
+}
+
+.pagination1 a {
+	display: inline-block;
+	padding: 8px 12px;
+	margin: 0 4px;
+	text-decoration: none;
+	color: #666;
+	border-radius: 4px;
+	transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+	cursor: pointer;
+	border: 1px solid transparent;
+	font-weight: 500;
+}
+
+.pagination1 a:hover {
+	background: #ccc2ff;
+	color: white;
+	transform: translateY(-2px);
+	box-shadow: 0 4px 12px #9285d1;
+}
+
+.pagination1 a:active {
+	transform: translateY(0px);
+}
+
+/* --------------------------------------------------------------------------
+   3. 상품 등록 및 수정 폼 공통 레이아웃 (Product Form Common)
+   -------------------------------------------------------------------------- */
+.product-form-wrapper {
+	max-width: 900px;
+	margin: 20px auto;
+	padding: 40px;
+	background-color: #ffffff;
+	border-radius: 15px;
+	box-shadow: 0 10px 30px rgba(106, 90, 205, 0.1);
+	font-family: 'Pretendard', sans-serif;
+}
+
+.product-form-wrapper h2 {
+	color: #6a5acd;
+	margin-bottom: 30px;
+	font-weight: 800;
+	border-left: 5px solid #9a8cff;
+	padding-left: 15px;
+	font-size: 1.5rem;
+}
+
+.product-form-section {
+	margin-bottom: 35px;
+	border: 1px solid #e0d7ff;
+	border-radius: 10px;
+	overflow: hidden;
+}
+
+.form-title-box {
+	background-color: #9a8cff;
+	color: white;
+	padding: 12px 20px;
+	font-weight: bold;
+	font-size: 16px;
+}
+
+.form-content-box {
+	padding: 30px;
+	background-color: #faf9ff;
+}
+
+.form-content-box .form-group {
+	margin-bottom: 25px;
+}
+
+.form-label {
+	display: block;
+	font-weight: 600;
+	color: #444;
+	margin-bottom: 10px;
+	font-size: 15px;
+}
+
+.form-info-box input[type="text"] {
+	width: 100%;
+	padding: 12px;
+	border: 1px solid #d1ccff;
+	border-radius: 8px;
+	outline: none;
+	font-size: 14px;
+	transition: border-color 0.2s;
+}
+
+.form-info-box input[type="text"]:focus {
+	border-color: #6a5acd;
+}
+
+/* 등록 폼 전용 이름 제한 너비 */
+.form-info-box input[type="text"]:not(.input-product-name) {
+	max-width: 400px;
+}
+
+/* 카테고리 체크박스 */
+.category-group {
+	display: flex;
+	gap: 20px;
+	flex-wrap: wrap;
+	background: white;
+	padding: 15px;
+	border-radius: 8px;
+	border: 1px solid #d1ccff;
+}
+
+.category-item label {
+	cursor: pointer;
+	font-size: 14px;
+	color: #666;
+	display: flex;
+	align-items: center;
+	gap: 5px;
+}
+
+.category-item input[type="checkbox"] {
+	accent-color: #6a5acd;
+	cursor: pointer;
+	width: 18px;
+	height: 18px;
+}
+
+/* 등록 폼 전용 상품 태그 가로 그리드 배치 */
+.form-content-box .form-group>div:has(input[type="text"]):not(.tag-grid-container):not(.form-info-box) {
+	display: grid;
+	grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+	gap: 10px;
+}
+
+.form-content-box .form-group>div>input[type="text"] {
+	padding: 10px;
+	border: 1px solid #d1ccff;
+	border-radius: 6px;
+	outline: none;
+}
+
+/* 상품 설명 */
+.form-info-box textarea {
+	width: 100%;
+	height: 120px;
+	padding: 15px;
+	border: 1px solid #d1ccff;
+	border-radius: 8px;
+	outline: none;
+	resize: none;
+	font-size: 14px;
+	transition: border-color 0.2s;
+}
+
+.form-info-box textarea:focus {
+	border-color: #6a5acd;
+}
+
+/* 강조 핑크 라벨 */
+.form-info-label {
+	font-weight: 600;
+	color: #ff1493;
+}
+
+/* 등록 폼 예상견적/예약금 가로 배치 정렬 */
+.form-content-box toggle-row,
+.form-content-box>div:not(.form-group):not(.form-row) {
+	display: flex;
+	gap: 20px;
+}
+
+.form-content-box>div:not(.form-group):not(.form-row)>.form-group {
+	flex: 1;
+	margin-bottom: 0;
+}
+
+.form-content-box>div:not(.form-group):not(.form-row) .form-info-box input[type="text"] {
+	max-width: none;
+	width: 100%;
+}
+
+/* 이미지 박스 및 업로드 라벨 */
+.form-content-box .form-group>div:not(.image-editor-box):not(.image-status-label):not(.tag-grid-container):not(.form-info-box) {
+	margin-bottom: 15px;
+	font-weight: bold;
+	color: #444;
+}
+
+.form-content-box .form-group>label:not(.btn-file-select) {
+	background: #6a5acd;
+	color: white;
+	padding: 10px 25px;
+	cursor: pointer;
+	border-radius: 8px;
+	font-weight: 600;
+	display: inline-block;
+	transition: 0.3s;
+	box-shadow: 0 4px 10px rgba(106, 90, 205, 0.2);
+}
+
+.form-content-box .form-group>label:not(.btn-file-select):hover {
+	background: #5544bb;
+}
+
+.image-editor-box {
+	background: linear-gradient(135deg, #ffe0e6 0%, #fff0f3 100%);
+	border: 2px dashed #ff7f9f;
+	border-radius: 8px;
+	padding: 40px;
+	text-align: center;
+	color: #ff7f9f;
+	font-weight: 600;
+	min-height: 200px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	cursor: pointer;
+	transition: all 0.3s ease;
+}
+
+.image-editor-box:hover {
+	background: linear-gradient(135deg, #ffd4e5 0%, #ffe8ef 100%);
+	border-color: #ff1493;
+}
+
+.image-editor-box img {
+	max-width: 500px;
+	max-height: 500px;
+	width: auto;
+	height: auto;
+	border-radius: 8px;
+}
+
+/* 하단 버튼 그룹 */
+.form-button-group {
+	display: flex;
+	gap: 15px;
+	margin-top: 30px;
+	justify-content: flex-end;
+}
+
+.form-button-group button {
+	padding: 12px 30px;
+	border: none;
+	border-radius: 6px;
+	font-weight: 600;
+	cursor: pointer;
+	font-size: 14px;
+	transition: all 0.3s ease;
+}
+
+.btn-submit {
+	background: #ff7f9f;
+	color: white;
+}
+
+.btn-submit:hover {
+	background: #ff1493;
+	transform: translateY(-2px);
+	box-shadow: 0 4px 12px rgba(255, 124, 159, 0.3);
+}
+
+.btn-cancel {
+	background: #f0f0f0;
+	color: #666;
+	border: 1px solid #ddd;
+}
+
+.btn-cancel:hover {
+	background: #e8e8e8;
+	border-color: #999;
+}
+
+/* --------------------------------------------------------------------------
+   4. 상품 수정 폼 전용 확장 스타일 (Product Edit Form Special)
+   -------------------------------------------------------------------------- */
+.input-product-name {
+	max-width: 400px;
+}
+
+.tag-grid-container {
+	display: grid;
+	grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+	gap: 10px;
+}
+
+.tag-grid-container input[type="text"] {
+	padding: 10px;
+	border: 1px solid #d1ccff;
+	border-radius: 6px;
+	outline: none;
+	font-size: 14px;
+	transition: border-color 0.2s;
+}
+
+.tag-grid-container input[type="text"]:focus {
+	border-color: #6a5acd;
+}
+
+.form-row {
+	display: flex;
+	gap: 20px;
+}
+
+.form-row .form-group {
+	flex: 1;
+	margin-bottom: 0;
+}
+
+.image-status-label {
+	margin-bottom: 15px;
+	font-weight: bold;
+	color: #444;
+}
+
+.btn-file-select {
+	background: #6a5acd;
+	color: white;
+	padding: 10px 25px;
+	cursor: pointer;
+	border-radius: 8px;
+	font-weight: 600;
+	display: inline-block;
+	transition: 0.3s;
+	box-shadow: 0 4px 10px rgba(106, 90, 205, 0.2);
+}
+
+.btn-file-select:hover {
+	background: #574bba;
+	transform: translateY(-1px);
+}
+
+.btn-file-select input[type="file"] {
+	display: none;
+}
+
+.image-preview-wrapper {
+	margin-top: 10px;
+}
+
+.image-preview-wrapper img {
+	max-width: 80%;
+	border: 1px solid #ccc;
+	border-radius: 6px;
+}

@@ -28,36 +28,20 @@ public class CompanyController {
 
 	/* 사용가능 / 이름변경: company10.do -> partnerManagement.do (4/27~) */
 	@RequestMapping("/partnerManagement.do")
-	public String test2(Model model) throws Exception {
+	public String partnerManagement(Model model) throws Exception {
 		return "/company/partnerManagement";
 	}
 	
 	/* 상품목록조회(카테고리 / 태그 필터)  + 상품 상세페이지  */
 	/* 이름변경: company2.do -> productCategoryTag.do (4/27~)*/
 	@RequestMapping("/productCategoryTag.do")
-	public String te4(Model model) throws Exception {
+	public String productCategoryTag(Model model) throws Exception {
 		return "/company/productCategoryTag";
 	}
 	
-	
-	
-	
-	
-	
-	
-	
-	
-	/* 로그인 없이 입장용 */
-	@RequestMapping("/company9.do")
-	public String test99(Model model) throws Exception {
-		return "/company/partnerManagement";
-	}
-	
-	
-
 	@RequestMapping(value = "/company.dox", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
 	@ResponseBody
-	public String tes1(@RequestParam HashMap<String, Object> map) throws Exception {
+	public String company(@RequestParam HashMap<String, Object> map) throws Exception {
 		HashMap<String, Object> resultMap = companyService.getCompany(map);
 
 		return new Gson().toJson(resultMap);
@@ -65,7 +49,7 @@ public class CompanyController {
 	
 	@RequestMapping(value = "/productList.dox", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
 	@ResponseBody
-	public String test2(@RequestParam HashMap<String, Object> map) throws Exception {
+	public String productList(@RequestParam HashMap<String, Object> map) throws Exception {
 		HashMap<String, Object> resultMap = companyService.getProductList(map);
 
 		return new Gson().toJson(resultMap);
@@ -73,7 +57,7 @@ public class CompanyController {
 
 	@RequestMapping(value = "/productDetail.dox", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
 	@ResponseBody
-	public String tes(@RequestParam HashMap<String, Object> map) throws Exception {
+	public String productDetail(@RequestParam HashMap<String, Object> map) throws Exception {
 		HashMap<String, Object> resultMap = companyService.getProduct(map);
 
 		return new Gson().toJson(resultMap);
@@ -81,7 +65,7 @@ public class CompanyController {
 
 	@ResponseBody
 	@PostMapping("/upload.dox")
-	public String uploadFile2(@RequestParam(value = "file", required = false) MultipartFile file, Company product)
+	public String upload(@RequestParam(value = "file", required = false) MultipartFile file, Company product)
 			throws IllegalStateException, IOException {
 		// 1. 파일이 저장될 물리적 경로 설정
 
@@ -121,7 +105,7 @@ public class CompanyController {
 	
 	@ResponseBody
 	@PostMapping("/upload2.dox")
-	public String uploadFile3(@RequestParam(value = "file", required = false) MultipartFile file, Company product, @RequestParam("userId") String userId)
+	public String upload2(@RequestParam(value = "file", required = false) MultipartFile file, Company product, @RequestParam("userId") String userId)
 			throws IllegalStateException, IOException {
 		
 		Company info = companyService.getCompanyInfo(userId);
@@ -163,7 +147,7 @@ public class CompanyController {
 	//productRemove.dox
 	@ResponseBody
 	@PostMapping("/productRemove.dox")
-	public String removeProduct(@RequestParam HashMap<String, Object> map) throws Exception {
+	public String productRemove(@RequestParam HashMap<String, Object> map) throws Exception {
 		HashMap<String, Object> resultMap = companyService.removeProduct(map);
 
 		return new Gson().toJson(resultMap);
@@ -171,7 +155,7 @@ public class CompanyController {
 	
 	@RequestMapping(value = "/ReservationList.dox", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
 	@ResponseBody
-	public String test23(@RequestParam HashMap<String, Object> map) throws Exception {
+	public String ReservationList(@RequestParam HashMap<String, Object> map) throws Exception {
 		HashMap<String, Object> resultMap = companyService.getReservation(map);
 
 		return new Gson().toJson(resultMap);
@@ -180,7 +164,7 @@ public class CompanyController {
 	//public HashMap<String, Object> getReviewCnt(HashMap<String, Object> map)
 	@RequestMapping(value = "/getReviewCnt.dox", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
 	@ResponseBody
-	public String test3(@RequestParam HashMap<String, Object> map) throws Exception {
+	public String getReviewCnt(@RequestParam HashMap<String, Object> map) throws Exception {
 		HashMap<String, Object> resultMap = companyService.getReviewCnt(map);
 
 		return new Gson().toJson(resultMap);
@@ -188,7 +172,7 @@ public class CompanyController {
 	
 	@RequestMapping(value = "/getSimpleReviewCnt.dox", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
 	@ResponseBody
-	public String tet3(@RequestParam HashMap<String, Object> map) throws Exception {
+	public String getSimpleReviewCnt(@RequestParam HashMap<String, Object> map) throws Exception {
 		HashMap<String, Object> resultMap = companyService.getSimpleReviewCnt(map);
 
 		return new Gson().toJson(resultMap);
@@ -197,7 +181,7 @@ public class CompanyController {
 		
 	@RequestMapping(value = "/ReviewDetails3.dox", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
 	@ResponseBody
-	public String tet33(@RequestParam HashMap<String, Object> map) throws Exception {
+	public String ReviewDetails3(@RequestParam HashMap<String, Object> map) throws Exception {
 		HashMap<String, Object> resultMap = companyService.getReviewDetails3(map);
 
 		return new Gson().toJson(resultMap);
@@ -205,7 +189,7 @@ public class CompanyController {
 	//public HashMap<String, Object> getSimpleReviewDetails3(HashMap<String, Object> map)
 	@RequestMapping(value = "/SimpleReviewDetails3.dox", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
 	@ResponseBody
-	public String te2t33(@RequestParam HashMap<String, Object> map) throws Exception {
+	public String SimpleReviewDetails3(@RequestParam HashMap<String, Object> map) throws Exception {
 		HashMap<String, Object> resultMap = companyService.getSimpleReviewDetails3(map);
 
 		return new Gson().toJson(resultMap);
@@ -213,7 +197,7 @@ public class CompanyController {
 	//public HashMap<String, Object> getTagList(HashMap<String, Object> map)
 	@RequestMapping(value = "/getTagAndProductList.dox", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
 	@ResponseBody
-	public String te23t33(@RequestParam HashMap<String, Object> map) throws Exception {
+	public String getTagAndProductList(@RequestParam HashMap<String, Object> map) throws Exception {
 		HashMap<String, Object> resultMap = companyService.getTagAndProductList(map);
 
 		return new Gson().toJson(resultMap);
@@ -223,7 +207,7 @@ public class CompanyController {
 	//public HashMap<String, Object> getBookedTimes(HashMap<String, Object> map) {
 	@RequestMapping(value = "/getBookedTimes.dox", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
 	@ResponseBody
-	public String te23t3(@RequestParam HashMap<String, Object> map) throws Exception {
+	public String getBookedTimes(@RequestParam HashMap<String, Object> map) throws Exception {
 		HashMap<String, Object> resultMap = companyService.getBookedTimes(map);
 
 		return new Gson().toJson(resultMap);
@@ -232,7 +216,7 @@ public class CompanyController {
 	//public HashMap<String, Object> addReservation(HashMap<String, Object> map)
 	@RequestMapping(value = "/addReservation.dox", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
 	@ResponseBody
-	public String test99(@RequestParam HashMap<String, Object> map) throws Exception {
+	public String addReservation(@RequestParam HashMap<String, Object> map) throws Exception {
 		HashMap<String, Object> resultMap = companyService.addReservation(map);
 
 		return new Gson().toJson(resultMap);
@@ -241,7 +225,7 @@ public class CompanyController {
 	//public HashMap<String, Object> getMyReservationList(HashMap<String, Object> map)
 	@RequestMapping(value = "/getMyReservationList.dox", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
 	@ResponseBody
-	public String test79(@RequestParam HashMap<String, Object> map) throws Exception {
+	public String getMyReservationList(@RequestParam HashMap<String, Object> map) throws Exception {
 		HashMap<String, Object> resultMap = companyService.getMyReservationList(map);
 
 		return new Gson().toJson(resultMap);
@@ -250,7 +234,7 @@ public class CompanyController {
 	//addAndEditPaymentFinal
 	@RequestMapping(value = "/addAndEditPaymentFinal.dox", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
 	@ResponseBody
-	public String test89(@RequestParam HashMap<String, Object> map) throws Exception {
+	public String addAndEditPaymentFinal(@RequestParam HashMap<String, Object> map) throws Exception {
 		HashMap<String, Object> resultMap = companyService.addAndEditPaymentFinal(map);
 
 		return new Gson().toJson(resultMap);
@@ -258,7 +242,7 @@ public class CompanyController {
 	
 	@RequestMapping(value = "/getTagList.dox", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
 	@ResponseBody
-	public String tess89(@RequestParam HashMap<String, Object> map) throws Exception {
+	public String getTagList(@RequestParam HashMap<String, Object> map) throws Exception {
 		HashMap<String, Object> resultMap = companyService.getTagList(map);
 
 		return new Gson().toJson(resultMap);
@@ -267,7 +251,7 @@ public class CompanyController {
 //	public HashMap<String, Object> addInquiryProduct(HashMap<String, Object> map)
 	@RequestMapping(value = "/addInquiryProduct.dox", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
 	@ResponseBody
-	public String tess09(@RequestParam HashMap<String, Object> map) throws Exception {
+	public String addInquiryProduct(@RequestParam HashMap<String, Object> map) throws Exception {
 		HashMap<String, Object> resultMap = companyService.addInquiryProduct(map);
 
 		return new Gson().toJson(resultMap);
@@ -276,7 +260,7 @@ public class CompanyController {
 	//public HashMap<String, Object> getInquiryProductList(HashMap<String, Object> map)
 	@RequestMapping(value = "/getInquiryProductList.dox", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
 	@ResponseBody
-	public String tess099(@RequestParam HashMap<String, Object> map) throws Exception {
+	public String getInquiryProductList(@RequestParam HashMap<String, Object> map) throws Exception {
 		HashMap<String, Object> resultMap = companyService.getInquiryProductList(map);
 
 		return new Gson().toJson(resultMap);
@@ -286,7 +270,7 @@ public class CompanyController {
 	//public HashMap<String, Object> addProductInquiryAnswer(HashMap<String, Object> map)
 	@RequestMapping(value = "/addProductInquiryAnswer.dox", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
 	@ResponseBody
-	public String tess0990(@RequestParam HashMap<String, Object> map) throws Exception {
+	public String addProductInquiryAnswer(@RequestParam HashMap<String, Object> map) throws Exception {
 		HashMap<String, Object> resultMap = companyService.addProductInquiryAnswer(map);
 
 		return new Gson().toJson(resultMap);
@@ -295,7 +279,7 @@ public class CompanyController {
 	//public HashMap<String, Object> getInquiryAnsYn(HashMap<String, Object> map) 
 	@RequestMapping(value = "/getInquiryAnsYn.dox", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
 	@ResponseBody
-	public String tess09901(@RequestParam HashMap<String, Object> map) throws Exception {
+	public String getInquiryAnsYn(@RequestParam HashMap<String, Object> map) throws Exception {
 		HashMap<String, Object> resultMap = companyService.getInquiryAnsYn(map);
 
 		return new Gson().toJson(resultMap);
@@ -305,7 +289,7 @@ public class CompanyController {
 	//public HashMap<String, Object> getMyInquiryList(HashMap<String, Object> map)
 	@RequestMapping(value = "/getMyInquiryList.dox", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
 	@ResponseBody
-	public String test03(@RequestParam HashMap<String, Object> map) throws Exception {
+	public String getMyInquiryList(@RequestParam HashMap<String, Object> map) throws Exception {
 		HashMap<String, Object> resultMap = companyService.getMyInquiryList(map);
 
 		return new Gson().toJson(resultMap);
@@ -315,7 +299,7 @@ public class CompanyController {
 	//public HashMap<String, Object> getInquiry1Answer(HashMap<String, Object> map)
 	@RequestMapping(value = "/getInquiry1Answer.dox", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
 	@ResponseBody
-	public String test037(@RequestParam HashMap<String, Object> map) throws Exception {
+	public String getInquiry1Answer(@RequestParam HashMap<String, Object> map) throws Exception {
 		HashMap<String, Object> resultMap = companyService.getInquiry1Answer(map);
 
 		return new Gson().toJson(resultMap);
