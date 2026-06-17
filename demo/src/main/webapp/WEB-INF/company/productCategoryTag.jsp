@@ -27,41 +27,36 @@
                 <main>
                     <main>
                         <div v-if="currentMenu === 'main' && productPage === 'list'">
-                            <div style="text-align: right; flex-direction: column;">
-                                <button @click="goMyResPage"
-                                    style="padding: 8px 15px; cursor: pointer; 
-                                border: 1px solid #ccc; background: #fff; border-radius: 4px; margin-right: 10px; margin-bottom: 10px;">나의 예약
-                                    보러가기</button>
-                                <button @click="goMyInquiryPage" style="padding: 8px 15px; cursor: pointer; 
-                                border: 1px solid #ccc; background: #fff; border-radius: 4px; margin-bottom: 10px;">나의
-                                    문의 보러가기</button>
+                            <div class="top-action-bar">
+                                <button @click="goMyResPage" class="btn-sub-action">나의 예약 보러가기</button>
+                                <button @click="goMyInquiryPage" class="btn-sub-action">나의 문의 보러가기</button>
                             </div>
+
                             <div class="filter-section">
-                                <!-- <div class="section-title">조회 필터</div> -->
                                 <h2>카테고리</h2>
                                 <label><input type="checkbox" v-model="selectCategory" value="스튜디오"> 스튜디오</label>
                                 <label><input type="checkbox" v-model="selectCategory" value="드레스"> 드레스</label>
                                 <label><input type="checkbox" v-model="selectCategory" value="메이크업"> 메이크업</label>
 
                                 <div class="tag-filter">
-                                    <h4 style="width: 100%;">분위기 선택</h4>
-                                    <label v-for="tag in productTag" :key="tag">
+                                    <h4>분위기 선택</h4> <label v-for="tag in productTag" :key="tag">
                                         <input type="checkbox" :value="tag" v-model="selectTags">
                                         {{ tag }}
                                     </label>
                                 </div>
                             </div>
+
                             <div v-for="item in filteredList" :key="item.id" class="product-item"
-                                @click="goDetailPage(item)" style="cursor:pointer;">
+                                @click="goDetailPage(item)">
                                 <div class="product-img-box">
-                                    <img :src="item.thumbnail" alt="item.name">
+                                    <img :src="item.thumbnail" :alt="item.name">
                                 </div>
                                 <div class="product-info">
                                     <h4>{{item.name}}</h4>
                                     <p class="product-content">{{item.content}}</p>
-                                    <div v-if="item.tag" style="display: flex; gap: 5px;">
-                                        <span v-for="t in item.tag"
-                                            style="font-size: 11px; color: #ff7f9f;">{{t}}</span>
+
+                                    <div v-if="item.tag" class="product-tags-wrapper">
+                                        <span v-for="t in item.tag" class="tag-span">{{t}}</span>
                                     </div>
                                     <p class="product-price">{{Number(item.price).toLocaleString()}}원</p>
                                 </div>
@@ -70,17 +65,15 @@
 
                         <div v-if="currentMenu === 'main' && productPage === 'detail'">
                             <!-- {{product1}} -->
-                            <button @click="fnBack()" style="padding: 8px 15px; cursor: pointer; 
-                                border: 1px solid #ccc; background: #fff; border-radius: 4px;
-                                 margin-right: 10px; margin-bottom: 10px;">← 뒤로가기</button>
+                            <button @click="fnBack()" class="btn-sub-action">← 뒤로가기</button>
 
                             <div class="detail-container">
                                 <div class="detail-left">
                                     <img :src="product1.thumbnail" class="detail-main-img">
-                                    <div class="detail-company-name">
-                                        {{ product1.company }} </div>
+                                    <div class="detail-company-name">{{ product1.company }}</div>
+
                                     <div class="detail-description-card">
-                                        <h3 style="margin-top:0;">{{ product1.name }}</h3>
+                                        <h3>{{ product1.name }}</h3>
                                         <p>{{ product1.content }}</p>
                                         <hr>
                                         <p>※ 상세 옵션 안내 및 유의사항 :</p>
@@ -89,37 +82,26 @@
                                             노쇼인 경우 예약금 환불은 원칙적으로 불가하며
                                             피치못한 사정으로 노쇼하실 경우, 불참 사유를 증명할 서류를 지참하시면
                                             소비자보호원의 소비자 권익에 대한 법적 사항을 준수하며
-                                            업체 내 환불규정에 따라 검토후 예약금 환불이 가능합니다.
-                                        </p>
-                                        </p>
+                                            업체 내 환불규정에 따라 검토후 예약금 환불이 가능합니다.</p>
                                     </div>
+
                                     <div class="detail-description-card2">
                                         <h3>요청 사항</h3>
-                                        <textarea v-model="res_content"
-                                            style="min-width: 500px; max-width: 500px; min-height: 200px;"
-                                            placeholder="예약시 요청 사항을 여기에 작성해주세요.">
-                                        </textarea>
+                                        <textarea v-model="res_content" placeholder="예약시 요청 사항을 여기에 작성해주세요."></textarea>
                                     </div>
                                 </div>
 
                                 <div class="detail-right">
                                     <div class="reservation-box">
-                                        <div
-                                            style="font-weight:bold; border-bottom:1px solid #ddd; padding-bottom:10px;">
-                                            예약하기</div>
-                                        <div class="calendar-placeholder"
-                                            style="background: white; flex-direction: column;">
-                                            <label for="res-date"
-                                                style="font-size: 14px; margin-bottom: 10px; color: #666;">방문 예정일을
-                                                선택해주세요</label>
-                                            <input type="date" id="res-date" v-model="selectedDate"
-                                                style="padding: 10px; border: 1px solid #ff7f9f; border-radius: 5px; width: 80%;">
-                                            <!-- {{selectedDate}} -->
+                                        <div class="reservation-box-title">예약하기</div>
 
+                                        <div class="calendar-placeholder detail-view">
+                                            <label for="res-date">방문 예정일을 선택해주세요</label>
+                                            <input type="date" id="res-date" v-model="selectedDate">
                                         </div>
+
                                         <div class="booking-time-container">
                                             <h3 class="section-title">방문 희망 시간을 선택해 주세요</h3>
-
                                             <div class="time-slot-group">
                                                 <h4 class="time-ampm">오전</h4>
                                                 <div class="time-slots">
@@ -143,49 +125,29 @@
                                             </div>
                                         </div>
                                     </div>
-
                                     <div class="price-info-box">
                                         <div class="price-row">
                                             <span>예상 견적 :</span>
                                             <span>{{ Number(product1.price).toLocaleString() }}원</span>
                                         </div>
                                     </div>
-
                                     <div class="price-info-box">
                                         <div class="price-row">
                                             <span>예약금 :</span>
                                             <span>{{ Number(product1.deposit).toLocaleString() }}원</span>
                                         </div>
                                     </div>
-
                                     <button class="btn-reserve" @click="fnReserve">예약하기</button>
                                     <button class="btn-inquiry" @click="goInquiry()">상품 문의하기</button>
-
                                 </div>
                             </div>
                         </div>
                         <div v-if="currentMenu === 'main' && productPage === 'inquiry'" class="payment-container">
-
-                            <!-- <div>상품 번호</div>
-                            <div>상품 이름</div>
-                            <div>문의 내용</div>
-                            <button>문의하기 버튼</button> -->
-
-
                             <div class="reservation-ticket">
                                 <div class="ticket-header">
                                     <span class="ticket-brand">MARRY VIEW RESERVATION</span>
                                     <span class="ticket-type">OFFICIAL TICKET</span>
                                 </div>
-                                <!-- {{product1}}
-                                {{selectedDate}}
-                                {{selectedTime}} -->
-                                <!-- <div style="text-align: right;">
-                                    <img :src="product1.thumbnail" style="max-height: 200px; margin-top: 10px; margin-right: 20px;">
-                                </div> -->
-                                <!-- {{product1}}
-                                {{"${sessionScope.sessionId}"}}
-                                {{inquiry}} -->
 
                                 <div class="ticket-body">
                                     <div class="ticket-info">
@@ -207,71 +169,42 @@
                                             <div class="info-row">
                                                 <label>문의 제목</label>
                                                 <div class="value">
-                                                    <input v-model="inquiry.title" style="min-width: 400px;">
-
+                                                    <input v-model="inquiry.title" class="inquiry-input-title">
                                                 </div>
                                             </div>
                                             <div class="info-row">
                                                 <label>문의 내용</label>
                                                 <div class="value">
                                                     <textarea v-model="inquiry.contents"
-                                                        style="min-width: 400px; min-height: 200px;"></textarea>
-
+                                                        class="inquiry-textarea-contents"></textarea>
                                                 </div>
                                             </div>
                                         </div>
-
-
                                     </div>
 
                                     <div class="ticket-side">
                                         <div class="side-content">
-                                            <img :src="product1.thumbnail"
-                                                style="height: 200px; width: 200px; object-fit: cover;">
+                                            <img :src="product1.thumbnail" class="ticket-side-img">
                                             <div class="amount-label">TOTAL PRICE(상품 및 서비스 가격)</div>
                                             <div class="amount-value">{{ Number(product1.price).toLocaleString() }}원
                                             </div>
                                             <div class="agreement-text">필수 항목 동의 : 노쇼관련</div>
-                                            <!-- <div class="ticket-barcode">|| ||| || |||| | ||</div> -->
                                         </div>
                                     </div>
                                 </div>
-
-                                <!-- {{user.name}}
-                                {{product1.id}}
-                                {{product1.companyNo}}
-                                {{res_content}}
-                                {{selectedDate}}
-                                {{selectedTime}} -->
-
-
 
                                 <div class="payment-btn-group">
                                     <button class="btn-cancel-pay" @click="productPage = 'detail'">뒤로가기</button>
                                     <button class="btn-final-reserve" @click="fnInquiryAboutProduct">문의하기</button>
                                 </div>
                             </div>
-
-
-
-
-
-
                         </div>
                         <div v-if="currentMenu === 'main' && productPage === 'payment'" class="payment-container">
-
                             <div class="reservation-ticket">
                                 <div class="ticket-header">
                                     <span class="ticket-brand">MARRY VIEW RESERVATION</span>
                                     <span class="ticket-type">OFFICIAL TICKET</span>
                                 </div>
-                                <!-- {{product1}}
-                                {{selectedDate}}
-                                {{selectedTime}} -->
-                                <!-- <div style="text-align: right;">
-                                    <img :src="product1.thumbnail" style="max-height: 200px; margin-top: 10px; margin-right: 20px;">
-                                </div> -->
-                                <!-- {{product1}} -->
 
                                 <div class="ticket-body">
                                     <div class="ticket-info">
@@ -301,32 +234,18 @@
                                             <label>요청 사항</label>
                                             <div class="value">{{res_content ? res_content : "요청사항 없음"}}</div>
                                         </div>
-
-
-
                                     </div>
 
                                     <div class="ticket-side">
                                         <div class="side-content">
-                                            <img :src="product1.thumbnail"
-                                                style="height: 200px; width: 200px; object-fit: cover;">
+                                            <img :src="product1.thumbnail" class="ticket-side-img">
                                             <div class="amount-label">TOTAL DEPOSIT</div>
                                             <div class="amount-value">{{ Number(product1.deposit).toLocaleString() }}원
                                             </div>
                                             <div class="agreement-text">필수 항목 동의 : 노쇼관련</div>
-                                            <!-- <div class="ticket-barcode">|| ||| || |||| | ||</div> -->
                                         </div>
                                     </div>
                                 </div>
-
-                                <!-- {{user.name}}
-                                {{product1.id}}
-                                {{product1.companyNo}}
-                                {{res_content}}
-                                {{selectedDate}}
-                                {{selectedTime}} -->
-
-
 
                                 <div class="payment-btn-group">
                                     <button class="btn-cancel-pay" @click="productPage = 'detail'">뒤로가기</button>
@@ -336,42 +255,18 @@
                         </div>
 
 
-                        <!-- <div class="payment-info-row">결제 상품 : {{ product1.name }}({{product1.company}})</div>
-                        <div class="payment-info-row">예약일자 및 시간 : {{ selectedDate }} {{ selectedTime }}</div>
-                        <div class="payment-info-row">예약자명 : {{ user.name }}</div>
-                        <div class="payment-info-row">휴대폰번호 : {{ user.contact}}</div>
-                        <div class="payment-info-row">예약금 : {{ product1.deposit }}</div>
-                        <div class="payment-info-row">필수항목동의 : 노쇼관련</div>
 
-                        <div class="total-payment-amount">
-                            결제 금액 : {{ product1.deposit }}
-                        </div>
-
-                        <div class="payment-btn-group">
-                            <button class="btn-final-reserve" @click="fnFinalOrder(user)">예약하기</button>
-                            <button class="btn-cancel-pay" @click="productPage = 'detail'">취소</button>
-                        </div> -->
                         <div v-if="currentMenu === 'main' && productPage === 'resultOfReservation'"
                             class="my-res-container">
-                            <button @click="fnBack()" style="padding: 8px 15px; cursor: pointer; 
-                                border: 1px solid #ccc; background: #fff; border-radius: 4px;
-                                 margin-right: 10px; margin-bottom: 10px;">← 뒤로가기</button>
-
+                            <button @click="fnBack()" class="btn-sub-action">← 뒤로가기</button>
                             <h2 class="list-title">나의 예약 내역</h2>
-
-
                             <div v-for="(r, index) in myReservationList" :key="index" class="mini-ticket"
                                 @click="fnGoDetail(r)">
-
-                                <!-- {{r}} -->
                                 <div class="ticket-img">
                                     <img :src="r.imgUrl" :alt="r.productName">
                                 </div>
 
-
                                 <div class="ticket-brief-info">
-
-
                                     <div class="info-top">
                                         <span class="res-no">No. {{ r.resNo }}</span>
                                     </div>
@@ -379,7 +274,6 @@
                                     <h3 class="product-name">{{ r.productName }}</h3>
                                     <p class="res-date-time">예약 날짜/시간 : {{ r.useDate }} {{ r.useTime.slice(0, 5) +
                                         ':00'}}</p>
-
                                     <div class="status-message" :class="r.resStatus">
                                         <span v-if="r.resStatus === 'WAIT'">⚠️ 30분 이내에 결제하지 않으면 취소됩니다.</span>
                                         <span v-else-if="r.resStatus === 'CONFIRM'">✅ 예약이 확정되었습니다.</span>
@@ -387,40 +281,26 @@
                                         <span v-else-if="r.resStatus === 'CANCEL'">❌ 취소된 예약입니다.</span>
                                     </div>
                                 </div>
-
                                 <div class="ticket-edge">
                                     <span>DETAIL</span>
                                 </div>
-
                             </div>
-
-
                         </div>
+
                         <div v-if="currentMenu === 'main' && productPage === 'reservaionPaymentDetails'"
                             class="payment-container">
-                            <!-- {{myReservation1}} -->
-
                             <div class="reservation-ticket">
                                 <div class="ticket-header">
                                     <span class="ticket-brand">MARRY VIEW RESERVATION</span>
                                     <span class="ticket-type">OFFICIAL TICKET</span>
                                 </div>
-                                <!-- {{product1}}
-                                {{selectedDate}}
-                                {{selectedTime}} -->
-                                <!-- <div style="text-align: right;">
-                                    <img :src="product1.thumbnail" style="max-height: 200px; margin-top: 10px; margin-right: 20px;">
-                                </div> -->
-
                                 <div class="ticket-body">
                                     <div class="ticket-info">
                                         <div class="info-row product-name">
                                             <label>예약 상품</label>
                                             <div class="value">{{ myReservation1.productName }} <small>({{
-                                                    myReservation1.comName
-                                                    }})</small></div>
+                                                    myReservation1.comName }})</small></div>
                                         </div>
-
                                         <div class="info-row">
                                             <label>TOTAL PRICE(상품 및 서비스 가격)</label>
                                             <div class="value">
@@ -442,219 +322,115 @@
                                             <div class="value">{{ myReservation1.resDate }} {{ myReservation1.resTime}}
                                             </div>
                                         </div>
-
-
-
-
                                         <div class="info-row">
                                             <label>휴대폰 번호</label>
                                             <div class="value">{{ myReservation1.tel }}</div>
                                         </div>
-
                                         <div class="info-row">
                                             <label>요청 사항</label>
                                             <div class="value">{{myReservation1.resContent}}</div>
                                         </div>
-
-
-
                                     </div>
-
                                     <div class="ticket-side">
                                         <div class="side-content">
-                                            <img :src="myReservation1.imgUrl"
-                                                style="height: 200px; width: 200px; object-fit: cover;">
+                                            <img :src="myReservation1.imgUrl" class="ticket-side-img">
                                             <div class="amount-label">TOTAL DEPOSIT(예약금)</div>
                                             <div class="amount-value">{{ Number(myReservation1.deposit).toLocaleString()
                                                 }}원</div>
                                             <div class="agreement-text">필수 항목 동의 : 노쇼관련</div>
-                                            <!-- <div class="ticket-barcode">|| ||| || |||| | ||</div> -->
                                         </div>
                                     </div>
                                 </div>
-
-                                <!-- {{user.name}}
-                                {{product1.id}}
-                                {{product1.companyNo}}
-                                {{res_content}}
-                                {{selectedDate}}
-                                {{selectedTime}} -->
-
-                                <!-- {{myReservation1}} -->
-
-
                                 <div class="payment-btn-group">
                                     <button class="btn-cancel-pay"
                                         @click="productPage='resultOfReservation'">뒤로가기</button>
                                     <button class="btn-final-reserve" @click="fnPaymentFinal()"
                                         :disabled="myReservation1.resStatus !== 'WAIT'">
-                                        {{fnButtonName}}</button>
-
+                                        {{fnButtonName}}
+                                    </button>
                                 </div>
                             </div>
                         </div>
 
                         <!-- 나의 문의내역 보는 리스트-->
                         <div v-if="currentMenu === 'main' && productPage === 'myRealInquiryList'"
-                            style="max-width: 900px; margin: 20px auto; padding: 20px;">
-                            <!-- <button @click="productPage = 'list'">뒤로가기</button> -->
-                            <!-- {{product1}}여기서는 사용 ㄴㄴ -->
-                            <!-- {{"${sessionScope.sessionId}"}}
-                            {{myInquiryList}} -->
-
-                            <!-- 헤더 영역 -->
-                            <div
-                                style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; border-bottom: 2px solid #333; padding-bottom: 10px;">
-                                <h2 style="margin: 0; color: #333;">나의 문의 내역</h2>
-                                <button @click="productPage = 'list'"
-                                    style="padding: 8px 15px; cursor: pointer; border: 1px solid #ccc; background: #fff; border-radius: 4px;">
-                                    뒤로가기
-                                </button>
+                            class="my-real-inquiry-container">
+                            <div class="inquiry-header-bar">
+                                <h2 class="inquiry-header-title">나의 문의 내역</h2>
+                                <button @click="productPage = 'list'" class="btn-sub-action">뒤로가기</button>
                             </div>
 
-                            <!-- 문의 리스트 반복문 -->
                             <div v-if="myInquiryList && myInquiryList.length > 0">
-
-                                <!-- {{myInquiry1}} -->
-
                                 <div v-for="(inquiry, index) in myInquiryList" :key="index"
-                                    @click="fnInquiryAnswerDetails(inquiry)" class="inquiryTicket"
-                                    style="display: flex; border: 1px solid #eee; border-radius: 8px; margin-bottom: 15px; overflow: hidden; background: #fff; box-shadow: 0 2px 5px rgba(0,0,0,0.05);">
+                                    @click="fnInquiryAnswerDetails(inquiry)" class="inquiryTicket list-view-ticket">
 
-                                    <!-- 1. 상품 이미지 구역 -->
-                                    <div style="width: 120px; height: 120px; background: #f9f9f9; ">
-                                        <img :src="inquiry.imgUrl" style="width: 100%; height: 100%; object-fit: cover;"
-                                            alt="상품이미지">
+                                    <div class="inquiry-img-box">
+                                        <img :src="inquiry.imgUrl" alt="상품이미지">
                                     </div>
 
-                                    <!-- 2. 문의 내용 및 상품 정보 구역 -->
-                                    <div
-                                        style="flex: 1; padding: 15px; display: flex; flex-direction: column; justify-content: center;">
-                                        <div style="font-size: 0.85rem; color: #888; margin-bottom: 5px;">
-                                            상품명: {{ inquiry.productName }}
-                                        </div>
-                                        <div
-                                            style="font-size: 1.1rem; font-weight: bold; color: #333; margin-bottom: 8px;">
-                                            {{ inquiry.inquiryTitle }}
-                                        </div>
-                                        <div
-                                            style="font-size: 0.95rem; color: #666; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 500px;">
-                                            {{ inquiry.inquiryContents }}
-                                        </div>
+                                    <div class="inquiry-info-box">
+                                        <div class="inquiry-prod-name">상품명: {{ inquiry.productName }}</div>
+                                        <div class="inquiry-title-text">{{ inquiry.inquiryTitle }}</div>
+                                        <div class="inquiry-content-text">{{ inquiry.inquiryContents }}</div>
                                     </div>
 
-                                    <!-- 3. 답변 상태 및 관리 구역 -->
-                                    <div
-                                        style="width: 150px; display: flex; flex-direction: column; justify-content: center; align-items: center; border-left: 1px dashed #eee; background: #fafafa;">
-                                        <!-- 답변 여부 (inquiryAns: "0"은 대기, "1"은 완료로 가정) -->
-                                        <span v-if="inquiry.inquiryAns === '1'"
-                                            style="color: #fff; background: #333; padding: 4px 10px; border-radius: 20px; font-size: 0.8rem; margin-bottom: 10px;">
-                                            답변 완료
-                                        </span>
-                                        <span v-else
-                                            style="color: #ff1493; border: 1px solid #ff1493; padding: 3px 9px; border-radius: 20px; font-size: 0.8rem; margin-bottom: 10px;">
-                                            답변 대기
-                                        </span>
-
-                                        <!-- 상세보기 버튼 (필요 시 구현) -->
-                                        <!-- <button
-                                            style="font-size: 0.85rem; background: none; border: none; color: #888; text-decoration: underline; cursor: pointer;">
-                                            상세보기
-                                        </button> -->
+                                    <div class="inquiry-status-box">
+                                        <span v-if="inquiry.inquiryAns === '1'" class="badge-ans-complete">답변 완료</span>
+                                        <span v-else class="badge-ans-wait">답변 대기</span>
                                     </div>
                                 </div>
                             </div>
 
-                            <!-- 문의 내역이 없을 경우 -->
-                            <div v-else style="text-align: center; padding: 50px; color: #aaa;">
+                            <div v-else class="inquiry-empty-box">
                                 문의하신 내역이 없습니다.
                             </div>
-
                         </div>
                         <div v-if="currentMenu === 'main' && productPage === 'inquiry1Details'"
-                            style="max-width: 800px; margin: 0 auto; padding: 20px; font-family: 'Noto Sans KR', sans-serif;">
-                            <!-- <button @click="productPage = 'myRealInquiryList'">뒤로 가기</button> -->
-
-                            <!-- {{myInquiry1}} -->
-                            <!-- <div>문의내역 상세보기</div>
-                            <hr>
-                            <div>내가 문의한 제목</div>
-                            <div>내가 문의한 내용</div>
-                            <hr>
-                            <div>답변내용</div>
-                            <div>답변자</div> -->
-
-
-                            <!-- 상단 헤더 -->
-                            <div
-                                style="margin-bottom: 30px; display: flex; align-items: center; justify-content: space-between;">
-                                <h2 style="font-size: 1.8rem; font-weight: bold; margin: 0;">문의 내용 상세보기</h2>
-                                <button @click="productPage = 'myRealInquiryList'"
-                                    style="padding: 6px 15px; border: 1px solid #333; background: #fff; cursor: pointer; border-radius: 4px;">
-                                    ← 리스트로 돌아가기
-                                </button>
+                            class="inquiry-detail-container">
+                            <div class="inquiry-detail-header">
+                                <h2 class="inquiry-detail-title">문의 내용 상세보기</h2>
+                                <button @click="productPage = 'myRealInquiryList'" class="btn-back-outline">← 리스트로
+                                    돌아가기</button>
                             </div>
 
-                            <!-- 1. 관련 상품 정보 (카드 형태) -->
-                            <div
-                                style="display: flex; align-items: center; padding: 15px; border: 1px solid #eee; border-radius: 12px; background: #fafafa; margin-bottom: 25px;">
-                                <img :src="myInquiry1.imgUrl"
-                                    style="width: 80px; height: 80px; object-fit: cover; border-radius: 8px; margin-right: 20px;">
+                            <div class="inquiry-product-card">
+                                <img :src="myInquiry1.imgUrl" alt="문의 상품 이미지">
                                 <div>
-                                    <div style="font-size: 0.85rem; color: #888;">문의 상품</div>
-                                    <div style="font-size: 1.1rem; font-weight: bold; color: #333;">{{
-                                        myInquiry1.productName }}</div>
+                                    <div class="inquiry-card-label">문의 상품</div>
+                                    <div class="inquiry-card-name">{{ myInquiry1.productName }}</div>
                                 </div>
                             </div>
 
-                            <!-- 2. 나의 문의 내용 -->
-                            <div
-                                style="border: 1px solid #eee; border-radius: 12px; overflow: hidden; margin-bottom: 25px;">
-                                <div
-                                    style="background: #f8f9fa; padding: 15px 20px; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; align-items: center;">
-                                    <span style="font-weight: bold; color: #555;">나의 문의</span>
-                                    <span style="font-size: 0.9rem; color: #999;">No. {{ myInquiry1.inquiryNo }}</span>
+                            <div class="inquiry-content-box-wrapper">
+                                <div class="inquiry-box-header">
+                                    <span class="inquiry-box-label">나의 문의</span>
+                                    <span class="inquiry-box-number">No. {{ myInquiry1.inquiryNo }}</span>
                                 </div>
-                                <div style="padding: 25px; background: #fff;">
-                                    <h3 style="margin: 0 0 15px 0; font-size: 1.3rem; color: #333;">Q. {{
-                                        myInquiry1.inquiryTitle }}</h3>
-                                    <div
-                                        style="line-height: 1.6; color: #666; white-space: pre-wrap; font-size: 1.05rem;">
-                                        {{ myInquiry1.inquiryContents }}</div>
+                                <div class="inquiry-box-body">
+                                    <h3 class="inquiry-body-title">Q. {{ myInquiry1.inquiryTitle }}</h3>
+                                    <div class="inquiry-body-text">{{ myInquiry1.inquiryContents }}</div>
                                 </div>
                             </div>
 
-                            <!-- 3. 답변 내용 (답변이 있을 때만 표시) -->
-                            <div v-if="myInquiry1.inquiryAns === '1'"
-                                style="border: 1px solid #eee; border-radius: 12px; overflow: hidden; background: #fff;">
-                                <div
-                                    style="background: #333; padding: 15px 20px; color: #fff; font-weight: bold; display: flex; align-items: center;">
-                                    <span style="margin-right: 10px;">A.</span> 업체 답변
+                            <div v-if="myInquiry1.inquiryAns === '1'" class="answer-box-wrapper">
+                                <div class="answer-box-header">
+                                    <span class="answer-prefix">A.</span> 업체 답변
                                 </div>
-                                <div style="padding: 25px;">
-                                    <!-- 데이터에 답변 필드명이 'answerContents'라고 가정했습니다 -->
-                                    <div
-                                        style="line-height: 1.6; color: #333; white-space: pre-wrap; font-size: 1.05rem; margin-bottom: 20px;">
+                                <div class="answer-box-body">
+                                    <div class="answer-body-text">
                                         {{ myInquiry1.answerContents || '답변 내용을 불러오는 중입니다.' }}
-                                        <!-- 답변 내용을 불러오는 중입니다. -->
                                     </div>
-                                    <div
-                                        style="text-align: right; font-size: 0.9rem; color: #999; border-top: 1px solid #f4f4f4; padding-top: 15px;">
+                                    <div class="answer-body-meta">
                                         답변자: {{ myInquiry1.ansCompany || '관리자' }}
-                                        <!-- 답변자 : 관리자 -->
                                     </div>
                                 </div>
                             </div>
 
-                            <!-- 답변 대기 중일 때 표시 -->
-                            <div v-else
-                                style="padding: 40px; text-align: center; border: 1px dashed #ddd; border-radius: 12px; color: #999; background: #fafafa;">
-                                <div style="font-size: 1.5rem; margin-bottom: 10px;">⏳</div>
+                            <div v-else class="answer-wait-box">
+                                <div class="answer-wait-icon">⏳</div>
                                 답변을 기다리고 있습니다. 조금만 더 기다려 주세요!
                             </div>
-
                         </div>
-
             </div>
         </div>
 
@@ -678,14 +454,9 @@
 
             data() {
                 return {
-                    // 변수 - (key : value)
-
-                    //디비에서 조회해온 내 inquiryList가 담기는 곳
                     myInquiryList: [],
-
                     //inquiryList v-for 돌릴때 각각이 담기는 곳
                     myInquiry1: {},
-
                     inquiry: {
                         title: '',
                         contents: ''
@@ -693,266 +464,32 @@
                     userid: "${sessionScope.sessionId}",
                     flag: false,
                     payAmount: '',
-
                     myReservation1: {},
                     myReservationList: [],
                     amTimes: ['10:00', '11:00'],
                     pmTimes: ['13:00', '14:00', '15:00', '16:00', '17:00'],
-
                     bookedTimes: [], // 서버에서 받아온 시간들 (HH:mm:ss 형태)
                     selectedTime: '', // 사용자가 클릭한 시간 (HH:mm 형태)
-
                     res_content: '',
-
                     selectedDate: '',
                     selectTags: [],
                     productTag: [],
                     selectCategory: [],
                     productList3: [],
-                    inquiryList: [
-                        { id: 1, product: '화려하게', title: '투어 일정 변경하고 싶습니다.', userid: '김결혼', content: '04.01일 예약했는데 04.08일로 변경하고 싶어요.' },
-                        { id: 2, product: '스몰 웨딩', title: '메이크업 추가되나요?', userid: '아리랑', content: '메이크업 여기서 받고싶어요.' },
-                    ],
-                    user: {
-                        name: 'maygirl05', contact: '010-5555-1111'
-                    },
+                    inquiryList: [],
+                    user: {},
                     currentMenu: 'main', // 초기 화면
                     reviewTab: 'detail',
-
                     page1: 'main', // 상품별 리뷰 페이지 구분 변수
                     productPage: 'list', //(list: 목록, reg: 등록, edit: 수정)
-
                     page: 1,
                     product: '',
                     product1: {},
                     proType: [],
-
-                    //product === productList.        v-for = "pro in productList" :key="pro.id"   v-if="product === pro.name" 
-                    productList: [
-                        {
-                            id: 1,
-                            thumbnail: 'https://img1.newsis.com/2021/09/26/NISI20210926_0000834715_web.jpg',
-                            name: '내추럴 스몰 웨딩',
-                            company: '아름 스튜디오',
-                            content: '자연스러운 채광과 함께하는 소규모 웨딩 패키지입니다.',
-                            price: '1,700,000원',
-                            category: ['스튜디오', '드레스'],
-                            tag: ['내추럴한', '인물 중심', '가성비']
-                        },
-                        {
-                            id: 2,
-                            thumbnail: 'https://i.imgur.com/RwwCSsD.jpeg',
-                            name: '럭셔리 비즈 패키지',
-                            company: '엘레강스 웨딩',
-                            content: '화려한 호텔 예식에 어울리는 프리미엄 비즈 드레스와 메이크업.',
-                            price: '3,500,000원',
-                            category: ['드레스', '메이크업'],
-                            tag: ['화려한', '비즈 맛집', '프리미엄']
-                        },
-                        {
-                            id: 3,
-                            thumbnail: 'https://i.imgur.com/vVJ0lAD.jpeg',
-                            name: '동화같은 가든 스냅',
-                            company: '포레스트 필름',
-                            content: '야외 정원에서 펼쳐지는 몽환적인 분위기의 촬영 세트입니다.',
-                            price: '1,200,000원',
-                            category: ['스튜디오'],
-                            tag: ['몽환적인', '야외 스냅', '그리너리']
-                        },
-                        {
-                            id: 4,
-                            thumbnail: 'https://i.imgur.com/OOOUXX2.jpeg',
-                            name: '클래식 단아 화보',
-                            company: '고은 사진관',
-                            content: '시간이 흘러도 변치 않는 단아하고 클래식한 인물 중심 촬영.',
-                            price: '2,100,000원',
-                            category: ['스튜디오'],
-                            tag: ['클래식한', '단아한', '인물 중심']
-                        },
-                        {
-                            id: 5,
-                            thumbnail: 'https://i.imgur.com/13Pd2g0.jpeg',
-                            name: '제주 푸른 바다 스냅',
-                            company: '아일랜드 스냅',
-                            content: '제주도의 푸른 바다와 숲을 배경으로 하는 감성 스냅 여행.',
-                            price: '1,500,000원',
-                            category: ['스튜디오'],
-                            tag: ['제주 스냅', '야외 스냅', '빈티지한']
-                        },
-                        {
-                            id: 6,
-                            thumbnail: 'https://i.imgur.com/5NZ6N6J.jpeg',
-                            name: '심플 실크 패키지',
-                            company: '실크로드 웨딩',
-                            content: '깔끔한 실크 드레스와 깨끗한 윤광 메이크업의 조화.',
-                            price: '1,800,000원',
-                            category: ['드레스', '메이크업'],
-                            tag: ['실크 드레스', '심플한', '윤광 메이크업']
-                        },
-                        {
-                            id: 7,
-                            thumbnail: 'https://i.imgur.com/unGGPeY.jpeg',
-                            name: '빈티지 레트로 웨딩',
-                            company: '기억 저장소',
-                            content: '유니크한 소품과 빈티지한 색감이 매력적인 스튜디오 상품.',
-                            price: '1,400,000원',
-                            category: ['스튜디오'],
-                            tag: ['빈티지한', '세련된', '커스터마이징']
-                        },
-                        {
-                            id: 8,
-                            thumbnail: 'https://i.imgur.com/HH39Q7x.jpeg',
-                            name: '프리미엄 토탈 샵',
-                            company: '골든 라벨',
-                            content: '스튜디오, 드레스, 메이크업을 한 번에 해결하는 올인원 패키지.',
-                            price: '4,200,000원',
-                            category: ['스튜디오', '드레스', '메이크업'],
-                            tag: ['토탈 샵', '프리미엄', '우아한']
-                        },
-                        {
-                            id: 9,
-                            thumbnail: 'https://i.imgur.com/dfAstzQ.jpeg',
-                            name: '로맨틱 야간 촬영',
-                            company: '미드나잇 스튜디오',
-                            content: '도시의 야경과 전구 조명이 어우러진 로맨틱한 분위기.',
-                            price: '1,100,000원',
-                            category: ['스튜디오'],
-                            tag: ['야간 촬영', '몽환적인', '감성적인']
-                        },
-                        {
-                            id: 10,
-                            thumbnail: 'https://i.imgur.com/zE63IB8.jpeg',
-                            name: '모던 시크 스튜디오',
-                            company: '블랙 앤 화이트',
-                            content: '심플한 배경에서 인물에만 집중하는 세련된 화보 스타일.',
-                            price: '1,600,000원',
-                            category: ['스튜디오'],
-                            tag: ['모던한', '세련된', '인물 중심']
-                        },
-                        {
-                            id: 11,
-                            thumbnail: 'https://i.imgur.com/x08AwJc.jpeg',
-                            name: '러블리 과즙 팡팡',
-                            company: '베리 메이크업',
-                            content: '사랑스러운 신부를 위한 화사한 과즙 메이크업과 레이스 드레스.',
-                            price: '2,300,000원',
-                            category: ['드레스', '메이크업'],
-                            tag: ['러블리한', '과즙 메이크업', '레이스 드레스']
-                        },
-                        {
-                            id: 12,
-                            thumbnail: 'https://i.imgur.com/BF7go1g.jpeg',
-                            name: '그리너리 본식 스냅',
-                            company: '모먼트 픽',
-                            content: '식장 분위기를 그대로 담아내는 생생한 현장 본식 스냅.',
-                            price: '900,000원',
-                            category: ['스튜디오'],
-                            tag: ['본식 스냅', '그리너리', '가성비']
-                        },
-                        {
-                            id: 13,
-                            thumbnail: 'https://i.imgur.com/zKxXEJ1.jpeg',
-                            name: '동양적 우아함 패키지',
-                            company: '연정 메이크업',
-                            content: '전통의 미와 현대적 감각이 어우러진 우아한 스타일링.',
-                            price: '2,500,000원',
-                            category: ['드레스', '메이크업'],
-                            tag: ['우아한', '단아한', '음영 메이크업']
-                        },
-                        {
-                            id: 14,
-                            thumbnail: 'https://i.imgur.com/jCdqTnb.jpeg',
-                            name: '나만의 커스터마이징',
-                            company: '더 원 웨딩',
-                            content: '신랑 신부가 원하는 컨셉을 그대로 구현하는 맞춤 상품.',
-                            price: '3,000,000원',
-                            category: ['스튜디오', '드레스', '메이크업'],
-                            tag: ['커스터마이징', '세련된', '단독 홀']
-                        },
-                        {
-                            id: 15,
-                            thumbnail: 'https://i.imgur.com/vWUgcRD.jpeg',
-                            name: '실속 알뜰 패키지',
-                            company: '굿데이 웨딩',
-                            content: '필요한 것만 쏙쏙 담은 거품 없는 실속형 웨딩 상품.',
-                            price: '800,000원',
-                            category: ['메이크업', '드레스'],
-                            tag: ['가성비', '심플한', '단아한']
-                        }
-                    ],
-
-
-                    simpleReviews: [
-                        // 1~7: 스몰 웨딩 (7개)
-                        { id: 1, product: '스몰 웨딩', content: '드레스 피팅 때 전문가 포스가 느껴져서 안심됐어요.', userid: '예신이1004', rating: 5, updated: 'new' },
-                        { id: 2, product: '스몰 웨딩', content: '지정했던 드레스가 대여 중이라 다른 걸 입어 아쉬워요.', userid: '드레스투어중', rating: 3, updated: 'new' },
-                        { id: 3, product: '스몰 웨딩', content: '메이크업 지속력이 좀 떨어져서 촬영 중간에 수정했어요.', userid: '수정화장필수', rating: 3, updated: 'new' },
-                        { id: 4, product: '스몰 웨딩', content: '대기 공간이 좁아서 부모님 모시고 가기엔 좀 불편해요.', userid: '효도신부', rating: 2, updated: 'old' },
-                        { id: 5, product: '스몰 웨딩', content: '드레스 상태가 조금 사용감이 느껴져서 아쉬웠습니다.', userid: '꼼꼼한체크', rating: 2, updated: 'old' },
-                        { id: 6, product: '스몰 웨딩', content: '가까운 지인들만 모시는 자리에 딱 맞는 심플한 드레스가 많아요.', userid: '심플리즘', rating: 5, updated: 'old' },
-                        { id: 7, product: '스몰 웨딩', content: '소규모 예식이라 걱정했는데 상담 실장님이 동선까지 잘 짜주셨어요.', userid: '미니멀라이프', rating: 4, updated: 'old' },
-
-                        // 8~12: 화려하게 (5개)
-                        { id: 8, product: '화려하게', content: '헬퍼 이모님이 세심하게 챙겨주셔서 공주 된 기분이었어요.', userid: '행복한웨딩', rating: 5, updated: 'new' },
-                        { id: 9, product: '화려하게', content: '수입 드레스 라인이 정말 독보적이네요. 화려함 끝판왕!', userid: '비즈가좋아', rating: 5, updated: 'new' },
-                        { id: 10, product: '화려하게', content: '실장님이 제 체형에 딱 맞는 드레스를 잘 골라주셨어요.', userid: '체형교정마법', rating: 5, updated: 'old' },
-                        { id: 11, product: '화려하게', content: '야간 촬영 추가했는데 분위기가 정말 환상적이에요.', userid: '밤하늘의별', rating: 5, updated: 'old' },
-                        { id: 12, product: '화려하게', content: '조명 아래서 비즈가 반짝이는 게 너무 예뻐서 눈을 뗄 수가 없었네요.', userid: '반짝이덕후', rating: 5, updated: 'old' },
-
-                        // 13~15: 동화같은 분위기 (3개)
-                        { id: 13, product: '동화같은 분위기', content: '스튜디오 채광이 너무 예뻐서 원본도 만족스러워요.', userid: '촬영끝행복시작', rating: 5, updated: 'old' },
-                        { id: 14, product: '동화같은 분위기', content: '작가님이 긴장을 잘 풀어주셔서 자연스럽게 찍었습니다.', userid: '웃는게어색해', rating: 5, updated: 'old' },
-                        { id: 15, product: '동화같은 분위기', content: '스튜디오 배경이 유행을 좀 탈 것 같지만 사진은 예쁩니다.', userid: '감성신부v', rating: 4, updated: 'old' }
-                    ],
-                    reviews: [
-                        { id: 1, product: '스몰 웨딩', rating: 5, author: '김결혼', content: '웨딩 플래너님이 정말 세심하게 도와주셔서 만족스러웠어요.', date: '26.04.08', updated: 'new' },
-                        { id: 2, product: '스몰 웨딩', rating: 4, author: '김tntn', content: '드레스 퀄리티가 기대 이상이었습니다!', date: '26.04.08', updated: 'new' },
-                        { id: 3, product: '스몰 웨딩', rating: 5, author: '김발랄', content: '스튜디오 촬영 분위기가 너무 좋아서 즐겁게 찍었어요.', date: '26.04.08', updated: 'new' },
-                        { id: 4, product: '스몰 웨딩', rating: 5, author: '김망고', content: '스냅 사진 퀄리티가 정말 좋아요.', date: '26.04.08', updated: 'new' },
-                        { id: 5, product: '스몰 웨딩', rating: 3, author: '김딸기', content: '예식 진행 스태프들이 매우 프로페셔널했습니다.', date: '26.04.07', updated: 'old' },
-                        { id: 6, product: '스몰 웨딩', rating: 4, author: '김포도', content: '예약 과정이 간편해서 좋았어요.', date: '26.04.07', updated: 'old' },
-                        { id: 7, product: '스몰 웨딩', rating: 3, author: '김사과', content: '디테일까지 신경 써주셔서 감동이었습니다.', date: '26.04.07', updated: 'old' },
-                        { id: 8, product: '스몰 웨딩', rating: 3, author: '김오렌지', content: '예산에 맞춰 잘 추천해주셔서 도움이 많이 됐어요.', date: '26.04.06', updated: 'old' },
-                        { id: 9, product: '스몰 웨딩', rating: 5, author: '김자몽', content: '웨딩 촬영 결과물이 정말 만족스러웠습니다.', date: '26.04.05', updated: 'old' },
-                        { id: 10, product: '스몰 웨딩', rating: 3, author: '김레몬', content: '당일 진행이 체계적이라 믿고 맡길 수 있었어요.', date: '26.04.05', updated: 'old' },
-                        { id: 11, product: '스몰 웨딩', rating: 3, author: '김복숭아', content: '친구들에게도 추천하고 싶은 업체입니다.', date: '26.04.02', updated: 'old' },
-                        { id: 12, product: '스몰 웨딩', rating: 5, author: '김수박', content: '상담부터 계약까지 과정이 투명했어요.', date: '26.04.02', updated: 'old' },
-                        { id: 13, product: '스몰 웨딩', rating: 5, author: '김참외', content: '웨딩홀 연출이 너무 아름다웠습니다.', date: '26.04.01', updated: 'old' },
-                        { id: 14, product: '스몰 웨딩', rating: 5, author: '김멜론', content: '가성비 좋은 패키지라 만족해요.', date: '26.04.01', updated: 'old' },
-                        { id: 15, product: '스몰 웨딩', rating: 3, author: '김키위', content: '플래너님 응대가 빠르고 정확했습니다.', date: '26.04.01', updated: 'old' },
-
-                        // 화려하게 (10개)
-                        { id: 16, product: '화려하게', rating: 3, author: '김미미', content: '메이크업이 자연스럽고 예쁘게 잘 되었어요.', date: '26.04.08', updated: 'new' },
-                        { id: 17, product: '화려하게', rating: 5, author: '김sksk', content: '상담부터 진행까지 전반적으로 만족합니다.', date: '26.04.08', updated: 'new' },
-                        { id: 18, product: '화려하게', rating: 5, author: '김하늘', content: '예식 당일 진행이 매끄러워서 걱정 없이 진행했어요.', date: '26.04.08', updated: 'new' },
-                        { id: 19, product: '화려하게', rating: 3, author: '김바다', content: '플래너님 덕분에 준비 과정이 훨씬 수월했습니다.', date: '26.04.05', updated: 'old' },
-                        { id: 20, product: '화려하게', rating: 3, author: '김초코', content: '드레스 종류가 다양해서 선택하기 좋았어요.', date: '26.04.05', updated: 'old' },
-                        { id: 21, product: '화려하게', rating: 5, author: '김쿠키', content: '촬영 작가님이 포즈도 잘 잡아주셔서 만족!', date: '26.04.04', updated: 'old' },
-                        { id: 22, product: '화려하게', rating: 4, author: '김라떼', content: '웨딩홀 분위기가 정말 고급스러웠습니다.', date: '26.04.04', updated: 'old' },
-                        { id: 23, product: '화려하게', rating: 5, author: '김모카', content: '상담이 친절하고 꼼꼼해서 신뢰가 갔어요.', date: '26.04.03', updated: 'old' },
-                        { id: 24, product: '화려하게', rating: 5, author: '김코코', content: '헤어 스타일링이 마음에 쏙 들었습니다.', date: '26.04.02', updated: 'old' },
-                        { id: 25, product: '화려하게', rating: 5, author: '김치즈', content: '전체 패키지 구성이 합리적이었어요.', date: '26.04.02', updated: 'old' },
-
-                        // 동화같은 분위기 (5개)
-                        { id: 26, product: '동화같은 분위기', rating: 5, author: '김파인', content: '드레스 피팅 경험이 정말 좋았어요.', date: '26.04.08', updated: 'new' },
-                        { id: 27, product: '동화같은 분위기', rating: 5, author: '김체리', content: '소소한 요청도 잘 반영해주셔서 감사했습니다.', date: '26.04.08', updated: 'new' },
-                        { id: 28, product: '동화같은 분위기', rating: 5, author: '김블루베리', content: '전체 일정 관리가 체계적이었어요.', date: '26.04.08', updated: 'new' },
-                        { id: 29, product: '동화같은 분위기', rating: 5, author: '김라임', content: '결혼 준비 스트레스가 많이 줄었습니다.', date: '26.04.05', updated: 'old' },
-                        { id: 30, product: '동화같은 분위기', rating: 5, author: '김코코넛', content: '인생에 한 번뿐인 날을 잘 만들어주셔서 감사합니다.', date: '26.04.01', updated: 'old' }
-                    ],
-                    reservationList: [
-                        { id: 1, product: '동화같은 분위기', content: '몽환적인 야외 촬영 희망합니다.', resDate: '26.03.01', useDate: '26.04.01 14:00PM', name: '김결혼', contact: '010-1234-5678', price: '50,000원' },
-                        { id: 2, product: '화려하게', content: '럭셔리한 호텔 연회장 예약 건입니다.', resDate: '26.03.05', useDate: '26.04.05 10:00AM', name: '5월신부', contact: '010-9876-5432', price: '100,000원' },
-                        { id: 3, product: '스몰 웨딩', content: '직계 가족만 모시는 조용한 예식입니다.', resDate: '26.03.10', useDate: '26.04.10 16:00PM', name: '김tntn', contact: '010-5555-6666', price: '30,000원' },
-                        { id: 4, product: '동화같은 분위기', content: '디즈니 컨셉 웨딩 상담 부탁드려요.', resDate: '26.03.12', useDate: '26.04.15 11:00AM', name: '이봄날', contact: '010-2222-3333', price: '50,000원' },
-                        { id: 5, product: '화려하게', content: '조명이 화려한 웨딩홀을 원합니다.', resDate: '26.03.15', useDate: '26.04.18 13:00PM', name: '박정성', contact: '010-4444-5555', price: '100,000원' },
-                        { id: 6, product: '스몰 웨딩', content: '펜션 전체 대관 스몰웨딩 상담입니다.', resDate: '26.03.18', useDate: '26.04.20 09:00AM', name: '최기록', contact: '010-7777-8888', price: '30,000원' },
-                        { id: 7, product: '동화같은 분위기', content: '숲속 컨셉 촬영 예약입니다.', resDate: '26.03.20', useDate: '26.04.22 15:30PM', name: '정반짝', contact: '010-9999-0000', price: '50,000원' },
-                        { id: 8, product: '화려하게', content: '풍성한 비즈 드레스 투어 희망합니다.', resDate: '26.03.22', useDate: '26.04.25 10:30AM', name: '강꽃님', contact: '010-1111-2222', price: '100,000원' },
-                        { id: 9, product: '스몰 웨딩', content: '레스토랑 웨딩 식순 문의입니다.', resDate: '26.03.25', useDate: '26.04.28 17:00PM', name: '윤소식', contact: '010-3333-4444', price: '30,000원' },
-                        { id: 10, product: '동화같은 분위기', content: '파스텔 톤 생화 장식 상담입니다.', resDate: '26.03.28', useDate: '26.05.02 12:00PM', name: '조전통', contact: '010-6666-7777', price: '50,000원' },
-                        { id: 11, product: '화려하게', content: '대형 웨딩홀 촬영 스케줄 문의입니다.', resDate: '26.04.01', useDate: '26.05.05 14:00PM', name: '한찬란', contact: '010-8888-9999', price: '100,000원' }
-                    ],
+                    productList: [],
+                    simpleReviews: [],
+                    reviews: [],
+                    reservationList: [],
                     category: ["스튜디오", "드레스", "메이크업"],
                     selectedItems: [],
                     productForm: {
@@ -1014,19 +551,6 @@
 
                         // 둘 다 만족하는 것만 리턴 (AND 조건)
                         return matchCategory && matchTag;
-
-
-
-                        // 카테고리 조건 (선택 안 했으면 pass, 선택했으면 포함 여부 확인)
-                        //const matchCategory = this.selectCategory.length === 0 || 
-                        //    this.selectCategory.some(cat => product.category.includes(cat));
-                        // []             //과즙팡팡     과즙팡팡,스몰웨딩
-                        // 태그 조건
-                        //const matchTag = this.selectTags.length === 0 ||
-                        //    this.selectTags.some(tag => product.tag.includes(tag));
-
-                        // 둘 다 만족하는 것만 리턴 (AND 조건)
-                        //return matchCategory && matchTag;
                     });
                 }
                 ,
@@ -1048,7 +572,7 @@
                         { id: 'main', name: '마이 페이지', count: 0 },
                         { id: 'product', name: '상품 관리', count: 0 },
                         { id: 'reservation', name: '예약 관리', count: this.resCount },
-                        { id: 'inquiry', name: '문의 내역', count: 2 },
+                        { id: 'inquiry', name: '문의 내역', count: 0 },
                         { id: 'review', name: '리뷰 내역', count: this.revCnt },
                         { id: 'customer', name: '고객센터', count: 0 }
                     ];
@@ -1069,17 +593,12 @@
                         }
                     })
                 },
-
-
                 filteredReviews() {
                     return this.reviews.filter(rev => rev.product === this.page1); // 현재 선택된 상품(page1)에 해당하는 리뷰만 반환 //[] 리스트..
                 },
                 filteredSimpleReviews() {
                     return this.simpleReviews.filter(rev => rev.product === this.page1); // 현재 선택된 상품(page1)에 해당하는 리뷰만 반환 //[] 리스트..
                 },
-
-
-
                 paginatedReviews() {
                     const start = (this.page - 1) * 5;
                     const end = start + 5;
@@ -1090,22 +609,17 @@
                     const end = start + 5;
                     return this.filteredSimpleReviews.slice(start, end); // 페이지에 맞는 리뷰만 반환 (5개씩) (page가 1이면 0~4, page가 2면 5~9) //[] 리스트..
                 },
-
                 fnPaginatedReservation() {
                     let start = (this.currentPage - 1) * 3;
                     let end = start + 3;
                     return this.reservationList.slice(start, end);
                 },
-
                 fnPaginatedInquiry() {
                     let start = this.currentPage - 1;
                     let end = start + 1;
                     return this.inquiryList.slice(start, end);
                     //(0, 1), (1, 2)
                 },
-
-
-
                 totalPages() {
                     return Math.ceil(this.filteredReviews.length / 5); // 총 페이지 수 계산 (5개씩 보여줄 때) // 숫자
                 },
@@ -1116,13 +630,9 @@
                 totalPageReservation() {
                     return Math.ceil(this.reservationList.length / 3);
                 },
-
-
-
             },
             watch: {
                 selectedDate(newVal) {
-
                     const today = new Date();
                     const tomorrow = new Date(today);
                     tomorrow.setDate(today.getDate() + 1);
@@ -1163,14 +673,10 @@
                         type: "POST",
                         data: param,
                         success: function (data) {
-                            //console.log(data); //info,result,message
-
                             self.user.name = data.info.comName;
                             self.user.usePeriod = data.info.usePeriod;
                             self.user.grade = data.info.grade;
                             self.user.lastPayment = data.info.lastPayment;
-
-                            //console.log(self.user);
                         }
                     });
                 },
@@ -1185,8 +691,6 @@
                         type: "POST",
                         data: param,
                         success: function (data) {
-                            //console.log(data);
-
                             self.productList3 = data.list; //덮어씌우기
                         }
                     });
@@ -1201,9 +705,7 @@
                 },
                 updateProduct: function () {
                     alert("상품이 수정되었습니다.");
-
                     this.productPage = 'list'; // 수정 후 상품 목록으로 돌아가기
-                    // 여기야!!(+)
                 },
 
                 goEditPage(item) {
@@ -1220,11 +722,8 @@
                         type: "POST",
                         data: param,
                         success: function (data) {
-                            console.log(data);
                             // 1. 일단 전체 데이터를 담습니다.
                             self.product1 = data.info;//덮어씌우기
-
-                            //
                             // 2. 문자열로 들어온 proType을 실제 배열로 변환합니다.
                             // 만약 데이터가 '["MAKEUP"]' 형태라면 JSON.parse를 써서 ["MAKEUP"] 배열로 만듭니다.
                             if (typeof self.product1.proType === 'string') {
@@ -1253,15 +752,6 @@
                         }
                     });
                 },
-
-                //프론트 만으로 되는거
-                //goEditPage(item) {
-                //    this.productPage = 'edit';
-                //    this.product = item.name;
-                // 중요: [... ]를 써서 원본이 아닌 '복사본'을 바구니에 담습니다.
-                //    this.selectedItems = [...item.category];
-                //},
-
                 // [2] 등록 버튼 누를 때: 바구니 깨끗이 비우기
                 goRegPage() {
                     this.productPage = 'reg';
@@ -1271,25 +761,16 @@
 
                 // [3] 수정 완료 버튼 (Save)
                 fnSave() {
-                    // 1. 현재 어떤 상품을 찾으려 하는지 확인
-                    console.log("현재 찾으려는 상품명:", this.product);
-                    console.log("현재 바구니(체크된 것):", this.selectedItems);
-
                     // 2. productList에서 해당 상품 찾기
                     const item = this.productList.find(p => p.name === this.product);
 
                     if (item) {
-                        // 3. 찾았다면 데이터 덮어씌우기
                         item.category = [...this.selectedItems];
-                        console.log("수정 완료된 원본 데이터:", item);
-
                         alert("수정되었습니다!");
                         this.productPage = 'list';
                     } else {
                         // 4. 만약 못 찾았다면 왜 못 찾았는지 경고!
-                        alert("수정 대상을 찾지 못했습니다. (콘솔창을 확인하세요)");
-                        console.error("productList 안에 '" + this.product + "'와 일치하는 이름이 없습니다.");
-                        console.log("현재 목록들:", this.productList.map(p => p.name));
+                        alert("수정 대상을 찾지 못했습니다.");
                     }
                 },
                 fnAdd() {
@@ -1307,10 +788,7 @@
 
                     alert("등록되었습니다!");
                     this.resetForm();
-
                     this.productPage = "list";
-
-
                 },
                 goRegPage2() {
                     this.product1 = {
@@ -1322,7 +800,6 @@
                         imgUrl: ''
                     }
                     this.productPage = 'reg';
-
                 },
                 resetForm() {
                     this.productForm = {
@@ -1333,39 +810,29 @@
                         price: "",
                         category: []
                     }
-
                     this.selectedItems = [];
 
                 },
                 fnRemove(item) {
                     //fnRemove(프로덕트 리스트에 있는요소)
-
                     if (confirm("정말 삭제하시겠습니까?")) {
-
                         const removed = this.productList.find(p => p.id === item.id);
                         const index = this.productList.indexOf(removed);
                         //removed 객체의 인덱스를 구해라. 담아라.
-
                         if (index !== -1) {
                             this.productList.splice(index, 1);
                             //index 위치에서부터1개 데이터 삭제하고 인덱스들을 앞으로 당김.
-
                             this.reviews = this.reviews.filter(r => r.product !== item.name);
                             this.simpleReviews = this.simpleReviews.filter(r => r.product !== item.name);
-
                         }
-
-
                         alert("삭제되었습니다.");
                     } else {
                         alert("삭제가 취소되었습니다.");
                     }
-
                 },
                 fnThumbnail(inquiry) {    //fnThumbnail(개별문의)
                     return this.productList.find(p => p.name === inquiry.product).thumbnail;
-                }
-                ,
+                },
                 handleMenuClick(menuId) {   //main,product,reservation,inquiry,review,customer
                     this.currentMenu = menuId;
                     this.productPage = 'list';
@@ -1373,7 +840,6 @@
                     this.page1 = 'main';
                     this.reviewTab = 'detail';
                     this.currentPage = 1;
-
                     if (menuId === 'main') {
                         this.fnCom();
                     }
@@ -1391,7 +857,6 @@
 
                         // 3. 브라우저가 "이 파일 내가 잠깐 보여줄 수 있게 가짜 주소 만들어줄게!" 하는 기능이에요.
                         this.previewUrl = URL.createObjectURL(file);
-
                     }
                 },
                 fnUpdateProduct() {
@@ -1420,13 +885,8 @@
                         processData: false,
                         contentType: false,
                         success: function (data) {
-                            console.log("서버가 보낸 데이터:", data); // [체크!] 이 데이터가 어떻게 생겼는지 확인
-
-                            // 만약 data가 JSON 문자열로 넘어왔다면 파싱이 필요할 수도 있어요
                             let res = (typeof data === 'string') ? JSON.parse(data) : data;
                             //data가 string으로 넘어왓다면? 자바스크립트가 읽을수있게 객체로 바꿔주기(parse해주기)
-
-
                             if (res.result === "success") {
                                 alert("상품 정보가 모두 수정되었습니다!");
                                 window.location.href = "/partnerManagement.do";
@@ -1455,10 +915,8 @@
                     formData.append("productDetails", this.product2.productDetails);
                     formData.append("originalPrice", this.product2.originalPrice);
 
-
                     formData.append("proType", JSON.stringify(this.product2.proType));
                     formData.append("userId", "${sessionScope.sessionId}");
-
                     $.ajax({
                         url: "/upload2.dox",
                         type: "POST",
@@ -1466,31 +924,23 @@
                         processData: false,
                         contentType: false,
                         success: function (data) {
-                            console.log("서버가 보낸 데이터:", data); // [체크!] 이 데이터가 어떻게 생겼는지 확인
-
-                            // 만약 data가 JSON 문자열로 넘어왔다면 파싱이 필요할 수도 있어요
                             let res = (typeof data === 'string') ? JSON.parse(data) : data;
                             //data가 string으로 넘어왓다면? 자바스크립트가 읽을수있게 객체로 바꿔주기(parse해주기)
-
-
                             if (res.result === "success") {
                                 alert("상품 정보가 모두 수정되었습니다!");
                                 window.location.href = "/partnerManagement.do";
                             } else {
                                 alert("서버 응답은 성공했지만, result가 success가 아닙니다.");
                             }
-
                         }
                     })
                 },
                 fnRemove2(item) {  //item in productList
                     if (confirm("정말 삭제하시겠습니까?")) {
-
                         let self = this;
                         let param = {
                             productNo: item.productNo
                         };
-                        console.log(item);
                         $.ajax({
                             url: "/productRemove.dox",
                             dataType: "json",
@@ -1502,9 +952,6 @@
                                 location.href = "/partnerManagement.do"
                             }
                         });
-
-
-
                     } else {
                         alert("삭제가 취소되었습니다.");
                     }
@@ -1522,7 +969,6 @@
                         }
                     });
                 },
-
                 //**내가 선택한 상품정보를 상세보기 바구니에 담는거임(->product1)
                 goDetailPage(item) {
                     this.productPage = 'detail';
@@ -1530,9 +976,6 @@
                     this.product1 = { ...item };
 
                     window.scrollTo(0, 0); // 화면 상단으로 이동
-
-                    //this.fnGetBookedTimes();
-
                 },
 
                 // 예약하기 버튼 클릭
@@ -1550,15 +993,12 @@
                     window.scrollTo(0, 0);
                 },
                 fnSaveReservation(user) {  //user
-
                     let loginId = "${sessionScope.sessionId}";
-
                     if (!loginId || loginId === "") {
                         alert("로그인 해주세요!");
                         return;
 
                     }
-
                     if (confirm("예약사항을 모두 확인하셨습니까?")) {
 
                         let self = this;
@@ -1576,33 +1016,15 @@
                             type: "POST",
                             data: param,
                             success: function (data) {
-                                console.log(data);
-
                                 if (data.result == 'success') {
                                     alert("예약이 저장되었습니다.");
                                     self.fnBack2();
                                 }
                             }
                         });
-
-
-
                     } else {
                         alert("취소되었습니다.");
                     }
-
-                    //alert("최종 예약 및 결제가 완료되었습니다!");
-
-                    // let maxId = this.userReservationList.length > 0
-                    //     ? Math.max(...this.userReservationList.map(item => item.id)) : 1;
-
-                    // this.userReservationList.push(
-                    //     { id: maxId + 1, productName: this.product1.name, resDate: this.selectedDate, resName: this.user.name, phoneNo: this.user.contact, deposit: 100000 }
-                    // )
-                    // this.productPage = 'list';   // 다시 목록으로 보내거나
-                    // console.log(this.userReservationList);
-
-                    ////this.currentMenu = 'reservation'; // 예약 내역 페이지로 보냅니다. ( )
                 },
                 fnGetTagAndProductList() {
                     let self = this;
@@ -1613,11 +1035,7 @@
                         type: "POST",
                         data: param,
                         success: function (data) {
-                            console.log(data);
-
                             self.productTag = data.taglist;
-
-                            //한번 해보는거
                             let productList1 = data.productListForTag.map(p => {
                                 return {
                                     id: p.productNo,
@@ -1632,7 +1050,6 @@
                                     deposit: p.deposit || 0
                                 }
                             });
-                            console.log(productList1);
                             self.productList = productList1;
                         }
                     });
@@ -1659,55 +1076,34 @@
                         productNo: self.product1.id,
                         useDate: self.selectedDate
                     };
-                    console.log(self.selectedDate);
-
-
-
-
                     $.ajax({
                         url: "/getBookedTimes.dox",
                         dataType: "json",
                         type: "POST",
                         data: param,
                         success: function (data) {
-                            console.log(data); //list ['10:00:00', '13:00:00', '17:00:00']
                             let newList = data.list.map(p => p.slice(0, 5)); //['10:00', '13:00', '17:00']
-
                             self.bookedTimes = newList;
                         }
                     });
                 },
                 goMyResPage() {
-
                     let loginId = "${sessionScope.sessionId}";
-
                     if (!loginId || loginId === "") {
                         alert("로그인 해주세요!");
                         return;
-
                     }
-
-
                     this.productPage = 'resultOfReservation';
-
                     let self = this;
                     let param = {
                         userId: "${sessionScope.sessionId}"
                     };
-
-                    //myReservation1: {},
-
-
                     $.ajax({
                         url: "/getMyReservationList.dox",
                         dataType: "json",
                         type: "POST",
                         data: param,
                         success: function (data) {
-                            console.log(data);
-                            //myReservation1: {},
-                            //myReservationList: [],
-
                             self.myReservationList = data.list.map(p => {
                                 return {
                                     companyNo: p.companyNo,
@@ -1735,10 +1131,8 @@
                                     refundDate: p.refundDate,
                                     comName: p.comName,
                                     tel: p.tel
-
                                 }
                             })
-                            console.log(self.myReservationList);
                         }
                     });
                 },
@@ -1748,29 +1142,7 @@
                 },
                 fnPaymentFinal() {
                     if (confirm("예약사항을 모두 확인하셨습니까?")) {
-
-
                         this.fnPaymentReal();
-                        //let self = this;
-                        //let param = {
-
-                        //};
-
-                        //self.productPage = 'paymentFinal';
-                        // $.ajax({
-                        //     url: "/.dox",
-                        //     dataType: "json",
-                        //     type: "POST",
-                        //     data: param,
-                        //     success: function (data) {
-                        //         console.log(data);
-
-
-                        //     }
-                        // });
-
-
-
                     } else {
                         alert("취소되었습니다.");
                     }
@@ -1785,38 +1157,27 @@
                         imp_uid: res.impUid,
                         merchant_uid: res.merchantUid
                     };
-
-                    console.log(param);
                     $.ajax({
                         url: "/addAndEditPaymentFinal.dox",
                         dataType: "json",
                         type: "POST",
                         data: param,
                         success: function (data) {
-                            console.log(data);
                             if (data.result == 'success') {
                                 alert('결제 완료되었습니다! 예약이 확정되었습니다!');
 
                                 self.productPage = 'list';
                                 self.payAmount = '';
-
                             } else {
                                 alert("결제 실패! 서버 오류입니다");
                             }
-                            //payAmount='';
                         }
                     });
                 },
-                // 제현님이 하실 부분 여기입니다!
-                // 결제하는 로직
                 fnPaymentReal() {
                     let self = this;
-
-                    ////
                     var IMP = window.IMP;
                     IMP.init("imp48518435");
-
-
                     IMP.request_pay(
                         {
                             channelKey: "channel-key-1ebd3d65-20bd-412e-83f3-b7e0c3b368ff",
@@ -1896,7 +1257,6 @@
                     if (!loginId || loginId === "") {
                         alert("로그인 해주세요!");
                         return;
-
                     }
                     let self = this;
                     let param = {
@@ -1906,15 +1266,12 @@
                         inquiryTitle: self.inquiry.title,
                         inquiryContents: self.inquiry.contents
                     };
-
-                    console.log(param);
                     $.ajax({
                         url: "/addInquiryProduct.dox",
                         dataType: "json",
                         type: "POST",
                         data: param,
                         success: function (data) {
-                            console.log(data);
                             if (data.result == 'success') {
                                 alert('문의가 등록되었습니다!');
 
@@ -1935,25 +1292,19 @@
                     if (!loginId || loginId === "") {
                         alert("로그인 해주세요!");
                         return;
-
                     }
-
                     //페이지 변경
                     this.productPage = 'myRealInquiryList';
-
                     let self = this;
                     let param = {
                         userId: "${sessionScope.sessionId}"
                     };
-
-                    console.log(param);
                     $.ajax({
                         url: "/getMyInquiryList.dox",
                         dataType: "json",
                         type: "POST",
                         data: param,
                         success: function (data) {
-                            console.log(data);
                             if (data.result == 'success') {
                                 self.myInquiryList = data.list;
                             } else {
@@ -1964,69 +1315,38 @@
                 },
                 //특정 문의를 클릭하면 실행되는거// 문의내용 상세보기로 간다
                 fnInquiryAnswerDetails(inquiry) {
-
-                    //특정 문의에 대한걸 복사해서 변수에 담는다.
                     this.myInquiry1 = { ...inquiry };
-
                     this.productPage = 'inquiry1Details'; //문의내용상세보기
 
-                    //여기서 통신한다.
                     let self = this;
                     let param = {
                         inquiryNo: self.myInquiry1.inquiryNo
                     };
-
-                    console.log(param);
                     $.ajax({
                         url: "/getInquiry1Answer.dox",
                         dataType: "json",
                         type: "POST",
                         data: param,
                         success: function (data) {
-                            console.log(data);
-
                             if (data.result === "success") {
                                 self.myInquiry1.answerContents = data.info.answerContents;
                                 self.myInquiry1.ansCompany = data.info.userId;
-
                             } else {
                                 alert("서버 오류!");
                             }
-
                         }
                     });
                 },
-                //상품 문의하기로 넘어갈때 내용 초기화도 함께 함.
                 goInquiry() {
                     this.inquiry.title = '';
                     this.inquiry.contents = '';
                     this.productPage = 'inquiry';
-
                 }
-
-
-
             }, // methods
-            //productTag
-
             mounted() {
-                // 처음 시작할 때 실행되는 부분
-
-
                 let self = this;
-                //self.fnCom();
                 self.fnGetTagAndProductList();
-
             }
-
-
         });
-
         app.mount('#app');
     </script>
-
-    <!--
-    -- 결제 하면서 3개를 넘김 (->
--- { userId : self.myReservation1.userId,
--- amount : self.myReservation1.deposit,
--- resNo : self.myReservation1.resNo }-->
