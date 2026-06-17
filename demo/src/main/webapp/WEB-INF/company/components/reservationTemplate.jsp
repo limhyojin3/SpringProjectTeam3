@@ -7,8 +7,7 @@
             </div>
 
             <div v-if="!selectedRes">
-                <div class="ticket-card" v-for="(res, idx) in pagedResList" :key="idx"
-                    @click="$emit('select-res', res)">
+                <div class="ticket-card" v-for="(res, idx) in pagedResList" :key="idx" @click="selectedRes = res">
                     <img class="ticket-img"
                         :src="registeredProductList.find(p => p.productName === res.productName)?.imgUrl"
                         :alt="res.productName"
@@ -30,7 +29,7 @@
 
                 <div class="pagination1">
                     <span v-for="num in totalResPageCount" :key="num">
-                        <a @click="$emit('change-page', num)" href="javascript:;"
+                        <a @click="resCurrentPage = num" href="javascript:;"
                             :style="resCurrentPage === num ? 'color: #9b8fd4; border:1px solid #9b8fd4 ;' : ''">
                             {{ num }}
                         </a>
@@ -39,14 +38,14 @@
             </div>
 
             <div v-else>
-                <button class="btn-back" @click="$emit('select-res', null)">← 목록으로</button>
+                <button class="btn-back" @click="selectedRes = null">← 목록으로</button>
                 <table>
                     <tr>
                         <th>예약 상품</th>
                         <td>{{ selectedRes.productName }}</td>
                     </tr>
                     <tr>
-                        <th>예약 내용/요청 사항</th>
+                        <th>예약 내용</th>
                         <td>{{ selectedRes.resContent === '' ? '요청사항 없음' : selectedRes.resContent }}</td>
                     </tr>
                     <tr>
@@ -77,8 +76,7 @@
                         <th>예약 처리상태</th>
                         <td
                             :style="selectedRes.resStatus === 'WAIT' ? 'color:#3714ff;' : selectedRes.resStatus === 'CANCEL' ? 'color:red;' : ''">
-                            {{ selectedRes.resStatus }}
-                        </td>
+                            {{ selectedRes.resStatus }}</td>
                     </tr>
                 </table>
             </div>

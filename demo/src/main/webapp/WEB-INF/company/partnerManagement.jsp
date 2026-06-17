@@ -41,27 +41,15 @@
                         </aside>
                         <main>
                             <div v-if="currentMenu === 'main'">
-                                <main-menu-component :user="user" @reg-ptn="fnRegPTN"></main-menu-component>
+                                <main-menu-component :user="user" @reg-ptn="fnRegPTN" />
                             </div>
                             <div v-if="currentMenu === 'product'">
-                                <product-section-component></product-section-component>
+                                <product-section-component />
                             </div>
                             <!-- 예약관리 페이지 -->
                             <div v-if="currentMenu === 'reservation'">
-                                <reservation-section-component
-                                    :res-count="resCount"
-                                    :selected-res="selectedRes"
-                                    :paged-res-list="pagedResList"
-                                    :registered-product-list="registeredProductList"
-                                    :reservation-list="reservationList"
-                                    :res-current-page="resCurrentPage"
-                                    :total-res-page-count="totalResPageCount"
-                                    :get-res-status-text="getResStatusText"
-                                    
-                                    @select-res="selectedRes = $event"
-                                    @change-page="resCurrentPage = $event"
-                                ></reservation-section-component>
-                                
+                                <reservation-section-component 
+                                    :registered-product-list="registeredProductList" />
                             </div>
                             <div v-if="currentMenu === 'inquiry'">
                                 <inquiry-section-component

@@ -7,12 +7,6 @@ const app = Vue.createApp({
             // 리뷰 내역 페이지 사이징
             reviewListPage: 1,   // 리뷰 상품 목록 페이지
             reviewListPageSize: 5,
-            // 예약 관리 페이지 사이징
-            selectedRes: null,
-            resCurrentPage: 1,
-            resPageSize: 5,
-            // 상품관리 페이지 사이징//
-            /*문의 답변과 관련된 맵*/
             inquiryAnswer: {
                 inquiryNo: '',
                 ansUserId: '',
@@ -21,7 +15,6 @@ const app = Vue.createApp({
                 inquiryAns: ''
             },
             inquiryDetails: {},
-            resCount: '',
             newReviewCnt: 0,
             newUnpaidReviewCnt: 0,
             totalSimpleReviewCnt: 0,
@@ -37,7 +30,6 @@ const app = Vue.createApp({
             productList: [],
             simpleReviews: [],
             reviews: [],
-            reservationList: [],
         }
     }, // data
     computed: {
@@ -68,15 +60,6 @@ const app = Vue.createApp({
         },
         totalSimplePages() {
             return Math.ceil(this.filteredSimpleReviews.length / 5); // 총 페이지 수 계산 (5개씩 보여줄 때) // 숫자
-        },
-        // 예약관리 페이지
-        pagedResList() {
-            const start = (this.resCurrentPage - 1) * this.resPageSize;
-            const end = start + this.resPageSize;
-            return this.reservationList.slice(start, end);
-        },
-        totalResPageCount() {
-            return Math.ceil(this.reservationList.length / this.resPageSize);
         },
         // 리뷰 내역 페이지
         pagedRegisteredProductList() {
@@ -140,7 +123,7 @@ const app = Vue.createApp({
             else if (menuId === 'product') {
                 //this.fnProductList();
             } else if (menuId === 'reservation') {
-                this.fnReservationList();
+                //this.fnReservationList();
             } else if (menuId === 'review') {
 
                 this.fnSimple();
@@ -387,13 +370,12 @@ const app = Vue.createApp({
         },
 		cleanText(content) { return PartnerUtils.cleanText(content); },
         starRating(rev) { return PartnerUtils.starRating(rev); },
-        getResStatusText(status) { return PartnerUtils.getResStatusText(status); }	
 	}, // methods
     mounted() {
         // 처음 시작할 때 실행되는 부분
         let self = this;
         self.fnCom();
-        self.fnReservationList();
+        //self.fnReservationList();
         self.fnSimple();
         self.fnReview();
         const urlParams = new URLSearchParams(window.location.search);
