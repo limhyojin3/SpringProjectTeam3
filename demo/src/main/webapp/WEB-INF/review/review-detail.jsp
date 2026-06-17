@@ -330,7 +330,16 @@
                     </div>
                     <div class="info-item mb-2">
                         <i class="fas fa-star mr-2 text-warning"></i> 
-                        <b>평점 : </b> {{ info.rating }} / 5
+                        <b>작성자 평점 : </b> {{ info.rating }} / 5
+                    </div>
+
+                    <div class="info-item mb-2" v-if="info.avgCompanyRating > 0">
+                        <i class="fas fa-star mr-2 text-primary"></i> 
+                        <b>업체 평균 평점 : </b> 
+                        <span class="font-weight-bold text-primary">
+                            {{ parseFloat(info.avgCompanyRating).toFixed(1) }} / 5
+                        </span>
+                        <small class="text-muted">(전체 {{ info.totalCount }}개 리뷰 기준)</small>
                     </div>
                     <div class="info-item">
                         <i class="fas fa-link mr-2 text-danger"></i> 

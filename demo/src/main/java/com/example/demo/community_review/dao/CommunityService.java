@@ -144,4 +144,8 @@ public class CommunityService {
         return null;
     }
     
+    public List<Map<String, Object>> selectPopularPostList() {
+        return communityMapper.selectPopularPostList();
+    }
+    
 }

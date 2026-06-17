@@ -202,12 +202,15 @@
                 </ul>
             </nav>
 
+            
             <!-- 플로팅 글쓰기 버튼 -->
             <div class="write-btn-wrapper">
+
                 <button class="btn-write" @click="fnAddPage">
                     <i class="fas fa-pen"></i>
                 </button>
             </div>
+            
         </main>
 
         <jsp:include page="/WEB-INF/common/footer.jsp" />
@@ -226,7 +229,9 @@
                     currentPage: 1,
                     pageSize: 10,
                     totalCount: 0,
-                    pageBlockSize: 5
+                    pageBlockSize: 5,
+                    popularList: [] // 인기글 데이터를 담을 배열 추가
+                    
                 };
             },
             computed: {
@@ -269,6 +274,17 @@
                         error: (xhr) => console.error("데이터 로드 실패")
                     });
                 },
+                fnGetPopularList() {
+                    $.ajax({
+                        url: "/api/community/popular.dox", // 해당 API 주소
+                        type: "POST",
+                        dataType: "json",
+                        success: (data) => {
+                            console.log(data); // ✅ 콘솔에 데이터가 찍히는지 확인하세요!
+                            this.popularList = data.list;
+                        }
+                    });
+                },
                 fnSearch() {
                     this.currentPage = 1;
                     this.fnList();
@@ -299,6 +315,7 @@
             },
             mounted() {
                 this.fnList();
+                this.fnGetPopularList();  // 사이드바 인기글 로드
             }
         }).mount('#app');
     </script>

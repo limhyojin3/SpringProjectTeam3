@@ -65,4 +65,6 @@ public interface CommunityMapper {
 
     /** 게시글 작성자 ID 조회 (수정/삭제 권한 체크용) */
     String selectPostAuthor(Map<String, Object> map);
+	// 인기 게시글 목록 조회 메서드
+	List<Map<String, Object>> selectPopularPostList();
 }
