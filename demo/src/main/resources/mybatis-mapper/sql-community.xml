@@ -168,4 +168,16 @@
     	SELECT user_id FROM Community_Post WHERE post_no = #{postNo}
 	</select>
 	
+	<select id="selectPopularPostList" resultType="hashmap">
+	    SELECT 
+	        p.post_no AS postNo,
+	        p.title,
+	        p.like_cnt AS likeCnt,
+	        p.view_cnt AS viewCnt
+	    FROM Community_Post p
+	    WHERE p.is_deleted = 0
+	    ORDER BY (p.like_cnt * 2 + p.view_cnt) DESC
+	    LIMIT 5
+	</select>
+	
 </mapper>
