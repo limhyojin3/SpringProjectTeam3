@@ -48,62 +48,13 @@
                             </div>
                             <!-- 예약관리 페이지 -->
                             <div v-if="currentMenu === 'reservation'">
-                                <reservation-section-component 
-                                    :registered-product-list="registeredProductList" />
+                                <reservation-section-component />
                             </div>
                             <div v-if="currentMenu === 'inquiry'">
-                                <inquiry-section-component
-                                    :view-page="viewPage"
-                                    :inquiry-list="inquiryList"
-                                    :fn-paginated-inquiry="fnPaginatedInquiry"
-                                    :fn-thumbnail="fnThumbnail"
-                                    :fn-answer-to-product-inquiry="fnAnswerToProductInquiry"
-                                    :current-page="currentPage"
-                                    :inquiry-details="inquiryDetails"
-                                    :inquiry-answer="inquiryAnswer"
-                                    :fn-backto-inquiry="fnBacktoInquiry"
-                                    :fn-save-answer="fnSaveAnswer"
-                                    
-                                    @change-page="currentPage = $event"
-                                ></inquiry-section-component>
-                                
+                                <inquiry-section-component />
                             </div>
                             <div v-if="currentMenu === 'review'">
-                                <review-section-component
-                                    :view-page="viewPage"
-                                    :review-tab="reviewTab"
-                                    :total-review-cnt="totalReviewCnt"
-                                    :total-simple-review-cnt="totalSimpleReviewCnt"
-                                    :new-review-cnt="newReviewCnt"
-                                    :paged-registered-product-list="pagedRegisteredProductList"
-                                    :registered-product-list="registeredProductList"
-                                    :review-专-page="reviewListPage"
-                                    :review-list-page="reviewListPage"
-                                    :total-review-list-pages="totalReviewListPages"
-                                    :new-unpaid-review-cnt="newUnpaidReviewCnt"
-                                    :paged-product-list-for-simple-reviews="pagedProductListForSimpleReviews"
-                                    :total-simple-review-list-pages="totalSimpleReviewListPages"
-                                    :reviews="reviews"
-                                    :paginated-reviews="paginatedReviews"
-                                    :current-page="currentPage"
-                                    :total-pages="totalPages"
-                                    :simple-reviews="simpleReviews"
-                                    :paginated-simple-reviews="paginatedSimpleReviews"
-                                    :total-simple-pages="totalSimplePages"
-                                    
-                                    :fn-review="fnReview"
-                                    :fn-simple="fnSimple"
-                                    :fn-review-details="fnReviewDetails"
-                                    :fn-simple-review-details="fnSimpleReviewDetails"
-                                    :fn-go-back-to-list="fnGoBackToList"
-                                    :star-rating="starRating"
-                                    :clean-text="cleanText"
-                                    :fn-page-change="fnPageChange"
-                                    
-                                    @change-review-list-page="reviewListPage = $event"
-                                    @change-current-page="currentPage = $event"
-                                ></review-section-component>
-                                
+                                <review-section-component>
                             </div>
                         </main>
                     </div>

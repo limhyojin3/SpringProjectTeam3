@@ -1,8 +1,6 @@
 const ReservationSectionComponent = {
     template: '#reservation-section-template',
     
-	props: ['registeredProductList'],
-	
     // 1. 오직 예약 관리에서만 쓰는 독립된 변수들
     data() {
         return {

@@ -1,7 +1,8 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 
 <template id="review-section-template">
-    <div> <div v-if="viewPage === 'main'">
+    <div> 
+        <div v-if="viewPage === 'main'">
             <div class="tab-menu">
                 <button :class="{ active: reviewTab === 'detail' }" @click="fnReview">
                     유료 리뷰({{totalReviewCnt}})
@@ -27,7 +28,7 @@
                 </div>
                 <div class="pagination1">
                     <span v-for="num in totalReviewListPages" :key="num">
-                        <a @click="$emit('change-review-list-page', num)" href="javascript:;"
+                        <a @click="reviewListPage = num" href="javascript:;"
                             :style="reviewListPage === num ? 'color: #9b8fd4; border:1px solid #9b8fd4;' : ''">
                             {{ num }}
                         </a>
@@ -43,7 +44,7 @@
                             <img :src="w.imgUrl" class="productImg">
                         </div>
                         <div class="review-product-name">
-                            <div class="ticket-no">No. {{ registeredProductList.length - ((reviewListPage - 1) * 5 + idx ) }}</div>
+                            <div class="ticket-no">No. {{ productListForSimpleReviews.length - ((reviewListPage - 1) * 5 + idx ) }}</div>
                             <a href="javascript:;" style="text-decoration: none; color:#0b3f8e;"><strong>{{w.productName}}</strong></a>
                         </div>
                         <div class="review-count-badge">리뷰 갯수: {{w.reviewCount}}개 </div>
@@ -51,7 +52,7 @@
                 </div>
                 <div class="pagination1">
                     <span v-for="num in totalSimpleReviewListPages" :key="num">
-                        <a @click="$emit('change-review-list-page', num)" href="javascript:;"
+                        <a @click="reviewListPage = num" href="javascript:;"
                             :style="reviewListPage === num ? 'color: #9b8fd4; border:1px solid #9b8fd4;' : ''">
                             {{ num }}
                         </a>
@@ -133,7 +134,7 @@
                     </table>
                     <div class="pagination1">
                         <span v-for="num in totalSimplePages" :key="num">
-                            <a @click="$emit('change-current-page', num)" href="javascript:;"
+                            <a @click="currentPage = num" href="javascript:;"
                                 :style="currentPage === num ? 'color: #9b8fd4; border:1px solid #9b8fd4;' : ''">
                                 {{num}}
                             </a>
@@ -147,6 +148,5 @@
                 </div>
             </div>
         </div>
-
     </div>
 </template>

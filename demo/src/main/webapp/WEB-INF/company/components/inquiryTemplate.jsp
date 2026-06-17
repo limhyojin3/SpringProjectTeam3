@@ -36,7 +36,7 @@
             
             <div class="pagination1">
                 <span v-for="num in inquiryList.length" :key="num">
-                    <a @click="$emit('change-page', num)" href="javascript:;"
+                    <a @click="currentPage = num" href="javascript:;"
                         :style="currentPage === num ? 'color: #9b8fd4; border:1px solid #9b8fd4;' : ''">
                         {{num}}
                     </a>
