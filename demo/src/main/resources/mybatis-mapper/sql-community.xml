@@ -48,6 +48,7 @@
 	    SELECT 
 	        p.post_no AS postNo,
 	        p.user_id AS userId,
+	        IF(p.content LIKE CONCAT('%', CHAR(60), 'img%'), 'Y', 'N') AS imgYn,
 	        CASE 
 	            WHEN m.status = 'WITHDRAWN' THEN '탈퇴회원'
 	            ELSE IFNULL(d.nickname, p.user_id) 

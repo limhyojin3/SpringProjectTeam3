@@ -134,10 +134,13 @@
                         category: "",
                         content: ""
                     },
-                    categoryList: [
+                     categoryList: [
                         { label: "🎈 자유게시판", value: "자유" },
-                        { label: "❓ 질문게시판", value: "질문" },
-                        { label: "💡 정보공유", value: "정보" }
+                        { label: "💍 결혼", value: "결혼" },
+                        { label: "👨‍👩‍👧‍👦 가족행사", value: "가족행사" },
+                        { label: "👶 육아출산", value: "육아출산" },
+                        { label: "💬 고민", value: "고민" },
+                        { label: "💼 직장", value: "직장" }
                     ],
                     quill: null
                 };
