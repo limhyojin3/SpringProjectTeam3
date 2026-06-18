@@ -96,7 +96,7 @@
         	ANNIVERSARY_DATE = #{anniversaryDate}
 	    WHERE USER_ID = #{userId}
 	</update>
-	
+
 	<!--회원 탈퇴 (db 삭제하지 않고 status를 변경합니다.)-->
 	<update id="updateUserStatus" parameterType="map">
 	    UPDATE MEMBER
