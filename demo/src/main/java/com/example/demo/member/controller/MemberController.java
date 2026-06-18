@@ -282,6 +282,7 @@ public class MemberController {
 //	        System.out.println("마이페이지 조회 ID: " + sessionId);
 //	        System.out.println("DB 조회 전체 결과: " + member);
 //	        System.out.println("================================");
+	        System.out.println("maritalStatus: " + member.getMaritalStatus()); // 추가
 	        
 	        // 2. JSP로 전달
 	        model.addAttribute("member", member);

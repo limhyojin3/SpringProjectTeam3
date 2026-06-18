@@ -79,12 +79,36 @@
         /* 제목 및 댓글수 */
         .comment-count { color: var(--primary-color); font-weight: 800; margin-left: 8px; }
 
-        /* 카테고리 뱃지 */
-        .badge-cate { padding: 6px 14px; border-radius: 10px; font-size: 0.78rem; font-weight: 800; display: inline-block; }
-        .cate-자유 { background: #eef2ff; color: #4f46e5; }
-        .cate-질문 { background: #fff7ed; color: #ea580c; }
-        .cate-정보 { background: #fdf2f8; color: #db2777; }
-        .cate-default { background: #f3f4f6; color: #6b7280; }
+       /* 카테고리 뱃지 스타일 - 다채롭고 감각적인 컬러 팔레트 */
+    .badge-cate { 
+        padding: 6px 14px; 
+        border-radius: 12px; 
+        font-size: 0.78rem; 
+        font-weight: 800; 
+        display: inline-block; 
+        transition: transform 0.2s;
+    }
+
+    /* 1. 자유: 청량한 파란색 */
+    .cate-자유 { background: #dbeafe; color: #1e40af; }
+
+    /* 2. 결혼: 사랑스러운 피치 핑크 */
+    .cate-결혼 { background: #ffe4e6; color: #be123c; }
+
+    /* 3. 가족행사: 싱그러운 그린 계열 */
+    .cate-가족행사 { background: #dcfce7; color: #15803d; }
+
+    /* 4. 육아출산: 따스한 옐로우 계열 */
+    .cate-육아출산 { background: #fef9c3; color: #a16207; }
+
+    /* 5. 고민: 차분하면서도 깊이 있는 퍼플 */
+    .cate-고민 { background: #ede9fe; color: #6d28d9; }
+
+    /* 6. 직장: 도시적인 느낌의 그레이 블루 */
+    .cate-직장 { background: #e2e8f0; color: #334155; }
+
+    /* 기본값: 깔끔한 중립 그레이 */
+    .cate-default { background: #f1f5f9; color: #64748b; }
         
         /* 작성자 및 통계 */
         .nickname { font-weight: 700; color: #555; background: #f8f9fa; padding: 4px 10px; border-radius: 6px; }
@@ -130,10 +154,10 @@
 
             <!-- 카테고리 탭 -->
             <div class="category-tabs">
-                <div v-for="cate in categories" :key="cate" 
-                     :class="['tab-item', { active: searchCategory === cate }]"
-                     @click="fnChangeCategory(cate)">
-                    {{ cate }}
+                <div v-for="cate in categoryList" :key="cate.value" 
+                     :class="['tab-item', { active: searchCategory === cate.value }]"
+                     @click="fnChangeCategory(cate.value)">
+                    {{ cate.label }}
                 </div>
             </div>
 
@@ -160,11 +184,14 @@
                     <div class="col-no">{{ item.postNo }}</div>
                     <div class="col-cate">
                         <span :class="['badge-cate', 'cate-' + (item.category || 'default')]">
-                            {{ item.category || '기타' }}
+                            {{ getCategoryLabel(item.category) || '기타' }}
                         </span>
                     </div>
                     <div class="col-title">
                         {{ item.title }}
+                        <span v-if="item.imgYn === 'Y'" style="margin-left: 8px; color: #ff4d6d; font-size: 0.9rem;">
+                            <i class="fas fa-image"></i>
+                        </span>
                         <span v-if="item.commentCnt > 0" class="comment-count">({{ item.commentCnt }})</span>
                     </div>
                     <div class="col-info">
@@ -225,7 +252,15 @@
                     searchKeyword: "",
                     searchType: "all",
                     searchCategory: "전체",
-                    categories: ["전체", "자유", "질문", "정보"],
+                    categoryList: [
+                        { label: "전체", value: "전체" },
+                        { label: "🎈 자유", value: "자유" },
+                        { label: "💍 결혼", value: "결혼" },
+                        { label: "👨‍👩‍👧‍👦 가족행사", value: "가족행사" },
+                        { label: "👶 육아출산", value: "육아출산" },
+                        { label: "💬 고민", value: "고민" },
+                        { label: "💼 직장", value: "직장" }
+                    ],
                     currentPage: 1,
                     pageSize: 10,
                     totalCount: 0,
@@ -289,8 +324,8 @@
                     this.currentPage = 1;
                     this.fnList();
                 },
-                fnChangeCategory(cate) {
-                    this.searchCategory = cate;
+                fnChangeCategory(value) {
+                    this.searchCategory = value;
                     this.currentPage = 1;
                     this.fnList();
                 },
@@ -311,6 +346,11 @@
                     } else {
                         location.href = "/api/community/add.do";
                     }
+                },
+                getCategoryLabel(val) {
+                    // categoryList에서 value가 일치하는 항목을 찾아 label을 반환
+                    const found = this.categoryList.find(c => c.value === val);
+                    return found ? found.label : val;
                 }
             },
             mounted() {

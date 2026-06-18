@@ -44,15 +44,33 @@
         label { display: block; font-weight: 700; margin-bottom: 12px; color: #444; font-size: 16px; }
         
         /* 카테고리 칩 UI */
-        .category-group { display: flex; gap: 12px; }
-        .cate-item {
-            padding: 10px 24px; border-radius: 50px; border: 2px solid #f0f0f0;
-            background: #fff; cursor: pointer; font-weight: 600; color: #aaa; transition: 0.3s;
+        /* 수정된 카테고리 칩 UI */
+        .category-group { 
+            display: flex; 
+            flex-wrap: wrap; /* 핵심: 항목이 많아지면 자동으로 줄바꿈 */
+            gap: 10px;       /* 항목 간 간격 */
         }
-        .cate-item:hover { border-color: var(--secondary-color); color: var(--secondary-color); }
+        .cate-item {
+            padding: 10px 20px; 
+            border-radius: 50px; 
+            border: 2px solid #f0f0f0;
+            background: #fff; 
+            cursor: pointer; 
+            font-weight: 600; 
+            color: #888; 
+            transition: all 0.2s ease;
+            white-space: nowrap; /* 텍스트가 잘리지 않게 설정 */
+        }
+        /* 마우스 호버 및 활성화 상태 개선 */
+        .cate-item:hover { 
+            border-color: var(--secondary-color); 
+            color: var(--primary-color); 
+        }
         .cate-item.active { 
-            background: var(--primary-color); border-color: var(--primary-color); color: #fff;
-            box-shadow: 0 4px 12px rgba(255, 77, 109, 0.2);
+            background: var(--primary-color); 
+            border-color: var(--primary-color); 
+            color: #fff;
+            transform: scale(1.02); /* 살짝 커지는 효과 */
         }
 
         /* 제목 입력창 */
@@ -78,6 +96,12 @@
         .btn-save:hover { background-color: #ff1a4a; transform: translateY(-3px); box-shadow: 0 8px 20px rgba(255, 77, 109, 0.25); }
         .btn-cancel { background-color: #eee; color: #777; }
         .btn-cancel:hover { background-color: #e2e2e2; }
+
+        /* 모바일 대응 (화면이 작을 때 카드 패딩 축소) */
+        @media (max-width: 768px) {
+            .write-card { padding: 25px; border-radius: 16px; }
+            .btn-common { padding: 15px 40px; }
+        }
     </style>
 </head>
 <body>
@@ -135,8 +159,11 @@
                     category: "자유",
                     categoryList: [
                         { label: "🎈 자유게시판", value: "자유" },
-                        { label: "❓ 질문게시판", value: "질문" },
-                        { label: "💡 정보", value: "정보" }
+                        { label: "💍 결혼", value: "결혼" },
+                        { label: "👨‍👩‍👧‍👦 가족행사", value: "가족행사" },
+                        { label: "👶 육아출산", value: "육아출산" },
+                        { label: "💬 고민", value: "고민" },
+                        { label: "💼 직장", value: "직장" }
                     ],
                     userId: "${sessionId}",
                     quill: null
