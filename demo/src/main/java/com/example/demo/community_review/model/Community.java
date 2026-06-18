@@ -17,4 +17,5 @@ public class Community {
     private int commentCnt;	  // 댓글 개수 출력
     private int isLiked;	  // 좋아요 여부
     private String nickname;
+    private String imgYn;
 }
