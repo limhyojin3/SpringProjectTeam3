@@ -3,10 +3,9 @@
 
 <mapper namespace="com.example.demo.company.mapper.CompanyMapper">
 	<!-- 여러개 검색 -->
-	<select id="selectUserList" parameterType="hashmap"
+	<!--<select id="selectUserList" parameterType="hashmap"
 		resultType="com.example.demo.company.model.Company">
-	</select>
-
+	</select>-->
 
 	<!-- 한개 검색 -->
 	<select id="selectCompany" parameterType="hashmap"
@@ -48,15 +47,12 @@
 		deposit = #{deposit},
 		tag = #{tag}
 		WHERE PRODUCT_NO = #{productNo}
-
 	</update>
 
 	<!-- 삭제 -->
 	<delete id="deleteProduct" parameterType="hashmap">
 		DELETE FROM PRODUCT WHERE PRODUCT_NO = #{productNo}
-
 	</delete>
-
 
 	<select id="selectCompanyByUserId" parameterType="String"
 		resultType="com.example.demo.company.model.Company">
@@ -72,9 +68,7 @@
 		IMG_URL, PRO_TYPE, COMPANY_NO, tag, deposit, reg_date)
 		VALUES(#{productName}, #{productDetails}, #{originalPrice}, #{imgUrl},
 		#{proType}, #{companyNo}, #{tag}, #{deposit}, now())
-
 	</insert>
-
 
 	<select id="selectReservation" parameterType="map"
 		resultType="com.example.demo.company.model.Company">
@@ -115,7 +109,6 @@
 		-- 3. 조건: 업체 테이블의 로그인 아이디가 'sunsu09'인 경우
 		left join member m on m.user_id = r.user_id --
 		WHERE c.user_id = #{userId} AND R.RES_STATUS = 'WAIT'
-
 	</select>
 
 	<select id="selectReviewCnt" parameterType="map"
@@ -178,7 +171,6 @@
 	<select id="selectTagList" parameterType="map"
 		resultType="string">
 		SELECT tag FROM product_tag;
-
 	</select>
 
 	<select id="selectProductListForTag" parameterType="map"
@@ -206,18 +198,14 @@
 				and 1=0
 			</otherwise>
 		</choose>
-		
 		 
 	</select>
 	<insert id="insertReservation"
 		parameterType="map">
-
 		insert into reservation values(
 		null, #{userId}, #{productNo}, #{companyNo},
 		now(), now(), 'WAIT', #{resContent}, #{useDate}, #{useTime}, null,
 		null);
-
-
 	</insert>
 
 	<select id="selectMyReservationList" parameterType="map"
@@ -293,11 +281,8 @@
 				and NOW() > STR_TO_DATE(CONCAT(use_date, ' ', use_time), '%Y-%m-%d 
 				%H:%i:%s') 
 			</foreach>
-		
 		</if>
 	</update>
-	
-
 
 	<!--int result = companyMapper.checkOver30minute(map);-->
 	<update id="checkOver30minute" parameterType="map">
@@ -438,13 +423,11 @@
 		ipa.answer_contents 만 셀렉트한거 그리고 where 조건절이 inquiry_no = #{inquiryNo} 인거 -->
 	<select id="selectInquiry1Answer" parameterType="map"
 		resultType="com.example.demo.company.model.Company">
-
 		select ip.inquiry_no, c.user_id, ipa.answer_contents from
 		inquiry_product ip
 		left join company c on ip.company_no = c.company_no
 		left join inquiry_product_answer ipa on ip.inquiry_no = ipa.inquiry_no
 		where ip.inquiry_no = #{inquiryNo}
-
 	</select>
 	 
 	<!-- 리뷰 라벨 업데이트 (현재시점에서 3일이상 지난거 0으로)-->
