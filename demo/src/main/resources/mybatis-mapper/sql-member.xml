@@ -91,7 +91,9 @@
 	        EMAIL = #{email},
 	        GENDER = #{gender},
 	        NICKNAME = #{nickName},
-	        WEDDING_DATE = #{weddingDate}
+	        WEDDING_DATE = #{weddingDate},
+	        MARITAL_STATUS = #{maritalStatus},
+        	ANNIVERSARY_DATE = #{anniversaryDate}
 	    WHERE USER_ID = #{userId}
 	</update>
 	
