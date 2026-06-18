@@ -116,6 +116,16 @@
             margin-left: 6px;
             opacity: 0.5;
         }
+
+        /* 리얼리뷰 드롭다운 아이콘 */
+        .fa-crown {
+            color: #f0b429;  /* 골드 */
+        }
+
+        .fa-tag {
+            color: #ff8fab;  /* 핑크 */
+        }
+        
     </style>
 </head>
 <nav class="navbar navbar-expand-lg sticky-top bg-white shadow-sm dropdown-header-wrap" style="border-bottom: 2px solid #fff0f3 !important;">
@@ -161,8 +171,8 @@
                     <a class="nav-link custom-nav-link" href="${pageContext.request.contextPath}/api/review/list.do">리얼리뷰</a>
                     <ul class="dropdown-contents">
                         <li><a href="${pageContext.request.contextPath}/api/review/list.do">전체보기</a></li>
-                        <li><a href="${pageContext.request.contextPath}/api/review/list.do?isPaid=1">💎 유료 리뷰</a></li>
-                        <li><a href="${pageContext.request.contextPath}/api/review/list.do?isPaid=0">🎁 무료 리뷰</a></li>
+                        <li><a href="${pageContext.request.contextPath}/api/review/list.do?isPaid=1"><i class="fa-solid fa-crown"></i> 유료 리뷰</a></li>
+                        <li><a href="${pageContext.request.contextPath}/api/review/list.do?isPaid=0"><i class="fa-solid fa-tag"></i> 무료 리뷰</a></li>
                     </ul>
                 </li>
 
