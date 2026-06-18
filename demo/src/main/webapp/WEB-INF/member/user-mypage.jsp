@@ -126,6 +126,13 @@
                 <jsp:include page="/WEB-INF/common/mypage-nav.jsp" />
 
                 <div class="right-sections">
+                    <!-- 미입력 안내 배너 -->
+                    <div v-if="hasIncomplete" 
+                        style="background:#fff8f0; border:1px solid #ffb3c1; border-radius:8px; padding:12px 16px; margin-bottom:16px; font-size:13px; color:#e05a7a;">
+                        <i class="fa-solid fa-circle-exclamation" style="margin-right:6px;"></i>
+                        미입력된 정보가 있어요.
+                        <span @click="fnEdit()" style="text-decoration:underline; cursor:pointer; font-weight:600;">내 정보 수정</span>에서 완성해보세요!
+                    </div>
                     <div class="greeting">
                         안녕하세요, <strong>{{info.name}}님!</strong><br>
                         <!-- 기념일 있는 사람 (기혼) -->
@@ -208,7 +215,8 @@
                     today.setHours(0, 0, 0, 0);
                     const wedding = new Date(w);
                     return Math.round((wedding - today) / (1000 * 60 * 60 * 24));
-                })()
+                })(),
+                hasIncomplete: false,
             };
         },
         computed: {
@@ -292,6 +300,12 @@
             },
         },
         mounted() {
+            // 소셜 로그인 유저이고 전화번호가 없으면 미입력 배너 표시
+            const userId = '${sessionId}';
+            const tel = '${member.tel}';
+            if (userId.startsWith('kakao_') && !tel) {
+                this.hasIncomplete = true;
+            }
             console.log("weddingDate:", this.weddingDate);
             console.log("anniversaryDate:", this.anniversaryDate);
             let self = this;
