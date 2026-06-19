@@ -20,12 +20,16 @@ import com.google.gson.Gson;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import jakarta.servlet.http.HttpServletRequest;
+import com.example.demo.admin.dao.NotificationService;
 
 @Controller
 public class AdminController {
 
 	@Autowired
 	AdminService adminService;
+	
+	@Autowired
+	NotificationService notificationService;
 	
 	@RequestMapping("/adminMain.do")
 	public String main(Model model) throws Exception {
@@ -128,6 +132,7 @@ public class AdminController {
 		return "admin/adminMyPass";
 	}
 
+
 	@RequestMapping(value = "/sales.dox", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
 	@ResponseBody
 	public String sales(Model model, @RequestParam HashMap<String, Object> map) throws Exception {
@@ -183,23 +188,51 @@ public class AdminController {
 	//관리자 리뷰 승인
 	@RequestMapping(value = "/reviewApprove.dox", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
 	@ResponseBody
-	public String editReviewApprove(Model model, @RequestParam HashMap<String, Object> map) throws Exception {
+	public String editReviewApprove(Model model, @RequestParam HashMap<String, Object> map, HttpSession session) throws Exception {
 
 		HashMap<String, Object> resultMap = new HashMap<>();
 
 		resultMap = adminService.editReviewApprove(map);
+		
+		if ("success".equals(resultMap.get("result"))) {
+	        boolean notificationCreated =
+	            notificationService.createReviewResult(
+	                map.get("reviewNo"),
+	                (String) session.getAttribute("sessionId"),
+	                true
+	            );
 
+	        putNotificationResult(
+	            resultMap,
+	            notificationCreated
+	        );
+	    }
+		
 		return new Gson().toJson(resultMap);
 	}
 
 	//관리자 리뷰 반려
 	@RequestMapping(value = "/reviewReject.dox", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
 	@ResponseBody
-	public String editReviewReject(@RequestParam HashMap<String, Object> map) {
+	public String editReviewReject(@RequestParam HashMap<String, Object> map, HttpSession session) {
 		HashMap<String, Object> resultMap = new HashMap<>();
 
 		resultMap = adminService.editReviewReject(map);
+		
+		if ("success".equals(resultMap.get("result"))) {
+	        boolean notificationCreated =
+	            notificationService.createReviewResult(
+	                map.get("reviewNo"),
+	                (String) session.getAttribute("sessionId"),
+	                false
+	            );
 
+	        putNotificationResult(
+	            resultMap,
+	            notificationCreated
+	        );
+	    }
+		
 		return new Gson().toJson(resultMap);
 	}
 	
@@ -257,10 +290,26 @@ public class AdminController {
 
 	@RequestMapping(value = "/inquiryAnswer.dox", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
 	@ResponseBody
-	public String inquiryAnswer(Model model, @RequestParam HashMap<String, Object> map) throws Exception {
+	public String inquiryAnswer(Model model, @RequestParam HashMap<String, Object> map, HttpSession session) throws Exception {
 		HashMap<String, Object> resultMap = new HashMap<String, Object>();
 		resultMap = adminService.editAnswer(map);
+		
+		if ("success".equals(resultMap.get("result"))) {
+	        String adminId =
+	            (String) session.getAttribute("sessionId");
 
+	        boolean notificationCreated =
+	            notificationService.createInquiryAnswered(
+	                map.get("inquiryNo"),
+	                adminId
+	            );
+
+	        putNotificationResult(
+	            resultMap,
+	            notificationCreated
+	        );
+	    }
+		
 		return new Gson().toJson(resultMap);
 	}
 	
@@ -382,22 +431,50 @@ public class AdminController {
 		// 신고 단일 승인
 		@RequestMapping(value = "/reportApprove.dox", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
 		@ResponseBody
-		public String reportApprove(Model model, @RequestParam HashMap<String, Object> map) throws Exception {
+		public String reportApprove(Model model, @RequestParam HashMap<String, Object> map, HttpSession session) throws Exception {
 
 		    HashMap<String, Object> resultMap = new HashMap<>();
 
 		    resultMap = adminService.approveReport(map);
+		    
+		    if ("success".equals(resultMap.get("result"))) {
+		        boolean notificationCreated =
+		            notificationService.createReportResult(
+		                map.get("reportNo"),
+		                (String) session.getAttribute("sessionId"),
+		                true
+		            );
 
+		        putNotificationResult(
+		            resultMap,
+		            notificationCreated
+		        );
+		    }
+		    
 		    return new Gson().toJson(resultMap);
 		}
 		
 		// 신고 반려
 		@RequestMapping(value = "/reportReject.dox", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
 		@ResponseBody
-		public String reportReject(@RequestParam HashMap<String, Object> map) {
+		public String reportReject(@RequestParam HashMap<String, Object> map, HttpSession session) {
 		    HashMap<String, Object> resultMap = new HashMap<>();
 
 		    resultMap = adminService.rejectReport(map);
+		    
+		    if ("success".equals(resultMap.get("result"))) {
+		        boolean notificationCreated =
+		            notificationService.createReportResult(
+		                map.get("reportNo"),
+		                (String) session.getAttribute("sessionId"),
+		                false
+		            );
+
+		        putNotificationResult(
+		            resultMap,
+		            notificationCreated
+		        );
+		    }
 
 		    return new Gson().toJson(resultMap);
 		}
@@ -619,7 +696,22 @@ public class AdminController {
 		return adminService.editCompanyReg(map);
 	}
 	
-	
+	private void putNotificationResult(
+	        HashMap<String, Object> resultMap,
+	        boolean notificationCreated) {
+
+	    resultMap.put(
+	        "notificationResult",
+	        notificationCreated ? "success" : "fail"
+	    );
+
+	    if (!notificationCreated) {
+	        resultMap.put(
+	            "notificationMessage",
+	            "업무 처리는 완료됐지만 알림 생성에 실패했습니다."
+	        );
+	    }
+	}
 	
 	
 }
