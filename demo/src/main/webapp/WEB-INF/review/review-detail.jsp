@@ -348,6 +348,23 @@
                 </div>
 
                 <div class="evaluation-box-wrapper" style="flex: 1; max-width: 400px;">
+                    <div id="ai-summary-box" class="my-4 p-4 border rounded shadow-sm" style="background-color: #f8f9fa;" v-if="aiSummary">
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <div class="font-weight-bold" style="color: #4a90e2;">
+                                <i class="fas fa-magic mr-1"></i> ✨ AI 한 줄 요약
+                            </div>
+                            <button class="btn btn-sm btn-light border-0" @click="isSummaryOpen = !isSummaryOpen">
+                                {{ isSummaryOpen ? '접기 ▲' : '펼치기 ▼' }}
+                            </button>
+                        </div>
+                        <div v-show="isSummaryOpen" class="mt-2 text-muted" style="line-height: 1.6; white-space: pre-line;">
+                            {{ aiSummary }}
+                        </div>
+                    </div>
+                    <div id="ai-loading-box" class="my-4 p-4 border rounded shadow-sm text-center" style="background-color: #f8f9fa;" v-else>
+                        <div class="spinner-border spinner-border-sm text-primary mr-2" role="status"></div>
+                        <span class="text-muted">AI가 리뷰를 요약하고 있습니다...</span>
+                    </div>
                     <div class="evaluation-header mb-2">
                         <i class="fas fa-check-circle text-secondary"></i> 
                         <span class="font-weight-bold ml-1" style="font-size: 0.9rem; color: #495057;">서비스 상세 평가</span>
@@ -633,6 +650,8 @@
                         "개인정보 노출",
                         "기타 부적절한 내용"
                     ],
+                    aiSummary: "",       // 요약 데이터 저장용
+                    isSummaryOpen: true, // 접기/펴기 상태
                    
                 };
             },
@@ -649,6 +668,9 @@
                                 this.info = data.info;
                                 
                                 this.reviewDetail = data.info;
+                                // --- [요약 호출 추가] ---
+                                this.fnGetAiSummary(); 
+                                // ----------------------
                                 if (this.info.imgUrl) {
                                     this.imgList = this.info.imgUrl.split(',').filter(url => url.trim() !== '');
                                 }
@@ -676,6 +698,42 @@
                                     oldContent: item.content
                                 }));
                             }
+                        }
+                    });
+                },
+                fnGetAiSummary() {
+                    console.log("fnGetAiSummary 함수 호출됨!"); // 이게 F12 콘솔에 뜨나요?
+                    // 이미 내용이 들어와 있다면 중복 호출 방지
+                    if (this.aiSummary) return; 
+
+                    // 여기서 info가 null이면 아예 함수 종료
+                    if (!this.info || !this.info.content){
+                        console.log("info나 content가 없어서 종료됨:", this.info);
+                        return;
+                    }
+                    $.ajax({
+                        url: "/api/review/summary.dox",
+                        type: "POST",
+                        contentType: "application/json",
+                        data: JSON.stringify({
+                            reviewNo: this.reviewNo, // JSP 변수 대신 data 속성 활용
+                            content: this.info.content
+                        }),
+                        success: (res)=> {
+                            // res가 문자열이라면 객체로 파싱하고, 이미 객체라면 그대로 사용
+                            const data = (typeof res === 'string') ? JSON.parse(res) : res;
+                            
+                            if (data.result === "success") {
+                                // 이제 summary 부분만 추출해서 담습니다.
+                                this.aiSummary = data.summary; 
+                            } else {
+                                this.aiSummary = "요약 정보를 불러올 수 없습니다.";
+                            }
+                        },
+                        error: (e) => {
+                            console.error("AI 요약 실패:", e);
+                            // 에러 시 사용자에게 알려줄 메시지
+                            this.aiSummary = "요약 정보를 불러오지 못했습니다.";
                         }
                     });
                 },
@@ -859,7 +917,9 @@
                     }
                 }
             },
-            mounted() { this.fnGetDetail(); }
+            mounted() { 
+                this.fnGetDetail(); 
+            }
         }).mount('#app');
     </script>
 </body>

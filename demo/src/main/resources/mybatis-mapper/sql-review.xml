@@ -378,5 +378,11 @@
 	    FROM review
 	    WHERE review_no = #{value}
 	</select>
+	
+	<update id="updateAiSummary" parameterType="map">
+	    UPDATE review 
+	    SET ai_summary = #{aiSummary} 
+	    WHERE review_no = #{reviewNo}
+	</update>
 
 </mapper>
