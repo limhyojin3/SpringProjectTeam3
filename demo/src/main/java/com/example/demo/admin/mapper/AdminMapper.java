@@ -56,7 +56,7 @@ public interface AdminMapper {
 
 	int insertAnswer(HashMap<String, Object> map);
 
-	void updateAnswer(HashMap<String, Object> map);
+	int updateAnswer(HashMap<String, Object> map);
 
 	void updateInquiryStatus(HashMap<String, Object> map);
 

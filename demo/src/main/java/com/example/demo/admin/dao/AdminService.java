@@ -21,6 +21,8 @@ import java.util.Map;
 public class AdminService {
 	@Autowired
 	AdminMapper adminMapper;
+	@Autowired
+	NotificationService notificationService;
 
 	public HashMap<String, Object> getSalesList(HashMap<String, Object> map) {
 		HashMap<String, Object> resultMap = new HashMap<String, Object>();
@@ -292,9 +294,18 @@ public class AdminService {
 		HashMap<String, Object> resultMap = new HashMap<String, Object>();
 		try {
 			
-			adminMapper.updateAnswer(map);
-			resultMap.put("message", Message.MSG_EDIT);
-			
+			 int updated = adminMapper.updateAnswer(map);
+
+		        resultMap.put(
+		            "result",
+		            updated > 0 ? "success" : "fail"
+		        );
+		        resultMap.put(
+		            "message",
+		            updated > 0
+		                ? Message.MSG_EDIT
+		                : "문의 답변 대상이 없습니다."
+		        );
 		} catch (Exception e) {
 			// TODO: handle exception
 			System.out.println(e.getMessage());

@@ -1,0 +1,197 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.example.demo.admin.mapper.NotificationMapper">
+
+	<select id="selectNotificationList"
+		parameterType="hashmap"
+		resultType="com.example.demo.admin.model.Notification">
+		SELECT
+		notification_no AS notificationNo,
+		receiver_id AS receiverId,
+		sender_id AS senderId,
+		notification_type AS notificationType,
+		content,
+		target_type AS targetType,
+		target_no AS targetNo,
+		is_read AS isRead,
+		DATE_FORMAT(created_at, '%Y-%m-%d %H:%i') AS createdAt,
+		DATE_FORMAT(read_at, '%Y-%m-%d %H:%i') AS readAt
+		FROM notification
+		WHERE receiver_id = #{receiverId}
+		ORDER BY notification_no DESC
+		LIMIT #{limit}
+	</select>
+
+	<select id="selectUnreadCount" resultType="int">
+		SELECT COUNT(*)
+		FROM notification
+		WHERE receiver_id = #{receiverId}
+		AND is_read = 'N'
+	</select>
+
+	<update id="updateNotificationRead" parameterType="hashmap">
+		UPDATE notification
+		SET
+		is_read = 'Y',
+		read_at = NOW()
+		WHERE notification_no = #{notificationNo}
+		AND receiver_id = #{receiverId}
+		AND is_read = 'N'
+	</update>
+
+	<update id="updateAllNotificationsRead">
+		UPDATE notification
+		SET
+		is_read = 'Y',
+		read_at = NOW()
+		WHERE receiver_id = #{receiverId}
+		AND is_read = 'N'
+	</update>
+
+	<!-- 문의 작성자를 수신자로 사용합니다. -->
+	<insert id="insertInquiryAnswered" parameterType="hashmap">
+		INSERT INTO notification (
+		receiver_id,
+		sender_id,
+		notification_type,
+		content,
+		target_type,
+		target_no
+		)
+		SELECT
+		user_id,
+		#{senderId},
+		'INQUIRY_ANSWERED',
+		'문의하신 내용에 답변이 등록되었습니다.',
+		'INQUIRY',
+		inquiry_no
+		FROM inquiry
+		WHERE inquiry_no = #{inquiryNo}
+		ON DUPLICATE KEY UPDATE
+		notification_no = notification_no
+	</insert>
+
+	<!-- 리뷰 작성자를 수신자로 사용합니다. -->
+	<insert id="insertReviewResult" parameterType="hashmap">
+		INSERT INTO notification (
+		receiver_id,
+		sender_id,
+		notification_type,
+		content,
+		target_type,
+		target_no
+		)
+		SELECT
+		user_id,
+		#{senderId},
+		#{notificationType},
+		#{content},
+		'REVIEW',
+		review_no
+		FROM review
+		WHERE review_no = #{reviewNo}
+		ON DUPLICATE KEY UPDATE
+		notification_no = notification_no
+	</insert>
+
+	<!-- 신고한 사용자에게 처리 결과를 보냅니다. -->
+	<insert id="insertReportResultForReporter" parameterType="hashmap">
+		INSERT INTO notification (
+		receiver_id,
+		sender_id,
+		notification_type,
+		content,
+		target_type,
+		target_no
+		)
+		SELECT
+		reporter_id,
+		#{senderId},
+		#{notificationType},
+		#{content},
+		'REPORT',
+		report_no
+		FROM report
+		WHERE report_no = #{reportNo}
+		ON DUPLICATE KEY UPDATE
+		notification_no = notification_no
+	</insert>
+
+	<!-- 신고가 승인된 경우 신고 대상 사용자에게도 알립니다. -->
+	<insert id="insertReportWarningForTarget" parameterType="hashmap">
+		INSERT INTO notification (
+		receiver_id,
+		sender_id,
+		notification_type,
+		content,
+		target_type,
+		target_no
+		)
+		SELECT
+		target_user_id,
+		#{senderId},
+		'REPORT_WARNING',
+		'회원님의 콘텐츠에 대한 신고가 승인 처리되었습니다.',
+		target_type,
+		target_id
+		FROM report
+		WHERE report_no = #{reportNo}
+		AND target_user_id IS NOT NULL
+		AND target_user_id != reporter_id
+		ON DUPLICATE KEY UPDATE
+		notification_no = notification_no
+	</insert>
+
+	<!-- 관리자에게 알림 -->
+	<insert id="insertInquiryReceivedForAdmins"
+		parameterType="hashmap">
+
+		INSERT INTO notification (
+		receiver_id,
+		sender_id,
+		notification_type,
+		content,
+		target_type,
+		target_no
+		)
+		SELECT
+		user_id,
+		#{senderId},
+		'INQUIRY_RECEIVED',
+		'새로운 문의가 접수되었습니다.',
+		'INQUIRY',
+		#{inquiryNo}
+		FROM member
+		WHERE role = 'ADMIN'
+		AND status = 'ACTIVE'
+		ON DUPLICATE KEY UPDATE
+		notification_no = notification_no
+	</insert>
+
+	<insert id="insertReportReceivedForAdmins"
+		parameterType="hashmap">
+
+		INSERT INTO notification (
+		receiver_id,
+		sender_id,
+		notification_type,
+		content,
+		target_type,
+		target_no
+		)
+		SELECT
+		user_id,
+		#{senderId},
+		'REPORT_RECEIVED',
+		'새로운 신고가 접수되었습니다.',
+		'REPORT',
+		#{reportNo}
+		FROM member
+		WHERE role = 'ADMIN'
+		AND status = 'ACTIVE'
+		ON DUPLICATE KEY UPDATE
+		notification_no = notification_no
+	</insert>
+
+</mapper>

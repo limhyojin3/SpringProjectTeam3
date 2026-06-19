@@ -161,7 +161,7 @@
                                         <option value="COUPON">쿠폰</option>
                                         <option value="GIFTCON">기프티콘</option>
                                     </select>
-                                    <button class="btn-done" @click="fnCouponModal()">등록</button>
+                                    <button class="btn-done" @click="fnCouponModal()">쿠폰등록</button>
                                     <button @click="fnResetSearch">초기화</button>
                                 </div>
                             </div>
