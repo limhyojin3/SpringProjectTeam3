@@ -1,4 +1,6 @@
 const app = Vue.createApp({
+
+
     data() {
         return {
             myInquiryList: [],
@@ -19,7 +21,9 @@ const app = Vue.createApp({
             selectedTime: '', // 사용자가 클릭한 시간 (HH:mm 형태)
             res_content: '',
             selectedDate: '',
+            selectTags: [],
             productTag: [],
+            selectCategory: [],
             productList3: [],
             inquiryList: [],
             user: {},
@@ -73,7 +77,32 @@ const app = Vue.createApp({
             } else {
                 return '만료된 예약';
             }
-        },
+        }
+        ,
+        filteredList() {
+            return this.productList.filter(product => {
+
+                // 카테고리 조건 (선택 안 했으면 pass, 선택했으면 포함 여부 확인)
+                const matchCategory = this.selectCategory.length === 0 || (
+
+                    product.category &&
+                    Array.isArray(product.category) &&
+                    this.selectCategory.some(cat => product.category.includes(cat))
+                    //[]            //과즙팡팡   과즙팡팡,스몰웨딩
+                );
+                // 태그 조건
+                const matchTag = this.selectTags.length === 0 || (
+
+                    product.tag &&
+                    Array.isArray(product.tag) &&
+                    this.selectTags.some(tag => product.tag.includes(tag))
+                );
+
+                // 둘 다 만족하는 것만 리턴 (AND 조건)
+                return matchCategory && matchTag;
+            });
+        }
+        ,
         resCount() {
             return this.reservationList.length;
         }
@@ -861,12 +890,7 @@ const app = Vue.createApp({
             this.inquiry.title = '';
             this.inquiry.contents = '';
             this.productPage = 'inquiry';
-        },
-		// 💡 여기에 아래 코드를 그대로 붙여넣으세요.
-	    changeProductPage(pageName) {
-	        this.productPage = pageName;
-	        window.scrollTo(0, 0);
-	    },
+        }
     }, // methods
     mounted() {
         let self = this;
@@ -874,7 +898,5 @@ const app = Vue.createApp({
     }
 });
 
-app.component('product-catalog-component', ProductCatalogComponent);
-//app.component('product-detail-component', ProductDetailComponent);
 
 app.mount('#app');
