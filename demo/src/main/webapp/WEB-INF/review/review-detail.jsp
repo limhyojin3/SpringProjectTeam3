@@ -361,9 +361,9 @@
                             {{ aiSummary }}
                         </div>
                     </div>
-                    <div id="ai-loading-box" class="my-4 p-4 border rounded shadow-sm text-center" style="background-color: #f8f9fa;" v-else>
+                    <div id="ai-loading-box" class="my-4 p-4 border rounded shadow-sm text-center" style="background-color: #f8f9fa;" v-else-if="!aiSummary && !errorOccurred">
                         <div class="spinner-border spinner-border-sm text-primary mr-2" role="status"></div>
-                        <span class="text-muted">AI가 리뷰를 요약하고 있습니다...</span>
+                        <span>AI가 리뷰를 요약하고 있습니다...</span>
                     </div>
                     <div class="evaluation-header mb-2">
                         <i class="fas fa-check-circle text-secondary"></i> 
@@ -668,9 +668,14 @@
                                 this.info = data.info;
                                 
                                 this.reviewDetail = data.info;
-                                // --- [요약 호출 추가] ---
-                                this.fnGetAiSummary(); 
-                                // ----------------------
+                                // --- [수정된 부분: DB에 이미 요약본이 있다면 즉시 적용] ---
+                                if (this.info.summary) {
+                                   setTimeout(() => {
+                                        this.aiSummary = this.info.summary;
+                                    }, 2000);
+                                } else {
+                                    this.fnGetAiSummary(); // 요약본이 없으면 그제야 AI 호출
+                                }
                                 if (this.info.imgUrl) {
                                     this.imgList = this.info.imgUrl.split(',').filter(url => url.trim() !== '');
                                 }

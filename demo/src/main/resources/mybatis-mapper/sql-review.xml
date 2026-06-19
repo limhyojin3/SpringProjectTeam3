@@ -136,6 +136,7 @@
 	        r.receipt_name AS receiptName,
 	        r.title AS title,
 	        r.content AS content,
+	        r.summary AS summary,
 	        r.booking_source AS bookingSource,
 	        r.original_name AS originalName,
 	        r.stored_name AS storedName,
@@ -379,10 +380,10 @@
 	    WHERE review_no = #{value}
 	</select>
 	
-	<update id="updateAiSummary" parameterType="map">
+	<update id="updateSummary" parameterType="map">
 	    UPDATE review 
-	    SET ai_summary = #{aiSummary} 
+	    SET summary = #{summary} 
 	    WHERE review_no = #{reviewNo}
 	</update>
-
+	
 </mapper>

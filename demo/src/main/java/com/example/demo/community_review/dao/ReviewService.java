@@ -340,18 +340,21 @@ public class ReviewService {
         param.put("reviewNo", reviewNo);
         HashMap<String, Object> review = reviewMapper.selectReviewDetail(param);
         
-        if (review.get("aiSummary") != null) {
-            return (String) review.get("aiSummary");
+        // DB 컬럼명에 맞춰 'summary' 키 사용
+        if (review.get("summary") != null) {
+            return (String) review.get("summary");
         }
         
-        // 2. AI 요약 생성 (Gemini API 호출 함수 - 직접 구현 필요)
+        // 2. AI 요약 생성
         String summary = callGeminiApi(content);
 
         // 3. DB에 업데이트
         HashMap<String, Object> updateParam = new HashMap<>();
         updateParam.put("reviewNo", reviewNo);
-        updateParam.put("aiSummary", summary);
-        reviewMapper.updateAiSummary(updateParam);
+        updateParam.put("summary", summary); // 여기도 'summary' 키 사용
+        
+        // 메서드명도 updateSummary로 변경 권장
+        reviewMapper.updateSummary(updateParam);
 
         return summary;
     }
@@ -399,15 +402,16 @@ public class ReviewService {
                 System.err.println("코드: " + response.code());
                 System.err.println("메시지: " + response.message());
                 System.err.println("응답 본문: " + responseData); 
-                return "통신 오류(" + response.code() + ")";
+                return "요약 서비스가 잠시 바쁩니다. 잠시 후 다시 시도해주세요.";
             }
             
             // 성공 시 파싱 진행
             JsonObject root = JsonParser.parseString(responseData).getAsJsonObject();
-            return root.getAsJsonArray("candidates").get(0).getAsJsonObject()
-                       .getAsJsonObject("content").getAsJsonArray("parts").get(0).getAsJsonObject()
-                       .get("text").getAsString();
-                       
+            String summaryText = root.getAsJsonArray("candidates").get(0).getAsJsonObject()
+                    .getAsJsonObject("content").getAsJsonArray("parts").get(0).getAsJsonObject()
+                    .get("text").getAsString();
+
+            return summaryText;
         } catch (Exception e) {
             System.err.println("--- Gemini API 호출 중 예외 발생 ---");
             e.printStackTrace(); 
