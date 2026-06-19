@@ -47,63 +47,16 @@
                                 @date-changed="onDetailDateChanged"
                                 @reserve="onDetailReserve" />
                         </div>
-                        <div v-if="currentMenu === 'main' && productPage === 'inquiry'" class="payment-container">
-                            <div class="reservation-ticket">
-                                <div class="ticket-header">
-                                    <span class="ticket-brand">MARRY VIEW RESERVATION</span>
-                                    <span class="ticket-type">OFFICIAL TICKET</span>
-                                </div>
 
-                                <div class="ticket-body">
-                                    <div class="ticket-info">
-                                        <div class="info-row product-name">
-                                            <label>문의할 상품</label>
-                                            <div class="value">{{ product1.name }} <small>({{ product1.company
-                                                    }})</small></div>
-                                        </div>
-                                        <div class="info-row">
-                                            <label>상품 및 서비스 내용</label>
-                                            <div class="value">{{product1.content}}</div>
-                                        </div>
-
-                                        <div class="info-grid">
-                                            <div class="info-row">
-                                                <label>문의자 명</label>
-                                                <div class="value">{{"${sessionScope.sessionId}"}}</div>
-                                            </div>
-                                            <div class="info-row">
-                                                <label>문의 제목</label>
-                                                <div class="value">
-                                                    <input v-model="inquiry.title" class="inquiry-input-title">
-                                                </div>
-                                            </div>
-                                            <div class="info-row">
-                                                <label>문의 내용</label>
-                                                <div class="value">
-                                                    <textarea v-model="inquiry.contents"
-                                                        class="inquiry-textarea-contents"></textarea>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div class="ticket-side">
-                                        <div class="side-content">
-                                            <img :src="product1.thumbnail" class="ticket-side-img">
-                                            <div class="amount-label">TOTAL PRICE(상품 및 서비스 가격)</div>
-                                            <div class="amount-value">{{ Number(product1.price).toLocaleString() }}원
-                                            </div>
-                                            <div class="agreement-text">필수 항목 동의 : 노쇼관련</div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="payment-btn-group">
-                                    <button class="btn-cancel-pay" @click="productPage = 'detail'">뒤로가기</button>
-                                    <button class="btn-final-reserve" @click="fnInquiryAboutProduct">문의하기</button>
-                                </div>
-                            </div>
+                        <!-- 3️⃣ 상품 문의하기 화면 컴포넌트화 -->
+                        <div v-if="currentMenu === 'main' && productPage === 'inquiry'">
+                            <product-inquiry-write-component 
+                                :product="product1"
+                                :session-id="'${sessionScope.sessionId}'"
+                                @back="productPage = 'detail'"
+                                @submit="onInquirySubmit" />
                         </div>
+
                         <div v-if="currentMenu === 'main' && productPage === 'payment'" class="payment-container">
                             <div class="reservation-ticket">
                                 <div class="ticket-header">
@@ -257,85 +210,21 @@
                             </div>
                         </div>
 
-                        <!-- 나의 문의내역 보는 리스트-->
-                        <div v-if="currentMenu === 'main' && productPage === 'myRealInquiryList'"
-                            class="my-real-inquiry-container">
-                            <div class="inquiry-header-bar">
-                                <h2 class="inquiry-header-title">나의 문의 내역</h2>
-                                <button @click="productPage = 'list'" class="btn-sub-action">뒤로가기</button>
-                            </div>
-
-                            <div v-if="myInquiryList && myInquiryList.length > 0">
-                                <div v-for="(inquiry, index) in myInquiryList" :key="index"
-                                    @click="fnInquiryAnswerDetails(inquiry)" class="inquiryTicket list-view-ticket">
-
-                                    <div class="inquiry-img-box">
-                                        <img :src="inquiry.imgUrl" alt="상품이미지">
-                                    </div>
-
-                                    <div class="inquiry-info-box">
-                                        <div class="inquiry-prod-name">상품명: {{ inquiry.productName }}</div>
-                                        <div class="inquiry-title-text">{{ inquiry.inquiryTitle }}</div>
-                                        <div class="inquiry-content-text">{{ inquiry.inquiryContents }}</div>
-                                    </div>
-
-                                    <div class="inquiry-status-box">
-                                        <span v-if="inquiry.inquiryAns === '1'" class="badge-ans-complete">답변 완료</span>
-                                        <span v-else class="badge-ans-wait">답변 대기</span>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div v-else class="inquiry-empty-box">
-                                문의하신 내역이 없습니다.
-                            </div>
+                        <!-- 7️⃣ 나의 문의 내역 목록 화면 컴포넌트화 -->
+                        <div v-if="currentMenu === 'main' && productPage === 'myRealInquiryList'">
+                            <my-inquiry-list-component 
+                                :inquiry-list="myInquiryList"
+                                @back="productPage = 'list'"
+                                @go-detail="fnInquiryAnswerDetails" />
                         </div>
-                        <div v-if="currentMenu === 'main' && productPage === 'inquiry1Details'"
-                            class="inquiry-detail-container">
-                            <div class="inquiry-detail-header">
-                                <h2 class="inquiry-detail-title">문의 내용 상세보기</h2>
-                                <button @click="productPage = 'myRealInquiryList'" class="btn-back-outline">← 리스트로
-                                    돌아가기</button>
-                            </div>
 
-                            <div class="inquiry-product-card">
-                                <img :src="myInquiry1.imgUrl" alt="문의 상품 이미지">
-                                <div>
-                                    <div class="inquiry-card-label">문의 상품</div>
-                                    <div class="inquiry-card-name">{{ myInquiry1.productName }}</div>
-                                </div>
-                            </div>
-
-                            <div class="inquiry-content-box-wrapper">
-                                <div class="inquiry-box-header">
-                                    <span class="inquiry-box-label">나의 문의</span>
-                                    <span class="inquiry-box-number">No. {{ myInquiry1.inquiryNo }}</span>
-                                </div>
-                                <div class="inquiry-box-body">
-                                    <h3 class="inquiry-body-title">Q. {{ myInquiry1.inquiryTitle }}</h3>
-                                    <div class="inquiry-body-text">{{ myInquiry1.inquiryContents }}</div>
-                                </div>
-                            </div>
-
-                            <div v-if="myInquiry1.inquiryAns === '1'" class="answer-box-wrapper">
-                                <div class="answer-box-header">
-                                    <span class="answer-prefix">A.</span> 업체 답변
-                                </div>
-                                <div class="answer-box-body">
-                                    <div class="answer-body-text">
-                                        {{ myInquiry1.answerContents || '답변 내용을 불러오는 중입니다.' }}
-                                    </div>
-                                    <div class="answer-body-meta">
-                                        답변자: {{ myInquiry1.ansCompany || '관리자' }}
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div v-else class="answer-wait-box">
-                                <div class="answer-wait-icon">⏳</div>
-                                답변을 기다리고 있습니다. 조금만 더 기다려 주세요!
-                            </div>
+                        <!-- 8️⃣ 단건 문의 내역 상세 답변 확인 화면 컴포넌트화 -->
+                        <div v-if="currentMenu === 'main' && productPage === 'inquiry1Details'">
+                            <inquiry-detail-component 
+                                :inquiry="myInquiry1"
+                                @back="productPage = 'myRealInquiryList'" />
                         </div>
+                        
                     </main>
                 </main>
             </div>
@@ -349,9 +238,12 @@
 
     <jsp:include page="/WEB-INF/company/components/productListTemplate.jsp" />
     <jsp:include page="/WEB-INF/company/components/productDetailTemplate.jsp" />
+    <jsp:include page="/WEB-INF/company/components/productInquiryTemplate.jsp" />
+
     <script>
         window.SESSION_ID = "${sessionScope.sessionId}";
     </script>
     <script src="/js/company-components/product-list-component.js"></script>
     <script src="/js/company-components/product-detail-component.js"></script>
+    <script src="/js/company-components/product-inquiry-component.js"></script>
     <script src="/js/product-category-tag.js"></script>

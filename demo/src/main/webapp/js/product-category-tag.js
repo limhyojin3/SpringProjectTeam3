@@ -710,7 +710,15 @@ const app = Vue.createApp({
             this.inquiry.title = '';
             this.inquiry.contents = '';
             this.productPage = 'inquiry';
-        }
+        },
+		onInquirySubmit(payload) {
+		    // 자식 컴포넌트가 보내온 입력 데이터들을 메인 데이터에 바인딩합니다.
+		    this.inquiry.title = payload.title;
+		    this.inquiry.contents = payload.contents;
+		    
+		    // 유저님이 작성하신 기존의 서버 저장 AJAX 함수를 그대로 실행합니다!
+		    this.fnInquiryAboutProduct();
+		}
     }, 
     mounted() {
         let self = this;
@@ -721,5 +729,10 @@ const app = Vue.createApp({
 // 💡 요청하신 방식대로 변수화된 객체를 각각 컴포넌트로 등록합니다.
 app.component('product-list-component', productListComponent);
 app.component('product-detail-component', productDetailComponent);
+
+// 💡 새롭게 만든 문의 관련 컴포넌트 변수 3개를 등록합니다!
+app.component('product-inquiry-write-component', productInquiryWriteComponent);
+app.component('my-inquiry-list-component', myInquiryListComponent);
+app.component('inquiry-detail-component', inquiryDetailComponent);
 
 app.mount('#app');
