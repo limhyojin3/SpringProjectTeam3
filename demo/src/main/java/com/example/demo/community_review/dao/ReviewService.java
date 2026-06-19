@@ -361,10 +361,10 @@ public class ReviewService {
         System.out.println("DEBUG - API Key: " + geminiApiKey);
         
      // 추천하는 가장 안정적인 모델명 (위 리스트에 있는 이름 그대로 사용)
-        String modelName = "gemini-3.5-flash"; // 또는 "gemini-2.5-flash"
+        String modelName = "gemini-2.5-flash-lite"; // 또는 "gemini-2.5-flash"
 
         // URL 구성을 아래와 같이 변경하세요 (v1beta/ 뒤에 바로 모델명을 붙임)
-        String url = "https://generativelanguage.googleapis.com/v1beta/models/" + modelName + ":generateContent?key=" + geminiApiKey;
+        String url = "https://generativelanguage.googleapis.com/v1/models/" + modelName + ":generateContent?key=" + geminiApiKey;
 
         // 타임아웃 설정을 추가하여 무한 대기 방지
         OkHttpClient client = new OkHttpClient.Builder()
