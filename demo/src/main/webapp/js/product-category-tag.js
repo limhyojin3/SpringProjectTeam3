@@ -210,7 +210,7 @@ const app = Vue.createApp({
                 top: 0,
                 behavior: 'smooth' // 'smooth'는 부드럽게, 'auto'는 즉시 이동합니다.
             });
-        },
+        }, 
         fnCom: function() {
             let self = this;
             let param = {

@@ -434,14 +434,12 @@
                     </main>
                 </main>
             </div>
-        </div>
+        </div> 
 
         <jsp:include page="/WEB-INF/common/footer.jsp" />
-
-        <!-- <div class="ai-chatbot">ai 챗봇</div> -->
         </div>
     </body>
-
+ 
     </html>
 
     <script>
