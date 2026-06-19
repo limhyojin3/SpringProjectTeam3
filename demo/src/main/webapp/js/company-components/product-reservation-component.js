@@ -4,7 +4,7 @@ const productReservationPaymentComponent = {
     props: ['product', 'selectedDate', 'selectedTime', 'userid', 'resContent']
 };
 
-// 2️⃣ 나의 예약 리스트 컴포넌트 객체
+// 2️⃣ 나의 예약 리스트 컴포넌트 객체 
 const myReservationListComponent = {
     template: '#my-reservation-list-template',
     props: ['reservationList']

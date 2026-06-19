@@ -48,7 +48,7 @@
 
             <div class="payment-btn-group">
                 <button class="btn-cancel-pay" @click="$emit('back')">뒤로가기</button>
-                <button class="btn-final-reserve" @click="$emit('save-reservation')">예약 저장하기</button>
+                <button class="btn-final-reserve" @click="fnSaveReservation">예약 저장하기</button>
             </div>
         </div>
     </div>
@@ -135,7 +135,7 @@
             </div>
             <div class="payment-btn-group">
                 <button class="btn-cancel-pay" @click="$emit('back')">뒤로가기</button>
-                <button class="btn-final-reserve" @click="$emit('pay-final')" :disabled="reservation.resStatus !== 'WAIT'">
+                <button class="btn-final-reserve" @click="fnPaymentFinal" :disabled="reservation.resStatus !== 'WAIT'">
                     {{ buttonName }}
                 </button>
             </div>
