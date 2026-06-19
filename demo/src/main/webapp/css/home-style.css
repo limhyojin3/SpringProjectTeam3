@@ -45,7 +45,7 @@
 	/* 전체 페이지 레이아웃 */
 	#wrapper {
 	    max-width: 1300px;
-	    margin: 50px auto;
+	    margin: 6px auto;
 	    padding: 0 20px;
 	    position: relative;
 	}
@@ -847,4 +847,81 @@
 	
 	.chat-input-area button:hover {
 	    background: rgb(255, 108, 108);
-}
+	}
+	
+	/* 캐치프레이즈 전체 구역 */
+	.catchphrase-section {
+	    max-width: 1300px;
+	    margin: 8px auto 4px auto;
+	    padding: 0 20px 0 469px;  /* 왼쪽에 left-banner 너비만큼 padding 추가 */
+	    position: relative;
+	}
+
+	/* 양옆 선 공통 */
+	.catchphrase-section::before,
+	.catchphrase-section::after {
+	    content: "";
+	    display: inline-block;
+	    vertical-align: middle;
+	    width: 20%;
+	    height: 1px;
+	    transition: opacity 0.5s;
+	    opacity: 0;
+	}
+
+	/* 왼쪽 선 */
+	.catchphrase-section::before {
+	    background: linear-gradient(to right, rgba(255,153,172,0), rgba(255,153,172,0.6));
+	}
+
+	/* 오른쪽 선 */
+	.catchphrase-section::after {
+	    background: linear-gradient(to left, rgba(255,153,172,0), rgba(255,153,172,0.6));
+	}
+
+	/* 타이핑 완료 후 양쪽 선 표시 */
+	.catchphrase-section.done::before,
+	.catchphrase-section.done::after {
+	    opacity: 1;
+	}
+
+	/* 텍스트 */
+	.catchphrase-text {
+	    display: inline-block;
+	    vertical-align: middle;
+	    padding: 0 20px;
+	    margin: 0;
+	    font-size: 14px;
+	    font-weight: 500;
+	    color: #555555;
+	}
+
+	/* 브랜드 컬러 */
+	.catchphrase-text .brand-point {
+	    color: #ff4a6b;
+	    font-weight: 700;
+	}
+
+	/* 아이콘 애니메이션 */
+	.wave-icon {
+	    color: #ff8fab;
+	    margin: 0 4px;
+	    display: inline-block;
+	    animation: iconTwinkle 1.8s ease-in-out infinite;
+	}
+
+	/* 타이핑 커서 */
+	.typing-text {
+	    white-space: nowrap;
+	    border-right: 2px solid #ff4a6b;
+	    animation: blink 0.7s step-end infinite;
+	}
+
+	@keyframes iconTwinkle {
+	    0%, 100% { transform: rotate(0deg) scale(1); opacity: 0.8; }
+	    50% { transform: rotate(15deg) scale(1.15); opacity: 1; }
+	}
+
+	@keyframes blink {
+	    50% { border-color: transparent; }
+	}

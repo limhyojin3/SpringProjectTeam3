@@ -9,7 +9,7 @@
     <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
     <script src="/js/page-change.js"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/common.css">
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 
@@ -265,7 +265,7 @@
                                     <td @click.stop><input type="checkbox" :value="like.likeNo" v-model="selectedReviewLikes"></td>
                                     <td>{{ like.likeNo }}</td>
                                     <td class="col-title">{{ like.title }}</td>
-                                    <td>{{ like.rating }}</td>
+                                    <td><i class="fa-solid fa-star"></i> {{ like.rating }}</td>
                                     <td>{{ like.regDate }}</td>
                                 </tr>
                             </tbody>

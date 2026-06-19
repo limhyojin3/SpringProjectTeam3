@@ -47,6 +47,12 @@ public class MemberController {
 		return "/home"; // 파일명
 	}
 	//
+	// 관리자 로그인
+	@RequestMapping("/admin/login.do") // 주소 
+	public String adminLogin(Model model) throws Exception {
+	    return "/member/admin-login";
+	}
+	
 	//*1. login (로그인)*
 	@RequestMapping("/login.do") // 주소 
 	public String login(Model model) throws Exception{
