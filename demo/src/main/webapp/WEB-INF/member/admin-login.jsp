@@ -125,8 +125,8 @@
             <i class="fa-solid fa-lock"></i> 관리자 로그인
         </p>
         <div class="input-group">
-            <input type="text" v-model="userId" @input="fnFilterId('user')" placeholder="관리자 아이디">
-            <input type="password" v-model="userPwd" @keyup.enter="fnLogin()" placeholder="비밀번호">
+            <input type="text" v-model="userId" placeholder="관리자 아이디">
+            <input type="password" v-model="password" @keyup.enter="fnLogin()" placeholder="비밀번호">
         </div>
         <button class="login-btn" @click="fnLogin()">로그인</button>
     </div>
@@ -138,7 +138,7 @@
             return {
                 tab: 'user',
                 userId: '',
-                userPwd: '',
+                password: '', // 💡 userPwd를 password로 완전히 통일!
             };
         },
         methods: {
@@ -148,8 +148,8 @@
             fnLogin() {
                 let param = {
                     userId: this.userId,
-                    password: this.userPwd,
-                    tab: 'user'
+                    password: this.password, // 💡 정상 매핑
+                    tab: 'admin'
                 };
                 $.ajax({
                     url: '/login.dox',
@@ -176,7 +176,7 @@
                             } else {
                                 alert('아이디 또는 비밀번호가 올바르지 않습니다.');
                             }
-                            this.userPwd = '';  // 비밀번호 초기화
+                            this.password = '';  // 💡 정상 초기화
                         }
                     }
                 });
@@ -184,11 +184,10 @@
             FnswitchTab(type) {
                 this.tab = type;
             },
-            // 영문 + 숫자만 허용
             fnFilterId(type) {
                 if (type === 'user') {
                     this.userId = this.userId.replace(/[^a-zA-Z0-9]/g, '');
-                } else { // 업체 아이디는 _ 허용
+                } else {
                     this.companyId = this.companyId.replace(/[^a-zA-Z0-9_]/g, '');
                 }
             },
