@@ -1,6 +1,6 @@
-// 💡 독립된 객체로 컴포넌트를 정의합니다.
 const productListComponent = {
     template: '#product-list-template',
+    // 💡 부모가 던져주는 데이터만 순수하게 받습니다. (결합도 낮음)
     props: ['productList', 'productTag'], 
     data() {
         return {

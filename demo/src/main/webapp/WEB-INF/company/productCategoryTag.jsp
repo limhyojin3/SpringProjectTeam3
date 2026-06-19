@@ -39,12 +39,8 @@
                         <div v-if="currentMenu === 'main' && productPage === 'detail'">
                             <product-detail-component
                                 :product="product1"
-                                :am-times="amTimes"
-                                :pm-times="pmTimes"
-                                :booked-times="bookedTimes"
                                 @back="fnBack"
                                 @go-inquiry="goInquiry"
-                                @date-changed="onDetailDateChanged"
                                 @reserve="onDetailReserve" />
                         </div>
 
@@ -121,4 +117,6 @@
     <script src="/js/company-components/product-detail-component.js"></script>
     <script src="/js/company-components/product-inquiry-component.js"></script>
     <script src="/js/company-components/product-reservation-component.js"></script>
+
+    <script src="/js/product-service.js"></script>
     <script src="/js/product-category-tag.js"></script>

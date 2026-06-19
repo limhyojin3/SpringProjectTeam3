@@ -448,32 +448,12 @@ const app = Vue.createApp({
             }
         },
         fnGetTagAndProductList() {
-            let self = this;
-            let param = {};
-            $.ajax({
-                url: "/getTagAndProductList.dox",
-                dataType: "json",
-                type: "POST",
-                data: param,
-                success: function(data) {
-                    self.productTag = data.taglist;
-                    let productList1 = data.productListForTag.map(p => {
-                        return {
-                            id: p.productNo,
-                            companyNo: p.companyNo,
-                            thumbnail: p.imgUrl,
-                            name: p.productName,
-                            company: p.comName,
-                            content: p.productDetails,
-                            price: p.originalPrice,
-                            category: typeof p.proType === 'string' ? JSON.parse(p.proType) : p.proType,
-                            tag: typeof p.tag === 'string' ? JSON.parse(p.tag) : p.tag,
-                            deposit: p.deposit || 0
-                        }
-                    });
-                    self.productList = productList1;
-                }
-            });
+			let self = this;
+	        // 💡 통신 파일에 요청해서 결과만 내 data에 쏙 대입합니다.
+	        ProductService.getTagAndProductList(function(tags, products) {
+	            self.productTag = tags;
+	            self.productList = products;
+	        });
         },
         fnSelectTime(time) {
             this.selectedTime = time;
