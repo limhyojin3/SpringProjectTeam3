@@ -111,6 +111,18 @@
         .company-mode .login-btn {
             background: #9b8fd4;
         }
+        .company-mode .login-btn:hover {
+            background: #8a7ec3;
+        }
+
+        /* 업체 모드 추가 */
+        .company-mode {
+            border-color: #9b8fd4;
+        }
+
+        .company-mode .link-wrap a:hover {
+            color: #9b8fd4;
+        }
 
         /* ── 로그인 버튼 ── */
         .login-btn {
@@ -138,10 +150,12 @@
             text-decoration: none;
             color: #888;
             font-size: 15px;
+            margin-top: 10px;
         }
         .link-wrap span.sep {
             color: #ccc;
             font-size: 15px;
+            margin-top: 10px;
         }
         .link-wrap a:hover { color: #f4a096; }
 
@@ -287,6 +301,9 @@
 
         .kakao-btn:hover { background: #F0D900; }
         .naver-btn:hover { background: #02B351; }
+        .social-btn kakao-btn{font-size:20px;}
+        .social-btn naver-btn{font-size:20px;}
+
     </style>
 </head>
 <body>
@@ -325,15 +342,15 @@
         <!-- 로그인 버튼 -->
         <button class="login-btn" @click="fnLogin()">로그인</button>
         <!-- 소셜 로그인 버튼  -->
-        <div class="social-login-wrap">
+        <div class="social-login-wrap" v-if="tab === 'user'">
             <div class="social-divider"><span>또는</span></div>
             
             <a href="/oauth/kakao" class="social-btn kakao-btn">
-                <i class="fa-solid fa-comment" style="font-size:20px;"></i>
+                <i class="fa-solid fa-comment"></i>
                 카카오로 로그인
             </a>
             <a href="/oauth/naver" class="social-btn naver-btn">
-                <i class="fa-solid fa-n" style="font-size:20px;"></i>
+                <i class="fa-solid fa-n"></i>
                 네이버로 로그인
             </a>
         </div>
@@ -419,14 +436,29 @@
                     dataType: 'json',
                     type: 'POST',
                     data: param,
-                    success(data) {
+                    success: (data) => {
                         alert(data.message);
-                        if (data.loginResult) location.href = '/merryViewHome.do';
+                        if (data.loginResult) {
+                            location.href = '/merryViewHome.do';
+                        } else {
+                            if (this.tab === 'user') {
+                                this.userPwd = '';
+                            } else {
+                                this.companyPwd = '';
+                            }
+                        }
                     }
                 });
             },
             FnswitchTab(type) {
                 this.tab = type;
+                // 로고 색 변경
+                const logo = document.querySelector('.logo-wrap img');
+                if (type === 'company') {
+                    logo.style.filter = 'hue-rotate(200deg)';  // 핑크 → 보라로
+                } else {
+                    logo.style.filter = 'none';
+                }
             },
             // 영문 + 숫자만 허용
             fnFilterId(type) {

@@ -53,9 +53,13 @@ public class MemberService {
 		     // 3. role 체크 (비밀번호 비교 전에!)
 		    String tab = (String) map.get("tab");
 		    if(tab.equals("user")) {
-		        if(!member.getRole().equals("USER") && !member.getRole().equals("ADMIN")) {
+		        if(!member.getRole().equals("USER")) {
 		          resultMap.put("loginResult", false);
-		          resultMap.put("message", "업체 로그인을 이용해주세요.");
+		          if(member.getRole().equals("ADMIN")) {
+		              resultMap.put("message", "관리자 전용 페이지에서 로그인해주세요.");
+		          } else {
+		              resultMap.put("message", "업체 로그인을 이용해주세요.");
+		          }
 		          return resultMap;
 		        }
 		    } else if(tab.equals("company")) {
@@ -77,7 +81,7 @@ public class MemberService {
 	        	map.put("userId", member.getUserId());
 //	        	System.out.println(map.get("userId"));
 	        	displayName = memberMapper.selectCompany(map);
-	        	System.out.println("조회된 업체명: " + displayName);
+//	        	System.out.println("조회된 업체명: " + displayName);
 	            resultMap.put("message", displayName + "님 환영합니다.");
 	    
 	         } else {
@@ -261,7 +265,7 @@ public class MemberService {
 	    try {
 	        // 카카오 유저 체크 먼저! (selectMember 호출 전에)
 	        String userId = (String) map.get("userId");
-	        if (userId != null && userId.startsWith("kakao_")) {
+	        if (userId != null && (userId.startsWith("kakao_") || userId.startsWith("naver_"))) {
 	            resultMap.put("result", "success");
 	            return resultMap;
 	        }

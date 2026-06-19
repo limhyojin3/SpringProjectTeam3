@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MarryView - 마이페이지</title>
     <script src="https://code.jquery.com/jquery-3.7.1.js" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
-    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
     <script src="/js/page-change.js"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
@@ -118,6 +118,8 @@
 </head>
 <body>
     <jsp:include page="/WEB-INF/common/header.jsp" />
+    <input type="hidden" id="sessionIdVal" value="${sessionId}">
+    <input type="hidden" id="memberTelVal" value="${member.tel}">
     <div id="app">
         <div id="wrapper">
             <div class="main-content">
@@ -133,6 +135,7 @@
                         미입력된 정보가 있어요.
                         <span @click="fnEdit()" style="text-decoration:underline; cursor:pointer; font-weight:600;">내 정보 수정</span>에서 완성해보세요!
                     </div>
+                    
                     <div class="greeting">
                         안녕하세요, <strong>{{info.name}}님!</strong><br>
                         <!-- 기념일 있는 사람 (기혼) -->
@@ -236,7 +239,7 @@
         },
         methods: {
             fnEdit: function() {
-                if (this.sessionId && this.sessionId.startsWith('kakao_')) {
+                if (this.sessionId && (this.sessionId.startsWith('kakao_') || this.sessionId.startsWith('naver_'))) {
                     location.href = "/myPage-updateForm.do";  // 바로 수정 페이지로
                 } else {
                     location.href = "/userMyPage-confirmPw.do";  // 일반 유저는 비밀번호 확인
@@ -295,31 +298,28 @@
 
                 const diff = Math.ceil((thisYearAnniv - today) / (1000 * 60 * 60 * 24));
                 this.anniversaryDDay = diff;
-                console.log("anniversaryDDay:", this.anniversaryDDay);
-                console.log("anniversaryYears:", this.anniversaryYears);
             },
         },
         mounted() {
-            // 소셜 로그인 유저이고 전화번호가 없으면 미입력 배너 표시
-            const userId = '${sessionId}';
-            const tel = '${member.tel}';
-            if (userId.startsWith('kakao_') && !tel) {
+            // hidden input으로 읽기
+            const userId = document.getElementById('sessionIdVal').value;
+            const tel = document.getElementById('memberTelVal').value;
+            
+            // 카카오/네이버 소셜 유저이고 전화번호 없으면 배너 표시
+            if ((userId.startsWith('kakao_') || userId.startsWith('naver_')) && !tel) {
                 this.hasIncomplete = true;
             }
-            console.log("weddingDate:", this.weddingDate);
-            console.log("anniversaryDate:", this.anniversaryDate);
+
             let self = this;
-        
+
             this.info.userId = "${member.userId}";
             this.info.name = "${member.name}";
 
             this.anniversaryDate = '${member.anniversaryDate}' || null;
             this.fnCalcAnniversary();
-            
-            // 잔여 횟수 조회
+
             axios.get("/myPassWallet.dox")
                 .then(res => {
-                    console.log("패스 지갑:", res.data);
                     self.passWallet = res.data;
                 })
                 .catch(err => {

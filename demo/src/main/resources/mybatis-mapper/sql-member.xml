@@ -123,6 +123,10 @@
 	    VALUES (#{userId}, #{name}, #{nickname}, #{email})
 	</insert>
 	
+	<select id="selectNicknameByUserId" parameterType="String" resultType="String">
+	    SELECT nickname FROM user_detail WHERE user_id = #{userId}
+	</select>
+	
 	<!-- 쿠폰 조회 -->
 	<select id="selectUserCouponList" parameterType="hashmap" resultType="hashmap">
 	    SELECT
@@ -440,6 +444,7 @@
 	    FROM company_like CL
 	    JOIN company C ON CL.company_no = C.company_no
 	    WHERE CL.user_id = #{userId}
+	    ORDER BY CL.like_no DESC 
 	    LIMIT #{pageSize} OFFSET #{offset}
 	</select>
 	<!-- 페이지 -->
@@ -463,6 +468,7 @@
 	    JOIN community_post CP ON CL.post_no = CP.post_no
 	    WHERE CL.user_id = #{userId}
 	    AND CP.user_id != #{userId}
+	    ORDER BY CL.like_no DESC
 	    LIMIT #{pageSize} OFFSET #{offset}
 	</select>
 	<!-- 페이지 -->
@@ -487,6 +493,7 @@
 	    JOIN review R ON RL.review_no = R.review_no
 	    WHERE RL.user_id = #{userId}
 	    AND R.user_id != #{userId} <!-- 본인 리뷰 제외 -->
+	    ORDER BY RL.like_no DESC
 	    LIMIT #{pageSize} OFFSET #{offset}
 	</select>
 	<!-- 페이지 -->
@@ -702,22 +709,16 @@
 	        R.reg_date,
 	        R.is_paid,
 	        R.user_id,
+	        R.like_cnt AS likeCnt,  <!-- COUNT 대신 컬럼 직접 사용 -->
+	        R.view_cnt AS viewCnt,
 	        IFNULL(R.thumbnail_url, R.img_url) AS thumbnailUrl,
 	        CASE WHEN PUL.user_id IS NOT NULL THEN 1 ELSE 0 END AS is_purchased,
-	        UD.nickname AS userNick,
-	        COUNT(RL.review_no) AS likeCnt,
-	        IFNULL(R.view_cnt, 0) AS viewCnt
+	        UD.nickname AS userNick
 	    FROM review R
-	    LEFT JOIN pass_usage_log PUL
-	        ON R.review_no = PUL.review_no
-	        AND PUL.user_id = #{userId}
-	    LEFT JOIN user_detail UD
-	        ON R.user_id = UD.user_id
-	    LEFT JOIN review_like RL
-	        ON R.review_no = RL.review_no
+	    LEFT JOIN pass_usage_log PUL ON R.review_no = PUL.review_no AND PUL.user_id = #{userId}
+	    LEFT JOIN user_detail UD ON R.user_id = UD.user_id
 	    WHERE R.approval_status = 'APPROVED'
-	    GROUP BY R.review_no, R.title, R.img_url, R.reg_date, R.is_paid, R.user_id, R.thumbnail_url, PUL.user_id, UD.nickname, R.view_cnt
-	    ORDER BY likeCnt DESC  <!-- 변경 -->
+	    ORDER BY R.like_cnt DESC
 	    LIMIT 4
 	</select>
 	

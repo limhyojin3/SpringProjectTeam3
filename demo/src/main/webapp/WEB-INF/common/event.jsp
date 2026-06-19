@@ -25,7 +25,7 @@
         }
 
         .event-hero::before {
-            content: '🎉';
+            content: none;
             position: absolute;
             font-size: 200px;
             opacity: 0.08;
@@ -34,7 +34,7 @@
         }
 
         .event-hero::after {
-            content: '💍';
+            content: none;
             position: absolute;
             font-size: 160px;
             opacity: 0.08;
@@ -128,7 +128,9 @@
         }
 
         .fixed-card-top .card-emoji {
-            font-size: 40px;
+            font-size: 36px;
+            color: white;
+            opacity: 0.9;
         }
 
         .fixed-card-top .card-brand {
@@ -241,7 +243,10 @@
             flex-shrink: 0;
         }
 
-        .always-reward .reward-icon { font-size: 28px; }
+        .always-reward .reward-icon {
+            font-size: 24px;
+            color: #9b8fd4;
+        }
 
         .always-reward .reward-text {
             font-size: 11px;
@@ -299,7 +304,8 @@
             font-weight: 700;
             cursor: pointer;
         }
-
+        .event-deco-left  { position:absolute; font-size:140px; opacity:0.08; top:-20px; left:-20px; color:white; }
+        .event-deco-right { position:absolute; font-size:120px; opacity:0.08; bottom:-10px; right:-10px; color:white; }
     </style>
 </head>
 <body>
@@ -308,23 +314,25 @@
         <!-- 준비중 모달 -->
         <div class="prep-modal-bg" v-if="showPrep" @click.self="showPrep = false">
             <div class="prep-modal">
-                <div class="prep-icon">🛠️</div>
+                <div class="prep-icon"><i class="fas fa-tools"></i></div>
                 <h3>이벤트 준비 중입니다!</h3>
-                <p>더 좋은 혜택으로 곧 찾아올게요.<br>조금만 기다려주세요 💕</p>
+                <p>더 좋은 혜택으로 곧 찾아올게요.<br>조금만 기다려주세요<i class="fas fa-heart" style="color:#f4a096;"></i></p>
                 <button class="prep-modal-btn" @click="showPrep = false">확인</button>
             </div>
         </div>
         <!-- 히어로 -->
         <div class="event-hero">
+            <i class="fas fa-party-horn event-deco-left"></i>  <%-- 없으면 fa-gift --%>
             <h1>MarryView Events</h1>
-            <p>메리뷰와 함께하는 다양한 이벤트를 만나보세요 💕</p>
+            <p>메리뷰와 함께하는 다양한 이벤트를 만나보세요!</p>
+            <i class="fas fa-ring event-deco-right"></i>
         </div>
 
         <div class="event-body">
 
             <!-- 고정 이벤트 -->
             <div class="section-title">
-                🎁 기프트콘 지급 이벤트
+                 <div class="reward-icon"><i class="fas fa-gift"></i></div>기프트콘 지급 이벤트
                 <span class="section-badge">고정</span>
             </div>
 
@@ -333,39 +341,39 @@
                 <!-- 투썸 -->
                 <div class="fixed-card">
                     <div class="fixed-card-top" style="background: linear-gradient(135deg, #7B1C2A, #a83248);">
-                        <span class="card-emoji">🎂</span>
+                        <i class="fas fa-birthday-cake card-emoji"></i>
                         <span class="card-brand">TWOSOME PLACE</span>
                     </div>
                     <div class="fixed-card-body">
                         <p class="condition">유료 리뷰 좋아요 30개 이상 달성 시</p>
-                        <p class="reward">투썸플레이스 케이크 조각 🎁</p>
-                        <span class="gift-badge">기프트콘 자동 발급</span>
+                        <p class="reward">투썸플레이스 케이크 조각</p>
+                        <span class="gift-badge"><i class="fas fa-gift"></i> 기프트콘 자동 발급</span>
                     </div>
                 </div>
 
                 <!-- CU -->
                 <div class="fixed-card">
                     <div class="fixed-card-top" style="background: linear-gradient(135deg, #5B2D8E, #7b3fb5);">
-                        <span class="card-emoji">🛒</span>
+                        <i class="fas fa-shopping-basket card-emoji"></i>
                         <span class="card-brand">CU</span>
                     </div>
                     <div class="fixed-card-body">
                         <p class="condition">무료 리뷰 좋아요 40개 이상 달성 시</p>
-                        <p class="reward">CU 편의점 3,000원권 🎁</p>
-                        <span class="gift-badge">기프트콘 자동 발급</span>
+                        <p class="reward">CU 편의점 3,000원권</p>
+                        <span class="gift-badge"><i class="fas fa-gift"></i> 기프트콘 자동 발급</span>
                     </div>
                 </div>
 
                 <!-- 스타벅스 -->
                 <div class="fixed-card">
                     <div class="fixed-card-top" style="background: linear-gradient(135deg, #00704A, #00a86b);">
-                        <span class="card-emoji">☕</span>
+                        <i class="fas fa-coffee card-emoji"></i>
                         <span class="card-brand">STARBUCKS</span>
                     </div>
                     <div class="fixed-card-body">
                         <p class="condition">결혼 기념일 당일 로그인 시</p>
-                        <p class="reward">스타벅스 아메리카노 Tall ☕</p>
-                        <span class="gift-badge">기프트콘 자동 발급</span>
+                        <p class="reward">스타벅스 아메리카노 Tall</p>
+                        <span class="gift-badge"><i class="fas fa-gift"></i> 기프트콘 자동 발급</span>
                     </div>
                 </div>
 
@@ -373,7 +381,7 @@
 
             <!-- 상시 이벤트 -->
             <div class="section-title">
-                ✨ 상시 이벤트
+                <i class="fas fa-wand-magic-sparkles"></i> 상시 이벤트
                 <span class="section-badge always">상시</span>
             </div>
 
@@ -381,42 +389,48 @@
 
                 <!-- 브라이덜샤워 -->
                 <div class="always-card" @click="showPrep = true">
-                    <div class="always-icon" style="background:#fff0f5;">🎀</div>
+                    <div class="always-icon" style="background:#fff0f5;">
+                        <i class="fas fa-heart" style="color:#f4a096;"></i>
+                    </div>
                     <div class="always-content">
                         <span class="always-tag">BRIDAL SHOWER</span>
                         <h3>브라이덜샤워 이벤트</h3>
-                        <p>마이페이지에서 결혼 예정일을 입력하면 특별한 쿠폰 혜택을 드려요!<br>예비 신부님들의 설레는 준비를 메리뷰가 함께합니다 💍</p>
+                        <p>마이페이지에서 결혼 예정일을 입력하면 특별한 쿠폰 혜택을 드려요!<br>예비 신부님들의 설레는 준비를 메리뷰가 함께합니다</p>
                     </div>
                     <div class="always-reward">
-                        <div class="reward-icon">🎟️</div>
+                        <div class="reward-icon"><i class="fas fa-ticket-alt"></i></div>
                         <div class="reward-text">쿠폰 발급</div>
                     </div>
                 </div>
 
                 <!-- 첫돌 -->
                 <div class="always-card" @click="showPrep = true">
-                    <div class="always-icon" style="background:#fff9e6;">👶</div>
+                    <div class="always-icon" style="background:#fff9e6;">
+                        <i class="fas fa-baby" style="color:#f0b429;"></i>
+                    </div>
                     <div class="always-content">
                         <span class="always-tag">FIRST BIRTHDAY</span>
                         <h3>우리 아이 첫돌 사진 리뷰 이벤트</h3>
-                        <p>소중한 첫돌 사진을 메리뷰에 리뷰로 남겨주세요!<br>베스트 리뷰로 선정되신 분께 기프트콘을 드립니다 🎁</p>
+                        <p>소중한 첫돌 사진을 메리뷰에 리뷰로 남겨주세요!<br>베스트 리뷰로 선정되신 분께 기프트콘을 드립니다</p>
                     </div>
                     <div class="always-reward">
-                        <div class="reward-icon">🎁</div>
+                        <div class="reward-icon"><i class="fas fa-gift"></i></div>
                         <div class="reward-text">기프트콘 증정</div>
                     </div>
                 </div>
 
                 <!-- 내가 제일 잘나가 -->
                 <div class="always-card" @click="showPrep = true">
-                    <div class="always-icon" style="background:#f0f5ff;">👑</div>
+                    <div class="always-icon" style="background:#f0f5ff;">
+                        <i class="fas fa-crown" style="color:#9b8fd4;"></i>
+                    </div>
                     <div class="always-content">
                         <span class="always-tag">BEST WEDDING</span>
                         <h3>내가 제일 잘나가 이벤트</h3>
-                        <p>제일로 즐거운 결혼식 사진을 올려주세요!<br>사진 콘테스트 선정 시 푸짐한 기프트콘 혜택을 드립니다 🏆</p>
+                        <p>제일로 즐거운 결혼식 사진을 올려주세요!<br>사진 콘테스트 선정 시 푸짐한 기프트콘 혜택을 드립니다</p>
                     </div>
                     <div class="always-reward">
-                        <div class="reward-icon">🏆</div>
+                        <div class="reward-icon"><i class="fas fa-trophy"></i></div>
                         <div class="reward-text">기프트콘 증정</div>
                     </div>
                 </div>
