@@ -1,6 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.example.demo.community_review.mapper.CommunityMapper">
+	
+	<!-- 커뮤니티 게시글 제목 조회 -->
+	<select id="getPostTitle" resultType="string">
+        SELECT title 
+        FROM Community_Post 
+        WHERE post_no = #{targetId}
+    </select>
+	
 	<!--게시글 추가-->
     <insert id="insertPost" useGeneratedKeys="true" keyProperty="postNo">
         INSERT INTO Community_Post (
@@ -10,59 +18,101 @@
         )
     </insert>
     
-	<!-- 게시글 리스트 -->
-   <select id="selectPostList" parameterType="hashmap" resultType="com.example.demo.community_review.model.Community">
-        SELECT 
-            post_no AS postNo,
-            user_id AS userId,
-            category,
-            title,
-            content,
-            reg_date AS regDate,
-            view_cnt AS viewCnt,
-            like_cnt AS likeCnt,
-            is_deleted AS isDeleted
-        FROM Community_Post 
-        WHERE is_deleted = 0
-        <if test="searchKeyword != null and searchKeyword != ''">
-            <choose>
-                <when test="searchType == 'title'">
-                    AND title LIKE CONCAT('%', #{searchKeyword}, '%')
-                </when>
-                <when test="searchType == 'userId'">
-                    AND user_id LIKE CONCAT('%', #{searchKeyword}, '%')
-                </when>
-                <otherwise>
-                    AND (title LIKE CONCAT('%', #{searchKeyword}, '%') 
-                         OR user_id LIKE CONCAT('%', #{searchKeyword}, '%'))
-                </otherwise>
-            </choose>
-        </if>
-        ORDER BY reg_date DESC
-    </select>
+    <!-- 커뮤니티 게시글 개수 조회 -->
+    <select id="selectPostCount" parameterType="hashmap" resultType="int">
+	    SELECT COUNT(*)
+	    FROM Community_Post p
+	    WHERE p.is_deleted = 0
+	    
+	    <if test="category != null and category != '' and category != '전체'">
+	        AND p.category = #{category}
+	    </if>
 	
+	    <if test="searchKeyword != null and searchKeyword != ''">
+	        <choose>
+	            <when test="searchType == 'title'">
+	                AND p.title LIKE CONCAT('%', #{searchKeyword}, '%')
+	            </when>
+	            <when test="searchType == 'userId'">
+	                AND p.user_id LIKE CONCAT('%', #{searchKeyword}, '%')
+	            </when>
+	            <otherwise>
+	                AND (p.title LIKE CONCAT('%', #{searchKeyword}, '%') 
+	                     OR p.user_id LIKE CONCAT('%', #{searchKeyword}, '%'))
+	            </otherwise>
+	        </choose>
+	    </if>
+	</select>
+    
+	<select id="selectPostList" parameterType="hashmap" resultType="com.example.demo.community_review.model.Community">
+	    SELECT 
+	        p.post_no AS postNo,
+	        p.user_id AS userId,
+	        IF(p.content LIKE CONCAT('%', CHAR(60), 'img%'), 'Y', 'N') AS imgYn,
+	        CASE 
+	            WHEN m.status = 'WITHDRAWN' THEN '탈퇴회원'
+	            ELSE IFNULL(d.nickname, p.user_id) 
+	        END AS nickname,
+	        p.category,
+	        p.title,
+	        p.content,
+	        DATE_FORMAT(p.reg_date, '%Y-%m-%d') AS regDate,
+	        p.view_cnt AS viewCnt,
+	        p.like_cnt AS likeCnt,
+	        p.is_deleted AS isDeleted,
+	        (SELECT COUNT(*) FROM comment c 
+	         WHERE c.post_no = p.post_no) AS commentCnt
+	    FROM Community_Post p
+	    LEFT JOIN MEMBER m ON p.user_id = m.user_id
+	    LEFT JOIN USER_DETAIL d ON p.user_id = d.user_id
+	    WHERE p.is_deleted = 0
+	    
+	    <if test="category != null and category != '' and category != '전체'">
+	        AND p.category = #{category}
+	    </if>
+	
+	    <if test="searchKeyword != null and searchKeyword != ''">
+	        <choose>
+	            <when test="searchType == 'title'">
+	                AND p.title LIKE CONCAT('%', #{searchKeyword}, '%')
+	            </when>
+	            <when test="searchType == 'userId'">
+	                AND p.user_id LIKE CONCAT('%', #{searchKeyword}, '%')
+	            </when>
+	            <otherwise>
+	                AND (p.title LIKE CONCAT('%', #{searchKeyword}, '%') 
+	                     OR p.user_id LIKE CONCAT('%', #{searchKeyword}, '%'))
+	            </otherwise>
+	        </choose> 
+	    </if>
+	    ORDER BY p.reg_date DESC
+	    LIMIT #{startIndex}, #{pageSize}
+	</select>
+	
+	<!-- ?? 아마 상세내용일건데 필요없는거 같지만 혹시모르니 냅둠. -->
     <select id="selectPostById" resultType="com.example.demo.community_review.model.Community">
         SELECT * FROM Community_Post WHERE post_no = #{postNo}
     </select>
     
 	<!--좋아요 기능-->
     <select id="checkPostLike" resultType="int">
-        SELECT COUNT(*) FROM Post_Like 
+        SELECT COUNT(*) FROM community_Like 
         WHERE post_no = #{postNo} AND user_id = #{userId}
     </select>
     
 	<!--추가 기능-->
     <insert id="insertPostLike">
-        INSERT INTO Post_Like (post_no, user_id, reg_date)
-        VALUES (#{postNo}, #{userId}, CURRENT_TIMESTAMP)
+        INSERT INTO community_Like (post_no, user_id)
+        VALUES (#{postNo}, #{userId})
     </insert>
     
 	<!--삭제 기능-->
     <delete id="deletePostLike">
-        DELETE FROM Post_Like 
+        DELETE FROM community_Like 
         WHERE post_no = #{postNo} AND user_id = #{userId}
     </delete>
     
+    <!-- 게시글 삭제 -->
     <delete id="deletePost" parameterType="hashmap">
 	    DELETE FROM Community_Post 
 	    WHERE post_no = #{postNo}
@@ -88,22 +138,47 @@
 	    SET view_cnt = view_cnt + 1
 	    WHERE post_no = #{postNo}
 	</update>
+	
+	<!-- 커뮤니티 게시글 상세 내용 -->
 	<select id="selectPostDetail" parameterType="hashmap" resultType="com.example.demo.community_review.model.Community">
 	    SELECT 
-	        post_no AS postNo,
-	        user_id AS userId,
-	        title,
-	        content,
-	        view_cnt AS viewCnt,
-	        like_cnt AS likeCnt,
-	        reg_date AS regDate
-	    FROM Community_Post
-	    WHERE post_no = #{postNo}
+	        p.post_no AS postNo,
+	        p.user_id AS userId,
+	        CASE 
+	            WHEN m.status = 'WITHDRAWN' THEN '탈퇴회원'
+	            ELSE IFNULL(d.nickname, p.user_id) 
+	        END AS nickname,
+	        p.title,
+	        p.category,
+	        p.content,
+	        p.view_cnt AS viewCnt,
+	        p.like_cnt AS likeCnt,
+	        p.reg_date AS regDate,
+	        (SELECT COUNT(*) 
+	         FROM community_like 
+	         WHERE post_no = p.post_no 
+	           AND user_id = #{userId}) AS isLiked
+	    FROM community_Post p
+	    LEFT JOIN MEMBER m ON p.user_id = m.user_id
+	    LEFT JOIN USER_DETAIL d ON p.user_id = d.user_id
+	    WHERE p.post_no = #{postNo}
 	</select>
 	
-	<!---->
+	<!-- 게시글 작성자인지 아닌지 구분해서 수정, 삭제 할 수 있도록 -->
 	<select id="selectPostAuthor" parameterType="hashmap" resultType="String">
     	SELECT user_id FROM Community_Post WHERE post_no = #{postNo}
+	</select>
+	
+	<select id="selectPopularPostList" resultType="hashmap">
+	    SELECT 
+	        p.post_no AS postNo,
+	        p.title,
+	        p.like_cnt AS likeCnt,
+	        p.view_cnt AS viewCnt
+	    FROM Community_Post p
+	    WHERE p.is_deleted = 0
+	    ORDER BY (p.like_cnt * 2 + p.view_cnt) DESC
+	    LIMIT 5
 	</select>
 	
 </mapper>

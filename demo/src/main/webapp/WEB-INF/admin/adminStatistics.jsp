@@ -8,327 +8,251 @@
         <title>Document</title>
         <script src="https://code.jquery.com/jquery-3.7.1.js"
             integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
+        <script src="../../js/page-change.js"></script>
         <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
-        <script src="/js/page-change.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+        <link rel="stylesheet" href="${pageContext.request.contextPath}/css/common.css">
+        <link rel="stylesheet" href="${pageContext.request.contextPath}/css/adminNavi.css">
+        <link rel="stylesheet" href="${pageContext.request.contextPath}/css/admin-common.css">
         <style>
-            /* 1. 컨테이너: 높이를 명확히 주고 쉼표를 없앰 */
-            .container {
-                width: 100%;
-                /* 화면 전체 높이를 사용하되, 헤더/푸터 제외한 나머지는 유연하게(1fr) */
-                display: grid;
-                grid-template-areas:
-                    "header header"
-                    "nav main"
-                    "footer footer";
-                grid-template-rows: 80px auto minmax(80px, auto);
-                /* 높이 고정 (쉼표 없음) */
-                grid-template-columns: 220px 1fr;
-                /* 너비 고정 */
-                gap: 5px;
-            }
-
-            /* 2. 각 영역별 테두리 및 색상 */
-            .header {
-                grid-area: header;
-                border: 2px solid red;
-                display: flex;
-                /* 가로 정렬 */
-                align-items: center;
-                /* 세로 중앙 정렬 */
-                justify-content: space-between;
-                /* 양 끝과 사이에 공간 배치 */
-                padding: 0 20px;
-            }
-
-            .logo {
-                width: 100px;
-                height: 60px;
-                background-color: pink;
-                color: white;
-                text-align: center;
-            }
-
-            .menu-group {
-                display: flex;
-                gap: 15px;
-            }
-
-            .menu-group button {
-                padding: 10px 18px;
-                font-weight: bold;
-                cursor: pointer;
-                border: 1px solid #ddd;
-                border-radius: 5px;
-                background-color: white;
-                transition: 0.2s;
-            }
-
-            .menu-group button:hover {
-                background-color: #f8f9fa;
-                border-color: red;
-                /* 강조색 */
-                color: red;
-            }
-
-            .loginbtn {
-                display: flex;
-                flex-direction: row;
-                border: 2px solid gray
-            }
-
-            .serviceBox {
-                width: 50px;
-                height: 50px;
-            }
-
-            .serviceBox img {
-                max-width: 100%;
-                height: auto;
-                display: block;
-            }
-
-            .nav {
-                grid-area: nav;
-                border: 1px solid blue;
-                padding: 20px 10px;
-                display: flex;
-                flex-direction: column;
-                gap: 8px;
-                background-color: #ffc7c2;
-            }
-
-            .activebtn {
-                width: 100%;
-                padding: 12px 10px;
-                text-align: left;
-                background-color: pink;
-                border: 1px solid #ddd;
-                border-radius: 4px;
-                cursor: pointer;
-                font-size: 14px;
-                font-weight: 500;
-                transition: 0.2s;
-            }
-
-            .nav-btn {
-                width: 100%;
-                padding: 12px 10px;
-                text-align: left;
-                background-color: white;
-                border: 1px solid #ddd;
-                border-radius: 4px;
-                cursor: pointer;
-                font-size: 14px;
-                font-weight: 500;
-                transition: 0.2s;
-            }
-
-            .nav-btn:hover {
-                background-color: #e3f2fd;
-                border-color: #2196f3;
-                color: #1976d2;
-            }
-
-            .main {
-                grid-area: main;
-                border: 1px solid #ffc7c2;
-                background-color: #ffc7c2;
-                padding: 20px;
-                display: flex;
-                gap: 20px;
-                /* 카드 사이 간격 */
-                align-items: flex-start;
-                /* 카드들이 위쪽에 고정되도록 */
-            }
-
-            .tab-buttons {
-                display: flex;
-                gap: 10px;
-                margin-bottom: 20px;
-            }
-
-            .tab-buttons button {
-                padding: 10px 15px;
-                border: none;
-                background: #eee;
-                cursor: pointer;
-                border-radius: 5px;
-            }
-
-            .tab-buttons button:hover {
-                background: #ff6b6b;
-                color: white;
-            }
-
-            .chart-area {
-                background: #fff;
-                padding: 20px;
-                border-radius: 10px;
-            }
+            .chart-area {}
 
             .chart-area div {
                 width: auto;
                 height: auto;
             }
+            
+            .stats-summary-grid {
+                display: grid;
+                grid-template-columns: repeat(3, 1fr);
+                gap: 20px;
+                margin-top: 24px;
+                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+                text-align: center;
+                transition: all 0.3s ease;
+            }
 
-            .footer {
-                grid-area: footer;
-                border: 2px solid gray;
-                background-color: #f9f9f9;
+            .stats-mini-card {
+                background: #fff0f3;
+                border-radius: 12px;
                 padding: 20px;
-                font-size: 13px;
-                color: #666;
-                display: flex;
-                flex-direction: column;
-                /* 위아래 섹션 구분 */
-                gap: 10px;
+                box-shadow: 0 4px 15px rgba(0, 0, 0, 0.06);
+                border: none;
+                transition: all 0.3s ease;
             }
 
-            .footer-top {
-                display: flex;
-                justify-content: space-between;
-                align-items: center;
-                border-bottom: 1px solid #ddd;
-                padding-bottom: 10px;
+            .stats-mini-card p {
+                font-size: 14px;
+                color: #868e96;
+                margin-bottom: 10px;
             }
 
-            .footer-bottom {
-                display: flex;
-                flex-wrap: wrap;
-                /* 가로로 쭉 나열되다가 모자라면 다음줄로 */
-                gap: 5px 20px;
-                color: #888;
+            .stats-mini-card h3 {
+                font-size: 24px;
+                font-weight: 700;
+                color: #212529;
             }
 
-            .footer-bottom span::after {
-                content: "|";
-                margin-left: 20px;
-                color: #ccc;
+            .stats-mini-card .up {
+                color: #fa5252;
             }
 
-            .footer-bottom span:last-child::after {
-                content: "";
-                /* 마지막 항목은 선 제거 */
+            .stats-mini-card .down {
+                color: #228be6;
             }
 
-            .footer-links a {
-                text-decoration: none;
-                color: #666;
-                margin-right: 15px;
+            .stats-mini-card:hover {
+                background: #ffe3e8;
+                transform: translateY(-5px);
+                box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
             }
 
-            .footer-links .bold-link {
-                font-weight: bold;
-                color: #333;
+            .up {
+                color: #e74c3c;
+            }
+
+            .up::before {
+                content: "▲ ";
+            }
+
+            .down {
+                color: #3498db;
+            }
+
+            .down::before {
+                content: "▼ ";
             }
         </style>
     </head>
 
     <body>
-        <div id="app" class="container">
-            <div class="header">
-                <div class="logo">메리뷰
-                </div>
-                <div class="menu-group">
-                    <button type="button">회사소개</button>
-                    <button type="button">제휴업체</button>
-                    <button type="button">커뮤니티</button>
-                    <button type="button">패스구매</button>
-                    <button type="button">리뷰조회</button>
-                </div>
-                <div class="loginbtn">
-                    <div class="serviceBox">
-                        <img src="../img/logoServiceJPG.JPG" alt="">
-                    </div>
-                    <button type="button">관리자</button>
-                </div>
-            </div>
-            <div class="nav">
-                <button @click="fnGoMain();" type="button" class="nav-btn">관리자 메인
-                    페이지</button>
-                <button type="button" class="nav-btn">전체 회원 목록</button>
-                <button type="button" class="nav-btn">전체 업체 목록</button>
-                <button type="button" class="nav-btn">전체 게시판/리뷰 목록</button>
-                <button type="button" class="nav-btn">결제 및 상품 관리</button>
-                <button type="button" class="nav-btn">신고 제보 관리</button>
-                <button type="button" class="nav-btn">통계</button>
-            </div>
-            <div class="main">
-                <div class="dashboard-container">
-                    <!-- 버튼 영역 -->
-                    <div class="tab-buttons">
-                        <button @click="selectedTab = 'sales'; fnGetSales();">월별 매출 현황</button>
-                        <button @click="selectedTab = 'users'; fnGetUsers('USER');">일반 회원 등록수</button>
-                        <button @click="selectedTab = 'companys'; fnGetUsers('NPARTNER');">일반 업체 등록수</button>
-                        <button @click="selectedTab = 'partners'; fnGetUsers('PARTNER')">제휴업체 등록수</button>
-                    </div>
-                    <!-- 차트 영역 -->
-                    <div class="chart-area">
-                        <div v-if="selectedTab === 'sales'">
-                            <h3>월별 매출 현황</h3>
-                            <div id="chart-sales"></div>
-                        </div>
-                        <div v-if="selectedTab === 'users'">
-                            <h3>일반 회원 등록수</h3>
-                            <div id="chart-users"></div>
-                        </div>
-                        <div v-if="selectedTab === 'companys'">
-                            <h3>일반 업체 등록수</h3>
-                            <div id="chart-companys"></div>
-                        </div>
-                        <div v-if="selectedTab === 'partners'">
-                            <h3>제휴 업체 등록수</h3>
-                            <div id="chart-partners"></div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="footer">
-                <!-- 상단: 로고, 링크, 고객센터 -->
-                <div class="footer-top">
-                    <div style="font-weight: bold; font-size: 16px; color: #333;">MERRYVIEW</div>
-                    <div class="footer-links">
-                        <a href="#">회사소개</a>
-                        <a href="#" class="bold-link">개인정보처리방침</a>
-                        <a href="#">이용약관</a>
-                        <a href="#">파트너 입점문의</a>
-                    </div>
-                    <div>고객센터 <span style="font-weight: bold; color: #ff6b6b;">1588-0000</span> (평일 10:00~18:00)</div>
-                </div>
+        <jsp:include page="/WEB-INF/common/header.jsp" />
 
-                <!-- 하단: 업체 정보 가로 나열 -->
-                <div class="footer-bottom">
-                    <span>(주)메리뷰</span>
-                    <span>대표: 김메리</span>
-                    <span>사업자등록번호: 123-45-67890</span>
-                    <span>통신판매업신고: 제 2026-서울강남-01234호</span>
-                    <span>주소: 서울특별시 강남구 테헤란로 77길 11, 메리타워 15층</span>
-                    <span>이메일: help@merryview.com</span>
-                </div>
+        <div id="app">
+            <div class="middle">
+                <jsp:include page="/WEB-INF/admin/adminNavi.jsp" />
+                <div class="main">
+                    <div class="container">
+                        <!-- 버튼 영역 -->
+                        <div class="tab-menu">
+                            <button :class="{active: activeTab == 'sales'}"
+                                @click="activeTab = 'sales'; fnGetSales();">월별 매출 현황</button>
+                            <button :class="{active: activeTab == 'users'}"
+                                @click="activeTab = 'users'; fnGetUsers('USER');">일반 회원
+                                등록수</button>
+                            <button :class="{active: activeTab == 'nPartners'}"
+                                @click="activeTab = 'nPartners'; fnGetUsers('NPARTNER');">일반 업체
+                                등록수</button>
+                            <button :class="{active: activeTab == 'partners'}"
+                                @click="activeTab = 'partners'; fnGetUsers('PARTNER')">제휴업체
+                                등록수</button>
+                        </div>
+                        <!-- 차트 영역 -->
+                        <div class="chart-area">
+                            <div v-if="activeTab == 'sales'">
+                                <h2>월별 매출 현황</h2>
+                                <div id="chart-sales"></div>
+                            </div>
+                            <div v-if="activeTab == 'users'">
+                                <h2>일반 회원 등록수</h2>
+                                <div id="chart-users"></div>
+                            </div>
+                            <div v-if="activeTab == 'nPartners'">
+                                <h2>일반 업체 등록수</h2>
+                                <div id="chart-nPartners"></div>
+                            </div>
+                            <div v-if="activeTab == 'partners'">
+                                <h2>제휴 업체 등록수</h2>
+                                <div id="chart-partners"></div>
+                            </div>
+                        </div>
 
-                <div style="font-size: 11px; color: #bbb; margin-top: 5px;">
-                    © 2026 MerryView Inc. All Rights Reserved.
+                        <div v-if="activeTab == 'sales'" class="stats-summary-grid">
+
+                            <div class="stats-mini-card">
+                                <p>이번달 매출</p>
+                                <h3>{{salesNow.toLocaleString()}}</h3>
+                            </div>
+
+                            <div class="stats-mini-card">
+                                <p>저번달 매출</p>
+                                <h3>{{salesBefore.toLocaleString()}}</h3>
+                            </div>
+
+                            <div class="stats-mini-card">
+                                <p>증감률</p>
+                                <h3 :class="salesGrowthRate == 0 ? 'same' : (salesGrowthRate < 0 ? 'down' : 'up')">
+                                    {{formatPercent(salesGrowthRate)}}%
+                                </h3>
+                            </div>
+
+                        </div>
+
+                        <div v-if="activeTab == 'users'" class="stats-summary-grid">
+
+                            <div class="stats-mini-card">
+                                <p>이번달 회원 수</p>
+                                <h3>{{userNow.toLocaleString()}}</h3>
+                            </div>
+
+                            <div class="stats-mini-card">
+                                <p>저번달 회원 수</p>
+                                <h3>{{userBefore.toLocaleString()}}</h3>
+                            </div>
+
+                            <div class="stats-mini-card">
+                                <p>증감률</p>
+                                <h3 :class="userGrowthRate == 0 ? 'same' : (userGrowthRate < 0 ? 'down' : 'up')">
+                                    {{formatPercent(userGrowthRate)}}%
+                                </h3>
+                            </div>
+
+                        </div>
+
+                        <div v-if="activeTab == 'nPartners'" class="stats-summary-grid">
+
+                            <div class="stats-mini-card">
+                                <p>이번달 일반 업체 수</p>
+                                <h3>{{nPartnerNow.toLocaleString()}}</h3>
+                            </div>
+
+                            <div class="stats-mini-card">
+                                <p>저번달 일반 업체 수</p>
+                                <h3>{{nPartnerBefore.toLocaleString()}}</h3>
+                            </div>
+
+                            <div class="stats-mini-card">
+                                <p>증감률</p>
+                                <h3
+                                    :class="nPartnerGrowthRate == 0 ? 'same' : (nPartnerGrowthRate < 0 ? 'down' : 'up')">
+                                    {{formatPercent(nPartnerGrowthRate)}}%
+                                </h3>
+                            </div>
+
+                        </div>
+
+                        <div v-if="activeTab == 'partners'" class="stats-summary-grid">
+
+                            <div class="stats-mini-card">
+                                <p>이번달 일반 업체 수</p>
+                                <h3>{{partnerNow.toLocaleString()}}</h3>
+                            </div>
+
+                            <div class="stats-mini-card">
+                                <p>저번달 일반 업체 수</p>
+                                <h3>{{partnerBefore.toLocaleString()}}</h3>
+                            </div>
+
+                            <div class="stats-mini-card">
+                                <p>증감률</p>
+                                <h3 :class="partnerGrowthRate == 0 ? 'same' : (partnerGrowthRate < 0 ? 'down' : 'up')">
+                                    {{formatPercent(partnerGrowthRate)}}%
+                                </h3>
+                            </div>
+
+                        </div>
+                    </div>
                 </div>
             </div>
+            <jsp:include page="/WEB-INF/common/footer.jsp" />
         </div>
         <script>
             const app = Vue.createApp({
                 data() {
                     return {
                         // 변수 - (key : value)
-                        selectedTab: "sales",
+                        activeTab: "sales",
                         list: [],
+                        salesNow: 1,
+                        salesBefore: 1,
+                        salesGrowthRate: 3,
                         priceList: [],
                         monthList: [],
                         clientList: [],
                         role: "",
+                        activeMenu: "",
+                        userNow: 1,
+                        userBefore: 1,
+                        userGrowthRate: 0,
+                        nPartnerNow: 0,
+                        nPartnerBefore: 0,
+                        nPartnerGrowthRate: 0,
+                        partnerNow: 1,
+                        partnerBefore: 1,
+                        partnerGrowthRate: 0,
+                        newCommer: 0,
+                        affRate: 0,
                     };
                 },
                 methods: {
                     // 함수(메소드) - (key : function())
-                    fnGoMain() {
-                        location.href = 'http://localhost:8080/adminMain.do';
+                    fnPage: function (url) {
+                        location.href = url;
+                    },
+                    formatPercent(val) {
+                        return Number(Math.abs(val || 0).toFixed(1)).toLocaleString();
                     },
                     fnSalesChart: function () {
                         let self = this;
@@ -342,30 +266,35 @@
                             }],
                             chart: {
                                 height: 350,
-                                type: 'line',
+                                type: 'area',
                                 zoom: {
                                     enabled: false
-                                }
+                                },
+                                toolbar: { show: false },
+                                animations: { enabled: true }
                             },
+                            colors: ['#FF4560'],
                             dataLabels: {
                                 enabled: false
                             },
                             stroke: {
-                                curve: 'straight'
+                                curve: 'smooth',
+                                width: 3,
+                                lineCap: 'round'
                             },
-                            // title: {
-                            //     text: 'Product Trends by Month',
-                            //     align: 'left'
-                            // },
-                            grid: {
-                                row: {
-                                    colors: ['#f3f3f3', 'transparent'], // takes an array which will be repeated on columns
-                                    opacity: 0.5
-                                },
+
+                            markers: {
+                                size: 5,
+                                colors: ['#FF4560'],
+                                strokeColors: '#fff',
+                                strokeWidth: 2,
+                                hover: { size: 7 }
                             },
+
                             xaxis: {
                                 categories: self.monthList
                             },
+
                         };
                         self.chart = new ApexCharts(document.querySelector("#chart-sales"), options);
                         self.chart.render();
@@ -383,11 +312,34 @@
                             }],
                             chart: {
                                 height: 350,
-                                type: 'line'
+                                type: 'area',
+                                zoom: {
+                                enabled: false
                             },
+                            toolbar: { show: false },
+                            animations: { enabled: true },
+                            },
+                            
                             xaxis: {
                                 categories: self.monthList
-                            }
+                            },
+                            colors: ['#FF4560'],
+                            dataLabels: {
+                                enabled: false
+                            },
+                            stroke: {
+                                curve: 'smooth',
+                                width: 3,
+                                lineCap: 'round'
+                            },
+
+                            markers: {
+                                size: 5,
+                                colors: ['#FF4560'],
+                                strokeColors: '#fff',
+                                strokeWidth: 2,
+                                hover: { size: 7 }
+                            },
                         };
 
                         self.chart = new ApexCharts(document.querySelector(id), options);
@@ -404,6 +356,17 @@
                             data: param,
                             success: function (data) {
                                 console.log(data);
+                                self.salesNow = data.list.length > 0
+                                    ? data.list[data.list.length - 1].totalRevenue
+                                    : 0;
+
+                                self.salesBefore = data.list.length > 1
+                                    ? data.list[data.list.length - 2].totalRevenue
+                                    : 0;
+
+                                self.salesGrowthRate = self.salesBefore == 0
+                                    ? 0
+                                    : ((self.salesNow - self.salesBefore) / self.salesBefore) * 100;
                                 self.priceList = [];
                                 self.monthList = [];
                                 for (let i = 0; i < data.list.length; i++) {
@@ -437,17 +400,68 @@
                                 if (self.role == "USER") {
                                     self.fnDrawChart("#chart-users", "일반 회원 수");
                                 } else if (self.role == "NPARTNER") {
-                                    self.fnDrawChart("#chart-companys", "일반 업체 수");
+                                    self.fnDrawChart("#chart-nPartners", "일반 업체 수");
                                 } else if (self.role == "PARTNER") {
                                     self.fnDrawChart("#chart-partners", "제휴 업체 수");
                                 }
+
+                                let len = data.list.length;
+
+                                let now = len > 0 ? data.list[len - 1].userCount : 0;
+                                let before = len > 1 ? data.list[len - 2].userCount : 0;
+
+                                let growth = before == 0
+                                    ? 0
+                                    : ((now - before) / before) * 100;
+
+                                if (role == "USER") {
+                                    self.userNow = now;
+                                    self.userBefore = before;
+                                    self.userGrowthRate = growth;
+                                }
+
+                                if (role == "NPARTNER") {
+                                    self.nPartnerNow = now;
+                                    self.nPartnerBefore = before;
+                                    self.nPartnerGrowthRate = growth;
+                                }
+
+                                if (role == "PARTNER") {
+                                    self.partnerNow = now;
+                                    self.partnerBefore = before;
+                                    self.partnerGrowthRate = growth;
+                                }
+                                self.fnAfterAllDone();
                             }
                         });
                     },
+
+                    fnAfterAllDone: function () {
+                        let self = this;
+                        self.newCommer = self.userNow + self.nPartnerNow + self.partnerNow;
+                        let total = self.nPartnerNow + self.partnerNow;
+                        self.affRate = total == 0 ? 0 : (self.partnerNow / total) * 100;
+                    },
+
+
                 }, // methods
                 mounted() {
                     // 처음 시작할 때 실행되는 부분
                     let self = this;
+                    const path = location.pathname;
+
+                    this.activeMenu =
+                        path.includes('adminMain') ? 'main' :
+                            path.includes('adminUser') ? 'user' :
+                                path.includes('adminCompany') ? 'company' :
+                                    path.includes('adminBoard') ? 'board' :
+                                        path.includes('adminReviewWait') ? 'reviewWait' :
+                                            path.includes('adminPayment') ? 'payment' :
+                                                path.includes('adminReport') ? 'report' :
+                                                    path.includes('adminInquiry') ? 'inquiry' :
+                                                        path.includes('adminStatistics') ? 'stats' :
+                                                            '';
+
                     self.fnGetSales();
                 }
             });

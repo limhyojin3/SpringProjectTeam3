@@ -1,55 +1,70 @@
 package com.example.demo.community_review.mapper;
 
-import java.util.HashMap;
 import java.util.List;
-
+import java.util.Map;
 import org.apache.ibatis.annotations.Mapper;
-
 import com.example.demo.community_review.model.Community;
-
-import jakarta.servlet.http.HttpServletRequest;
 
 @Mapper
 public interface CommunityMapper {
-    
- // --- 좋아요 관련 메서드 추가 ---
 
-	// 1. 좋아요 여부 확인 (map 안에 postNo, userId가 있어야 함)
-    int checkPostLike(HashMap<String, Object> map);
-    
-    // 2. 좋아요 기록 추가 (map 안에 postNo, userId가 있어야 함)
-    void insertPostLike(HashMap<String, Object> map);
-    
-    // 3. 좋아요 기록 삭제 (map 안에 postNo, userId가 있어야 함)
-    void deletePostLike(HashMap<String, Object> map);
-    
-    // 4. 커뮤니티 테이블의 like_cnt 증감 (map 안에 postNo, amount가 있어야 함)
-    void updatePostLikeCount(HashMap<String, Object> map);
-    
-    // 5. 게시글 추가 (객체 Community 사용)
+    /* ==========================================================
+     * [1] 게시글 조회 (Read)
+     * ========================================================== */
+
+    /** 전체 게시글 리스트 조회 (검색 및 페이지네이션 포함) */
+    List<Community> selectPostList(Map<String, Object> map);
+
+    /** 전체 게시글 개수 조회 (페이지네이션용) */
+    int selectPostCount(Map<String, Object> map);
+
+    /** 게시글 상세 조회 */
+    Community selectPostDetail(Map<String, Object> map);
+
+    /** 알림 등을 위한 특정 게시글 제목 조회 */
+    String getPostTitle(String targetId);
+
+
+    /* ==========================================================
+     * [2] 게시글 관리 (CUD)
+     * ========================================================== */
+
+    /** 신규 게시글 등록 */
     int insertPost(Community post);
 
-    // 6. 게시글 리스트 조회 (조건이 없으므로 인자 생략 가능)
-    List<Community> selectPostList(HashMap<String, Object> map);
+    /** 게시글 수정 */
+    int updatePost(Map<String, Object> map);
 
-    // 7. 게시글 상세 조회 (postNo 필요)
-    Community selectPostById(HashMap<String, Object> map);
-    
-    // 8. 상세 조회 (7번이랑 유사 해서 검증해야됨.)
-    Community selectPostDetail(HashMap<String, Object> map);
-    
-    // 9. 조회수 증가
-    int updateViewCount(HashMap<String, Object> map);
-    
-    // 10. 게시글 삭제
-    int deletePost(HashMap<String, Object> map);
-    
-    // 11. 게시글 수정
-    int updatePost(HashMap<String, Object> map);
+    /** 게시글 삭제 (is_deleted 필드 업데이트 또는 실제 삭제) */
+    int deletePost(Map<String, Object> map);
 
-    // 12. 게시글 권한 설정 (수정, 삭제를 주소 직접 입력해서 이동하는 것을 방지하는 용도)
-	String selectPostAuthor(HashMap<String, Object> map);
+    /** 조회수 증가 */
+    int updateViewCount(Map<String, Object> map);
 
-    
-    
+
+    /* ==========================================================
+     * [3] 좋아요 기능 (Like)
+     * ========================================================== */
+
+    /** 특정 사용자의 게시글 좋아요 여부 확인 */
+    int checkPostLike(Map<String, Object> map);
+
+    /** 좋아요 기록 추가 */
+    void insertPostLike(Map<String, Object> map);
+
+    /** 좋아요 기록 삭제 */
+    void deletePostLike(Map<String, Object> map);
+
+    /** 게시글 테이블의 좋아요 수(like_cnt) 증감 */
+    void updatePostLikeCount(Map<String, Object> map);
+
+
+    /* ==========================================================
+     * [4] 권한 및 보안 (Security)
+     * ========================================================== */
+
+    /** 게시글 작성자 ID 조회 (수정/삭제 권한 체크용) */
+    String selectPostAuthor(Map<String, Object> map);
+	// 인기 게시글 목록 조회 메서드
+	List<Map<String, Object>> selectPopularPostList();
 }

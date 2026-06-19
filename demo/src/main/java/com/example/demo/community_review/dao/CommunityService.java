@@ -3,6 +3,7 @@ package com.example.demo.community_review.dao;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -40,6 +41,12 @@ public class CommunityService {
         return communityMapper.deletePost(map);
     }
     
+    // 페이지네이션
+    public int getPostCount(HashMap<String, Object> map) {
+        
+        return communityMapper.selectPostCount(map);
+    }
+    
     // 게시글 수정
     public int editPost(HashMap<String, Object> map) {
         try {
@@ -55,6 +62,10 @@ public class CommunityService {
     public List<Community> getList(HashMap<String, Object> map) {
     	// 인자 없이 호출해도 매퍼와 XML이 연결됩니다.
         return communityMapper.selectPostList(map);
+    }
+    
+    public Community getPostDetail(HashMap<String, Object> map) {
+        return communityMapper.selectPostDetail(map);
     }
 
     
@@ -131,6 +142,10 @@ public class CommunityService {
             return authorId; // 작성자 ID만 반환
         }
         return null;
+    }
+    
+    public List<Map<String, Object>> selectPopularPostList() {
+        return communityMapper.selectPopularPostList();
     }
     
 }

@@ -1,26 +1,440 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
-	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.example.demo.company.mapper.CompanyMapper">
 	<!-- 여러개 검색 -->
-	<select id="selectUserList" parameterType="hashmap" resultType="com.example.demo.company.model.Company">
-	</select>
-	
+	<!--<select id="selectUserList" parameterType="hashmap"
+		resultType="com.example.demo.company.model.Company">
+	</select>-->
+
 	<!-- 한개 검색 -->
-	<select id="selectUser" parameterType="hashmap" resultType="com.example.demo.company.model.Company">
+	<select id="selectCompany" parameterType="hashmap"
+		resultType="com.example.demo.company.model.Company">
+		select m.*, c.com_name, p.pay_date from member m
+		left join company c on m.user_id = c.user_id
+		left join payment p on m.user_id = p.user_id
+		where m.user_id = #{userid}
+	</select>
+ 
+	<select id="selectProduct" parameterType="hashmap"
+		resultType="com.example.demo.company.model.Company">
+		SELECT P.PRODUCT_NO, P.PRODUCT_NAME,P.PRODUCT_DETAILS, P.ORIGINAL_PRICE,
+		P.IMG_URL, P.PRO_TYPE, p.deposit, p.tag
+		FROM PRODUCT P
+		LEFT JOIN COMPANY C ON P.COMPANY_NO = C.COMPANY_NO
+		WHERE C.USER_ID = #{userid} AND PRODUCT_NO = #{productNo}
+	</select>
+
+	<select id="selectProductList" parameterType="hashmap"
+		resultType="com.example.demo.company.model.Company">
+		SELECT P.PRODUCT_NO, P.PRODUCT_NAME,P.PRODUCT_DETAILS, P.ORIGINAL_PRICE,
+		P.IMG_URL
+		FROM PRODUCT P
+		LEFT JOIN COMPANY C ON P.COMPANY_NO = C.COMPANY_NO
+		WHERE C.USER_ID = #{userid}
+		order by p.reg_date desc
+	</select>
+	<!-- 삽입 -->
+	<update id="updateProduct"
+		parameterType="com.example.demo.company.model.Company">
+		UPDATE PRODUCT
+		SET 
+		PRODUCT_NAME = #{productName},
+		PRODUCT_DETAILS = #{productDetails},
+		ORIGINAL_PRICE = #{originalPrice},
+		IMG_URL = #{imgUrl},
+		PRO_TYPE = #{proType},
+		deposit = #{deposit},
+		tag = #{tag}
+		WHERE PRODUCT_NO = #{productNo}
+	</update>
+
+	<!-- 삭제 -->
+	<delete id="deleteProduct" parameterType="hashmap">
+		DELETE FROM PRODUCT WHERE PRODUCT_NO = #{productNo}
+	</delete>
+
+	<select id="selectCompanyByUserId" parameterType="String"
+		resultType="com.example.demo.company.model.Company">
+		SELECT COMPANY_NO AS companyNo
+		FROM COMPANY
+		WHERE USER_ID = #{userId}
+	</select>
+
+	<!-- 등록 -->
+	<insert id="insertProduct"
+		parameterType="com.example.demo.company.model.Company">
+		INSERT INTO PRODUCT(PRODUCT_NAME, PRODUCT_DETAILS, ORIGINAL_PRICE,
+		IMG_URL, PRO_TYPE, COMPANY_NO, tag, deposit, reg_date)
+		VALUES(#{productName}, #{productDetails}, #{originalPrice}, #{imgUrl},
+		#{proType}, #{companyNo}, #{tag}, #{deposit}, now())
+	</insert>
+
+	<select id="selectReservation" parameterType="map"
+		resultType="com.example.demo.company.model.Company">
+		SELECT
+		r.res_no,
+		r.res_status,
+		r.user_id AS res_user_id, -- 실제 예약한 유저의 아이디
+		r.product_no,
+		p.product_name,
+		r.res_date,
+		r.res_time,
+		r.res_content,
+		r.use_date,
+		r.use_time,
+		p.deposit,
+		m.tel,
+		r.pay_date
+		FROM company c
+		-- 1. 업체 테이블과 상품 테이블 연결 (이 업체가 가진 상품들)
+		JOIN product p ON c.company_no = p.company_no
+		-- 2. 상품 테이블과 예약 테이블 연결 (그 상품들에 들어온 예약들)
+		JOIN reservation r ON p.product_no = r.product_no
+		-- 3. 조건: 업체 테이블의 로그인 아이디가 'sunsu09'인 경우
+		left join member m on m.user_id = r.user_id --
+		WHERE c.user_id = #{userId}
+		order by r.res_date desc, r.res_time desc
+	</select>
+
+	<select id="selectNewResCnt" parameterType="map"
+		resultType="String">
+		SELECT
+		COUNT(RES_NO) new_res_cnt
+		FROM company c
+		-- 1. 업체 테이블과 상품 테이블 연결 (이 업체가 가진 상품들)
+		JOIN product p ON c.company_no = p.company_no
+		-- 2. 상품 테이블과 예약 테이블 연결 (그 상품들에 들어온 예약들)
+		JOIN reservation r ON p.product_no = r.product_no
+		-- 3. 조건: 업체 테이블의 로그인 아이디가 'sunsu09'인 경우
+		left join member m on m.user_id = r.user_id --
+		WHERE c.user_id = #{userId} AND R.RES_STATUS = 'WAIT'
+	</select>
+
+	<select id="selectReviewCnt" parameterType="map"
+		resultType="com.example.demo.company.model.Company">
+		select p.product_no, p.product_name, p.img_url, count(review_no)
+		reviewCount from product p
+		left join review r on p.product_no = r.product_no and r.is_paid = 1
+		where p.company_no = (
+		select company_no cmpNo from company c where c.user_id = #{userId})
+		group by p.product_no, p.product_name, p.img_url
+		order by p.reg_date desc
+	</select>
+
+	<select id="selectSimpleReviewCnt" parameterType="map"
+		resultType="com.example.demo.company.model.Company">
+		select p.product_no, p.product_name, p.img_url, count(review_no)
+		reviewCount from product p
+		left join review r on p.product_no = r.product_no and r.is_paid = 0
+		where p.company_no = (
+		select company_no cmpNo from company c where c.user_id = #{userId})
+		group by p.product_no, p.product_name, p.img_url
+		order by p.reg_date desc 
+	</select>
+ 
+	<select id="selectNewReviewCnt" parameterType="map"
+		resultType="com.example.demo.company.model.Company">
+		select count(company_no) reviewCount from review r where r.is_paid = 1
+		and updated =
+		1 and r.company_no = (
+		select company_no from company c where user_id = #{userId})
+	</select>
+
+	<select id="selectNewSimpleReviewCnt" parameterType="map"
+		resultType="com.example.demo.company.model.Company">
+		select count(company_no) reviewCount from review r where r.is_paid = 0
+		and updated =
+		1 and r.company_no = (
+		select company_no from company c where user_id = #{userId})
+	</select>
+	<select id="selectReviewDetails3" parameterType="map"
+		resultType="com.example.demo.company.model.Review">
+		select r.reg_date, r.img_description, r.is_paid, r.review_no, r.user_id,
+		r.company_no, r.product_no, r.rating, r.content, r.thumbnail_url, r.updated
+		from review r
+		where is_paid = 1 and product_no = #{productNo}
+		order by r.reg_date desc;
+	</select>
+	<select id="selectSimpleReviewDetails3" parameterType="map"
+		resultType="com.example.demo.company.model.Review">
+		SELECT
+		r.review_no,
+		r.content,
+		r.user_id,
+		r.rating,
+		r.updated,
+		r.reg_date
+		FROM REVIEW r WHERE IS_PAID = 0 AND PRODUCT_NO = #{productNo}
+		order by r.reg_date desc
+	</select>
+	<select id="selectTagList" parameterType="map"
+		resultType="string">
+		SELECT tag FROM product_tag;
+	</select>
+
+	<select id="selectProductListForTag" parameterType="map"
+		resultType="com.example.demo.company.model.Company">
+		SELECT P.PRODUCT_NO, P.COMPANY_NO, P.IMG_URL, P.PRODUCT_NAME,
+		C.COM_NAME, P.PRODUCT_DETAILS, P.ORIGINAL_PRICE, P.PRO_TYPE, P.TAG,
+		P.DEPOSIT FROM
+		PRODUCT P
+		LEFT JOIN COMPANY C ON P.COMPANY_NO = C.COMPANY_NO
+	</select>
+
+	<select id="selectBookedTimes" parameterType="map"
+		resultType="String">
+		
+		SELECT r.use_time FROM reservation r
+		where r.product_no = #{productNo} 
+		and r.res_status = 'WAIT'
+		<choose>
+			<!-- useDate가 있을 때만 조건을 추가 -->
+			<when test="useDate != null and useDate != ''">
+				and r.use_date =#{useDate}
+			</when> 
+			<!-- useDate가 없으면 결과를 반환하지 않도록 설정 -->
+			<otherwise>
+				and 1=0
+			</otherwise>
+		</choose>
+		 
+	</select>
+	<insert id="insertReservation"
+		parameterType="map">
+		insert into reservation values(
+		null, #{userId}, #{productNo}, #{companyNo},
+		now(), now(), 'WAIT', #{resContent}, #{useDate}, #{useTime}, null,
+		null);
+	</insert>
+
+	<select id="selectMyReservationList" parameterType="map"
+		resultType="com.example.demo.company.model.Company">
+		select r.res_no,
+		r.user_id,
+		m.tel,
+		r.product_no,
+		r.company_no,
+		c.com_name,
+		r.res_date,
+		r.res_time,
+		r.res_status,
+		r.res_content,
+		r.use_date,
+		r.use_time,
+		r.pay_date,
+		r.pay_no,
+		p.product_name,
+		p.product_details,
+		p.original_price,
+		p.is_active,
+		p.img_url,
+		p.pro_type,
+		p.tag,
+		p.deposit,
+		pr.amount,
+		pr.pay_status,
+		pr.refund,
+		pr.refund_date
+		from reservation r
+		left join product p on p.product_no = r.product_no
+		left join payment_reservation pr on r.res_no = pr.res_no
+		inner join company c on c.company_no = r.company_no
+		inner join member m on m.user_id = r.user_id
+		where r.user_id = #{userId}
+	</select>
+	<!-- resNoList를 가져온다.(일반유저가 로그인했을때) -->
+	<select id="selectResNoList" parameterType="map" resultType="integer">
+		select res_no from reservation where user_id = #{userId}
 	</select>
 	
-	<!-- 삽입 -->
-	<insert id="insertUser" parameterType="hashmap">
-	</insert>
-	
-	<!-- 삭제 -->
-	<delete id="deleteUser" parameterType="hashmap">
-	</delete>
-	
-	<!-- 수정 -->
-	<update id="updateUser" parameterType="hashmap">
+	<!-- resNoList 를 가져온다. (업체유저가 로그인했을때) -->
+	<select id="selectResNoListForCompanyUser" parameterType="map" resultType="integer">
+		select res_no from reservation where company_no = (
+		select company_no from company where user_id = #{userId}
+		)
+	</select>
+
+	<!-- 쿼리문에서 분기처리 한거임.. -->
+	<!--나의 예약내역리스트로 갈때(사용자 입장에서) 내 예약상태를 업데이트한다. DONE 또는 CANCEL이 보이도록 -->
+	<!-- update 한후 결과값은 int result = 1 또는 0 -->
+	<update id="updateReservationStatus" parameterType="hashmap">
+		<if test="resNoList != null and resNoList.size > 0">
+			<foreach collection="resNoList" item="resNo" separator=";"> 
+				UPDATE reservation 
+				SET res_status = IF(pay_no IS NOT NULL, 'DONE', 'CANCEL')
+				WHERE res_no = #{resNo} 
+				AND user_id = #{userId} 
+				AND NOW() > STR_TO_DATE(CONCAT(use_date, ' ', use_time), '%Y-%m-%d 
+				%H:%i:%s') 
+			</foreach>
+		</if>
 	</update>
 	
+	<!-- 업체 입장에서 예약내역 리스트로 갈때 예약상태를 업데이트 해보자. DONE 또는 CANCEL이 보이도록 -->
+	<update id="updateReservationStatusForCompany" parameterType="hashmap">
+		<if test="resNoList != null and resNoList.size() > 0">
+			<foreach collection="resNoList" item="resNo" separator=";">
+				update reservation
+				set res_status = IF(pay_no is not null, 'DONE', 'CANCEL')
+				where res_no = #{resNo}
+				and NOW() > STR_TO_DATE(CONCAT(use_date, ' ', use_time), '%Y-%m-%d 
+				%H:%i:%s') 
+			</foreach>
+		</if>
+	</update>
+
+	<!--int result = companyMapper.checkOver30minute(map);-->
+	<update id="checkOver30minute" parameterType="map">
+		update reservation
+		set res_status = 'CANCEL'
+		where res_status = 'WAIT'
+		and res_date is not null
+		and res_time is not null
+		and timestampdiff(minute, addtime(res_date, res_time), now()) >= 30
+		and user_id = #{userId}
+	</update>
+
+	<insert id="insertPaymentFinal" parameterType="map"> insert into
+		payment_reservation(
+			pay_no,
+			user_id,
+			amount,
+			pay_status,
+			pay_date,
+			res_no,
+			refund,
+			refund_date,
+			imp_uid,
+			merchant_uid) values(null, #{userId}, #{amount}, 'SUCCESS', NOW(),
+		#{resNo}, 0, null, #{impUid}, #{merchantUid}) <selectKey keyProperty="payDate,payNo"
+			resultType="map" order="AFTER">
+			SELECT
+			pay_date AS payDate,
+			pay_no AS payNo
+			FROM payment_reservation
+			WHERE pay_no = LAST_INSERT_ID()
+		</selectKey>
+	</insert>
+	<update id="updatePaymentFinal" parameterType="map">
+		update reservation
+		set
+		res_status = 'CONFIRM',
+		pay_date = #{payDate},
+		pay_no = #{payNo}
+		where res_no = #{resNo}
+	</update>
+
+	<insert id="insertUniqueNewTagsOnly"
+		parameterType="com.example.demo.company.model.Company">
+		<if test="uniqueNewTagsOnly != null and uniqueNewTagsOnly.size() > 0">
+			insert into product_tag values <foreach
+				collection="uniqueNewTagsOnly" item="tag" separator=",">
+				(null, #{tag})
+			</foreach>
+		</if>
+
+	</insert>
+	<!-- 사용자가 문의할떄 -->
+	<insert id="insertInquiryProduct" parameterType="map">
+		insert into inquiry_product
+		values(null, #{userId}, #{companyNo}, #{productNo}, #{inquiryTitle},
+		#{inquiryContents}, 0)
+
+	</insert>
+	<!-- 컴퍼니가 문의 내역 리스트 갖고올때 -->
+	<select id="selectInquiryProductList" parameterType="map"
+		resultType="com.example.demo.company.model.Company">
+		select
+		ip.inquiry_no,
+		ip.user_id,
+		ip.product_no,
+		ip.inquiry_title,
+		ip.inquiry_contents,
+		p.product_name,
+		p.product_details,
+		p.img_url,
+		p.pro_type,
+		p.tag,
+		p.original_price,
+		p.deposit,
+		c.company_no,
+		c.com_name,
+		c.com_intro,
+		ip.inquiry_ans
+		from inquiry_product ip
+		left join product p on ip.product_no = p.product_no
+		left join company c on p.company_no = c.company_no
+		where c.company_no = (
+		select c1.company_no from company c1 where c1.user_id = #{userId}
+		) 
+
+	</select>
+	<!-- 문의에 답변작성해서 테이블에 insert 됨 -->
+	<insert id="insertProductInquiryAnswer" parameterType="map">
+		insert into inquiry_product_answer
+		values(null, #{inquiryNo}, #{answerContents}, #{ansUserId})
+	</insert>
+	<!-- 답변했으니까 inquiry_ans 업데이트해준다 -->
+	<update id="updateInquiryAnsStatus" parameterType="map">
+		update inquiry_product
+		set inquiry_ans = 1
+		where inquiry_no = #{inquiryNo}
+
+	</update>
+	<!-- 넘어온 inquiry_no = 6으로 문의 번호, 문의에 답변여부, 답변번호, 답변컨텐츠, 답변자명을 조회하기. -->
+	<select id="selectInquiryAnsYn" parameterType="map"
+		resultType="com.example.demo.company.model.Company">
+		select ip.inquiry_no, ip.inquiry_ans, ipa.answer_no,
+		ipa.answer_contents, ipa.ans_user_id from inquiry_product ip
+		left join inquiry_product_answer ipa
+		on ip.inquiry_no = ipa.inquiry_no where ip.inquiry_no = #{inquiryNo}
+	</select>
+
+	<!-- inquiry_ans 가 1이상인 경우(수정하는 상황) answer를 업데이트만 하는경우-->
+	<update id="updateProductInquiryAnswer" parameterType="map">
+		update inquiry_product_answer
+		set
+		answer_contents = #{answerContents},
+		ans_user_id = #{ansUserId}
+		where inquiry_no = #{inquiryNo}
+	</update>
+
+	<!-- 내가 문의한 내역 불러오는 쿼리 -->
+	<select id="selectMyInquiryList" parameterType="map"
+		resultType="com.example.demo.company.model.Company">
+		SELECT
+		ip.inquiry_no,
+		p.product_no,
+		ip.inquiry_title,
+		ip.inquiry_contents,
+		ip.inquiry_ans,
+		p.product_name,
+		p.product_details,
+		p.original_price,
+		p.is_active,
+		p.img_url
+		FROM inquiry_product ip
+		left join product p on ip.product_no = p.product_no
+		where ip.user_id = #{userId}
+	</select>
+
+	<!-- 인쿼리프로덕트랑 컴퍼니랑 인쿼리프로덕트앤서랑 조인한거 중에 ip.inquiry_no, c.user_id, 
+		ipa.answer_contents 만 셀렉트한거 그리고 where 조건절이 inquiry_no = #{inquiryNo} 인거 -->
+	<select id="selectInquiry1Answer" parameterType="map"
+		resultType="com.example.demo.company.model.Company">
+		select ip.inquiry_no, c.user_id, ipa.answer_contents from
+		inquiry_product ip
+		left join company c on ip.company_no = c.company_no
+		left join inquiry_product_answer ipa on ip.inquiry_no = ipa.inquiry_no
+		where ip.inquiry_no = #{inquiryNo}
+	</select>
+	 
+	<!-- 리뷰 라벨 업데이트 (현재시점에서 3일이상 지난거 0으로)-->
+	<update id="updateOldNewLabels" parameterType="map">
+	    UPDATE review
+	    SET updated = 0
+	    WHERE DATEDIFF(NOW(), reg_date) >= 3
+	      AND updated = 1
+	</update> 
 </mapper>

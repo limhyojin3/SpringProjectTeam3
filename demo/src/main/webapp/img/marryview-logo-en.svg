@@ -1,0 +1,17 @@
+<svg width="400" height="80" viewBox="0 0 400 80" role="img" xmlns="http://www.w3.org/2000/svg">
+<title>MarryView English Logo</title>
+
+<!-- 하트 왼쪽 -->
+<path d="M52 38 C52 34 47 30 42 34 C37 30 32 34 32 38 C32 44 42 52 42 52 C42 52 52 44 52 38Z" fill="#f4a096" opacity="0.7"/>
+<!-- 하트 오른쪽 -->
+<path d="M368 38 C368 34 363 30 358 34 C353 30 348 34 348 38 C348 44 358 52 358 52 C358 52 368 44 368 38Z" fill="#f4a096" opacity="0.7"/>
+
+<!-- 메인 텍스트 -->
+<text x="200" y="54"
+  text-anchor="middle"
+  font-family="'Georgia', serif"
+  font-size="50"
+  font-weight="bold"
+  fill="#e8836f"
+  letter-spacing="3">MarryView</text>
+</svg>

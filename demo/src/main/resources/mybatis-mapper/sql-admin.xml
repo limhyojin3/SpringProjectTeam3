@@ -14,15 +14,1427 @@
 		ORDER BY sale_month;
 	</select>
 
+	<!--adminMain에 쓰일 요약 용도-->
 	<select id="selectClientsList" parameterType="hashmap"
 		resultType="com.example.demo.admin.model.Admin"> SELECT
 		DATE_FORMAT(REG_DATE, '%Y-%m') AS USER_MONTH, Count(*) AS USER_COUNT
-		FROM MEMBER WHERE 1=1
+		FROM MEMBER WHERE 1=1 
 		<if test="role != null and role != 'ALL'">
 			AND ROLE = #{role}
-		</if>
-		GROUP BY USER_MONTH
-		ORDER BY USER_MONTH;
+		</if> 
+		GROUP BY USER_MONTH 
+		ORDER BY USER_MONTH ASC; </select>
+		
+	<select id="selectAllClientsCount" parameterType="hashmap"
+		resultType="int">
+		SELECT
+		Count(*)
+		FROM MEMBER
+		WHERE ROLE != "ADMIN"
+		AND status != "WITHDRAWN"
 	</select>
 
+	<select id="selectAllPartnersCount" parameterType="hashmap"
+		resultType="int">
+		SELECT
+		Count(*)
+		FROM MEMBER
+		WHERE ROLE = "PARTNER"
+		AND status != "WITHDRAWN"
+	</select>
+
+<!-- 리뷰게시판 글 목록 -->
+	<select id="selectReviewList" parameterType="hashmap"
+		resultType="com.example.demo.admin.model.Admin">
+		SELECT
+		REVIEW_NO,
+		USER_ID,
+		TITLE,
+		CONTENT,
+		APPROVAL_STATUS,
+		REG_DATE,
+		COUNT(*) OVER() AS REVIEW_WAIT,
+		DATE_FORMAT(REG_DATE, '%Y-%m-%d') AS POST_DAY
+		FROM REVIEW WHERE 1=1
+		<!--AND APPROVAL_STATUS = "WAIT"-->
+	<!-- 검색어 필터-->
+	<if test="keyword != null and keyword != ''">
+		<choose>
+			<when test="searchType == 'userId'">
+				AND USER_ID LIKE CONCAT('%', #{keyword}, '%')
+			</when>
+			<when test="searchType == 'title'">
+				AND TITLE LIKE CONCAT('%', #{keyword}, '%')
+			</when>
+			<when test="searchType == 'content'">
+				AND CONTENT LIKE CONCAT('%', #{keyword}, '%')
+			</when>
+			<otherwise>
+				AND (
+				USER_ID LIKE CONCAT('%', #{keyword}, '%')
+				OR TITLE LIKE CONCAT('%', #{keyword}, '%')
+				OR CONTENT LIKE CONCAT('%', #{keyword}, '%')
+				)
+			</otherwise>
+		</choose>
+	</if>
+	<!-- 처리상태 필터 (복합 조건) -->
+	<if
+		test="approvalStatus != null and approvalStatus != 'ALL'">
+		<choose>
+			<!-- 대기 -->
+			<when test="approvalStatus == 'WAIT'">
+				AND approval_status = "WAIT"
+			</when>
+			<!-- 승인 -->
+			<when test="approvalStatus == 'APPROVED'">
+				AND approval_status = "APPROVED"
+			</when>
+			<!-- 반려 -->
+			<when test="approvalStatus == 'REJECTED'">
+				AND approval_status = "REJECTED"
+			</when>
+		</choose>
+	</if>
+	<!-- 정렬 -->
+	<choose>
+		<when test="sortType == 'latest'">
+			ORDER BY REG_DATE DESC
+		</when>
+		<when test="sortType == 'old'">
+			ORDER BY REG_DATE ASC
+		</when>
+		<otherwise>
+			ORDER BY REG_DATE DESC
+		</otherwise>
+	</choose>
+	
+	LIMIT #{pageSize} OFFSET #{offSet}
+	</select>
+	
+	<!--Review 페이지네이션 count-->
+	<select id="selectReviewCount" parameterType="hashmap" resultType="int">
+		SELECT COUNT(*) FROM review WHERE 1=1
+		<!-- 검색어 필터-->
+	<if test="keyword != null and keyword != ''">
+		<choose>
+			<when test="searchType == 'userId'">
+				AND USER_ID LIKE CONCAT('%', #{keyword}, '%')
+			</when>
+			<when test="searchType == 'title'">
+				AND TITLE LIKE CONCAT('%', #{keyword}, '%')
+			</when>
+			<when test="searchType == 'content'">
+				AND CONTENT LIKE CONCAT('%', #{keyword}, '%')
+			</when>
+			<otherwise>
+				AND (
+				USER_ID LIKE CONCAT('%', #{keyword}, '%')
+				OR TITLE LIKE CONCAT('%', #{keyword}, '%')
+				OR CONTENT LIKE CONCAT('%', #{keyword}, '%')
+				)
+			</otherwise>
+		</choose>
+	</if>
+	<!-- 처리상태 필터 (복합 조건) -->
+	<if
+		test="approvalStatus != null and approvalStatus != 'ALL'">
+		<choose>
+			<!-- 대기 -->
+			<when test="approvalStatus == 'WAIT'">
+				AND approval_status = "WAIT"
+			</when>
+			<!-- 승인 -->
+			<when test="approvalStatus == 'APPROVED'">
+				AND approval_status = "APPROVED"
+			</when>
+			<!-- 반려 -->
+			<when test="approvalStatus == 'REJECTED'">
+				AND approval_status = "REJECTED"
+			</when>
+		</choose>
+	</if>
+	</select>
+	<!--review 끝-->
+	
+<!-- 리뷰 게시판 승인-->
+	<update id="updateReviewApprove" parameterType="hashmap">
+		UPDATE review
+		SET approval_status = 'APPROVED'
+		WHERE review_no = #{reviewNo}
+	</update>
+
+<!-- 리뷰 게시판 반려 -->
+	<update id="updateReviewReject" parameterType="hashmap">
+		UPDATE review
+		SET approval_status = 'REJECTED'
+		WHERE review_no = #{reviewNo}
+	</update>
+
+<!-- 신고 게시판 검색어 필터 -->
+	<select id="selectReportList" parameterType="hashmap"
+		resultType="com.example.demo.admin.model.Admin"> SELECT REPORT_NO,
+	REPORTER_ID, TARGET_TYPE, 
+		CASE WHEN TARGET_TYPE = 'MEMBER' THEN
+		TARGET_USER_ID ELSE CAST(TARGET_ID AS CHAR) 
+		END AS UNI_TARGET_ID,
+		TARGET_USER_ID AS targetUserId,
+	REPORT_TITLE, REPORT_CONTENT, ANSWER_STATUS, ACTION_STATUS, REG_DATE,
+	COUNT(*) OVER() AS REPORT_WAIT, DATE_FORMAT(REG_DATE, '%Y-%m-%d') AS
+	REPORT_DAY FROM REPORT WHERE 1=1
+	<!-- 필터 1: 신고 대상 유형 (MEMBER, REVIEW 등) -->
+	<if
+		test="targetType != null and targetType != 'ALL'">
+		AND target_type = #{targetType}
+	</if>
+	<!-- 필터 2: 검색어 필터-->
+	<if test="keyword != null and keyword != ''">
+		<choose>
+			<when test="searchType == 'reporter'">
+				AND REPORTER_ID LIKE CONCAT('%', #{keyword}, '%')
+			</when>
+			<when test="searchType == 'uniTargetId'">
+				AND (TARGET_USER_ID LIKE CONCAT('%', #{keyword}, '%') OR
+				TARGET_ID LIKE CONCAT('%', #{keyword}, '%'))
+			</when>
+			<when test="searchType == 'title'">
+				AND REPORT_TITLE LIKE CONCAT('%', #{keyword}, '%')
+			</when>
+			<when test="searchType == 'content'">
+				AND REPORT_CONTENT LIKE CONCAT('%', #{keyword}, '%')
+			</when>
+			<otherwise>
+				AND (
+				REPORTER_ID LIKE CONCAT('%', #{keyword}, '%')
+				OR REPORT_TITLE LIKE CONCAT('%', #{keyword}, '%')
+				OR REPORT_CONTENT LIKE CONCAT('%', #{keyword}, '%')
+				)
+			</otherwise>
+		</choose>
+	</if>
+	<!-- 3. 처리상태 필터 (복합 조건) -->
+	<if
+		test="processStatus != null and processStatus != 'ALL'">
+		<choose>
+			<!-- 조치대기: 조치 자체가 아직 안 된 상태 -->
+			<when test="processStatus == 'WAIT_ACTION'">
+				AND action_status = 0
+			</when>
+			<!-- 답변대기: 조치는 했지만 답변(통보)은 안 나간 상태 -->
+			<!--<when test="processStatus == 'WAIT_ANSWER'">
+				AND action_status = 1 AND answer_status = 0
+			</when>-->
+			<!-- 처리완료: 조치와 답변 모두 끝난 상태 -->
+			<when test="processStatus == 'COMPLETED'">
+				AND action_status = 1 <!-- AND answer_status = 1-->
+			</when>
+			<!-- 반려: 반려 조치-->
+			<when test="processStatus == 'REJECTED'">
+				AND action_status = 2 <!--AND answer_status = 0-->
+			</when>
+		</choose>
+	</if>
+	<!-- 정렬 -->
+	<choose>
+		<when test="sortType == 'latest'">
+			ORDER BY REG_DATE DESC
+		</when>
+		<when test="sortType == 'old'">
+			ORDER BY REG_DATE ASC
+		</when>
+		<otherwise>
+			ORDER BY REG_DATE DESC
+		</otherwise>
+	</choose>
+	LIMIT #{pageSize} OFFSET #{offSet}
+</select>
+
+<!--댓글로 게시판 추적-->
+<select id="selectCommentPostNo"
+        parameterType="hashmap"
+        resultType="int">
+
+    SELECT post_no
+    FROM comment
+    WHERE comment_no = #{commentNo}
+</select>
+
+<!-- 댓글로 리뷰 추적-->
+<select id="selectComentReviewNo"
+        parameterType="hashmap"
+        resultType="int">
+
+    SELECT review_no
+    FROM comment
+    WHERE comment_no = #{commentNo}
+</select>
+
+<!--대댓글추적-->
+<select id="selectParentCommentPostNo"
+        parameterType="hashmap"
+        resultType="int">
+
+    SELECT p.post_no
+    FROM comment c
+    JOIN comment p ON c.parent_comment_no = p.comment_no
+    WHERE c.comment_no = #{commentNo}
+    LIMIT 1
+
+</select>
+
+<!-- 전체 개수(for 페이징) 영역 시작 -->
+<!-- Report 시작 -->
+	<select id="selectReportCount" parameterType="hashmap" resultType="int">
+		SELECT COUNT(*) FROM report WHERE 1=1 
+		<!-- 필터 1: 신고 대상 유형 (MEMBER, REVIEW 등) -->
+	<if
+		test="targetType != null and targetType != 'ALL'">
+		AND target_type = #{targetType}
+	</if>
+	<!-- 필터 2: 검색어 필터-->
+	<if test="keyword != null and keyword != ''">
+		<choose>
+			<when test="searchType == 'reporter'">
+				AND REPORTER_ID LIKE CONCAT('%', #{keyword}, '%')
+			</when>
+			<when test="searchType == 'uniTargetId'">
+				AND (TARGET_USER_ID LIKE CONCAT('%', #{keyword}, '%') OR
+				TARGET_ID LIKE CONCAT('%', #{keyword}, '%'))
+			</when>
+			<when test="searchType == 'title'">
+				AND REPORT_TITLE LIKE CONCAT('%', #{keyword}, '%')
+			</when>
+			<when test="searchType == 'content'">
+				AND REPORT_CONTENT LIKE CONCAT('%', #{keyword}, '%')
+			</when>
+			<otherwise>
+				AND (
+				REPORTER_ID LIKE CONCAT('%', #{keyword}, '%')
+				OR REPORT_TITLE LIKE CONCAT('%', #{keyword}, '%')
+				OR REPORT_CONTENT LIKE CONCAT('%', #{keyword}, '%')
+				)
+			</otherwise>
+		</choose>
+	</if>
+	<!-- 3. 처리상태 필터 (복합 조건) -->
+	<if
+		test="processStatus != null and processStatus != 'ALL'">
+		<choose>
+			<!-- 조치대기: 조치 자체가 아직 안 된 상태 -->
+			<when test="processStatus == 'WAIT_ACTION'">
+				AND action_status = 0
+			</when>
+			<!-- 답변대기: 조치는 했지만 답변(통보)은 안 나간 상태 -->
+			<when test="processStatus == 'WAIT_ANSWER'">
+				AND action_status = 1 AND answer_status = 0
+			</when>
+			<!-- 처리완료: 조치와 답변 모두 끝난 상태 -->
+			<when test="processStatus == 'COMPLETED'">
+				AND action_status = 1 AND answer_status = 1
+			</when>
+			<!-- 반려: 반려 조치-->
+			<when test="processStatus == 'REJECTED'">
+				AND action_status = 2 AND answer_status = 0
+			</when>
+		</choose>
+	</if>
+	</select>
+	<!--Report 끝-->
+
+<!-- 전체 개수(페이징)영역 끝 -->
+
+<!-- 패스권 결제페이지?-->
+	<select id="selectPassList" parameterType="hashmap"
+		resultType="com.example.demo.admin.model.Admin">
+		SELECT
+		PASS_NO,
+		PASS_NAME,
+		PRICE,
+		REVIEW_CNT,
+		IS_ACTIVE,
+		REG_DATE,
+		description
+		FROM PASS_PRODUCT
+		WHERE IS_ACTIVE = 1
+	</select>
+
+	<select id="selectPassInfo" parameterType="hashmap"
+		resultType="com.example.demo.admin.model.Admin">
+		SELECT *
+		FROM PAYMENT P
+		INNER JOIN PAYMENT_PASS P2 ON P.PAY_NO = P2.PAY_NO
+		WHERE PASS_NO = 1 AND PAY_STATUS = "SUCCESS" AND USER_ID = #{userId};
+	</select>
+
+	<select id="selectPriceInfo" resultType="int">
+		SELECT price
+		FROM PASS_PRODUCT
+		WHERE PASS_NO = #{passNo}
+	</select>
+
+	
+
+	
+	
+	<!--결제완료페이지에서조회-->
+	<select id="selectPaymentByPayNo" parameterType="int" resultType="hashmap">
+	    SELECT 
+	        P.pay_no,
+	        P.user_id,
+	        P.amount,
+	        P.pay_status,
+	        P.pay_date,
+	        PP.pass_no,
+	        PP.item_name
+	    FROM payment P
+	    LEFT JOIN payment_pass PP 
+	        ON P.pay_no = PP.pay_no
+	    WHERE P.pay_no = #{payNo}
+	</select>
+
+
+<!-- 관리자 문의 게시판 -->
+	<!-- 문의 목록 조회-->
+	<select id="selectInquiryList" parameterType="hashmap"
+		resultType="com.example.demo.admin.model.Admin"> SELECT * FROM inquiry
+	WHERE 1=1 <if test="status != null and status != 'ALL'">
+			AND status = #{status}
+		</if>
+
+		<!-- 정렬 -->
+	<choose>
+			<when test="sortType == 'latest'">
+				ORDER BY REG_DATE DESC
+			</when>
+			<when test="sortType == 'old'">
+				ORDER BY REG_DATE ASC
+			</when>
+			<otherwise>
+				ORDER BY REG_DATE DESC
+			</otherwise>
+		</choose>
+		LIMIT #{pageSize} OFFSET #{offSet}
+	</select>
+	<!-- 문의 목록 count-->
+	<select id="selectInquiryCount" resultType="int">
+		SELECT COUNT(*)
+		FROM inquiry WHERE 1=1
+		<if test="status != null and status != 'ALL'">
+			AND status = #{status}
+		</if>
+	</select>
+
+	<!--답변여부확인-->
+	<select id="checkAnswer" parameterType="hashmap" resultType="int">
+		SELECT COUNT(*)
+		FROM inquiry_answer
+		WHERE inquiry_no = #{inquiryNo}
+	</select>
+
+	<!--새로운 테이블에 답변을 저장하려했는데 이미 문의 테이블에 답변 컬럼이 있어서 삭제예정
+	<insert id="insertAnswer" parameterType="hashmap">
+		INSERT INTO inquiry (
+		inquiry_no,
+		answer_content
+		) VALUES (
+		#{inquiryNo},
+		#{answer}
+		)
+	</insert> 새로운 테이블에 답변을 저장하려했는데 이미 문의 테이블에 답변 컬럼이 있어서 삭제예정-->
+
+	<update id="updateAnswer" parameterType="hashmap">
+		UPDATE inquiry
+		SET answer_content = #{answerContent}
+		WHERE inquiry_no = #{inquiryNo}
+	</update>
+
+	<update id="updateInquiryStatus" parameterType="hashmap">
+		UPDATE inquiry
+		SET status = #{status}
+		WHERE inquiry_no = #{inquiryNo}
+	</update>
+
+	<!--  전체 회원목록 페이지 + 회원들 신고수까지 조인, 필터, 페이지네이션-->
+	<select id="selectUserList" parameterType="hashmap"
+		resultType="com.example.demo.admin.model.Admin">
+		SELECT
+		M.USER_ID AS userId,
+		U.NAME AS name,
+		U.NICKNAME AS nickName,
+		U.EMAIL AS userEmail,
+		M.STATUS AS status,
+		M.TEL AS tel,
+		M.REG_DATE AS regDate,
+		M.ROLE AS role,
+		M.LAST_LOGIN AS lastLogin,
+		U.WEDDING_DATE AS weddingDate,
+		U.GENDER AS gender,
+		CASE
+		WHEN M.ROLE = 'USER' THEN 'USER'
+		WHEN M.ROLE IN ('PARTNER', 'NPARTNER') THEN 'COMPANY'
+		END AS targetType,
+		R.reportCount
+		FROM MEMBER M
+		LEFT JOIN USER_DETAIL U
+		ON M.USER_ID = U.USER_ID
+		LEFT JOIN (
+		SELECT TARGET_USER_ID, COUNT(*) AS reportCount
+		FROM REPORT
+		WHERE ACTION_STATUS = 1
+		GROUP BY TARGET_USER_ID
+		) R ON R.TARGET_USER_ID = M.USER_ID
+		WHERE 1=1
+		AND M.ROLE = 'USER'
+
+		<!-- 필터 : 검색어 필터-->
+	<if test="keyword != null and keyword != ''">
+		<choose>
+			<when test="searchType == 'userId'">
+				AND M.USER_ID LIKE CONCAT('%', #{keyword}, '%')
+			</when>
+			<when test="searchType == 'name'">
+				AND NAME LIKE CONCAT('%', #{keyword}, '%')
+			</when>
+			<when test="searchType == 'nickName'">
+				AND NICKNAME LIKE CONCAT('%', #{keyword}, '%')
+			</when>
+			<otherwise>
+				AND (
+				M.USER_ID LIKE CONCAT('%', #{keyword}, '%')
+				OR NAME LIKE CONCAT('%', #{keyword}, '%')
+				OR NICKNAME LIKE CONCAT('%', #{keyword}, '%')
+				)
+			</otherwise>
+		</choose>
+	</if>
+		<!-- 필터 : 계정 상태) -->
+	<if
+		test="status != null and status != 'ALL'">
+		AND status = #{status}
+	</if>
+	<if test="sort == 'report'">
+		ORDER BY reportCount DESC
+	</if>
+	LIMIT #{pageSize} OFFSET #{offSet}
+	</select>
+
+	<!-- 전체 회원목록 totalCount-->
+	<select id="selectUserCount" parameterType="hashmap"
+		resultType="int">
+		SELECT COUNT(*)
+		FROM MEMBER M
+		LEFT JOIN USER_DETAIL U
+		ON M.USER_ID = U.USER_ID
+		WHERE 1=1
+		AND M.ROLE = 'USER'
+		<!-- 필터 : 검색어 필터-->
+	<if test="keyword != null and keyword != ''">
+		<choose>
+			<when test="searchType == 'userId'">
+				AND M.USER_ID LIKE CONCAT('%', #{keyword}, '%')
+			</when>
+			<when test="searchType == 'name'">
+				AND NAME LIKE CONCAT('%', #{keyword}, '%')
+			</when>
+			<when test="searchType == 'nickName'">
+				AND NICKNAME LIKE CONCAT('%', #{keyword}, '%')
+			</when>
+			<otherwise>
+				AND (
+				M.USER_ID LIKE CONCAT('%', #{keyword}, '%')
+				OR NAME LIKE CONCAT('%', #{keyword}, '%')
+				OR NICKNAME LIKE CONCAT('%', #{keyword}, '%')
+				)
+			</otherwise>
+		</choose>
+	</if>
+		<!-- 필터 : 계정 상태) -->
+	<if
+		test="status != null and status != 'ALL'">
+		AND status = #{status}
+	</if>
+</select>
+
+	<!-- 회원 상세 조회 -->
+	<select id="selectUserDetail" parameterType="hashmap"
+		resultType="com.example.demo.admin.model.Admin">
+
+		SELECT
+		M.USER_ID AS userId,
+		U.NAME AS name,
+		U.NICKNAME AS nickName,
+		U.EMAIL AS userEmail,
+		M.STATUS AS status,
+		M.TEL AS tel,
+		M.REG_DATE AS regDate,
+		M.ROLE AS role,
+		M.LAST_LOGIN AS lastLogin,
+		M.previous_payment AS previousPayment,
+		M.out_date AS outDate,
+		U.WEDDING_DATE AS weddingDate,
+		U.GENDER AS gender,
+		U.marital_status AS maritalStatus,
+		U.anniversary_date AS anniversaryDate,
+		CASE
+		WHEN M.ROLE = 'USER' THEN 'USER'
+		WHEN M.ROLE IN ('PARTNER', 'NPARTNER') THEN 'COMPANY'
+		END AS targetType
+		FROM MEMBER M
+		LEFT JOIN USER_DETAIL U
+		ON M.USER_ID = U.USER_ID
+		WHERE M.USER_ID = #{userId}
+
+	</select>
+
+	<!-- 전체 업체목록 페이지 필터 페이지네이션-->
+	<select id="selectCompanyList" parameterType="hashmap"
+		resultType="com.example.demo.admin.model.Admin">
+		SELECT
+		M.USER_ID AS userId,
+		C.COM_NAME AS companyName,
+		C.COM_EMAIL AS companyEmail,
+		C.COM_TYPE AS comType,
+		C.COM_TEL AS comTel,
+		C.COM_ADDRESS AS comAddress,
+		M.LAST_LOGIN AS lastLogin,
+		M.STATUS AS status,
+		C.STATUS AS companyStatus,
+		M.REG_DATE AS regDate,
+		C.CEO_NAME AS ceoName,
+		C.BIZ_NO AS bizNo,
+		M.ROLE AS role,
+		C.registration_fee AS registrationFee,
+		R.reportCount,
+		CASE
+		WHEN M.ROLE = 'USER' THEN 'USER'
+		WHEN M.ROLE IN ('PARTNER', 'NPARTNER') THEN 'COMPANY'
+		END AS targetType,
+		R.reportCount
+		FROM MEMBER M
+		LEFT JOIN COMPANY C
+		ON M.USER_ID = C.USER_ID
+		LEFT JOIN (
+		SELECT TARGET_USER_ID, COUNT(*) AS reportCount
+		FROM REPORT
+		WHERE ACTION_STATUS = 1
+		GROUP BY TARGET_USER_ID
+		) R ON R.TARGET_USER_ID = M.USER_ID
+		WHERE M.ROLE IN ('PARTNER', 'NPARTNER')
+		<!-- 필터 : 신고 대상 유형 (PARTNER, NPARTNER) -->
+	<if
+		test="role != null and role != 'ALL'">
+		AND M.ROLE = #{role}
+	</if>
+		<!-- 필터 : 검색어 필터-->
+	<if test="keyword != null and keyword != ''">
+		<choose>
+			<when test="searchType == 'userId'">
+				AND M.USER_ID LIKE CONCAT('%', #{keyword}, '%')
+			</when>
+			<when test="searchType == 'companyName'">
+				AND C.COM_NAME LIKE CONCAT('%', #{keyword}, '%')
+			</when>
+			<when test="searchType == 'ceoName'">
+				AND C.CEO_NAME LIKE CONCAT('%', #{keyword}, '%')
+			</when>
+			<otherwise>
+				AND (
+				M.USER_ID LIKE CONCAT('%', #{keyword}, '%')
+				OR C.COM_NAME LIKE CONCAT('%', #{keyword}, '%')
+				OR C.CEO_NAME LIKE CONCAT('%', #{keyword}, '%')
+				)
+			</otherwise>
+		</choose>
+	</if>
+		<!-- 필터 : 계정 상태) -->
+	<if
+		test="status != null and status != 'ALL'">
+		AND M.STATUS = #{status}
+	</if>
+	<if test="sort == 'report'">
+		ORDER BY reportCount DESC
+	</if>
+	LIMIT #{pageSize} OFFSET #{offSet}
+	</select>
+
+	<!-- 업체 totalCount-->
+	<select id="selectCompanyCount" parameterType="hashmap"
+		resultType="int">
+		SELECT COUNT(*)
+		FROM MEMBER M
+		LEFT JOIN COMPANY C
+		ON M.USER_ID = C.USER_ID
+		WHERE M.ROLE IN ('PARTNER', 'NPARTNER')
+	<!-- 필터 : 신고 대상 유형 (PARTNER, NPARTNER) -->
+	<if
+		test="role != null and role != 'ALL'">
+		AND M.ROLE = #{role}
+	</if>
+		<!-- 필터 : 검색어 필터-->
+	<if test="keyword != null and keyword != ''">
+		<choose>
+			<when test="searchType == 'userId'">
+				AND M.USER_ID LIKE CONCAT('%', #{keyword}, '%')
+			</when>
+			<when test="searchType == 'name'">
+				AND C.COM_NAME LIKE CONCAT('%', #{keyword}, '%')
+			</when>
+			<when test="searchType == 'nickName'">
+				AND C.CEO_NAME LIKE CONCAT('%', #{keyword}, '%')
+			</when>
+			<otherwise>
+				AND (
+				M.USER_ID LIKE CONCAT('%', #{keyword}, '%')
+				OR C.COM_NAME LIKE CONCAT('%', #{keyword}, '%')
+				OR C.CEO_NAME LIKE CONCAT('%', #{keyword}, '%')
+				)
+			</otherwise>
+		</choose>
+	</if>
+		<!-- 필터 : 계정 상태) -->
+	<if
+		test="status != null and status != 'ALL'">
+		AND M.status = #{status}
+	</if>
+		
+	</select>
+	<!-- 업체 상세 조회 -->
+	<select id="selectCompanyDetail" parameterType="hashmap"
+		resultType="com.example.demo.admin.model.Admin">
+
+		SELECT
+		M.USER_ID AS userId,
+		C.COM_NAME AS companyName,
+		C.COM_EMAIL AS companyEmail,
+		C.COM_TYPE AS comType,
+		C.COM_TEL AS comTel,
+		C.COM_ADDRESS AS comAddress,
+		M.LAST_LOGIN AS lastLogin,
+		M.STATUS AS status,
+		M.REG_DATE AS regDate,
+		C.CEO_NAME AS ceoName,
+		C.BIZ_NO AS bizNo,
+		M.ROLE AS role,
+		C.registration_fee AS registrationFee,
+		C.com_intro AS comIntro,
+		CASE
+		WHEN M.ROLE = 'USER' THEN 'USER'
+		WHEN M.ROLE IN ('PARTNER', 'NPARTNER') THEN 'COMPANY'
+		END AS targetType
+		FROM MEMBER M
+		LEFT JOIN COMPANY C
+		ON M.USER_ID = C.USER_ID
+		WHERE M.USER_ID = #{userId}
+
+	</select>
+
+	<!-- 게시글 목록 조회 -->
+	<!-- 게시글 목록 페이지 필터 페이지네이션-->
+	<select id="selectBoardList" parameterType="hashmap"
+		resultType="com.example.demo.admin.model.Admin">
+		SELECT
+		p.post_no AS postNo,
+		p.user_id AS userId,
+		p.category,
+		p.title,
+		p.content,
+		p.reg_date AS regDate,
+		p.view_cnt AS viewCnt,
+		p.like_cnt AS likeCnt,
+		p.is_deleted AS isDeleted,
+		(
+        SELECT COUNT(*)
+        FROM comment c
+        WHERE c.post_no = p.post_no
+        AND c.is_deleted = 0
+    	) AS commentCnt
+    FROM Community_Post p
+	WHERE 1=1
+		
+		<if test="category != null and category != 'ALL'">
+		    <choose>
+		        <when test="category == '정보'">
+		            AND (p.category = '정보공유' OR p.category = '정보')
+		        </when>
+		        <otherwise>
+		            AND p.category = #{category}
+		        </otherwise>
+		    </choose>
+		</if>
+	    <if test="keyword != null and keyword != ''">
+	        <choose>
+	            <when test="searchType == 'userId'">
+	                AND p.user_id LIKE CONCAT('%', #{keyword}, '%')
+	            </when>
+	            <when test="searchType == 'title'">
+	                AND p.title LIKE CONCAT('%', #{keyword}, '%')
+	            </when>
+	            <when test="searchType == 'content'">
+	                AND p.content LIKE CONCAT('%', #{keyword}, '%')
+	            </when>
+	            <otherwise>
+	                AND (p.title LIKE CONCAT('%', #{keyword}, '%') 
+	                     OR p.user_id LIKE CONCAT('%', #{keyword}, '%')
+	                     OR p.content LIKE CONCAT('%', #{keyword}, '%'))
+	            </otherwise>
+	        </choose>
+	    </if>
+
+		<!-- 정렬 -->
+	<choose>
+		<when test="sortType == 'latest'">
+			ORDER BY regDate DESC
+		</when>
+		<when test="sortType == 'old'">
+			ORDER BY regDate ASC
+		</when>
+		<otherwise>
+			ORDER BY regDate DESC
+		</otherwise>
+	</choose>
+	LIMIT #{pageSize} OFFSET #{offSet}
+	</select>
+
+	<!-- 게시글 totalCount-->
+	<select id="selectBoardCount" parameterType="hashmap"
+		resultType="int">
+		SELECT COUNT(*)
+		FROM Community_Post p
+		WHERE 1=1
+ 		<if test="category != null and category != 'ALL'">
+		    <choose>
+		        <when test="category == '정보'">
+		            AND (p.category = '정보공유' OR p.category = '정보')
+		        </when>
+		        <otherwise>
+		            AND p.category = #{category}
+		        </otherwise>
+		    </choose>
+		</if>
+	
+	    <if
+			test="keyword != null and keyword != ''">
+			<choose>
+				<when test="searchType == 'userId'">
+					AND p.user_id LIKE CONCAT('%', #{keyword}, '%')
+				</when>
+				<when test="searchType == 'title'">
+					AND p.title LIKE CONCAT('%', #{keyword}, '%')
+				</when>
+				<when test="searchType == 'content'">
+					AND p.content LIKE CONCAT('%', #{keyword}, '%')
+				</when>
+				<otherwise>
+					AND (p.title LIKE CONCAT('%', #{keyword}, '%')
+					OR p.user_id LIKE CONCAT('%', #{keyword}, '%')
+					OR p.content LIKE CONCAT('%', #{keyword}, '%'))
+				</otherwise>
+			</choose>
+		</if>
+	</select>
+
+	<!-- 게시글 삭제하는척만 -->	
+	<update id="updateBoardApprove" parameterType="hashmap">
+		UPDATE community_post
+		SET is_deleted = CASE 
+                        WHEN is_deleted = 0 THEN 1
+                        ELSE 0
+                     END
+		WHERE post_no = #{postNo}
+	</update>
+
+	<!-- 게시글 상세 -->
+<select id="selectPostDetail" parameterType="hashmap"
+        resultType="com.example.demo.admin.model.Admin">
+
+    SELECT
+        p.post_no        AS postNo,
+        p.user_id        AS userId,
+        p.category,
+        p.title,
+        p.content,
+        p.reg_date       AS regDate,
+        p.view_cnt       AS viewCnt,
+        p.like_cnt       AS likeCnt,
+        p.is_deleted     AS isDeleted,
+
+        (
+            SELECT COUNT(*)
+            FROM comment c
+            WHERE c.post_no = p.post_no
+            AND c.is_deleted = 0
+        ) AS commentCnt
+
+    FROM Community_Post p
+    WHERE p.post_no = #{postNo}
+
+</select>
+
+	<!-- 신고 누적 조회 -->
+	<select id="selectReportHistory" parameterType="hashmap" resultType="int">
+	SELECT COUNT(*) AS report_count
+    FROM REPORT
+    WHERE TARGET_USER_ID = #{target_id}
+    AND ACTION_STATUS = 1
+	</select>
+	<!-- 신고게시판 전 회원 2회이상 조회 -->
+	<select id="selectKillHistory" parameterType="hashmap" resultType="com.example.demo.admin.model.Admin">
+		select target_user_id AS targetUserId, r.killCount
+		from(
+		SELECT target_user_id, COUNT(*) AS killCount
+		FROM REPORT
+		WHERE ACTION_STATUS = 1
+		GROUP BY target_user_id) r
+		where killCount &gt; 1
+		ORDER BY r.killCount DESC
+	</select>
+	
+	<!-- 회원 상세 신고 이력 조회 -->
+	<select id="selectReportInfoList" parameterType="hashmap" resultType="com.example.demo.admin.model.Admin">
+		SELECT
+		report_content,
+		reporter_id,
+		reg_date
+		FROM report
+		WHERE target_user_id = #{target_id}
+		AND action_status = 1
+		ORDER BY reg_date DESC
+	</select>
+
+	<!-- 신고 상세 조회-->
+	<select id="selectReportDetail" parameterType="hashmap"
+		resultType="com.example.demo.admin.model.Admin">
+
+		SELECT
+		REPORT_NO,
+		REPORTER_ID,
+		TARGET_USER_ID AS targetUserId,
+		TARGET_TYPE,
+		CASE
+		WHEN TARGET_TYPE = 'MEMBER' THEN TARGET_USER_ID
+		ELSE CAST(TARGET_ID AS CHAR)
+		END AS UNI_TARGET_ID,
+		REPORT_TITLE,
+		REPORT_CONTENT,
+		ANSWER_STATUS,
+		ACTION_STATUS,
+		REG_DATE
+		FROM REPORT
+		WHERE REPORT_NO = #{reportNo}
+
+	</select>
+
+	<!-- 정지 이력 조회 -->
+	<select id="selectBanHistory" parameterType="hashmap" resultType="com.example.demo.admin.model.Admin">
+		SELECT
+		target_id AS targetId,
+		target_type AS targetType,
+		action_type AS actionType,
+		reason,
+		admin_id AS adminId,
+		reg_date AS banRegDate
+		FROM ban_history
+		WHERE target_id = #{target_id}
+		AND target_type = #{target_type}
+		ORDER BY reg_date DESC
+	</select>
+
+	<!-- 정지/해제 (회원/업체 공통) -->
+	<update id="updateMemberStatus">
+		UPDATE member
+		SET status = #{status}
+		WHERE user_id = #{target_id}
+	</update>
+
+	<!-- 정지 이력 저장 -->
+	<insert id="insertBanHistory">
+		INSERT INTO ban_history (
+		target_id,
+		target_type,
+		action_type,
+		reason,
+		admin_id
+		) VALUES (
+		#{target_id},
+		#{target_type},
+		#{action_type},
+		#{reason},
+		#{admin_id}
+		)
+	</insert>
+
+	<!-- 일괄 신고 승인-->
+	<update id="batchApproveReport" parameterType="hashmap">
+    UPDATE REPORT
+    SET action_status = 1
+    WHERE report_no IN
+    <foreach collection="reportNos" item="no" open="(" separator="," close=")">
+        #{no}
+    </foreach>
+	</update>
+
+	<update id="batchReject" parameterType="hashmap">
+	    UPDATE report
+	    SET action_status = 2,
+	        reject_reason = #{rejectReason}
+	    WHERE report_no IN
+	    <foreach collection="reportNos" item="no" open="(" separator="," close=")">
+	        #{no}
+	    </foreach>
+	</update>
+
+	<!-- 단일 신고 승인-->
+	<update id="updateReportApprove" parameterType="hashmap">
+		UPDATE report
+		SET action_status = 1
+		WHERE report_no = #{reportNo}
+	</update>
+
+	<!-- 신고 반려 -->
+	<update id="updateReportReject" parameterType="hashmap">
+		UPDATE report
+		SET action_status = 2,
+			reject_reason = #{rejectReason}
+		WHERE report_no = #{reportNo}
+	</update>
+
+
+	<!-- 결제 관리-->
+	<select id="selectPaymentList" parameterType="hashmap" resultType="com.example.demo.admin.model.Admin">
+	    SELECT * FROM payment
+	    ORDER BY pay_no DESC
+	    LIMIT #{pageSize} OFFSET #{offSet}
+	</select>
+	
+	<select id="selectPassPaymentList" parameterType="hashmap" resultType="com.example.demo.admin.model.Admin">
+	    SELECT p.pay_no AS payNo,
+        p.user_id AS userId,
+        p.amount AS amount,
+        p.pay_status AS payStatus,
+        p.pay_date AS payDate,
+        ppp.pass_name AS passName
+	    FROM payment p
+	    JOIN payment_pass pp ON p.pay_no = pp.pay_no
+	    JOIN pass_product ppp ON pp.pass_no = ppp.pass_no
+	    ORDER BY P.pay_no DESC
+	    LIMIT #{pageSize} OFFSET #{offSet}
+	</select>
+	
+	<select id="selectReservationPaymentList" parameterType="hashmap" resultType="com.example.demo.admin.model.Admin">
+	    <!--SELECT
+	    p.pay_no AS payNo,
+        p.user_id AS userId,
+        p.amount AS amount,
+        p.pay_status AS payStatus,
+        p.pay_date AS payDate,
+        r.res_no AS resNo,
+        r.refund AS refund,
+        r.refund_date AS refundDate,
+        user_id, product_no, company_no, res_date, res_time, res_status, res_content, use_date, use_time, pay_date, pay_no
+        pp.product_name AS productName
+	    FROM payment p
+	    LEFT JOIN payment_reservation r ON p.pay_no = r.pay_no
+	    LEFT JOIN reservation rr ON r.res_no = rr.res_no
+	    LEFT JOIN product pp ON rr.product_no = pp.product_no
+	    -->
+	    SELECT
+	    r.res_no AS resNo,
+	    r.user_id AS userId,
+	    r.pay_no AS payNo,
+	    r.res_status AS resStatus,
+	    r.use_date AS useDate,
+	    p.product_name AS productName,
+	    pr.amount AS amount,
+	    pr.pay_status AS payStatus,
+	    pr.pay_date AS payDate,
+	    pr.refund AS refund,
+	    pr.refund_date AS refundDate
+	    FROM reservation r
+	    join payment_reservation pr on r.pay_no = pr.pay_no<!-- 페이넘버 안맞는게 넘 많아서 일단 이너조인으로-->
+	    left join product p on r.product_no = p.product_no
+	    ORDER BY pr.pay_date DESC
+	    
+	    LIMIT #{pageSize} OFFSET #{offSet}
+	</select>
+	
+	<select id="selectRegistrationPaymentList" parameterType="hashmap" resultType="com.example.demo.admin.model.Admin">
+	    SELECT
+	    p.user_id AS userId,
+	    p.pay_no AS payNo,
+        p.amount AS amount,
+        p.pay_date AS payDate,
+        c.com_name AS comName,
+        c.registration_fee AS registrationFee
+	    FROM payment p
+	    JOIN payment_registration pr ON p.pay_no = pr.pay_no
+	    JOIN company c ON pr.company_no = c.company_no
+	    ORDER BY P.pay_no DESC
+	    LIMIT #{pageSize} OFFSET #{offSet}
+	</select>
+	
+	<select id="selectPaymentCount" parameterType="hashmap" resultType="int">
+    	SELECT COUNT(*) FROM payment
+	</select>
+	
+	<select id="selectPassPaymentCount" parameterType="hashmap" resultType="int">
+    	SELECT COUNT(*)
+	    FROM payment P
+	    JOIN payment_pass p2 ON P.pay_no = p2.pay_no
+	</select>
+	
+	<select id="selectReservationPaymentCount" parameterType="hashmap" resultType="int">
+	    SELECT COUNT(*)
+	    FROM reservation r
+	    join payment_reservation pr on r.pay_no = pr.pay_no
+	    left join product p on r.product_no = p.product_no
+	</select>
+
+	<select id="selectRegistrationPaymentCount" parameterType="hashmap" resultType="int">
+	    SELECT COUNT(*)
+	    FROM payment p
+	    JOIN payment_registration pr ON p.pay_no = pr.pay_no
+	    JOIN company c ON pr.company_no = c.company_no
+	</select>
+
+
+	<!-- 상품 관리 -->
+	<select id="selectAdminProductList" parameterType="hashmap" resultType="com.example.demo.admin.model.Admin">
+    SELECT
+        p.product_no AS productNo,
+        p.company_no AS companyNo,
+        p.product_name AS productName,
+        p.product_details AS productDetails,
+        p.original_price AS originalPrice,
+        p.is_active AS isActive,
+        p.img_url AS imgUrl,
+        p.pro_type AS proType,
+        p.tag AS tag,
+        p.deposit AS deposit,
+        c.com_name AS comName
+    FROM product p
+    LEFT JOIN company c ON p.company_no = c.company_no
+    <where>
+        <if test="keyword != null and keyword != ''">
+            AND (
+                p.product_name LIKE CONCAT('%', #{keyword}, '%')
+                OR c.com_name LIKE CONCAT('%', #{keyword}, '%')
+            )
+        </if>
+
+        <if test="status != null and status != ''">
+            AND p.is_active = #{status}
+        </if>
+    </where>
+    ORDER BY p.product_no DESC
+    LIMIT #{pageSize} OFFSET #{offSet}
+	</select>
+
+	<select id="selectAdminProductCount" parameterType="hashmap" resultType="int">
+	    SELECT COUNT(*) FROM product p
+	    LEFT JOIN company c
+            ON p.company_no = c.company_no
+	    <where>
+            <if test="keyword != null and keyword != ''">
+                AND (
+                    p.product_name LIKE CONCAT('%', #{keyword}, '%')
+                    OR c.com_name LIKE CONCAT('%', #{keyword}, '%')
+                )
+            </if>
+
+            <if test="status != null and status != ''">
+                AND p.is_active = #{status}
+            </if>
+        </where>
+	</select>
+
+	<!-- 상품 상태 변경 -->
+    <update id="updateProductStatus"
+            parameterType="hashmap">
+
+        UPDATE product
+        SET is_active = #{isActive}
+        WHERE product_no = #{productNo}
+
+    </update>
+
+
+	<!-- 상품 삭제 -->
+    <delete id="deleteProduct"
+            parameterType="hashmap">
+
+        DELETE FROM product
+        WHERE product_no = #{productNo}
+
+    </delete>
+
+
+	<!-- 상품 상세 -->
+    <select id="selectProductInfo"
+            parameterType="hashmap"
+            resultType="com.example.demo.admin.model.Admin">
+
+        SELECT
+            p.product_no       AS productNo,
+            p.company_no       AS companyNo,
+            p.product_name     AS productName,
+            p.product_details  AS productDetails,
+            p.original_price   AS originalPrice,
+            p.is_active        AS isActive,
+            p.img_url          AS imgUrl,
+            p.pro_type         AS proType,
+            p.tag              AS tag,
+            p.deposit          AS deposit,
+            c.com_name         AS comName
+        FROM product p
+        LEFT JOIN company c
+            ON p.company_no = c.company_no
+        WHERE p.product_no = #{productNo}
+
+    </select>
+	<!-- 쿠폰 관리-->	
+	<select id="selectCouponList" parameterType="hashmap" resultType="com.example.demo.admin.model.Admin">
+    SELECT
+        coupon_code AS couponCode,
+        coupon_name AS couponName,
+        discount_rate AS discountRate,
+        issue_type AS issueType,
+        max_issue_cnt AS maxIssueCnt,
+        coupon_type AS couponType
+    FROM coupon
+    WHERE 1=1
+    <if test="keyword != null and keyword != ''">
+	    AND (
+	        coupon_code LIKE CONCAT('%', #{keyword}, '%')
+	        OR coupon_name LIKE CONCAT('%', #{keyword}, '%')
+	    )
+	</if>
+	<if test="status != null and status != ''">
+            AND coupon_type = #{status}
+    </if>
+    ORDER BY coupon_code DESC
+    LIMIT #{pageSize} OFFSET #{offSet}
+	</select>
+	
+	<select id="selectCouponCount" parameterType="hashmap" resultType="int">
+	    SELECT COUNT(*) FROM coupon
+	    WHERE 1=1
+    <if test="keyword != null and keyword != ''">
+	    AND (
+	        coupon_code LIKE CONCAT('%', #{keyword}, '%')
+	        OR coupon_name LIKE CONCAT('%', #{keyword}, '%')
+	    )
+	</if>
+	<if test="status != null and status != ''">
+            AND coupon_type = #{status}
+    </if>
+	</select>
+
+	<!-- 쿠폰 등록 -->
+	<insert id="insertCoupon"
+	        parameterType="hashmap">
+	
+	    INSERT INTO coupon
+	    (
+	        coupon_code,
+	        coupon_name,
+	        discount_rate,
+	        issue_type,
+	        max_issue_cnt,
+	        giftcon_image
+	    )
+	    VALUES
+	    (
+	        #{couponCode},
+	        #{couponName},
+	        #{discountRate},
+	        #{issueType},
+	        #{maxIssueCnt},
+	        #{giftconImage}
+	    )
+	
+	</insert>
+
+	<!-- 쿠폰 삭제 -->
+	<delete id="deleteCoupon"
+	        parameterType="hashmap">
+	
+	    DELETE FROM coupon
+	    WHERE coupon_code = #{couponCode}
+	
+	</delete>
+	<!--패스관리-->
+	<!-- 패스목록-->
+	<select id="selectAllPassList" parameterType="hashmap" resultType="com.example.demo.admin.model.Admin">
+    SELECT
+        pass_no AS passNo,
+        pass_name AS passName,
+        price AS price,
+        review_cnt AS reviewCnt,
+        is_active AS isActive,
+        reg_date AS regDate
+    FROM pass_product
+    WHERE 1 = 1
+		<!-- 검색어 -->
+    <if test="keyword != null and keyword != ''">
+        AND pass_name LIKE CONCAT('%', #{keyword}, '%')
+    </if>
+
+		<!-- 상태 -->
+    <if test="status != null and status != ''">
+        AND is_active = #{status}
+    </if>
+
+    ORDER BY pass_no DESC
+    LIMIT #{pageSize} OFFSET #{offSet}
+	</select>
+	
+	<select id="selectPassCount" parameterType="hashmap" resultType="int">
+	    SELECT COUNT(*) FROM pass_product
+	     WHERE 1 = 1
+
+	    <if test="keyword != null and keyword != ''">
+	        AND pass_name LIKE CONCAT('%', #{keyword}, '%')
+	    </if>
+	
+	    <if test="status != null and status != ''">
+	        AND is_active = #{status}
+	    </if>
+	</select>
+	
+	<update id="updatePassStatus" parameterType="hashmap">
+	    UPDATE pass_product
+	    SET is_active = #{isActive}
+	    WHERE pass_no = #{passNo}
+	</update>
+
+	<!-- 패스 등록 -->
+	<insert id="insertPass" parameterType="hashmap">
+	    INSERT INTO pass_product
+	    (
+	        pass_name,
+	        price,
+	        review_cnt,
+	        is_active,
+	        description
+	    )
+	    VALUES
+	    (
+	        #{passName},
+	        #{price},
+	        #{reviewCnt},
+	        #{isActive},
+	        #{description}
+	    )
+	</insert>
+
+
+	<!-- 패스 삭제 -->
+	<delete id="deletePass" parameterType="hashmap">
+	
+	    DELETE FROM pass_product
+	    WHERE pass_no = #{passNo}
+	
+	</delete>
+
+	<!-- 결제완료 페이지에서 조회 -->
+	<!--① 패스권 결제 조회-->
+	<select id="selectPassPayment" parameterType="hashmap" resultType="hashmap">
+		SELECT
+		    p.pay_no,
+		    p.user_id,
+		    p.amount,
+		    p.pay_status,
+		    DATE_FORMAT(p.pay_date, '%Y-%m-%d %H:%i:%s') AS pay_date,
+		    pp.pass_no,
+		    pp.item_name,
+		    pr.pass_name
+		FROM payment p
+		JOIN payment_pass pp ON p.pay_no = pp.pay_no
+		JOIN pass_product pr ON pp.pass_no = pr.pass_no
+		WHERE p.pay_no = #{payNo}
+	</select>
+	<!--② 예약 결제 조회-->
+	<select id="selectReservationPayment" parameterType="hashmap" resultType="hashmap">
+		SELECT
+		    p.pay_no,
+		    p.user_id,
+		    p.amount,
+		    p.pay_status,
+		    p.pay_date,
+		    r.res_no,
+		    r.res_date,
+		    r.res_time,
+		    r.use_date,
+		    r.use_time,
+		    r.res_status
+		FROM payment p
+		JOIN payment_reservation pr ON p.pay_no = pr.pay_no
+		JOIN reservation r ON pr.res_no = r.res_no
+		WHERE p.pay_no = #{payNo}
+	</select>
+	<!--③ 업체 등록 결제 조회-->
+	<select id="selectRegistrationPayment" parameterType="hashmap" resultType="hashmap">
+		SELECT
+		    p.pay_no,
+		    p.user_id,
+		    p.amount,
+		    p.pay_status,
+		    p.pay_date,
+		    pr.company_no
+		FROM payment p
+		JOIN payment_registration pr ON p.pay_no = pr.pay_no
+		WHERE p.pay_no = #{payNo}
+	</select>
+	
+<!-- 마이 패스 페이지-->
+	<!-- 패스 결제 내역 조회 -->
+	<select id="selectMyPassList" parameterType="hashmap"
+	    resultType="com.example.demo.admin.model.Admin">
+	    SELECT 
+	    	P.pay_no AS payNo,
+	    	P.amount AS amount,
+	        PP.pass_no AS passNo,
+	        PP.item_name AS itemName,
+	        P.pay_date AS payDate,
+	        P.pay_status AS payStatus,
+	        PPP.review_cnt AS reviewCnt
+	    FROM payment P
+	    JOIN payment_pass PP ON P.pay_no = PP.pay_no
+	    JOIN pass_product PPP ON PP.pass_no = PPP.pass_no
+	    WHERE P.user_id = #{userId}
+	    <if test="payStatus != null and payStatus != 'ALL'">
+	    	AND P.pay_status = #{payStatus}
+	    </if>
+	    ORDER BY P.pay_date DESC
+	    LIMIT #{pageSize} OFFSET #{offSet}
+	</select>
+		<!-- 페이지네이션-->
+	<select id="selectMyPassCount" parameterType="hashmap"
+	    resultType="int">
+	    SELECT COUNT(*)
+	    FROM payment P
+	    JOIN payment_pass PP ON P.pay_no = PP.pay_no
+	    WHERE P.user_id = #{userId}
+	</select>
+		<!-- 열람권 잔여 횟수 -->
+	<select id="selectMyWallet" parameterType="String" 
+		resultType="int">
+	    SELECT COALESCE(U.remaining_count, 0) AS remainingCount
+	    FROM user_pass_wallet U
+	    JOIN pass_product P ON U.pass_no = P.pass_no
+	    WHERE U.user_id = #{userId}
+	</select>
+	
+	<!-- 제휴 등록 -->
+	<update id="updateCompanyReg" parameterType="hashmap">
+		UPDATE member
+		SET role = 'PARTNER'
+		WHERE user_id = #{userId}
+	</update>
+	<update id="updateCompanyRegPaid" parameterType="hashmap">
+		UPDATE company
+		SET registration_fee = 'PAID'
+		WHERE user_id = #{userId}
+	</update>
+	
 </mapper>
