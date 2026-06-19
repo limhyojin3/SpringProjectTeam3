@@ -7,7 +7,6 @@ const app = Vue.createApp({
             flag: false,
             payAmount: '',
             myReservation1: {},
-            myReservationList: [],
             amTimes: ['10:00', '11:00'],
             pmTimes: ['13:00', '14:00', '15:00', '16:00', '17:00'],
             bookedTimes: [], 
@@ -56,17 +55,6 @@ const app = Vue.createApp({
         }
     }, 
     computed: {
-        fnButtonName() {
-            if (this.myReservation1.resStatus === 'WAIT') {
-                return '결제 및 예약 확정하기';
-            } else if (this.myReservation1.resStatus === 'CANCEL') {
-                return '취소된 예약';
-            } else if (this.myReservation1.resStatus === 'CONFIRM') {
-                return '확정된 예약';
-            } else {
-                return '만료된 예약';
-            }
-        },
         resCount() {
             return this.reservationList.length;
         },
@@ -410,38 +398,6 @@ const app = Vue.createApp({
         fnReserve() {
             // 💡 예약 버튼 로직은 컴포넌트 내부(submitReserve)에서 전담 처리 후 상단 onDetailReserve 메소드로 위임됩니다.
         },
-        fnSaveReservation(user) {  
-            let loginId = window.SESSION_ID;
-            if (!loginId || loginId === "") {
-                alert("로그인 해주세요!");
-                return;
-            }
-            if (confirm("예약사항을 모두 확인하셨습니까?")) {
-                let self = this;
-                let param = {
-                    userId: window.SESSION_ID,
-                    productNo: self.product1.id,
-                    companyNo: self.product1.companyNo,
-                    resContent: self.res_content,
-                    useDate: self.selectedDate,
-                    useTime: self.selectedTime
-                };
-                $.ajax({
-                    url: "/addReservation.dox",
-                    dataType: "json",
-                    type: "POST",
-                    data: param,
-                    success: function(data) {
-                        if (data.result == 'success') {
-                            alert("예약이 저장되었습니다.");
-                            self.fnBack2();
-                        }
-                    }
-                });
-            } else {
-                alert("취소되었습니다.");
-            }
-        },
         fnGetTagAndProductList() {
 			let self = this;
 	        // 💡 통신 파일에 요청해서 결과만 내 data에 쏙 대입합니다.
@@ -454,12 +410,6 @@ const app = Vue.createApp({
             this.selectedTime = time;
         },
         fnBack() {
-            this.productPage = 'list';
-            this.selectedDate = '';
-            this.selectedTime = '';
-            this.bookedTimes = [];
-        },
-        fnBack2() {
             this.productPage = 'list';
             this.selectedDate = '';
             this.selectedTime = '';
@@ -483,131 +433,11 @@ const app = Vue.createApp({
             });
         },
         goMyResPage() {
-            let loginId = window.SESSION_ID;
-            if (!loginId || loginId === "") {
-                alert("로그인 해주세요!");
-                return;
-            }
             this.productPage = 'resultOfReservation';
-            let self = this;
-            let param = { userId: window.SESSION_ID };
-            $.ajax({
-                url: "/getMyReservationList.dox",
-                dataType: "json",
-                type: "POST",
-                data: param,
-                success: function(data) {
-                    self.myReservationList = data.list.map(p => {
-                        return {
-                            companyNo: p.companyNo,
-                            deposit: p.deposit,       
-                            imgUrl: p.imgUrl,
-                            isActive: p.isActive,
-                            originalPrice: p.originalPrice,
-                            payDate: p.payDate,
-                            payNo: p.payNo,
-                            proType: JSON.parse(p.proType),
-                            productDetails: p.productDetails,
-                            productName: p.productName,
-                            resContent: p.resContent != "" ? p.resContent : "요청사항 없음",
-                            resNo: p.resNo,
-                            resStatus: p.resStatus,
-                            resDate: p.resDate,
-                            resTime: p.resTime,
-                            tag: JSON.parse(p.tag),
-                            useDate: p.useDate,
-                            useTime: p.useTime,
-                            userId: p.userId,
-                            amount: p.amount,
-                            payStatus: p.payStatus,
-                            refund: p.refund,
-                            refundDate: p.refundDate,
-                            comName: p.comName,
-                            tel: p.tel
-                        }
-                    })
-                }
-            });
         },
         fnGoDetail(r) {
             this.productPage = "reservaionPaymentDetails";
             this.myReservation1 = r;
-        },
-        fnPaymentFinal() {
-            if (confirm("예약사항을 모두 확인하셨습니까?")) {
-                this.fnPaymentReal();
-            } else {
-                alert("취소되었습니다.");
-            }
-        },
-        fnPaymentFinal2(res) {
-            let self = this;
-            let param = {
-                userId: window.SESSION_ID,
-                amount: self.myReservation1.deposit,
-                resNo: self.myReservation1.resNo,
-                imp_uid: res.impUid,
-                merchant_uid: res.merchantUid
-            };
-            $.ajax({
-                url: "/addAndEditPaymentFinal.dox",
-                dataType: "json",
-                type: "POST",
-                data: param,
-                success: function(data) {
-                    if (data.result == 'success') {
-                        alert('결제 완료되었습니다! 예약이 확정되었습니다!');
-                        self.productPage = 'list';
-                        self.payAmount = '';
-                    } else {
-                        alert("결제 실패! 서버 오류입니다");
-                    }
-                }
-            });
-        },
-        fnPaymentReal() {
-            let self = this;
-            var IMP = window.IMP;
-            IMP.init("imp48518435");
-            IMP.request_pay(
-                {
-                    channelKey: "channel-key-1ebd3d65-20bd-412e-83f3-b7e0c3b368ff",
-                    pay_method: "card",
-                    merchant_uid: "order_" + window.SESSION_ID + "_" + new Date().getTime(), 
-                    name: self.myReservation1.productName,
-                    amount: self.myReservation1.deposit,      
-                },
-                function(response) {
-                    if (response.imp_uid) {
-                        self.fnVerifyPayment(response);
-                    } else {
-                        alert("결제가 취소되었습니다");
-                    }
-                },
-            );
-        },
-        fnVerifyPayment(response) {
-            let self = this;
-            $.ajax({
-                url: "http://localhost:8080/verifyPayment3.dox",
-                type: "POST",
-                data: {
-                    userId: window.SESSION_ID,     
-                    imp_uid: response.imp_uid,           
-                    merchant_uid: response.merchant_uid,
-                    amount: self.myReservation1.deposit,
-                    type: "RES"
-                },
-                success: function(res) {
-                    if (res.result == "success") {
-                        self.fnPaymentFinal2(res);
-                    } else {
-                        alert("결제 검증 실패");
-                    }
-                }, error: function(xhr, status, err) {
-                    alert("서버 통신 오류");
-                }
-            });
         },
         goMyInquiryPage() {
             this.productPage = 'myRealInquiryList';
@@ -637,7 +467,7 @@ const app = Vue.createApp({
 // 💡 요청하신 방식대로 변수화된 객체를 각각 컴포넌트로 등록합니다.
 app.component('product-list-component', productListComponent);
 app.component('product-detail-component', productDetailComponent);
-
+ 
 // 💡 새롭게 만든 문의 관련 컴포넌트 변수 3개를 등록합니다!
 app.component('product-inquiry-write-component', productInquiryWriteComponent);
 app.component('my-inquiry-list-component', myInquiryListComponent);

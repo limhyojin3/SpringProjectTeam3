@@ -61,22 +61,20 @@
                                 :userid="userid"
                                 :res-content="res_content"
                                 @back="productPage = 'detail'"
-                                @save-reservation="fnSaveReservation(user)" />
+                                @success="fnBack" />
                         </div>
 
                         <div v-if="currentMenu === 'main' && productPage === 'resultOfReservation'">
                             <my-reservation-list-component
-                                :reservation-list="myReservationList"
-                                @back="fnBack()"
+                                @back="fnBack"
                                 @go-detail="fnGoDetail" />
                         </div>
 
                         <div v-if="currentMenu === 'main' && productPage === 'reservaionPaymentDetails'">
                             <reservation-detail-component
                                 :reservation="myReservation1"
-                                :button-name="fnButtonName"
                                 @back="productPage='resultOfReservation'"
-                                @pay-final="fnPaymentFinal" />
+                                @payment-success="fnBack" />
                         </div>
 
                         <!-- 7️⃣ 나의 문의 내역 목록 화면 컴포넌트화 -->
