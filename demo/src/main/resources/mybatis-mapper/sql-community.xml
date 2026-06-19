@@ -83,7 +83,7 @@
 	                AND (p.title LIKE CONCAT('%', #{searchKeyword}, '%') 
 	                     OR p.user_id LIKE CONCAT('%', #{searchKeyword}, '%'))
 	            </otherwise>
-	        </choose>
+	        </choose> 
 	    </if>
 	    ORDER BY p.reg_date DESC
 	    LIMIT #{startIndex}, #{pageSize}

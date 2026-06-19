@@ -16,7 +16,7 @@
     <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script src="/js/page-change.js"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 </head>
 <style>
     /* 홈 css에 있어요. */
@@ -57,6 +57,13 @@
             </div>
         </div>
         <div id="wrapper">
+            <div class="catchphrase-section">
+                <p class="catchphrase-text">
+                    <i class="fa-solid fa-heart wave-icon"></i>
+                    <span class="typing-text"></span>
+                    <i class="fa-solid fa-heart wave-icon" id="wave-right" style="display:none;"></i>
+                </p>
+            </div>
             <div class="main-content">
                 <div class="left-banner">
                     <div class="main-banner-img">
@@ -340,6 +347,34 @@
             }
         });
         app.mount('#app');
+        document.addEventListener('DOMContentLoaded', function() {
+            const text = 'Marry해서 Merry하게 · 메리뷰와 함께하세요';
+            const target = document.querySelector('.typing-text');
+            const waveRight = document.getElementById('wave-right');
+            let i = 0;
+
+            function type() {
+                if (i < text.length) {
+                    target.innerHTML = text.slice(0, i + 1)
+                        .replace('Marry', '<span class="brand-point">Marry</span>')
+                        .replace('Merry', '<span class="brand-point">Merry</span>');
+                    i++;
+                    setTimeout(type, 80);
+                } else {
+                    target.style.borderRight = 'none';
+                    if (waveRight) waveRight.style.display = 'inline-block';
+                    document.querySelector('.catchphrase-section').classList.add('done');
+                    setTimeout(() => {
+                        i = 0;
+                        target.style.borderRight = '2px solid #ff4a6b';
+                        if (waveRight) waveRight.style.display = 'none';
+                        document.querySelector('.catchphrase-section').classList.remove('done');
+                        type();
+                    }, 3000);
+                }
+            }
+            type();  // ← 이 줄 추가!
+        });
     </script>
 </body>
 </html>

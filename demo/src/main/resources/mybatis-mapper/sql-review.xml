@@ -136,6 +136,7 @@
 	        r.receipt_name AS receiptName,
 	        r.title AS title,
 	        r.content AS content,
+	        r.summary AS summary,
 	        r.booking_source AS bookingSource,
 	        r.original_name AS originalName,
 	        r.stored_name AS storedName,
@@ -378,5 +379,11 @@
 	    FROM review
 	    WHERE review_no = #{value}
 	</select>
-
+	
+	<update id="updateSummary" parameterType="map">
+	    UPDATE review 
+	    SET summary = #{summary} 
+	    WHERE review_no = #{reviewNo}
+	</update>
+	
 </mapper>

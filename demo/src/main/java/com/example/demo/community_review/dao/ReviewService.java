@@ -8,6 +8,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -17,9 +18,19 @@ import com.example.demo.community_review.mapper.ReviewMapper;
 import com.example.demo.community_review.model.Review;
 import com.example.demo.member.mapper.MemberMapper;
 import com.google.gson.Gson;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+
+import okhttp3.MediaType;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
 
 @Service
 public class ReviewService {
+	@Value("${geminiAi.api.key}") // application.properties의 키값
+    private String geminiApiKey;
 
     @Autowired
     private ReviewMapper reviewMapper;
@@ -321,6 +332,91 @@ public class ReviewService {
         review.setThumbnailUrl(extractThumbnail(review.getContent()));
         
         return reviewMapper.insertReview(review);
+    }
+    
+    public String getAiSummary(Long reviewNo, String content) {
+        // 1. 기존 DB에서 요약본 조회 (이미 존재하면 바로 반환)
+        HashMap<String, Object> param = new HashMap<>();
+        param.put("reviewNo", reviewNo);
+        HashMap<String, Object> review = reviewMapper.selectReviewDetail(param);
+        
+        // DB 컬럼명에 맞춰 'summary' 키 사용
+        if (review.get("summary") != null) {
+            return (String) review.get("summary");
+        }
+        
+        // 2. AI 요약 생성
+        String summary = callGeminiApi(content);
+
+        // 3. DB에 업데이트
+        HashMap<String, Object> updateParam = new HashMap<>();
+        updateParam.put("reviewNo", reviewNo);
+        updateParam.put("summary", summary); // 여기도 'summary' 키 사용
+        
+        // 메서드명도 updateSummary로 변경 권장
+        reviewMapper.updateSummary(updateParam);
+
+        return summary;
+    }
+
+    private String callGeminiApi(String content) {
+        // 1. API 키 확인 (콘솔에 제대로 찍히는지 확인)
+        System.out.println("DEBUG - API Key: " + geminiApiKey);
+        
+     // 추천하는 가장 안정적인 모델명 (위 리스트에 있는 이름 그대로 사용)
+        String modelName = "gemini-2.5-flash-lite"; // 또는 "gemini-2.5-flash"
+
+        // URL 구성을 아래와 같이 변경하세요 (v1beta/ 뒤에 바로 모델명을 붙임)
+        String url = "https://generativelanguage.googleapis.com/v1/models/" + modelName + ":generateContent?key=" + geminiApiKey;
+
+        // 타임아웃 설정을 추가하여 무한 대기 방지
+        OkHttpClient client = new OkHttpClient.Builder()
+                .connectTimeout(15, java.util.concurrent.TimeUnit.SECONDS)
+                .readTimeout(15, java.util.concurrent.TimeUnit.SECONDS) 
+                .build();
+
+        // AI에게 보낼 요청 본문 구성
+        JsonObject jsonBody = new JsonObject();
+        JsonObject contentObj = new JsonObject();
+        JsonObject partObj = new JsonObject();
+        
+        partObj.addProperty("text", "다음 리뷰 내용을 읽고, 핵심 장점과 아쉬운 점을 포함하여 3줄 이내로 핵심 요약해줘:\n\n" + content);
+        
+        com.google.gson.JsonArray partsArray = new com.google.gson.JsonArray();
+        partsArray.add(partObj);
+        contentObj.add("parts", partsArray);
+        
+        com.google.gson.JsonArray contentsArray = new com.google.gson.JsonArray();
+        contentsArray.add(contentObj);
+        jsonBody.add("contents", contentsArray);
+
+        RequestBody body = RequestBody.create(jsonBody.toString(), MediaType.get("application/json; charset=utf-8"));
+        Request request = new Request.Builder().url(url).post(body).build();
+
+        try (Response response = client.newCall(request).execute()) {
+            // 응답 내용을 담을 문자열 생성 (한 번 읽으면 사라지므로 변수에 저장)
+            String responseData = response.body().string();
+            
+            if (!response.isSuccessful()) {
+                System.err.println("--- Gemini API 통신 실패 ---");
+                System.err.println("코드: " + response.code());
+                System.err.println("메시지: " + response.message());
+                System.err.println("응답 본문: " + responseData); 
+                return "요약 서비스가 잠시 바쁩니다. 잠시 후 다시 시도해주세요.";
+            }
+            
+            // 성공 시 파싱 진행
+            JsonObject root = JsonParser.parseString(responseData).getAsJsonObject();
+            String summaryText = root.getAsJsonArray("candidates").get(0).getAsJsonObject()
+                    .getAsJsonObject("content").getAsJsonArray("parts").get(0).getAsJsonObject()
+                    .get("text").getAsString();
+
+            return summaryText;
+        } catch (Exception e) {
+            System.err.println("--- Gemini API 호출 중 예외 발생 ---");
+            e.printStackTrace(); 
+            return "요약 생성 중 오류";
+        }
     }
     
 }

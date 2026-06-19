@@ -39,4 +39,6 @@ public interface ReviewMapper {
     
     /* --- [5] 리뷰와 관련된 기프트콘 --- */
     Map<String, Object> getReviewInfoForGiftcon(String targetId);
+    
+    int updateSummary(Map<String, Object> map);
 }
