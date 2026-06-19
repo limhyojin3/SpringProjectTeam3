@@ -61,7 +61,7 @@
                                 :userid="userid"
                                 :res-content="res_content"
                                 @back="productPage = 'detail'"
-                                @success="fnBack" />
+                                @success="onReservationSuccess" />
                         </div>
 
                         <div v-if="currentMenu === 'main' && productPage === 'resultOfReservation'">
@@ -74,7 +74,7 @@
                             <reservation-detail-component
                                 :reservation="myReservation1"
                                 @back="productPage='resultOfReservation'"
-                                @payment-success="fnBack" />
+                                @payment-success="onReservationSuccess" />
                         </div>
 
                         <!-- 7️⃣ 나의 문의 내역 목록 화면 컴포넌트화 -->
