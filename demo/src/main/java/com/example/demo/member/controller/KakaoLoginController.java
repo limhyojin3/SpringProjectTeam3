@@ -17,8 +17,10 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.client.RestTemplate;
-import com.example.demo.member.model.Member; 
+
+import com.example.demo.member.dao.MemberService;
 import com.example.demo.member.mapper.MemberMapper;
+import com.example.demo.member.model.Member;
 
 import jakarta.servlet.http.HttpSession;
 
@@ -26,6 +28,9 @@ import jakarta.servlet.http.HttpSession;
 public class KakaoLoginController {
 	@Autowired
 	MemberMapper memberMapper;
+	
+	@Autowired
+	private MemberService memberService;
 
     @Value("${kakao.client-id}")
     private String clientId;
@@ -76,8 +81,16 @@ public class KakaoLoginController {
                 detailMap.put("userId", kakaoId);
                 detailMap.put("name", nickname);
                 detailMap.put("nickname", nickname);
-                detailMap.put("email", email);  // ← 여기서 사용
+                detailMap.put("email", email);  
                 memberMapper.insertKakaoMemberDetail(detailMap);
+                
+                memberService.giveCoupon(kakaoId, "WEDDING10");
+            } else {
+                // 기존 회원이면 DB에서 닉네임 가져오기
+                String dbNickname = memberMapper.selectNicknameByUserId(kakaoId);
+                if (dbNickname != null && !dbNickname.isEmpty()) {
+                    nickname = dbNickname;
+                }
             }
 
             session.setAttribute("sessionId", kakaoId);

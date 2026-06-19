@@ -13,10 +13,24 @@
         overflow: visible !important;
     }
 
+    .dropdown-header-wrap .container {
+        max-width: 1300px;
+        padding: 0 20px;
+    }
+
+    /* 기본 유저 */
     .dropdown-header-wrap {
-        position: sticky;
+        border-bottom: 2px solid #fff0f3;
+        box-shadow: 0 2px 4px rgba(255, 77, 109, 0.08);
+        position: sticky;  /* ← 기존 코드에 있던 거 여기로 통합 */
         z-index: 1000;
         background-color: white !important;
+    }
+
+    /* 관리자 */
+    .admin-mode {
+        border-bottom: 2px solid #0f3460 !important;
+        box-shadow: none !important;
     }
 
     /* ── 메인 메뉴(1차) 링크 ── */
@@ -86,6 +100,10 @@
         white-space: nowrap !important;
         transition: color 0.2s;
     }
+
+    .navbar .custom-nav-link:hover { color: #ff4d6d !important; }
+    .navbar.partner-mode .custom-nav-link:hover { color: #9b8fd4 !important; }
+    .navbar.admin-mode .custom-nav-link:hover { color: #e94560 !important; }
 
     .dropdown-contents li a:hover {
         color: #ff4d6d !important;
@@ -168,14 +186,71 @@
         text-align: center;
         padding: 12px;
     }
+
+    /* 기본 (유저) */
+    .nav-name { color: #ff4d6d; font-weight: bold; margin-left: 10px; }
+    .nav-icon-btn { color: #ff4d6d !important; padding: 0 10px !important; }
+
+    /* ── 업체 모드 (연보라) ── */
+    .partner-mode {
+        background-color: #f8f6ff !important;
+        border-bottom: 2px solid #d4cef0 !important;
+        box-shadow: 0 2px 4px rgba(155, 143, 212, 0.08) !important;
+    }
+    .partner-mode .custom-nav-link { color: #9b8fd4 !important; }
+    .partner-mode .header-bg-panel {
+        background-color: #f8f6ff;
+        border-bottom: 2px solid #f8f6ff;
+
+    }
+    .partner-mode .dropdown-contents li a:hover { color: #9b8fd4 !important; }
+    .partner-mode .notification-btn,
+    .partner-mode li[style*="color:#ff4d6d"],
+    .partner-mode .nav-name span { color: #9b8fd4 !important; }
+    .partner-mode .nav-name span { color: #9b8fd4 !important; }
+    .partner-mode .nav-icon-btn { color: #9b8fd4 !important; }
+    .partner-mode .nav-divider { color: #d4cef0 !important; }
+    .partner-mode .navbar-brand span { color: #9b8fd4 !important; }
+    .partner-mode .navbar-brand img { filter: hue-rotate(270deg); }
+
+    /* ── 관리자 모드 (다크) ── */
+    .admin-mode {
+        background-color: #1a1a2e !important;
+        border-bottom: 2px solid #0f3460 !important;
+        box-shadow: none !important;
+    }
+    .admin-mode .custom-nav-link { color: #e94560 !important; }
+    .admin-mode .header-bg-panel {
+        background-color: #16213e;
+        border-bottom: 2px solid #0f3460;
+    }
+    .admin-mode .dropdown-contents li a { color: #aaa !important; }
+    .admin-mode .dropdown-contents li a:hover { color: #eee !important; }
+    .admin-mode .notification-btn,
+    .admin-mode .nav-link,
+    .admin-mode li span { color: #eee !important; }
+    .admin-mode .nav-name span { color: #eee !important; }
+    .admin-mode .nav-icon-btn { color: #eee !important; }
+    .admin-mode .nav-divider { color: #0f3460 !important; }
+    .admin-mode .navbar-brand span { color: #eeeeee !important; }
+    .admin-mode .navbar-brand img { filter: brightness(0) invert(1); }
+
+    .navbar.partner-mode .nav-link:hover {
+    text-shadow: 0 0 8px rgba(155, 143, 212, 0.5) !important;
+    }
+    .navbar.admin-mode .nav-link:hover {
+        text-shadow: 0 0 8px rgba(233, 69, 96, 0.5) !important;
+    }
 </style>
 
-<nav class="navbar navbar-expand-lg sticky-top bg-white shadow-sm dropdown-header-wrap" style="border-bottom: 2px solid #fff0f3 !important;">
+<nav class="navbar navbar-expand-lg sticky-top dropdown-header-wrap
+    <c:if test="${sessionScope.sessionRole == 'PARTNER' or sessionScope.sessionRole == 'NPARTNER'}">partner-mode</c:if>
+    <c:if test="${sessionScope.sessionRole == 'ADMIN'}">admin-mode</c:if>">
     <div class="container">
         <a class="navbar-brand" href="${pageContext.request.contextPath}/merryViewHome.do"
-            style="text-decoration:none!important; display:flex; align-items:center; gap:10px;">
-            <img src="${pageContext.request.contextPath}/css/marryview-logo.svg" alt="MARRY VIEW" style="height:32px; width:auto;">
-            <span style="font-family:'Playfair Display',Georgia,serif; font-size:22px; font-weight:700; color:#ff4d6d; letter-spacing:0.5px;">MarryView</span>
+            style="text-decoration:none!important; display:flex; align-items:center; gap:20px;">
+            <img src="${pageContext.request.contextPath}/css/marryview-logo.svg" alt="MARRY VIEW" style="height:35px; width:auto;">
+            <span style="font-family:'Playfair Display',Georgia,serif; font-size:30px; font-weight:700; color:#ff4d6d; letter-spacing:0.5px;">MarryView</span>
         </a>
 
         <div class="collapse navbar-collapse">
@@ -275,14 +350,13 @@
                     </c:choose>
                 </li>
 
-                <li class="nav-item mx-3" style="color: #ffb3c1 !important;">|</li>
+                <li class="nav-item mx-3 nav-divider">|</li>
 
                 <!-- 고객센터 -->
                 <c:if test="${sessionRole != 'ADMIN'}">
                     <li class="nav-item">
-                        <a class="nav-link"
-                            href="${sessionRole == 'USER' ? '/userMyPage-cs.do' : sessionRole == 'ADMIN' ? '/adminMain.do' : (sessionRole == 'PARTNER' || sessionRole == 'NPARTNER') ? '/partnerManagement.do' : 'javascript:void(0)'}"
-                            style="color: #ff4d6d !important; padding: 0 10px !important;">
+                        <a class="nav-link nav-icon-btn"
+                            href="${sessionRole == 'USER' ? '/userMyPage-cs.do' : sessionRole == 'ADMIN' ? '/adminMain.do' : (sessionRole == 'PARTNER' || sessionRole == 'NPARTNER') ? '/partnerManagement.do' : 'javascript:void(0)'}">
                             <i class="fas fa-headset" style="font-size: 1.3rem !important;"></i>
                         </a>
                     </li>
@@ -312,7 +386,7 @@
                     </li>
 
                     <!-- 이름 -->
-                    <li class="nav-item" style="color:#ff4d6d; font-weight:bold; margin-left:10px;">
+                    <li class="nav-item nav-name">
                         <span>${sessionScope.sessionName}님!</span>
                     </li>
                 </c:if>
@@ -321,15 +395,13 @@
                 <li class="nav-item">
                     <c:choose>
                         <c:when test="${empty sessionScope.sessionId}">
-                            <a class="nav-link" href="${pageContext.request.contextPath}/login.do" title="로그인"
-                                style="color: #ff4d6d !important; padding: 0 10px !important;">
+                            <a class="nav-link nav-icon-btn" href="${pageContext.request.contextPath}/login.do" title="로그인">
                                 <i class="fas fa-user-circle" style="font-size: 1.3rem !important;"></i>
                                 <span style="font-size: 0.95rem; font-weight: bold; margin-left: 4px;">로그인</span>
                             </a>
                         </c:when>
                         <c:otherwise>
-                            <a class="nav-link" href="${pageContext.request.contextPath}/logout.do" title="로그아웃"
-                                style="color: #ff4d6d !important; padding: 0 10px !important;">
+                            <a class="nav-link nav-icon-btn" href="${pageContext.request.contextPath}/logout.do" title="로그아웃">
                                 <i class="fas fa-sign-out-alt" style="font-size: 1.3rem !important;"></i>
                             </a>
                         </c:otherwise>

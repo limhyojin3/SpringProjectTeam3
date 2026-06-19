@@ -24,6 +24,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 
+
 @Controller
 @RequestMapping("/api/review")
 public class ReviewController {
@@ -308,4 +309,26 @@ public class ReviewController {
         }
         return result;
     }
+    @PostMapping("/summary.dox")
+    @ResponseBody
+    public String getAiSummary(@RequestBody HashMap<String, Object> map) {
+        HashMap<String, Object> resultMap = new HashMap<>();
+        try {
+            // 요청에서 reviewNo와 content 추출
+            Long reviewNo = Long.valueOf(String.valueOf(map.get("reviewNo")));
+            String content = (String) map.get("content");
+            
+            // 서비스 호출하여 요약 결과 가져오기
+            String summary = reviewService.getAiSummary(reviewNo, content);
+            
+            resultMap.put("summary", summary);
+            resultMap.put("result", "success");
+        } catch (Exception e) {
+            e.printStackTrace();
+            resultMap.put("result", "error");
+            resultMap.put("message", "요약 생성 중 오류가 발생했습니다.");
+        }
+        return gson.toJson(resultMap);
+    }
+    
 }
