@@ -735,4 +735,9 @@ app.component('product-inquiry-write-component', productInquiryWriteComponent);
 app.component('my-inquiry-list-component', myInquiryListComponent);
 app.component('inquiry-detail-component', inquiryDetailComponent);
 
+// 💡 새롭게 만든 예약/결제 컴포넌트 객체 3개를 최종 부착(등록)합니다!
+app.component('product-reservation-payment-component', productReservationPaymentComponent);
+app.component('my-reservation-list-component', myReservationListComponent);
+app.component('reservation-detail-component', reservationDetailComponent);
+
 app.mount('#app');
