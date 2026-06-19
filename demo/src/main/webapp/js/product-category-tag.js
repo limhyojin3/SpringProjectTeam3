@@ -1,10 +1,8 @@
 const app = Vue.createApp({
-
-
     data() {
         return {
+			productTag: [],
             myInquiryList: [],
-            //inquiryList v-for 돌릴때 각각이 담기는 곳
             myInquiry1: {},
             inquiry: {
                 title: '',
@@ -17,18 +15,17 @@ const app = Vue.createApp({
             myReservationList: [],
             amTimes: ['10:00', '11:00'],
             pmTimes: ['13:00', '14:00', '15:00', '16:00', '17:00'],
-            bookedTimes: [], // 서버에서 받아온 시간들 (HH:mm:ss 형태)
-            selectedTime: '', // 사용자가 클릭한 시간 (HH:mm 형태)
+            bookedTimes: [], 
+            selectedTime: '', 
             res_content: '',
             selectedDate: '',
-            productTag: [],
             productList3: [],
             inquiryList: [],
             user: {},
-            currentMenu: 'main', // 초기 화면
+            currentMenu: 'main', 
             reviewTab: 'detail',
-            page1: 'main', // 상품별 리뷰 페이지 구분 변수
-            productPage: 'list', //(list: 목록, reg: 등록, edit: 수정)
+            page1: 'main', 
+            productPage: 'list', 
             page: 1,
             product: '',
             product1: {},
@@ -49,8 +46,8 @@ const app = Vue.createApp({
             },
             pageSize: 0,
             currentPage: 1,
-            previewUrl: null, // 미리보기용 URL
-            uploadFile: null,  // 서버로 보낼 실제 파일 객체
+            previewUrl: null, 
+            uploadFile: null,  
             product2: {
                 companyNo: '',
                 productNo: '',
@@ -62,8 +59,7 @@ const app = Vue.createApp({
             },
             userReservationList: []
         }
-
-    }, // data
+    }, 
     computed: {
         fnButtonName() {
             if (this.myReservation1.resStatus === 'WAIT') {
@@ -78,15 +74,12 @@ const app = Vue.createApp({
         },
         resCount() {
             return this.reservationList.length;
-        }
-        ,
+        },
         revCnt() {
             return this.reviews.filter(r => r.updated === 'new').length
                 + this.simpleReviews.filter(r => r.updated === 'new').length;
-        }
-        ,
+        },
         editingProduct() {
-            // productList에서 이름이 일치하는 녀석을 찾고, 없으면 빈 객체{}를 반환
             return this.productList.find(p => p.name === this.product) || {};
         },
         menuList() {
@@ -116,20 +109,20 @@ const app = Vue.createApp({
             })
         },
         filteredReviews() {
-            return this.reviews.filter(rev => rev.product === this.page1); // 현재 선택된 상품(page1)에 해당하는 리뷰만 반환 //[] 리스트..
+            return this.reviews.filter(rev => rev.product === this.page1); 
         },
         filteredSimpleReviews() {
-            return this.simpleReviews.filter(rev => rev.product === this.page1); // 현재 선택된 상품(page1)에 해당하는 리뷰만 반환 //[] 리스트..
+            return this.simpleReviews.filter(rev => rev.product === this.page1); 
         },
         paginatedReviews() {
             const start = (this.page - 1) * 5;
             const end = start + 5;
-            return this.filteredReviews.slice(start, end); // 페이지에 맞는 리뷰만 반환 (5개씩) (page가 1이면 0~4, page가 2면 5~9) //[] 리스트..
+            return this.filteredReviews.slice(start, end); 
         },
         paginatedSimpleReviews() {
             const start = (this.page - 1) * 5;
             const end = start + 5;
-            return this.filteredSimpleReviews.slice(start, end); // 페이지에 맞는 리뷰만 반환 (5개씩) (page가 1이면 0~4, page가 2면 5~9) //[] 리스트..
+            return this.filteredSimpleReviews.slice(start, end); 
         },
         fnPaginatedReservation() {
             let start = (this.currentPage - 1) * 3;
@@ -140,55 +133,43 @@ const app = Vue.createApp({
             let start = this.currentPage - 1;
             let end = start + 1;
             return this.inquiryList.slice(start, end);
-            //(0, 1), (1, 2)
         },
         totalPages() {
-            return Math.ceil(this.filteredReviews.length / 5); // 총 페이지 수 계산 (5개씩 보여줄 때) // 숫자
+            return Math.ceil(this.filteredReviews.length / 5); 
         },
         totalSimplePages() {
-            return Math.ceil(this.filteredSimpleReviews.length / 5); // 총 페이지 수 계산 (5개씩 보여줄 때) // 숫자
-        }
-        ,
+            return Math.ceil(this.filteredSimpleReviews.length / 5); 
+        },
         totalPageReservation() {
             return Math.ceil(this.reservationList.length / 3);
-        },
+        }
     },
     watch: {
-        selectedDate(newVal) {
-            const today = new Date();
-            const tomorrow = new Date(today);
-            tomorrow.setDate(today.getDate() + 1);
-
-            tomorrow.setHours(0, 0, 0, 0);
-            const selected = new Date(newVal);
-            selected.setHours(0, 0, 0, 0);
-
-            /* 선택된 날짜를 감시 - 잘못된 날짜가 올 경우 알림을 띄운다.*/
-            if (selected < tomorrow) {
-                alert("날짜는 내일 이후부터 선택 가능합니다!");
-
-                this.selectedDate = '';
-            } else {  /* 제대로 된 날짜가 올경우 함수를 호출한다.*/
-                this.fnGetBookedTimes();
-            }
-
-        },
+        // 💡 날짜 감시 watch 로직은 자식 컴포넌트 내부로 이사하여 완전히 비워졌습니다.
     },
     methods: {
-        // 함수(메소드) - (key : function())
+        // 💡 상세 보기 컴포넌트 전용 커스텀 이벤트 바인딩 핸들러 함수 2개 추가
+        onDetailDateChanged(date) {
+            this.selectedDate = date;
+            this.fnGetBookedTimes();
+        },
+        onDetailReserve(payload) {
+            this.selectedDate = payload.date;
+            this.selectedTime = payload.time;
+            this.res_content = payload.content;
+            this.productPage = 'payment';
+            window.scrollTo(0, 0);
+        },
         fnPageChange(num) {
             this.currentPage = num;
-
             window.scrollTo({
                 top: 0,
-                behavior: 'smooth' // 'smooth'는 부드럽게, 'auto'는 즉시 이동합니다.
+                behavior: 'smooth'
             });
         }, 
         fnCom: function() {
             let self = this;
-            let param = {
-                userid: window.SESSION_ID
-            };
+            let param = { userid: window.SESSION_ID };
             $.ajax({
                 url: "http://localhost:8080/company.dox",
                 dataType: "json",
@@ -204,20 +185,17 @@ const app = Vue.createApp({
         },
         fnProductList: function() {
             let self = this;
-            let param = {
-                userid: window.SESSION_ID
-            };
+            let param = { userid: window.SESSION_ID };
             $.ajax({
                 url: "http://localhost:8080/productList.dox",
                 dataType: "json",
                 type: "POST",
                 data: param,
                 success: function(data) {
-                    self.productList3 = data.list; //덮어씌우기
+                    self.productList3 = data.list;
                 }
             });
         },
-
         withdraw: function() {
             if (confirm("정말 탈퇴하시겠습니까?")) {
                 alert("탈퇴되었습니다.");
@@ -227,16 +205,14 @@ const app = Vue.createApp({
         },
         updateProduct: function() {
             alert("상품이 수정되었습니다.");
-            this.productPage = 'list'; // 수정 후 상품 목록으로 돌아가기
+            this.productPage = 'list'; 
         },
-
         goEditPage(item) {
             let self = this;
             self.productPage = 'edit';
-
             let param = {
                 userid: window.SESSION_ID,
-                productNo: item.productNo //파라미터로 보내주면되는구나~
+                productNo: item.productNo 
             };
             $.ajax({
                 url: "http://localhost:8080/productDetail.dox",
@@ -244,70 +220,48 @@ const app = Vue.createApp({
                 type: "POST",
                 data: param,
                 success: function(data) {
-                    // 1. 일단 전체 데이터를 담습니다.
-                    self.product1 = data.info;//덮어씌우기
-                    // 2. 문자열로 들어온 proType을 실제 배열로 변환합니다.
-                    // 만약 데이터가 '["MAKEUP"]' 형태라면 JSON.parse를 써서 ["MAKEUP"] 배열로 만듭니다.
+                    self.product1 = data.info;
                     if (typeof self.product1.proType === 'string') {
                         try {
-                            let rawArray = JSON.parse(self.product1.proType);//["MAKEUP" , "STUDIO"]
-
+                            let rawArray = JSON.parse(self.product1.proType);
                             self.product1.proType = rawArray.map(val => {
-                                if (val === 'MAKEUP') {
-                                    return '메이크업';
-                                } else if (val === 'DRESS') {
-                                    return '드레스';
-                                } else if (val === 'STUDIO') {
-                                    return '스튜디오';
-                                } else {
-                                    return val; // 혹시 모르는 값이 들어올 경우 원래 값을 유지
-                                } //self.product1.proType = ["메이크업", "스튜디오"]
+                                if (val === 'MAKEUP') return '메이크업';
+                                else if (val === 'DRESS') return '드레스';
+                                else if (val === 'STUDIO') return '스튜디오';
+                                else return val;
                             })
                         } catch (e) {
-                            // 혹시 JSON 형식이 아닐 경우를 대비해 빈 배열로 초기화하거나 예외 처리
                             self.product1.proType = [];
                         }
                     }
-
-
-
                 }
             });
         },
-        // [2] 등록 버튼 누를 때: 바구니 깨끗이 비우기
         goRegPage() {
             this.productPage = 'reg';
-            this.product = ''; // 수정 대상이 없으므로 비워줍니다.
-            this.selectedItems = []; // 바구니를 비워야 등록창이 깨끗합니다.
+            this.product = ''; 
+            this.selectedItems = []; 
         },
-
-        // [3] 수정 완료 버튼 (Save)
         fnSave() {
-            // 2. productList에서 해당 상품 찾기
             const item = this.productList.find(p => p.name === this.product);
-
             if (item) {
                 item.category = [...this.selectedItems];
                 alert("수정되었습니다!");
                 this.productPage = 'list';
             } else {
-                // 4. 만약 못 찾았다면 왜 못 찾았는지 경고!
                 alert("수정 대상을 찾지 못했습니다.");
             }
         },
         fnAdd() {
             const newProduct = {
-                id: this.productList.length > 0 ?
-                    Math.max(...this.productList.map(p => p.id)) + 1 : 1,
+                id: this.productList.length > 0 ? Math.max(...this.productList.map(p => p.id)) + 1 : 1,
                 thumbnail: this.productForm.thumbnail || "images/default-thumbnail.png",
                 name: this.productForm.name,
                 content: this.productForm.content,
                 price: this.productForm.price,
                 category: [...this.selectedItems]
             }
-
-            this.productList.push({ ...newProduct });  //{...newProduct} <- 이게 복사본이야? (+)
-
+            this.productList.push({ ...newProduct });  
             alert("등록되었습니다!");
             this.resetForm();
             this.productPage = "list";
@@ -325,25 +279,16 @@ const app = Vue.createApp({
         },
         resetForm() {
             this.productForm = {
-                id: "",
-                thumbnail: "",
-                name: "",
-                content: "",
-                price: "",
-                category: []
+                id: "", thumbnail: "", name: "", content: "", price: "", category: []
             }
             this.selectedItems = [];
-
         },
         fnRemove(item) {
-            //fnRemove(프로덕트 리스트에 있는요소)
             if (confirm("정말 삭제하시겠습니까?")) {
                 const removed = this.productList.find(p => p.id === item.id);
                 const index = this.productList.indexOf(removed);
-                //removed 객체의 인덱스를 구해라. 담아라.
                 if (index !== -1) {
                     this.productList.splice(index, 1);
-                    //index 위치에서부터1개 데이터 삭제하고 인덱스들을 앞으로 당김.
                     this.reviews = this.reviews.filter(r => r.product !== item.name);
                     this.simpleReviews = this.simpleReviews.filter(r => r.product !== item.name);
                 }
@@ -352,10 +297,10 @@ const app = Vue.createApp({
                 alert("삭제가 취소되었습니다.");
             }
         },
-        fnThumbnail(inquiry) {    //fnThumbnail(개별문의)
+        fnThumbnail(inquiry) {    
             return this.productList.find(p => p.name === inquiry.product).thumbnail;
         },
-        handleMenuClick(menuId) {   //main,product,reservation,inquiry,review,customer
+        handleMenuClick(menuId) {   
             this.currentMenu = menuId;
             this.productPage = 'list';
             this.page = 1;
@@ -364,40 +309,27 @@ const app = Vue.createApp({
             this.currentPage = 1;
             if (menuId === 'main') {
                 this.fnCom();
-            }
-            else if (menuId === 'product') {
+            } else if (menuId === 'product') {
                 this.fnProductList();
             }
         },
         fnFileChange(event) {
-            // 1. 이벤트가 일어난 대상(input)에서 선택된 파일들 중 첫 번째[0]를 가져와요.
             const file = event.target.files[0];
-
             if (file) {
-                // 2. 진짜 파일 덩어리를 우리 변수에 쏙 넣어둡니다.
                 this.uploadFile = file;
-
-                // 3. 브라우저가 "이 파일 내가 잠깐 보여줄 수 있게 가짜 주소 만들어줄게!" 하는 기능이에요.
                 this.previewUrl = URL.createObjectURL(file);
             }
         },
         fnUpdateProduct() {
-            // 1. 택배 박스(FormData)를 하나 만듭니다.
-            // 파일은 일반 텍스트가 아니라서 반드시 이 'FormData'라는 박스에 담아야 해요.
             let self = this;
             let formData = new FormData();
-
-            // 1. 사진 파일 담기(선택했을 때만)
             if (this.uploadFile) {
                 formData.append("file", this.uploadFile);
             }
-
-            // 2. 다른 모든 정보들 싹 다 담기(자바의 변수명과 똑같이!)
             formData.append("productNo", this.product1.productNo);
             formData.append("productName", this.product1.productName);
             formData.append("productDetails", this.product1.productDetails);
             formData.append("originalPrice", this.product1.originalPrice);
-
             formData.append("proType", JSON.stringify(this.product1.proType));
 
             $.ajax({
@@ -408,35 +340,25 @@ const app = Vue.createApp({
                 contentType: false,
                 success: function(data) {
                     let res = (typeof data === 'string') ? JSON.parse(data) : data;
-                    //data가 string으로 넘어왓다면? 자바스크립트가 읽을수있게 객체로 바꿔주기(parse해주기)
                     if (res.result === "success") {
                         alert("상품 정보가 모두 수정되었습니다!");
                         window.location.href = "/partnerManagement.do";
                     } else {
                         alert("서버 응답은 성공했지만, result가 success가 아닙니다.");
                     }
-
                 }
             })
         },
         fnInsertProduct() {
-            // 1. 택배 박스(FormData)를 하나 만듭니다.
-            // 파일은 일반 텍스트가 아니라서 반드시 이 'FormData'라는 박스에 담아야 해요.
             let self = this;
             let formData = new FormData();
-
-            // 1. 사진 파일 담기(선택했을 때만)
             if (this.uploadFile) {
                 formData.append("file", this.uploadFile);
             }
-
-            // 2. 다른 모든 정보들 싹 다 담기(자바의 변수명과 똑같이!)
-            //formData.append("companyNo", this.product2.companyNo);
             formData.append("productNo", this.product2.productNo);
             formData.append("productName", this.product2.productName);
             formData.append("productDetails", this.product2.productDetails);
             formData.append("originalPrice", this.product2.originalPrice);
-
             formData.append("proType", JSON.stringify(this.product2.proType));
             formData.append("userId", window.SESSION_ID);
             $.ajax({
@@ -447,7 +369,6 @@ const app = Vue.createApp({
                 contentType: false,
                 success: function(data) {
                     let res = (typeof data === 'string') ? JSON.parse(data) : data;
-                    //data가 string으로 넘어왓다면? 자바스크립트가 읽을수있게 객체로 바꿔주기(parse해주기)
                     if (res.result === "success") {
                         alert("상품 정보가 모두 수정되었습니다!");
                         window.location.href = "/partnerManagement.do";
@@ -457,19 +378,16 @@ const app = Vue.createApp({
                 }
             })
         },
-        fnRemove2(item) {  //item in productList
+        fnRemove2(item) {  
             if (confirm("정말 삭제하시겠습니까?")) {
                 let self = this;
-                let param = {
-                    productNo: item.productNo
-                };
+                let param = { productNo: item.productNo };
                 $.ajax({
                     url: "/productRemove.dox",
                     dataType: "json",
                     type: "POST",
                     data: param,
                     success: function(data) {
-
                         alert(data.message);
                         location.href = "/partnerManagement.do"
                     }
@@ -486,43 +404,24 @@ const app = Vue.createApp({
                 dataType: "json",
                 type: "POST",
                 data: param,
-                success: function(data) {
-
-                }
+                success: function(data) {}
             });
         },
-        //**내가 선택한 상품정보를 상세보기 바구니에 담는거임(->product1)
         goDetailPage(item) {
             this.productPage = 'detail';
-            // 선택한 상품 정보를 product1(상세보기 바구니)에 담기
             this.product1 = { ...item };
-
-            window.scrollTo(0, 0); // 화면 상단으로 이동
+            window.scrollTo(0, 0); 
         },
-
-        // 예약하기 버튼 클릭
         fnReserve() {
-            // 실제로는 여기서 날짜 선택 여부를 체크하면 좋아요!
-            if (!this.selectedDate) {
-                alert("예약 날짜를 선택해주세요!");
-                return;
-            }
-            if (!this.selectedTime) {
-                alert("예약 시간을 선택해주세요!");
-                return;
-            }
-            this.productPage = 'payment'; // 결제 화면으로 렌더링 상태 변경
-            window.scrollTo(0, 0);
+            // 💡 예약 버튼 로직은 컴포넌트 내부(submitReserve)에서 전담 처리 후 상단 onDetailReserve 메소드로 위임됩니다.
         },
-        fnSaveReservation(user) {  //user
+        fnSaveReservation(user) {  
             let loginId = window.SESSION_ID;
             if (!loginId || loginId === "") {
                 alert("로그인 해주세요!");
                 return;
-
             }
             if (confirm("예약사항을 모두 확인하셨습니까?")) {
-
                 let self = this;
                 let param = {
                     userId: window.SESSION_ID,
@@ -576,7 +475,6 @@ const app = Vue.createApp({
                 }
             });
         },
-        // 시간 버튼 클릭 시 호출
         fnSelectTime(time) {
             this.selectedTime = time;
         },
@@ -604,7 +502,7 @@ const app = Vue.createApp({
                 type: "POST",
                 data: param,
                 success: function(data) {
-                    let newList = data.list.map(p => p.slice(0, 5)); //['10:00', '13:00', '17:00']
+                    let newList = data.list.map(p => p.slice(0, 5)); 
                     self.bookedTimes = newList;
                 }
             });
@@ -617,9 +515,7 @@ const app = Vue.createApp({
             }
             this.productPage = 'resultOfReservation';
             let self = this;
-            let param = {
-                userId: window.SESSION_ID
-            };
+            let param = { userId: window.SESSION_ID };
             $.ajax({
                 url: "/getMyReservationList.dox",
                 dataType: "json",
@@ -629,7 +525,7 @@ const app = Vue.createApp({
                     self.myReservationList = data.list.map(p => {
                         return {
                             companyNo: p.companyNo,
-                            deposit: p.deposit,       //Number(p.deposit).toLocaleString() + '원'
+                            deposit: p.deposit,       
                             imgUrl: p.imgUrl,
                             isActive: p.isActive,
                             originalPrice: p.originalPrice,
@@ -670,7 +566,6 @@ const app = Vue.createApp({
             }
         },
         fnPaymentFinal2(res) {
-            // myReservation1.deposit 은 예약금을 의미함.
             let self = this;
             let param = {
                 userId: window.SESSION_ID,
@@ -687,7 +582,6 @@ const app = Vue.createApp({
                 success: function(data) {
                     if (data.result == 'success') {
                         alert('결제 완료되었습니다! 예약이 확정되었습니다!');
-
                         self.productPage = 'list';
                         self.payAmount = '';
                     } else {
@@ -704,78 +598,44 @@ const app = Vue.createApp({
                 {
                     channelKey: "channel-key-1ebd3d65-20bd-412e-83f3-b7e0c3b368ff",
                     pay_method: "card",
-                    merchant_uid: "order_" + window.SESSION_ID + "_" + new Date().getTime(), // 주문 고유 번호
+                    merchant_uid: "order_" + window.SESSION_ID + "_" + new Date().getTime(), 
                     name: self.myReservation1.productName,
-                    amount: self.myReservation1.deposit,      //제품 가격
+                    amount: self.myReservation1.deposit,      
                 },
                 function(response) {
-                    // 결제 종료 시 호출되는 콜백 함수
-                    // response.imp_uid 값으로 결제 단건조회 API를 호출하여 결제 결과를 확인하고,
-                    // 결제 결과를 처리하는 로직을 작성합니다.
-                    console.log(response);
-                    console.log("전체 response:", response);
-                    console.log("success:", response.success);
-                    console.log("imp_uid:", response.imp_uid);
-                    console.log("status:", response.status);
-                    console.log("paid_amount:", response.paid_amount);
                     if (response.imp_uid) {
-                        console.log("포트원 번호: " + response.imp_uid);
-                        // 우리쪽 db에 결제정보 저장
-                        // 페이지 이동 필요하면 페이지 이동 (메인 or 마이)
-                        // 결제 성공 후 서버 검증
-                        console.log("imp_uid:", response.imp_uid);
                         self.fnVerifyPayment(response);
                     } else {
-                        console.log("에러내용: " + response.error_msg);
-                        // self.isPaying = false;
                         alert("결제가 취소되었습니다");
                     }
                 },
             );
         },
-
         fnVerifyPayment(response) {
             let self = this;
-            console.log("서버로 보내는 imp_uid:", response.imp_uid);
-            console.log("서버로 보내는 merchant_uid:", response.merchant_uid);
             $.ajax({
                 url: "http://localhost:8080/verifyPayment3.dox",
                 type: "POST",
                 data: {
-                    userId: window.SESSION_ID,     // 로그인 아이디
-                    imp_uid: response.imp_uid,           // 결제 고유 값(중복)
+                    userId: window.SESSION_ID,     
+                    imp_uid: response.imp_uid,           
                     merchant_uid: response.merchant_uid,
                     amount: self.myReservation1.deposit,
                     type: "RES"
                 },
                 success: function(res) {
-                    console.log(res);
                     if (res.result == "success") {
-                        console.log("포트원 번호: " + res.impUid);
-                        console.log("포트원 번호: " + res.merchantUid);
-                        // self.isModalOpen = false; 모달 끄기
-                        // location.href = "/adminPayFinish.do?payNo=" + res.pay_no + "&type=PASS";
-                        //예약이면 &type=RES 등록이면 &type=REG
                         self.fnPaymentFinal2(res);
                     } else {
-                        console.log("에러내용: " + res.error_msg);
-                        self.isPaying = false;
                         alert("결제 검증 실패");
                     }
                 }, error: function(xhr, status, err) {
-                    console.log("ERROR:", xhr.responseText);
-                    console.log("STATUS:", status);
-                    console.log("ERR:", err);
-                    self.isPaying = false;
                     alert("서버 통신 오류");
-                    console.log(xhr);
                 }
             });
         },
         fnInquiryAboutProduct() {
-
             let loginId = window.SESSION_ID;
-
             if (!loginId || loginId === "") {
                 alert("로그인 해주세요!");
                 return;
@@ -796,31 +656,22 @@ const app = Vue.createApp({
                 success: function(data) {
                     if (data.result == 'success') {
                         alert('문의가 등록되었습니다!');
-
                         self.productPage = 'list';
-
                     } else {
                         alert("문의 등록 실패! 서버 오류입니다");
                     }
-                    //payAmount='';
                 }
             });
         },
-        //나의 문의내역 보러가기
         goMyInquiryPage() {
-
             let loginId = window.SESSION_ID;
-
             if (!loginId || loginId === "") {
                 alert("로그인 해주세요!");
                 return;
             }
-            //페이지 변경
             this.productPage = 'myRealInquiryList';
             let self = this;
-            let param = {
-                userId: window.SESSION_ID
-            };
+            let param = { userId: window.SESSION_ID };
             $.ajax({
                 url: "/getMyInquiryList.dox",
                 dataType: "json",
@@ -835,15 +686,11 @@ const app = Vue.createApp({
                 }
             });
         },
-        //특정 문의를 클릭하면 실행되는거// 문의내용 상세보기로 간다
         fnInquiryAnswerDetails(inquiry) {
             this.myInquiry1 = { ...inquiry };
-            this.productPage = 'inquiry1Details'; //문의내용상세보기
-
+            this.productPage = 'inquiry1Details'; 
             let self = this;
-            let param = {
-                inquiryNo: self.myInquiry1.inquiryNo
-            };
+            let param = { inquiryNo: self.myInquiry1.inquiryNo };
             $.ajax({
                 url: "/getInquiry1Answer.dox",
                 dataType: "json",
@@ -864,13 +711,15 @@ const app = Vue.createApp({
             this.inquiry.contents = '';
             this.productPage = 'inquiry';
         }
-    }, // methods
+    }, 
     mounted() {
         let self = this;
         self.fnGetTagAndProductList();
     }
 });
 
+// 💡 요청하신 방식대로 변수화된 객체를 각각 컴포넌트로 등록합니다.
 app.component('product-list-component', productListComponent);
+app.component('product-detail-component', productDetailComponent);
 
 app.mount('#app');
