@@ -1,0 +1,194 @@
+/* ==========================================================================
+   [reservation-detail-template] 단건 예약 상세 및 최종 결제 화면 전용 스타일 세트
+   ========================================================================== */
+
+/* 1. 결제/예약 외부 컨테이너 공통 및 배경 정렬 (원본 선언 순서 유지 결합) */
+.payment-container {
+	padding: 50px;
+	max-width: 800px;
+	margin: 0 auto;
+	line-height: 2;
+}
+
+.payment-container h2 {
+	font-size: 32px;
+	margin-bottom: 40px;
+}
+
+.payment-btn-group {
+	display: flex;
+	justify-content: center;
+	gap: 20px;
+}
+
+.payment-container {
+	padding: 50px 20px;
+	display: flex;
+	justify-content: center;
+	background-color: #f9f9f9;
+}
+
+.payment-container {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	padding: 60px 20px;
+	background-color: #fffafb; /* 연한 핑크빛 배경 */
+	min-height: 50vh;
+}
+
+/* 2. 🎟️ 티켓 카드 디자인 본체 및 마우스 호버 효과 */
+.reservation-ticket {
+	width: 100%;
+	max-width: 700px;
+	background: #fff;
+	border-radius: 15px;
+	position: relative;
+	box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+	transition: transform 0.3s ease, box-shadow 0.3s ease;
+	overflow: hidden;
+	border: 1px solid #eee;
+}
+
+.reservation-ticket:hover {
+	transform: translateY(-10px); /* 위로 둥실 떠오르는 애니메이션 */
+	box-shadow: 0 20px 40px rgba(255, 127, 159, 0.15);
+}
+
+/* 3. 티켓 구조별 레이아웃 구역 분할 */
+.ticket-header {
+	background-color: #ff7f9f;
+	padding: 12px 25px;
+	display: flex;
+	justify-content: space-between;
+	color: #fff;
+	font-size: 0.8rem;
+	letter-spacing: 2px;
+	font-weight: bold;
+}
+
+.ticket-body {
+	display: flex;
+	padding: 30px;
+	border-bottom: 2px dashed #eee; /* 티켓 절취선 데코 효과 */
+}
+
+.ticket-info {
+	flex: 2;
+	border-right: 2px dashed #eee;
+	padding-right: 20px;
+}
+
+.ticket-side {
+	flex: 1;
+	padding-left: 20px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	text-align: center;
+}
+
+/* 4. 내부 텍스트 라벨 정보 행 스타일 */
+.info-row {
+	margin-bottom: 20px;
+}
+
+.info-row label {
+	display: block;
+	font-size: 0.85rem;
+	color: #999;
+	margin-bottom: 5px;
+}
+
+.info-row .value {
+	font-size: 1.1rem;
+	font-weight: 600;
+	color: #333;
+}
+
+/* 예약 상품명 텍스트 컬러 강조 */
+.product-name .value {
+	color: #ff7f9f;
+	font-size: 1.3rem;
+}
+
+/* 사용 일시 정보 및 내부 시간 배지 태그 */
+.date-time {
+	color: #333;
+}
+
+.time-tag {
+	background: #fff0f3;
+	color: #ff7f9f;
+	padding: 2px 8px;
+	border-radius: 4px;
+	font-size: 0.9rem;
+}
+
+/* 5. 우측 사이드 금액 및 필수 동의 안내 구역 */
+.amount-label {
+	font-size: 0.8rem;
+	color: #999;
+}
+
+.amount-value {
+	font-size: 1.5rem;
+	font-weight: 800;
+	color: #333;
+	margin: 10px 0;
+}
+
+.agreement-text {
+	font-size: 0.75rem;
+	color: #bbb;
+	margin-bottom: 15px;
+}
+
+/* 우측 전용 썸네일 이미지 크기 */
+.ticket-side-img {
+	height: 200px;
+	width: 200px;
+	object-fit: cover;
+	border-radius: 8px;
+	border: 1px solid #f0f0f0;
+	margin-bottom: 10px;
+}
+
+/* 6. 하단 제어 버튼 그룹 */
+.payment-btn-group {
+	padding: 25px;
+	display: flex;
+	gap: 15px;
+}
+
+.btn-final-reserve {
+	flex: 2;
+	background: #ff7f9f;
+	color: white;
+	border: none;
+	padding: 15px;
+	border-radius: 8px;
+	font-weight: bold;
+	cursor: pointer;
+	transition: 0.3s;
+}
+
+.btn-final-reserve:disabled {
+	background-color: #ccc;
+	color: #fff;
+	cursor: not-allowed;
+}
+
+.btn-final-reserve:not(:disabled):hover {
+	background: #ff5c85;
+}
+
+.btn-cancel-pay {
+	flex: 1;
+	background: #fff;
+	color: #999;
+	border: 1px solid #ddd;
+	padding: 15px;
+	border-radius: 8px;
+	cursor: pointer;
+}

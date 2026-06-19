@@ -1,4 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
+<link rel="stylesheet" href="${pageContext.request.contextPath}/css/company-css/product-reservation-payment-template.css">
+<link rel="stylesheet" href="${pageContext.request.contextPath}/css/company-css/my-reservation-list-template.css">
+<link rel="stylesheet" href="${pageContext.request.contextPath}/css/company-css/reservation-detail-template.css">
 
 <script type="text/x-template" id="product-reservation-payment-template">
     <div class="payment-container">

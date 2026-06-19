@@ -1,4 +1,5 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
+<link rel="stylesheet" href="${pageContext.request.contextPath}/css/company-css/productListTemplate.css">
 
 <script type="text/x-template" id="product-list-template">
     <div>
