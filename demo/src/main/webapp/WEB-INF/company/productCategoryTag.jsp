@@ -47,10 +47,10 @@
                         <!-- 3️⃣ 상품 문의하기 화면 컴포넌트화 -->
                         <div v-if="currentMenu === 'main' && productPage === 'inquiry'">
                             <product-inquiry-write-component 
-                                :product="product1"
-                                :session-id="'${sessionScope.sessionId}'"
+                                :product="product1" 
+                                :session-id="userid"
                                 @back="productPage = 'detail'"
-                                @submit="onInquirySubmit" />
+                                @success="productPage = 'list'" />
                         </div>
 
                         <div v-if="currentMenu === 'main' && productPage === 'payment'">
@@ -82,7 +82,6 @@
                         <!-- 7️⃣ 나의 문의 내역 목록 화면 컴포넌트화 -->
                         <div v-if="currentMenu === 'main' && productPage === 'myRealInquiryList'">
                             <my-inquiry-list-component 
-                                :inquiry-list="myInquiryList"
                                 @back="productPage = 'list'"
                                 @go-detail="fnInquiryAnswerDetails" />
                         </div>

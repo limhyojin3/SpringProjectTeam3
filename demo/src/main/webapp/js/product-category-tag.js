@@ -2,12 +2,7 @@ const app = Vue.createApp({
     data() {
         return {
 			productTag: [],
-            myInquiryList: [],
             myInquiry1: {},
-            inquiry: {
-                title: '',
-                contents: ''
-            },
             userid: window.SESSION_ID,
             flag: false,
             payAmount: '',
@@ -614,81 +609,14 @@ const app = Vue.createApp({
                 }
             });
         },
-        fnInquiryAboutProduct() {
-            let loginId = window.SESSION_ID;
-            if (!loginId || loginId === "") {
-                alert("로그인 해주세요!");
-                return;
-            }
-            let self = this;
-            let param = {
-                userId: window.SESSION_ID,
-                productNo: self.product1.id,
-                companyNo: self.product1.companyNo,
-                inquiryTitle: self.inquiry.title,
-                inquiryContents: self.inquiry.contents
-            };
-            $.ajax({
-                url: "/addInquiryProduct.dox",
-                dataType: "json",
-                type: "POST",
-                data: param,
-                success: function(data) {
-                    if (data.result == 'success') {
-                        alert('문의가 등록되었습니다!');
-                        self.productPage = 'list';
-                    } else {
-                        alert("문의 등록 실패! 서버 오류입니다");
-                    }
-                }
-            });
-        },
         goMyInquiryPage() {
-            let loginId = window.SESSION_ID;
-            if (!loginId || loginId === "") {
-                alert("로그인 해주세요!");
-                return;
-            }
             this.productPage = 'myRealInquiryList';
-            let self = this;
-            let param = { userId: window.SESSION_ID };
-            $.ajax({
-                url: "/getMyInquiryList.dox",
-                dataType: "json",
-                type: "POST",
-                data: param,
-                success: function(data) {
-                    if (data.result == 'success') {
-                        self.myInquiryList = data.list;
-                    } else {
-                        alert("서버오류!");
-                    }
-                }
-            });
         },
         fnInquiryAnswerDetails(inquiry) {
-            this.myInquiry1 = { ...inquiry };
+            this.myInquiry1 = inquiry;
             this.productPage = 'inquiry1Details'; 
-            let self = this;
-            let param = { inquiryNo: self.myInquiry1.inquiryNo };
-            $.ajax({
-                url: "/getInquiry1Answer.dox",
-                dataType: "json",
-                type: "POST",
-                data: param,
-                success: function(data) {
-                    if (data.result === "success") {
-                        self.myInquiry1.answerContents = data.info.answerContents;
-                        self.myInquiry1.ansCompany = data.info.userId;
-                    } else {
-                        alert("서버 오류!");
-                    }
-                }
-            });
         },
         goInquiry() {
-            this.inquiry.title = '';
-            this.inquiry.contents = '';
             this.productPage = 'inquiry';
         },
 		onInquirySubmit(payload) {

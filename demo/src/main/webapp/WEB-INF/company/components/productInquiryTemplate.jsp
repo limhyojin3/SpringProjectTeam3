@@ -1,6 +1,5 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 
-<!-- 1️⃣ [문의 작성] 화면 템플릿 -->
 <script type="text/x-template" id="product-inquiry-write-template">
     <div class="payment-container">
         <div class="reservation-ticket">
@@ -58,7 +57,6 @@
     </div>
 </script>
 
-<!-- 2️⃣ [나의 문의 목록] 화면 템플릿 -->
 <script type="text/x-template" id="my-inquiry-list-template">
     <div class="my-real-inquiry-container">
         <div class="inquiry-header-bar">
@@ -88,7 +86,6 @@
     </div>
 </script>
 
-<!-- 3️⃣ [문의 상세 및 답변 확인] 화면 템플릿 -->
 <script type="text/x-template" id="inquiry-detail-template">
     <div class="inquiry-detail-container">
         <div class="inquiry-detail-header">
@@ -97,34 +94,34 @@
         </div>
 
         <div class="inquiry-product-card">
-            <img :src="inquiry.imgUrl" alt="문의 상품 이미지">
+            <img :src="localInquiry.imgUrl" alt="문의 상품 이미지">
             <div>
                 <div class="inquiry-card-label">문의 상품</div>
-                <div class="inquiry-card-name">{{ inquiry.productName }}</div>
+                <div class="inquiry-card-name">{{ localInquiry.productName }}</div>
             </div>
         </div>
 
         <div class="inquiry-content-box-wrapper">
             <div class="inquiry-box-header">
                 <span class="inquiry-box-label">나의 문의</span>
-                <span class="inquiry-box-number">No. {{ inquiry.inquiryNo }}</span>
+                <span class="inquiry-box-number">No. {{ localInquiry.inquiryNo }}</span>
             </div>
             <div class="inquiry-box-body">
-                <h3 class="inquiry-body-title">Q. {{ inquiry.inquiryTitle }}</h3>
-                <div class="inquiry-body-text">{{ inquiry.inquiryContents }}</div>
+                <h3 class="inquiry-body-title">Q. {{ localInquiry.inquiryTitle }}</h3>
+                <div class="inquiry-body-text">{{ localInquiry.inquiryContents }}</div>
             </div>
         </div>
 
-        <div v-if="inquiry.inquiryAns === '1'" class="answer-box-wrapper">
+        <div v-if="localInquiry.inquiryAns === '1'" class="answer-box-wrapper">
             <div class="answer-box-header">
                 <span class="answer-prefix">A.</span> 업체 답변
             </div>
             <div class="answer-box-body">
                 <div class="answer-body-text">
-                    {{ inquiry.answerContents || '답변 내용을 불러오는 중입니다.' }}
+                    {{ localInquiry.answerContents || '답변 내용을 불러오는 중입니다.' }}
                 </div>
                 <div class="answer-body-meta">
-                    답변자: {{ inquiry.ansCompany || '관리자' }}
+                    답변자: {{ localInquiry.ansCompany || '관리자' }}
                 </div>
             </div>
         </div>
