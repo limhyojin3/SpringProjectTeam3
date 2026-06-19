@@ -40,8 +40,9 @@ public class MemberService {
 	            resultMap.put("message", "아이디가 존재하지 않습니다.");
 	            return resultMap;
 	        }
-	        // 2-1. 계정 상태 체크 (추가!)
-	        if("WITHDRAWN".equals(member.getStatus())) { // 탈퇴 상태값에 맞춰 수정하세요
+	        
+	        // 2-1. 계정 상태 체크
+	        if("WITHDRAWN".equals(member.getStatus())) { 
 	            resultMap.put("loginResult", false);
 	            resultMap.put("message", "탈퇴 처리된 계정입니다.");
 	            return resultMap;
@@ -50,73 +51,76 @@ public class MemberService {
 	            resultMap.put("message", "이용이 정지된 계정입니다.");
 	            return resultMap;
 	        }
-		     // 3. role 체크 (비밀번호 비교 전에!)
-		    String tab = (String) map.get("tab");
-		    if(tab.equals("user")) {
-		        if(!member.getRole().equals("USER")) {
-		          resultMap.put("loginResult", false);
-		          if(member.getRole().equals("ADMIN")) {
-		              resultMap.put("message", "관리자 전용 페이지에서 로그인해주세요.");
-		          } else {
-		              resultMap.put("message", "업체 로그인을 이용해주세요.");
-		          }
-		          return resultMap;
-		        }
-		    } else if(tab.equals("company")) {
-		        if(!member.getRole().equals("PARTNER") && !member.getRole().equals("NPARTNER")) {
-		           resultMap.put("loginResult", false);
-		           resultMap.put("message", "일반 로그인을 이용해주세요.");
-		           return resultMap;
-		        }
-		    }
 	        
-	        // 4. 비밀번호 비교
-		    if(passwordEncoder.matches((String)map.get("password"), member.getPassword())) { // 암호화
+	        // 3. role 체크 (비밀번호 비교 전에!)
+	        String tab = (String) map.get("tab");
+	        if(tab.equals("user")) {
+	            if(!member.getRole().equals("USER")) {
+	                resultMap.put("loginResult", false);
+	                if(member.getRole().equals("ADMIN")) {
+	                    resultMap.put("message", "관리자 전용 페이지에서 로그인해주세요.");
+	                } else {
+	                    resultMap.put("message", "업체 로그인을 이용해주세요.");
+	                }
+	                return resultMap;
+	            }
+	        } else if(tab.equals("company")) {
+	            if(!member.getRole().equals("PARTNER") && !member.getRole().equals("NPARTNER")) {
+	                resultMap.put("loginResult", false);
+	                resultMap.put("message", "일반 로그인을 이용해주세요.");
+	                return resultMap;
+	            }
+	        } else if(tab.equals("admin")) { 
+	            if(!member.getRole().equals("ADMIN")) {
+	                resultMap.put("loginResult", false);
+	                resultMap.put("message", "관리자 권한이 없는 계정입니다.");
+	                return resultMap;
+	            }
+	        }
+	        
+	        // 4. 비밀번호 비교 (중복되던 이중 구조 및 변수 선언 깔끔하게 통합)
+	        if(passwordEncoder.matches((String)map.get("password"), member.getPassword())) { 
 	            resultMap.put("loginResult", true);
 	            
-	         // tab은 위에서 이미 선언했으니까 그냥 사용 가능합니다.
-	         String displayName= ""; // 화면에 표시할 이름을 담을 변수
-	         if(tab.equals("company")) {
-//	        	System.out.println("DB에서 가져온 Member ID: " + member.getUserId()); // DB 객체 값
-	        	map.put("userId", member.getUserId());
-//	        	System.out.println(map.get("userId"));
-	        	displayName = memberMapper.selectCompany(map);
-//	        	System.out.println("조회된 업체명: " + displayName);
-	            resultMap.put("message", displayName + "님 환영합니다.");
-	    
-	         } else {
-	        	displayName = member.getName();
-	            resultMap.put("message", displayName + "님 환영합니다.");
-	            
-	          }
-	          
-	         // url 분기
-	         if(member.getRole().equals("ADMIN")) { // 관리자 role
-	            resultMap.put("url", "/admin/main.do"); 
-	         } else if(member.getRole().equals("NPARTNER")) { // 업체롤 role
-	            resultMap.put("url", "/company10.do"); 
-	         } else {
+	            String displayName = ""; 
+	            if(tab.equals("company")) {
+	                map.put("userId", member.getUserId());
+	                displayName = memberMapper.selectCompany(map);
+	                resultMap.put("message", displayName + "님 환영합니다.");
+	            } else {
+	                displayName = member.getName();
+	                resultMap.put("message", displayName + "님 환영합니다.");
+	            }
+	              
+	            // url 분기
+	            if(member.getRole().equals("ADMIN")) { 
+	                resultMap.put("url", "/admin/main.do"); 
+	            } else if(member.getRole().equals("NPARTNER")) { 
+	                resultMap.put("url", "/company10.do"); 
+	            } else {
 	                resultMap.put("url", "/merryViewHome.do");
-	         }	            
+	            }	            
+	            
+	            // 세션 저장
 	            session.setAttribute("sessionId", member.getUserId());
 	            session.setAttribute("sessionName", displayName);
 	            session.setAttribute("sessionRole", member.getRole());
 	            
-	            // ✅ 결혼 기념일 기프트콘 체크 (일반 유저만)
+	            // 결혼 기념일 기프트콘 체크 (일반 유저만)
 	            if (member.getRole().equals("USER")) {
 	                giveAnniversaryGiftcon(member.getUserId());
 	            }
-	            
-	         }else {
+	        } else {
 	            resultMap.put("loginResult", false);
-	            resultMap.put("message", "비밀번호가 일치하지 않습니다."); // *메세지 부분은 일단 하드코딩 했지만 공용 메세지에 추가 후 변경 예정
+	            resultMap.put("message", "비밀번호가 일치하지 않습니다."); 
 	        }
 	        
 	    } catch(Exception e) {
 	        e.printStackTrace();
 	        resultMap.put("loginResult", false);
-	        resultMap.put("message", "로그인 중 오류가 발생했습니다."); // *공용 메세지 추가 후 변경 예정
+	        resultMap.put("message", "로그인 중 오류가 발생했습니다."); 
 	    }
+	    
 	    return resultMap;
 	}
 	//
