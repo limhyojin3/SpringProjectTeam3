@@ -1,5 +1,8 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
-<link rel="stylesheet" href="${pageContext.request.contextPath}/css/company-css/productTemplate.css">
+<link rel="stylesheet" href="${pageContext.request.contextPath}/css/company-css/productManagementList.css">
+<link rel="stylesheet" href="${pageContext.request.contextPath}/css/company-css/productManagementFormBase.css">
+<link rel="stylesheet" href="${pageContext.request.contextPath}/css/company-css/productManagementFormMedia.css">
+<link rel="stylesheet" href="${pageContext.request.contextPath}/css/company-css/productManagementEditForm.css">
 
     <template id="product-section-template">
         <div v-if="productPage === 'list'">
