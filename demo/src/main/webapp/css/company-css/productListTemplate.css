@@ -17,51 +17,141 @@
 }
 
 /* ==========================================================================
-   2. 카테고리 & 태그 필터 검색 영역
+   2. 카테고리 & 태그 필터 검색 영역 (대/중/소 구조)
    ========================================================================== */
 .filter-section {
 	background: #fff;
-	padding: 20px;
-	border-radius: 10px;
+	padding: 24px;
+	border-radius: 12px;
 	border: 1px solid #ff7f9f;
 	margin-bottom: 30px;
+	display: flex;
+	flex-direction: column;
+	gap: 20px;
 }
 
-.filter-section h2,
-.filter-section h4 {
-	margin-top: 0;
-	color: #333;
+/* 대분류 대형 상단 탭 스타일 */
+.large-category-container {
+	display: flex;
+	border-bottom: 2px solid #ffe0e6;
+	padding-bottom: 10px;
+	gap: 15px;
 }
 
-.tag-filter {
-	margin-top: 15px;
-	padding-top: 15px;
-	border-top: 1px dashed #ddd;
+.large-tab-btn {
+	background: #fdfdfd;
+	border: 1px solid #ffe0e6;
+	padding: 10px 24px;
+	font-size: 1.05rem;
+	font-weight: 700;
+	color: #777;
+	border-radius: 8px 8px 0 0;
+	cursor: pointer;
+	transition: all 0.2s ease-in-out;
+}
+
+.large-tab-btn:hover {
+	color: #ff7f9f;
+	background: #fff0f3;
+}
+
+.large-tab-btn.active {
+	background: #ff7f9f;
+	color: #fff;
+	border-color: #ff7f9f;
+	box-shadow: 0 4px 10px rgba(255, 127, 159, 0.25);
+}
+
+/* 중분류 및 소분류 타이틀 */
+.filter-section h3 {
+	font-size: 1.1rem;
+	font-weight: 700;
+	color: #444;
+	margin: 0 0 12px 0;
+}
+
+/* 칩 정렬 플렉스박스 */
+.chips-flex-box {
 	display: flex;
 	flex-wrap: wrap;
 	gap: 10px;
 }
 
-/* 카테고리 태그 헤더 보정 */
-.tag-filter h4 {
-	width: 100%;
+/* 체크박스 기본 원형 UI 숨김 */
+.custom-hidden-input {
+	display: none !important;
 }
 
-.tag-filter label,
-.filter-section label {
+/* 버튼형 토글 칩 라벨 디자인 */
+.chip-toggle-label {
 	cursor: pointer;
-	background: #fff0f3;
-	padding: 5px 12px;
-	border-radius: 20px;
+	background: #fff;
+	padding: 7px 16px;
+	border-radius: 25px;
 	font-size: 0.9rem;
 	color: #d6336c;
 	border: 1px solid #ffe0e6;
-	transition: 0.2s;
+	transition: all 0.2s ease;
+	user-select: none;
 }
 
-.tag-filter label:hover {
+.chip-toggle-label:hover {
+	background: #fff0f3;
+	border-color: #ff7f9f;
+}
+
+/* 활성화(선택 완료) 상태 스타일 */
+.chip-toggle-label.active {
 	background: #ff7f9f;
-	color: white;
+	color: #ffffff;
+	border-color: #ff7f9f;
+	font-weight: bold;
+}
+
+/* 💡 신규 추가: 쿠팡 스타일 태그 2개 초과 선택 시 미선택 단추 잠금 비활성화 디자인 */
+.chip-toggle-label.disabled {
+	opacity: 0.4;                     /* 불투명도를 낮춰서 잠긴 느낌 부여 */
+	cursor: not-allowed !important;   /* 마우스 올릴 때 금지 마크 표시 */
+	background: #f8f9fa !important;   /* 회색 톤 배경 처리 */
+	border-color: #e9ecef !important; /* 선 테두리 무력화 */
+	color: #adb5bd !important;        /* 글자색 흐리게 */
+	pointer-events: none;             /* HTML단 클릭 이벤트 강제 물리 차단 */
+}
+
+/* 결혼 분위기 소분류 박스 */
+.tag-filter-container {
+	border-top: 1px dashed #ffe0e6;
+	padding-top: 20px;
+	display: flex;
+	flex-direction: column;
+	gap: 15px;
+}
+
+.sub-tag-group-box {
+	background: #fffbfb;
+	padding: 14px;
+	border-radius: 8px;
+	border: 1px solid #fff0f2;
+}
+
+.sub-group-title {
+	font-size: 0.9rem;
+	font-weight: bold;
+	color: #888;
+	margin: 0 0 8px 4px;
+}
+
+/* 태그 전용 칩 보정 */
+.tag-specific-chip {
+	background: #fff;
+	color: #e64980;
+	border-color: #ffd8a8;
+}
+
+.tag-specific-chip.active {
+	background: #e64980;
+	color: #fff;
+	border-color: #e64980;
 }
 
 /* ==========================================================================
@@ -69,7 +159,7 @@
    ========================================================================== */
 .product-item {
 	display: flex;
-	align-items: flex-start; /* 상단 정렬 */
+	align-items: flex-start;
 	gap: 20px;
 	background: white;
 	padding: 20px;
@@ -78,7 +168,7 @@
 	border: 1px solid #eee;
 	transition: all 0.3s ease;
 	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-	cursor: pointer; /* 마우스 포인터 추가 커스텀 */
+	cursor: pointer;
 }
 
 .product-item:hover {
@@ -87,10 +177,9 @@
 	border-color: #ff7f9f;
 }
 
-/* 상품 썸네일 이미지 박스 */
 .product-img-box {
 	box-sizing: border-box;
-	flex-shrink: 0; /* 이미지 크기 고정 */
+	flex-shrink: 0;
 	height: 140px;
 	width: 140px;
 	border-radius: 10px;
@@ -101,10 +190,9 @@
 .product-img-box img {
 	height: 100%;
 	width: 100%;
-	object-fit: cover; /* 이미지 비율 유지 */
+	object-fit: cover;
 }
 
-/* 텍스트 정보 영역 */
 .product-info {
 	flex: 1;
 	display: flex;
@@ -127,13 +215,12 @@
 }
 
 .product-info .product-price {
-	margin-top: auto; /* 하단 배치 */
+	margin-top: auto;
 	font-weight: bold;
 	color: #ff1493;
 	font-size: 1.1rem;
 }
 
-/* 하단 분위기 분기 스팬 태그 감싸는 랩퍼 */
 .product-tags-wrapper {
 	display: flex;
 	gap: 5px;
@@ -142,4 +229,7 @@
 .tag-span {
 	font-size: 11px;
 	color: #ff7f9f;
+	background: #fff0f3;
+	padding: 2px 6px;
+	border-radius: 4px;
 }

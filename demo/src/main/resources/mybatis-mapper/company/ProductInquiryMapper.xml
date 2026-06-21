@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.example.demo.company.mapper.ProductInquiryMapper">
+
+	<insert id="insertInquiryProduct" parameterType="map">
+		INSERT INTO inquiry_product(user_id, company_no, product_no, inquiry_title, inquiry_contents, inquiry_ans)
+		VALUES(null, #{userId}, #{companyNo}, #{productNo}, #{inquiryTitle}, #{inquiryContents}, 0)
+	</insert>
+	
+	<select id="selectInquiryProductList" parameterType="map"
+		resultType="com.example.demo.company.model.ProductInquiry">
+		SELECT
+			ip.inquiry_no,
+			ip.user_id,
+			ip.product_no,
+			ip.inquiry_title,
+			ip.inquiry_contents,
+			p.product_name,
+			p.product_details,
+			p.img_url,
+			p.pro_type,
+			p.tag,
+			p.original_price,
+			p.deposit,
+			c.company_no,
+			c.com_name,
+			c.com_intro,
+			ip.inquiry_ans
+		FROM inquiry_product ip
+		LEFT JOIN product p ON ip.product_no = p.product_no
+		LEFT JOIN company c ON p.company_no = c.company_no
+		WHERE c.company_no = (
+			SELECT c1.company_no FROM company c1 WHERE c1.user_id = #{userId}
+		) 
+	</select>
+	
+	<insert id="insertProductInquiryAnswer" parameterType="map">
+		INSERT INTO inquiry_product_answer(inquiry_no, answer_contents, ans_user_id)
+		VALUES(null, #{inquiryNo}, #{answerContents}, #{ansUserId})
+	</insert>
+	
+	<update id="updateInquiryAnsStatus" parameterType="map">
+		UPDATE inquiry_product
+		SET inquiry_ans = 1
+		WHERE inquiry_no = #{inquiryNo}
+	</update>
+	
+	<select id="selectInquiryAnsYn" parameterType="map"
+		resultType="com.example.demo.company.model.ProductInquiry">
+		SELECT ip.inquiry_no, ip.inquiry_ans, ipa.answer_no, ipa.answer_contents, ipa.ans_user_id 
+		FROM inquiry_product ip
+		LEFT JOIN inquiry_product_answer ipa ON ip.inquiry_no = ipa.inquiry_no 
+		WHERE ip.inquiry_no = #{inquiryNo}
+	</select>
+
+	<update id="updateProductInquiryAnswer" parameterType="map">
+		UPDATE inquiry_product_answer
+		SET answer_contents = #{answerContents}, ans_user_id = #{ansUserId}
+		WHERE inquiry_no = #{inquiryNo}
+	</update>
+
+	<select id="selectMyInquiryList" parameterType="map"
+		resultType="com.example.demo.company.model.ProductInquiry">
+		SELECT
+			ip.inquiry_no,
+			p.product_no,
+			ip.inquiry_title,
+			ip.inquiry_contents,
+			ip.inquiry_ans,
+			p.product_name,
+			p.product_details,
+			p.original_price,
+			p.is_active,
+			p.img_url
+		FROM inquiry_product ip
+		LEFT JOIN product p ON ip.product_no = p.product_no
+		WHERE ip.user_id = #{userId}
+	</select>
+
+	<select id="selectInquiry1Answer" parameterType="map"
+		resultType="com.example.demo.company.model.ProductInquiry">
+		SELECT ip.inquiry_no, c.user_id, ipa.answer_contents 
+		FROM inquiry_product ip
+		LEFT JOIN company c ON ip.company_no = c.company_no
+		LEFT JOIN inquiry_product_answer ipa ON ip.inquiry_no = ipa.inquiry_no
+		WHERE ip.inquiry_no = #{inquiryNo}
+	</select>
+</mapper>
