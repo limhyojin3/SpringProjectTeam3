@@ -59,11 +59,14 @@ const app = createApp({
         goInquiry() {
             this.productPage = 'inquiry';
         },
-        onDetailReserve(date, time, content) {
-            this.selectedDate = date;
-            this.selectedTime = time;
-            this.res_content = content;
+        // 💡 실전 디버깅 완결: 자식 컴포넌트가 쏘아 올린 { date, time, content } 단일 포장 상자(객체)를 
+        // 안전하게 인자로 수신받아 부모창의 개별 반응성 변수들에 조각조각 완벽하게 해체 및 분배 대입 완료!
+        onDetailReserve(reserveData) {
+            this.selectedDate = reserveData.date;
+            this.selectedTime = reserveData.time;
+            this.res_content = reserveData.content; // 유저님이 작성하신 "ㅁㄴㄴㅁㅇ" 가 이 방으로 안전하게 정착합니다!
             this.productPage = 'payment';
+            window.scrollTo(0, 0); // 화면 상단으로 쾌적하게 스크롤 포커싱
         },
         onReservationSuccess() {
             this.productPage = 'resultOfReservation';
@@ -107,7 +110,7 @@ if (typeof myInquiryListComponent !== 'undefined') {
 }
 if (typeof inquiryDetailComponent !== 'undefined') {
     app.component('inquiry-detail-component', inquiryDetailComponent);
-}
+} 
 
 // Vue 3 앱 구동 시작
 app.mount('#app');
