@@ -1,0 +1,92 @@
+@charset "UTF-8";
+
+/* ==========================================================================
+   1. 공통 상단 액션 버튼
+   ========================================================================== */
+.btn-sub-action {
+	padding: 8px 15px;
+	cursor: pointer;
+	border: 1px solid #ccc;
+	background: #fff;
+	border-radius: 4px;
+}
+
+/* ==========================================================================
+   2. 상품 상세 페이지 기본 레이아웃 (좌/우 분할)
+   ========================================================================== */
+.detail-container {
+	display: flex;
+	gap: 30px;
+	padding: 20px;
+}
+
+/* 왼쪽 콘텐츠 영역 (이미지, 이름, 상세정보) */
+.detail-left {
+	flex: 7;
+	display: flex;
+	flex-direction: column;
+	gap: 20px;
+}
+
+.detail-main-img {
+	width: 100%;
+	height: 400px;
+	object-fit: cover;
+	border-radius: 10px;
+	border: 1px solid #ddd;
+}
+
+.detail-company-name {
+	font-size: 24px;
+	font-weight: bold;
+	padding: 15px;
+	border: 2px solid #333;
+	background: #fff;
+	display: inline-block;
+}
+
+/* 상품 설명 카드 (상세 옵션 안내) */
+.detail-description-card {
+	background: #ffe0e6;
+	/* 이미지의 핑크색 배경 부분 */
+	min-height: 300px;
+	padding: 30px;
+	border-radius: 10px;
+	border: 2px solid #ff7f9f;
+	font-size: 16px;
+	line-height: 1.8;
+}
+
+.detail-description-card h3 {
+	margin-top: 0;
+}
+
+/* 요청 사항 카드 및 입력창 (Textarea) */
+.detail-description-card2 {
+	background: #ffe0e6;
+	/* 이미지의 핑크색 배경 부분 */
+	min-height: 100px;
+	padding: 30px;
+	border-radius: 10px;
+	border: 2px solid #ff7f9f;
+	font-size: 16px;
+	line-height: 1.8;
+}
+
+.detail-description-card2 textarea {
+	min-width: 500px;
+	max-width: 500px;
+	min-height: 200px;
+	padding: 15px;
+	border: 1px solid #ff7f9f;
+	border-radius: 8px;
+	outline: none;
+}
+
+/* 오른쪽 사이드바 영역 (예약 제어 골격) */
+.detail-right {
+	flex: 3;
+	display: flex;
+	flex-direction: column;
+	gap: 15px;
+}

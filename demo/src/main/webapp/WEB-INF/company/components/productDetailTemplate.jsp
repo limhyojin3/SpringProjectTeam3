@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
-<link rel="stylesheet" href="${pageContext.request.contextPath}/css/company-css/productDetailTemplate.css">
+<link rel="stylesheet" href="${pageContext.request.contextPath}/css/company-css/productDetailLayout.css">
+<link rel="stylesheet" href="${pageContext.request.contextPath}/css/company-css/productReservation.css">
 
 <script type="text/x-template" id="product-detail-template">
     <div>
@@ -8,7 +9,7 @@
         <div class="detail-container">
             <div class="detail-left">
                 <img :src="product.thumbnail" class="detail-main-img">
-                <div class="detail-company-name">{{ product.company }}</div>
+                <div class="detail-company-name">{{ product.comName }}</div>
 
                 <div class="detail-description-card">
                     <h3>{{ product.name }}</h3>
