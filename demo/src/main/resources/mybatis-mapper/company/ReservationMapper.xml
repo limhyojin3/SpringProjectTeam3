@@ -79,8 +79,14 @@
 			p.original_price,
 			p.is_active,
 			p.img_url,
-			p.pro_type,
-			p.tag,
+			/* 💡 버그 척결 핵심: 존재하지 않아 에러를 내뿜던 유령 컬럼 p.pro_type 완벽 도려내기 차단 완료 */
+			/* 💡 연쇄 버그 방어: p.tag 역시 존재하지 않는 에러 유발선이므로, 안전하게 콤마로 묶어 전달하는 독립 서브쿼리 서랍으로 전면 교체 완료 */
+			(
+				SELECT GROUP_CONCAT(pt_all.tag SEPARATOR ',')
+				FROM product_tag_map ptm_all
+				INNER JOIN product_tag pt_all ON ptm_all.tag_id = pt_all.id
+				WHERE ptm_all.product_no = p.product_no
+			) AS tag,
 			p.deposit,
 			pr.amount,
 			pr.pay_status,
