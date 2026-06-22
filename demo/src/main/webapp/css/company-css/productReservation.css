@@ -1,0 +1,204 @@
+@charset "UTF-8";
+
+/* ==========================================================================
+   3. 예약 박스 및 달력 / 시간 선택 세트 (우측 사이드바 선명도 보강 에디션)
+   ========================================================================== */
+.reservation-box {
+	border: 1px solid #e5dbde; /* 💡 명도 보강: 흐릿하던 선을 확실하고 깔끔한 웜그레이선으로 교정 */
+	padding: 25px;
+	border-radius: 16px;
+	background: #ffffff;
+	box-shadow: 0 10px 30px rgba(0, 0, 0, 0.04); /* 깊이감이 느껴지는 은은한 임베드 입체 섀도우 */
+}
+
+.reservation-box-title {
+	font-weight: 800;
+	border-bottom: 2px solid #fff0f3;
+	padding-bottom: 14px;
+	font-size: 1.25rem;
+	color: #111111; /* 💡 완벽한 선명함 보장 */
+	letter-spacing: -0.5px;
+}
+
+/* 방문일자 달력 커스텀 */
+.calendar-placeholder.detail-view {
+	background: white;
+	flex-direction: column;
+	height: auto;
+	padding: 20px 10px;
+}
+
+.calendar-placeholder.detail-view label {
+	font-size: 14px;
+	margin-bottom: 12px;
+	color: #222222; /* 💡 폰트 명도 대비 최적화 */
+	align-self: center;
+	font-weight: 700; /* 조금 더 볼드하게 지휘 */
+}
+
+.calendar-placeholder.detail-view input[type="date"] {
+	padding: 12px;
+	border: 1px solid #dcd1d4; /* 💡 선명한 보더 라인 */
+	border-radius: 8px;
+	width: 90%;
+	outline: none;
+	font-size: 14px;
+	color: #111;
+	transition: all 0.2s;
+	text-align: center;
+	font-weight: bold;
+}
+
+.calendar-placeholder.detail-view input[type="date"]:focus {
+	border-color: #ff4da6;
+	box-shadow: 0 0 0 3px rgba(255, 77, 166, 0.15);
+}
+
+/* 시간 그리드 컨테이너 */
+.booking-time-container {
+	margin-top: 20px;
+	padding: 20px 15px;
+	background-color: #faf6f7; /* 선명하게 구분되는 컴포넌트 배경 패널 */
+	border-radius: 12px;
+	border: 1px solid #eededf;
+}
+
+.section-title {
+	font-size: 1.05rem;
+	font-weight: 800;
+	margin-bottom: 20px;
+	color: #111111; /* 에스프레소 블랙 오버레이 */
+	line-height: 1.4;
+}
+
+.time-slot-group {
+	margin-bottom: 20px;
+}
+
+.time-slot-group:last-child {
+	margin-bottom: 0;
+}
+
+.time-ampm {
+	font-size: 0.95rem;
+	color: #333333; /* 💡 자막 흐릿함 해소 */
+	margin-bottom: 10px;
+	font-weight: 700;
+}
+
+/* 버튼들을 나열하는 그리드 */
+.time-slots {
+	display: grid;
+	grid-template-columns: repeat(auto-fill, minmax(95px, 1fr));
+	gap: 10px;
+}
+
+/* [기본 상태] 버튼 스타일 */
+.time-btn {
+	padding: 12px;
+	border-radius: 8px;
+	border: 1px solid #dcd3d5; /* 테두리 선명도 최적화 */
+	background-color: #ffffff;
+	font-size: 0.95rem;
+	font-weight: 600;
+	color: #444444;
+	cursor: pointer;
+	transition: all 0.2s ease-in-out;
+}
+
+.time-btn:not(:disabled):not(.active):hover {
+	background-color: #fff0f2;
+	border-color: #ffb6c1;
+	color: #ff4da6;
+}
+
+/* [예약 불가 상태] */
+.time-btn.booked:disabled {
+	background-color: #f2edeef2;
+	color: #b5abab;
+	border-color: #e5dbde;
+	cursor: not-allowed;
+	text-decoration: line-through;
+}
+
+/* [내가 선택한 상태] */
+.time-btn.active {
+	background-color: #ff4da6;
+	color: #ffffff;
+	border-color: #ff4da6;
+	font-weight: 700;
+	box-shadow: 0 4px 10px rgba(255, 77, 166, 0.3);
+}
+
+.time-btn.active:hover {
+	background-color: #ff1493;
+	border-color: #ff1493;
+}
+
+/* ==========================================================================
+   4. 견적 정보 및 하단 액션 버튼 그룹 (하이엔드 리디자인 편대)
+   ========================================================================== */
+.price-info-box {
+	padding: 18px;
+	border: 1px solid #e5dbde; /* 💡 흐릿함 완벽 추방 */
+	border-radius: 12px;
+	background: linear-gradient(135deg, #fdf8fa 0%, #ffffff 100%);
+	font-weight: bold;
+	box-shadow: 0 4px 15px rgba(0, 0, 0, 0.02);
+}
+
+.price-row {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	font-size: 15px;
+	color: #222; /* 라벨 선명도 부스팅 */
+}
+
+.price-row span:last-child {
+	font-size: 18px;
+	color: #111;
+	font-weight: 800;
+}
+
+/* 💡 대수술 메인 [예약하기] 버튼: 하이엔드 프리미엄 로즈 그라데이션 및 푹신한 리프트 입체 쿠션 섀도우 수혈 */
+.btn-reserve {
+	background: linear-gradient(135deg, #ff66b2 0%, #ff1493 100%);
+	color: #ffffff;
+	padding: 16px;
+	border: none;
+	border-radius: 12px;
+	font-weight: 800;
+	font-size: 17px;
+	cursor: pointer;
+	transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+	box-shadow: 0 5px 15px rgba(255, 20, 147, 0.35); /* 웅장한 시그니처 광채 그림자 */
+	letter-spacing: 0.5px;
+}
+
+.btn-reserve:not(:disabled):hover {
+	background: linear-gradient(135deg, #ff4da6 0%, #d8006f 100%);
+	transform: translateY(-2px); /* 부드럽게 공중으로 1px 더 도약 */
+	box-shadow: 0 8px 22px rgba(255, 20, 147, 0.5);
+}
+
+/* 💡 대수술 서브 [상품 문의하기] 버튼: 둔탁함을 지우고 내부를 투명하게 날린 슬림 세련미 가득 아웃라인 고스트 스타일 파격 변신 */
+.btn-inquiry {
+	background: transparent !important; /* 💡 배경 투명화 처리 */
+	color: #ff4da6; /* 💡 텍스트 컬러 단독 부각 */
+	padding: 15px;
+	border: 2px solid #ff4da6; /* 💡 아웃라인 선조 장착 */
+	border-radius: 12px;
+	font-weight: 700;
+	font-size: 16px;
+	cursor: pointer;
+	transition: all 0.25s ease;
+	box-shadow: none; /* 무거운 그림자 제거 */
+}
+
+.btn-inquiry:hover {
+	background: #fff0f3 !important; /* 가벼운 틴트 핑크 반전 효과 */
+	color: #ff1493;
+	border-color: #ff1493;
+	transform: translateY(-1px);
+}

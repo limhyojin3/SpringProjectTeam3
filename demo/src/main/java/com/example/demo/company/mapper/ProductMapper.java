@@ -1,0 +1,41 @@
+package com.example.demo.company.mapper;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import org.apache.ibatis.annotations.Mapper;
+import com.example.demo.company.model.Product;
+
+@Mapper
+public interface ProductMapper {
+
+	// 1. 카테고리/태그 동적 다중 필터링 상품 리스트 조회
+	List<Product> selectProductList(HashMap<String, Object> map);
+
+	// 2. 상품 단건 상세 정보 조회
+	Product selectProduct(HashMap<String, Object> map);
+
+	// 3. 기등록 상품 정보 수정 업데이트
+	int updateProduct(Product product);
+
+	// 4. 신규 상품 최초 등록 인서트
+	int insertProduct(Product product);
+
+	// 5. 상품 정보 삭제
+	int deleteProduct(HashMap<String, Object> map);
+
+	// 6. 순수 태그 마스터 리스트 조회
+	List<String> selectTagList(HashMap<String, Object> map);
+
+	// 7. 특정 카테고리 상품 추출 (기본 호환용)
+	List<Product> selectProductListForTag(HashMap<String, Object> map);
+
+	// 8. 신규 고유 태그 데이터 추가
+	int insertUniqueNewTagsOnly(Map<String, Object> tagParamMap);
+
+	// 💡 9. 동적 트리를 구축하기 위한 실제 등록된 대/중분류 카테고리 추출 단자
+	List<HashMap<String, Object>> selectDistinctCategories();
+
+	// 💡 10. 동적 트리를 구축하기 위한 테이블의 전체 태그-중분류 사전 추출 단자
+	List<HashMap<String, Object>> selectAllTagsWithMedium();
+}

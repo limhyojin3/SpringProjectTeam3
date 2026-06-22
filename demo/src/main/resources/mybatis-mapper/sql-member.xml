@@ -44,11 +44,36 @@
 	    )
 	</insert>
 	
+	<!-- 탈퇴 회원 재활성화 - MEMBER 테이블 UPDATE -->
+	<update id="reactivateMember" parameterType="hashmap">
+	    UPDATE MEMBER
+	    SET PASSWORD = #{password},
+	        TEL = #{userTel},
+	        STATUS = 'ACTIVE',
+	        OUT_DATE = NULL,
+	        REG_DATE = NOW()
+	    WHERE USER_ID = #{userId}
+	</update>
+	
+	<!-- 탈퇴 회원 재활성화 - USER_DETAIL 테이블 UPDATE -->
+	<update id="reactivateUserDetail" parameterType="hashmap">
+	    UPDATE USER_DETAIL
+	    SET NAME = #{name},
+	        NICKNAME = #{userId},
+	        GENDER = #{gender},
+	        EMAIL = #{email},
+	        WEDDING_DATE = #{weddingDate,jdbcType=DATE},
+	        ANNIVERSARY_DATE = #{anniversaryDate,jdbcType=DATE},
+	        MARITAL_STATUS = #{maritalStatus}
+	    WHERE USER_ID = #{userId}
+	</update>
+	
 	<!-- member table에서 user id 중복체크 -->
 	<select id="selectUserId" parameterType="hashmap" resultType="int">
 	    SELECT COUNT(*) 
 	    FROM MEMBER 
 	    WHERE USER_ID = #{userId}
+	    AND STATUS != 'WITHDRAWN'
 	</select>
 	
 	<!--USER_DETAIL table에서 USER EMAIL 중복체크-->
@@ -56,6 +81,14 @@
 	    SELECT COUNT(*)
 	    FROM USER_DETAIL
 	    WHERE EMAIL = #{email}
+	</select>
+	
+	<!-- MEMBER table에서 전화번호 중복체크 -->
+	<select id="selectUserPhone" parameterType="hashmap" resultType="int">
+	    SELECT COUNT(*)
+	    FROM MEMBER
+	    WHERE REPLACE(TEL, '-', '') = #{tel}
+	    AND STATUS != 'WITHDRAWN'
 	</select>
 	
 	<!--내 정보 수정을 위한 유저 정보 조회-->
@@ -105,6 +138,14 @@
 	        OUT_DATE = NOW()
 	    WHERE USER_ID = #{userId}
 	</update>
+	
+	<!-- 탈퇴 후 재가입 방지 체크 -->
+	<select id="selectWithdrawnDate" parameterType="map" resultType="string">
+	    SELECT OUT_DATE
+	    FROM MEMBER
+	    WHERE USER_ID = #{userId}
+	    AND STATUS = 'WITHDRAWN'
+	</select>
 	
 	<!-- 카카오 ID로 회원 조회 -->
 	<select id="selectMemberByKakaoId" parameterType="String" resultType="com.example.demo.member.model.Member">

@@ -706,6 +706,16 @@ public class MemberController {
 	@RequestMapping(value = "/sendSms.dox", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
 	@ResponseBody
 	public String sendSms(@RequestParam HashMap<String, Object> map) throws Exception {
+		// ✅ 전화번호 중복체크 (회원가입 시에만 체크)
+	    if ("join".equals(map.get("type"))) {
+	        int phoneCount = memberService.checkPhoneDuplicate(map);
+	        if (phoneCount > 0) {
+	            HashMap<String, Object> resultMap = new HashMap<>();
+	            resultMap.put("result", "fail");
+	            resultMap.put("message", "이미 가입된 전화번호입니다.");
+	            return new Gson().toJson(resultMap);
+	        }
+	    }
 	    HashMap<String, Object> resultMap = smsService.sendSms(map);
 	    return new Gson().toJson(resultMap);
 	}

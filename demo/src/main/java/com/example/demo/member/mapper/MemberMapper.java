@@ -22,6 +22,8 @@ public interface MemberMapper {
 	int selectUserId(HashMap<String, Object> map);
 	// 이메일 중복 체크
 	int selectUserEmail(HashMap<String, Object> map);
+	// 전화번호 중복 체크
+	int selectUserPhone(HashMap<String, Object> map);
 	// 유저 상세 정보 조회 (내 정보 수정)
 	Member selectMemberInfo(String userId);
 	// 유저 내 정보 수정(멤버 테이블)
@@ -30,6 +32,12 @@ public interface MemberMapper {
 	public int updateUserDetail(HashMap<String, Object> map);
 	// 유저 탈퇴 (status 상태를 WITHDRAWN로 변경)
 	public int updateUserStatus(HashMap<String, Object> map);
+	// 탈퇴 날짜조회
+	String selectWithdrawnDate(HashMap<String, Object> map);
+	// 탈퇴 회원 재활성화
+	void reactivateMember(HashMap<String, Object> map);
+	// 탈퇴 회원 재활성화 - USER_DETAIL 테이블 UPDATE
+	void reactivateUserDetail(HashMap<String, Object> map);
 	// 유저 쿠폰 조회
 	List<HashMap<String, Object>> selectUserCouponList(Map<String, Object> param);
 	// 유저 쿠폰 개수

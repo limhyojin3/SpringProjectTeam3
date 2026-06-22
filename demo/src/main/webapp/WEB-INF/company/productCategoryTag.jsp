@@ -21,16 +21,14 @@
     <body>
         <jsp:include page="/WEB-INF/common/header.jsp" />
         <div id="app">
-            <!-- html 코드는 id가 app인 태그 안에서 작업 -->
-
             <div class="container1">
                 <main>
                     <main>
                         <div v-if="currentMenu === 'main' && productPage === 'list'">
-                            <!-- 💡 우리가 만든 상품 목록 컴포넌트를 조립합니다 -->
                             <product-list-component 
                                 :product-list="productList"
                                 :product-tag="productTag"
+                                @update-filter-list="fnLoadProductList"
                                 @go-detail="goDetailPage"
                                 @go-my-res="goMyResPage"
                                 @go-my-inquiry="goMyInquiryPage" />
@@ -44,7 +42,6 @@
                                 @reserve="onDetailReserve" />
                         </div>
 
-                        <!-- 3️⃣ 상품 문의하기 화면 컴포넌트화 -->
                         <div v-if="currentMenu === 'main' && productPage === 'inquiry'">
                             <product-inquiry-write-component 
                                 :product="product1" 
@@ -61,32 +58,28 @@
                                 :userid="userid"
                                 :res-content="res_content"
                                 @back="productPage = 'detail'"
-                                @save-reservation="fnSaveReservation(user)" />
+                                @success="onReservationSuccess" />
                         </div>
 
                         <div v-if="currentMenu === 'main' && productPage === 'resultOfReservation'">
                             <my-reservation-list-component
-                                :reservation-list="myReservationList"
-                                @back="fnBack()"
+                                @back="fnBack"
                                 @go-detail="fnGoDetail" />
                         </div>
 
                         <div v-if="currentMenu === 'main' && productPage === 'reservaionPaymentDetails'">
                             <reservation-detail-component
                                 :reservation="myReservation1"
-                                :button-name="fnButtonName"
                                 @back="productPage='resultOfReservation'"
-                                @pay-final="fnPaymentFinal" />
+                                @payment-success="onReservationSuccess" />
                         </div>
 
-                        <!-- 7️⃣ 나의 문의 내역 목록 화면 컴포넌트화 -->
                         <div v-if="currentMenu === 'main' && productPage === 'myRealInquiryList'">
                             <my-inquiry-list-component 
                                 @back="productPage = 'list'"
                                 @go-detail="fnInquiryAnswerDetails" />
                         </div>
 
-                        <!-- 8️⃣ 단건 문의 내역 상세 답변 확인 화면 컴포넌트화 -->
                         <div v-if="currentMenu === 'main' && productPage === 'inquiry1Details'">
                             <inquiry-detail-component 
                                 :inquiry="myInquiry1"
@@ -101,7 +94,7 @@
         <jsp:include page="/WEB-INF/common/footer.jsp" />
         </div>
     </body>
- 
+
     </html>
 
     <jsp:include page="/WEB-INF/company/components/productListTemplate.jsp" />

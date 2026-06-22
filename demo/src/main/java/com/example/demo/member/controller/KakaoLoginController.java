@@ -84,7 +84,7 @@ public class KakaoLoginController {
                 detailMap.put("email", email);  
                 memberMapper.insertKakaoMemberDetail(detailMap);
                 
-                memberService.giveCoupon(kakaoId, "WEDDING10");
+                memberService.giveCoupon(kakaoId, "WELCOME15");
             } else {
                 // 기존 회원이면 DB에서 닉네임 가져오기
                 String dbNickname = memberMapper.selectNicknameByUserId(kakaoId);

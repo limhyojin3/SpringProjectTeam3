@@ -1,0 +1,98 @@
+@charset "UTF-8";
+
+/* ==========================================================================
+   3-2. 상품 등록/수정 폼 이미지 미디어 박스 및 버튼 액션 제어
+   ========================================================================== */
+
+/* 이미지 영역 텍스트 설명 및 업로드 라벨 */
+.form-content-box .form-group>div:not(.image-editor-box):not(.image-status-label):not(.tag-grid-container):not(.form-info-box) {
+	margin-bottom: 15px;
+	font-weight: bold;
+	color: #444;
+}
+
+.form-content-box .form-group>label:not(.btn-file-select) {
+	background: #6a5acd;
+	color: white;
+	padding: 10px 25px;
+	cursor: pointer;
+	border-radius: 8px;
+	font-weight: 600;
+	display: inline-block;
+	transition: 0.3s;
+	box-shadow: 0 4px 10px rgba(106, 90, 205, 0.2);
+}
+
+.form-content-box .form-group>label:not(.btn-file-select):hover {
+	background: #5544bb;
+}
+
+/* 드롭존 스타일 이미지 에디터 점선 상자 */
+.image-editor-box {
+	background: linear-gradient(135deg, #ffe0e6 0%, #fff0f3 100%);
+	border: 2px dashed #ff7f9f;
+	border-radius: 8px;
+	padding: 40px;
+	text-align: center;
+	color: #ff7f9f;
+	font-weight: 600;
+	min-height: 200px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	cursor: pointer;
+	transition: all 0.3s ease;
+}
+
+.image-editor-box:hover {
+	background: linear-gradient(135deg, #ffd4e5 0%, #ffe8ef 100%);
+	border-color: #ff1493;
+}
+
+.image-editor-box img {
+	max-width: 500px;
+	max-height: 500px;
+	width: auto;
+	height: auto;
+	border-radius: 8px;
+}
+
+/* 하단 최종 제출/취소 버튼 그룹 */
+.form-button-group {
+	display: flex;
+	gap: 15px;
+	margin-top: 30px;
+	justify-content: flex-end;
+}
+
+.form-button-group button {
+	padding: 12px 30px;
+	border: none;
+	border-radius: 6px;
+	font-weight: 600;
+	cursor: pointer;
+	font-size: 14px;
+	transition: all 0.3s ease;
+}
+
+.btn-submit {
+	background: #ff7f9f;
+	color: white;
+}
+
+.btn-submit:hover {
+	background: #ff1493;
+	transform: translateY(-2px);
+	box-shadow: 0 4px 12px rgba(255, 124, 159, 0.3);
+}
+
+.btn-cancel {
+	background: #f0f0f0;
+	color: #666;
+	border: 1px solid #ddd;
+}
+
+.btn-cancel:hover {
+	background: #e8e8e8;
+	border-color: #999;
+}

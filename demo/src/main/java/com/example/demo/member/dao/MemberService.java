@@ -25,6 +25,7 @@ public class MemberService {
 	@Autowired
 	MemberMapper memberMapper;
 	
+	@Autowired
 	PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 	// *로그인 (일반,업체,관리자)*
 	public HashMap<String, Object> login(HashMap<String, Object> map, HttpSession session) {
@@ -54,7 +55,7 @@ public class MemberService {
 	        
 	        // 3. role 체크 (비밀번호 비교 전에!)
 	        String tab = (String) map.get("tab");
-	        if(tab.equals("user")) {
+	        if("user".equals(tab)) {
 	            if(!member.getRole().equals("USER")) {
 	                resultMap.put("loginResult", false);
 	                if(member.getRole().equals("ADMIN")) {
@@ -64,13 +65,17 @@ public class MemberService {
 	                }
 	                return resultMap;
 	            }
-	        } else if(tab.equals("company")) {
+	        } else if("company".equals(tab)) {
 	            if(!member.getRole().equals("PARTNER") && !member.getRole().equals("NPARTNER")) {
 	                resultMap.put("loginResult", false);
-	                resultMap.put("message", "일반 로그인을 이용해주세요.");
+	                if(member.getRole().equals("ADMIN")) {
+	                    resultMap.put("message", "관리자 전용 페이지에서 로그인해주세요.");
+	                } else {
+	                    resultMap.put("message", "일반 로그인을 이용해주세요.");
+	                }
 	                return resultMap;
 	            }
-	        } else if(tab.equals("admin")) { 
+	        } else if("admin".equals(tab)) { 
 	            if(!member.getRole().equals("ADMIN")) {
 	                resultMap.put("loginResult", false);
 	                resultMap.put("message", "관리자 권한이 없는 계정입니다.");
@@ -200,13 +205,37 @@ public class MemberService {
 	    if(map.get("anniversaryDate") != null && map.get("anniversaryDate").toString().isEmpty()) {
 	        map.put("anniversaryDate", null);
 	    }
+	    
+	    // 탈퇴 이력 조회 (7일 체크 + 재활성화 분기에 재활용)
+	    String withdrawnDate = memberMapper.selectWithdrawnDate(map);
+	    if (withdrawnDate != null) {
+	        LocalDate outDate = LocalDate.parse(withdrawnDate.substring(0, 10));
+	        if (LocalDate.now().isBefore(outDate.plusDays(7))) {
+	            resultMap.put("result", "fail");
+	            resultMap.put("message", "탈퇴 후 7일간 재가입이 불가합니다.");
+	            return resultMap;
+	        }
+	    }
+	    
+	    // 구현은 해놓지만, 같은 번호로 가입 테스트 하려면 주석 처리해야함.
+	    // [전화번호 중복 가입 방지 - 테스트 완료 후 주석]
+//	     int phoneCount = memberMapper.selectUserPhone(map);
+//	     if (phoneCount > 0) {
+//	         resultMap.put("result", "fail");
+//	         resultMap.put("message", "이미 가입된 전화번호입니다.");
+//	         return resultMap;
+//	     }
+	    
 		try {
 			map.put("password", passwordEncoder.encode((String)map.get("password")));
-			// member 테이블 INSERT
-	        memberMapper.insertMember(map);
-	        // user_detail 테이블 INSERT
-	        memberMapper.insertUserDetail(map);
-	        
+			// ✅ 탈퇴 이력 있으면 UPDATE(재활성화), 없으면 INSERT
+	        if (withdrawnDate != null) {
+	            memberMapper.reactivateMember(map);
+	            memberMapper.reactivateUserDetail(map);
+	        } else {
+	            memberMapper.insertMember(map);
+	            memberMapper.insertUserDetail(map);
+	        }
 	        // --- [쿠폰 지급 로직 추가] ---
 	     	String userId = (String) map.get("userId");	
 	     	// [A] 회원가입 축하 쿠폰 지급
@@ -227,6 +256,11 @@ public class MemberService {
 		}
 		return resultMap;
 	}
+	// 전화번호 중복체크
+	public int checkPhoneDuplicate(HashMap<String, Object> map) {
+	    return memberMapper.selectUserPhone(map);
+	}
+	
 	// * 업체 회원 가입 *
 	@Transactional
 	public HashMap<String, Object> addCompany(HashMap<String, Object> map) {

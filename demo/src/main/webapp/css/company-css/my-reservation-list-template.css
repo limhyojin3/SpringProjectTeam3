@@ -1,0 +1,125 @@
+/* ==========================================================================
+   [my-reservation-list-template] 나의 예약 내역 목록 화면 전용 스타일 세트
+   ========================================================================== */
+
+/* 공통 서브 액션 버튼 (뒤로가기) */
+.btn-sub-action {
+	padding: 8px 15px;
+	cursor: pointer;
+	border: 1px solid #ccc;
+	background: #fff;
+	border-radius: 4px;
+}
+
+/* 나의 예약 내역 리스트 전체 컨테이너 */
+.my-res-container {
+	padding: 40px 20px;
+	max-width: 600px;
+	margin: 0 auto;
+}
+
+/* 리스트 화면 메인 타이틀 */
+.list-title {
+	margin-bottom: 25px;
+	font-weight: bold;
+	color: #333;
+}
+
+/* 🎫 간략 버전 티켓 카드 기본 스타일 및 hover 모션 */
+.mini-ticket {
+	display: flex;
+	background: #fff;
+	border-radius: 12px;
+	margin-bottom: 20px;
+	box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+	cursor: pointer;
+	transition: transform 0.2s, box-shadow 0.2s;
+	overflow: hidden;
+	border: 1px solid #eee;
+}
+
+.mini-ticket:hover {
+	transform: translateY(-5px);
+	box-shadow: 0 8px 20px rgba(255, 127, 159, 0.15);
+}
+
+/* 티켓 왼쪽 썸네일 이미지 영역 규격 */
+.ticket-img {
+	width: 120px;
+	height: 140px;
+	overflow: hidden;
+}
+
+.ticket-img img {
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+}
+
+/* 티켓 우측 요약 텍스트 영역 정보 정렬 */
+.ticket-brief-info {
+	flex: 1;
+	padding: 15px;
+	position: relative;
+}
+
+.info-top {
+	margin-bottom: 8px;
+}
+
+/* 예약 고유 번호 */
+.res-no {
+	font-size: 0.7rem;
+	color: #ccc;
+}
+
+/* 예약 상품 타이틀 명칭 */
+.product-name {
+	font-size: 1.05rem;
+	font-weight: bold;
+	margin-bottom: 5px;
+	color: #333;
+}
+
+/* 선택 일시 텍스트 포맷 */
+.res-date-time {
+	font-size: 0.9rem;
+	color: #777;
+	margin-bottom: 10px;
+}
+
+/* 📢 예약 처리 상태별 분기 안내 메시지 색상 매칭 */
+.status-message {
+	font-size: 0.8rem;
+	font-weight: 600;
+}
+
+.status-message.WAIT {
+	color: #ff9800; /* 대기 상태 노란색 */
+}
+
+.status-message.CONFIRM {
+	color: #4caf50; /* 확정 상태 초록색 */
+}
+
+.status-message.DONE {
+	color: #9e9e9e; /* 완료/만료 상태 회색 */
+}
+
+.status-message.CANCEL {
+	color: #f44336; /* 취소 상태 빨간색 */
+}
+
+/* 티켓 오른쪽 가장자리 절취선 세로 텍스트 데코 영역 */
+.ticket-edge {
+	width: 30px;
+	background: #fdfdfd;
+	border-left: 2px dashed #eee;
+	writing-mode: vertical-rl;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	font-size: 0.6rem;
+	color: #ddd;
+	letter-spacing: 2px;
+}
