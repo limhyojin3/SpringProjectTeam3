@@ -1,4 +1,3 @@
-
 const app = Vue.createApp({
     el: '#app',
     data() {
@@ -37,13 +36,14 @@ const app = Vue.createApp({
                 success: function(data) {
                     console.log(data); //info,result,message
 
+                    // 💡 해시맵 유연화 대응 레일: 대소문자 파이프라인 방어막 가동
+                    let targetName = data.info.comName || data.info.COMNAME;
+                    let targetRole = data.info.role || data.info.ROLE;
+
                     self.user = {
                         ...self.user, // 기존 user의 다른 데이터들을 유지하고 싶을 때 사용
-                        name: data.info.comName,
-                        payDate: data.info.payDate,
-                        grade: data.info.role,
-                        lastPayment: data.info.previousPayment,
-                        regDate: data.info.regDate
+                        name: targetName,
+                        grade: targetRole // 드디어 봉쇄가 풀린 'PARTNER' / 'NPARTNER' 데이터 장착!
                     };
                 }
             });

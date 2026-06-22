@@ -84,3 +84,5 @@
             </div>
         </div>
     </template>
+
+    <script src="${pageContext.request.contextPath}/js/company-components/reservation-section-component.js"></script>

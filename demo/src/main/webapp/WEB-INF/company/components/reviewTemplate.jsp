@@ -151,3 +151,5 @@
         </div>
     </div>
 </template>
+
+<script src="${pageContext.request.contextPath}/js/company-components/review-section-component.js"></script>

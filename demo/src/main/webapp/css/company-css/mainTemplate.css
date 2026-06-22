@@ -1,62 +1,142 @@
 @charset "UTF-8";
 
 /* ==========================================================================
-   [mainTemplate.jsp] - 업체 메인 홈 컴포넌트 전용 스타일
+   [mainTemplate.css] - 💡 단위 오류 긴급 수정 및 가시성 극대화 리얼 골드 마스터판
    ========================================================================== */
 
-/* 1. 상단 환영 타이틀 */
-h2 {
-	font-size: 1.5rem;
+/* 대시보드 전체 외곽 랩퍼 여백 정화 */
+.premium-dashboard-wrapper {
+	padding: 10px 15px;
+	font-family: 'Noto Sans KR', sans-serif;
+}
+
+/* 1. 상단 환영 타이틀 타이포그래피 정밀 튜닝 */
+.dashboard-welcome-msg {
+	font-size: 1.65rem;
+	font-weight: 700;
+	color: #2c2c2c;
 	margin-bottom: 25px;
-	padding-left: 10px;
+	padding-left: 0;
+	letter-spacing: -0.5px;
 }
 
-/* 2. 업체 등급 라벨 (제휴업체 / 일반업체) */
-.section-title {
-	background: #ffb400;
+/* 업체명 강조 시그니처 컬러 폰트 */
+.welcome-highlight {
+	color: #ff4da6;
+}
+
+/* 2. 구형 흰색 대형 카드를 완전 대체하는 슬림 액션 바 트랙 */
+.dashboard-action-bar {
+	background: #ffffff;
+	border: 1px solid #f1f1f1;
+	border-radius: 12px;
+	padding: 24px 30px;
+	box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
+}
+
+/* 가로 듀얼 트랙 정렬용 플렉스 레일 개통 */
+.grade-track-row {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	width: 100%;
+}
+
+/* 제휴 완료 시 가로 전체를 럭셔리하게 채우는 정렬 모드 */
+.partner-center-mode {
+	justify-content: center;
+	padding: 10px 0;
+}
+
+/* 배지 그룹 좌측 정렬 서랍 */
+.premium-badge-wrapper {
+	display: flex;
+	flex-direction: column;
+	gap: 8px;
+}
+
+/* 3. 명품 등급별 시그니처 타이포그래피 배지 라벨 */
+.badge-premium-label {
 	display: inline-block;
-	padding: 5px 15px;
-	color: white;
-	font-weight: bold;
-	margin-bottom: 15px;
+	padding: 6px 16px;
+	font-size: 0.82rem;
+	font-weight: 800;
+	border-radius: 20px;
+	letter-spacing: 0.5px;
+	text-align: center;
+	width: fit-content;
 }
 
-/* 3. 등록 일자 안내 카드 */
-.content-card {
-	background-color: white;
-	border: 1px solid #eee;
-	padding: 30px;
-	border-radius: 10px;
-	margin-bottom: 20px;
-	position: relative;
-	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+/* ⏳ 일반 회원사: 차분하고 부드러운 머스타드 소프트 크림 틴트 테마 */
+.badge-premium-label.npartner {
+	background: #fff6e0;
+	color: #d49200;
 }
 
-/* 카드 내부 날짜 텍스트 */
-.user-grade {
-	text-align: right;
-	font-size: 20px;
+/* 👑 공식 제휴사: 압도적인 품격을 선사하는 미드나잇 딥차콜 & 백금 앙상블 조합 */
+.badge-premium-label.partner {
+	background: #2c2c2c;
+	color: #ffffff;
+	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+	margin-left: 15px;
 }
 
-/* 4. 미제휴 일반업체 전용 레이아웃 및 등록 버튼 */
-.user-nopartner {
-	text-align: right;
+/* 일반 업체용 하단 가이드 캡션 문구 */
+.badge-premium-notice {
+	font-size: 0.82rem;
+	color: #999999;
+	font-weight: 500;
 }
 
-.btn-product-reg {
-	background: #ffb400;
-	padding: 10px 24px;
-	border: none;
-	border-radius: 10px;
-	font-weight: bold;
-	cursor: pointer;
-	color: white;
-	font-size: 14px;
-	transition: 0.2s;
+/* 4. 제휴 완료 시 발동되는 오피셜 마스터 인증 패널 스타일 */
+.official-partner-panel {
+	display: flex;
+	align-items: center;
+	justify-content: center;
 }
 
-.btn-product-reg:hover {
-	background: #e0a500;
-	transform: translateY(-2px);
-	box-shadow: 0 4px 12px rgba(240, 180, 41, 0.3);
+.crown-icon {
+	font-size: 1.6rem;
+	margin-right: 12px;
+	animation: crownBounce 2s infinite ease-in-out;
+}
+
+.official-title-text {
+	font-size: 1.15rem;
+	font-weight: 800;
+	color: #2c2c2c;
+	letter-spacing: 1px;
+	font-family: 'Montserrat', sans-serif;
+}
+
+/* 5. 🎯 완벽 수정: px 단위를 deg 각도로 전격 교정하고, 
+      흰색 글씨가 눈부시게 폭발하도록 채도를 깊고 진하게 튜닝한 진짜 리얼 골드 마스터 버튼 */
+.premium-dashboard-wrapper .btn-premium-upgrade {
+	background: linear-gradient(135deg, #ffb400 0%, #ff7a00 100%) !important; /* 💡 135deg 교정 및 딥 오렌지골드 배합 */
+	color: #ffffff !important;
+	border: none !important;
+	padding: 14px 28px !important;
+	border-radius: 30px !important;
+	font-weight: 700 !important;
+	cursor: pointer !important;
+	font-size: 0.92rem !important;
+	letter-spacing: -0.3px !important;
+	transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1) !important;
+	box-shadow: 0 4px 15px rgba(255, 122, 0, 0.35) !important;
+}
+
+.premium-dashboard-wrapper .btn-premium-upgrade:hover {
+	transform: translateY(-3px) !important;
+	box-shadow: 0 8px 25px rgba(255, 122, 0, 0.55) !important;
+	filter: brightness(1.08) !important;
+}
+
+.premium-dashboard-wrapper .btn-premium-upgrade:active {
+	transform: translateY(-1px) !important;
+}
+
+/* 크라운 왕관의 미세한 명품 모션 애니메이션 */
+@keyframes crownBounce {
+	0%, 100% { transform: translateY(0) rotate(0deg); }
+	50% { transform: translateY(-4px) rotate(3deg); }
 }
