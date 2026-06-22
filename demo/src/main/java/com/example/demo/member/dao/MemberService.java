@@ -205,13 +205,37 @@ public class MemberService {
 	    if(map.get("anniversaryDate") != null && map.get("anniversaryDate").toString().isEmpty()) {
 	        map.put("anniversaryDate", null);
 	    }
+	    
+	    // 탈퇴 이력 조회 (7일 체크 + 재활성화 분기에 재활용)
+	    String withdrawnDate = memberMapper.selectWithdrawnDate(map);
+	    if (withdrawnDate != null) {
+	        LocalDate outDate = LocalDate.parse(withdrawnDate.substring(0, 10));
+	        if (LocalDate.now().isBefore(outDate.plusDays(7))) {
+	            resultMap.put("result", "fail");
+	            resultMap.put("message", "탈퇴 후 7일간 재가입이 불가합니다.");
+	            return resultMap;
+	        }
+	    }
+	    
+	    // 구현은 해놓지만, 같은 번호로 가입 테스트 하려면 주석 처리해야함.
+	    // [전화번호 중복 가입 방지 - 테스트 완료 후 주석]
+//	     int phoneCount = memberMapper.selectUserPhone(map);
+//	     if (phoneCount > 0) {
+//	         resultMap.put("result", "fail");
+//	         resultMap.put("message", "이미 가입된 전화번호입니다.");
+//	         return resultMap;
+//	     }
+	    
 		try {
 			map.put("password", passwordEncoder.encode((String)map.get("password")));
-			// member 테이블 INSERT
-	        memberMapper.insertMember(map);
-	        // user_detail 테이블 INSERT
-	        memberMapper.insertUserDetail(map);
-	        
+			// ✅ 탈퇴 이력 있으면 UPDATE(재활성화), 없으면 INSERT
+	        if (withdrawnDate != null) {
+	            memberMapper.reactivateMember(map);
+	            memberMapper.reactivateUserDetail(map);
+	        } else {
+	            memberMapper.insertMember(map);
+	            memberMapper.insertUserDetail(map);
+	        }
 	        // --- [쿠폰 지급 로직 추가] ---
 	     	String userId = (String) map.get("userId");	
 	     	// [A] 회원가입 축하 쿠폰 지급
@@ -232,6 +256,11 @@ public class MemberService {
 		}
 		return resultMap;
 	}
+	// 전화번호 중복체크
+	public int checkPhoneDuplicate(HashMap<String, Object> map) {
+	    return memberMapper.selectUserPhone(map);
+	}
+	
 	// * 업체 회원 가입 *
 	@Transactional
 	public HashMap<String, Object> addCompany(HashMap<String, Object> map) {

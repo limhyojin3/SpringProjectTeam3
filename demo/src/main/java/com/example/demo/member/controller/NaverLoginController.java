@@ -96,7 +96,7 @@ public class NaverLoginController {
                 memberMapper.insertKakaoMemberDetail(detailMap);
                 
                 // 쿠폰 발급 추가
-                memberService.giveCoupon(naverId, "WEDDING10");
+                memberService.giveCoupon(naverId, "WELCOME15");
             } else {
                 // 기존 회원이면 DB에서 닉네임 가져오기
                 String dbNickname = memberMapper.selectNicknameByUserId(naverId);

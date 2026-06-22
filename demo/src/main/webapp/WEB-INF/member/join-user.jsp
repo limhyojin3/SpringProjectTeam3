@@ -385,6 +385,26 @@
         cursor: pointer;
     }
     .terms-modal-confirm:hover { opacity: 0.88; }
+
+    .pwd-strength-bar {
+        width: 100%;
+        height: 4px;
+        background: #eee;
+        border-radius: 4px;
+        margin-top: 4px;
+    }
+    .pwd-strength-fill {
+        height: 100%;
+        border-radius: 4px;
+        transition: width 0.3s;
+    }
+    .pwd-strength-fill.weak { width: 33%; background: #ff4d4d; }
+    .pwd-strength-fill.normal { width: 66%; background: #ffaa00; }
+    .pwd-strength-fill.strong { width: 100%; background: #4caf50; }
+
+    .weak { color: #ff4d4d; }
+    .normal { color: #ffaa00; }
+    .strong { color: #4caf50; }
     </style>
 </head>
 <body>
@@ -536,6 +556,13 @@
                             <input type="password" v-model="info.password"
                                 @input="filterPassword" :disabled="!isVerified"
                                 placeholder="영문+숫자 8자 이상">
+                        </div>
+                        <!-- ✅ 여기로 이동 -->
+                        <div class="msg-box" :class="{'show': pwdStrengthMsg, 'disabled': !isVerified}">
+                            <span :class="pwdStrengthClass">{{ pwdStrengthMsg }}</span>
+                            <div class="pwd-strength-bar">
+                                <div class="pwd-strength-fill" :class="pwdStrengthClass"></div>
+                            </div>
                         </div>
                         <div class="form-input" :class="{'disabled': !isVerified}">
                             <input type="password" v-model="info.passwordConfirm"
@@ -697,6 +724,8 @@
                 yesterday: new Date(Date.now() - 86400000).toISOString().split('T')[0],
                 isTermsAgreed: false,
                 showTermsModal: false,
+                pwdStrengthMsg: '',
+                pwdStrengthClass: '',
             };
         },
         methods: {
@@ -915,13 +944,16 @@
                     url: "http://localhost:8080/sendSms.dox",
                     dataType: "json",
                     type: "POST",
-                    data: { tel: self.info.userTel.replace(/-/g, '') },
+                    data: { 
+                        tel: self.info.userTel.replace(/-/g, ''),
+                        type: 'join' // 해당 행 주석 처리하면 전화번호 중복 체크 안함
+                    },
                     success: function(data) {
                         if(data.result === 'success') {
                             self.telMsg = "✅ 인증번호가 발송되었습니다.";  // 추가
                             self.isUserTelAvailable = true;
                         } else {
-                            self.telMsg = "❌ 발송에 실패했습니다.";  // 추가
+                            self.telMsg = "❌" + data.message;  // 추가
                             self.isUserTelAvailable = false;
                         }
                     }
@@ -988,6 +1020,26 @@
             filterPassword: function() {
                 // 한글, 띄어쓰기 제거
                 this.info.password = this.info.password.replace(/[ㄱ-ㅎㅏ-ㅣ가-힣\s]/g, '');
+
+                // 보안 단계 체크
+                let pwd = this.info.password;
+                let hasLetter = /[a-zA-Z]/.test(pwd);
+                let hasNumber = /[0-9]/.test(pwd);
+                let hasSpecial = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(pwd);
+                
+                if (!pwd) {
+                    this.pwdStrengthMsg = '';
+                    this.pwdStrengthClass = '';
+                } else if (pwd.length < 8 || !hasLetter || !hasNumber) {
+                    this.pwdStrengthMsg = '🔴 취약 - 영문+숫자 8자리 이상 입력해주세요.';
+                    this.pwdStrengthClass = 'weak';
+                } else if (hasSpecial) {
+                    this.pwdStrengthMsg = '🟢 강함 - 안전한 비밀번호입니다.';
+                    this.pwdStrengthClass = 'strong';
+                } else {
+                    this.pwdStrengthMsg = '🟡 보통 - 특수문자 추가 시 보안이 강해져요.';
+                    this.pwdStrengthClass = 'normal';
+                }
             },
         }, // methods
         watch: {
