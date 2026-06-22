@@ -39,7 +39,7 @@ const productListComponent = {
         this.triggerFilterReload();
     },
     watch: {
-        // 대분류, 중분류 라디오, 소분류 체크박스가 클릭될 때마다 실시간 감시(Watch)하여 동적 재조회를 유도합니다.
+        // 대분류, 중분류 라디오, 소분류 체크박스가 클릭될 때마다 실시간 감시(Watch)하여 동적재조회를 유도합니다.
         selectLargeCategory(newVal) {
             this.triggerFilterReload();
         },
@@ -78,8 +78,29 @@ const productListComponent = {
             return this.categoriesData[this.selectLargeCategory]?.tags?.[this.selectCategory] || [];
         },
         // 백엔드 데이터베이스 레벨(MyBatis JOIN + HAVING COUNT)에서 이미 완벽하게 필터링이 종결된 정답 데이터셋을 화면 리스트에 다이렉트 바인딩
+        // 💡 회귀 디버깅 완결 조치: 부모나 백엔드 쿼리가 태그 정보를 어떤 규격(String/Array)으로 주든 
+        // 자식 필터 연산 구역에서 즉시 가로채어 진짜 자바스크립트 배열 객체로 완벽 재포장 바인딩을 보장합니다.
         filteredList() {
-            return this.productList || [];
+            if (!this.productList) return [];
+            return this.productList.map(item => {
+                let parsedTag = [];
+                if (item.tag) {
+                    if (typeof item.tag === 'string') {
+                        try {
+                            parsedTag = JSON.parse(item.tag);
+                        } catch (e) {
+                            // 만약 일반 콤마로 나열된 문자열일 경우 split 처리 및 공백 제거 방어막 가동
+                            parsedTag = item.tag.split(',').map(t => t.trim()).filter(t => t !== '');
+                        }
+                    } else if (Array.isArray(item.tag)) {
+                        parsedTag = item.tag;
+                    }
+                }
+                return {
+                    ...item,
+                    tag: parsedTag
+                };
+            });
         }
     }
 };

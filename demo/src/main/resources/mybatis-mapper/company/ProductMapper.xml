@@ -21,7 +21,15 @@
 			p.medium_category,
 			p.deposit,
 			p.reg_date,
-			c.com_name
+			c.com_name,
+			/* 💡 고도화 핵심: 어제 우리가 구축한 검색 필터 하드웨어를 100% 보존하기 위해, 
+			   SELECT 절 내부에서 해당 상품의 모든 태그 텍스트들을 콤마로 예쁘게 묶어 공급하는 독립 서브쿼리 레일 이식 */
+			(
+				SELECT GROUP_CONCAT(pt_all.tag SEPARATOR ',')
+				FROM product_tag_map ptm_all
+				INNER JOIN product_tag pt_all ON ptm_all.tag_id = pt_all.id
+				WHERE ptm_all.product_no = p.product_no
+			) AS tag
 		FROM product p
 		LEFT JOIN company c ON p.company_no = c.company_no
 		<if test="tagList != null and tagList.size() > 0">
@@ -67,7 +75,14 @@
 			p.medium_category,
 			p.deposit,
 			p.reg_date,
-			c.com_name
+			c.com_name,
+			/* 상세 조회 시에도 프론트엔드 태그 노출 방어벽을 위해 동일 서브쿼리 매핑 적용 */
+			(
+				SELECT GROUP_CONCAT(pt_all.tag SEPARATOR ',')
+				FROM product_tag_map ptm_all
+				INNER JOIN product_tag pt_all ON ptm_all.tag_id = pt_all.id
+				WHERE ptm_all.product_no = p.product_no
+			) AS tag
 		FROM product p
 		LEFT JOIN company c ON p.company_no = c.company_no
 		WHERE p.product_no = #{productNo}
@@ -91,10 +106,6 @@
 		INSERT INTO product(company_no, product_name, product_details, original_price, is_active, img_url, large_category, medium_category, deposit, reg_date)
 		VALUES(#{companyNo}, #{productName}, #{productDetails}, #{originalPrice}, #{isActive}, #{imgUrl}, #{largeCategory}, #{mediumCategory}, #{deposit}, NOW())
 	</insert>
-
-	<delete id="deleteProduct" parameterType="map">
-		DELETE FROM product WHERE product_no = #{productNo}
-	</delete>
 
 	<select id="selectTagList" parameterType="map" resultType="String">
 		SELECT tag FROM product_tag ORDER BY id ASC
@@ -142,5 +153,9 @@
 		FROM product_tag
 		WHERE tag IS NOT NULL AND medium_category IS NOT NULL
 	</select>
-
+ 
+	<delete id="deleteProduct" parameterType="map">
+		DELETE FROM product WHERE product_no = #{productNo}
+	</delete>
+	
 </mapper>
