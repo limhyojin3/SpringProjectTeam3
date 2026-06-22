@@ -24,6 +24,8 @@ public interface MemberMapper {
 	int selectUserEmail(HashMap<String, Object> map);
 	// 전화번호 중복 체크
 	int selectUserPhone(HashMap<String, Object> map);
+	// 프로필 이미지 수정
+	void updateProfileImg(HashMap<String, Object> map);
 	// 유저 상세 정보 조회 (내 정보 수정)
 	Member selectMemberInfo(String userId);
 	// 유저 내 정보 수정(멤버 테이블)
@@ -108,7 +110,16 @@ public interface MemberMapper {
 	//결혼 기념일 확인
 	String selectAnniversaryDate(String userId);
 	int checkAnniversaryGiftcon(HashMap<String, Object> map);
-			
+	// 사용자 프로필 조회
+	Member selectUserProfile(String userId);
+	List<Member> selectUserReviewList(HashMap<String, Object> map);
+	List<Member> selectUserPostList(HashMap<String, Object> map);
+	List<Member> selectUserCommentList(HashMap<String, Object> map);
+	// 페이징
+	int selectUserReviewCount(String userId);
+	int selectUserPostCount(String userId);
+	int selectUserCommentCount(String userId);
+	
 	// * 유료리뷰 열람 시 *
 	// 열람 기록 확인
 	int selectUsageLog(HashMap<String, Object> map);
