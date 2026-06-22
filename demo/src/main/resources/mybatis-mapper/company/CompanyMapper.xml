@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.example.demo.company.mapper.CompanyMapper">
+
+	<select id="selectCompany" parameterType="hashmap"
+		resultType="com.example.demo.company.model.Company">
+		SELECT m.*, c.com_name, p.pay_date 
+		FROM member m
+		LEFT JOIN company c ON m.user_id = c.user_id
+		LEFT JOIN payment p ON m.user_id = p.user_id
+		WHERE m.user_id = #{userid}
+	</select>
+
+	<select id="selectCompanyByUserId" parameterType="String"
+		resultType="String">
+		SELECT COMPANY_NO AS companyNo
+		FROM COMPANY
+		WHERE USER_ID = #{userId}
+	</select>
+
+	<select id="selectReviewCnt" parameterType="map"
+		resultType="hashmap">
+		SELECT p.product_no, p.product_name, p.img_url, COUNT(review_no) AS reviewCount 
+		FROM product p
+		LEFT JOIN review r ON p.product_no = r.product_no AND r.is_paid = 1
+		WHERE p.company_no = (
+			SELECT company_no FROM company c WHERE c.user_id = #{userId}
+		)
+		GROUP BY p.product_no, p.product_name, p.img_url
+		ORDER BY p.reg_date DESC
+	</select>
+
+	<select id="selectSimpleReviewCnt" parameterType="map"
+		resultType="hashmap">
+		SELECT p.product_no, p.product_name, p.img_url, COUNT(review_no) AS reviewCount 
+		FROM product p
+		LEFT JOIN review r ON p.product_no = r.product_no AND r.is_paid = 0
+		WHERE p.company_no = (
+			SELECT company_no FROM company c WHERE c.user_id = #{userId}
+		)
+		GROUP BY p.product_no, p.product_name, p.img_url
+		ORDER BY p.reg_date DESC 
+	</select>
+ 
+	<select id="selectNewReviewCnt" parameterType="map"
+		resultType="hashmap">
+		SELECT COUNT(company_no) AS reviewCount 
+		FROM review r 
+		WHERE r.is_paid = 1 AND updated = 1 
+		AND r.company_no = (
+			SELECT company_no FROM company c WHERE user_id = #{userId}
+		)
+	</select>
+
+	<select id="selectNewSimpleReviewCnt" parameterType="map"
+		resultType="hashmap">
+		SELECT COUNT(company_no) AS reviewCount 
+		FROM review r 
+		WHERE r.is_paid = 0 AND updated = 1 
+		AND r.company_no = (
+			SELECT company_no FROM company c WHERE user_id = #{userId}
+		)
+	</select>
+	
+	<select id="selectReviewDetails3" parameterType="map"
+		resultType="com.example.demo.company.model.Review">
+		SELECT r.reg_date, r.img_description, r.is_paid, r.review_no, r.user_id,
+		r.company_no, r.product_no, r.rating, r.content, r.thumbnail_url, r.updated
+		FROM review r
+		WHERE is_paid = 1 AND product_no = #{productNo}
+		ORDER BY r.reg_date DESC
+	</select>
+	
+	<select id="selectSimpleReviewDetails3" parameterType="map"
+		resultType="com.example.demo.company.model.Review">
+		SELECT r.review_no, r.content, r.user_id, r.rating, r.updated, r.reg_date
+		FROM review r 
+		WHERE IS_PAID = 0 AND PRODUCT_NO = #{productNo}
+		ORDER BY r.reg_date DESC
+	</select>
+	 
+	<update id="updateOldNewLabels" parameterType="map">
+	    UPDATE review
+	    SET updated = 0
+	    WHERE DATEDIFF(NOW(), reg_date) >= 3 AND updated = 1
+	</update> 
+</mapper>

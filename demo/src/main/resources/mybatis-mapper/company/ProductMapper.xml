@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.example.demo.company.mapper.ProductMapper">
+
+	<select id="selectProductList" parameterType="map" resultType="com.example.demo.company.model.Product">
+		SELECT 
+			p.product_no,
+			p.product_no AS id,
+			p.company_no,
+			p.product_name,
+			p.product_name AS name,
+			p.product_details,
+			p.product_details AS content,
+			p.original_price,
+			p.original_price AS price,
+			p.is_active,
+			p.img_url,
+			p.img_url AS thumbnail,
+			p.large_category,
+			p.medium_category,
+			p.deposit,
+			p.reg_date,
+			c.com_name,
+			/* 💡 고도화 핵심: 어제 우리가 구축한 검색 필터 하드웨어를 100% 보존하기 위해, 
+			   SELECT 절 내부에서 해당 상품의 모든 태그 텍스트들을 콤마로 예쁘게 묶어 공급하는 독립 서브쿼리 레일 이식 */
+			(
+				SELECT GROUP_CONCAT(pt_all.tag SEPARATOR ',')
+				FROM product_tag_map ptm_all
+				INNER JOIN product_tag pt_all ON ptm_all.tag_id = pt_all.id
+				WHERE ptm_all.product_no = p.product_no
+			) AS tag
+		FROM product p
+		LEFT JOIN company c ON p.company_no = c.company_no
+		<if test="tagList != null and tagList.size() > 0">
+			INNER JOIN product_tag_map ptm ON p.product_no = ptm.product_no
+			INNER JOIN product_tag pt ON ptm.tag_id = pt.id
+		</if>
+		<where>
+			<if test="largeCategory != null and largeCategory != ''">
+				AND p.large_category = #{largeCategory}
+			</if>
+			<if test="mediumCategory != null and mediumCategory != ''">
+				AND p.medium_category = #{mediumCategory}
+			</if>
+			<if test="tagList != null and tagList.size() > 0">
+				AND pt.tag IN
+				<foreach collection="tagList" item="tag" open="(" separator="," close=")">
+					#{tag}
+				</foreach>
+			</if>
+		</where>
+		GROUP BY p.product_no
+		<if test="tagList != null and tagList.size() > 0">
+			HAVING COUNT(DISTINCT pt.tag) = #{tagSize}
+		</if>
+		ORDER BY p.reg_date DESC
+	</select>
+
+	<select id="selectProduct" parameterType="map" resultType="com.example.demo.company.model.Product">
+		SELECT 
+			p.product_no,
+			p.product_no AS id,
+			p.company_no,
+			p.product_name,
+			p.product_name AS name,
+			p.product_details,
+			p.product_details AS content,
+			p.original_price,
+			p.original_price AS price,
+			p.is_active,
+			p.img_url,
+			p.img_url AS thumbnail,
+			p.large_category,
+			p.medium_category,
+			p.deposit,
+			p.reg_date,
+			c.com_name,
+			/* 상세 조회 시에도 프론트엔드 태그 노출 방어벽을 위해 동일 서브쿼리 매핑 적용 */
+			(
+				SELECT GROUP_CONCAT(pt_all.tag SEPARATOR ',')
+				FROM product_tag_map ptm_all
+				INNER JOIN product_tag pt_all ON ptm_all.tag_id = pt_all.id
+				WHERE ptm_all.product_no = p.product_no
+			) AS tag
+		FROM product p
+		LEFT JOIN company c ON p.company_no = c.company_no
+		WHERE p.product_no = #{productNo}
+	</select>
+
+	<update id="updateProduct" parameterType="com.example.demo.company.model.Product">
+		UPDATE product
+		SET 
+			product_name = #{productName},
+			product_details = #{productDetails},
+			original_price = #{originalPrice},
+			is_active = #{isActive},
+			img_url = #{imgUrl},
+			large_category = #{largeCategory},
+			medium_category = #{mediumCategory},
+			deposit = #{deposit}
+		WHERE product_no = #{productNo}
+	</update>
+
+	<insert id="insertProduct" parameterType="com.example.demo.company.model.Product" useGeneratedKeys="true" keyProperty="productNo">
+		INSERT INTO product(company_no, product_name, product_details, original_price, is_active, img_url, large_category, medium_category, deposit, reg_date)
+		VALUES(#{companyNo}, #{productName}, #{productDetails}, #{originalPrice}, #{isActive}, #{imgUrl}, #{largeCategory}, #{mediumCategory}, #{deposit}, NOW())
+	</insert>
+
+	<select id="selectTagList" parameterType="map" resultType="String">
+		SELECT tag FROM product_tag ORDER BY id ASC
+	</select>
+
+	<select id="selectProductListForTag" parameterType="map" resultType="com.example.demo.company.model.Product">
+		SELECT 
+			p.product_no,
+			p.product_no AS id,
+			p.company_no,
+			p.product_name,
+			p.product_name AS name,
+			p.product_details,
+			p.product_details AS content,
+			p.original_price,
+			p.original_price AS price,
+			p.is_active,
+			p.img_url,
+			p.img_url AS thumbnail,
+			p.large_category,
+			p.medium_category,
+			p.deposit,
+			p.reg_date
+		FROM product p 
+		WHERE p.large_category = #{largeCategory}
+	</select>
+
+	<insert id="insertUniqueNewTagsOnly" parameterType="map">
+		INSERT IGNORE INTO product_tag(tag)
+		VALUES
+		<foreach collection="uniqueNewTagsOnly" item="tag" separator=",">
+			(#{tag})
+		</foreach>
+	</insert>
+
+	<select id="selectDistinctCategories" resultType="hashmap">
+		SELECT DISTINCT large_category, medium_category 
+		FROM product
+		WHERE large_category IS NOT NULL AND medium_category IS NOT NULL
+		ORDER BY FIELD(large_category, '결혼', '가족행사', '친구와함께'), medium_category ASC
+	</select>
+
+	<select id="selectAllTagsWithMedium" resultType="hashmap">
+		SELECT tag, medium_category 
+		FROM product_tag
+		WHERE tag IS NOT NULL AND medium_category IS NOT NULL
+	</select>
+ 
+	<delete id="deleteProduct" parameterType="map">
+		DELETE FROM product WHERE product_no = #{productNo}
+	</delete>
+	
+</mapper>

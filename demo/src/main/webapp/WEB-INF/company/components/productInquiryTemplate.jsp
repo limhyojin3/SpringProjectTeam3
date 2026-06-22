@@ -1,4 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
+<link rel="stylesheet" href="${pageContext.request.contextPath}/css/company-css/product-inquiry-write-template.css">
+<link rel="stylesheet" href="${pageContext.request.contextPath}/css/company-css/my-inquiry-list-template.css">
+<link rel="stylesheet" href="${pageContext.request.contextPath}/css/company-css/inquiry-detail-template.css">
 
 <script type="text/x-template" id="product-inquiry-write-template">
     <div class="payment-container">
