@@ -34,8 +34,27 @@
     .review-card:hover { transform: translateY(-8px); box-shadow: 0 12px 24px rgba(0,0,0,0.1); border-color: var(--primary-color); }
     
     /* [수정] 카드 이미지 박스 - 높이를 180px에서 220px로 확대 */
-    .card-img-box { width: 100%; height: 220px; background: #f8f9fa; overflow: hidden; position: relative; display: flex; align-items: center; justify-content: center; }
-    .card-img-box img { width: 100%; height: 100%; object-fit: cover; }
+    /* [수정] 카드 이미지 박스 - 고정 높이 대신 비율 사용 */
+    .card-img-box {
+    width: 100%;
+    aspect-ratio: 3 / 4; /* 세로형으로 가장 안정적인 비율 */
+    background-color: #f2f2f2;
+    border-radius: 8px;
+    overflow: hidden; 
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* 이미지 처리 - 무조건 꽉 차게 */
+.card-img-box img {
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: cover !important; /* 이미지 비율 유지하며 박스 채우기 */
+    object-position: center center !important; /* 중앙 얼굴/피사체 우선 정렬 */
+    display: block;
+}
     .no-img { color: #ccc; font-size: 2.5rem; }
     .card-badges { position: absolute; top: 12px; left: 12px; z-index: 2; display: flex; gap: 6px; }
     
@@ -44,13 +63,14 @@
     .card-com-name { font-size: 0.85rem; color: var(--primary-color); font-weight: bold; margin-bottom: 4px; }
     
     /* [수정] 제목 영역 - margin-bottom을 12px에서 4px로 줄여 공백 제거 */
+    /* 제목 영역 최적화 */
     .card-review-title { 
         font-size: 1.05rem; 
         font-weight: 700; 
         color: #333; 
-        margin-bottom: 4px; 
+        margin-bottom: 8px; /* 통계 영역과 약간 띄우기 */
         line-height: 1.4; 
-        height: 2.8em; 
+        height: 3em; /* 2줄 기준 딱 맞는 높이 */
         overflow: hidden; 
         display: -webkit-box; 
         -webkit-line-clamp: 2; 
@@ -85,8 +105,25 @@
     .rank-3 { background: #CD7F32; } 
 
     /* [수정] 베스트 이미지 박스도 동일하게 확대 (선택사항) */
-    .best-img-box { width: 100%; height: 200px; overflow: hidden; border-radius: 15px 15px 0 0; }
-    .best-img-box img { width: 100%; height: 100%; object-fit: cover; }
+    /* 베스트 이미지 박스도 동일하게 적용 */
+    /* 베스트 섹션 이미지 박스도 동일하게 적용 */
+    .best-img-box {
+        width: 100%;
+        aspect-ratio: 3 / 4;
+        background: #f8f9fa;
+        overflow: hidden;
+        position: relative;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .best-img-box img {
+        width: 100% !important;
+        height: 100% !important;
+        object-fit: cover !important;
+        object-position: center center !important;
+    }
     .no-img-default { padding: 30px; object-fit: contain !important; }
 
     /* 베스트 텍스트 영역 */
