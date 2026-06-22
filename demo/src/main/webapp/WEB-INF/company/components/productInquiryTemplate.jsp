@@ -73,7 +73,14 @@
                     <img :src="inquiry.imgUrl" alt="상품이미지">
                 </div>
                 <div class="inquiry-info-box">
-                    <div class="inquiry-prod-name">상품명: {{ inquiry.productName }}</div>
+                    <div class="inquiry-info-top-row">
+                        <div class="inquiry-prod-name">상품명: {{ inquiry.productName }}</div>
+                        
+                        <div v-if="inquiry.inquiryDate" class="inquiry-date-text">
+                            문의일시: {{ inquiry.inquiryDate.slice(0, 16) }}
+                        </div>
+                    </div>
+                    
                     <div class="inquiry-title-text">{{ inquiry.inquiryTitle }}</div>
                     <div class="inquiry-content-text">{{ inquiry.inquiryContents }}</div>
                 </div>
@@ -123,6 +130,9 @@
             <div class="inquiry-box-header">
                 <span class="inquiry-box-label">나의 문의</span>
                 <span class="inquiry-box-number">No. {{ localInquiry.inquiryNo }}</span>
+                <span v-if="localInquiry.inquiryDate" class="inquiry-box-date">
+                    작성일시: {{ localInquiry.inquiryDate.slice(0, 16) }}
+                </span>
             </div>
             <div class="inquiry-box-body">
                 <h3 class="inquiry-body-title">Q. {{ localInquiry.inquiryTitle }}</h3>
@@ -138,8 +148,10 @@
                 <div class="answer-body-text">
                     {{ localInquiry.answerContents || '답변 내용을 불러오는 중입니다.' }}
                 </div>
-                <div class="answer-box-body-meta" style="font-size: 0.85rem; color: #999; margin-top: 10px; text-align: right;">
+                
+                <div class="answer-body-meta">
                     답변자: {{ localInquiry.ansCompany || '관리자' }}
+                    <span v-if="localInquiry.answerDate"> | 답변일시: {{ localInquiry.answerDate.slice(0, 16) }}</span>
                 </div>
             </div>
         </div>

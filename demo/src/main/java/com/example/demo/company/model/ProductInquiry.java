@@ -31,4 +31,7 @@ public class ProductInquiry {
     private Integer answerNo;
     private String answerContents;
     private String ansUserId;
+    
+    private String inquiryDate;
+    private String answerDate;
 }
