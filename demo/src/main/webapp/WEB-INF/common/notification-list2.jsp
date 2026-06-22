@@ -138,135 +138,6 @@
             letter-spacing: .1em;
         }
 
-        .product-ad-rail {
-            position: fixed;
-            top: calc(50% + min(27.5vh, 260px) + 14px);
-            left: calc(50% - 480px - var(--side-width) - 14px);
-            z-index: 1;
-            display: none;
-            width: var(--side-width);
-        }
-
-        .product-ad-card {
-            position: relative;
-            overflow: hidden;
-            min-height: 172px;
-            padding: 15px;
-            border: 1px solid rgba(255, 77, 109, .14);
-            border-radius: 22px;
-            background: rgba(255, 255, 255, .96);
-            box-shadow: 0 18px 44px rgba(115, 55, 72, .12);
-        }
-
-        .product-ad-topline {
-            position: relative;
-            z-index: 2;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: 10px;
-        }
-
-        .product-ad-label {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            color: var(--primary-dark);
-            font-size: 8px;
-            font-weight: 900;
-            letter-spacing: .08em;
-        }
-
-        .product-ad-label::before {
-            width: 6px;
-            height: 6px;
-            border-radius: 50%;
-            background: var(--primary);
-            box-shadow: 0 0 0 3px rgba(255, 77, 109, .10);
-            content: "";
-        }
-
-        .product-ad-number { color: #b6a8ad; font: 700 8px/1 Georgia, serif; }
-
-        .product-ad-body {
-            position: relative;
-            z-index: 1;
-            display: grid;
-            grid-template-columns: 62px minmax(0, 1fr);
-            gap: 11px;
-            align-items: center;
-        }
-
-        .product-ad-visual {
-            display: grid;
-            width: 62px;
-            height: 72px;
-            place-items: center;
-            border-radius: 17px;
-            background: linear-gradient(145deg, #ffe9ee, #fff8fa);
-            color: var(--primary-dark);
-            font-size: 28px;
-            box-shadow: inset 0 0 0 1px rgba(255, 77, 109, .10);
-        }
-
-        .product-ad-visual.gold { background: linear-gradient(145deg, #fff3d9, #fffaf0); color: #ba8025; }
-        .product-ad-visual.lilac { background: linear-gradient(145deg, #efe9ff, #faf8ff); color: #8065c7; }
-
-        .product-ad-company {
-            overflow: hidden;
-            margin-bottom: 5px;
-            color: #a29298;
-            font-size: 8px;
-            font-weight: 800;
-            text-overflow: ellipsis;
-            white-space: nowrap;
-        }
-
-        .product-ad-name {
-            display: -webkit-box;
-            overflow: hidden;
-            min-height: 30px;
-            margin: 0;
-            color: #4d4146;
-            font-size: 11px;
-            font-weight: 900;
-            line-height: 1.45;
-            -webkit-box-orient: vertical;
-            -webkit-line-clamp: 2;
-        }
-
-        .product-ad-price { display: flex; align-items: baseline; gap: 5px; margin-top: 7px; }
-        .product-ad-discount { color: var(--primary); font-size: 10px; font-weight: 900; }
-        .product-ad-amount { color: #4d4146; font-size: 10px; font-weight: 900; }
-
-        .product-ad-bottom {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-top: 12px;
-        }
-
-        .product-ad-dots { display: flex; gap: 4px; }
-        .product-ad-dot { width: 4px; height: 4px; border-radius: 50%; background: #e7dce0; transition: width .18s ease, background .18s ease; }
-        .product-ad-dot.active { width: 12px; border-radius: 99px; background: var(--primary); }
-
-        .product-ad-actions { display: flex; align-items: center; gap: 5px; }
-
-        .product-ad-arrow,
-        .product-ad-link {
-            display: grid;
-            height: 24px;
-            place-items: center;
-            border: 1px solid rgba(255, 77, 109, .13);
-            background: #fff;
-            color: var(--primary-dark);
-            cursor: pointer;
-        }
-
-        .product-ad-arrow { width: 24px; padding: 0; border-radius: 50%; font-size: 12px; }
-        .product-ad-link { padding: 0 9px; border-radius: 99px; font-size: 8px; font-weight: 900; }
-        .product-ad-arrow:hover, .product-ad-link:hover { background: var(--primary-soft); }
-
         .wedding-celebration-rail {
             position: fixed;
             top: 50%;
@@ -274,14 +145,8 @@
             z-index: 0;
             display: none;
             width: var(--side-width);
-            max-height: calc(100vh - 28px);
-            overflow-y: auto;
-            padding: 2px;
-            scrollbar-width: none;
             transform: translateY(-50%);
         }
-
-        .wedding-celebration-rail::-webkit-scrollbar { display: none; }
 
         .celebration-card {
             position: relative;
@@ -449,115 +314,6 @@
 
         .celebration-arrow:hover { background: var(--primary-soft); transform: translateY(-1px); }
         .celebration-position { min-width: 34px; color: var(--muted); font: 700 9px/1 Georgia, serif; text-align: center; }
-
-        .popular-feed {
-            margin-top: 16px;
-            overflow: hidden;
-            border: 1px solid rgba(255, 77, 109, .13);
-            border-radius: 22px;
-            background: rgba(255, 255, 255, .94);
-            box-shadow: 0 18px 42px rgba(115, 55, 72, .11);
-        }
-
-        .popular-feed-head {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 15px 16px 10px;
-        }
-
-        .popular-feed-title {
-            display: flex;
-            align-items: center;
-            gap: 7px;
-            margin: 0;
-            color: #4d3a41;
-            font-size: 12px;
-            font-weight: 900;
-        }
-
-        .popular-live-dot {
-            width: 7px;
-            height: 7px;
-            border-radius: 50%;
-            background: var(--primary);
-            box-shadow: 0 0 0 4px rgba(255, 77, 109, .10);
-        }
-
-        .popular-feed-caption { color: #aa9ba1; font-size: 8px; font-weight: 700; letter-spacing: .06em; }
-
-        .popular-tabs {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            margin: 0 12px 5px;
-            padding: 3px;
-            border-radius: 11px;
-            background: #f8f3f5;
-        }
-
-        .popular-tab {
-            padding: 7px 5px;
-            border: 0;
-            border-radius: 8px;
-            background: transparent;
-            color: #9b8d93;
-            cursor: pointer;
-            font-size: 10px;
-            font-weight: 800;
-            transition: background .18s ease, color .18s ease, box-shadow .18s ease;
-        }
-
-        .popular-tab.active {
-            background: #fff;
-            color: var(--primary-dark);
-            box-shadow: 0 4px 12px rgba(115, 55, 72, .08);
-        }
-
-        .popular-list { margin: 0; padding: 5px 12px 10px; list-style: none; }
-
-        .popular-item {
-            display: grid;
-            grid-template-columns: 20px minmax(0, 1fr);
-            gap: 8px;
-            width: 100%;
-            padding: 10px 4px;
-            border: 0;
-            border-bottom: 1px solid #f4eaed;
-            background: transparent;
-            color: inherit;
-            text-align: left;
-            cursor: pointer;
-        }
-
-        .popular-item:last-child { border-bottom: 0; }
-        .popular-item:hover .popular-item-title { color: var(--primary-dark); }
-
-        .popular-rank {
-            color: var(--primary);
-            font: italic 700 14px/1.3 Georgia, serif;
-            text-align: center;
-        }
-
-        .popular-item-title {
-            display: block;
-            overflow: hidden;
-            color: #51464a;
-            font-size: 10px;
-            font-weight: 800;
-            line-height: 1.45;
-            text-overflow: ellipsis;
-            transition: color .18s ease;
-            white-space: nowrap;
-        }
-
-        .popular-item-meta {
-            display: flex;
-            gap: 8px;
-            margin-top: 4px;
-            color: #aa9da2;
-            font-size: 8px;
-            font-weight: 700;
-        }
 
         .page-header {
             display: flex;
@@ -911,8 +667,8 @@
 
         .brand-message {
             position: relative;
-            margin: 0 auto 36px;
-            padding: 6px 28px 0;
+            margin: 48px auto 0;
+            padding: 34px 28px 6px;
             text-align: center;
         }
 
@@ -1158,10 +914,6 @@
             animation: sideFadeLeft .9s .2s cubic-bezier(.2, .75, .25, 1) both;
         }
 
-        .product-ad-rail {
-            animation: productAdFadeUp .82s .34s cubic-bezier(.2, .75, .25, 1) both;
-        }
-
         .wedding-celebration-rail {
             animation: sideFadeRight .9s .28s cubic-bezier(.2, .75, .25, 1) both;
         }
@@ -1179,11 +931,6 @@
         @keyframes sideFadeRight {
             from { opacity: 0; transform: translate(16px, -47%) scale(.97); }
             to { opacity: 1; transform: translate(0, -50%) scale(1); }
-        }
-
-        @keyframes productAdFadeUp {
-            from { opacity: 0; transform: translateY(14px) scale(.98); }
-            to { opacity: 1; transform: translateY(0) scale(1); }
         }
 
         @media (max-width: 680px) {
@@ -1205,7 +952,6 @@
 
         @media (min-width: 1380px) {
             .side-visual { display: block; }
-            .product-ad-rail { display: block; }
             .wedding-celebration-rail { display: block; }
         }
 
@@ -1216,7 +962,6 @@
             .brand-message,
             .header-notification-demo,
             .side-visual--left,
-            .product-ad-rail,
             .wedding-celebration-rail {
                 animation: none;
             }
@@ -1231,8 +976,6 @@
     </style>
 </head>
 <body>
-<!-- 영상 파일 경로: /video/wedding-side.mp4
-     선택 사항인 첫 화면 이미지: /images/wedding-video-cover.jpg -->
 <aside class="side-visual side-visual--left" aria-hidden="true">
     <video class="side-video"
            id="weddingSideVideo"
@@ -1244,33 +987,6 @@
         <span class="video-ornament-title">Our beautiful days</span>
         <span class="video-ornament-copy">MARRY DAY, MERRY DAYS</span>
     </span>
-</aside>
-<aside class="product-ad-rail" aria-label="메리뷰 입점 업체 추천 상품">
-    <article class="product-ad-card">
-        <div class="product-ad-topline">
-            <span class="product-ad-label">MARRYVIEW PICK</span>
-            <span class="product-ad-number" id="productAdNumber">01 / 03</span>
-        </div>
-        <div class="product-ad-body">
-            <div class="product-ad-visual" id="productAdVisual" aria-hidden="true">♕</div>
-            <div>
-                <div class="product-ad-company" id="productAdCompany"></div>
-                <h2 class="product-ad-name" id="productAdName"></h2>
-                <div class="product-ad-price">
-                    <span class="product-ad-discount" id="productAdDiscount"></span>
-                    <span class="product-ad-amount" id="productAdAmount"></span>
-                </div>
-            </div>
-        </div>
-        <div class="product-ad-bottom">
-            <div class="product-ad-dots" id="productAdDots" aria-hidden="true"></div>
-            <div class="product-ad-actions">
-                <button type="button" class="product-ad-arrow" id="productAdPrev" aria-label="이전 추천 상품">‹</button>
-                <button type="button" class="product-ad-arrow" id="productAdNext" aria-label="다음 추천 상품">›</button>
-                <button type="button" class="product-ad-link" id="productAdLink">보러가기</button>
-            </div>
-        </div>
-    </article>
 </aside>
 <aside class="wedding-celebration-rail" aria-label="메리뷰 회원 결혼 소식">
     <article class="celebration-card">
@@ -1291,33 +1007,9 @@
         <span class="celebration-position" id="celebrationPosition">1 / 2</span>
         <button type="button" class="celebration-arrow" id="celebrationNext" aria-label="다음 결혼 소식">›</button>
     </div>
-
-    <section class="popular-feed" aria-labelledby="popularFeedTitle">
-        <div class="popular-feed-head">
-            <h2 class="popular-feed-title" id="popularFeedTitle">
-                <span class="popular-live-dot" aria-hidden="true"></span>
-                지금 인기 있어요
-            </h2>
-            <span class="popular-feed-caption">LIVE PICK</span>
-        </div>
-        <div class="popular-tabs" role="tablist" aria-label="인기 콘텐츠 종류">
-            <button type="button" class="popular-tab active" data-popular-type="post" role="tab" aria-selected="true">인기글</button>
-            <button type="button" class="popular-tab" data-popular-type="review" role="tab" aria-selected="false">인기리뷰</button>
-        </div>
-        <ol class="popular-list" id="popularList"></ol>
-    </section>
 </aside>
 
 <main class="page-shell">
-    <section class="brand-message" aria-label="메리뷰 브랜드 메시지">
-        <p class="brand-slogan">Marry Day, <span class="accent">Merry Days.</span></p>
-        <p class="brand-copy">
-            결혼하는 오늘부터 함께 살아갈 모든 날까지.<br>
-            메리뷰가 당신의 행복한 나날과 함께합니다.
-        </p>
-        <div class="brand-signature">MARRYVIEW</div>
-    </section>
-
     <header class="page-header">
         <div>
             <button type="button" class="back-button" id="btnBack" aria-label="이전 페이지로 돌아가기">
@@ -1387,6 +1079,15 @@
         </aside>
     </c:if>
 
+    <section class="brand-message" aria-label="메리뷰 브랜드 메시지">
+        <p class="brand-slogan">Marry Day, <span class="accent">Merry Days.</span></p>
+        <p class="brand-copy">
+            결혼하는 오늘부터 함께 살아갈 모든 날까지.<br>
+            메리뷰가 당신의 행복한 나날과 함께합니다.
+        </p>
+        <div class="brand-signature">MARRYVIEW</div>
+    </section>
+
     <c:if test="${not empty sessionScope.sessionId}">
         <section class="header-notification-demo" aria-label="헤더 알림 메뉴 테스트">
             <div class="demo-label">헤더 알림 메뉴 테스트 · 종 아이콘에 마우스를 올려보세요</div>
@@ -1417,7 +1118,6 @@
 </main>
 
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
-
 <script>
 $(function () {
     const apiBase = '${pageContext.request.contextPath}/api/notification';
@@ -1427,8 +1127,6 @@ $(function () {
     let currentFilter = 'all';
     let toastTimer;
     let celebrationIndex = 0;
-    let productAdIndex = 0;
-    let productAdTimer;
 
     // 프론트 화면 확인용 임시 데이터입니다. 추후 API 응답으로 교체하면 됩니다.
     const weddingNews = [
@@ -1461,27 +1159,6 @@ $(function () {
         }
     ];
 
-    // 프론트 화면 확인용 임시 데이터입니다. 추후 인기글/인기리뷰 API 응답으로 교체합니다.
-    const popularContent = {
-        post: [
-            { title: '결혼 준비, 예산은 어디서부터 잡아야 할까요?', views: 328, likes: 41 },
-            { title: '웨딩홀 투어 전에 꼭 확인할 체크리스트', views: 246, likes: 35 },
-            { title: '본식 스냅 업체 고를 때 중요했던 세 가지', views: 198, likes: 27 }
-        ],
-        review: [
-            { title: '채광이 정말 예뻤던 야외 웨딩 솔직 후기', views: 412, likes: 58 },
-            { title: '드레스 투어 세 곳 비교하고 결정한 후기', views: 365, likes: 49 },
-            { title: '메이크업 상담부터 본식까지 꼼꼼 리뷰', views: 289, likes: 43 }
-        ]
-    };
-
-    // 프론트 화면 확인용 입점 업체 상품 데이터입니다. 추후 상품 광고 API 응답으로 교체합니다.
-    const productAds = [
-        { company: '로즈브라이드', name: '2026 시그니처 드레스 패키지', discount: '20%', amount: '1,280,000원', symbol: '♕', tone: '' },
-        { company: '아르떼 주얼리', name: '프라이빗 웨딩링 커플 세트', discount: '15%', amount: '890,000원', symbol: '◇', tone: 'gold' },
-        { company: '메종 드 플라워', name: '본식 부케 · 부토니에 세트', discount: '10%', amount: '198,000원', symbol: '✿', tone: 'lilac' }
-    ];
-
     function showResponse(data) {
         if (!$responseBox.length) return;
         $responseBox.removeClass('error').text(JSON.stringify(data, null, 2));
@@ -1504,63 +1181,6 @@ $(function () {
         $('#celebrationMessage').text(item.message);
         $('#celebrationBottom').text(item.bottom).toggleClass('is-mine', item.isMine);
         $('#celebrationPosition').text((celebrationIndex + 1) + ' / ' + weddingNews.length);
-    }
-
-    function renderPopularContent(type) {
-        const items = popularContent[type] || [];
-        const $list = $('#popularList').empty();
-
-        items.forEach(function (item, index) {
-            $list.append(
-                $('<li>').append(
-                    $('<button>', {
-                        type: 'button',
-                        class: 'popular-item',
-                        'aria-label': (index + 1) + '위 ' + item.title
-                    }).append(
-                        $('<span>').addClass('popular-rank').text(index + 1),
-                        $('<span>').append(
-                            $('<span>').addClass('popular-item-title').text(item.title),
-                            $('<span>').addClass('popular-item-meta').append(
-                                $('<span>').text('조회 ' + item.views),
-                                $('<span>').text('♥ ' + item.likes)
-                            )
-                        )
-                    )
-                )
-            );
-        });
-    }
-
-    function renderProductAd() {
-        const item = productAds[productAdIndex];
-        if (!item || !$('#productAdName').length) return;
-
-        $('#productAdVisual').attr('class', 'product-ad-visual ' + item.tone).text(item.symbol);
-        $('#productAdCompany').text(item.company);
-        $('#productAdName').text(item.name);
-        $('#productAdDiscount').text(item.discount);
-        $('#productAdAmount').text(item.amount);
-        $('#productAdNumber').text(String(productAdIndex + 1).padStart(2, '0') + ' / ' + String(productAds.length).padStart(2, '0'));
-
-        const $dots = $('#productAdDots').empty();
-        productAds.forEach(function (_, index) {
-            $dots.append($('<span>').addClass('product-ad-dot' + (index === productAdIndex ? ' active' : '')));
-        });
-    }
-
-    function moveProductAd(direction) {
-        productAdIndex = (productAdIndex + direction + productAds.length) % productAds.length;
-        renderProductAd();
-        restartProductAdTimer();
-    }
-
-    function restartProductAdTimer() {
-        clearInterval(productAdTimer);
-        productAdTimer = setInterval(function () {
-            productAdIndex = (productAdIndex + 1) % productAds.length;
-            renderProductAd();
-        }, 5000);
     }
 
     function setupSideVideo() {
@@ -1806,23 +1426,6 @@ $(function () {
         renderCelebration();
     });
 
-    $('.popular-tab').on('click', function () {
-        const type = $(this).data('popular-type');
-        $('.popular-tab').removeClass('active').attr('aria-selected', 'false');
-        $(this).addClass('active').attr('aria-selected', 'true');
-        renderPopularContent(type);
-    });
-
-    $('#popularList').on('click', '.popular-item', function () {
-        showToast('상세 페이지 연결은 API 연동 시 추가됩니다.');
-    });
-
-    $('#productAdPrev').on('click', function () { moveProductAd(-1); });
-    $('#productAdNext').on('click', function () { moveProductAd(1); });
-    $('#productAdLink').on('click', function () {
-        showToast('상품 상세 연결은 API 연동 시 추가됩니다.');
-    });
-
     $('#demoNotificationBtn').on('click', function () {
         const $wrap = $('#demoNotificationWrap').toggleClass('open');
         $(this).attr('aria-expanded', $wrap.hasClass('open'));
@@ -1885,9 +1488,6 @@ $(function () {
     });
 
     renderCelebration();
-    renderPopularContent('post');
-    renderProductAd();
-    restartProductAdTimer();
     setupSideVideo();
     refreshAll(false);
 });

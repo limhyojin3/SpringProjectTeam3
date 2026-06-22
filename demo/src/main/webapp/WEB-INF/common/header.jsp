@@ -380,7 +380,7 @@
                                 <div class="notification-date">{{item.createdAt}}</div>
                             </div>
                             <div class="notification-footer">
-                                <a href="/notification/list.do">전체보기</a>
+                                <a href="/api/notification/list.do">전체보기</a>
                             </div>
                         </div>
                     </li>

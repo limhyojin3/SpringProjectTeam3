@@ -1107,8 +1107,8 @@
         p.original_price AS originalPrice,
         p.is_active AS isActive,
         p.img_url AS imgUrl,
-        p.pro_type AS proType,
-        p.tag AS tag,
+        p.large_category AS largeCategory,
+        p.medium_category AS mediumCategory,
         p.deposit AS deposit,
         c.com_name AS comName
     FROM product p
@@ -1124,6 +1124,13 @@
         <if test="status != null and status != ''">
             AND p.is_active = #{status}
         </if>
+        <if test="largeCategory != null and largeCategory != ''">
+				AND LARGE_CATEGORY = #{largeCategory}
+		</if>
+
+		<if test="mediumCategory != null and mediumCategory != ''">
+			AND MEDIUM_CATEGORY = #{mediumCategory}
+		</if>
     </where>
     ORDER BY p.product_no DESC
     LIMIT #{pageSize} OFFSET #{offSet}
@@ -1181,8 +1188,8 @@
             p.original_price   AS originalPrice,
             p.is_active        AS isActive,
             p.img_url          AS imgUrl,
-            p.pro_type         AS proType,
-            p.tag              AS tag,
+            p.large_category         AS largeCategory,
+            p.medium_category              AS mediumCategory,
             p.deposit          AS deposit,
             c.com_name         AS comName
         FROM product p
