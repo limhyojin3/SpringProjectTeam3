@@ -105,10 +105,6 @@
     <script>
         window.SESSION_ID = "${sessionScope.sessionId}";
     </script>
-    <script src="/js/company-components/product-list-component.js"></script>
-    <script src="/js/company-components/product-detail-component.js"></script>
-    <script src="/js/company-components/product-inquiry-component.js"></script>
-    <script src="/js/company-components/product-reservation-component.js"></script>
 
     <script src="/js/product-service.js"></script>
     <script src="/js/product-category-tag.js"></script>

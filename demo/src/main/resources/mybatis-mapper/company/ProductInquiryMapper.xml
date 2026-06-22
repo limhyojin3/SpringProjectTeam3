@@ -3,9 +3,10 @@
 
 <mapper namespace="com.example.demo.company.mapper.ProductInquiryMapper">
 
+	<!-- 💡 문의 등록 시 현재 시각(NOW())이 inquiry_date 컬럼에 자동 기입되도록 확장 -->
 	<insert id="insertInquiryProduct" parameterType="map">
-		INSERT INTO inquiry_product(user_id, company_no, product_no, inquiry_title, inquiry_contents, inquiry_ans)
-		VALUES(null, #{userId}, #{companyNo}, #{productNo}, #{inquiryTitle}, #{inquiryContents}, 0)
+		INSERT INTO inquiry_product(user_id, company_no, product_no, inquiry_title, inquiry_contents, inquiry_ans, inquiry_date)
+		VALUES(#{userId}, #{companyNo}, #{productNo}, #{inquiryTitle}, #{inquiryContents}, 0, NOW())
 	</insert>
 	
 	<select id="selectInquiryProductList" parameterType="map"
@@ -16,6 +17,8 @@
 			ip.product_no,
 			ip.inquiry_title,
 			ip.inquiry_contents,
+			/* 💡 관로 추가: 상품 문의 등록일시 추출 */
+			ip.inquiry_date,
 			p.product_name,
 			p.product_details,
 			p.img_url,
@@ -26,7 +29,7 @@
 			c.company_no,
 			c.com_name,
 			c.com_intro,
-			ip.inquiry_ans
+			IF((SELECT COUNT(*) FROM inquiry_product_answer WHERE inquiry_no = ip.inquiry_no) > 0, '1', '0') AS inquiry_ans
 		FROM inquiry_product ip
 		LEFT JOIN product p ON ip.product_no = p.product_no
 		LEFT JOIN company c ON p.company_no = c.company_no
@@ -35,9 +38,10 @@
 		) 
 	</select>
 	
+	<!-- 💡 업체 답변 등록 시 현재 시각(NOW())이 answer_date 컬럼에 자동 기입되도록 확장 -->
 	<insert id="insertProductInquiryAnswer" parameterType="map">
-		INSERT INTO inquiry_product_answer(inquiry_no, answer_contents, ans_user_id)
-		VALUES(null, #{inquiryNo}, #{answerContents}, #{ansUserId})
+		INSERT INTO inquiry_product_answer(inquiry_no, answer_contents, ans_user_id, answer_date)
+		VALUES(#{inquiryNo}, #{answerContents}, #{ansUserId}, NOW())
 	</insert>
 	
 	<update id="updateInquiryAnsStatus" parameterType="map">
@@ -48,15 +52,23 @@
 	
 	<select id="selectInquiryAnsYn" parameterType="map"
 		resultType="com.example.demo.company.model.ProductInquiry">
-		SELECT ip.inquiry_no, ip.inquiry_ans, ipa.answer_no, ipa.answer_contents, ipa.ans_user_id 
+		SELECT 
+			ip.inquiry_no, 
+			ip.inquiry_ans, 
+			ipa.answer_no, 
+			ipa.answer_contents, 
+			ipa.ans_user_id,
+			/* 💡 관로 추가: 답변 일시 추출 */
+			ipa.answer_date
 		FROM inquiry_product ip
 		LEFT JOIN inquiry_product_answer ipa ON ip.inquiry_no = ipa.inquiry_no 
 		WHERE ip.inquiry_no = #{inquiryNo}
 	</select>
 
+	<!-- 💡 업체 답변 수정 시 수정 시각이 업데이트되도록 확장 -->
 	<update id="updateProductInquiryAnswer" parameterType="map">
 		UPDATE inquiry_product_answer
-		SET answer_contents = #{answerContents}, ans_user_id = #{ansUserId}
+		SET answer_contents = #{answerContents}, ans_user_id = #{ansUserId}, answer_date = NOW()
 		WHERE inquiry_no = #{inquiryNo}
 	</update>
 
@@ -67,7 +79,9 @@
 			p.product_no,
 			ip.inquiry_title,
 			ip.inquiry_contents,
-			ip.inquiry_ans,
+			IF((SELECT COUNT(*) FROM inquiry_product_answer WHERE inquiry_no = ip.inquiry_no) > 0, '1', '0') AS inquiry_ans,
+			/* 💡 관로 추가: 나의 문의 내역 화면으로 보낼 등록일시 데이터 추출 */
+			ip.inquiry_date,
 			p.product_name,
 			p.product_details,
 			p.original_price,
@@ -76,11 +90,18 @@
 		FROM inquiry_product ip
 		LEFT JOIN product p ON ip.product_no = p.product_no
 		WHERE ip.user_id = #{userId}
+		/* 💡 코어 타격: 유저님이 명시해주신 '가장 최신인게 가장 위에 맨 앞으로 정렬' 정수 매커니즘 실장 */
+		ORDER BY ip.inquiry_date DESC
 	</select>
 
 	<select id="selectInquiry1Answer" parameterType="map"
 		resultType="com.example.demo.company.model.ProductInquiry">
-		SELECT ip.inquiry_no, c.user_id, ipa.answer_contents 
+		SELECT 
+			ip.inquiry_no, 
+			c.user_id, 
+			ipa.answer_contents,
+			/* 💡 관로 추가: 문의 상세보기 창으로 배달될 업체 답변 일시 데이터 추출 */
+			ipa.answer_date 
 		FROM inquiry_product ip
 		LEFT JOIN company c ON ip.company_no = c.company_no
 		LEFT JOIN inquiry_product_answer ipa ON ip.inquiry_no = ipa.inquiry_no

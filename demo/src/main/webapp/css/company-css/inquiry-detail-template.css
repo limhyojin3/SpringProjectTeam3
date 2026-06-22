@@ -78,22 +78,31 @@
 	margin-bottom: 25px;
 }
 
+/* 💡 이사 완료: 리스트 파일에서 이쪽 전용 서랍으로 이사한 질문 상단 가로 플렉스 엔진 */
 .inquiry-box-header {
 	background: #f8f9fa;
 	padding: 15px 20px; 
 	border-bottom: 1px solid #eee; 
 	display: flex; 
-	justify-content: space-between;
 	align-items: center;
 }
 
+/* 번호 텍스트와 글자가 바짝 엉겨 붙어 겹치던 타이포그래피 공간 장애 해소 마진 */
 .inquiry-box-label {
 	font-weight: bold; 
 	color: #555;
+	margin-right: 10px;
 }
 
 .inquiry-box-number {
 	font-size: 0.9rem; 
+	color: #999;
+}
+
+/* 💡 이사 완료: 상세보기 내 나의 문의 우측 끝 정렬용 작성일시 타임스탬프 */
+.inquiry-box-date {
+	margin-left: auto;
+	font-size: 0.85rem;
 	color: #999;
 }
 
@@ -150,6 +159,7 @@
 	margin-bottom: 20px;
 }
 
+/* 💡 이사 및 통합 완결: 상세보기 하단 답변자 정보 및 답변 일시 우측 정렬 전용 서랍 모듈 */
 .answer-body-meta {
 	text-align: right;
 	font-size: 0.9rem; 

@@ -85,7 +85,23 @@
     <div class="my-res-container">
         <button @click="$emit('back')" class="btn-sub-action">← 뒤로가기</button>
         <h2 class="list-title">나의 예약 내역</h2>
-        <div v-for="(r, index) in reservationList" :key="index" class="mini-ticket" @click="$emit('go-detail', r)">
+        
+        <div class="my-res-tab-bar">
+            <button type="button" @click="currentTab = 'ALL'" :class="['res-tab-capsule-btn all', { active: currentTab === 'ALL' }]">
+                전체
+            </button>
+            <button type="button" @click="currentTab = 'ING'" :class="['res-tab-capsule-btn ing', { active: currentTab === 'ING' }]">
+                예약 진행중
+            </button>
+            <button type="button" @click="currentTab = 'DONE'" :class="['res-tab-capsule-btn done', { active: currentTab === 'DONE' }]">
+                이용 완료
+            </button>
+            <button type="button" @click="currentTab = 'CANCEL'" :class="['res-tab-capsule-btn cancel', { active: currentTab === 'CANCEL' }]">
+                취소된 예약
+            </button>
+        </div>
+
+        <div v-for="(r, index) in filteredAndSortedList" :key="index" class="mini-ticket" @click="$emit('go-detail', r)">
             <div class="ticket-img">
                 <img :src="r.imgUrl" :alt="r.productName">
             </div>
@@ -96,7 +112,7 @@
                 </div>
 
                 <h3 class="product-name">{{ r.productName }}</h3>
-                <p class="res-date-time">예약 날짜/시간 : {{ r.useDate }} {{ r.useTime.slice(0, 5) + ':00'}}</p>
+                <p class="res-date-time">예약 날짜/시간 : {{ r.useDate }} {{ r.useTime.slice(0, 5) + ':00' }}</p>
                 <div class="status-message" :class="r.resStatus">
                     <span v-if="r.resStatus === 'WAIT'">⚠️ 30분 이내에 결제하지 않으면 취소됩니다.</span>
                     <span v-else-if="r.resStatus === 'CONFIRM'">✅ 예약이 확정되었습니다.</span>
@@ -169,3 +185,6 @@
         </div>
     </div>
 </script>
+<script src="${pageContext.request.contextPath}/js/company-components/product-reservation-payment-component.js"></script>
+<script src="${pageContext.request.contextPath}/js/company-components/my-reservation-list-component.js"></script>
+<script src="${pageContext.request.contextPath}/js/company-components/reservation-detail-component.js"></script>

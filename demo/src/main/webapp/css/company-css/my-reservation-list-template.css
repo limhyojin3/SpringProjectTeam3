@@ -2,13 +2,14 @@
    [my-reservation-list-template] 나의 예약 내역 목록 화면 전용 스타일 세트
    ========================================================================== */
 
-/* 공통 서브 액션 버튼 (뒤로가기) */
+/* 공통 서브 액션 버튼 (뒤로가기) - 💡 리팩토링: 하단 여백 마진을 인라인 대신 정식 규격으로 편입 */
 .btn-sub-action {
 	padding: 8px 15px;
 	cursor: pointer;
 	border: 1px solid #ccc;
 	background: #fff;
 	border-radius: 4px;
+	margin-bottom: 20px;
 }
 
 /* 나의 예약 내역 리스트 전체 컨테이너 */
@@ -23,6 +24,47 @@
 	margin-bottom: 25px;
 	font-weight: bold;
 	color: #333;
+}
+
+/* 💡 프리미엄 4단 탭 필터 바 레이어 클래스 서랍 신설 */
+.my-res-tab-bar {
+	display: flex;
+	gap: 8px;
+	margin-bottom: 25px;
+	border-bottom: 2px solid #fff0f3;
+	padding-bottom: 12px;
+	flex-wrap: wrap;
+}
+
+/* 💡 4단 프리미엄 캡슐 버튼 공통 외형 서랍 신설 */
+.res-tab-capsule-btn {
+	padding: 8px 18px;
+	border-radius: 20px;
+	border: 1px solid #ffe3e8;
+	background: #fff;
+	font-weight: 700;
+	font-size: 13.5px;
+	cursor: pointer;
+	transition: all 0.25s ease;
+}
+
+/* 💡 무분별한 인라인 색상 코드를 걷어내기 위한 역할별 서브 클래스(Modifier) 매핑 */
+.res-tab-capsule-btn.all { color: #777; }
+.res-tab-capsule-btn.ing { color: #ff66b2; }
+.res-tab-capsule-btn.done { color: #4dadff; }
+.res-tab-capsule-btn.cancel { color: #b5abab; }
+
+/* 💡 캡슐 버튼 호버 및 활성화(Active) 인터랙션 이식 */
+.res-tab-capsule-btn:hover {
+	background: #fff5f7 !important;
+	transform: translateY(-1px);
+}
+
+.res-tab-capsule-btn.active {
+	background: #ff4da6 !important;
+	color: #ffffff !important;
+	border-color: #ff4da6 !important;
+	box-shadow: 0 4px 12px rgba(255, 77, 166, 0.3) !important;
 }
 
 /* 🎫 간략 버전 티켓 카드 기본 스타일 및 hover 모션 */

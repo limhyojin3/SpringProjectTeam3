@@ -68,12 +68,19 @@
         </div>
 
         <div v-if="inquiryList && inquiryList.length > 0">
-            <div v-for="(inquiry, index) in inquiryList" :key="index" @click="$emit('go-detail', inquiry)" class="inquiryTicket list-view-ticket">
+            <div v-for="(inquiry, index) in paginatedInquiryList" :key="index" @click="$emit('go-detail', inquiry)" class="inquiryTicket list-view-ticket">
                 <div class="inquiry-img-box">
                     <img :src="inquiry.imgUrl" alt="상품이미지">
                 </div>
                 <div class="inquiry-info-box">
-                    <div class="inquiry-prod-name">상품명: {{ inquiry.productName }}</div>
+                    <div class="inquiry-info-top-row">
+                        <div class="inquiry-prod-name">상품명: {{ inquiry.productName }}</div>
+                        
+                        <div v-if="inquiry.inquiryDate" class="inquiry-date-text">
+                            문의일시: {{ inquiry.inquiryDate.slice(0, 16) }}
+                        </div>
+                    </div>
+                    
                     <div class="inquiry-title-text">{{ inquiry.inquiryTitle }}</div>
                     <div class="inquiry-content-text">{{ inquiry.inquiryContents }}</div>
                 </div>
@@ -81,6 +88,21 @@
                     <span v-if="inquiry.inquiryAns === '1'" class="badge-ans-complete">답변 완료</span>
                     <span v-else class="badge-ans-wait">답변 대기</span>
                 </div>
+            </div>
+
+            <div class="inquiry-pagination">
+                <button type="button" v-if="currentPage > 1 && totalPages > 2" @click="fnPrevPage" class="page-arrow-btn">
+                    &lt;
+                </button>
+                
+                <button type="button" v-for="page in visiblePages" :key="page" @click="fnChangePage(page)" 
+                    :class="['page-num-btn', { active: page === currentPage }]">
+                    {{ page }}
+                </button>
+                
+                <button type="button" v-if="currentPage < totalPages && totalPages > 2" @click="fnNextPage" class="page-arrow-btn">
+                    &gt;
+                </button>
             </div>
         </div>
         <div v-else class="inquiry-empty-box">
@@ -108,6 +130,9 @@
             <div class="inquiry-box-header">
                 <span class="inquiry-box-label">나의 문의</span>
                 <span class="inquiry-box-number">No. {{ localInquiry.inquiryNo }}</span>
+                <span v-if="localInquiry.inquiryDate" class="inquiry-box-date">
+                    작성일시: {{ localInquiry.inquiryDate.slice(0, 16) }}
+                </span>
             </div>
             <div class="inquiry-box-body">
                 <h3 class="inquiry-body-title">Q. {{ localInquiry.inquiryTitle }}</h3>
@@ -123,8 +148,10 @@
                 <div class="answer-body-text">
                     {{ localInquiry.answerContents || '답변 내용을 불러오는 중입니다.' }}
                 </div>
+                
                 <div class="answer-body-meta">
                     답변자: {{ localInquiry.ansCompany || '관리자' }}
+                    <span v-if="localInquiry.answerDate"> | 답변일시: {{ localInquiry.answerDate.slice(0, 16) }}</span>
                 </div>
             </div>
         </div>
@@ -134,3 +161,4 @@
         </div>
     </div>
 </script>
+<script src="${pageContext.request.contextPath}/js/company-components/product-inquiry-component.js"></script>

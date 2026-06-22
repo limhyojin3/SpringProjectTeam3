@@ -45,7 +45,7 @@
 	color: #333;
 }
 
-/* 문의 티켓 개별 아이템 카드 확장 레이아웃 */
+/* 각 카드마다 세로 길이를 135px 절대 고정값으로 통제 */
 .list-view-ticket {
 	display: flex; 
 	border: 1px solid #eee;
@@ -53,12 +53,14 @@
 	margin-bottom: 15px; 
 	overflow: hidden; 
 	background: #fff;
+	height: 135px;
 }
 
-/* 왼쪽 상품 썸네일 이미지 영역 */
+/* 왼쪽 썸네일 영역 공백 제거 및 비율 유지 스케일 잠금 */
 .inquiry-img-box {
-	width: 120px;
-	height: 120px; 
+	width: 135px;
+	height: 135px; 
+	min-width: 135px;
 	background: #f9f9f9;
 }
 
@@ -75,28 +77,51 @@
 	display: flex; 
 	flex-direction: column;
 	justify-content: center;
+	overflow: hidden; 
+}
+
+/* 상품명과 문의일시를 한 줄에 나란히 배치하고 양끝 마진을 가동하여 완벽한 좌우 대칭 구도 확립 */
+.inquiry-info-top-row {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	width: 100%;
+	margin-bottom: 6px;
 }
 
 .inquiry-prod-name {
 	font-size: 0.85rem;
 	color: #888; 
-	margin-bottom: 5px;
+	margin: 0;
+}
+
+/* 💡 아키텍처 정화: 목록 화면에만 쓰이는 상단 우측 문의일시 텍스트 정렬 스타일만 명확히 잔류 */
+.inquiry-date-text {
+	font-size: 0.82rem;
+	color: #aaaaaa;
+	margin: 0;
 }
 
 .inquiry-title-text {
 	font-size: 1.1rem;
 	font-weight: bold;
 	color: #333; 
-	margin-bottom: 8px;
+	margin-bottom: 6px;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
 }
 
+/* 문의 내용은 무조건 단 한 줄만 정밀 노출하고 말줄임표 처리 */
 .inquiry-content-text {
 	font-size: 0.95rem;
 	color: #666; 
+	display: block;
 	overflow: hidden; 
 	text-overflow: ellipsis; 
 	white-space: nowrap; 
-	max-width: 500px;
+	width: 100%;
+	max-width: 520px;
 }
 
 /* 오른쪽 답변 상태 정렬 박스 영역 */
@@ -110,23 +135,27 @@
 	background: #fafafa;
 }
 
-/* 답변 처리 결과 고유 배지 라벨 */
+/* 답변 처리 결과 고유 배지 라벨: 프리미엄 모던 스펙 */
 .badge-ans-complete {
-	color: #fff;
-	background: #333; 
-	padding: 4px 10px; 
-	border-radius: 20px; 
-	font-size: 0.8rem; 
-	margin-bottom: 10px;
+	color: #ffffff;
+	background: #2c2c2c; 
+	padding: 5px 12px; 
+	border-radius: 6px; 
+	font-size: 0.78rem; 
+	font-weight: 700;
+	letter-spacing: 0.5px; 
+	box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
 }
 
 .badge-ans-wait {
-	color: #ff1493;
-	border: 1px solid #ff1493; 
-	padding: 3px 9px; 
-	border-radius: 20px; 
-	font-size: 0.8rem;
-	margin-bottom: 10px;
+	color: #ff4da6;
+	background: #fff0f3; 
+	padding: 5px 12px; 
+	border-radius: 6px; 
+	font-size: 0.78rem;
+	font-weight: 700;
+	letter-spacing: 0.5px;
+	border: none; 
 }
 
 /* 내역 데이터가 존재하지 않을 때 표시되는 빈 데이터 공백 상자 */
@@ -134,4 +163,45 @@
 	text-align: center;
 	padding: 50px; 
 	color: #aaa;
+}
+
+/* ==========================================================================
+   나의 문의 내역 하단 스마트 페이징 네비게이션 바 전용 스타일 컴포넌트
+   ========================================================================== */
+.inquiry-pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 6px;
+    margin-top: 30px;
+    padding-top: 15px;
+}
+
+.page-num-btn, .page-arrow-btn {
+    width: 34px;
+    height: 34px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    border: 1px solid #ffe3e8;
+    background: #ffffff;
+    color: #777777;
+    font-weight: 700;
+    font-size: 13.5px;
+    cursor: pointer;
+    transition: all 0.25s ease;
+}
+
+.page-num-btn:hover, .page-arrow-btn:hover {
+    background: #fff5f7;
+    border-color: #ffb3d1;
+    color: #ff4da6;
+}
+
+.page-num-btn.active {
+    background: #ff4da6 !important;
+    color: #ffffff !important;
+    border-color: #ff4da6 !important;
+    box-shadow: 0 4px 10px rgba(255, 77, 166, 0.3);
 }
