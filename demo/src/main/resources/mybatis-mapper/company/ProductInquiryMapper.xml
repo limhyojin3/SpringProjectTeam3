@@ -5,7 +5,7 @@
 
 	<insert id="insertInquiryProduct" parameterType="map">
 		INSERT INTO inquiry_product(user_id, company_no, product_no, inquiry_title, inquiry_contents, inquiry_ans)
-		VALUES(null, #{userId}, #{companyNo}, #{productNo}, #{inquiryTitle}, #{inquiryContents}, 0)
+		VALUES(#{userId}, #{companyNo}, #{productNo}, #{inquiryTitle}, #{inquiryContents}, 0)
 	</insert>
 	
 	<select id="selectInquiryProductList" parameterType="map"
@@ -26,7 +26,8 @@
 			c.company_no,
 			c.com_name,
 			c.com_intro,
-			ip.inquiry_ans
+			/* 실제 답변 내역 데이터의 유무를 실시간 카운트하여 Vue의 엄격한 스트릭트 이퀄(=== '1')에 대응하도록 처리 */
+			IF((SELECT COUNT(*) FROM inquiry_product_answer WHERE inquiry_no = ip.inquiry_no) > 0, '1', '0') AS inquiry_ans
 		FROM inquiry_product ip
 		LEFT JOIN product p ON ip.product_no = p.product_no
 		LEFT JOIN company c ON p.company_no = c.company_no
@@ -37,7 +38,7 @@
 	
 	<insert id="insertProductInquiryAnswer" parameterType="map">
 		INSERT INTO inquiry_product_answer(inquiry_no, answer_contents, ans_user_id)
-		VALUES(null, #{inquiryNo}, #{answerContents}, #{ansUserId})
+		VALUES(#{inquiryNo}, #{answerContents}, #{ansUserId})
 	</insert>
 	
 	<update id="updateInquiryAnsStatus" parameterType="map">
@@ -67,7 +68,8 @@
 			p.product_no,
 			ip.inquiry_title,
 			ip.inquiry_contents,
-			ip.inquiry_ans,
+			/* 실제 답변 테이블의 행 존재 여부를 기준으로 판별하여 문자열 '1' 또는 '0'으로 안전 변환 송출 */
+			IF((SELECT COUNT(*) FROM inquiry_product_answer WHERE inquiry_no = ip.inquiry_no) > 0, '1', '0') AS inquiry_ans,
 			p.product_name,
 			p.product_details,
 			p.original_price,

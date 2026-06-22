@@ -135,3 +135,46 @@
 	padding: 50px; 
 	color: #aaa;
 }
+
+/* ==========================================================================
+   나의 문의 내역 하단 스마트 페이징 네비게이션 바 전용 스타일 컴포넌트
+   ========================================================================== */
+.inquiry-pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 6px;
+    margin-top: 30px;
+    padding-top: 15px;
+}
+
+/* 숫자 버튼 및 화살표 버튼 공통 외형 */
+.page-num-btn, .page-arrow-btn {
+    width: 34px;
+    height: 34px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    border: 1px solid #ffe3e8;
+    background: #ffffff;
+    color: #777777;
+    font-weight: 700;
+    font-size: 13.5px;
+    cursor: pointer;
+    transition: all 0.25s ease;
+}
+
+.page-num-btn:hover, .page-arrow-btn:hover {
+    background: #fff5f7;
+    border-color: #ffb3d1;
+    color: #ff4da6;
+}
+
+/* 🎯 현재 보고 있는 활성화 페이지의 메리뷰 시그니처 하이라이트 테마 */
+.page-num-btn.active {
+    background: #ff4da6 !important;
+    color: #ffffff !important;
+    border-color: #ff4da6 !important;
+    box-shadow: 0 4px 10px rgba(255, 77, 166, 0.3);
+}

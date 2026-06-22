@@ -68,7 +68,7 @@
         </div>
 
         <div v-if="inquiryList && inquiryList.length > 0">
-            <div v-for="(inquiry, index) in inquiryList" :key="index" @click="$emit('go-detail', inquiry)" class="inquiryTicket list-view-ticket">
+            <div v-for="(inquiry, index) in paginatedInquiryList" :key="index" @click="$emit('go-detail', inquiry)" class="inquiryTicket list-view-ticket">
                 <div class="inquiry-img-box">
                     <img :src="inquiry.imgUrl" alt="상품이미지">
                 </div>
@@ -81,6 +81,21 @@
                     <span v-if="inquiry.inquiryAns === '1'" class="badge-ans-complete">답변 완료</span>
                     <span v-else class="badge-ans-wait">답변 대기</span>
                 </div>
+            </div>
+
+            <div class="inquiry-pagination">
+                <button type="button" v-if="currentPage > 1 && totalPages > 2" @click="fnPrevPage" class="page-arrow-btn">
+                    &lt;
+                </button>
+                
+                <button type="button" v-for="page in visiblePages" :key="page" @click="fnChangePage(page)" 
+                    :class="['page-num-btn', { active: page === currentPage }]">
+                    {{ page }}
+                </button>
+                
+                <button type="button" v-if="currentPage < totalPages && totalPages > 2" @click="fnNextPage" class="page-arrow-btn">
+                    &gt;
+                </button>
             </div>
         </div>
         <div v-else class="inquiry-empty-box">
@@ -123,7 +138,7 @@
                 <div class="answer-body-text">
                     {{ localInquiry.answerContents || '답변 내용을 불러오는 중입니다.' }}
                 </div>
-                <div class="answer-body-meta">
+                <div class="answer-box-body-meta" style="font-size: 0.85rem; color: #999; margin-top: 10px; text-align: right;">
                     답변자: {{ localInquiry.ansCompany || '관리자' }}
                 </div>
             </div>
