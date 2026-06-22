@@ -21,6 +21,7 @@ import com.example.demo.member.dao.GeminiService;
 import com.example.demo.member.dao.MemberService;
 import com.example.demo.member.dao.SmsService;
 import com.example.demo.member.model.Member;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 
 import jakarta.servlet.http.HttpSession;
@@ -205,6 +206,13 @@ public class MemberController {
 	    return new Gson().toJson(resultMap);
 	}
 	// 3.마이페이지
+	// 3-0. 마이페이지 프로필 이미지 변경
+	@PostMapping("/saveProfileImg.dox")
+	@ResponseBody
+	public HashMap<String, Object> saveProfileImg(@RequestParam HashMap<String, Object> map, HttpSession session) {
+	    map.put("userId", session.getAttribute("sessionId"));
+	    return memberService.saveProfileImg(map);
+	}
 	// 3-1. 마이페이지 메인
 	@RequestMapping("/userMyPage.do") // 주소 
 	public String userMyPage(HttpSession session,Model model) throws Exception{
@@ -741,7 +749,33 @@ public class MemberController {
 		    map.put("userId", userId);
 		    return memberService.decreasePass(map);
 		}
-	
+		
+	// 사용자 프로필 조회
+		@GetMapping("/userProfile.do")
+		public String userProfile(@RequestParam String userId, Model model) {
+		    Member profile = memberService.getUserProfile(userId);
+		    model.addAttribute("profile", profile);
+		    model.addAttribute("targetUserId", userId);
+		    return "member/userProfile";
+		}
+		
+		@RequestMapping(value = "/userProfileData.dox", method = RequestMethod.GET)
+		@ResponseBody
+		public HashMap<String, Object> userProfileData(
+		        @RequestParam String userId,
+		        @RequestParam(defaultValue = "1") int reviewPage,
+		        @RequestParam(defaultValue = "1") int postPage,
+		        @RequestParam(defaultValue = "1") int commentPage) {
+		    HashMap<String, Object> result = new HashMap<>();
+		    result.put("reviewList", memberService.getUserReviewList(userId, reviewPage));
+		    result.put("postList", memberService.getUserPostList(userId, postPage));
+		    result.put("commentList", memberService.getUserCommentList(userId, commentPage));
+		    result.put("reviewTotal", memberService.getUserReviewCount(userId));
+		    result.put("postTotal", memberService.getUserPostCount(userId));
+		    result.put("commentTotal", memberService.getUserCommentCount(userId));
+		    return result;
+		}
+	//
 	// *메인 홈 출력* 
 		@GetMapping("/mainPostList.dox")
 		@ResponseBody

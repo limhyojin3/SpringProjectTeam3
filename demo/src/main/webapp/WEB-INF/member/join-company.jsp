@@ -412,6 +412,25 @@
         .terms-modal-confirm:hover {
              opacity: 0.88; 
         }
+        .pwd-strength-bar {
+            width: 100%;
+            height: 4px;
+            background: #eee;
+            border-radius: 4px;
+            margin-top: 4px;
+        }
+        .pwd-strength-fill {
+            height: 100%;
+            border-radius: 4px;
+            transition: width 0.3s;
+        }
+        .pwd-strength-fill.weak { width: 33%; background: #ff4d4d; }
+        .pwd-strength-fill.normal { width: 66%; background: #ffaa00; }
+        .pwd-strength-fill.strong { width: 100%; background: #4caf50; }
+
+        .weak { color: #ff4d4d; }
+        .normal { color: #ffaa00; }
+        .strong { color: #4caf50; }
     </style>
 </head>
 <body>
@@ -600,6 +619,10 @@
                                 :disabled="!(isVerified && isBizVerified)"
                                 placeholder="영문+숫자 8자 이상">
                         </div>
+                        <!-- ✅ 추가 -->
+                        <div class="msg-box" :class="{'show': pwdStrengthMsg, 'disabled': !(isVerified && isBizVerified)}">
+                            <span :class="pwdStrengthClass">{{ pwdStrengthMsg }}</span>
+                        </div>
                         <div class="form-input" :class="{'disabled': !(isVerified && isBizVerified)}">
                             <input type="password" v-model="info.passwordConfirm"
                                 :disabled="!(isVerified && isBizVerified)"
@@ -749,7 +772,8 @@
 
                 isTermsAgreed: false, // 약관 동의
                 showTermsModal: false, // 약관 동의 모달
-
+                pwdStrengthMsg: '',
+                pwdStrengthClass: '',
             };
         },
         methods: {
@@ -1064,6 +1088,26 @@
             filterPassword: function() {
                 // 한글, 띄어쓰기 제거
                 this.info.password = this.info.password.replace(/[ㄱ-ㅎㅏ-ㅣ가-힣\s]/g, '');
+
+                 // 보안 단계 체크
+                let pwd = this.info.password;
+                let hasLetter = /[a-zA-Z]/.test(pwd);
+                let hasNumber = /[0-9]/.test(pwd);
+                let hasSpecial = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(pwd);
+                
+                if (!pwd) {
+                    this.pwdStrengthMsg = '';
+                    this.pwdStrengthClass = '';
+                } else if (pwd.length < 8 || !hasLetter || !hasNumber) {
+                    this.pwdStrengthMsg = '🔴 취약 - 영문+숫자 8자리 이상 입력해주세요.';
+                    this.pwdStrengthClass = 'weak';
+                } else if (hasSpecial) {
+                    this.pwdStrengthMsg = '🟢 강함 - 안전한 비밀번호입니다.';
+                    this.pwdStrengthClass = 'strong';
+                } else {
+                    this.pwdStrengthMsg = '🟡 보통 - 특수문자 추가 시 보안이 강해져요.';
+                    this.pwdStrengthClass = 'normal';
+                }
             },
             fnSearchAddress: function() {
                 new daum.Postcode({

@@ -297,6 +297,18 @@ public class MemberService {
 	}
 	
 	// * 유저 마이페이지 *
+	// 프로필 이미지 변경
+	public HashMap<String, Object> saveProfileImg(HashMap<String, Object> map) {
+	    HashMap<String, Object> resultMap = new HashMap<>();
+	    try {
+	        memberMapper.updateProfileImg(map);
+	        resultMap.put("result", "success");
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	        resultMap.put("result", "fail");
+	    }
+	    return resultMap;
+	}
 	// 내 정보 수정 - 비밀번호 확인
 	public HashMap<String, Object> checkPassword(HashMap<String, Object> map) {
 	    HashMap<String, Object> resultMap = new HashMap<String, Object>();
@@ -679,6 +691,45 @@ public class MemberService {
 	    String encodedPw = passwordEncoder.encode((String) map.get("newPw"));
 	    map.put("newPw", encodedPw);
 	    return memberMapper.updatePassword(map);
+	}
+	
+	// 사용자 프로필 조회
+	public Member getUserProfile(String userId) {
+	    return memberMapper.selectUserProfile(userId);
+	}
+	// 사용자가 쓴 리뷰
+	public List<Member> getUserReviewList(String userId, int page) {
+	    HashMap<String, Object> map = new HashMap<>();
+	    map.put("userId", userId);
+	    map.put("pageSize", 5);
+	    map.put("offset", (page - 1) * 5);
+	    return memberMapper.selectUserReviewList(map);
+	}
+	// 사용자가 쓴 게시글
+	public List<Member> getUserPostList(String userId, int page) {
+	    HashMap<String, Object> map = new HashMap<>();
+	    map.put("userId", userId);
+	    map.put("pageSize", 5);
+	    map.put("offset", (page - 1) * 5);
+	    return memberMapper.selectUserPostList(map);
+	}
+	// 사용자가 쓴 댓글
+	public List<Member> getUserCommentList(String userId, int page) {
+	    HashMap<String, Object> map = new HashMap<>();
+	    map.put("userId", userId);
+	    map.put("pageSize", 5);
+	    map.put("offset", (page - 1) * 5);
+	    return memberMapper.selectUserCommentList(map);
+	}
+	// 페이징
+	public int getUserReviewCount(String userId) {
+	    return memberMapper.selectUserReviewCount(userId);
+	}
+	public int getUserPostCount(String userId) {
+	    return memberMapper.selectUserPostCount(userId);
+	}
+	public int getUserCommentCount(String userId) {
+	    return memberMapper.selectUserCommentCount(userId);
 	}
 	
 	// *메인 홈 출력* 
