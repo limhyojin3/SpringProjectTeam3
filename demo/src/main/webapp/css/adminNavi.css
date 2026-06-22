@@ -58,12 +58,12 @@ body {
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	background: #FFFFFF;
+	background: #f8f9fc;
 	font-size: 16px;
 	font-weight: 700;
 	color: #30344F;
 	transition: .28s ease;
-	border: 1px solid #e8edf2;
+	border: 1px solid #f8f9fc;
 }
 
 /* hover 내부 버튼 */

@@ -7,7 +7,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>알림 | MarryView</title>
 
-    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/common.css">
 
     <style>
         :root {
@@ -22,9 +24,11 @@
             --success: #38a169;
             --shadow: 0 18px 50px rgba(115, 55, 72, 0.10);
             --side-width: clamp(150px, calc((100vw - 1040px) / 2 - 34px), 230px);
+            --side-gap: 34px;
         }
 
         * { box-sizing: border-box; }
+        [v-cloak] { display: none !important; }
 
         body {
             min-height: 100vh;
@@ -39,7 +43,7 @@
 
         button, select { font: inherit; }
 
-        button:focus-visible, select:focus-visible, .notification-item:focus-visible {
+        button:focus-visible, select:focus-visible, .notification-page-item:focus-visible {
             outline: 3px solid rgba(255, 77, 109, .22);
             outline-offset: 2px;
         }
@@ -92,7 +96,7 @@
         }
 
         .side-visual--left {
-            left: calc(50% - 480px - var(--side-width) - 14px);
+            left: calc(50% - 480px - var(--side-width) - var(--side-gap));
             background-image: linear-gradient(145deg, #f5d9e0, #efc5d0);
         }
 
@@ -141,7 +145,7 @@
         .product-ad-rail {
             position: fixed;
             top: calc(50% + min(27.5vh, 260px) + 14px);
-            left: calc(50% - 480px - var(--side-width) - 14px);
+            left: calc(50% - 480px - var(--side-width) - var(--side-gap));
             z-index: 1;
             display: none;
             width: var(--side-width);
@@ -269,12 +273,12 @@
 
         .wedding-celebration-rail {
             position: fixed;
-            top: 50%;
-            right: calc(50% - 480px - var(--side-width) - 14px);
+            top: calc(50% + 24px);
+            right: calc(50% - 480px - var(--side-width) - var(--side-gap));
             z-index: 0;
             display: none;
             width: var(--side-width);
-            max-height: calc(100vh - 28px);
+            max-height: calc(100vh - 64px);
             overflow-y: auto;
             padding: 2px;
             scrollbar-width: none;
@@ -762,7 +766,7 @@
 
         .notification-list { min-height: 250px; }
 
-        .notification-item {
+        .notification-page-item {
             position: relative;
             display: grid;
             grid-template-columns: 44px minmax(0, 1fr) auto;
@@ -779,12 +783,12 @@
             transition: background .18s ease;
         }
 
-        .notification-item:last-child { border-bottom: 0; }
-        .notification-item:hover { background: #fff9fa; }
-        .notification-item.unread { background: linear-gradient(90deg, #fff4f6 0, #fff 44%); }
-        .notification-item.unread:hover { background: #fff4f6; }
+        .notification-page-item:last-child { border-bottom: 0; }
+        .notification-page-item:hover { background: #fff9fa; }
+        .notification-page-item.unread { background: linear-gradient(90deg, #fff4f6 0, #fff 44%); }
+        .notification-page-item.unread:hover { background: #fff4f6; }
 
-        .notification-item.unread::before {
+        .notification-page-item.unread::before {
             position: absolute;
             top: 0;
             bottom: 0;
@@ -805,7 +809,7 @@
             font-size: 20px;
         }
 
-        .notification-item:not(.unread) .type-icon {
+        .notification-page-item:not(.unread) .type-icon {
             background: #edf8f1;
             color: var(--success);
             font-weight: 900;
@@ -822,7 +826,7 @@
             box-shadow: 0 0 0 4px rgba(255, 77, 109, .10);
         }
 
-        .notification-content {
+        .notification-page-content {
             margin: 0;
             color: #453e42;
             font-size: 14px;
@@ -843,7 +847,7 @@
             white-space: nowrap;
         }
 
-        .notification-item.unread .read-label { background: var(--primary-soft); color: var(--primary); }
+        .notification-page-item.unread .read-label { background: var(--primary-soft); color: var(--primary); }
 
         .state-view {
             display: grid;
@@ -953,156 +957,6 @@
             letter-spacing: .2em;
         }
 
-        .header-notification-demo {
-            margin-top: 34px;
-            padding: 22px;
-            border: 1px dashed rgba(255, 77, 109, .24);
-            border-radius: 18px;
-            background: rgba(255, 255, 255, .58);
-        }
-
-        .demo-label {
-            margin-bottom: 14px;
-            color: var(--muted);
-            font-size: 12px;
-            font-weight: 700;
-        }
-
-        .demo-header-bar {
-            display: flex;
-            min-height: 64px;
-            align-items: center;
-            justify-content: flex-end;
-            padding: 0 20px;
-            border-radius: 15px;
-            background: #fff;
-            box-shadow: 0 9px 28px rgba(115, 55, 72, .09);
-        }
-
-        .demo-notification-wrap { position: relative; list-style: none; }
-
-        .demo-notification-wrap::after {
-            position: absolute;
-            top: 100%;
-            right: 0;
-            z-index: 4;
-            width: 100%;
-            height: 8px;
-            content: "";
-        }
-
-        .demo-notification-btn {
-            position: relative;
-            display: grid;
-            width: 42px;
-            height: 42px;
-            place-items: center;
-            border: 0;
-            border-radius: 50%;
-            background: var(--primary-soft);
-            color: var(--primary);
-            cursor: pointer;
-            transition: background .18s ease, transform .18s ease;
-        }
-
-        .demo-notification-btn:hover { background: #ffe1e8; transform: translateY(-1px); }
-        .demo-notification-btn svg { width: 20px; height: 20px; }
-
-        .demo-badge {
-            position: absolute;
-            top: -4px;
-            right: -5px;
-            display: grid;
-            min-width: 19px;
-            height: 19px;
-            padding: 0 4px;
-            place-items: center;
-            border: 2px solid #fff;
-            border-radius: 99px;
-            background: var(--primary);
-            color: #fff;
-            font-size: 9px;
-            font-weight: 800;
-        }
-
-        .demo-notification-dropdown {
-            position: absolute;
-            top: calc(100% + 4px);
-            right: 0;
-            z-index: 5;
-            width: min(360px, calc(100vw - 52px));
-            overflow: hidden;
-            border: 1px solid var(--line);
-            border-radius: 16px;
-            background: #fff;
-            box-shadow: 0 20px 55px rgba(74, 39, 49, .18);
-            opacity: 0;
-            pointer-events: none;
-            transform: translateY(-7px);
-            transition: opacity .18s ease, transform .18s ease;
-        }
-
-        .demo-notification-wrap:hover .demo-notification-dropdown,
-        .demo-notification-wrap:focus-within .demo-notification-dropdown,
-        .demo-notification-wrap.open .demo-notification-dropdown {
-            opacity: 1;
-            pointer-events: auto;
-            transform: translateY(0);
-        }
-
-        .demo-dropdown-head {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 16px 17px;
-            border-bottom: 1px solid var(--line);
-        }
-
-        .demo-dropdown-title { font-size: 15px; font-weight: 800; }
-
-        .demo-read-all {
-            padding: 5px;
-            border: 0;
-            background: transparent;
-            color: var(--primary);
-            cursor: pointer;
-            font-size: 11px;
-            font-weight: 800;
-        }
-
-        .demo-dropdown-list { max-height: 310px; overflow-y: auto; }
-
-        .demo-dropdown-item {
-            display: block;
-            width: 100%;
-            padding: 14px 17px;
-            border: 0;
-            border-bottom: 1px solid var(--line);
-            background: #fff;
-            color: inherit;
-            text-align: left;
-            cursor: pointer;
-        }
-
-        .demo-dropdown-item:hover { background: #fff7f9; }
-        .demo-dropdown-item.unread { background: #fff1f4; }
-        .demo-dropdown-item.unread:hover { background: #ffe8ed; }
-        .demo-item-content { overflow: hidden; font-size: 13px; line-height: 1.5; text-overflow: ellipsis; white-space: nowrap; }
-        .demo-item-date { margin-top: 5px; color: #a0959a; font-size: 10px; }
-        .demo-empty { padding: 36px 15px; color: var(--muted); font-size: 12px; text-align: center; }
-
-        .demo-dropdown-footer a {
-            display: block;
-            padding: 13px;
-            color: var(--primary-dark);
-            font-size: 12px;
-            font-weight: 800;
-            text-align: center;
-            text-decoration: none;
-        }
-
-        .demo-dropdown-footer a:hover { background: var(--primary-soft); }
-
         .toast {
             position: fixed;
             top: 50%;
@@ -1150,10 +1004,6 @@
             animation: pageFadeUp .76s .26s cubic-bezier(.2, .75, .25, 1) both;
         }
 
-        .header-notification-demo {
-            animation: pageFadeUp .76s .34s cubic-bezier(.2, .75, .25, 1) both;
-        }
-
         .side-visual--left {
             animation: sideFadeLeft .9s .2s cubic-bezier(.2, .75, .25, 1) both;
         }
@@ -1193,14 +1043,12 @@
             .toolbar-actions { width: 100%; }
             .toolbar-actions .btn { flex: 1; }
             .filter-row { padding: 12px 18px; }
-            .notification-item { grid-template-columns: 40px minmax(0, 1fr); padding: 17px 18px; }
+            .notification-page-item { grid-template-columns: 40px minmax(0, 1fr); padding: 17px 18px; }
             .type-icon { width: 40px; height: 40px; border-radius: 13px; }
             .read-label { display: none; }
             .toast { width: 205px; height: 183px; padding: 34px 30px 22px; font-size: 14px; }
             .brand-message { margin-top: 34px; padding-right: 12px; padding-left: 12px; }
             .brand-copy br { display: none; }
-            .header-notification-demo { padding: 14px; }
-            .demo-header-bar { padding: 0 14px; }
         }
 
         @media (min-width: 1380px) {
@@ -1214,7 +1062,6 @@
             .notification-card,
             .developer-panel,
             .brand-message,
-            .header-notification-demo,
             .side-visual--left,
             .product-ad-rail,
             .wedding-celebration-rail {
@@ -1231,13 +1078,17 @@
     </style>
 </head>
 <body>
+<jsp:include page="/WEB-INF/common/header.jsp" />
+<div id="app" v-cloak
+    data-api-base="${pageContext.request.contextPath}/api/notification"
+    data-context-path="${pageContext.request.contextPath}">
 <!-- 영상 파일 경로: /video/wedding-side.mp4
      선택 사항인 첫 화면 이미지: /images/wedding-video-cover.jpg -->
 <aside class="side-visual side-visual--left" aria-hidden="true">
     <video class="side-video"
            id="weddingSideVideo"
            data-src="${pageContext.request.contextPath}/img/weddinggirlmovie.mp4"
-           data-poster="${pageContext.request.contextPath}/images/wedding-video-cover.jpg"
+           data-poster="${pageContext.request.contextPath}/img/weddingPic.png"
            autoplay muted loop playsinline preload="none"></video>
     <span class="video-ornament video-ornament--top">MARRYVIEW FILM</span>
     <span class="video-ornament video-ornament--bottom">
@@ -1249,25 +1100,27 @@
     <article class="product-ad-card">
         <div class="product-ad-topline">
             <span class="product-ad-label">MARRYVIEW PICK</span>
-            <span class="product-ad-number" id="productAdNumber">01 / 03</span>
+            <span class="product-ad-number">{{ productAdNumber }}</span>
         </div>
         <div class="product-ad-body">
-            <div class="product-ad-visual" id="productAdVisual" aria-hidden="true">♕</div>
+            <div class="product-ad-visual" :class="currentProductAd.tone" aria-hidden="true">{{ currentProductAd.symbol }}</div>
             <div>
-                <div class="product-ad-company" id="productAdCompany"></div>
-                <h2 class="product-ad-name" id="productAdName"></h2>
+                <div class="product-ad-company">{{ currentProductAd.company }}</div>
+                <h2 class="product-ad-name">{{ currentProductAd.name }}</h2>
                 <div class="product-ad-price">
-                    <span class="product-ad-discount" id="productAdDiscount"></span>
-                    <span class="product-ad-amount" id="productAdAmount"></span>
+                    <span class="product-ad-discount">{{ currentProductAd.discount }}</span>
+                    <span class="product-ad-amount">{{ currentProductAd.amount }}</span>
                 </div>
             </div>
         </div>
         <div class="product-ad-bottom">
-            <div class="product-ad-dots" id="productAdDots" aria-hidden="true"></div>
+            <div class="product-ad-dots" aria-hidden="true">
+                <span v-for="(_, index) in productAds" :key="index" class="product-ad-dot" :class="{ active: index === productAdIndex }"></span>
+            </div>
             <div class="product-ad-actions">
-                <button type="button" class="product-ad-arrow" id="productAdPrev" aria-label="이전 추천 상품">‹</button>
-                <button type="button" class="product-ad-arrow" id="productAdNext" aria-label="다음 추천 상품">›</button>
-                <button type="button" class="product-ad-link" id="productAdLink">보러가기</button>
+                <button type="button" class="product-ad-arrow" @click="moveProductAd(-1)" aria-label="이전 추천 상품">‹</button>
+                <button type="button" class="product-ad-arrow" @click="moveProductAd(1)" aria-label="다음 추천 상품">›</button>
+                <button type="button" class="product-ad-link" @click="showToast('상품 상세 연결은 API 연동 시 추가됩니다.')">보러가기</button>
             </div>
         </div>
     </article>
@@ -1276,20 +1129,20 @@
     <article class="celebration-card">
         <div class="celebration-topline">
             <span class="celebration-label">MARRYVIEW WEDDING</span>
-            <span class="celebration-dday" id="celebrationDday">D-DAY</span>
+            <span class="celebration-dday">{{ currentWeddingNews.dday }}</span>
         </div>
         <div class="celebration-rings" aria-hidden="true"><span></span><span></span></div>
-        <p class="celebration-kicker" id="celebrationKicker">오늘의 결혼 소식</p>
-        <h2 class="celebration-names" id="celebrationNames"></h2>
-        <div class="celebration-date" id="celebrationDate"></div>
+        <p class="celebration-kicker">{{ currentWeddingNews.kicker }}</p>
+        <h2 class="celebration-names">{{ currentWeddingNews.names }}</h2>
+        <div class="celebration-date">{{ currentWeddingNews.date }}</div>
         <div class="celebration-divider" aria-hidden="true">♥</div>
-        <p class="celebration-message" id="celebrationMessage"></p>
-        <div class="celebration-bottom" id="celebrationBottom"></div>
+        <p class="celebration-message">{{ currentWeddingNews.message }}</p>
+        <div class="celebration-bottom" :class="{ 'is-mine': currentWeddingNews.isMine }">{{ currentWeddingNews.bottom }}</div>
     </article>
     <div class="celebration-nav" aria-label="결혼 소식 이동">
-        <button type="button" class="celebration-arrow" id="celebrationPrev" aria-label="이전 결혼 소식">‹</button>
-        <span class="celebration-position" id="celebrationPosition">1 / 2</span>
-        <button type="button" class="celebration-arrow" id="celebrationNext" aria-label="다음 결혼 소식">›</button>
+        <button type="button" class="celebration-arrow" @click="moveCelebration(-1)" aria-label="이전 결혼 소식">‹</button>
+        <span class="celebration-position">{{ celebrationIndex + 1 }} / {{ weddingNews.length }}</span>
+        <button type="button" class="celebration-arrow" @click="moveCelebration(1)" aria-label="다음 결혼 소식">›</button>
     </div>
 
     <section class="popular-feed" aria-labelledby="popularFeedTitle">
@@ -1301,10 +1154,20 @@
             <span class="popular-feed-caption">LIVE PICK</span>
         </div>
         <div class="popular-tabs" role="tablist" aria-label="인기 콘텐츠 종류">
-            <button type="button" class="popular-tab active" data-popular-type="post" role="tab" aria-selected="true">인기글</button>
-            <button type="button" class="popular-tab" data-popular-type="review" role="tab" aria-selected="false">인기리뷰</button>
+            <button type="button" class="popular-tab" :class="{ active: popularType === 'post' }" @click="popularType = 'post'" role="tab" :aria-selected="popularType === 'post'">인기글</button>
+            <button type="button" class="popular-tab" :class="{ active: popularType === 'review' }" @click="popularType = 'review'" role="tab" :aria-selected="popularType === 'review'">인기리뷰</button>
         </div>
-        <ol class="popular-list" id="popularList"></ol>
+        <ol class="popular-list">
+            <li v-for="(item, index) in currentPopularItems" :key="item.title">
+                <button type="button" class="popular-item" @click="showToast('상세 페이지 연결은 API 연동 시 추가됩니다.')" :aria-label="(index + 1) + '위 ' + item.title">
+                    <span class="popular-rank">{{ index + 1 }}</span>
+                    <span>
+                        <span class="popular-item-title">{{ item.title }}</span>
+                        <span class="popular-item-meta"><span>조회 {{ item.views }}</span><span>♥ {{ item.likes }}</span></span>
+                    </span>
+                </button>
+            </li>
+        </ol>
     </section>
 </aside>
 
@@ -1320,7 +1183,7 @@
 
     <header class="page-header">
         <div>
-            <button type="button" class="back-button" id="btnBack" aria-label="이전 페이지로 돌아가기">
+            <button type="button" class="back-button" @click="goBack" aria-label="이전 페이지로 돌아가기">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <path d="M19 12H5M11 18l-6-6 6-6"/>
                 </svg>
@@ -1341,40 +1204,59 @@
                         <path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9"/>
                         <path d="M10 21h4"/>
                     </svg>
-                    <span class="count-badge" id="unreadCount">0</span>
+                    <span class="count-badge">{{ unreadBadge }}</span>
                 </div>
                 <div>
                     <div class="summary-title" id="notificationHeading">내 알림</div>
-                    <div class="summary-text" id="summaryText">알림을 불러오는 중입니다.</div>
+                    <div class="summary-text">{{ summaryText }}</div>
                 </div>
             </div>
 
             <div class="toolbar-actions">
-                <button type="button" class="btn btn-ghost" id="btnRefresh">
+                <button type="button" class="btn btn-ghost" @click="refreshAll(true)" :disabled="refreshing">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <path d="M20 11a8 8 0 1 0-2.3 5.7"/><path d="M20 4v7h-7"/>
                     </svg>
                     새로고침
                 </button>
-                <button type="button" class="btn btn-primary" id="btnReadAll">모두 읽음</button>
+                <button type="button" class="btn btn-primary" @click="readAll" :disabled="refreshing || unreadCount === 0">모두 읽음</button>
             </div>
         </div>
 
         <div class="filter-row">
             <div class="filters" role="tablist" aria-label="알림 필터">
-                <button type="button" class="filter-btn active" data-filter="all" role="tab" aria-selected="true">전체</button>
-                <button type="button" class="filter-btn" data-filter="unread" role="tab" aria-selected="false">읽지 않음</button>
-                <button type="button" class="filter-btn" data-filter="read" role="tab" aria-selected="false">읽음</button>
+                <button v-for="filter in filters" :key="filter.value" type="button" class="filter-btn"
+                    :class="{ active: currentFilter === filter.value }" @click="currentFilter = filter.value"
+                    role="tab" :aria-selected="currentFilter === filter.value">{{ filter.label }}</button>
             </div>
-            <span class="list-status" id="listStatus"></span>
+            <span class="list-status">{{ filteredNotifications.length }}개의 알림</span>
         </div>
 
-        <div class="notification-list" id="notificationList" aria-live="polite">
-            <div class="state-view">
+        <div class="notification-list" aria-live="polite">
+            <div v-if="loading" class="state-view">
                 <div>
                     <div class="loading-dots" aria-label="알림 불러오는 중"><span></span><span></span><span></span></div>
                 </div>
             </div>
+            <div v-else-if="errorMessage" class="state-view">
+                <div><div class="state-icon">⚠</div><h3 class="state-title">알림을 불러오지 못했어요</h3><p class="state-copy">{{ errorMessage }}</p></div>
+            </div>
+            <div v-else-if="filteredNotifications.length === 0" class="state-view">
+                <div><div class="state-icon">{{ emptyState.icon }}</div><h3 class="state-title">{{ emptyState.title }}</h3><p class="state-copy">{{ emptyState.copy }}</p></div>
+            </div>
+            <template v-else>
+                <button v-for="item in filteredNotifications" :key="item.notificationNo" type="button"
+                    class="notification-page-item" :class="{ unread: item.isRead === 'N' }" @click="readNotification(item)"
+                    :aria-label="(item.isRead === 'N' ? '읽지 않은 알림: ' : '') + (item.content || '알림 내용 없음')">
+                    <span class="type-icon" aria-hidden="true">{{ item.isRead === 'N' ? typeIcon(item.notificationType) : '✓' }}</span>
+                    <span>
+                        <span class="item-head"><span class="item-type">{{ typeLabel(item.notificationType) }}</span><span v-if="item.isRead === 'N'" class="new-dot" aria-label="새 알림"></span></span>
+                        <p class="notification-page-content">{{ item.content || '알림 내용이 없습니다.' }}</p>
+                        <span class="notification-meta">{{ formatDate(item.createdAt) }}</span>
+                    </span>
+                    <span class="read-label">{{ item.isRead === 'N' ? '읽음 처리' : '확인함' }}</span>
+                </button>
+            </template>
         </div>
     </section>
 
@@ -1382,515 +1264,15 @@
         <aside class="developer-panel">
             <details>
                 <summary>개발자용 API 응답 보기</summary>
-                <pre class="response-box" id="responseBox">아직 응답이 없습니다.</pre>
+                <pre class="response-box" :class="{ error: responseIsError }">{{ responseText }}</pre>
             </details>
         </aside>
     </c:if>
 
-    <c:if test="${not empty sessionScope.sessionId}">
-        <section class="header-notification-demo" aria-label="헤더 알림 메뉴 테스트">
-            <div class="demo-label">헤더 알림 메뉴 테스트 · 종 아이콘에 마우스를 올려보세요</div>
-            <div class="demo-header-bar">
-                <div class="demo-notification-wrap" id="demoNotificationWrap">
-                    <button type="button" class="demo-notification-btn" id="demoNotificationBtn" aria-label="알림 메뉴 열기" aria-expanded="false">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9">
-                            <path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9"/>
-                            <path d="M10 21h4"/>
-                        </svg>
-                        <span class="demo-badge" id="demoUnreadCount">0</span>
-                    </button>
-
-                    <div class="demo-notification-dropdown">
-                        <div class="demo-dropdown-head">
-                            <span class="demo-dropdown-title">알림</span>
-                            <button type="button" class="demo-read-all" id="demoReadAll">모두 읽음</button>
-                        </div>
-                        <div class="demo-dropdown-list" id="demoDropdownList"></div>
-                        <div class="demo-dropdown-footer">
-                            <a href="${pageContext.request.contextPath}/api/notification/list.do">전체보기</a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-    </c:if>
 </main>
 
-<div class="toast" id="toast" role="status" aria-live="polite"></div>
-
-<script>
-$(function () {
-    const apiBase = '${pageContext.request.contextPath}/api/notification';
-    const $responseBox = $('#responseBox');
-    const $notificationList = $('#notificationList');
-    let notifications = [];
-    let currentFilter = 'all';
-    let toastTimer;
-    let celebrationIndex = 0;
-    let productAdIndex = 0;
-    let productAdTimer;
-
-    // 프론트 화면 확인용 임시 데이터입니다. 추후 API 응답으로 교체하면 됩니다.
-    const weddingNews = [
-        {
-            isMine: true,
-            names: '민준 & 서연',
-            date: '2026. 06. 27 · SAT',
-            dday: 'D-8',
-            kicker: '우리의 결혼식',
-            message: '두 사람이 함께 그려온 소중한 약속이 곧 아름다운 시작을 맞이합니다.',
-            bottom: '메리뷰가 두 분의 결혼을 진심으로 축하해요!'
-        },
-        {
-            isMine: false,
-            names: '지훈 & 하은',
-            date: '2026. 07. 04 · SAT',
-            dday: 'D-15',
-            kicker: '메리뷰 회원의 결혼 소식',
-            message: '두 사람의 새로운 계절이 사랑과 행복으로 오래도록 빛나기를 바랍니다.',
-            bottom: '두 분의 아름다운 시작을 함께 축하해 주세요.'
-        },
-        {
-            isMine: false,
-            names: '도윤 & 수아',
-            date: '2026. 07. 11 · SAT',
-            dday: 'D-22',
-            kicker: '메리뷰 회원의 결혼 소식',
-            message: '서로의 가장 좋은 친구가 된 두 사람이 이제 평생의 동반자가 됩니다.',
-            bottom: '따뜻한 축하의 마음을 함께 전해 주세요.'
-        }
-    ];
-
-    // 프론트 화면 확인용 임시 데이터입니다. 추후 인기글/인기리뷰 API 응답으로 교체합니다.
-    const popularContent = {
-        post: [
-            { title: '결혼 준비, 예산은 어디서부터 잡아야 할까요?', views: 328, likes: 41 },
-            { title: '웨딩홀 투어 전에 꼭 확인할 체크리스트', views: 246, likes: 35 },
-            { title: '본식 스냅 업체 고를 때 중요했던 세 가지', views: 198, likes: 27 }
-        ],
-        review: [
-            { title: '채광이 정말 예뻤던 야외 웨딩 솔직 후기', views: 412, likes: 58 },
-            { title: '드레스 투어 세 곳 비교하고 결정한 후기', views: 365, likes: 49 },
-            { title: '메이크업 상담부터 본식까지 꼼꼼 리뷰', views: 289, likes: 43 }
-        ]
-    };
-
-    // 프론트 화면 확인용 입점 업체 상품 데이터입니다. 추후 상품 광고 API 응답으로 교체합니다.
-    const productAds = [
-        { company: '로즈브라이드', name: '2026 시그니처 드레스 패키지', discount: '20%', amount: '1,280,000원', symbol: '♕', tone: '' },
-        { company: '아르떼 주얼리', name: '프라이빗 웨딩링 커플 세트', discount: '15%', amount: '890,000원', symbol: '◇', tone: 'gold' },
-        { company: '메종 드 플라워', name: '본식 부케 · 부토니에 세트', discount: '10%', amount: '198,000원', symbol: '✿', tone: 'lilac' }
-    ];
-
-    function showResponse(data) {
-        if (!$responseBox.length) return;
-        $responseBox.removeClass('error').text(JSON.stringify(data, null, 2));
-    }
-
-    function showToast(message) {
-        clearTimeout(toastTimer);
-        $('#toast').text(message).addClass('show');
-        toastTimer = setTimeout(function () { $('#toast').removeClass('show'); }, 2200);
-    }
-
-    function renderCelebration() {
-        const item = weddingNews[celebrationIndex];
-        if (!item || !$('#celebrationNames').length) return;
-
-        $('#celebrationDday').text(item.dday);
-        $('#celebrationKicker').text(item.kicker);
-        $('#celebrationNames').text(item.names);
-        $('#celebrationDate').text(item.date);
-        $('#celebrationMessage').text(item.message);
-        $('#celebrationBottom').text(item.bottom).toggleClass('is-mine', item.isMine);
-        $('#celebrationPosition').text((celebrationIndex + 1) + ' / ' + weddingNews.length);
-    }
-
-    function renderPopularContent(type) {
-        const items = popularContent[type] || [];
-        const $list = $('#popularList').empty();
-
-        items.forEach(function (item, index) {
-            $list.append(
-                $('<li>').append(
-                    $('<button>', {
-                        type: 'button',
-                        class: 'popular-item',
-                        'aria-label': (index + 1) + '위 ' + item.title
-                    }).append(
-                        $('<span>').addClass('popular-rank').text(index + 1),
-                        $('<span>').append(
-                            $('<span>').addClass('popular-item-title').text(item.title),
-                            $('<span>').addClass('popular-item-meta').append(
-                                $('<span>').text('조회 ' + item.views),
-                                $('<span>').text('♥ ' + item.likes)
-                            )
-                        )
-                    )
-                )
-            );
-        });
-    }
-
-    function renderProductAd() {
-        const item = productAds[productAdIndex];
-        if (!item || !$('#productAdName').length) return;
-
-        $('#productAdVisual').attr('class', 'product-ad-visual ' + item.tone).text(item.symbol);
-        $('#productAdCompany').text(item.company);
-        $('#productAdName').text(item.name);
-        $('#productAdDiscount').text(item.discount);
-        $('#productAdAmount').text(item.amount);
-        $('#productAdNumber').text(String(productAdIndex + 1).padStart(2, '0') + ' / ' + String(productAds.length).padStart(2, '0'));
-
-        const $dots = $('#productAdDots').empty();
-        productAds.forEach(function (_, index) {
-            $dots.append($('<span>').addClass('product-ad-dot' + (index === productAdIndex ? ' active' : '')));
-        });
-    }
-
-    function moveProductAd(direction) {
-        productAdIndex = (productAdIndex + direction + productAds.length) % productAds.length;
-        renderProductAd();
-        restartProductAdTimer();
-    }
-
-    function restartProductAdTimer() {
-        clearInterval(productAdTimer);
-        productAdTimer = setInterval(function () {
-            productAdIndex = (productAdIndex + 1) % productAds.length;
-            renderProductAd();
-        }, 5000);
-    }
-
-    function setupSideVideo() {
-        const video = document.getElementById('weddingSideVideo');
-        if (!video) return;
-
-        const desktopScreen = window.matchMedia('(min-width: 1380px)');
-
-        function syncVideo(event) {
-            if (event.matches) {
-                if (!video.getAttribute('poster')) video.setAttribute('poster', video.dataset.poster);
-                if (!video.getAttribute('src')) {
-                    video.setAttribute('src', video.dataset.src);
-                    video.load();
-                }
-                const playPromise = video.play();
-                if (playPromise) playPromise.catch(function () {});
-            } else {
-                video.pause();
-                video.removeAttribute('src');
-                video.removeAttribute('poster');
-                video.load();
-            }
-        }
-
-        syncVideo(desktopScreen);
-        if (desktopScreen.addEventListener) {
-            desktopScreen.addEventListener('change', syncVideo);
-        } else {
-            desktopScreen.addListener(syncVideo);
-        }
-    }
-
-    function showError(xhr) {
-        const message = xhr.responseJSON && xhr.responseJSON.message
-            ? xhr.responseJSON.message
-            : (xhr.responseText || '잠시 후 다시 시도해 주세요.');
-
-        if ($responseBox.length) {
-            $responseBox.addClass('error').text('HTTP 상태: ' + xhr.status + '\n' + message);
-        }
-        renderState('⚠', '알림을 불러오지 못했어요', '네트워크 상태를 확인한 뒤 새로고침해 주세요.');
-    }
-
-    function request(path, data) {
-        return $.ajax({
-            url: apiBase + path,
-            type: 'POST',
-            dataType: 'json',
-            data: data || {}
-        }).done(showResponse).fail(showError);
-    }
-
-    function renderState(icon, title, copy) {
-        $notificationList.empty().append(
-            $('<div>').addClass('state-view').append(
-                $('<div>').append(
-                    $('<div>').addClass('state-icon').text(icon),
-                    $('<h3>').addClass('state-title').text(title),
-                    $('<p>').addClass('state-copy').text(copy)
-                )
-            )
-        );
-    }
-
-    function typeLabel(type) {
-        const labels = {
-            MATCH: '매칭', MESSAGE: '메시지', REVIEW: '후기',
-            SYSTEM: '안내', RESERVATION: '예약', PAYMENT: '결제'
-        };
-        return labels[type] || type || '새 소식';
-    }
-
-    function typeIcon(type) {
-        const icons = {
-            MATCH: '♥', MESSAGE: '✉', REVIEW: '★',
-            SYSTEM: 'i', RESERVATION: '✓', PAYMENT: '₩'
-        };
-        return icons[type] || '♥';
-    }
-
-    function formatDate(value) {
-        if (!value) return '';
-        const date = new Date(String(value).replace(' ', 'T'));
-        if (isNaN(date.getTime())) return value;
-
-        const diff = Date.now() - date.getTime();
-        const minute = 60 * 1000;
-        const hour = 60 * minute;
-        const day = 24 * hour;
-
-        if (diff < minute) return '방금 전';
-        if (diff < hour) return Math.floor(diff / minute) + '분 전';
-        if (diff < day) return Math.floor(diff / hour) + '시간 전';
-        if (diff < 7 * day) return Math.floor(diff / day) + '일 전';
-
-        return new Intl.DateTimeFormat('ko-KR', {
-            year: 'numeric', month: 'short', day: 'numeric'
-        }).format(date);
-    }
-
-    function updateSummary(unreadCount) {
-        const count = Number(unreadCount) || 0;
-        $('#unreadCount').text(count > 99 ? '99+' : count);
-        $('#demoUnreadCount').text(count > 99 ? '99+' : count).toggle(count > 0);
-        $('#summaryText').text(count ? '읽지 않은 알림이 ' + count + '개 있어요.' : '새로운 알림을 모두 확인했어요.');
-        $('#btnReadAll').prop('disabled', count === 0);
-    }
-
-    function renderHeaderDropdown() {
-        const $list = $('#demoDropdownList');
-        if (!$list.length) return;
-
-        $list.empty();
-        const previewItems = notifications.slice(0, 5);
-
-        if (!previewItems.length) {
-            $list.append($('<div>').addClass('demo-empty').text('새로운 알림이 없습니다.'));
-            return;
-        }
-
-        previewItems.forEach(function (item) {
-            $list.append(
-                $('<button>', {
-                    type: 'button',
-                    class: 'demo-dropdown-item' + (item.isRead === 'N' ? ' unread' : ''),
-                    'data-notification-no': item.notificationNo
-                }).append(
-                    $('<div>').addClass('demo-item-content').text(item.content || '알림 내용이 없습니다.'),
-                    $('<div>').addClass('demo-item-date').text(formatDate(item.createdAt))
-                )
-            );
-        });
-    }
-
-    function renderList() {
-        renderHeaderDropdown();
-        const filtered = notifications.filter(function (item) {
-            if (currentFilter === 'unread') return item.isRead === 'N';
-            if (currentFilter === 'read') return item.isRead === 'Y';
-            return true;
-        });
-
-        $notificationList.empty();
-        $('#listStatus').text(filtered.length + '개의 알림');
-
-        if (!filtered.length) {
-            if (currentFilter === 'unread') {
-                renderState('✓', '모두 확인했어요', '읽지 않은 알림이 없습니다.');
-            } else if (currentFilter === 'read') {
-                renderState('✓', '확인한 알림이 없어요', '알림을 읽으면 이곳에서 다시 확인할 수 있어요.');
-            } else {
-                renderState('♡', '아직 알림이 없어요', '새로운 소식이 생기면 이곳에 알려드릴게요.');
-            }
-            return;
-        }
-
-        filtered.forEach(function (item) {
-            const unread = item.isRead === 'N';
-            const $button = $('<button>', {
-                type: 'button',
-                class: 'notification-item' + (unread ? ' unread' : ''),
-                'data-notification-no': item.notificationNo,
-                'aria-label': (unread ? '읽지 않은 알림: ' : '') + (item.content || '알림 내용 없음')
-            });
-
-            const $icon = $('<span>')
-                .addClass('type-icon')
-                .attr('aria-hidden', 'true')
-                .text(unread ? typeIcon(item.notificationType) : '✓');
-            const $body = $('<span>');
-            const $head = $('<span>').addClass('item-head').append(
-                $('<span>').addClass('item-type').text(typeLabel(item.notificationType))
-            );
-
-            if (unread) $head.append($('<span>').addClass('new-dot').attr('aria-label', '새 알림'));
-
-            $body.append(
-                $head,
-                $('<p>').addClass('notification-content').text(item.content || '알림 내용이 없습니다.'),
-                $('<span>').addClass('notification-meta').text(formatDate(item.createdAt))
-            );
-
-            $button.append(
-                $icon,
-                $body,
-                $('<span>').addClass('read-label').text(unread ? '읽음 처리' : '확인함')
-            );
-
-            $notificationList.append($button);
-        });
-    }
-
-    function loadUnreadCount() {
-        return request('/unread-count.dox', {}).done(function (response) {
-            if (response.result === 'success') updateSummary(response.unreadCount);
-        });
-    }
-
-    function loadNotificationList() {
-        return request('/list.dox', { limit: 20 }).done(function (response) {
-            if (response.result === 'success') {
-                notifications = response.list || [];
-                renderList();
-            } else if (response.message) {
-                renderState('!', '확인이 필요해요', response.message);
-            }
-        });
-    }
-
-    function refreshAll(showMessage) {
-        $('#btnRefresh').prop('disabled', true);
-        $.when(loadUnreadCount(), loadNotificationList()).always(function () {
-            $('#btnRefresh').prop('disabled', false);
-            if (showMessage) showToast('알림을 새로 불러왔어요.');
-        });
-    }
-
-    $('.filter-btn').on('click', function () {
-        currentFilter = $(this).data('filter');
-        $('.filter-btn').removeClass('active').attr('aria-selected', 'false');
-        $(this).addClass('active').attr('aria-selected', 'true');
-        renderList();
-    });
-
-    $('#btnBack').on('click', function () {
-        if (window.history.length > 1) {
-            window.history.back();
-        } else {
-            window.location.href = '${pageContext.request.contextPath}/';
-        }
-    });
-
-    $('#btnRefresh').on('click', function () { refreshAll(true); });
-
-    $('#celebrationPrev').on('click', function () {
-        celebrationIndex = (celebrationIndex - 1 + weddingNews.length) % weddingNews.length;
-        renderCelebration();
-    });
-
-    $('#celebrationNext').on('click', function () {
-        celebrationIndex = (celebrationIndex + 1) % weddingNews.length;
-        renderCelebration();
-    });
-
-    $('.popular-tab').on('click', function () {
-        const type = $(this).data('popular-type');
-        $('.popular-tab').removeClass('active').attr('aria-selected', 'false');
-        $(this).addClass('active').attr('aria-selected', 'true');
-        renderPopularContent(type);
-    });
-
-    $('#popularList').on('click', '.popular-item', function () {
-        showToast('상세 페이지 연결은 API 연동 시 추가됩니다.');
-    });
-
-    $('#productAdPrev').on('click', function () { moveProductAd(-1); });
-    $('#productAdNext').on('click', function () { moveProductAd(1); });
-    $('#productAdLink').on('click', function () {
-        showToast('상품 상세 연결은 API 연동 시 추가됩니다.');
-    });
-
-    $('#demoNotificationBtn').on('click', function () {
-        const $wrap = $('#demoNotificationWrap').toggleClass('open');
-        $(this).attr('aria-expanded', $wrap.hasClass('open'));
-    });
-
-    $('#demoReadAll').on('click', function () {
-        $('#btnReadAll').trigger('click');
-    });
-
-    $('#demoDropdownList').on('click', '.demo-dropdown-item', function () {
-        const notificationNo = $(this).data('notification-no');
-        const item = notifications.find(function (value) {
-            return String(value.notificationNo) === String(notificationNo);
-        });
-
-        if (!item || item.isRead !== 'N') return;
-
-        request('/read.dox', { notificationNo: notificationNo }).done(function (response) {
-            if (response.result === 'success') {
-                item.isRead = 'Y';
-                renderList();
-                loadUnreadCount();
-                showToast('알림을 읽음 처리했어요.');
-            }
-        });
-    });
-
-    $notificationList.on('click', '.notification-item', function () {
-        const notificationNo = $(this).data('notification-no');
-        const item = notifications.find(function (value) {
-            return String(value.notificationNo) === String(notificationNo);
-        });
-
-        if (!item || item.isRead !== 'N') return;
-
-        request('/read.dox', { notificationNo: notificationNo }).done(function (response) {
-            if (response.result === 'success') {
-                item.isRead = 'Y';
-                renderList();
-                loadUnreadCount();
-                showToast('알림을 읽음 처리했어요.');
-            }
-        });
-    });
-
-    $('#btnReadAll').on('click', function () {
-        const $button = $(this).prop('disabled', true);
-        request('/read-all.dox', {}).done(function (response) {
-            if (response.result === 'success') {
-                notifications.forEach(function (item) { item.isRead = 'Y'; });
-                updateSummary(0);
-                renderList();
-                showToast('모든 알림을 확인했어요.');
-            }
-        }).always(function () {
-            if (notifications.some(function (item) { return item.isRead === 'N'; })) {
-                $button.prop('disabled', false);
-            }
-        });
-    });
-
-    renderCelebration();
-    renderPopularContent('post');
-    renderProductAd();
-    restartProductAdTimer();
-    setupSideVideo();
-    refreshAll(false);
-});
-</script>
+<div class="toast" :class="{ show: toastVisible }" role="status" aria-live="polite">{{ toastMessage }}</div>
+</div>
+<script src="${pageContext.request.contextPath}/js/common/notification-page.js"></script>
 </body>
 </html>

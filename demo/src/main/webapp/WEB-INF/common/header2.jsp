@@ -120,89 +120,72 @@
     .fa-crown { color: #f0b429; }
     .fa-tag   { color: #ff8fab; }
 
-    /* ── 공통 헤더 알림: 다른 페이지와 겹치지 않도록 mv-noti로 한정 ── */
-    .mv-noti { position: relative; margin-left: 15px; list-style: none; }
-
-    .mv-noti-btn {
+    /* ── 알림 ── */
+    .notification-wrap {
         position: relative;
-        display: grid;
-        width: 42px;
-        height: 42px;
-        padding: 0;
-        place-items: center;
-        border: 0;
-        border-radius: 50%;
-        background: #fff0f3;
+        margin-left: 15px;
+    }
+
+    .notification-btn {
         color: #ff4d6d;
-        cursor: pointer;
-        font-size: 19px;
-        transition: background .18s ease, transform .18s ease;
+        font-size: 20px;
+        position: relative;
+        display: flex;
+        align-items: center;
+        text-decoration: none;
     }
-    .mv-noti-btn::after { position: absolute; top: 100%; right: 0; width: 42px; height: 8px; content: ""; }
-    .mv-noti-btn:hover { background: #ffe1e8; transform: translateY(-1px); }
-    .mv-noti-btn:focus-visible { outline: 3px solid rgba(255, 77, 109, .2); outline-offset: 2px; }
 
-    .mv-noti-badge {
+    .notification-dropdown {
+        display: none;
         position: absolute;
-        top: -3px;
-        right: -4px;
-        display: grid;
-        min-width: 18px;
-        height: 18px;
-        padding: 0 4px;
-        place-items: center;
-        border: 2px solid #fff;
-        border-radius: 99px;
-        background: #ff4d6d;
-        color: #fff !important;
-        font-size: 9px;
-        font-weight: 800;
-    }
-    .mv-noti-badge[hidden] { display: none; }
-
-    .mv-noti-panel {
-        position: absolute;
-        top: calc(100% + 7px);
+        top: 100%;
         right: 0;
-        z-index: 9999;
-        width: min(360px, calc(100vw - 28px));
+        margin-top: 0;
+        width: 340px;
+        background: white;
+        border-radius: 12px;
+        box-shadow: 0 8px 30px rgba(0, 0, 0, .12);
         overflow: hidden;
-        border: 1px solid #f0e5e9;
-        border-radius: 16px;
-        background: #fff;
-        box-shadow: 0 20px 55px rgba(74, 39, 49, .18);
-        opacity: 0;
-        pointer-events: none;
-        transform: translateY(-7px);
-        visibility: hidden;
-        transition: opacity .18s ease, transform .18s ease, visibility .18s ease;
-    }
-    .mv-noti-btn:hover + .mv-noti-panel,
-    .mv-noti-panel:hover,
-    .mv-noti:focus-within .mv-noti-panel,
-    .mv-noti.is-open .mv-noti-panel {
-        opacity: 1;
-        pointer-events: auto;
-        transform: translateY(0);
-        visibility: visible;
+        z-index: 9999;
     }
 
-    .mv-noti-head { display: flex; align-items: center; justify-content: space-between; padding: 16px 17px; border-bottom: 1px solid #f0e5e9; }
-    .mv-noti-title { color: #453e42 !important; font-size: 15px; font-weight: 800; }
-    .mv-noti-read-all { padding: 5px; border: 0; background: transparent; color: #e83f60; cursor: pointer; font-size: 11px; font-weight: 800; }
-    .mv-noti-read-all:disabled { color: #c8bcc1; cursor: default; }
+    .notification-wrap:hover .notification-dropdown {
+        display: block;
+    }
 
-    .mv-noti-list { max-height: 310px; overflow-y: auto; }
-    .mv-noti-item { display: block; width: 100%; padding: 14px 17px; border: 0; border-bottom: 1px solid #f0e5e9; background: #fff; color: inherit; text-align: left; cursor: pointer; }
-    .mv-noti-item:hover { background: #fff7f9; }
-    .mv-noti-item.unread { background: #fff1f4; }
-    .mv-noti-item.unread:hover { background: #ffe8ed; }
-    .mv-noti-content { overflow: hidden; color: #453e42; font-size: 13px; line-height: 1.5; text-overflow: ellipsis; white-space: nowrap; }
-    .mv-noti-date { margin-top: 5px; color: #a0959a; font-size: 10px; }
-    .mv-noti-empty { padding: 36px 15px; color: #857a80; font-size: 12px; text-align: center; }
+    .notification-header {
+        display: flex;
+        justify-content: space-between;
+        padding: 15px;
+        border-bottom: 1px solid #eee;
+        font-weight: bold;
+    }
 
-    .mv-noti-footer a { display: block; padding: 13px; color: #e83f60 !important; font-size: 12px; font-weight: 800; text-align: center; text-decoration: none; }
-    .mv-noti-footer a:hover { background: #fff0f3; }
+    .notification-item {
+        padding: 15px;
+        border-bottom: 1px solid #f3f3f3;
+        cursor: pointer;
+        transition: .2s;
+    }
+
+    .notification-item:hover { background: #fff5f7; }
+    .notification-item.unread { background: #eef7ff; }
+
+    .notification-content {
+        font-size: 14px;
+        color: #444;
+    }
+
+    .notification-date {
+        margin-top: 5px;
+        color: #999;
+        font-size: 12px;
+    }
+
+    .notification-footer {
+        text-align: center;
+        padding: 12px;
+    }
 
     /* 기본 (유저) */
     .nav-name { color: #ff4d6d; font-weight: bold; margin-left: 10px; }
@@ -221,7 +204,7 @@
 
     }
     .partner-mode .dropdown-contents li a:hover { color: #9b8fd4 !important; }
-    .partner-mode .mv-noti-btn,
+    .partner-mode .notification-btn,
     .partner-mode li[style*="color:#ff4d6d"],
     .partner-mode .nav-name span { color: #9b8fd4 !important; }
     .partner-mode .nav-name span { color: #9b8fd4 !important; }
@@ -243,7 +226,7 @@
     }
     .admin-mode .dropdown-contents li a { color: #aaa !important; }
     .admin-mode .dropdown-contents li a:hover { color: #eee !important; }
-    .admin-mode .mv-noti-btn,
+    .admin-mode .notification-btn,
     .admin-mode .nav-link,
     .admin-mode li span { color: #eee !important; }
     .admin-mode .nav-name span { color: #eee !important; }
@@ -251,22 +234,6 @@
     .admin-mode .nav-divider { color: #0f3460 !important; }
     .admin-mode .navbar-brand span { color: #eeeeee !important; }
     .admin-mode .navbar-brand img { filter: brightness(0) invert(1); }
-    .admin-mode .mv-noti-btn { border: 1px solid #33456f; background: #24345a; color: #ff718a !important; }
-    .admin-mode .mv-noti-btn:hover { background: #2d406d; }
-    .admin-mode .mv-noti-badge { border-color: #1a1a2e; background: #e94560; color: #fff !important; }
-    .admin-mode .mv-noti-panel { border-color: #33456f; background: #1f2947; box-shadow: 0 20px 55px rgba(0, 0, 0, .32); }
-    .admin-mode .mv-noti-head { border-bottom-color: #33405e; }
-    .admin-mode .mv-noti-title { color: #f5f7ff !important; }
-    .admin-mode .mv-noti-read-all { color: #ff718a; }
-    .admin-mode .mv-noti-read-all:disabled { color: #74809e; }
-    .admin-mode .mv-noti-item { border-bottom-color: #33405e; background: #1f2947; }
-    .admin-mode .mv-noti-item:hover { background: #273455; }
-    .admin-mode .mv-noti-item.unread { background: rgba(233, 69, 96, .15); }
-    .admin-mode .mv-noti-item.unread:hover { background: rgba(233, 69, 96, .24); }
-    .admin-mode .mv-noti-content { color: #eef2ff; }
-    .admin-mode .mv-noti-date, .admin-mode .mv-noti-empty { color: #aab3cf; }
-    .admin-mode .mv-noti-footer a { color: #ff718a !important; }
-    .admin-mode .mv-noti-footer a:hover { background: #273455; }
 
     .navbar.partner-mode .nav-link:hover {
     text-shadow: 0 0 8px rgba(155, 143, 212, 0.5) !important;
@@ -368,11 +335,11 @@
                                 <c:when test="${sessionScope.sessionRole == 'ADMIN'}">
                                     <a class="nav-link custom-nav-link" href="${pageContext.request.contextPath}/adminMain.do">관리자페이지 <i class="fas fa-chevron-right arrow-icon"></i></a>
                                     <ul class="dropdown-contents">
-                                        <li style="display:flex; align-items:center; color:#8f9bb8;"><a href="${pageContext.request.contextPath}/adminMain.do">관리자</a>&nbsp;│&nbsp;<a href="${pageContext.request.contextPath}/adminStatistics.do">통계</a></li>
-                                        <li style="display:flex; align-items:center; color:#8f9bb8;"><a href="${pageContext.request.contextPath}/adminUser.do">회원</a>&nbsp;│&nbsp;<a href="${pageContext.request.contextPath}/adminCompany.do">업체</a></li>
-                                        <li style="display:flex; align-items:center; color:#8f9bb8;"><a href="${pageContext.request.contextPath}/adminBoard.do">게시판</a>&nbsp;│&nbsp;<a href="${pageContext.request.contextPath}/adminReview.do">리뷰</a></li>
-                                        <li style="display:flex; align-items:center; color:#8f9bb8;"><a href="${pageContext.request.contextPath}/adminPayment.do">결제</a>&nbsp;│&nbsp;<a href="${pageContext.request.contextPath}/adminProduct.do">상품</a></li>
-                                        <li style="display:flex; align-items:center; color:#8f9bb8;"><a href="${pageContext.request.contextPath}/adminReport.do">신고</a>&nbsp;│&nbsp;<a href="${pageContext.request.contextPath}/adminInquiry.do">문의</a></li>
+                                        <li style="display:flex; align-items:center"><a href="${pageContext.request.contextPath}/adminMain.do">관리자</a> / <a href="${pageContext.request.contextPath}/adminStatistics.do">통계</a></li>
+                                        <li style="display:flex; align-items:center"><a href="${pageContext.request.contextPath}/adminUser.do">회원</a> / <a href="${pageContext.request.contextPath}/adminCompany.do">업체</a></li>
+                                        <li style="display:flex; align-items:center"><a href="${pageContext.request.contextPath}/adminBoard.do">게시판</a> / <a href="${pageContext.request.contextPath}/adminReview.do">리뷰</a></li>
+                                        <li style="display:flex; align-items:center"><a href="${pageContext.request.contextPath}/adminPayment.do">결제</a> / <a href="${pageContext.request.contextPath}/adminProduct.do">상품</a></li>
+                                        <li style="display:flex; align-items:center"><a href="${pageContext.request.contextPath}/adminReport.do">신고</a> / <a href="${pageContext.request.contextPath}/adminInquiry.do">문의</a></li>
                                     </ul>
                                 </c:when>
                             </c:choose>
@@ -395,26 +362,25 @@
                     </li>
                 </c:if>
 
-                <!-- 공통 헤더 알림: 페이지 Vue/jQuery와 독립적으로 동작 -->
+                <!-- 알림 -->
                 <c:if test="${not empty sessionScope.sessionId}">
-                    <li class="nav-item mv-noti" id="mvHeaderNoti"
-                        data-api-base="${pageContext.request.contextPath}/api/notification"
-                        data-context-path="${pageContext.request.contextPath}"
-                        data-session-role="${sessionScope.sessionRole}">
-                        <button type="button" class="mv-noti-btn" aria-label="알림 전체보기" aria-expanded="false">
+                    <li class="nav-item notification-wrap">
+                        <a href="javascript:void(0);" class="notification-btn">
                             <i class="fas fa-bell"></i>
-                            <span class="mv-noti-badge" hidden>0</span>
-                        </button>
-                        <div class="mv-noti-panel">
-                            <div class="mv-noti-head">
-                                <span class="mv-noti-title">알림</span>
-                                <button type="button" class="mv-noti-read-all">모두 읽음</button>
+                        </a>
+                        <div class="notification-dropdown">
+                            <div class="notification-header">
+                                <span>알림</span>
+                                <a href="javascript:;" @click="fnReadAll">모두 읽음</a>
                             </div>
-                            <div class="mv-noti-list" aria-live="polite">
-                                <div class="mv-noti-empty">알림을 불러오는 중입니다.</div>
+                            <div class="notification-item" v-for="item in notificationList"
+                                :key="item.notificationNo" @click="fnMove(item)"
+                                :class="{ unread: item.isRead=='N' }">
+                                <div class="notification-content">{{item.content}}</div>
+                                <div class="notification-date">{{item.createdAt}}</div>
                             </div>
-                            <div class="mv-noti-footer">
-                                <a href="${pageContext.request.contextPath}/api/notification/list.do">전체보기</a>
+                            <div class="notification-footer">
+                                <a href="/api/notification/list.do">전체보기</a>
                             </div>
                         </div>
                     </li>
@@ -525,4 +491,3 @@ function getFirstImg(imgUrls) {
         : cleanUrl;
 }
 </script>
-<script src="${pageContext.request.contextPath}/js/common/header-notification.js"></script>
