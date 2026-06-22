@@ -75,3 +75,4 @@
         </div>
     </div>
 </script>
+<script src="${pageContext.request.contextPath}/js/company-components/product-list-component.js"></script>

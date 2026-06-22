@@ -161,3 +161,4 @@
         </div>
     </div>
 </script>
+<script src="${pageContext.request.contextPath}/js/company-components/product-inquiry-component.js"></script>

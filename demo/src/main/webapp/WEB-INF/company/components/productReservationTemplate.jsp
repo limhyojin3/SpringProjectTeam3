@@ -185,3 +185,6 @@
         </div>
     </div>
 </script>
+<script src="${pageContext.request.contextPath}/js/company-components/product-reservation-payment-component.js"></script>
+<script src="${pageContext.request.contextPath}/js/company-components/my-reservation-list-component.js"></script>
+<script src="${pageContext.request.contextPath}/js/company-components/reservation-detail-component.js"></script>
