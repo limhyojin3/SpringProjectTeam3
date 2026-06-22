@@ -212,11 +212,24 @@
                 </div>
             </div>
 
-            <div class="category-filter-bar mb-4">
-                <button class="btn btn-sm mr-2" :class="category === 'all' ? 'btn-dark' : 'btn-outline-dark'" @click="fnCategoryFilter('all')">전체</button>
-                <button class="btn btn-sm mr-2" :class="category === 'STUDIO' ? 'btn-danger' : 'btn-outline-danger'" @click="fnCategoryFilter('STUDIO')">📸 스튜디오</button>
-                <button class="btn btn-sm mr-2" :class="category === 'DRESS' ? 'btn-danger' : 'btn-outline-danger'" @click="fnCategoryFilter('DRESS')">👗 드레스</button>
-                <button class="btn btn-sm" :class="category === 'MAKEUP' ? 'btn-danger' : 'btn-outline-danger'" @click="fnCategoryFilter('MAKEUP')">💄 메이크업</button>
+            <div class="category-filter-bar mb-3">
+                <button class="btn btn-sm mr-2" :class="mainCategory === 'all' ? 'btn-dark' : 'btn-outline-dark'" 
+                        @click="fnChangeLargeCategory('all')">전체</button>
+                <button class="btn btn-sm mr-2" :class="mainCategory === '결혼' ? 'btn-danger' : 'btn-outline-danger'" 
+                        @click="fnChangeLargeCategory('결혼')">💍 결혼</button>
+                <button class="btn btn-sm mr-2" :class="mainCategory === '가족행사' ? 'btn-danger' : 'btn-outline-danger'" 
+                        @click="fnChangeLargeCategory('가족행사')">👨‍👩‍👧‍👦 가족행사</button>
+                <button class="btn btn-sm" :class="mainCategory === '친구와함께' ? 'btn-danger' : 'btn-outline-danger'" 
+                        @click="fnChangeLargeCategory('친구와함께')">🎈 친구와함께</button>
+            </div>
+
+            <!-- 2. 중분류 필터 (결혼/가족행사 선택 시에만 출력) -->
+            <div class="category-filter-bar mb-4" v-if="mainCategory !== 'all'">
+                <button class="btn btn-sm mr-2" :class="subCategory === 'all' ? 'btn-dark' : 'btn-outline-dark'" 
+                        @click="fnChangeMediumCategory('all')">전체</button>
+                <button class="btn btn-sm mr-2" v-for="sub in categoryMap[mainCategory]" :key="sub"
+                        :class="subCategory === sub ? 'btn-primary' : 'btn-outline-primary'" 
+                        @click="fnChangeMediumCategory(sub)">{{sub}}</button>
             </div>
 
             <div class="best-review-wrapper" v-if="bestList && bestList.length > 0">
@@ -343,6 +356,15 @@
                     totalCount: 0,
                     pageBlockSize: 5,
                     userRemainingCount: 0, 
+                    mainCategory: 'all', // mainCategory 대신 largeCategory 사용
+                    subCategory: 'all', // subCategory 대신 mediumCategory 사용
+                    // 대분류별 중분류 매핑 데이터
+                    categoryMap: {
+                        '결혼': ['스튜디오', '드레스', '메이크업'],
+                        '가족행사': ['가족사진', '돌잔치', '아이생일파티', '기념일', '부모님생신'],
+                        '친구와함께': ['우정사진', '브라이덜샤워', '파티룸']
+                    }
+                    
                 };
             },
             computed: {
@@ -371,10 +393,24 @@
                         }
                     });
                 },
+                // 1차 분류 선택 시
+                fnChangeLargeCategory(val) {
+                    this.mainCategory = val;
+                    this.subCategory = 'all'; // 대분류 변경 시 중분류 초기화
+                    this.currentPage = 1;
+                    this.fnList();
+                },
+                // 2차 분류 선택 시
+                fnChangeMediumCategory(val) {
+                    this.subCategory = val;
+                    this.currentPage = 1;
+                    this.fnList();
+                },
                 fnList() {
                     const nParam = {
                         isPaid: this.isPaid,
-                        category: this.category,
+                        largeCategory: this.mainCategory,  
+                        mediumCategory: this.subCategory,
                         searchKeyword: this.searchKeyword,
                         searchType: this.searchType,
                         startIndex: (this.currentPage - 1) * this.pageSize,

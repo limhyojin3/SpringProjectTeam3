@@ -141,7 +141,9 @@ public class ReviewController {
             @RequestParam(value = "receiptFile", required = false) MultipartFile receiptFile,
             @RequestParam(value = "reviewFiles", required = false) List<MultipartFile> reviewFiles) {
         try {
+        	
             Review review = gson.fromJson(reviewDataJson, Review.class);
+            System.out.println("대분류: " + review.getLargeCategory());
             
             HttpSession session = request.getSession();
             String currentId = (String) session.getAttribute("sessionId");
@@ -169,6 +171,7 @@ public class ReviewController {
             // 서비스 내부에서 extractThumbnail(review.getContent())를 호출하여 
             // review.setThumbnailUrl()이 수행되도록 구현되어 있어야 합니다.
             return reviewService.registerReview(review, receiptFile, reviewFiles);
+            
             
         } catch (Exception e) {
             e.printStackTrace();

@@ -84,19 +84,25 @@
                 </div>
 
                 <div class="form-row" v-if="companyType === 'internal'">
-                    <div class="col-md-4 mb-2">
-                        <select class="form-control" v-model="selectedCategory" @change="fnResetSelection">
-                            <option value="">카테고리 선택</option>
+                    <div class="col-md-3 mb-2">
+                        <select class="form-control" v-model="largeCategory" @change="fnChangeLargeCategory">
+                            <option value="">카테고리</option>
                             <option v-for="cat in categoryList" :key="cat" :value="cat">{{cat}}</option>
                         </select>
                     </div>
-                    <div class="col-md-4 mb-2">
-                        <select class="form-control" v-model="companyNo" :disabled="!selectedCategory" @change="fnGetProductList">
+                    <div class="col-md-3 mb-2">
+                        <select class="form-control" v-model="mediumCategory" :disabled="!largeCategory" @change="fnChangeMediumCategory">
+                            <option value="">상세 분류</option>
+                            <option v-for="mCat in mediumCategoryList" :key="mCat" :value="mCat">{{mCat}}</option>
+                        </select>
+                    </div>
+                    <div class="col-md-3 mb-2">
+                        <select class="form-control" v-model="companyNo" :disabled="!mediumCategory" @change="fnGetProductList">
                             <option value="">업체 선택</option>
                             <option v-for="com in filteredCompanyList" :key="com.companyNo" :value="com.companyNo">{{com.comName}}</option>
                         </select>
                     </div>
-                    <div class="col-md-4 mb-2">
+                    <div class="col-md-3 mb-2">
                         <select class="form-control" v-model="productNo" :disabled="!companyNo">
                             <option value="">상품 선택</option>
                             <option v-for="item in productList" :key="item.productNo" :value="item.productNo">{{item.productName}}</option>
@@ -253,8 +259,12 @@
                     rating: 5,
                     quill: null,
                     textLength: 0,
+                    largeCategory: '',      // 대분류
+                    mediumCategory: '',     // 중분류
                     companyList: [],
-                    categoryList: [],
+                    categoryList: [],         // [추가] 대분류 목록 변수 선언
+                    mediumCategoryList: [], // 대분류 선택 시 바뀌는 중분류 목록
+                    filteredCompanyList: [],// 필터링된 업체 목록
                     productList: [],
                     previews: [] ,
                     review : {
@@ -277,6 +287,33 @@
                 }
             },
             methods: {
+                // 1. 대분류 변경 시
+                fnChangeLargeCategory() {
+                    this.mediumCategory = '';
+                    this.companyNo = '';
+                    this.productNo = '';
+                    this.productList = [];
+                    
+                    // 대분류에 맞는 중분류만 추출 (중복 제거)
+                    this.mediumCategoryList = [...new Set(
+                        this.companyList
+                            .filter(c => c.largeCategory === this.largeCategory)
+                            .map(c => c.mediumCategory)
+                    )];
+                },
+
+                // 2. 중분류 변경 시 -> 업체 목록 갱신
+                fnChangeMediumCategory() {
+                    this.companyNo = '';
+                    this.productNo = '';
+                    this.productList = [];
+                    
+                    // 선택된 대/중분류에 해당하는 업체만 필터링
+                    this.filteredCompanyList = this.companyList.filter(c => 
+                        c.largeCategory === this.largeCategory && 
+                        c.mediumCategory === this.mediumCategory
+                    );
+                },
                 initEditor() {
                     this.quill = new Quill('#editor', {
                         theme: 'snow',
@@ -311,12 +348,17 @@
                         url: "/api/review/productList.dox",
                         type: "POST",
                         contentType: "application/json",
-                        data: JSON.stringify({ companyNo: this.companyNo }),
+                        data: JSON.stringify({ 
+                            companyNo: this.companyNo,
+                            largeCategory: this.largeCategory,
+                            mediumCategory: this.mediumCategory 
+                        }),
                         success: (res) => {
                             const data = typeof res === 'string' ? JSON.parse(res) : res;
                             if(data.result === "success") {
                                 this.productList = data.list;
                                 this.productNo = '';
+                                 console.log("전체 리스트 확인:", data.list); // 이 콘솔을 보고 필드명을 다시 확인하세요.
                             }
                         }
                     });
@@ -332,7 +374,12 @@
                             const data = typeof res === 'string' ? JSON.parse(res) : res;
                             if(data.result === "success") {
                                 this.companyList = data.list;
-                                this.categoryList = [...new Set(data.list.map(com => com.comType))];
+                                
+                                // [수정] 아래 'largeCategory' 부분을 실제 데이터 필드명으로 변경하세요.
+                                // 만약 콘솔에서 찍어봤을 때 필드명이 'large_category'라면 그대로 쓰세요.
+                                this.categoryList = [...new Set(data.list.map(com => com.largeCategory))]; 
+                                
+                                console.log("대분류 목록:", this.categoryList);
                             }
                         }
                     });
@@ -349,6 +396,8 @@
                     if(!this.$refs.receiptFile.files[0]) return alert("영수증 인증 사진을 업로드해주세요.");
                     
                     if(this.companyType === 'internal') {
+                        if(!this.largeCategory) return alert("대분류를 선택해주세요.");
+                        if(!this.mediumCategory) return alert("중분류를 선택해주세요.");
                         if(!this.companyNo) return alert("업체를 선택해주세요.");
                         if(!this.productNo) return alert("상품을 선택해주세요.");
                     } else {
@@ -403,6 +452,8 @@
                     
                     const reviewData = {
                         userId: this.sessionId,
+                        largeCategory: this.largeCategory,
+                        mediumCategory: this.mediumCategory,
                         companyNo: this.companyType === 'internal' ? this.companyNo : null,
                         productNo: this.companyType === 'internal' ? this.productNo : null,
                         externalName: this.companyType === 'external' ? this.externalName : null,
@@ -481,6 +532,8 @@
             mounted() {
                 this.initEditor();
                 this.fnGetCompanyList();
+                this.fnGetProductList();
+
             }
         }).mount('#app');
     </script>

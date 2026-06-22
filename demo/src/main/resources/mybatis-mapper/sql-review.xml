@@ -9,7 +9,6 @@
         WHERE review_no = #{targetId}
     </select>
 
-	<!-- 리뷰 개수 조회 -->
 	<select id="selectReviewCount" parameterType="hashmap" resultType="int">
 	    SELECT COUNT(*)
 	    FROM Review r
@@ -19,11 +18,14 @@
 	    <if test="isPaid != null and isPaid != '' or isPaid == 0">
 	        AND r.is_paid = #{isPaid}
 	    </if>
-	
-	    <if test="category != null and category != '' and category != 'all'">
-	        AND JSON_CONTAINS(c.com_type, JSON_QUOTE(#{category}))
+	    
+	    <if test="largeCategory != null and largeCategory != '' and largeCategory != '전체' and largeCategory != 'all'">
+	        AND r.large_category = #{largeCategory}
 	    </if>
-	
+	    <if test="mediumCategory != null and mediumCategory != '' and mediumCategory != 'all'">
+	        AND r.medium_category = #{mediumCategory}
+	    </if>
+	    
 	    <if test="searchKeyword != null and searchKeyword != ''">
 	        <choose>
 	            <when test="searchType == 'company'"> AND c.com_name LIKE CONCAT('%', #{searchKeyword}, '%') </when>
@@ -39,6 +41,8 @@
     <select id="selectReviewList" parameterType="hashmap" resultType="hashmap">
 	    SELECT 
 	        r.review_no AS reviewNo,
+	        r.large_category AS largeCategory,
+    		r.medium_category AS mediumCategory, 
 	        CASE 
 	            WHEN m.status = 'WITHDRAWN' THEN '탈퇴회원'
 	            ELSE d.nickname 
@@ -54,7 +58,10 @@
 	        r.stored_name AS storedName,
 	        IFNULL(r.thumbnail_url, r.img_url) AS thumbnailUrl, 
 	        IFNULL(c.com_name, '일반 리뷰') AS comName,
-	        c.com_type AS comType, 
+	        CASE 
+	            WHEN r.company_no IS NULL OR r.company_no = 0 THEN '외부업체'
+	            ELSE '제휴업체'
+	        END AS comType,
 	        (SELECT COUNT(*) FROM comment com WHERE com.review_no = r.review_no) AS commentCnt,
 	        (SELECT IFNULL(AVG(r2.rating), 0) FROM Review r2 WHERE r2.company_no = r.company_no AND r2.approval_status = 'APPROVED') AS avgRating,
 	        CASE 
@@ -64,7 +71,7 @@
 	        DATE_FORMAT(r.reg_date, '%Y-%m-%d') AS regDate,
 	        <!-- [추가] 열람 기록 확인 로직 -->
 	        CASE 
-	            WHEN p.review_no IS NOT NULL THEN 'ALREADY_VIEWED'
+	            WHEN log.review_no IS NOT NULL THEN 'ALREADY_VIEWED'
 	            ELSE 'NOT_VIEWED'
 	        END AS viewStatus
 	        
@@ -72,17 +79,25 @@
 	    LEFT OUTER JOIN Company c ON r.company_no = c.company_no
 	    LEFT JOIN MEMBER m ON r.user_id = m.user_id
 	    LEFT JOIN USER_DETAIL d ON r.user_id = d.user_id
+	    
 	    <!-- [추가] 사용자의 열람 로그 조인 (sessionId가 있을 때만 유효하게 작동) -->
-    	LEFT OUTER JOIN Pass_Usage_Log p ON r.review_no = p.review_no AND p.user_id = #{sessionId}
+    	LEFT OUTER JOIN Pass_Usage_Log log ON r.review_no = log.review_no AND log.user_id = #{sessionId}
 	    WHERE r.approval_status = 'APPROVED'
+	    
+	   <if test="largeCategory != null and largeCategory != '' and largeCategory != '전체' and largeCategory != 'all'">
+		    AND r.large_category = #{largeCategory}
+		</if>	
+		<if test="mediumCategory != null and mediumCategory != '' and mediumCategory != 'all'">
+		    AND r.medium_category = #{mediumCategory}
+		</if>
 	
 	    <if test="isPaid != null and isPaid != '' or isPaid == 0">
 	        AND r.is_paid = #{isPaid}
 	    </if>
 	
-	    <if test="category != null and category != '' and category != 'all'">
+	    <!--<if test="category != null and category != '' and category != 'all'">
 	        AND JSON_CONTAINS(c.com_type, JSON_QUOTE(#{category}))
-	    </if>
+	    </if>-->
 	
 	    <if test="searchKeyword != null and searchKeyword != ''">
 	        <choose>
@@ -229,7 +244,6 @@
         SELECT 
             company_no AS companyNo,
             com_name AS comName,
-            com_type AS comType,
             com_address AS comAddress
         FROM Company
         WHERE company_no = #{companyNo}
@@ -241,22 +255,36 @@
 	        product_no AS productNo,
 	        product_name AS productName,
 	        original_price AS originalPrice
-	    FROM product
+	    FROM Product
 	    WHERE company_no = #{companyNo}
-	      AND is_active = 1  
-     </select>
+	      AND is_active = 1
+	    <if test="largeCategory != null and largeCategory != ''">
+	        AND large_category = #{largeCategory}
+	    </if>
+	    <if test="mediumCategory != null and mediumCategory != ''">
+	        AND medium_category = #{mediumCategory}
+	    </if>
+	</select>
     
     
     <!-- 현재 등록된 업체 -->
-    <select id="selectActiveCompanyList" resultType="hashmap">
-        SELECT 
-            company_no AS companyNo,
-            com_name AS comName,
-            com_type AS comType
-        FROM Company
-        WHERE status = 'ACTIVE' OR status IS NULL  
-        ORDER BY com_type ASC, com_name ASC 
-    </select>
+    <select id="selectActiveCompanyList" parameterType="hashmap" resultType="hashmap">
+	    SELECT DISTINCT 
+	        c.company_no AS companyNo, 
+	        c.com_name AS comName,
+	        p.large_category AS largeCategory, 
+	        p.medium_category AS mediumCategory
+	    FROM Company c
+	    JOIN Product p ON c.company_no = p.company_no
+	    WHERE (c.status = 'ACTIVE' OR c.status IS NULL)
+	    <if test="largeCategory != null and largeCategory != ''">
+	        AND p.large_category = #{largeCategory}
+	    </if>
+	    <if test="mediumCategory != null and mediumCategory != ''">
+	        AND p.medium_category = #{mediumCategory}
+	    </if>
+	    ORDER BY c.com_name ASC 
+	</select>
     
     <!-- 리뷰 등록 -->
     <insert id="insertReview" parameterType="com.example.demo.community_review.model.Review">
@@ -280,7 +308,9 @@
             professionalism, 
         	waiting_time_status, 
         	waiting_duration, 
-        	extra_charge_force
+        	extra_charge_force,
+        	large_category, 
+        	medium_category
            	
         ) VALUES (
             #{userId}, 
@@ -304,8 +334,10 @@
             #{professionalism},
         	#{waitingTimeStatus}, 
         	#{waitingDuration}, 
-        	#{extraChargeForce}
-            
+        	#{extraChargeForce},
+        	#{largeCategory}, 
+        	#{mediumCategory}
+             
         )
     </insert>
 

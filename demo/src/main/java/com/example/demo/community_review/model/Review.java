@@ -55,4 +55,8 @@ public class Review {
 
     private String aiSummary; // 추가
     private String summary; // 요약문 저장용
+
+    private String largeCategory;
+    private String mediumCategory;
+
 }
