@@ -4,11 +4,20 @@
 <mapper namespace="com.example.demo.company.mapper.CompanyMapper">
 
 	<select id="selectCompany" parameterType="hashmap"
-		resultType="com.example.demo.company.model.Company">
-		SELECT m.*, c.com_name, p.pay_date 
+		resultType="com.example.demo.company.model.PartnerMember">
+		SELECT 
+			m.user_id AS userId,
+			m.password,
+			m.ROLE AS role, /* 🎯 진짜 회원 등급 직통 배달 파이프라인 완비 */
+			m.status,
+			m.tel,
+			m.reg_date AS regDate,
+			m.last_login AS lastLogin,
+			m.previous_payment AS previousPayment,
+			m.out_date AS outDate,
+			c.com_name AS comName
 		FROM member m
 		LEFT JOIN company c ON m.user_id = c.user_id
-		LEFT JOIN payment p ON m.user_id = p.user_id
 		WHERE m.user_id = #{userid}
 	</select>
 

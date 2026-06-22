@@ -46,7 +46,6 @@ const ReservationSectionComponent = {
                 type: "POST",
                 data: param,
                 success: function(data) {
-                    console.log(data);
                     self.reservationList = data.list;
                     self.resCount = data.newResCnt;
                 }

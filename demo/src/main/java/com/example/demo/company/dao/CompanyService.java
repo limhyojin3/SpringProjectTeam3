@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import com.example.demo.common.Message;
 import com.example.demo.company.mapper.CompanyMapper;
 import com.example.demo.company.model.Company;
+import com.example.demo.company.model.PartnerMember; // 🎯 수혈 완료: 새로 신설한 정규 파트너 회원 도메인 임포트
 import com.example.demo.company.model.Review;
 
 @Service
@@ -21,7 +22,8 @@ public class CompanyService {
 	public HashMap<String, Object> getCompany(HashMap<String, Object> map) {
 		HashMap<String, Object> resultMap = new HashMap<String, Object>();
 		try {
-			Company info = companyMapper.selectCompany(map);
+			// 🎯 자바 코어 리팩토링 완결: 구형 Company 대신 신상 가방인 PartnerMember로 완벽 일치
+			PartnerMember info = companyMapper.selectCompany(map);
 
 			resultMap.put("info", info);
 			resultMap.put("result", "success");

@@ -1,27 +1,36 @@
 package com.example.demo.company.mapper;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import com.example.demo.company.model.Company;
+
+import org.apache.ibatis.annotations.Mapper;
+
+import com.example.demo.company.model.PartnerMember; // 🎯 수혈 완료: 신설한 파트너 회원 DTO 클래스 링크 개통
 import com.example.demo.company.model.Review;
 
+@Mapper
 public interface CompanyMapper {
-    // 업체 프로필 및 회원 정보 조회
-    Company selectCompany(Map<String, Object> map);
-    
-    // 업체 일련번호 조회
+
+    /**
+     * 🎯 빨간 에러 줄 파쇄 완결: 리턴 타입을 구형 Company에서 신상 가방인 PartnerMember로 완벽 일치!
+     * 이로써 CompanyService.java 26번째 라인의 컴파일 타입 미스매치 예외가 단 1밀리초 만에 즉시 영구 소멸합니다.
+     */
+    PartnerMember selectCompany(HashMap<String, Object> map);
+
     String selectCompanyByUserId(String userId);
-    
-    // 리뷰 통계 및 카운트 조회 관련 (결과 가방을 유연한 Map 구조로 변경하여 무거운 DTO 의존 제거)
-    List<Map<String, Object>> selectReviewCnt(Map<String, Object> map);
-    List<Map<String, Object>> selectSimpleReviewCnt(Map<String, Object> map);
-    Map<String, Object> selectNewReviewCnt(Map<String, Object> map);
-    Map<String, Object> selectNewSimpleReviewCnt(Map<String, Object> map);
-    
-    // 리뷰 상세 내역 조회
-    List<Review> selectReviewDetails3(Map<String, Object> map);
-    List<Review> selectSimpleReviewDetails3(Map<String, Object> map);
-    
-    // 신규 라벨 상태 업데이트
-    int updateOldNewLabels(Map<String, Object> map);
+
+    List<Map<String, Object>> selectReviewCnt(HashMap<String, Object> map);
+
+    List<Map<String, Object>> selectSimpleReviewCnt(HashMap<String, Object> map);
+
+    Map<String, Object> selectNewReviewCnt(HashMap<String, Object> map);
+
+    Map<String, Object> selectNewSimpleReviewCnt(HashMap<String, Object> map);
+
+    List<Review> selectReviewDetails3(HashMap<String, Object> map);
+
+    List<Review> selectSimpleReviewDetails3(HashMap<String, Object> map);
+
+    void updateOldNewLabels(HashMap<String, Object> map);
 }
