@@ -41,6 +41,7 @@ public class ProductService {
 				}
 			}
 
+			// 💡 데이터 관로 체크: 프론트엔드에서 성실하게 쏴준 userid 파라미터가 map에 담겨 마이바티스로 직통 전달됩니다.
 			List<Product> list = productMapper.selectProductList(map);
 
 			resultMap.put("list", list);

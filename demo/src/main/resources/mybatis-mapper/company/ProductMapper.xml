@@ -37,6 +37,9 @@
 			INNER JOIN product_tag pt ON ptm.tag_id = pt.id
 		</if>
 		<where>
+			<if test="userid != null and userid != ''">
+				AND c.user_id = #{userid}
+			</if>
 			<if test="largeCategory != null and largeCategory != ''">
 				AND p.large_category = #{largeCategory}
 			</if>
