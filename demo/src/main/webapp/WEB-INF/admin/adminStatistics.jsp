@@ -35,7 +35,7 @@
             }
 
             .stats-mini-card {
-                background: #fff0f3;
+                background: #9ac2fc;
                 border-radius: 12px;
                 padding: 20px;
                 box-shadow: 0 4px 15px rgba(0, 0, 0, 0.06);

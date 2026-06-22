@@ -14,7 +14,7 @@ body {
 	width: 280px;
 	min-height: 100vh;
 	padding: 20px;
-	background: #DBCFBD;
+	background: #1A1A2E;
 }
 
 /* 로고 */
@@ -28,12 +28,13 @@ body {
 	border-radius: 8px;
 	text-align: center;
 	box-shadow: 0 8px 18px rgba(0, 0, 0, .05);
-	background-color: #f4a096;
-	color: #fff;
+	background-color: #0F3460;
+	color: white;
 }
 
 .admin-title:hover {
-	color: #ff4d6d;
+	background: #E8ECF6;
+	color: #0F3460;
 	text-decoration: none;
 	transform: scale(1.1);
 	transition: .28s ease;
@@ -57,10 +58,10 @@ body {
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	background: #fff;
+	background: #FFFFFF;
 	font-size: 16px;
 	font-weight: 700;
-	color: #333;
+	color: #30344F;
 	transition: .28s ease;
 	border: 1px solid #e8edf2;
 }
@@ -84,8 +85,8 @@ body {
 	text-decoration: none;
 	font-size: 15px;
 	font-weight: 700;
-	color: #444;
-	background: #fff;
+	color: #30344F;
+	background: #FFFFFF;
 	border: 1px solid #e8edf2;
 }
 
@@ -94,10 +95,12 @@ body {
 }
 
 .hover-view a:hover {
-	background: #fff0f3;
-	color: #ff4d6d;
+	background: #E8ECF6;
+	color: #16213E;
 	transition: 0.3s;
-
+	border-color: #D5DCEC;
+	outline: none;
+	box-shadow: none;
 }
 
 /* hover 시 전환 */
@@ -128,15 +131,15 @@ body {
 	text-decoration: none;
 	font-size: 16px;
 	font-weight: 700;
-	color: black;
-	background: white;
+	color: #30344F;
+	background: #FFFFFF;
 	border-radius: 8px;
 	transition: .25s;
 }
 
 .single-btn:hover {
-	background: #fff0f3;
-	color: #ff4d6d;
+	background: #E8ECF6;
+	color: #16213E;
 	transition: 0.3s;
 	text-decoration: none;
 
@@ -152,11 +155,9 @@ body {
 }
 
 .hover-view a.activebtn {
-    background:#ff6b6b !important;
-    color:white !important;
-    font-weight:700;
-    border:1px solid #ff6b6b !important;
-}
-.hover-view a.activebtn {
-    pointer-events: none;
+	background: #CBD5EA !important;
+	color: #0F3460 !important;
+	font-weight: 700;
+	border: 1px solid #B8C5DF !important;
+	pointer-events: none;
 }

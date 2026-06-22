@@ -119,6 +119,8 @@ public class Admin {
 	String proType;
 	String tag;
 	int deposit;
+	String largeCategory;
+	String mediumCategory;
 
 	// 쿠폰
 //	String couponCode;

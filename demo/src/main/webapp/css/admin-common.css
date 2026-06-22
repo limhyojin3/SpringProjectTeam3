@@ -6,7 +6,7 @@
 
 body {
 	font-family: 'Pretendard', -apple-system, sans-serif;
-	background-color: #DBCFBD;
+	background-color: #1A1A2E;
 	color: #333;
 }
 
@@ -31,7 +31,7 @@ body {
 .main .container {
 	width: 1250px;
 	padding: 20px;
-	background: #fff;
+	background: #F8F9FC;
 	border-radius: 10px;
 	box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
 	
@@ -182,28 +182,28 @@ input.form-control {
 
 /* 검색 버튼 (딥 그린) */
 .keyword-group button {
-    background-color: #4A5D4E;
+    background-color: #1A1A2E;
     color: white;
-    border: 1px solid #4A5D4E;
+    border: 1px solid #1A1A2E;
     padding: 0 15px;
 }
 
 .keyword-group button:hover {
-    background-color: #3a4a3e;
+    background-color: #16213E;
     /* 호버 시에도 살짝 그림자를 주면 생동감이 생깁니다 */
     box-shadow: 0 2px 6px rgba(0,0,0,0.1);
 }
 
 /* 초기화 버튼 (레드 아웃라인) */
 .filter-group button {
-    background: #4A5D4E;
-    border: 1px solid #4A5D4E;
+    background: #1A1A2E;
+    border: 1px solid #1A1A2E;
     color: white;
     padding: 0 15px;
 }
 
 .filter-group button:hover {
-    background-color: #3a4a3e;
+    background-color: #16213E;
     color: white;
 	box-shadow: 0 2px 6px rgba(0,0,0,0.1);
 }
@@ -212,9 +212,9 @@ input.form-control {
 h2 {
     font-size: 24px;
     padding-left: 12px;
-    border-left: 5px solid #DBCFBD; /* 포인트 컬러 막대 */
+    border-left: 5px solid #334155; /* 포인트 컬러 막대 */
     margin-bottom: 25px;
-    color: #4A5D4E; /* 버튼에서 썼던 진한 색 */
+    color: #0F172A; 
 }
 
 button {
@@ -318,12 +318,12 @@ table button:hover{
 }
 
 .tab-menu button:hover {
-	color: #4A5D4E;
+	color: #334155;
 	transform: translateY(-2px);
 }
 
 .tab-menu button.active {
-	color: #4A5D4E;
+	color: #334155;
 	font-weight: bold;
 }
 
@@ -334,7 +334,7 @@ table button:hover{
     left: 0;
     right: 0;
     height: 4px;    /* 선 두께 */
-    background-color: #DBCFBD; /* 페이지네이션과 같은 색 */
+    background-color: #334155; /* 페이지네이션과 같은 색 */
     border-radius: 4px; /* 선의 양 끝만 둥글게 깎아 직선 느낌 유지 */
 }
 
@@ -349,10 +349,10 @@ table button:hover{
 }
 
 .table th {
-	background: #f2f0ec;
+	background: #E5E8F1;
 	font-weight: 700;
-	color: #4A5D4E;
-	border-bottom: 2px solid #DBCFBD;
+	color: #252A44;
+	border-bottom: 2px solid #DFE2EA;
 	padding: 15px;
 	text-align: center;
 
@@ -413,14 +413,14 @@ table button:hover{
 }
 
 .page-box button:hover {
-	color:#4A5D4E;
-	background-color: rgba(219, 207, 189, 0.3);
+	color:#1E293B;
+	background-color: rgba(51, 65, 85, 0.08) ;
 	transform: translateY(-2px);
 }
 
 .page-box button.active {
-	background: #DBCFBD;
-	color: #4A5D4E;
+	background: #334155;
+	color: #FFFFFF;
 	font-weight: 800;
 	transform: scale(1.2);
 	padding: 0;
