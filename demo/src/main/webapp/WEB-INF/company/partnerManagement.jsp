@@ -78,11 +78,4 @@
         window.SESSION_ID = "${sessionScope.sessionId}";
     </script>
     <script src="/js/partner-utils.js"></script>
-    
-    <script src="/js/company-components/main-menu-component.js"></script>
-    <script src="/js/company-components/product-section-component.js"></script>
-    <script src="/js/company-components/reservation-section-component.js"></script>
-    <script src="/js/company-components/inquiry-section-component.js"></script>
-    <script src="/js/company-components/review-section-component.js"></script>
-
     <script src="/js/partner-management.js"></script>

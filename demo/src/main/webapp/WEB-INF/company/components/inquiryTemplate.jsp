@@ -112,3 +112,5 @@
 
     </div>
 </template>
+
+<script src="${pageContext.request.contextPath}/js/company-components/inquiry-section-component.js"></script>

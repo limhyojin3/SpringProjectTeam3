@@ -18,3 +18,5 @@
             <div><span v-if="user.grade === 'NPARTNER'">*관리자가 승인후 제휴업체 등급이 됩니다!</span></div>
         </div>
     </template>
+
+    <script src="${pageContext.request.contextPath}/js/company-components/main-menu-component.js"></script>
