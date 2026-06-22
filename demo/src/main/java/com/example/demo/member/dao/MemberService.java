@@ -25,6 +25,7 @@ public class MemberService {
 	@Autowired
 	MemberMapper memberMapper;
 	
+	@Autowired
 	PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 	// *로그인 (일반,업체,관리자)*
 	public HashMap<String, Object> login(HashMap<String, Object> map, HttpSession session) {
@@ -54,7 +55,7 @@ public class MemberService {
 	        
 	        // 3. role 체크 (비밀번호 비교 전에!)
 	        String tab = (String) map.get("tab");
-	        if(tab.equals("user")) {
+	        if("user".equals(tab)) {
 	            if(!member.getRole().equals("USER")) {
 	                resultMap.put("loginResult", false);
 	                if(member.getRole().equals("ADMIN")) {
@@ -64,13 +65,17 @@ public class MemberService {
 	                }
 	                return resultMap;
 	            }
-	        } else if(tab.equals("company")) {
+	        } else if("company".equals(tab)) {
 	            if(!member.getRole().equals("PARTNER") && !member.getRole().equals("NPARTNER")) {
 	                resultMap.put("loginResult", false);
-	                resultMap.put("message", "일반 로그인을 이용해주세요.");
+	                if(member.getRole().equals("ADMIN")) {
+	                    resultMap.put("message", "관리자 전용 페이지에서 로그인해주세요.");
+	                } else {
+	                    resultMap.put("message", "일반 로그인을 이용해주세요.");
+	                }
 	                return resultMap;
 	            }
-	        } else if(tab.equals("admin")) { 
+	        } else if("admin".equals(tab)) { 
 	            if(!member.getRole().equals("ADMIN")) {
 	                resultMap.put("loginResult", false);
 	                resultMap.put("message", "관리자 권한이 없는 계정입니다.");
