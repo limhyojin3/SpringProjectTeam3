@@ -58,10 +58,18 @@ public class ProductService {
 	public HashMap<String, Object> getProduct(HashMap<String, Object> map) {
 		HashMap<String, Object> resultMap = new HashMap<String, Object>();
 		try {
-			List<String> tagList = productMapper.selectTagList(map);
 			Product info = productMapper.selectProduct(map);
 
-			resultMap.put("tagList", tagList);
+			// 🎯 [신규 이식] 이 상품 고유의 태그 문자열("태그1,태그2")만 정밀 정제해서 전송 그릇에 적재
+			List<String> currentProductTags = new java.util.ArrayList<>();
+			if (info != null && info.getTag() != null && !info.getTag().trim().isEmpty()) {
+				String[] tags = info.getTag().split(",");
+				for (String t : tags) {
+					currentProductTags.add(t.trim());
+				}
+			}
+						
+			resultMap.put("tagList", currentProductTags);
 			resultMap.put("info", info);
 			resultMap.put("result", "success");
 			resultMap.put("message", Message.MSG_ADD);

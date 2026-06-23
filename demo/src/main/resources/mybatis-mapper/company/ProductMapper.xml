@@ -93,15 +93,16 @@
 
 	<update id="updateProduct" parameterType="com.example.demo.company.model.Product">
 		UPDATE product
-		SET 
-			product_name = #{productName},
-			product_details = #{productDetails},
-			original_price = #{originalPrice},
-			is_active = #{isActive},
-			img_url = #{imgUrl},
-			large_category = #{largeCategory},
-			medium_category = #{mediumCategory},
-			deposit = #{deposit}
+		<set>
+			<if test="productName != null">product_name = #{productName},</if>
+			<if test="productDetails != null">product_details = #{productDetails},</if>
+			<if test="originalPrice != null">original_price = #{originalPrice},</if>
+			<if test="isActive != null">is_active = #{isActive},</if>
+			<if test="imgUrl != null and imgUrl != ''">img_url = #{imgUrl},</if>
+			<if test="largeCategory != null">large_category = #{largeCategory},</if>
+			<if test="mediumCategory != null">medium_category = #{mediumCategory},</if>
+			<if test="deposit != null">deposit = #{deposit}</if>
+		</set>
 		WHERE product_no = #{productNo}
 	</update>
 

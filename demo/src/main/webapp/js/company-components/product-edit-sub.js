@@ -27,7 +27,8 @@ const ProductEditSub = {
                 productDetails: '',
                 originalPrice: '',  // 실시간 문자열 콤마 핸들링을 위해 공백 문자열로 세팅
                 deposit: '',        // 실시간 문자열 콤마 핸들링을 위해 공백 문자열로 세팅
-                imgUrl: ''
+                imgUrl: '',
+                isActive: 1         // 🎯 [디버깅] 백엔드 NOT NULL 에러 방어용 상태 그릇 기본값 개통
             }
         };
     },
@@ -261,6 +262,16 @@ const ProductEditSub = {
             formData.append("largeCategory", this.oneProductDetails.largeCategory);
             formData.append("mediumCategory", this.oneProductDetails.mediumCategory);
 
+			// 🎯 [이 위치에 딱 한 줄 추가] 백엔드 upload 메서드 규격 정렬을 위한 userId 적재
+			formData.append("userId", window.SESSION_ID);
+						
+            // 🎯 [디버깅 추가 안전장치 1] 기존 로드된 isActive 값 유실 차단 (값이 없을 시 1로 백업 부동 처리)
+            let activeStatus = this.oneProductDetails.isActive !== undefined ? this.oneProductDetails.isActive : 1;
+            formData.append("isActive", activeStatus);
+
+            // 🎯 [디버깅 추가 안전장치 2] 새 사진을 안 올렸을 때 기존 이미지 URL이 널로 덮어써져 폭파되는 현상 원천 차단
+            formData.append("imgUrl", this.oneProductDetails.imgUrl || '');
+
             // 유저님이 최종적으로 칩 버튼을 눌러 확정한 태그 배열 수급 포장 (uniqueNewTagsOnly 키로 다중 적재)
             if (this.selectedTags.length > 0) {
                 this.selectedTags.forEach(tag => {
@@ -302,7 +313,7 @@ const ProductEditSub = {
             this.originalSnapshot = ''; // 스냅샷 백업 주머니 해제
             this.oneProductDetails = {
                 productNo: '', productName: '', largeCategory: '', mediumCategory: '',
-                productDetails: '', originalPrice: '', deposit: '', imgUrl: ''
+                productDetails: '', originalPrice: '', deposit: '', imgUrl: '', isActive: 1
             };
             this.$emit('back');
         }

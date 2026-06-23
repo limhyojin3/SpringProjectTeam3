@@ -55,7 +55,7 @@ public class ProductController {
 	/* 기등록 상품 정보 수정 및 물리 이미지 업로드 단자 */
 	@ResponseBody
 	@PostMapping("/upload.dox")
-	public String upload(@RequestParam(value = "file", required = false) MultipartFile file, Product product)
+	public String upload(@RequestParam(value = "file", required = false) MultipartFile file, Product product, @RequestParam("userId") String userId)
 			throws IllegalStateException, IOException {
 
 		if (file != null && !file.isEmpty()) {
