@@ -106,6 +106,17 @@
         /* 신고 버튼 */
         .btn-report { background: transparent; color: #ff8a8a; border: 1px solid #ffeded; padding: 6px 14px; border-radius: 8px; font-size: 13px; font-weight: 700; }
         .btn-report:hover { background: #fff0f0; color: #dc3545; }
+
+        .nickname-link {
+            text-decoration: none; /* 밑줄 제거 */
+            color: inherit;       /* 기존 글자색 유지 */
+            cursor: pointer;
+        }
+
+        .nickname-link:hover {
+            text-decoration: underline; /* 호버 시 밑줄 효과 */
+            color: #555;                /* 살짝 다른 색상으로 강조 */
+        }
     </style>
 </head>
 <body>
@@ -127,7 +138,12 @@
                         </div>
                         <h2 class="post-title">{{ post.title }}</h2>
                         <div class="post-info">
-                            <span class="author-name">@{{ post.nickname }}</span>
+                            <a 
+                            v-if="post.nickname !== '탈퇴회원'"
+                            :href="'/userProfile.do?userId=' + post.userId" class="nickname-link">
+                                <span class="author-name">@{{ post.nickname }}</span>
+                            </a>
+                            <b v-else class="text-danger">{{ post.nickname }}</b>
                             <span class="text-light">|</span>
                             <span>{{ post.regDate }}</span>
                             <span class="text-light">|</span>
@@ -178,7 +194,12 @@
                         <div v-for="item in commentList" :key="item.commentNo" :class="['comment-item', { 'is-reply': item.parentNo }]">
                             <div class="comment-header">
                                 <b :class="{'text-muted': item.nickname === '탈퇴회원' || item.isDeleted == 1}">
-                                    <template v-if="item.isDeleted == 0">@{{ item.nickname }}</template>
+                                   <a v-if="item.isDeleted == 0 && item.nickname !== '탈퇴회원'" 
+                                        :href="'/userProfile.do?userId=' + item.userId" 
+                                        style="text-decoration: none; color: inherit;">
+                                        @{{ item.nickname }}
+                                    </a>
+                                    <b v-else class="text-danger">{{ item.nickname }}</b>
                                     <template v-else-if="item.delRole === 'ADMIN'">[관리자 삭제]</template>
                                     <template v-else>[삭제된 댓글]</template>
                                 </b>
