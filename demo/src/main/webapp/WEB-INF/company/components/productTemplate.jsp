@@ -5,34 +5,42 @@
 <link rel="stylesheet" href="${pageContext.request.contextPath}/css/company-css/productManagementEditForm.css">
 
     <template id="product-section-template">
-        <div v-if="productPage === 'list'">
+        <div v-if="productPage === 'list'" class="product-management-list-container">
             <div class="productlist-productReg">
                 <div class="section-header">
-                    <h2>등록한 상품({{ registeredProductList.length }})</h2>
+                    <h2>등록한 상품 <span class="header-count-badge">{{ registeredProductList.length }}</span></h2>
                 </div>
-                <button @click="fnRegPage()" class="btn-product-reg">상품등록</button>
+                <button @click="fnRegPage()" class="btn-product-reg">✨ 신규 상품 등록</button>
             </div>
+            
             <div v-for="(i, idx) in fnPaginatedProductList" :key="idx" class="content-card PaginatedProductList">
                 <div class="imgUrl">
                     <img :src="i.imgUrl" :alt="i.productName" class="productImg">
                 </div>
+                
                 <div class="registeredProductList">
-                    <div class="ticket-no">No. {{ registeredProductList.length - ((productCurrentPage - 1) * 5 + idx )
-                        }}</div>
-                    <div style="flex: 1; font-weight: bold;">{{ i.productName }}</div>
+                    <div class="badge-pill-ticket">
+                        No. {{ registeredProductList.length - ((productCurrentPage - 1) * 5 + idx) }}
+                    </div>
+                    <h3 class="product-display-name">{{ i.productName }}</h3>
+                    <p class="product-display-desc" v-if="i.productDetails">{{ i.productDetails }}</p>
                 </div>
 
                 <div class="originalPrice">
-                    <div>{{ Number(i.originalPrice).toLocaleString() }}원</div>
-                    <button @click="fnEditPage(i)" class="btn-edit">수정하기</button>
-                    <button @click="fnRemoveProduct(i)" class="btn-delete">삭제하기</button>
+                    <div class="price-tag-display">
+                        <span class="price-value">{{ Number(i.originalPrice).toLocaleString() }}</span>원
+                    </div>
+                    <div class="action-btn-group">
+                        <button @click="fnEditPage(i)" class="btn-edit">수정하기</button>
+                        <button @click="fnRemoveProduct(i)" class="btn-delete">삭제하기</button>
+                    </div>
                 </div>
             </div>
 
             <div class="pagination1">
                 <span v-for="num in totalProductPages" :key="num">
                     <a @click="productCurrentPage = num" href="javascript:;"
-                        :style="productCurrentPage === num ? 'color: #9b8fd4; border: 1px solid #9b8fd4;' : ''">
+                        :class="{ 'active-page-node': productCurrentPage === num }">
                         {{ num }}
                     </a>
                 </span>
@@ -127,9 +135,9 @@
 
         <div v-else-if="productPage === 'edit'">
             <div class="product-form-wrapper">
-                <h2>상품 수정하기</h2>
+                <h2>商品 수정하기</h2>
                 <div class="product-form-section">
-                    <div class="form-title-box">상품 기본 정보</div>
+                    <div class="form-title-box">商品 기본 정보</div>
                     <div class="form-content-box">
                         <div class="form-group">
                             <label class="form-label">상품 이름</label>
