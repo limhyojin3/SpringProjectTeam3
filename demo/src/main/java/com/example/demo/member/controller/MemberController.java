@@ -867,4 +867,11 @@ public class MemberController {
 
 		    return "success";
 		}
+		
+		// 이벤트 상세
+		@GetMapping("/eventDetail.do")
+		public String eventDetail(@RequestParam int eventId, Model model) {
+		    model.addAttribute("eventId", eventId);
+		    return "member/eventDetail";
+		}
 }

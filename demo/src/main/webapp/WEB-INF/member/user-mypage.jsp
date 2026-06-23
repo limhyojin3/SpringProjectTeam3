@@ -19,7 +19,9 @@
     <%-- ✅ 마이페이지 메인 전용 스타일만 --%>
     <style>
         .greeting {
-            background-color: white;
+            background: rgba(255, 255, 255, 0.9);
+            box-shadow: 0 4px 16px rgba(255, 100, 130, 0.08);
+            backdrop-filter: blur(8px);
             border: 1px solid #ffc7c2;
             border-radius: 10px;
             padding: 20px 25px;
@@ -44,7 +46,9 @@
         .shortcut-btn {
             flex: 1;
             padding: 20px;
-            background: #fff0f3;
+            background: rgba(255, 255, 255, 0.9);
+            box-shadow: 0 4px 16px rgba(255, 100, 130, 0.08);
+            backdrop-filter: blur(8px);
             border: 1px solid #ffc7c2;
             border-radius: 10px;
             text-align: center;
@@ -70,7 +74,9 @@
         }
 
         .pass-box {
-            background-color: #fff0f3;
+            background: rgba(255, 255, 255, 0.9);
+            box-shadow: 0 4px 16px rgba(255, 100, 130, 0.08);
+            backdrop-filter: blur(8px);
             border: 1px solid #ffc7c2;
             border-radius: 10px;
             padding: 20px 25px;
@@ -229,7 +235,8 @@
         }
 
         .incomplete-banner {
-            background: #fff8f0;
+            background: rgba(255, 255, 255, 0.9);
+            box-shadow: 0 4px 16px rgba(255, 100, 130, 0.08);
             border: 1px solid #ffb3c1;
             border-radius: 8px;
             padding: 12px 16px;

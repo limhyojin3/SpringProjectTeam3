@@ -486,7 +486,7 @@
 	    SELECT 
 	        CL.like_no,
 	        CL.company_no,
-	        C.com_name,
+	        C.com_name
 	    FROM company_like CL
 	    JOIN company C ON CL.company_no = C.company_no
 	    WHERE CL.user_id = #{userId}
@@ -750,10 +750,9 @@
 	</insert>
 	<!-- company 테이블 INSERT -->
 	<insert id="insertCompany" parameterType="hashmap">
-	    INSERT INTO COMPANY (COM_NAME, COM_TYPE, USER_ID, COM_ADDRESS, BIZ_NO, CEO_NAME, COM_TEL, COM_EMAIL, REGISTRATION_FEE)
+	    INSERT INTO COMPANY (COM_NAME, USER_ID, COM_ADDRESS, BIZ_NO, CEO_NAME, COM_TEL, COM_EMAIL, REGISTRATION_FEE)
 	    VALUES (
 	        #{comName},
-	        #{comType},
 	        #{userId},
 	        #{comAddress, jdbcType=VARCHAR},
 	        #{bizNo},

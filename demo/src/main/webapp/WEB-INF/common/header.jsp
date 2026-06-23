@@ -3,7 +3,7 @@
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
-
+<link rel="stylesheet" href="${pageContext.request.contextPath}/css/common.css">  <!-- ✅ 추가 -->
 <style>
     /* ── 드롭다운 전체 래퍼 ── */
     .dropdown-header-wrap,
