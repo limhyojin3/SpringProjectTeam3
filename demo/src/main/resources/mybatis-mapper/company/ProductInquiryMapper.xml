@@ -4,10 +4,12 @@
 <mapper namespace="com.example.demo.company.mapper.ProductInquiryMapper">
 
 	<insert id="insertInquiryProduct" parameterType="map">
-		INSERT INTO inquiry_product(user_id, company_no, product_no, inquiry_title, inquiry_contents, inquiry_ans, inquiry_date)
-		VALUES(#{userId}, #{companyNo}, #{productNo}, #{inquiryTitle}, #{inquiryContents}, 0, NOW())
+		INSERT INTO inquiry_product(user_id, company_no, product_no,
+		inquiry_title, inquiry_contents, inquiry_ans, inquiry_date)
+		VALUES(#{userId}, #{companyNo}, #{productNo}, #{inquiryTitle},
+		#{inquiryContents}, 0, NOW())
 	</insert>
-	
+
 	<select id="selectInquiryProductList" parameterType="map"
 		resultType="com.example.demo.company.model.ProductInquiry">
 		SELECT
@@ -16,13 +18,10 @@
 			ip.product_no,
 			ip.inquiry_title,
 			ip.inquiry_contents,
-			/* 💡 관로 추가: 상품 문의 등록일시 추출 */
 			ip.inquiry_date,
 			p.product_name,
 			p.product_details,
 			p.img_url,
-			/* 🎯 디버깅 수술 완료: Unknown column 'p.pro_type' 오류를 일으키던 유령 컬럼 라인을 말끔히 청소 제거 */
-			p.tag,
 			p.original_price,
 			p.deposit,
 			c.company_no,
@@ -34,56 +33,60 @@
 		LEFT JOIN company c ON p.company_no = c.company_no
 		WHERE c.company_no = (
 			SELECT c1.company_no FROM company c1 WHERE c1.user_id = #{userId}
-		) 
-	</select>
-	
+		)
+		ORDER BY ip.inquiry_date DESC
+	</select> 
+
 	<insert id="insertProductInquiryAnswer" parameterType="map">
-		INSERT INTO inquiry_product_answer(inquiry_no, answer_contents, ans_user_id, answer_date)
+		INSERT INTO inquiry_product_answer(inquiry_no, answer_contents,
+		ans_user_id, answer_date)
 		VALUES(#{inquiryNo}, #{answerContents}, #{ansUserId}, NOW())
 	</insert>
-	
+
 	<update id="updateInquiryAnsStatus" parameterType="map">
 		UPDATE inquiry_product
 		SET inquiry_ans = 1
 		WHERE inquiry_no = #{inquiryNo}
 	</update>
-	
+
 	<select id="selectInquiryAnsYn" parameterType="map"
 		resultType="com.example.demo.company.model.ProductInquiry">
-		SELECT 
-			ip.inquiry_no, 
-			ip.inquiry_ans, 
-			ipa.answer_no, 
-			ipa.answer_contents, 
-			ipa.ans_user_id,
-			/* 💡 관로 추가: 답변 일시 추출 */
-			ipa.answer_date
+		SELECT
+		ip.inquiry_no,
+		ip.inquiry_ans,
+		ipa.answer_no,
+		ipa.answer_contents,
+		ipa.ans_user_id,
+		/* 💡 관로 추가: 답변 일시 추출 */
+		ipa.answer_date
 		FROM inquiry_product ip
-		LEFT JOIN inquiry_product_answer ipa ON ip.inquiry_no = ipa.inquiry_no 
+		LEFT JOIN inquiry_product_answer ipa ON ip.inquiry_no = ipa.inquiry_no
 		WHERE ip.inquiry_no = #{inquiryNo}
 	</select>
 
 	<update id="updateProductInquiryAnswer" parameterType="map">
 		UPDATE inquiry_product_answer
-		SET answer_contents = #{answerContents}, ans_user_id = #{ansUserId}, answer_date = NOW()
+		SET answer_contents = #{answerContents}, ans_user_id = #{ansUserId},
+		answer_date = NOW()
 		WHERE inquiry_no = #{inquiryNo}
 	</update>
 
 	<select id="selectMyInquiryList" parameterType="map"
 		resultType="com.example.demo.company.model.ProductInquiry">
 		SELECT
-			ip.inquiry_no,
-			p.product_no,
-			ip.inquiry_title,
-			ip.inquiry_contents,
-			IF((SELECT COUNT(*) FROM inquiry_product_answer WHERE inquiry_no = ip.inquiry_no) > 0, '1', '0') AS inquiry_ans,
-			/* 💡 관로 추가: 나의 문의 내역 화면으로 보낼 등록일시 데이터 추출 */
-			ip.inquiry_date,
-			p.product_name,
-			p.product_details,
-			p.original_price,
-			p.is_active,
-			p.img_url
+		ip.inquiry_no,
+		p.product_no,
+		ip.inquiry_title,
+		ip.inquiry_contents,
+		IF((SELECT COUNT(*) FROM inquiry_product_answer WHERE inquiry_no =
+		ip.inquiry_no) > 0, '1', '0') AS inquiry_ans,
+		/* 💡 관로 추가: 나의 문의 내역 화면으로 보낼 등록일시 데이터 추출 */
+		ip.inquiry_date,
+		p.product_name,
+		p.product_details,
+		p.original_price,
+		p.is_active,
+		p.img_url
 		FROM inquiry_product ip
 		LEFT JOIN product p ON ip.product_no = p.product_no
 		WHERE ip.user_id = #{userId}
@@ -92,12 +95,12 @@
 
 	<select id="selectInquiry1Answer" parameterType="map"
 		resultType="com.example.demo.company.model.ProductInquiry">
-		SELECT 
-			ip.inquiry_no, 
-			c.user_id, 
-			ipa.answer_contents,
-			/* 💡 관로 추가: 문의 상세보기 창으로 배달될 업체 답변 일시 데이터 추출 */
-			ipa.answer_date 
+		SELECT
+		ip.inquiry_no,
+		c.user_id,
+		ipa.answer_contents,
+		/* 💡 관로 추가: 문의 상세보기 창으로 배달될 업체 답변 일시 데이터 추출 */
+		ipa.answer_date
 		FROM inquiry_product ip
 		LEFT JOIN company c ON ip.company_no = c.company_no
 		LEFT JOIN inquiry_product_answer ipa ON ip.inquiry_no = ipa.inquiry_no

@@ -36,4 +36,6 @@ public class Reservation {
     private String payStatus;
     private Integer refund;
     private Date refundDate;
+    
+    private String resUserId;
 }

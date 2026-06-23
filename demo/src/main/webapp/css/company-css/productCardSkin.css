@@ -1,0 +1,96 @@
+@charset "UTF-8";
+
+/* ==========================================================================
+   2. 하이엔드 3차원 플로팅 상품 리스트 카드 (Premium Product Card)
+   ========================================================================== */
+.product-management-list-container .content-card {
+	background-color: #ffffff;
+	border: 1px solid #f3f3f3 !important;
+	border-radius: 14px !important;
+	margin-bottom: 22px !important;
+	position: relative;
+	box-shadow: 0 4px 18px rgba(0, 0, 0, 0.03) !important;
+	transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1) !important;
+}
+
+/* 🎯 고도화 마이크로 인터랙션: 마우스를 올리면 카드가 공중으로 4px 사뿐히 플로팅 부상 */
+.product-management-list-container .content-card:hover {
+	transform: translateY(-4px);
+	box-shadow: 0 10px 30px rgba(155, 143, 212, 0.12) !important;
+	border-color: #e5e1fa !important;
+}
+
+.PaginatedProductList {
+	display: flex;
+	align-items: center;
+	padding: 24px 28px;
+}
+
+/* 좌측 상품 이미지 그릇 프레임 */
+.imgUrl {
+	width: 110px;
+	height: 110px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	margin-right: 26px;
+	flex-shrink: 0;
+	background: #fafafa;
+	border-radius: 12px;
+	overflow: hidden;
+	border: 1px solid #f6f6f6;
+}
+
+.productImg {
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+	transition: transform 0.4s ease;
+}
+
+.product-management-list-container .content-card:hover .productImg {
+	transform: scale(1.05);
+}
+
+/* 중앙 타이포그래피 메인 서랍 */
+.registeredProductList {
+	flex: 1;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	padding-right: 15px;
+}
+
+/* 은은한 연보라빛 알약 일련번호 배지 */
+.badge-pill-ticket {
+	font-size: 0.72rem;
+	font-weight: 800;
+	color: #8c7dbd;
+	background-color: #f4f1fa;
+	padding: 3px 10px;
+	border-radius: 20px;
+	width: fit-content;
+	margin-bottom: 8px;
+	letter-spacing: 0.3px;
+}
+
+/* 가시성이 폭발하는 상품명 서체 */
+.product-display-name {
+	font-size: 1.18rem;
+	font-weight: 700;
+	color: #2c2c2c;
+	margin: 0 0 6px 0 !important;
+	letter-spacing: -0.4px;
+}
+
+/* 차분하게 아래로 흐르는 설명 서브 카피 (2줄 제약 컷팅 바인딩) */
+.product-display-desc {
+	font-size: 0.88rem;
+	color: #777777;
+	margin: 0 !important;
+	line-height: 1.45;
+	display: -webkit-box;
+	-webkit-line-clamp: 2;
+	-webkit-box-orient: vertical;
+	overflow: hidden;
+}

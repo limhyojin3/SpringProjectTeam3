@@ -1,0 +1,66 @@
+@charset "UTF-8";
+
+/* ==========================================================================
+   1. 상품 목록 전체 레이아웃 서랍 (Product List View Container)
+   ========================================================================== */
+.product-management-list-container {
+	padding: 5px 10px;
+	font-family: 'Noto Sans KR', sans-serif;
+}
+
+/* 상단 정보 안내 및 버튼 정렬 바 */
+.productlist-productReg {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	margin-bottom: 25px;
+	padding: 0 5px;
+}
+
+.section-header {
+	border-left: 4.5px solid #9b8fd4;
+	padding-left: 14px;
+}
+
+.section-header h2 {
+	border: none !important;
+	padding: 0 !important;
+	margin: 0 !important;
+	font-size: 1.45rem !important;
+	font-weight: 700;
+	color: #1e1e1e;
+	letter-spacing: -0.5px;
+}
+
+/* 상단 텍스트 카운트 원형 틴트 엠블럼 */
+.header-count-badge {
+	font-size: 1.15rem;
+	color: #9b8fd4;
+	background: #f2effb;
+	padding: 2px 10px;
+	border-radius: 12px;
+	margin-left: 4px;
+	font-weight: 800;
+}
+
+/* 🎯 교정 기능 완벽 보존: transition: all 을 제거하고 호버 타격 속성만 적용하여
+      첫 화면 로딩 컴파일 시 버튼이 슥 늘어나거나 끌어당겨지듯 흔들리던 노이즈를 완벽 차단했습니다. */
+.productlist-productReg .btn-product-reg {
+	background: linear-gradient(135deg, #ffb400 0%, #ff7a00 100%) !important;
+	padding: 12px 26px !important;
+	border: none !important;
+	border-radius: 30px !important;
+	font-weight: 700 !important;
+	cursor: pointer !important;
+	color: #ffffff !important;
+	font-size: 14px !important;
+	letter-spacing: -0.2px;
+	transition: transform 0.2s ease, box-shadow 0.2s ease, filter 0.2s ease !important;
+	box-shadow: 0 4px 14px rgba(255, 122, 0, 0.3) !important;
+}
+
+.productlist-productReg .btn-product-reg:hover {
+	transform: translateY(-2.5px) !important;
+	box-shadow: 0 6px 20px rgba(255, 122, 0, 0.45) !important;
+	filter: brightness(1.05);
+}
