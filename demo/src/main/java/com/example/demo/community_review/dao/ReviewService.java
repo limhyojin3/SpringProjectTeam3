@@ -26,6 +26,7 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
+import com.example.demo.admin.dao.NotificationService;
 
 @Service
 public class ReviewService {
@@ -40,6 +41,9 @@ public class ReviewService {
     
     @Autowired
     private MemberMapper memberMapper; //✅기프트콘 로직 추가✅
+
+    @Autowired
+    private NotificationService notificationService;
     
     private final Gson gson = new Gson();
 
@@ -163,6 +167,13 @@ public class ReviewService {
             couponMap.put("sourceReviewNo", targetId);
 
             memberMapper.insertGiftcon(couponMap);
+            
+            notificationService.createGiftconIssued(
+            	    reviewAuthorId,
+            	    couponCode,
+            	    targetId
+            	);
+            
             System.out.println("기프트콘 발급 완료: " + couponCode + " → " + reviewAuthorId);
 
         } catch (Exception e) {

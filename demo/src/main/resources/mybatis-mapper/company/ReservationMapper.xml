@@ -52,7 +52,10 @@
 		</choose>
 	</select>
 
-	<insert id="insertReservation" parameterType="map">
+	<insert id="insertReservation" parameterType="map"
+		useGeneratedKeys="true"
+        keyProperty="resNo"
+        keyColumn="res_no">
 		INSERT INTO reservation(user_id, product_no, company_no, res_date, res_time, res_status, res_content, use_date, use_time, pay_date, pay_no)
 		VALUES(#{userId}, #{productNo}, #{companyNo}, NOW(), NOW(), 'WAIT', #{resContent}, #{useDate}, #{useTime}, NULL, NULL)
 	</insert>

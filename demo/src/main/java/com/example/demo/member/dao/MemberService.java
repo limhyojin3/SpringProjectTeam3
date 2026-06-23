@@ -18,7 +18,7 @@ import com.example.demo.member.model.Member;
 
 import jakarta.servlet.http.HttpSession;
 import java.time.LocalDate;
-
+import com.example.demo.admin.dao.NotificationService;
 
 @Service
 public class MemberService {
@@ -27,6 +27,10 @@ public class MemberService {
 	
 	@Autowired
 	PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+	
+	@Autowired
+	private NotificationService notificationService;
+	
 	// *로그인 (일반,업체,관리자)*
 	public HashMap<String, Object> login(HashMap<String, Object> map, HttpSession session) {
 	    HashMap<String, Object> resultMap = new HashMap<>();
@@ -444,7 +448,15 @@ public class MemberService {
         // status는 'UNUSED'로, 발급일은 현재 시간으로 저장됩니다.
         int result = memberMapper.insertUserCoupon(map);
 
-        return (result > 0) ? "SUCCESS" : "FAIL";
+        if (result > 0) {
+            notificationService.createCouponIssued(
+                String.valueOf(map.get("userId")),
+                String.valueOf(map.get("couponCode"))
+            );
+            return "SUCCESS";
+        }
+
+        return "FAIL";
     }
 	// 쿠폰 발급 (회원가입 쿠폰, 결혼에정일 입력 시 지급 쿠폰)
 	@Transactional
@@ -457,6 +469,8 @@ public class MemberService {
 	    int duplicate = memberMapper.checkDuplicateCoupon(couponMap);
 	    if (duplicate == 0) {
 	        memberMapper.insertUserCoupon(couponMap);
+	        
+	        notificationService.createCouponIssued(userId, couponCode);
 	    }
 	}
 	// 기프트콘 조회

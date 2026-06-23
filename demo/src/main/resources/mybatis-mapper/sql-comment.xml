@@ -38,7 +38,10 @@
 	        c.reg_date ASC
 	</select>
 	
-	<insert id="insertReviewComment" parameterType="hashmap">
+	<insert id="insertReviewComment" parameterType="hashmap"
+		useGeneratedKeys="true"
+        keyProperty="commentNo"
+        keyColumn="comment_no">
 	    INSERT INTO comment (
 	        review_no, 
 	        user_id,
@@ -86,7 +89,10 @@
 	        c.reg_date ASC
 	</select>
 	
-	<insert id="insertCommunityComment" parameterType="hashmap">
+	<insert id="insertCommunityComment" parameterType="hashmap"
+		useGeneratedKeys="true"
+        keyProperty="commentNo"
+        keyColumn="comment_no">
 	    INSERT INTO comment (
 	        post_no, 
 	        user_id,

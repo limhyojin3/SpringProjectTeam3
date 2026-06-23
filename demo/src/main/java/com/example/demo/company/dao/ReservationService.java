@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.example.demo.common.Message;
 import com.example.demo.company.mapper.ReservationMapper;
 import com.example.demo.company.model.Reservation;
+import com.example.demo.admin.dao.NotificationService;
 
 @Service
 public class ReservationService {
@@ -17,6 +18,9 @@ public class ReservationService {
 	@Autowired
 	private ReservationMapper reservationMapper;
 
+	@Autowired
+	private NotificationService notificationService;
+	
 	public HashMap<String, Object> getReservation(HashMap<String, Object> map) {
 		HashMap<String, Object> resultMap = new HashMap<String, Object>();
 		try {
@@ -66,6 +70,8 @@ public class ReservationService {
 		try {
 			int result = reservationMapper.insertReservation(map);
 			if (result > 0) {
+				notificationService.createReservationRequested(map.get("resNo"));
+				
 				resultMap.put("result", "success");
 				resultMap.put("message", Message.MSG_REMOVE);
 			}
@@ -118,6 +124,8 @@ public class ReservationService {
 			int result2 = reservationMapper.updatePaymentFinal(map);
 
 			if (result1 > 0 && result2 > 0) {
+				notificationService.createReservationConfirmed(map.get("resNo"));
+				
 				resultMap.put("result", "success");
 				resultMap.put("message", Message.MSG_REMOVE);
 			}
