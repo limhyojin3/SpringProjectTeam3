@@ -77,7 +77,8 @@
                     { company: '로즈브라이드', name: '2026 시그니처 드레스 패키지', discount: '20%', amount: '1,280,000원', symbol: '♕', tone: '' },
                     { company: '아르떼 주얼리', name: '프라이빗 웨딩링 커플 세트', discount: '15%', amount: '890,000원', symbol: '◇', tone: 'gold' },
                     { company: '메종 드 플라워', name: '본식 부케 · 부토니에 세트', discount: '10%', amount: '198,000원', symbol: '✿', tone: 'lilac' }
-                ]
+                ],
+				notificationChangedHandler: null,
             };
         },
 
@@ -300,6 +301,8 @@
             this.refreshAll(false);
             this.restartProductAdTimer();
             this.setupSideVideo();
+			this.notificationChangedHandler = this.refreshAll.bind(this, false);
+			document.addEventListener('mv:notification-changed', this.notificationChangedHandler);
         },
 
         beforeUnmount: function () {
@@ -309,6 +312,9 @@
                 if (desktopScreen.removeEventListener) desktopScreen.removeEventListener('change', syncVideoHandler);
                 else desktopScreen.removeListener(syncVideoHandler);
             }
+			if (this.notificationChangedHandler) {
+			    document.removeEventListener('mv:notification-changed', this.notificationChangedHandler);
+			}
         }
     }).mount('#app');
 })();

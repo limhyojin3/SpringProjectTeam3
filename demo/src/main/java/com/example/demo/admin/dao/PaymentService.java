@@ -23,6 +23,8 @@ import org.springframework.beans.factory.annotation.Value;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import java.time.LocalDateTime;
+import com.example.demo.admin.dao.NotificationService;
+
 @Service
 public class PaymentService {
 
@@ -31,6 +33,9 @@ public class PaymentService {
 	
 	@Autowired
 	AdminService adminService;
+	
+	@Autowired
+	NotificationService notificationService;
 	
 	@Value("${iamport.imp_key}")
 	private String impKey;
@@ -608,10 +613,10 @@ public class PaymentService {
 	            return resultMap;
 	        }
 
-	        // 3. 토큰 발급 (이미 존재 메소드)
+	        // 3. 토큰 발급
 	        String token = getToken();
 
-	        // 4. 결제 취소 (이미 존재 메소드 재사용)
+	        // 4. 결제 취소
 	        boolean cancelResult = cancelPayment(token, impUid);
 
 	        if (!cancelResult) {
@@ -629,6 +634,9 @@ public class PaymentService {
 
 	        paymentMapper.updateRefundReservation(map);
 	        paymentMapper.updateRefundReservation2(map);
+	        
+	        notificationService.createReservationCanceled(reservation.get("resNo"));
+	        notificationService.createReservationCanceledForCompany(reservation.get("resNo"));
 	        
 	        resultMap.put("impUid", impUid);
 	        resultMap.put("result", "success");

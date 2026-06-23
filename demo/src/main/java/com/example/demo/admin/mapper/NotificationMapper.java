@@ -28,4 +28,26 @@ public interface NotificationMapper {
 	int insertInquiryReceivedForAdmins(HashMap<String, Object> map);
 
 	int insertReportReceivedForAdmins(HashMap<String, Object> map);
+
+	int insertReservationRequestedForCompany(HashMap<String, Object> map);
+	
+	int insertReservationConfirmedForUser(HashMap<String, Object> map);
+	
+	int insertReservationCanceledForUser(HashMap<String, Object> map);
+	
+	int insertReservationCanceledForCompany(HashMap<String, Object> map);
+	
+	int insertProductInquiryReceivedForCompany(HashMap<String, Object> map);
+
+	int insertProductInquiryAnsweredForUser(HashMap<String, Object> map);
+	
+	int insertCouponIssuedForUser(HashMap<String, Object> map);
+	
+	int insertGiftconIssuedForUser(HashMap<String, Object> map);
+	
+	int insertReviewCommentedForAuthor(HashMap<String, Object> map);
+
+	int insertPostCommentedForAuthor(HashMap<String, Object> map);
+	
+	int insertCompanyReviewReceived(HashMap<String, Object> map);
 }
