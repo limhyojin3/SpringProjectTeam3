@@ -1,5 +1,4 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
-<!-- 🎯 자립형 격리 개통: 상단에서 목록 컴포넌트 전용 프리미엄 CSS 스킨을 직통 수급합니다. -->
 <link rel="stylesheet" href="${pageContext.request.contextPath}/css/company-css/productListLayout.css">
 <link rel="stylesheet" href="${pageContext.request.contextPath}/css/company-css/productCardSkin.css">
 <link rel="stylesheet" href="${pageContext.request.contextPath}/css/company-css/productPriceControl.css">
@@ -7,7 +6,6 @@
 
 <template id="product-list-sub-template">
     <div class="product-management-list-container">
-        <!-- 상단 타이틀 바 -->
         <div class="productlist-productReg">
             <div class="section-header">
                 <h2>등록한 상품 <span class="header-count-badge">{{ registeredProductList.length }}</span></h2>
@@ -15,7 +13,6 @@
             <button @click="fnRegPage()" class="btn-product-reg">✨ 신규 상품 등록</button>
         </div>
         
-        <!-- 프리미엄 3D 플로팅 상품 카드 루프 트랙 -->
         <div v-for="(i, idx) in fnPaginatedProductList" :key="idx" class="content-card PaginatedProductList">
             <div class="imgUrl">
                 <img :src="i.imgUrl" :alt="i.productName" class="productImg">
@@ -40,11 +37,10 @@
             </div>
         </div>
 
-        <!-- ◀ 1 2 3 ▶ 명품 화살표 멀티 페이지네이션 인덱스 링크 위젯 -->
         <div class="pagination1">
             <a @click="fnPrevPage" href="javascript:;" :class="{ 'disabled-arrow': productCurrentPage === 1 }">◀</a>
             
-            <span v-for="num in totalProductPages" :key="num">
+            <span v-for="num in visiblePageNumbers" :key="num">
                 <a @click="productCurrentPage = num" href="javascript:;"
                     :class="{ 'active-page-node': productCurrentPage === num }">
                     {{ num }}
@@ -56,5 +52,4 @@
     </div>
 </template>
 
-<!-- 🎯 자립형 격리 개통: 하단에서 이 목록 템플릿의 생명과 페이징 데이터 그릇을 다스릴 전용 JS를 직통 로드합니다. -->
 <script src="${pageContext.request.contextPath}/js/company-components/product-list-sub.js"></script>

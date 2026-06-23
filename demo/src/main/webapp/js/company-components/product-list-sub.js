@@ -26,6 +26,43 @@ const ProductListSub = {
         // 토탈 상품 개수를 4로 나누어 인덱스 넘버를 정밀 연산 동기화하는 식
         totalProductPages() {
             return Math.ceil(this.registeredProductList.length / this.productPageSize);
+        },
+        /**
+         * 🎯 [신규 추가 고도화] 현재 페이지를 기점으로 상시 최대 3개의 번호만 유연하게 계산해 뿜어내는 슬라이더 엔진
+         * @returns {Array} [1, 2, 3] 또는 [2, 3, 4] 형태의 정수형 넘버링 주머니
+         */
+        visiblePageNumbers() {
+            const total = this.totalProductPages;
+            const current = this.productCurrentPage;
+            
+            // 만약 총 페이지 수가 3개 이하로 작다면 전체 페이지 번호를 그대로 리턴 안전 처리
+            if (total <= 3) {
+                let pages = [];
+                for (let i = 1; i <= total; i++) {
+                    pages.push(i);
+                }
+                return pages;
+            }
+            
+            // 현재 활성화된 페이지를 중심으로 앞뒤 구역 설정 연산 기동
+            let start = current - 1;
+            let end = current + 1;
+            
+            // 극단적인 포지션(첫 페이지 구역 또는 끝 페이지 구역) 도달 시 좌우 밸런스 강제 조정 쉴드
+            if (start < 1) {
+                start = 1;
+                end = 3;
+            } else if (end > total) {
+                end = total;
+                start = total - 2;
+            }
+            
+            // 확정된 바운더리 범위를 기반으로 3개 배열 순수 인출
+            let pages = [];
+            for (let i = start; i <= end; i++) {
+                pages.push(i);
+            }
+            return pages;
         }
     },
 
