@@ -195,12 +195,15 @@ public class AdminController {
 		resultMap = adminService.editReviewApprove(map);
 		
 		if ("success".equals(resultMap.get("result"))) {
+			
 	        boolean notificationCreated =
 	            notificationService.createReviewResult(
 	                map.get("reviewNo"),
 	                (String) session.getAttribute("sessionId"),
 	                true
 	            );
+	        
+	        notificationService.createCompanyReviewReceived(map.get("reviewNo"));
 
 	        putNotificationResult(
 	            resultMap,

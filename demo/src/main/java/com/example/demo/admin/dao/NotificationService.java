@@ -158,4 +158,126 @@ public class NotificationService {
         });
     }
     
+    public boolean createReservationRequested(Object resNo) {
+
+        return tryCreate("예약 요청", () -> {
+            HashMap<String, Object> map = new HashMap<>();
+            map.put("resNo", resNo);
+
+            return notificationMapper
+                .insertReservationRequestedForCompany(map) > 0;
+        });
+    }
+    
+    public boolean createReservationConfirmed(Object resNo) {
+
+        return tryCreate("예약 확정", () -> {
+            HashMap<String, Object> map = new HashMap<>();
+            map.put("resNo", resNo);
+
+            return notificationMapper
+                .insertReservationConfirmedForUser(map) > 0;
+        });
+    }
+    
+    public boolean createReservationCanceled(Object resNo) {
+
+        return tryCreate("예약 취소", () -> {
+            HashMap<String, Object> map = new HashMap<>();
+            map.put("resNo", resNo);
+
+            return notificationMapper
+                .insertReservationCanceledForUser(map) > 0;
+        });
+    }
+    
+    public boolean createReservationCanceledForCompany(Object resNo) {
+
+        return tryCreate("업체 예약 취소", () -> {
+            HashMap<String, Object> map = new HashMap<>();
+            map.put("resNo", resNo);
+
+            return notificationMapper
+                .insertReservationCanceledForCompany(map) > 0;
+        });
+    }
+    
+    public boolean createProductInquiryReceived(Object inquiryNo) {
+
+        return tryCreate("상품 문의 접수", () -> {
+            HashMap<String, Object> map = new HashMap<>();
+            map.put("inquiryNo", inquiryNo);
+
+            return notificationMapper
+                .insertProductInquiryReceivedForCompany(map) > 0;
+        });
+    }
+
+    public boolean createProductInquiryAnswered(Object inquiryNo) {
+
+        return tryCreate("상품 문의 답변", () -> {
+            HashMap<String, Object> map = new HashMap<>();
+            map.put("inquiryNo", inquiryNo);
+
+            return notificationMapper
+                .insertProductInquiryAnsweredForUser(map) > 0;
+        });
+    }
+    
+    public boolean createCouponIssued(String userId, String couponCode) {
+
+        return tryCreate("쿠폰 발급", () -> {
+            HashMap<String, Object> map = new HashMap<>();
+            map.put("userId", userId);
+            map.put("couponCode", couponCode);
+
+            return notificationMapper
+                .insertCouponIssuedForUser(map) > 0;
+        });
+    }
+    
+    public boolean createGiftconIssued(String userId, String couponCode, Object reviewNo) {
+
+        return tryCreate("기프티콘 발급", () -> {
+            HashMap<String, Object> map = new HashMap<>();
+            map.put("userId", userId);
+            map.put("couponCode", couponCode);
+            map.put("reviewNo", reviewNo);
+
+            return notificationMapper
+                .insertGiftconIssuedForUser(map) > 0;
+        });
+    }
+    
+    public boolean createReviewCommented(Object commentNo) {
+
+        return tryCreate("리뷰 댓글", () -> {
+            HashMap<String, Object> map = new HashMap<>();
+            map.put("commentNo", commentNo);
+
+            return notificationMapper
+                .insertReviewCommentedForAuthor(map) > 0;
+        });
+    }
+
+    public boolean createPostCommented(Object commentNo) {
+
+        return tryCreate("게시글 댓글", () -> {
+            HashMap<String, Object> map = new HashMap<>();
+            map.put("commentNo", commentNo);
+
+            return notificationMapper
+                .insertPostCommentedForAuthor(map) > 0;
+        });
+    }
+    
+    public boolean createCompanyReviewReceived(Object reviewNo) {
+        return tryCreate("업체 리뷰 등록", () -> {
+            HashMap<String, Object> map = new HashMap<>();
+            map.put("reviewNo", reviewNo);
+
+            return notificationMapper
+                .insertCompanyReviewReceived(map) > 0;
+        });
+    }
 }
