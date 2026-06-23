@@ -3,9 +3,10 @@
 <link rel="stylesheet" href="${pageContext.request.contextPath}/css/company-css/inquiryTemplate.css">
 
 <template id="inquiry-section-template">
-    <div> <div v-if="viewPage === 'main'">
+    <div> 
+        <div v-if="viewPage === 'main'">
             <div class="section-header">
-                <h2>문의 관리 : <span style="color:#9b8fd4;">전체 문의 {{inquiryList.length}}건</span></h2>
+                <h2>문의 관리 : <span style="color:#9b8fd4;">전체 문의 {{ inquiryList ? inquiryList.length : 0 }}건</span></h2>
             </div>
             <div class="content-card" v-for="i in fnPaginatedInquiry" :key="i">
                 <div style="display: flex;">
@@ -29,7 +30,7 @@
                     </tr>
                     <tr>
                         <th>답변 여부</th>
-                        <td v-if="i.inquiryAns === '1'" style="color:#0099ff">답변 완료</td>
+                        <td v-if="i.inquiryAns == 1" style="color:#0099ff">답변 완료</td>
                         <td v-else>아직 답변하지 않음</td>
                     </tr>
                 </table>
@@ -37,12 +38,16 @@
             </div>
             
             <div class="pagination1">
-                <span v-for="num in inquiryList.length" :key="num">
+                <a @click="fnPrevPage" href="javascript:;" :class="{ 'disabled-arrow': currentPage === 1 }">◀</a>
+                
+                <span v-for="num in visibleInquiryPageNumbers" :key="num">
                     <a @click="currentPage = num" href="javascript:;"
-                        :style="currentPage === num ? 'color: #9b8fd4; border:1px solid #9b8fd4;' : ''">
-                        {{num}}
+                        :class="{ 'active-page-node': currentPage === num }">
+                        {{ num }}
                     </a>
                 </span>
+                
+                <a @click="fnNextPage" href="javascript:;" :class="{ 'disabled-arrow': currentPage === totalInquiryPages || totalInquiryPages === 0 }">▶</a>
             </div>
         </div>
 
@@ -102,7 +107,7 @@
                             취소
                         </button>
                         <button @click="fnSaveAnswer" class="btn-action-submit">
-                            <span v-if="inquiryAnswer.inquiryAns === '0'">답변 등록하기</span>
+                            <span v-if="inquiryAnswer.inquiryAns == 0">답변 등록하기</span>
                             <span v-else>답변 수정하기</span>
                         </button>
                     </div>

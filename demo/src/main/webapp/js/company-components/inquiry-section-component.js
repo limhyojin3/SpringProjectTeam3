@@ -1,3 +1,8 @@
+/**
+ * ==========================================================================
+ * [InquirySectionComponent] 문의 관리 전용 독립 서브 컴포넌트 객체
+ * ==========================================================================
+ */
 const InquirySectionComponent = {
     template: '#inquiry-section-template',
     
@@ -18,19 +23,64 @@ const InquirySectionComponent = {
         };
     },
 
-    // 2. 메인에 있던 문의 페이징 computed 그대로 이사
+    // 2. 메인에 있던 문의 페이징 연산부 고도화 및 최대 3개 동적 슬라이더 계산식 증설
     computed: {
         fnPaginatedInquiry() {
+            if (!this.inquiryList) return [];
             let start = this.currentPage - 1;
-            let end = start + 1;
+            let end = start + 1; // 1개 스케일 루프 유지
             return this.inquiryList.slice(start, end);
+        },
+        // 토탈 문의 페이지 수 정밀 연산 동기화
+        totalInquiryPages() {
+            return this.inquiryList ? this.inquiryList.length : 0;
+        },
+        /**
+         * 🎯 [신규 이식] 현재 문의 페이지 번호를 기점으로 상시 최대 3개의 번호 블록만 유연하게 다스리는 슬라이딩 수식
+         * @returns {Array} [1, 2, 3] 구조의 유동 인덱스 주머니
+         */
+        visibleInquiryPageNumbers() {
+            const total = this.totalInquiryPages;
+            const current = this.currentPage;
+            
+            if (!total) return [];
+            
+            // 만약 총 페이지 수가 3개 이하로 작다면 전체 페이지 번호를 그대로 리턴
+            if (total <= 3) {
+                let pages = [];
+                for (let i = 1; i <= total; i++) {
+                    pages.push(i);
+                }
+                return pages;
+            }
+            
+            // 현재 보고 있는 번호를 중심으로 좌우 스코프 전개
+            let start = current - 1;
+            let end = current + 1;
+            
+            // 양 끝점 포지셔닝 이탈 방지 가드 레일
+            if (start < 1) {
+                start = 1;
+                end = 3;
+            } else if (end > total) {
+                end = total;
+                start = total - 2;
+            }
+            
+            let pages = [];
+            for (let i = start; i <= end; i++) {
+                pages.push(i);
+            }
+            return pages;
         }
     },
 
-    // 3. 메인에 있던 문의 관련 함수(Methods)들 그대로 이사
+    // 3. 문의 관련 함수 및 신규 화살표 핸들러 단자 증설
     methods: {
         fnThumbnail(i) {
-            return this.inquiryList.find(p => p.productName === i.productName).imgUrl;
+            if (!this.inquiryList || this.inquiryList.length === 0) return '';
+            let found = this.inquiryList.find(p => p.productName === i.productName);
+            return found ? found.imgUrl : '';
         },
         fnInquiryProduct() {
             let self = this;
@@ -43,7 +93,11 @@ const InquirySectionComponent = {
                 type: "POST",
                 data: param,
                 success: function(data) {
-                    self.inquiryList = data.list;
+                    // 🎯 [핵심 디버깅 격리] 백엔드가 null이나 누락 필드를 던지더라도 강제로 빈 배열([])을 보존케 마킹!
+                    self.inquiryList = data.list || [];
+                },
+                error: function() {
+                    self.inquiryList = [];
                 }
             });
         },
@@ -105,6 +159,18 @@ const InquirySectionComponent = {
                     }
                 }
             });
+        },
+        // 🎯 [신규 추가] 왼쪽 화살표(◀) 단자 무빙 처리 액션
+        fnPrevPage() {
+            if (this.currentPage > 1) {
+                this.currentPage--;
+            }
+        },
+        // 🎯 [신규 추가] 오른쪽 화살표(▶) 단자 무빙 처리 액션
+        fnNextPage() {
+            if (this.currentPage < this.totalInquiryPages) {
+                this.currentPage++;
+            }
         }
     },
 
