@@ -1,5 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-<link rel="stylesheet" href="${pageContext.request.contextPath}/css/company-css/productRegSub.css">
+<link rel="stylesheet" href="${pageContext.request.contextPath}/css/company-css/productRegForm.css">
+<link rel="stylesheet" href="${pageContext.request.contextPath}/css/company-css/productRegChips.css">
+<link rel="stylesheet" href="${pageContext.request.contextPath}/css/company-css/productRegButtons.css">
 
 <template id="product-reg-sub-template">
     <div class="product-form-wrapper">

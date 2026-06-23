@@ -29,7 +29,7 @@
                 </div>
 
                 <div class="form-group" v-if="availableTags.length > 0">
-                    <label class="form-label">명품 테마 태그 (최대 3개)</label>
+                    <label class="form-label">태그</label>
                     <div class="chip-group-zone">
                         <button type="button" class="premium-chip-btn" v-for="t in availableTags" :key="t" :class="{'active-tag': selectedTags.includes(t), 'disabled-lock': !selectedTags.includes(t) && selectedTags.length >= 3}" @click="toggleTagSelection(t)"># {{t}}</button>
                     </div>
