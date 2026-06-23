@@ -10,56 +10,73 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/common.css">
     <style>
+        /* 하단 빈 배경 제거 */
+        html, body {
+            min-height: unset !important;
+            height: auto !important;
+        }
+        body {
+           background: linear-gradient(180deg, #e0f4ff 0%, #ffffff 400px, #ffffff 100%);
+        }
+        .container-layout {
+            min-height: unset !important;
+        }
         /* ── 히어로 ── */
         .event-hero {
             width: 100%;
-            height: 280px;
-            background: linear-gradient(135deg, #ffc7c2 0%, #f4a096 60%, #e8887a 100%);
+            height: 340px;
+            background-image: url('/img/event/event2.jpg');
+            background-size: 70%;
+            background-position: center 50%;
+            background-repeat: no-repeat;
+            background-color: white;
             display: flex;
+            padding-bottom: 100px;
             flex-direction: column;
             align-items: center;
-            justify-content: center;
+            justify-content: flex-end;
             text-align: center;
             position: relative;
             overflow: hidden;
+            color: #fff0f5;
+            text-shadow: 2px 1px 1px rgb(97, 179, 255);
         }
+
 
         .event-hero::before {
-            content: none;
+            content: '';
             position: absolute;
-            font-size: 200px;
-            opacity: 0.08;
-            top: -30px;
-            left: -30px;
+            inset: 0;
+            background: 
+                linear-gradient(to right, rgba(255,255,255,0.85) 0%, rgba(255,255,255,0.1) 20%, rgba(255,255,255,0.1) 80%, rgba(255,255,255,0.85) 100%),
+                linear-gradient(to bottom, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.2) 60%, rgba(255,255,255,0.95) 100%);
+            z-index: 1;
         }
 
+        /* 하단 그라데이션 페이드 */
         .event-hero::after {
-            content: none;
+            content: '';
             position: absolute;
-            font-size: 160px;
-            opacity: 0.08;
-            bottom: -20px;
-            right: -10px;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 100px;
+            background: linear-gradient(to bottom, transparent, white);
+            z-index: 1;
         }
 
-        .event-hero h1 {
-            font-family: Georgia, serif;
-            font-style: italic;
-            font-size: 42px;
-            color: white;
-            margin: 0 0 8px;
-            text-shadow: 0 2px 10px rgba(0,0,0,0.1);
-        }
-
+        /* 글씨는 그라데이션 위에 */
+        .event-hero h1,
         .event-hero p {
-            font-size: 15px;
-            color: rgba(255,255,255,0.9);
-            margin: 0;
+            position: relative;
+            z-index: 2;
+            color: #ffffff;  /* ✅ 흰 배경이니 어두운 색으로 */
+            text-shadow: 1px 1px 1px #7ec8c8 ;
         }
 
         /* ── 본문 ── */
         .event-body {
-            max-width: 1000px;
+            max-width: 1200px;
             margin: 0 auto;
             padding: 60px 24px 100px;
         }
@@ -74,7 +91,7 @@
             gap: 10px;
             margin-bottom: 24px;
             padding-bottom: 12px;
-            border-bottom: 2px solid #f4a096;
+            border-bottom: 2px solid #7ec8c8;
         }
 
         .section-badge {
@@ -82,7 +99,7 @@
             font-weight: 700;
             padding: 3px 10px;
             border-radius: 20px;
-            background: #f4a096;
+            background: #64b4dc;
             color: white;
             letter-spacing: 0.04em;
         }
@@ -94,10 +111,11 @@
         /* ── 고정 이벤트 그리드 ── */
         .fixed-grid {
             display: grid;
-            grid-template-columns: repeat(3, 1fr);
+            grid-template-columns: repeat(3, 1fr);  /* ✅ 3열 그리드 */
             gap: 20px;
             margin-bottom: 60px;
         }
+
 
         .fixed-card {
             border-radius: 16px;
@@ -106,7 +124,11 @@
             transition: transform 0.2s, box-shadow 0.2s;
             animation: fadeUp 0.6s ease forwards;
             opacity: 0;
+            display: flex;
+            flex-direction: column;  /* ✅ 이미지 위, 텍스트 아래 */
+            cursor:pointer;
         }
+
 
         .fixed-card:hover {
             transform: translateY(-6px);
@@ -116,15 +138,14 @@
         .fixed-card:nth-child(1) { animation-delay: 0.1s; }
         .fixed-card:nth-child(2) { animation-delay: 0.2s; }
         .fixed-card:nth-child(3) { animation-delay: 0.3s; }
+        .fixed-card:nth-child(4) { animation-delay: 0.4s; }
 
         .fixed-card-top {
-            height: 130px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            position: relative;
+            width: 100%;
+            height: 220px;  /* ✅ 이미지 높이 */
+            background-size: cover;
+            background-position: center;
+            flex-shrink: 0;
         }
 
         .fixed-card-top .card-emoji {
@@ -143,6 +164,7 @@
         .fixed-card-body {
             background: white;
             padding: 18px 20px;
+            flex: 1;
         }
 
         .fixed-card-body .condition {
@@ -164,9 +186,9 @@
             font-weight: 700;
             padding: 4px 10px;
             border-radius: 20px;
-            background: #fff4f3;
-            color: #f4a096;
-            border: 1px solid #ffd1d1;
+            background: #e8f6ff;
+            color: #64b4dc;
+            border: 1px solid #b8e0f0;
         }
 
         /* ── 상시 이벤트 리스트 ── */
@@ -178,7 +200,7 @@
 
         .always-card {
             background: white;
-            border: 1px solid #f0e0e0;
+            border: none;
             border-radius: 16px;
             padding: 28px 32px;
             display: flex;
@@ -216,8 +238,8 @@
         .always-content .always-tag {
             font-size: 11px;
             font-weight: 700;
-            color: #9b8fd4;
-            background: #f5f3ff;
+            color: #64b4dc;
+            background: #e8f6ff;
             padding: 3px 10px;
             border-radius: 20px;
             display: inline-block;
@@ -322,67 +344,64 @@
         </div>
         <!-- 히어로 -->
         <div class="event-hero">
-            <i class="fas fa-party-horn event-deco-left"></i>  <%-- 없으면 fa-gift --%>
-            <h1>MarryView Events</h1>
-            <p>메리뷰와 함께하는 다양한 이벤트를 만나보세요!</p>
-            <i class="fas fa-ring event-deco-right"></i>
+            <i class="fas fa-sun event-deco-left"></i>
+            <h1>MarryView Summer Event</h1>
+            <p>메리뷰에서 메리하게! 여름을 함께 즐겨요 🌊</p>
+            <i class="fas fa-umbrella-beach event-deco-right"></i>
         </div>
 
         <div class="event-body">
 
             <!-- 고정 이벤트 -->
             <div class="section-title">
-                 <div class="reward-icon"><i class="fas fa-gift"></i></div>기프트콘 지급 이벤트
-                <span class="section-badge">고정</span>
+                 <div class="reward-icon"><i class="fas fa-gift"></i></div>메리뷰 시즌 이벤트
+                <span class="section-badge">~8월</span>
             </div>
 
             <div class="fixed-grid">
-
-                <!-- 투썸 -->
-                <div class="fixed-card">
-                    <div class="fixed-card-top" style="background: linear-gradient(135deg, #7B1C2A, #a83248);">
-                        <i class="fas fa-birthday-cake card-emoji"></i>
-                        <span class="card-brand">TWOSOME PLACE</span>
+                <!-- 가족 사진 자랑 -->
+                <div class="fixed-card"  @click="goEvent(1)">
+                    <div class="fixed-card-top" style="background-image: url('/img/event/event_img1.jpg'); background-size: cover; background-position: center;">
                     </div>
                     <div class="fixed-card-body">
-                        <p class="condition">유료 리뷰 좋아요 30개 이상 달성 시</p>
-                        <p class="reward">투썸플레이스 케이크 조각</p>
-                        <span class="gift-badge"><i class="fas fa-gift"></i> 기프트콘 자동 발급</span>
+                        <div class="fixed-card-body-text">
+                            <p class="condition">가족 사진을 올려주세요!</p>
+                            <p class="reward">Team 가족 모여라! 가족 사진 자랑</p>
+                            <span class="gift-badge"><i class="fas fa-gift"></i> 제주도 비행기 티켓 지원</span>
+                        </div>
                     </div>
                 </div>
 
-                <!-- CU -->
-                <div class="fixed-card">
-                    <div class="fixed-card-top" style="background: linear-gradient(135deg, #5B2D8E, #7b3fb5);">
-                        <i class="fas fa-shopping-basket card-emoji"></i>
-                        <span class="card-brand">CU</span>
+                <!-- 여름 휴가비 지원 -->
+                <div class="fixed-card"  @click="goEvent(2)">
+                    <div class="fixed-card-top" style="background-image: url('/img/event/event_img5.jpg'); background-size: cover; background-position: center;">
                     </div>
                     <div class="fixed-card-body">
-                        <p class="condition">무료 리뷰 좋아요 40개 이상 달성 시</p>
-                        <p class="reward">CU 편의점 3,000원권</p>
-                        <span class="gift-badge"><i class="fas fa-gift"></i> 기프트콘 자동 발급</span>
+                        <div class="fixed-card-body-text">
+                            <p class="condition">여름 휴가 사진 리뷰 등록 시</p>
+                            <p class="reward">여름 휴가비 지원 이벤트</p>
+                            <span class="gift-badge"><i class="fas fa-gift"></i> 휴가비 50만원 지원!</span>
+                        </div>
                     </div>
                 </div>
-
-                <!-- 스타벅스 -->
-                <div class="fixed-card">
-                    <div class="fixed-card-top" style="background: linear-gradient(135deg, #00704A, #00a86b);">
-                        <i class="fas fa-coffee card-emoji"></i>
-                        <span class="card-brand">STARBUCKS</span>
+                <!-- 신혼부부 응모 -->
+                <div class="fixed-card"  @click="goEvent(3)">
+                    <div class="fixed-card-top" style="background-image: url('/img/event/event_img6.jpg'); background-size: cover; background-position: center;">
                     </div>
                     <div class="fixed-card-body">
-                        <p class="condition">결혼 기념일 당일 로그인 시</p>
-                        <p class="reward">스타벅스 아메리카노 Tall</p>
-                        <span class="gift-badge"><i class="fas fa-gift"></i> 기프트콘 자동 발급</span>
+                        <div class="fixed-card-body-text">
+                            <p class="condition">신혼부부 인증 후 응모 시</p>
+                            <p class="reward">신혼부부 응모! 신혼가전 지원!</p>
+                            <span class="gift-badge"><i class="fas fa-gift"></i> LG 냉장고 지원</span>
+                        </div>
                     </div>
                 </div>
-
             </div>
 
             <!-- 상시 이벤트 -->
             <div class="section-title">
-                <i class="fas fa-wand-magic-sparkles"></i> 상시 이벤트
-                <span class="section-badge always">상시</span>
+                <i class="fas fa-wand-magic-sparkles"></i> 고정 이벤트
+                <span class="section-badge always">고정</span>
             </div>
 
             <div class="always-list">
@@ -447,8 +466,14 @@
                 return {
                     showPrep: false
                 };
+            },
+            methods: {
+                goEvent(id) {
+                    window.location.href = '/eventDetail.do?eventId=' + id;
+                }
             }
         });
+        
         app.mount('#app');
     </script>
 </body>

@@ -1,10 +1,12 @@
 	/* 기본 스타일 리셋 */
 	* { box-sizing: border-box; margin: 0; padding: 0; }
-	body { 
-		font-family: 'Noto Sans KR', 
-		sans-serif; background-color: #f9f9f9; 
-		color: #333;
-		 
+	* { box-sizing: border-box; margin: 0; padding: 0; }
+	body {
+		background: linear-gradient(180deg, #fff0f3 0%, #ffffff 400px) no-repeat;
+		background-size: 100% 400px;
+	    font-family: 'Pretendard', -apple-system, sans-serif;
+	    margin: 0;
+	    padding: 0;
 	}
 	[v-cloak] { display: none; }
 	/* 준비중 모달 배경 */
@@ -442,16 +444,6 @@
 	    margin-top: 16px;
 	}
 	
-	/* 하단 로고 */
-	.footer-logo {
-	    position: absolute;
-	    bottom: -60px;
-	    left: 20px;
-	    font-family: 'Georgia', serif; /* 예쁜 서체 사용 */
-	    font-style: italic;
-	    font-size: 40px;
-	    color: #f4a096;
-	}
 	/* ✅ 애니메이션 추가 */
 	@keyframes fadeUp {
 	    from {
@@ -924,4 +916,34 @@
 
 	@keyframes blink {
 	    50% { border-color: transparent; }
+	}
+	
+	/* 꽃잎 날리는 애니메이션 효과 */
+	.sakura {
+	    position: fixed;
+	    top: -50px;
+	    pointer-events: none;
+	    z-index: 999999;
+	    width: 8px;
+	    height: 18px;
+	    background: linear-gradient(135deg, #ffffff, #ffb7c5);
+	    border-radius: 50% 50% 50% 0;
+	    opacity: 0.5;
+	    filter: drop-shadow(0 2px 4px rgba(255, 100, 130, 0.3));
+	    animation: sakuraFall linear forwards;
+	}
+
+	@keyframes sakuraFall {
+	    0% {
+	        transform: translateY(0) translateX(0) rotate(0deg) scale(1);
+	        opacity: 0.8;
+	    }
+	    50% {
+	        transform: translateY(50vh) translateX(60px) rotate(180deg) scale(1.2);
+	        opacity: 0.6;
+	    }
+	    100% {
+	        transform: translateY(110vh) translateX(-40px) rotate(720deg) scale(0.9);
+	        opacity: 0;
+	    }
 	}

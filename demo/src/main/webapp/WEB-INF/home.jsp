@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>메리뷰 - 리얼 웨딩 후기</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">  <!-- ✅ 6.5.1만 유지 -->
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/common.css">
     <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/css/home-style.css">
     <link rel="shortcut icon" href="/images/marryviewlogo_v2.png">
@@ -16,7 +16,6 @@
     <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script src="/js/page-change.js"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 </head>
 <style>
     /* 홈 css에 있어요. */
@@ -344,6 +343,30 @@
                 axios.get("/mainPostList.dox").then(res => { this.postList = res.data; });
 
                 this.startSlide();
+                // 꽃잎 애니메이션
+                function createSakura() {
+                    const current = document.querySelectorAll(".sakura").length;
+                    if (current >= 40) return;
+                    const el = document.createElement("div");
+                    el.className = "sakura";
+                    el.style.left = Math.random() * window.innerWidth + "px";
+                    const size = Math.random() * 14 + 8;
+                    el.style.width = size + "px";
+                    el.style.height = size * 1.5 + "px";
+                    const duration = Math.random() * 4 + 4;
+                    el.style.animationDuration = duration + "s";
+                    el.style.zIndex = Math.random() > 0.5 ? 999999 : 999998;
+                    document.body.appendChild(el);
+                    setTimeout(() => { el.remove(); }, duration * 1000);
+                }
+
+                const sakuraInterval = setInterval(() => {
+                    if (document.querySelectorAll(".sakura").length >= 15) return;
+                    createSakura();
+                }, 150);
+
+                setTimeout(() => { clearInterval(sakuraInterval); }, 60000);
+                window.addEventListener("beforeunload", () => { clearInterval(sakuraInterval); });
             }
         });
         app.mount('#app');

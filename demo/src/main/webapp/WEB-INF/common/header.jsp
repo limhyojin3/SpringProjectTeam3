@@ -3,7 +3,7 @@
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
-
+<link rel="stylesheet" href="${pageContext.request.contextPath}/css/common.css">  <!-- ✅ 추가 -->
 <style>
     /* ── 드롭다운 전체 래퍼 ── */
     .dropdown-header-wrap,
@@ -274,6 +274,13 @@
     .navbar.admin-mode .nav-link:hover {
         text-shadow: 0 0 8px rgba(233, 69, 96, 0.5) !important;
     }
+    .navbar .nav-link {
+        transition: text-shadow 0.2s ease;
+    }
+    .navbar .nav-link:hover {
+        text-shadow: 0 0 8px rgba(255, 77, 109, 0.5) !important;
+    }
+    
 </style>
 
 <nav class="navbar navbar-expand-lg sticky-top dropdown-header-wrap
@@ -313,10 +320,12 @@
                 <li class="nav-item has-dropdown">
                     <a class="nav-link custom-nav-link" href="${pageContext.request.contextPath}/api/community/list.do">커뮤니티</a>
                     <ul class="dropdown-contents">
-                        <li><a href="${pageContext.request.contextPath}/api/community/list.do">전체 보기</a></li>
                         <li><a href="${pageContext.request.contextPath}/api/community/list.do?category=자유">자유글</a></li>
-                        <li><a href="${pageContext.request.contextPath}/api/community/list.do?category=질문">질문글</a></li>
-                        <li><a href="${pageContext.request.contextPath}/api/community/list.do?category=정보">정보공유글</a></li>
+                        <li><a href="${pageContext.request.contextPath}/api/community/list.do?category=결혼">결혼</a></li>
+                        <li><a href="${pageContext.request.contextPath}/api/community/list.do?category=가족행사">가족행사</a></li>
+                        <li><a href="${pageContext.request.contextPath}/api/community/list.do?category=육아출산">육아출산</a></li>
+                        <li><a href="${pageContext.request.contextPath}/api/community/list.do?category=고민">고민</a></li>
+                        <li><a href="${pageContext.request.contextPath}/api/community/list.do?category=직장">직장</a></li>
                     </ul>
                 </li>
 
@@ -481,7 +490,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 document.querySelectorAll('.nav-btn').forEach(btn => {
                     if (btn.innerText.trim() === menuMap[menuParam]) btn.click();
                 });
-            }, 200);
+            }, 100);
         }
 
         /* B. 유료/무료 리뷰 탭 */
@@ -497,13 +506,14 @@ document.addEventListener('DOMContentLoaded', function () {
 
         /* C. 커뮤니티 카테고리 탭 */
         if (categoryParam) {
+            setTimeout(() => {
             document.querySelectorAll('.tab-menu button, .tab-item').forEach(btn => {
                 const btnText = btn.innerText.replace(/[^가-힣a-zA-Z]/g, '').trim();
                 if (btnText === categoryParam.trim()) btn.click();
-            });
+                });
+            }, 100);
         }
     }
-
     /* ── Vue 렌더링 감지 후 탭 클릭 ── */
     const observer = new MutationObserver(() => {
         const target = document.querySelector('.tab-menu button, .nav-btn, .tab-item');

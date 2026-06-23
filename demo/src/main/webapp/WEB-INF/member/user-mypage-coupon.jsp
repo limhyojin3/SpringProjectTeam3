@@ -15,22 +15,23 @@
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/mypage.css">
 
     <style>
+        /* 섹션 */
         .coupon-section {
             background-color: #fff;
             padding: 40px;
             border-radius: 12px;
-            border: 1px solid #eee;
+            border: 1px solid #f0e0e0;
             width: 100%;
             max-width: 800px;
             height: fit-content;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.03);
+            box-shadow: 0 2px 12px rgba(0,0,0,0.04);
         }
 
-        /* ── 탭 ── */
+        /* 탭 */
         .tab-wrap {
             display: flex;
             gap: 0;
-            border-bottom: 2px solid #f4a096;
+            border-bottom: 2px solid #ffc7c2;
             margin-bottom: 24px;
         }
 
@@ -48,73 +49,91 @@
         }
 
         .tab-btn.active {
-            color: #f4a096;
-            border-bottom: 3px solid #f4a096;
+            color: #e07a8a;
+            border-bottom: 3px solid #e07a8a;
         }
 
-        /* ── 쿠폰 목록 ── */
+        /* 쿠폰 목록 */
         .coupon-list {
             margin-top: 10px;
             display: flex;
             flex-direction: column;
-            gap: 15px;
+            gap: 12px;
         }
 
         .coupon-item {
-            border: 1px solid #ffd1d1;
+            border: 1px solid #f0e0e0;
             background-color: #fff9f9;
-            padding: 25px;
-            border-radius: 10px;
+            padding: 20px 24px;
+            border-radius: 12px;
             display: flex;
             justify-content: space-between;
             align-items: center;
+            transition: 0.2s;
+        }
+
+        .coupon-item:hover {
+            box-shadow: 0 4px 16px rgba(224, 122, 138, 0.15);
+            transform: translateY(-2px);
         }
 
         .coupon-name {
-            font-size: 18px;
-            font-weight: bold;
+            font-size: 15px;
+            font-weight: 700;
             color: #333;
         }
 
         .coupon-discount {
             margin-left: 10px;
-            color: #ff6b6b;
-            font-weight: bold;
+            color: #e07a8a;
+            font-weight: 700;
         }
 
         .coupon-date {
-            color: #888;
+            color: #aaa;
             font-size: 13px;
         }
 
+        /* 쿠폰 등록 */
         .coupon-footer {
-            margin-top: 30px;
-            text-align: right;
-        }
-
-        .btn-register {
-            background-color: #ffc107;
-            color: #333;
-            padding: 12px 25px;
-            border-radius: 6px;
-            border: none;
-            font-weight: bold;
-            cursor: pointer;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-top: 24px;
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            gap: 8px;
         }
 
         .coupon-input-field {
             padding: 10px 15px;
-            border: 1px solid #ddd;
+            border: 1px solid #ffc7c2;
             border-radius: 6px;
-            margin-right: 10px;
             width: 250px;
             outline: none;
+            font-size: 14px;
+            color: #555;
         }
 
-        .coupon-input-field:focus { border-color: #f4a096; }
+        .coupon-input-field:focus {
+            border-color: #e07a8a;
+        }
 
-        /* ── 기프트콘 목록 ── */
+        .btn-register {
+            background-color: #e07a8a;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 6px;
+            border: none;
+            font-weight: 700;
+            font-size: 14px;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .btn-register:hover {
+            background-color: #c9606f;
+        }
+
+        /* 기프트콘 */
         .giftcon-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
@@ -123,8 +142,8 @@
         }
 
         .giftcon-card {
-            border: 1px solid #ffd1d1;
-            border-radius: 10px;
+            border: 1px solid #f0e0e0;
+            border-radius: 12px;
             overflow: hidden;
             cursor: pointer;
             transition: transform 0.2s, box-shadow 0.2s;
@@ -133,7 +152,7 @@
 
         .giftcon-card:hover {
             transform: translateY(-3px);
-            box-shadow: 0 6px 16px rgba(244,160,150,0.3);
+            box-shadow: 0 6px 16px rgba(224, 122, 138, 0.25);
         }
 
         .giftcon-card.used {
@@ -178,10 +197,10 @@
             margin-bottom: 4px;
         }
 
-        .badge-unused { background: #fff0f0; color: #f4a096; }
+        .badge-unused { background: #fff0f3; color: #e07a8a; }
         .badge-used   { background: #eee;    color: #aaa; }
 
-        /* ── 모달 ── */
+        /* 모달 */
         .giftcon-modal-bg {
             position: fixed;
             inset: 0;
@@ -207,7 +226,7 @@
         }
 
         .giftcon-modal-header {
-            background: #f4a096;
+            background: #e07a8a;
             color: white;
             padding: 14px 20px;
             display: flex;
@@ -238,8 +257,8 @@
         }
 
         .giftcon-code-box {
-            background: #f9f9f9;
-            border: 1px dashed #ffd1d1;
+            background: #fff9f9;
+            border: 1px dashed #ffc7c2;
             border-radius: 8px;
             padding: 12px;
             margin-bottom: 12px;
@@ -264,7 +283,7 @@
             margin-top: 8px;
         }
 
-        /* ── 페이지네이션 ── */
+        /* 페이지네이션 */
         .pagination-wrap {
             display: flex;
             justify-content: center;
@@ -279,8 +298,8 @@
             min-width: 34px;
             padding: 0 10px;
             background-color: #fff;
-            color: #f4a096;
-            border: 1.5px solid #f4a096;
+            color: #e07a8a;
+            border: 1px solid #ffc7c2;
             border-radius: 6px;
             cursor: pointer;
             font-size: 13px;
@@ -289,16 +308,34 @@
         }
 
         .btn-page-arrow:hover,
-        .btn-page-num:hover { background-color: #f4a096; color: white; }
+        .btn-page-num:hover {
+            background-color: #e07a8a;
+            color: white;
+            border-color: #e07a8a;
+        }
 
-        .btn-page-num.active-page { background-color: #f4a096; color: white; font-weight: bold; }
-        .btn-page-arrow:disabled  { opacity: 0.3; cursor: not-allowed; }
+        .btn-page-num.active-page {
+            background-color: #e07a8a;
+            color: white;
+            border-color: #e07a8a;
+            font-weight: bold;
+        }
+
+        .btn-page-arrow:disabled { opacity: 0.3; cursor: not-allowed; }
 
         .empty-msg {
             text-align: center;
             padding: 40px 0;
             color: #bbb;
             font-size: 14px;
+            line-height: 1.8;
+        }
+
+        .empty-icon {
+            font-size: 32px;
+            color: #ffc7c2;
+            margin-bottom: 12px;
+            display: block;
         }
     </style>
 </head>
@@ -316,10 +353,10 @@
                         <!-- 탭 -->
                         <div class="tab-wrap">
                             <button class="tab-btn" :class="{ active: activeTab === 'coupon' }" @click="activeTab = 'coupon'">
-                                🎟️ 쿠폰 ({{ couponList.length }})
+                                <i class="fas fa-ticket-alt"></i> 쿠폰 ({{ couponList.length }})
                             </button>
                             <button class="tab-btn" :class="{ active: activeTab === 'giftcon' }" @click="activeTab = 'giftcon'">
-                                🎁 기프트콘 ({{ giftconList.length }})
+                                <i class="fas fa-gift"></i> 기프트콘 ({{ giftconList.length }})
                             </button>
                         </div>
 
@@ -376,7 +413,10 @@
                                     </div>
                                 </div>
                             </div>
-                            <div v-else class="empty-msg">보유한 기프트콘이 없습니다. 🎁<br>베스트 리뷰에 선정되면 기프트콘이 발급됩니다!</div>
+                            <div v-else class="empty-msg">
+                                <i class="fas fa-gift empty-icon"></i>
+                                보유한 기프트콘이 없습니다.<br>베스트 리뷰에 선정되면 기프트콘이 발급됩니다!
+                            </div>
                         </div>
 
                     </section>
@@ -389,8 +429,10 @@
         <div class="giftcon-modal-bg" v-if="selectedGiftcon" @click.self="selectedGiftcon = null">
             <div class="giftcon-modal">
                 <div class="giftcon-modal-header">
-                    🎁 {{ selectedGiftcon.couponName }}
-                    <button class="modal-close-btn" @click="selectedGiftcon = null">✕</button>
+                    <i class="fas fa-gift"></i> {{ selectedGiftcon.couponName }}
+                    <button class="modal-close-btn" @click="selectedGiftcon = null">
+                        <i class="fas fa-times"></i>
+                    </button>
                 </div>
                 <div class="giftcon-modal-body">
                     <img :src="selectedGiftcon.giftconImage || '/img/giftcon/default.png'"

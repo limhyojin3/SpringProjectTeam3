@@ -27,7 +27,10 @@
             margin-bottom: 18px;
             cursor: pointer;
         }
-        .logo-wrap img { height: 64px; }
+        .logo-wrap img { 
+            height: 64px;
+            filter: hue-rotate(200deg);
+        }
 
         .join-card {
             width: 100%;
@@ -54,7 +57,7 @@
         }
 
         .form-label {
-            background: #f4a096;
+            background: #9b8fd4;
             color: white;
             width: 90px;
             min-width: 90px;
@@ -74,7 +77,7 @@
             min-width: 0;
             display: flex;
             flex-direction: column;
-            border: 1px solid #f4a096;
+            border: 1px solid #9b8fd4;
             border-left: none;
             border-radius: 0 6px 6px 0;
             overflow: hidden;
@@ -91,7 +94,7 @@
             background: #fff;
         }
         .form-input + .form-input {
-            border-top: 1px solid #f4a096;
+            border-top: 1px solid #9b8fd4;
         }
         .form-input.disabled { background: #f5f5f5; }
 
@@ -124,7 +127,7 @@
         input[type="radio"] {
             margin-left: 12px;
             margin-right: 4px;
-            accent-color: #f4a096;
+            accent-color: #9b8fd4;
         }
 
         .email-id-input {
@@ -165,7 +168,7 @@
         .btn-check {
             align-self: stretch;
             padding: 0 14px;
-            background: #f0b429;
+            background: #98b5fd;
             color: white;
             border: none;
             border-radius: 0 6px 6px 0;
@@ -182,7 +185,7 @@
         .btn-submit {
             width: 100%;
             height: 48px;
-            background: #f4a096;
+            background: #9b8fd4;
             color: white;
             border: none;
             border-radius: 6px;
@@ -216,11 +219,11 @@
             transition: all 0.3s;
         }
         .step-dot.active {
-            background: #f4a096;
+            background: #9b8fd4;
             color: white;
         }
         .step-dot.done {
-            background: #f4a096;
+            background: #9b8fd4;
             color: white;
             opacity: 0.5;
         }
@@ -231,7 +234,7 @@
             transition: background 0.3s;
         }
         .step-line.done {
-            background: #f4a096;
+            background: #9b8fd4;
             opacity: 0.5;
         }
         .step-label {
@@ -264,7 +267,7 @@
         .btn-next {
             flex: 2;
             height: 48px;
-            background: #f4a096;
+            background: #9b8fd4;
             color: white;
             border: none;
             border-radius: 6px;
@@ -281,7 +284,7 @@
              margin: 16px 0 8px; 
         }
         .terms-box { 
-            border: 1px solid #f4a096; 
+            border: 1px solid #9b8fd4; 
             border-radius: 6px; 
             overflow: hidden; 
         }
@@ -298,7 +301,7 @@
         }
         .terms-view-btn {
              font-size: 12px; 
-             color: #f4a096; 
+             color: #9b8fd4; 
              cursor: pointer; 
              text-decoration: underline; 
         }
@@ -310,7 +313,7 @@
              border-top: 1px solid #f9ddd9; 
         }
         .terms-check-row input[type="checkbox"] {
-             accent-color: #f4a096; 
+             accent-color: #9b8fd4; 
              width: 16px; 
              height: 16px; 
         }
@@ -390,7 +393,7 @@
              gap: 10px; 
         }
         .terms-modal-footer input[type="checkbox"] {
-             accent-color: #f4a096; 
+             accent-color: #9b8fd4; 
              width: 16px; 
              height: 16px; 
         }
@@ -402,7 +405,7 @@
         .terms-modal-confirm {
              margin-left: auto; 
              padding: 8px 20px; 
-             background: #f4a096; 
+             background: #9b8fd4; 
              color: white; 
              border: none; 
              border-radius: 6px; 
@@ -452,9 +455,9 @@
                     <div class="step-dot" :class="{active: step===3}">3</div>
                 </div>
                 <div style="display:flex; justify-content:center; gap:25px; margin-bottom:20px;">
-                    <span class="step-label" :style="{color: step>=1 ? '#f4a096' : '#bbb'}">기본정보</span>
-                    <span class="step-label" :style="{color: step>=2 ? '#f4a096' : '#bbb'}">본인인증</span>
-                    <span class="step-label" :style="{color: step>=3 ? '#f4a096' : '#bbb'}">비밀번호</span>
+                    <span class="step-label" :style="{color: step>=1 ? '#9b8fd4' : '#bbb'}">기본정보</span>
+                    <span class="step-label" :style="{color: step>=2 ? '#9b8fd4' : '#bbb'}">본인인증</span>
+                    <span class="step-label" :style="{color: step>=3 ? '#9b8fd4' : '#bbb'}">비밀번호</span>
                 </div>
             </div>
 
@@ -533,23 +536,6 @@
                     </div>
                     <button class="btn-check" @click="fnCheckEmail()">중복체크</button>
                 </div>
-
-                <!-- 업체 분류 -->
-                <div class="form-row">
-                    <div class="form-label">업체 분류</div>
-                    <div class="row-body">
-                        <div class="form-input">
-                            <select v-model="info.comType">
-                                <option value="">선택해주세요</option>
-                                <option value="STUDIO">스튜디오</option>
-                                <option value="DRESS">드레스</option>
-                                <option value="MAKEUP">메이크업</option>
-                                <option value="SNAP">스냅</option>
-                            </select>
-                        </div>
-                    </div>
-                </div>
-
                 <div class="step-btn-wrap">
                     <button class="btn-next" @click="step=2">다음 →</button>
                 </div>
@@ -734,7 +720,6 @@
                     // *company table
                     comName : "",
                     ceoName : "",
-                    comType : "STUDIO",
                     comAddress : "",
                     comAddressDetail: "",
                     comEmail : "", // [저장용] 중복체크 통과 시 합쳐진 전체 이메일 저장
