@@ -1,5 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
-<link rel="stylesheet" href="${pageContext.request.contextPath}/css/company-css/productEditSub.css">
+<link rel="stylesheet" href="${pageContext.request.contextPath}/css/company-css/productEditForm.css">
+<link rel="stylesheet" href="${pageContext.request.contextPath}/css/company-css/productEditChips.css">
+<link rel="stylesheet" href="${pageContext.request.contextPath}/css/company-css/productEditButtons.css">
 
 <template id="product-edit-sub-template">
     <div class="product-form-wrapper">
@@ -15,9 +17,9 @@
                 <div class="form-group">
                     <label class="form-label">대분류 카테고리</label>
                     <div class="chip-group-zone">
-                        <button type="button" class="premium-chip-btn" :class="{'active-large': oneProductDetails.largeCategory === '결혼'}" @click="selectLargeCategory('결혼')">결혼</button>
-                        <button type="button" class="premium-chip-btn" :class="{'active-large': oneProductDetails.largeCategory === '가족행사'}" @click="selectLargeCategory('가족행사')">가족행사</button>
-                        <button type="button" class="premium-chip-btn" :class="{'active-large': oneProductDetails.largeCategory === '친구와함께'}" @click="selectLargeCategory('친구와함께')">친구와함께</button>
+                        <button type="button" class="premium-chip-btn" :class="{'active-large': oneProductDetails.largeCategory === '결혼'}" disabled>결혼</button>
+                        <button type="button" class="premium-chip-btn" :class="{'active-large': oneProductDetails.largeCategory === '가족행사'}" disabled>가족행사</button>
+                        <button type="button" class="premium-chip-btn" :class="{'active-large': oneProductDetails.largeCategory === '친구와함께'}" disabled>친구와함께</button>
                     </div>
                 </div>
 
