@@ -1,9 +1,8 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
-<link rel="stylesheet" href="${pageContext.request.contextPath}/css/company-css/reservationTemplate.css">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/company-css/reservationTemplate.css">
 
     <template id="reservation-section-template">
         <div>
-            <!-- <pre style="background: #f4f4f4; padding: 10px;">넘겨받은 상품 데이터: {{ registeredProductList }}</pre> -->
             <div class="section-header">
                 <h2>예약 관리 : <span style="color:#9b8fd4;">새 예약 {{ resCount }}건</span></h2>
             </div>
@@ -30,12 +29,17 @@
                 </div>
 
                 <div class="pagination1">
-                    <span v-for="num in totalResPageCount" :key="num">
+                    <a @click="fnPrevPage" href="javascript:;" :class="{ 'disabled-arrow': resCurrentPage === 1 }">◀</a>
+
+                    <span v-for="num in visibleResPageNumbers" :key="num">
                         <a @click="resCurrentPage = num" href="javascript:;"
-                            :style="resCurrentPage === num ? 'color: #9b8fd4; border:1px solid #9b8fd4 ;' : ''">
+                            :class="{ 'active-page-node': resCurrentPage === num }">
                             {{ num }}
                         </a>
                     </span>
+
+                    <a @click="fnNextPage" href="javascript:;"
+                        :class="{ 'disabled-arrow': resCurrentPage === totalResPageCount || totalResPageCount === 0 }">▶</a>
                 </div>
             </div>
 
@@ -52,15 +56,17 @@
                     </tr>
                     <tr>
                         <th>예약저장</th>
-                        <td>{{ selectedRes.resDate }} {{ selectedRes.resTime }}</td>
+                        <td>{{ selectedRes.resDate ? selectedRes.resDate.substring(0, 10) : '' }} {{ selectedRes.resTime
+                            ? selectedRes.resTime.substring(0, 5) : '' }}</td>
                     </tr>
                     <tr>
                         <th>예약결제</th>
-                        <td>{{ selectedRes.payDate === undefined ? '(미결제)' : '(결제완료)' + selectedRes.payDate }}</td>
+                        <td>{{ selectedRes.payDate === undefined ? '(미결제)' : '(결제완료) ' + selectedRes.payDate }}</td>
                     </tr>
                     <tr>
                         <th>예약 날짜/시간</th>
-                        <td>{{ selectedRes.useDate }} {{ selectedRes.useTime }}</td>
+                        <td>{{ selectedRes.useDate }} {{ selectedRes.useTime ? selectedRes.useTime.substring(0, 5) : ''
+                            }}</td>
                     </tr>
                     <tr>
                         <th>예약자명</th>

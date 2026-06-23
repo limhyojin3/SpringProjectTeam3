@@ -22,7 +22,10 @@ public class ReservationController {
 	@ResponseBody
 	public String ReservationList(@RequestParam HashMap<String, Object> map) throws Exception {
 		HashMap<String, Object> resultMap = reservationService.getReservation(map);
-		return new Gson().toJson(resultMap);
+		
+		// 🎯 [이 구역 기존 return문 삭제 후 딱 2줄로 교체] 날짜 포맷(yyyy-MM-dd HH:mm)이 강제 지정된 빌더 가동
+		Gson gson = new com.google.gson.GsonBuilder().setDateFormat("yyyy-MM-dd HH:mm").create();
+		return gson.toJson(resultMap);
 	}
 	
 	/* 특정 날짜에 선점 완료된 시간대 체크 */
