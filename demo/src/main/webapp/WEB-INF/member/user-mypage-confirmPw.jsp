@@ -68,7 +68,7 @@
         .btn-confirm {
             width: 100%;
             padding: 15px;
-            background-color: #ff4d6d;
+            background-color: #e07a8a;
             color: white;
             border: none;
             border-radius: 5px;
@@ -79,7 +79,7 @@
         }
 
         .btn-confirm:hover {
-            background-color: #ff1a43;
+            background-color: #e07a8a;
         }
     </style>
 </head>

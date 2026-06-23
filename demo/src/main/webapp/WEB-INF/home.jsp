@@ -343,6 +343,30 @@
                 axios.get("/mainPostList.dox").then(res => { this.postList = res.data; });
 
                 this.startSlide();
+                // 꽃잎 애니메이션
+                function createSakura() {
+                    const current = document.querySelectorAll(".sakura").length;
+                    if (current >= 40) return;
+                    const el = document.createElement("div");
+                    el.className = "sakura";
+                    el.style.left = Math.random() * window.innerWidth + "px";
+                    const size = Math.random() * 14 + 8;
+                    el.style.width = size + "px";
+                    el.style.height = size * 1.5 + "px";
+                    const duration = Math.random() * 4 + 4;
+                    el.style.animationDuration = duration + "s";
+                    el.style.zIndex = Math.random() > 0.5 ? 999999 : 999998;
+                    document.body.appendChild(el);
+                    setTimeout(() => { el.remove(); }, duration * 1000);
+                }
+
+                const sakuraInterval = setInterval(() => {
+                    if (document.querySelectorAll(".sakura").length >= 15) return;
+                    createSakura();
+                }, 150);
+
+                setTimeout(() => { clearInterval(sakuraInterval); }, 60000);
+                window.addEventListener("beforeunload", () => { clearInterval(sakuraInterval); });
             }
         });
         app.mount('#app');

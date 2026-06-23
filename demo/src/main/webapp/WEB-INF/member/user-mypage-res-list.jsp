@@ -217,6 +217,14 @@
             font-weight: 700;
             cursor: pointer;
         }
+        h4 {
+            font-size: 18px;
+            font-weight: 700;
+            color: #333;
+            margin-bottom: 20px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid #f4a096;
+        }
 
     </style>
 </head>
@@ -267,7 +275,7 @@
                     <div class="right-sections">
                         <section class="res-section">
                             <div class="section-header">
-                                <h2>내 예약 목록</h2>
+                                <h4>내 예약 목록</h4>
                             </div>
 
                             <div class="res-list" v-if="resList.length > 0">

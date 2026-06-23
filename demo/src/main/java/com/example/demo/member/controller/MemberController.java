@@ -775,6 +775,22 @@ public class MemberController {
 		    result.put("commentTotal", memberService.getUserCommentCount(userId));
 		    return result;
 		}
+		// 모달조회용
+	      @RequestMapping(value = "/userProfileSimple.dox", method = RequestMethod.GET)
+	      @ResponseBody
+	      public HashMap<String, Object> userProfileSimple(@RequestParam String userId) {
+	          HashMap<String, Object> result = new HashMap<>();
+	          
+	          // 1. 프로필 정보 (이미 구현된 것 재사용)
+	          result.put("info", memberService.getUserProfile(userId));
+	          
+	          // 2. 카운트 정보만 가져옴 (페이징 데이터 제외)
+	          result.put("reviewTotal", memberService.getUserReviewCount(userId));
+	          result.put("postTotal", memberService.getUserPostCount(userId));
+	          
+	          return result;
+	      }
+		
 	//
 	// *메인 홈 출력* 
 		@GetMapping("/mainPostList.dox")

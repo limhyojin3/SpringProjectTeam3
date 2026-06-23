@@ -27,27 +27,25 @@
         .review-tab {
             flex: 1;
             padding: 12px 0;
-            border: 2px solid #f4a096;
+            border: 1px solid #ffc7c2;
             background-color: white;
             cursor: pointer;
-            font-size: 15px;
-            font-weight: bold;
+            font-size: 14px;
+            font-weight: 600;
             transition: 0.2s;
+            color: #e07a8a;
         }
 
-        .review-tab:first-child {
-            border-radius: 8px 0 0 8px;
-        }
-
-        .review-tab:last-child {
-            border-radius: 0 8px 8px 0;
-        }
+        .review-tab:first-child { border-radius: 8px 0 0 8px; }
+        .review-tab:last-child { border-radius: 0 8px 8px 0; }
 
         .review-tab.active-tab {
-            background-color: #f4a096;
+            background-color: #e07a8a;
             color: white;
+            border-color: #e07a8a;
         }
 
+        /* 리뷰 카드 */
         .review-list {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
@@ -55,52 +53,54 @@
             margin-bottom: 20px;
         }
 
+
         .review-card {
-            border: 1px solid #ffc7c2;
-            border-radius: 8px;
+            border: 1px solid #f0e0e0;
+            border-radius: 12px;
             overflow: hidden;
             cursor: pointer;
             transition: 0.2s;
-            display: flex;          
-            flex-direction: column; 
+            display: flex;
+            flex-direction: column;
+            background: white;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
         }
 
         .review-card:hover {
-            box-shadow: 0 4px 10px rgba(244, 160, 150, 0.4);
-            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(244, 160, 150, 0.25);
+            transform: translateY(-3px);
         }
 
         .review-thumbnail {
             width: 100%;
-            aspect-ratio: 4/3;
-            background-color: #ffc7c2;
+            height: 140px;
+            background-color: #fff0f3;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 13px;
-            color: #999;
-            object-fit:cover;
-            height:120px; 
-            overflow:hidden;
+            overflow: hidden;
         }
 
         .review-card-title {
-            padding: 10px;
+            padding: 8px 12px;
             font-size: 13px;
-            font-weight: bold;
+            font-weight: 600;
             text-align: center;
-            background-color: #ff69b4;
-            color: white;
-            min-height: 50px;          /* 추가 */
-            flex: 1;     
-            display: flex;             /* 추가 */
-            align-items: center;       /* 추가 */
-            justify-content: center;   /* 추가 */
+            background-color: white;
+            color: #444;
+            border-top: 1px solid #f5f5f5;
         }
+
+        .review-card-title:last-child {
+            font-size: 12px;
+            color: #aaa;
+            font-weight: 400;
+        }
+
 
         .review-list-item {
             padding: 12px 15px;
-            background-color: #ff69b4;
+            background-color: #e07a8a;
             color: white;
             border-radius: 6px;
             font-size: 14px;
@@ -111,14 +111,10 @@
         }
 
         .review-list-item:hover {
-            background-color: #f4a096;
+            background-color: #e07a8a;
         }
 
-        .review-index-wrap {
-            text-align: center;
-            margin-top: 20px;
-        }
-
+        /* 페이지네이션 */
         .review-index-wrap {
             display: flex;
             justify-content: center;
@@ -132,8 +128,8 @@
             min-width: 34px;
             padding: 0 10px;
             background-color: #fff;
-            color: #f4a096;
-            border: 1.5px solid #f4a096;
+            color: #e07a8a;
+            border: 1px solid #ffc7c2;
             border-radius: 6px;
             cursor: pointer;
             font-size: 13px;
@@ -142,13 +138,15 @@
         }
 
         .btn-review-index:hover {
-            background-color: #f4a096;
+            background-color: #e07a8a;
             color: white;
+            border-color: #e07a8a;
         }
 
         .btn-review-index.active-page {
-            background-color: #f4a096;
+            background-color: #e07a8a;
             color: white;
+            border-color: #e07a8a;
             font-weight: bold;
         }
 
@@ -163,12 +161,24 @@
             object-fit: cover;
         }
 
+        /* 빈 메시지 */
         .empty-msg {
             text-align: center;
-            padding: 40px 0;
-            color: #999;
+            padding: 60px 0;
+            color: #bbb;
+            font-size: 14px;
         }
-
+        h4 {
+            font-size: 18px;
+            font-weight: 700;
+            color: #333;
+            margin-bottom: 20px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid #f4a096;
+        }
+        i {
+            margin-right: 8px;
+        }
     </style>
 </head>
 <body>
@@ -180,7 +190,7 @@
                 <%-- ✅ 사이드바 공용 include --%>
                 <jsp:include page="/WEB-INF/common/mypage-nav.jsp" />
                 <div class="right-sections">
-                    <h4>리뷰 열람 내역</h4>
+                    <h4><i class="fas fa-book-open"></i> 리뷰 열람 내역</h4>
                     <!-- 탭 버튼 -->
                     <div class="review-tab-wrap">
                         <button class="review-tab" :class="{'active-tab': reviewTab === 'paid'}" @click="switchReviewTab('paid')">유료리뷰</button>
@@ -196,13 +206,11 @@
                                     <img v-if="review.thumbnailUrl" 
                                         :src="review.thumbnailUrl" 
                                         class="thumbnail-img" 
-                                        style="width:100%; height:100%; object-fit:cover;"
                                         @error="handleImgError">
                                         
                                     <img v-else 
                                         src="/img/default_logo.png" 
-                                        class="thumbnail-img"
-                                        style="width:100%; height:100%; object-fit:cover;">
+                                        class="thumbnail-img">
                                 </div>
                                 <div class="review-card-title">{{ review.title }}</div>
                                 <div class="review-card-title">{{ review.comName }}</div>
@@ -233,13 +241,11 @@
                                     <img v-if="review.thumbnailUrl" 
                                         :src="review.thumbnailUrl" 
                                         class="thumbnail-img" 
-                                        style="width:100%; height:100%; object-fit:cover;"
                                         @error="handleImgError">
                                         
                                     <img v-else 
                                         src="/img/default_logo.png" 
-                                        class="thumbnail-img"
-                                        style="width:100%; height:100%; object-fit:cover;">
+                                        class="thumbnail-img">
                                 </div>
                                 <div class="review-card-title">{{ review.title }}</div> <!--제목-->
                                 <div class="review-card-title">{{ review.comName }}</div> <!--업체 명-->

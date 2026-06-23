@@ -14,32 +14,117 @@
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/mypage.css">
 
     <style>
-        .cs-write-title { font-size: 30px; font-weight: bold; text-align: center; margin-bottom: 25px; color: #333; }
-        .report-table { width: 100%; border-collapse: collapse; margin-bottom: 20px; font-size: 14px; background: white; table-layout: fixed; }
-        .report-table th { background-color: #f8f9fa; padding: 12px; text-align: center; border-bottom: 2px solid #dee2e6; color: #333; }
-        .report-table td { padding: 12px; text-align: center; border-bottom: 1px solid #eee; color: #555; vertical-align: middle; }
-        .report-table tr:hover { background-color: #fdfdfd; }
-        
-        .ellipsis { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .col-title { text-align: left !important; cursor: pointer; font-weight: 500; }
-        .col-title:hover { color: #f4a096; text-decoration: underline; }
-        .target-text { text-align: left !important; color: #888; font-size: 13px; }
+        /* 제목 */
+        .cs-write-title {
+            font-size: 20px;
+            font-weight: 700;
+            color: #333;
+            margin-bottom: 20px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid #e07a8a;
+            text-align: left;
+        }
 
-        .badge-wait { background-color: #ffeeba; color: #856404; padding: 5px 10px; border-radius: 4px; font-size: 12px; }
-        .badge-done { background-color: #d4edda; color: #155724; padding: 5px 10px; border-radius: 4px; font-size: 12px; }
+        /* 필터 */
+        .filter-area {
+            display: flex;
+            justify-content: flex-end;
+            gap: 8px;
+            margin-bottom: 15px;
+        }
 
-        .btn-back { padding: 10px 30px; background-color: #9b8fd4; color: white; border: none; border-radius: 6px; cursor: pointer; }
+        .filter-select {
+            width: 150px;
+            height: 38px;
+            font-size: 14px;
+            border: 1px solid #ffc7c2;
+            border-radius: 6px;
+            color: #555;
+            padding: 0 8px;
+        }
 
-        .filter-area { display: flex; justify-content: flex-end; gap: 8px; margin-bottom: 15px; }
-        .filter-select { width: 150px; height: 38px; font-size: 14px; border: 1px solid #ddd; border-radius: 4px; }
+        .filter-select:focus {
+            outline: none;
+            border-color: #e07a8a;
+        }
 
-        .modal-label { font-weight: bold; color: #666; font-size: 13px; margin-bottom: 5px; display: block; }
-        .target-box { background: #f1f3f5; padding: 10px 15px; border-radius: 6px; border-left: 4px solid #9b8fd4; margin-bottom: 15px; font-weight: 600; }
-        .content-box { background: #f8f9fa; padding: 15px; border-radius: 8px; border: 1px solid #eee; min-height: 100px; white-space: pre-wrap; }
-        
-        .pagination .page-item.active .page-link { background-color: #9b8fd4; border-color: #9b8fd4; color: white; }
-        .pagination .page-link { color: #9b8fd4; }
+        /* 테이블 */
+        .report-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+            font-size: 14px;
+            background: white;
+            table-layout: fixed;
+        }
 
+        .report-table th {
+            background-color: #fff0f3;
+            padding: 12px;
+            text-align: center;
+            border-bottom: 2px solid #e07a8a;
+            border-top: 1px solid #ffc7c2;
+            font-weight: 700;
+            color: #555;
+        }
+
+        .report-table td {
+            padding: 12px;
+            text-align: center;
+            border-bottom: 1px solid #f5f5f5;
+            color: #555;
+            vertical-align: middle;
+        }
+
+        .report-table tr:hover td {
+            background-color: #fff9f9;
+        }
+
+        .ellipsis {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .col-title {
+            text-align: left !important;
+            cursor: pointer;
+            font-weight: 500;
+        }
+
+        .col-title:hover {
+            color: #e07a8a;
+            text-decoration: underline;
+        }
+
+        .target-text {
+            text-align: left !important;
+            color: #888;
+            font-size: 13px;
+        }
+
+        /* 상태 배지 */
+        .badge-wait {
+            background-color: #fff0f3;
+            color: #e07a8a;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 700;
+            border: 1px solid #ffc7c2;
+        }
+
+        .badge-done {
+            background-color: #f0f5ff;
+            color: #9b8fd4;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 700;
+            border: 1px solid #d4cef0;
+        }
+
+        /* 페이지네이션 */
         .pagination-wrap {
             display: flex;
             justify-content: center;
@@ -54,8 +139,8 @@
             min-width: 34px;
             padding: 0 10px;
             background-color: #fff;
-            color: #f4a096;
-            border: 1.5px solid #f4a096;
+            color: #e07a8a;
+            border: 1px solid #ffc7c2;
             border-radius: 6px;
             cursor: pointer;
             font-size: 13px;
@@ -65,13 +150,15 @@
 
         .btn-page-arrow:hover,
         .btn-page-num:hover {
-            background-color: #f4a096;
+            background-color: #e07a8a;
             color: white;
+            border-color: #e07a8a;
         }
 
         .btn-page-num.active-page {
-            background-color: #f4a096;
+            background-color: #e07a8a;
             color: white;
+            border-color: #e07a8a;
             font-weight: bold;
         }
 
@@ -80,22 +167,71 @@
             cursor: not-allowed;
         }
 
+        /* 뒤로가기 버튼 */
         .btn-back {
             padding: 0 20px;
             height: 34px;
-            background-color: #fff;
-            color: #f4a096;
-            border: 1.5px solid #f4a096;
+            background-color: white;
+            color: #e07a8a;
+            border: 1px solid #ffc7c2;
             border-radius: 6px;
             cursor: pointer;
             font-size: 13px;
-            font-weight: 500;
+            font-weight: 600;
             transition: 0.2s;
         }
 
         .btn-back:hover {
-            background-color: #f4a096;
+            background-color: #e07a8a;
             color: white;
+            border-color: #e07a8a;
+        }
+
+        /* 모달 */
+        .modal-label {
+            font-weight: 700;
+            color: #555;
+            font-size: 13px;
+            margin-bottom: 5px;
+            display: block;
+        }
+
+        .target-box {
+            background: #fff0f3;
+            padding: 10px 15px;
+            border-radius: 6px;
+            border-left: 4px solid #e07a8a;
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+
+        .content-box {
+            background: #f9f9f9;
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid #f0e0e0;
+            min-height: 100px;
+            white-space: pre-wrap;
+        }
+
+        .pagination .page-item.active .page-link {
+            background-color: #e07a8a;
+            border-color: #e07a8a;
+            color: white;
+        }
+
+        .pagination .page-link {
+            color: #e07a8a;
+        }
+
+        .empty-msg {
+            padding: 50px 0;
+            color: #bbb;
+            text-align: center;
+            font-size: 14px;
+        }
+        i {
+            margin-right: 8px;
         }
 
     </style>
@@ -108,7 +244,7 @@
                 <jsp:include page="/WEB-INF/common/mypage-nav.jsp" />
 
                 <div class="right-sections">
-                    <h3 class="cs-write-title">내 신고 내역</h3>
+                    <h3 class="cs-write-title"><i class="fas fa-headset"></i>내 신고 내역</h3>
                     
                     <div class="filter-area">
                         <select class="filter-select" v-model="searchType" @change="fnGetReportList(1)">
@@ -153,7 +289,7 @@
                                 <td>{{ fnFormatDate(item.regDate) }}</td>
                             </tr>
                             <tr v-if="reportList.length === 0">
-                                <td colspan="6" style="padding: 50px 0; color: #999;">신고하신 내역이 없습니다.</td>
+                               <td colspan="6" class="empty-msg">신고하신 내역이 없습니다.</td>
                             </tr>
                         </tbody>
                     </table>
