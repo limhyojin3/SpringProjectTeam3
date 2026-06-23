@@ -1,0 +1,259 @@
+/* ==========================================================================
+   [productRegSub.css] 드레스샵 전용 프리미엄 소프트 파스텔 & 비비드 골드 일체화 스킨 (등록 폼)
+   ========================================================================== */
+
+/* 1. 전체 외부 레이아웃 및 래퍼 구역 */
+.product-form-wrapper {
+    max-width: 850px;
+    margin: 2.5rem auto;
+    padding: 0 1.5rem;
+    font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+    color: #4a375a; /* 차분하고 세련된 모브 퍼플 브라운 텍스트 */
+}
+
+.product-form-wrapper h2 {
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: #3b2354;
+    margin-bottom: 1.75rem;
+    letter-spacing: -0.03em;
+}
+
+/* 2. 메인 컨테이너 카드 구조 */
+.product-form-section {
+    background: #ffffff;
+    border: 1px solid #f3eef7;
+    border-radius: 16px;
+    box-shadow: 0 10px 30px -5px rgba(167, 139, 250, 0.04), 0 8px 20px -6px rgba(167, 139, 250, 0.02);
+    overflow: hidden;
+    margin-bottom: 2rem;
+}
+
+/* 폼 상단 섹션 안내 바 (부드러운 우유빛 연보라 라벤더 틴트) */
+.form-title-box {
+    background-color: #faf8fc;
+    padding: 1.35rem 1.75rem;
+    font-size: 1.05rem;
+    font-weight: 600;
+    color: #7c58a6;
+    border-bottom: 1px solid #f3eef7;
+}
+
+/* 폼 내실 컨텐츠 수납 격실 */
+.form-content-box {
+    padding: 2.25rem 1.75rem;
+}
+
+/* 3. 폼 입력 단위 레이아웃 행 */
+.form-group {
+    margin-bottom: 1.85rem;
+}
+
+.form-group:last-child {
+    margin-bottom: 0;
+}
+
+.form-label {
+    display: block;
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: #6d4c8f;
+    margin-bottom: 0.6rem;
+}
+
+/* 4. 텍스트 필드 및 설명 입력창 (보라색 포커스 링) */
+.form-input-text,
+.form-textarea {
+    width: 100%;
+    padding: 0.8rem 1.1rem;
+    font-size: 0.95rem;
+    color: #4a2e63;
+    background-color: #ffffff;
+    border: 1px solid #e2d9ec;
+    border-radius: 10px;
+    box-sizing: border-box;
+    transition: all 0.2s ease-in-out;
+}
+
+.form-textarea {
+    height: 160px;
+    resize: vertical;
+    min-height: 110px;
+}
+
+/* 인풋 포커스 상태 피드백 메커니즘 */
+.form-input-text:focus,
+.form-textarea:focus {
+    outline: none;
+    border-color: #d8b4fe;
+    box-shadow: 0 0 0 4px rgba(216, 180, 254, 0.25);
+    background-color: #faf9fc;
+}
+
+/* 5. 🎯 명품 카테고리 칩 버튼 디자인 통제소 */
+.chip-group-zone {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.65rem;
+    margin-top: 0.4rem;
+}
+
+/* 기본 상태 칩: 아주 맑고 연한 미색 라벤더 */
+.premium-chip-btn {
+    background-color: #fbf9fe;
+    color: #7c6295;
+    border: 1px solid #eaddf3;
+    padding: 0.6rem 1.4rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    border-radius: 50px;
+    cursor: pointer;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* 기본 호버 */
+.premium-chip-btn:hover:not(.disabled-lock) {
+    background-color: #f3e8ff;
+    color: #6b21a8;
+    border-color: #d8b4fe;
+}
+
+/* 💜 [대분류 활성화] 고급스러운 파스텔 소프트 라벤더 보라 */
+.premium-chip-btn.active-large {
+    background-color: #e9d5ff;
+    color: #5b21b6;
+    border-color: #c084fc;
+    font-weight: 600;
+}
+.premium-chip-btn.active-large:hover {
+    background-color: #d8b4fe !important;
+    border-color: #a78bfa !important;
+    color: #4c1d95 !important;
+}
+
+/* 💗 [중분류 활성화] 우아하고 포근한 파스텔 살구 인디 핑크 */
+.premium-chip-btn.active-medium {
+    background-color: #fce7f3;
+    color: #be185d;
+    border-color: #fbcfe8;
+    font-weight: 600;
+}
+.premium-chip-btn.active-medium:hover {
+    background-color: #fbcfe8 !important;
+    border-color: #f472b6 !important;
+    color: #9d174d !important;
+}
+
+/* 🔮 [태그 활성화] 은은하고 세련된 소프트 오키드 퍼플 모브 */
+.premium-chip-btn.active-tag {
+    background-color: #fae8ff;
+    color: #a21caf;
+    border-color: #f5d0fe;
+    font-weight: 600;
+}
+.premium-chip-btn.active-tag:hover {
+    background-color: #f5d0fe !important;
+    border-color: #e879f9 !important;
+    color: #701a75 !important;
+}
+
+/* 🔒 3개 상한 차단 스킨 (락 걸린 투명도 조절) */
+.premium-chip-btn.disabled-lock {
+    background-color: #f9fafb;
+    color: #d1d5db;
+    border-color: #e5e7eb;
+    cursor: not-allowed;
+    opacity: 0.6;
+}
+
+/* 우측 하단 태그 잔여 카운터 표시부 */
+.tag-count-indicator {
+    font-size: 0.8rem;
+    color: #b7a2cd;
+    margin-top: 0.55rem;
+    font-weight: 600;
+    text-align: right;
+}
+
+/* 6. 파일 선택 상자 및 미리보기 프레임 고도화 */
+.form-input-file {
+    display: block;
+    width: 100%;
+    padding: 0.8rem 1rem;
+    font-size: 0.875rem;
+    color: #7c6295;
+    background-color: #fbf9fe;
+    border: 2px dashed #eaddf3;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    box-sizing: border-box;
+}
+
+.form-input-file:hover {
+    background-color: #f3e8ff;
+    border-color: #d8b4fe;
+}
+
+/* 실시간 업로드 이미지 프리뷰 액자 레이아웃 */
+.preview-img-zone {
+    margin-top: 0.75rem;
+    background-color: #ffffff;
+    border: 2px solid #fbcfe8;
+    border-radius: 12px;
+    padding: 0.6rem;
+    display: inline-block;
+    box-shadow: 0 4px 12px rgba(244, 114, 182, 0.05);
+}
+
+/* 7. 하단 버튼 그룹 세션 영역 및 🎯 image_c85bc9.png 비비드 오렌지 골드 스타일 전격 반영 */
+.form-button-group {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 0.75rem;
+    margin-top: 1.75rem;
+}
+
+.btn-cancel,
+.btn-submit {
+    padding: 0.85rem 2.5rem;
+    font-size: 0.95rem;
+    font-weight: 600;
+    border-radius: 50px; /* 원형 캡슐 스타일 매칭 */
+    cursor: pointer;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    box-sizing: border-box;
+}
+
+/* 취소 버튼 (부드러운 라벤더 아웃라인 스킨) */
+.btn-cancel {
+    background-color: #ffffff;
+    color: #8b5cf6;
+    border: 1px solid #e9d5ff;
+}
+
+.btn-cancel:hover {
+    background-color: #f3e8ff;
+    color: #6d28d9;
+    border-color: #c084fc;
+}
+
+/* 🏆 상품 등록 버튼 (화사한 입체 비비드 오렌지 골드 그라데이션) */
+.btn-submit {
+    background: linear-gradient(135deg, #ff9e00, #ff6d00);
+    color: #ffffff;
+    border: none;
+    box-shadow: 0 6px 16px rgba(255, 109, 0, 0.25);
+}
+
+/* 호버 시 오렌지 골드 빛이 한층 화사해지는 연출 효과 */
+.btn-submit:hover {
+    background: linear-gradient(135deg, #ffaa1d, #ff7a14);
+    transform: translateY(-1px);
+    box-shadow: 0 8px 22px rgba(255, 109, 0, 0.35);
+}
+
+.btn-submit:active {
+    transform: translateY(0);
+}
