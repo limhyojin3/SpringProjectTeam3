@@ -285,6 +285,16 @@
         margin-top: 20px;
     }
 }
+.nickname-link {
+    text-decoration: none; /* 밑줄 제거 */
+    color: inherit;       /* 기존 글자색 유지 */
+    cursor: pointer;
+}
+
+.nickname-link:hover {
+    text-decoration: underline; /* 호버 시 밑줄 효과 */
+    color: #555;                /* 살짝 다른 색상으로 강조 */
+}
     </style>
 </head>
 <body>
@@ -308,7 +318,14 @@
                 <h2 class="mt-3" style="font-weight: 700; color: #222;">{{ info.title }}</h2>
                 <div class="d-flex justify-content-between align-items-center flex-wrap">
                     <small class="text-muted">
-                        작성자: <b :class="{'text-danger': info.nickname === '탈퇴회원'}">{{ info.nickname }}</b> | {{ info.regDate }}
+                        작성자: 
+                        <a 
+                            v-if="info.nickname !== '탈퇴회원'"
+                            :href="'/userProfile.do?userId=' + info.userId" class="text-decoration-none text-dark">
+                            <b :class="{'text-danger': info.nickname === '탈퇴회원'}">{{ info.nickname }}</b>
+                        </a> 
+                        <b v-else class="text-danger">{{ info.nickname }}</b>
+                        | {{ info.regDate }}
                     </small>
                     <small class="text-muted"><i class="far fa-eye"></i> {{ info.viewCnt }} | <i class="far fa-heart text-danger"></i> {{ info.likeCnt }}</small>
                 </div>
@@ -458,8 +475,15 @@
                                 <span v-if="item.parentNo" class="reply-mark">ㄴ</span>
                                 <span class="comment-user">
                                     <template v-if="item.isDeleted == 0">
-                                        <span :class="{'text-danger': item.nickname === '탈퇴회원'}">{{ item.nickname }}</span>
+                                        <a v-if="item.nickname !== '탈퇴회원'" 
+                                        :href="'/userProfile.do?userId=' + item.userId" 
+                                        class="text-decoration-none text-dark">
+                                            <span :class="{'text-danger': item.nickname === '탈퇴회원'}">{{ item.nickname }}</span>
+                                        </a>
+                                        
+                                        <span v-else class="text-danger">{{ item.nickname }}</span>
                                     </template>
+                                    
                                     <template v-else>
                                         <b v-if="item.delRole === 'ADMIN'" class="text-danger" style="font-size: 0.9em;">[관리자 삭제]</b>
                                         <b v-else class="text-muted" style="font-size: 0.9em;">[삭제된 댓글]</b>

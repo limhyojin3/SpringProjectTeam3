@@ -162,6 +162,16 @@
         position: relative;
         overflow: hidden;
     }
+    .nickname-link {
+        text-decoration: none; /* 밑줄 제거 */
+        color: inherit;       /* 기존 글자색 유지 */
+        cursor: pointer;
+    }
+
+    .nickname-link:hover {
+        text-decoration: underline; /* 호버 시 밑줄 효과 */
+        color: #555;                /* 살짝 다른 색상으로 강조 */
+    }
         
     </style>
 </head>
@@ -256,7 +266,9 @@
 
                         <div class="best-info">
                             <span class="company-tag">{{best.comName}}</span>
-                            <div class="user-nickname"> {{ best.nickname }} 님</div>
+                            <a v-if="best.nickname !== '탈퇴회원'":href="'/userProfile.do?userId=' + best.userId" class="nickname-link">
+                                <div class="user-nickname"> {{ best.nickname }} 님</div>
+                            </a>
                             <h3 class="title-text">{{best.title}}</h3>
                             <div class="best-meta">
                                 <span><i class="fas fa-heart"></i> {{best.likeCnt}}</span>
@@ -300,7 +312,10 @@
                         </div>
 
                         <div class="card-info-row">
-                            <span><i class="far fa-user-circle mr-1"></i>{{ item.nickname }}</span>
+                            <a v-if="item.nickname !== '탈퇴회원'" :href="'/userProfile.do?userId=' + item.userId" class="nickname-link">
+                                <span><i class="far fa-user-circle mr-1"></i>{{ item.nickname }}</span>
+                            </a>
+                            <b v-else class="text-danger">{{ item.nickname }}</b>
                             <span>{{ item.regDate }}</span>
                         </div>
                     </div>

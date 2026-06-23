@@ -6,6 +6,7 @@
     <title>커뮤니티 목록 - MarryView</title>
     <!-- 라이브러리 로드 -->
     <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
@@ -139,6 +140,59 @@
             transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); display: flex; align-items: center; justify-content: center;
         }
         .btn-write:hover { transform: scale(1.1) rotate(5deg); background: #ff1a4a; }
+
+        .nickname-link {
+            text-decoration: none; /* 밑줄 제거 */
+            color: inherit;       /* 기존 글자색 유지 */
+            cursor: pointer;
+        }
+
+        .nickname-link:hover {
+            text-decoration: underline; /* 호버 시 밑줄 효과 */
+            color: #555;                /* 살짝 다른 색상으로 강조 */
+        }
+        .col-info {
+            position: relative;
+            z-index: 1; /* 기본값 */
+        }
+
+        .nickname-container {
+            position: relative; /* 기준점 */
+            display: inline-block;
+        }
+
+        /* 모달 스타일 */
+        .profile-hover-modal {
+            position: absolute;
+            top: 100%; /* 닉네임 바로 아래 */
+            left: 0;
+            width: 170px;
+            background: #fff;
+            border: 1px solid #eee;
+            padding: 12px;
+            border-radius: 12px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+            z-index: 9999; /* 핵심: 다른 요소보다 무조건 위 */
+            
+            /* 부드러운 등장 애니메이션 */
+            animation: fadeIn 0.3s ease-out forwards;
+        }
+
+        /* 애니메이션 효과 */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* 아래 행의 닉네임과 겹칠 때 모달이 무조건 위로 오게 함 */
+        .list-item:hover {
+            z-index: 100;
+        }
+        /* 데이터가 로드되고 모달이 보일 때 */
+        .profile-hover-modal.active {
+            opacity: 1;
+            visibility: visible;
+        }
     </style>
 </head>
 <body>
@@ -194,12 +248,38 @@
                         </span>
                         <span v-if="item.commentCnt > 0" class="comment-count">({{ item.commentCnt }})</span>
                     </div>
-                    <div class="col-info">
-                        <span class="nickname">@{{ item.nickname }}</span>
+                    <div class="col-info" style="position: relative;">
+                        <div class="nickname-container" 
+                            @mouseenter="fnShowHover(item.userId, item.postNo)" 
+                            @mouseleave="fnHideHover">
+                            
+                            <a v-if="item.nickname !== '탈퇴회원'" 
+                            :href="'/userProfile.do?userId=' + item.userId" 
+                            class="nickname-link">
+                                <span class="nickname">@{{ item.nickname }}</span>
+                            </a>
+                            <b v-else class="text-danger">@{{ item.nickname }}</b>
+
+                            <div v-if="hoverUserId === item.userId && hoverPostNo === item.postNo && hoverInfo" 
+                                class="profile-hover-modal">
+                                <div class="modal-content" style="text-align: center;">
+                                    <img :src="'/img/profile/' + (hoverInfo.info.profileImg || 'heart.png')" 
+                                        style="width: 50px; height: 50px; border-radius: 50%; object-fit: cover; margin-bottom: 8px;">
+                                    <p style="margin: 0; font-weight: bold; white-space: nowrap;">{{ hoverInfo.info.nickName }}</p>
+                                    <div style="font-size: 0.8em; color: #666; margin-top: 5px; white-space: nowrap;">
+                                        게시글: {{ hoverInfo.postTotal }} | 리뷰: {{ hoverInfo.reviewTotal }}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
                         <div class="stat-group">
                             <span><i class="far fa-eye icon-view"></i>{{ item.viewCnt }}</span>
                             <span class="icon-heart"><i class="fas fa-heart"></i> {{ item.likeCnt }}</span>
                         </div>
+                    </div>
+
+                        
                     </div>
                 </div>
 
@@ -265,7 +345,9 @@
                     pageSize: 10,
                     totalCount: 0,
                     pageBlockSize: 5,
-                    popularList: [] // 인기글 데이터를 담을 배열 추가
+                    popularList: [], // 인기글 데이터를 담을 배열 추가
+                    hoverInfo: null, // 호버한 유저의 정보가 담길 곳
+                    hoverUserId: null // 현재 호버 중인 유저의 ID
                     
                 };
             },
@@ -287,6 +369,20 @@
                 }
             },
             methods: {
+                fnShowHover(userId, postNo) {
+                    this.hoverUserId = userId;
+                    this.hoverPostNo = postNo;
+                    // 서버에서 데이터 가져오기
+                    axios.get('/userProfileSimple.dox', { params: { userId: userId  } })
+                        .then(res => {
+                            this.hoverInfo = res.data; // 서버에서 보낸 info, reviewTotal, postTotal 저장
+                        });
+                },
+                fnHideHover() {
+                    this.hoverUserId = null;
+                    this.hoverPostNo = null; // 초기화
+                    this.hoverInfo = null;
+                },
                 fnList() {
                     const nParam = {
                         searchKeyword: this.searchKeyword,
