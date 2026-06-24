@@ -16,7 +16,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.example.demo.company.dao.CompanyService;
-import com.example.demo.company.dao.ProductService;
+import com.example.demo.company.dao.ProductQueryService;
+import com.example.demo.company.dao.ProductCommandService;
+import com.example.demo.company.dao.ProductMetadataService;
 import com.example.demo.company.model.Company;
 import com.example.demo.company.model.Product;
 import com.google.gson.Gson;
@@ -25,7 +27,13 @@ import com.google.gson.Gson;
 public class ProductController {
 
 	@Autowired
-	private ProductService productService;
+	private ProductQueryService productQueryService;
+
+	@Autowired
+	private ProductCommandService productCommandService;
+
+	@Autowired
+	private ProductMetadataService productMetadataService;
 
 	@Autowired
 	private CompanyService companyService;
@@ -40,7 +48,7 @@ public class ProductController {
 	@RequestMapping(value = "/productList.dox", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
 	@ResponseBody
 	public String productList(@RequestParam HashMap<String, Object> map) throws Exception {
-		HashMap<String, Object> resultMap = productService.getProductList(map);
+		HashMap<String, Object> resultMap = productQueryService.getProductList(map);
 		return new Gson().toJson(resultMap);
 	}
 
@@ -48,7 +56,7 @@ public class ProductController {
 	@RequestMapping(value = "/productDetail.dox", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
 	@ResponseBody
 	public String productDetail(@RequestParam HashMap<String, Object> map) throws Exception {
-		HashMap<String, Object> resultMap = productService.getProduct(map);
+		HashMap<String, Object> resultMap = productQueryService.getProduct(map);
 		return new Gson().toJson(resultMap);
 	}
 
@@ -77,7 +85,7 @@ public class ProductController {
 			product.setImgUrl("/img2/" + savedName);
 		}
 
-		HashMap<String, Object> resultMap = productService.editProduct(product);
+		HashMap<String, Object> resultMap = productCommandService.editProduct(product);
 		return new Gson().toJson(resultMap);
 	}
 	
@@ -111,7 +119,7 @@ public class ProductController {
 			product.setImgUrl("/img2/" + savedName);
 		}
 
-		HashMap<String, Object> resultMap = productService.addProduct(product);
+		HashMap<String, Object> resultMap = productCommandService.addProduct(product);
 		return new Gson().toJson(resultMap);
 	}
 
@@ -119,7 +127,7 @@ public class ProductController {
 	@ResponseBody
 	@PostMapping("/productRemove.dox")
 	public String productRemove(@RequestParam HashMap<String, Object> map) throws Exception {
-		HashMap<String, Object> resultMap = productService.removeProduct(map);
+		HashMap<String, Object> resultMap = productCommandService.removeProduct(map);
 		return new Gson().toJson(resultMap);
 	}
 	
@@ -127,7 +135,7 @@ public class ProductController {
 	@RequestMapping(value = "/getTagAndProductList.dox", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
 	@ResponseBody
 	public String getTagAndProductList(@RequestParam HashMap<String, Object> map) throws Exception {
-		HashMap<String, Object> resultMap = productService.getTagAndProductList(map);
+		HashMap<String, Object> resultMap = productMetadataService.getTagAndProductList(map);
 		return new Gson().toJson(resultMap);
 	}
 	
@@ -135,15 +143,15 @@ public class ProductController {
 	@RequestMapping(value = "/getTagList.dox", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
 	@ResponseBody
 	public String getTagList(@RequestParam HashMap<String, Object> map) throws Exception {
-		HashMap<String, Object> resultMap = productService.getTagList(map);
+		HashMap<String, Object> resultMap = productMetadataService.getTagList(map);
 		return new Gson().toJson(resultMap);
 	}
 
-	/* 💡 고도화 핵심: 기존 소스를 완벽히 보존한 채 하단에 안전하게 접합된 완전 동적 트리 반환 API 단자 */
+	/* 상품 동적 트리 반환 API 단자 */
 	@RequestMapping(value = "/getCategoryTree.dox", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
 	@ResponseBody
 	public String getCategoryTree() throws Exception {
-		HashMap<String, Object> treeData = productService.getCategoryTree();
+		HashMap<String, Object> treeData = productMetadataService.getCategoryTree();
 		return new Gson().toJson(treeData);
 	}
 }

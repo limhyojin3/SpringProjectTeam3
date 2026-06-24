@@ -1,5 +1,9 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
-<link rel="stylesheet" href="${pageContext.request.contextPath}/css/company-css/reviewTemplate.css">
+<link rel="stylesheet" href="${pageContext.request.contextPath}/css/company-css/review-tabs.css">
+<link rel="stylesheet" href="${pageContext.request.contextPath}/css/company-css/review-product-list.css">
+<link rel="stylesheet" href="${pageContext.request.contextPath}/css/company-css/review-detail-view.css">
+<link rel="stylesheet" href="${pageContext.request.contextPath}/css/company-css/review-simple-table.css">
+<link rel="stylesheet" href="${pageContext.request.contextPath}/css/company-css/review-pagination.css">
 
 <template id="review-section-template">
     <div> 
@@ -28,12 +32,13 @@
                     </div>
                 </div>
                 <div class="pagination1">
-                    <span v-for="num in totalReviewListPages" :key="num">
-                        <a @click="reviewListPage = num" href="javascript:;"
-                            :style="reviewListPage === num ? 'color: #9b8fd4; border:1px solid #9b8fd4;' : ''">
+                    <a @click="reviewListPage > 1 ? reviewListPage-- : null" href="javascript:;" :class="{ 'disabled-arrow': reviewListPage === 1 }">◀</a>
+                    <span v-for="num in visibleReviewListPages" :key="num">
+                        <a @click="reviewListPage = num" href="javascript:;" :class="{ 'active-page-node': reviewListPage === num }">
                             {{ num }}
                         </a>
                     </span>
+                    <a @click="reviewListPage < totalReviewListPages ? reviewListPage++ : null" href="javascript:;" :class="{ 'disabled-arrow': reviewListPage === totalReviewListPages || totalReviewListPages === 0 }">▶</a>
                 </div>
             </div>
 
@@ -52,12 +57,13 @@
                     </div>
                 </div>
                 <div class="pagination1">
-                    <span v-for="num in totalSimpleReviewListPages" :key="num">
-                        <a @click="reviewListPage = num" href="javascript:;"
-                            :style="reviewListPage === num ? 'color: #9b8fd4; border:1px solid #9b8fd4;' : ''">
+                    <a @click="reviewListPage > 1 ? reviewListPage-- : null" href="javascript:;" :class="{ 'disabled-arrow': reviewListPage === 1 }">◀</a>
+                    <span v-for="num in visibleSimpleReviewListPages" :key="num">
+                        <a @click="reviewListPage = num" href="javascript:;" :class="{ 'active-page-node': reviewListPage === num }">
                             {{ num }}
                         </a>
                     </span>
+                    <a @click="reviewListPage < totalSimpleReviewListPages ? reviewListPage++ : null" href="javascript:;" :class="{ 'disabled-arrow': reviewListPage === totalSimpleReviewListPages || totalSimpleReviewListPages === 0 }">▶</a>
                 </div>
             </div>
         </div>
@@ -72,7 +78,7 @@
                             <div class="review-photo-wrapper">
                                 <span class="new-label-absolute" v-if="rev.updated === '1'">NEW</span>
                                 <div class="review-photo">
-                                    <img :src="rev.thumbnailUrl" :alt="rev.imgDescription" class="imgUrl">
+                                    <div class="review-photo-bg" :style="{ backgroundImage: 'url(' + rev.thumbnailUrl + ')' }"></div>
                                 </div>
                             </div>
                             <div :class="{ 'review-text-limit' : !rev.isExpanded }" class="review-item-text">
@@ -88,12 +94,13 @@
                         <hr>
                     </div>
                     <div class="pagination1">
-                        <span v-for="num in totalPages" :key="num">
-                            <a @click="fnPageChange(num)" href="javascript:;"
-                                :style="currentPage === num ? 'color: #9b8fd4; border:1px solid #9b8fd4;' : ''">
+                        <a @click="currentPage > 1 ? fnPageChange(currentPage - 1) : null" href="javascript:;" :class="{ 'disabled-arrow': currentPage === 1 }">◀</a>
+                        <span v-for="num in visibleDetailPages" :key="num">
+                            <a @click="fnPageChange(num)" href="javascript:;" :class="{ 'active-page-node': currentPage === num }">
                                 {{num}}
                             </a>
                         </span>
+                        <a @click="currentPage < totalPages ? fnPageChange(currentPage + 1) : null" href="javascript:;" :class="{ 'disabled-arrow': currentPage === totalPages || totalPages === 0 }">▶</a>
                     </div>
                 </div>
                 <div v-else>
@@ -134,12 +141,13 @@
                         </tbody>
                     </table>
                     <div class="pagination1">
-                        <span v-for="num in totalSimplePages" :key="num">
-                            <a @click="currentPage = num" href="javascript:;"
-                                :style="currentPage === num ? 'color: #9b8fd4; border:1px solid #9b8fd4;' : ''">
+                        <a @click="currentPage > 1 ? currentPage-- : null" href="javascript:;" :class="{ 'disabled-arrow': currentPage === 1 }">◀</a>
+                        <span v-for="num in visibleSimpleDetailPages" :key="num">
+                            <a @click="currentPage = num" href="javascript:;" :class="{ 'active-page-node': currentPage === num }">
                                 {{num}}
                             </a>
                         </span>
+                        <a @click="currentPage < totalSimplePages ? currentPage++ : null" href="javascript:;" :class="{ 'disabled-arrow': currentPage === totalSimplePages || totalSimplePages === 0 }">▶</a>
                     </div>
                 </div>
                 <div v-else>
