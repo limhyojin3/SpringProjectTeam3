@@ -1,46 +1,23 @@
 const ReviewSectionComponent = {
     template: '#review-section-template',
-    
-    // 1. 오직 리뷰 관리방에서만 사용하는 독립된 변수들
+
     data() {
         return {
-            viewPage: 'main',             // 상품별 리뷰 페이지 구분 변수 ('main' 또는 1 등)
-            reviewTab: 'detail',          // 'detail'(유료), 'simple'(무료) 탭 구분
-            reviewListPage: 1,            // 리뷰 상품 목록 페이지 번호
-            reviewListPageSize: 5,        // 한 페이지당 보여줄 상품 수
-            currentPage: 1,               // 상세 리뷰 목록의 현재 페이지 번호
-            
-            newReviewCnt: 0,              // 새 유료 리뷰 건수
-            newUnpaidReviewCnt: 0,        // 새 무료 리뷰 건수
-            totalReviewCnt: 0,            // 전체 유료 리뷰 건수
-            totalSimpleReviewCnt: 0,      // 전체 무료 리뷰 건수
-            
-            registeredProductList: [],       // 유료 리뷰 대상 상품 목록
-            productListForSimpleReviews: [], // 무료 리뷰 대상 상품 목록
-            reviews: [],                     // 선택한 상품의 유료 상세 리뷰 리스트
-            simpleReviews: []                // 선택한 상품의 무료 상세 리뷰 리스트
+            viewPage: 'main', reviewTab: 'detail', reviewListPage: 1, reviewListPageSize: 5, currentPage: 1,
+            newReviewCnt: 0, newUnpaidReviewCnt: 0, totalReviewCnt: 0, totalSimpleReviewCnt: 0,
+            registeredProductList: [], productListForSimpleReviews: [], reviews: [], simpleReviews: []
         };
     },
 
-    // 2. 메인에 흩어져 있던 리뷰 관련 계산식(Computed) 통째로 이사
     computed: {
-        filteredReviews() {
-            return this.reviews;
-        },
-        filteredSimpleReviews() {
-            return this.simpleReviews;
-        },
         paginatedReviews() {
             const start = (this.currentPage - 1) * 5;
-            const end = start + 5;
-            return this.filteredReviews.slice(start, end);
+            return this.reviews.slice(start, start + 5);
         },
         paginatedSimpleReviews() {
             const start = (this.currentPage - 1) * 5;
-            const end = start + 5;
-            return this.filteredSimpleReviews.slice(start, end);
+            return this.simpleReviews.slice(start, start + 5);
         },
-        // 리뷰 대상 상품 목록 페이징
         pagedRegisteredProductList() {
             const start = (this.reviewListPage - 1) * this.reviewListPageSize;
             return this.registeredProductList.slice(start, start + this.reviewListPageSize);
@@ -49,123 +26,65 @@ const ReviewSectionComponent = {
             const start = (this.reviewListPage - 1) * this.reviewListPageSize;
             return this.productListForSimpleReviews.slice(start, start + this.reviewListPageSize);
         },
-        totalReviewListPages() {
-            return Math.ceil(this.registeredProductList.length / this.reviewListPageSize);
-        },
-        totalSimpleReviewListPages() {
-            return Math.ceil(this.productListForSimpleReviews.length / this.reviewListPageSize);
-        },
-        totalPages() {
-            return Math.ceil(this.filteredReviews.length / 5);
-        },
-        totalSimplePages() {
-            return Math.ceil(this.filteredSimpleReviews.length / 5);
-        }
+        totalReviewListPages() { return Math.ceil(this.registeredProductList.length / this.reviewListPageSize); },
+        totalSimpleReviewListPages() { return Math.ceil(this.productListForSimpleReviews.length / this.reviewListPageSize); },
+        totalPages() { return Math.ceil(this.reviews.length / 5); },
+        totalSimplePages() { return Math.ceil(this.simpleReviews.length / 5); },
+
+        /* 💡 고도화 핵심: 현재 활성화된 페이지를 기준으로 오직 '최대 3개'의 숫자 배열만 반환하는 슬라이딩 파이프라인 */
+        visibleReviewListPages() { return this.calcSliding(this.reviewListPage, this.totalReviewListPages); },
+        visibleSimpleReviewListPages() { return this.calcSliding(this.reviewListPage, this.totalSimpleReviewListPages); },
+        visibleDetailPages() { return this.calcSliding(this.currentPage, this.totalPages); },
+        visibleSimpleDetailPages() { return this.calcSliding(this.currentPage, this.totalSimplePages); }
     },
 
-    // 3. 리뷰 비동기 통신 및 헬퍼 함수들 이사
     methods: {
-        fnGoBackToList() {
-            this.viewPage = 'main';
+        /* 🎯 최대 3개 노출 동적 슬라이딩 윈도우 헬퍼 연산식 */
+        calcSliding(current, total) {
+            if (total <= 3) { return Array.from({ length: total }, (_, i) => i + 1); }
+            let start = Math.max(1, current - 1);
+            if (start + 2 > total) { start = total - 2; }
+            return [start, start + 1, start + 2];
         },
+        fnGoBackToList() { this.viewPage = 'main'; },
         fnReview() {
-            this.reviewTab = 'detail';
-            this.reviewListPage = 1;
-            let self = this;
-            let param = { userId: window.SESSION_ID };
+            this.reviewTab = 'detail'; this.reviewListPage = 1; let self = this;
             $.ajax({
-                url: "/getReviewCnt.dox",
-                dataType: "json",
-                type: "POST",
-                data: param,
+                url: "/getReviewCnt.dox", dataType: "json", type: "POST", data: { userId: window.SESSION_ID },
                 success: function(data) {
-                    self.registeredProductList = data.list;
-                    self.newReviewCnt = data.info.reviewCount;
-
-                    let reviewCntList = self.registeredProductList.map(p => p.reviewCount);
-                    let sum = 0;
-                    for (let i = 0; i < reviewCntList.length; i++) {
-                        sum += reviewCntList[i];
-                    }
-                    self.totalReviewCnt = sum;
+                    self.registeredProductList = data.list; self.newReviewCnt = data.info.reviewCount;
+                    self.totalReviewCnt = self.registeredProductList.reduce((sum, p) => sum + p.reviewCount, 0);
                 }
             });
         },
         fnSimple() {
-            this.reviewTab = 'simple';
-            this.reviewListPage = 1;
-            let self = this;
-            let param = { userId: window.SESSION_ID };
+            this.reviewTab = 'simple'; this.reviewListPage = 1; let self = this;
             $.ajax({
-                url: "/getSimpleReviewCnt.dox",
-                dataType: "json",
-                type: "POST",
-                data: param,
+                url: "/getSimpleReviewCnt.dox", dataType: "json", type: "POST", data: { userId: window.SESSION_ID },
                 success: function(data) {
-                    self.productListForSimpleReviews = data.list;
-                    self.newUnpaidReviewCnt = data.info.reviewCount;
-
-                    let reviewCntList = self.productListForSimpleReviews.map(p => p.reviewCount);
-                    let sum = 0;
-                    for (let i = 0; i < reviewCntList.length; i++) {
-                        sum += reviewCntList[i];
-                    }
-                    self.totalSimpleReviewCnt = sum;
+                    self.productListForSimpleReviews = data.list; self.newUnpaidReviewCnt = data.info.reviewCount;
+                    self.totalSimpleReviewCnt = self.productListForSimpleReviews.reduce((sum, p) => sum + p.reviewCount, 0);
                 }
             });
         },
         fnReviewDetails(w) {
-            this.viewPage = 1;
-            this.currentPage = 1;
-            let self = this;
-            let param = {
-                userId: window.SESSION_ID,
-                productNo: w.productNo
-            };
+            this.viewPage = 1; this.currentPage = 1; let self = this;
             $.ajax({
-                url: "/ReviewDetails3.dox",
-                dataType: "json",
-                type: "POST",
-                data: param,
-                success: function(data) {
-                    self.reviews = data.list.map(r => ({ ...r, isExpanded: false }));
-                }
+                url: "/ReviewDetails3.dox", dataType: "json", type: "POST", data: { userId: window.SESSION_ID, productNo: w.productNo },
+                success: function(data) { self.reviews = data.list.map(r => ({ ...r, isExpanded: false })); }
             });
         },
         fnSimpleReviewDetails(w) {
-            this.viewPage = 1;
-            this.currentPage = 1;
-            let self = this;
-            let param = {
-                userId: window.SESSION_ID,
-                productNo: w.productNo
-            };
+            this.viewPage = 1; this.currentPage = 1; let self = this;
             $.ajax({
-                url: "/SimpleReviewDetails3.dox",
-                dataType: "json",
-                type: "POST",
-                data: param,
-                success: function(data) {
-                    self.simpleReviews = data.list;
-                }
+                url: "/SimpleReviewDetails3.dox", dataType: "json", type: "POST", data: { userId: window.SESSION_ID, productNo: w.productNo },
+                success: function(data) { self.simpleReviews = data.list; }
             });
         },
-        fnPageChange(num) {
-            this.currentPage = num;
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        },
-        // 공통 유틸 함수 연결
-        cleanText(content) { 
-            return PartnerUtils.cleanText(content); 
-        },
-        starRating(rev) { 
-            return PartnerUtils.starRating(rev); 
-        }
+        fnPageChange(num) { this.currentPage = num; window.scrollTo({ top: 0, behavior: 'smooth' }); },
+        cleanText(content) { return PartnerUtils.cleanText(content); },
+        starRating(rev) { return PartnerUtils.starRating(rev); }
     },
 
-    // 4. 리뷰 관리 탭이 활성화되면 자동으로 유료/무료 리뷰의 초기 상태를 갱신
-    mounted() {
-        this.fnReview();
-        this.fnSimple();
-    }
+    mounted() { this.fnReview(); this.fnSimple(); }
 };

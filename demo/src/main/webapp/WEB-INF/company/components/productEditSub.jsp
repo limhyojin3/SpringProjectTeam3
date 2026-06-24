@@ -85,4 +85,6 @@
     </div>
 </template>
 
+<script src="${pageContext.request.contextPath}/js/company-components/product-edit-core-module.js"></script>
+<script src="${pageContext.request.contextPath}/js/company-components/product-edit-category-module.js"></script>
 <script src="${pageContext.request.contextPath}/js/company-components/product-edit-sub.js"></script>

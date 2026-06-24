@@ -9,13 +9,11 @@
         <div class="product-form-section">
             <div class="form-title-box">상품 기본 정보</div>
             <div class="form-content-box">
-                <!-- 상품 이름 구역 -->
                 <div class="form-group">
                     <label class="form-label">상품 이름</label>
                     <input type="text" v-model="initializedOneProductDetails.productName" class="form-input-text">
                 </div>
 
-                <!-- 대분류 카테고리 구역 -->
                 <div class="form-group">
                     <label class="form-label">대분류</label>
                     <div class="chip-group-zone">
@@ -25,7 +23,6 @@
                     </div>
                 </div>
 
-                <!-- 중분류 카테고리 구역 -->
                 <div class="form-group" v-if="availableMediums.length > 0">
                     <label class="form-label">중분류</label>
                     <div class="chip-group-zone">
@@ -33,7 +30,6 @@
                     </div>
                 </div>
 
-                <!-- 태그 목록 구역 -->
                 <div class="form-group" v-if="availableTags.length > 0">
                     <label class="form-label">태그</label>
                     <div class="chip-group-zone">
@@ -42,19 +38,16 @@
                     <div class="tag-count-indicator">선택: {{selectedTags.length}} / 3</div>
                 </div>
 
-                <!-- 💡 [기능 고도화] 실제 금액 입력 (실시간 콤마 필터 장착) -->
                 <div class="form-group">
                     <label class="form-label">예상 견적 (원)</label>
                     <input type="text" v-model="initializedOneProductDetails.originalPrice" @input="fnInputComma('originalPrice')" class="form-input-text" style="text-align: right;" placeholder="금액을 입력하세요 (예: 1,500,000)">
                 </div>
 
-                <!-- 💡 [기능 고도화] 예약금 금액 입력 (실시간 콤마 필터 장착) -->
                 <div class="form-group">
                     <label class="form-label">예약금 (원)</label>
                     <input type="text" v-model="initializedOneProductDetails.deposit" @input="fnInputComma('deposit')" class="form-input-text" style="text-align: right;" placeholder="예약금을 입력하세요 (예: 150,000)">
                 </div>
 
-                <!-- 상품 이미지 등록 및 실시간 자립형 미리보기 결합 구역 -->
                 <div class="form-group">
                     <label class="form-label">상품 이미지 등록</label>
                     <input type="file" @change="fnFileChange" class="form-input-file" accept="image/*">
@@ -64,7 +57,6 @@
                     </div>
                 </div>
 
-                <!-- 상품 설명 구역 -->
                 <div class="form-group">
                     <label class="form-label">상품 설명</label>
                     <textarea v-model="initializedOneProductDetails.productDetails" class="form-textarea"></textarea>
@@ -77,4 +69,7 @@
         </div>
     </div>
 </template>
+
+<script src="${pageContext.request.contextPath}/js/company-components/product-reg-core-module.js"></script>
+<script src="${pageContext.request.contextPath}/js/company-components/product-reg-category-module.js"></script>
 <script src="${pageContext.request.contextPath}/js/company-components/product-reg-sub.js"></script>

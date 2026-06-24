@@ -31,36 +31,4 @@ public class CompanyController {
 		HashMap<String, Object> resultMap = companyService.getCompany(map);
 		return new Gson().toJson(resultMap);
 	}
-	
-	/* 일반 결제 기반 리뷰 통계 및 카운트 조회 */
-	@RequestMapping(value = "/getReviewCnt.dox", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
-	@ResponseBody
-	public String getReviewCnt(@RequestParam HashMap<String, Object> map) throws Exception {
-		HashMap<String, Object> resultMap = companyService.getReviewCnt(map);
-		return new Gson().toJson(resultMap);
-	}
-	
-	/* 간이 결제 기반 리뷰 통계 및 카운트 조회 */
-	@RequestMapping(value = "/getSimpleReviewCnt.dox", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
-	@ResponseBody
-	public String getSimpleReviewCnt(@RequestParam HashMap<String, Object> map) throws Exception {
-		HashMap<String, Object> resultMap = companyService.getSimpleReviewCnt(map);
-		return new Gson().toJson(resultMap);
-	}
-		
-	/* 일반 결제 리뷰 상세 내역 리스트 조회 */
-	@RequestMapping(value = "/ReviewDetails3.dox", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
-	@ResponseBody
-	public String ReviewDetails3(@RequestParam HashMap<String, Object> map) throws Exception {
-		HashMap<String, Object> resultMap = companyService.getReviewDetails3(map);
-		return new Gson().toJson(resultMap);
-	}
-
-	/* 간이 결제 리뷰 상세 내역 리스트 조회 */
-	@RequestMapping(value = "/SimpleReviewDetails3.dox", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
-	@ResponseBody
-	public String SimpleReviewDetails3(@RequestParam HashMap<String, Object> map) throws Exception {
-		HashMap<String, Object> resultMap = companyService.getSimpleReviewDetails3(map);
-		return new Gson().toJson(resultMap);
-	}
 }

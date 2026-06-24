@@ -1,0 +1,35 @@
+@charset "UTF-8";
+
+/* 1. 상단 유료/무료 리뷰 전환 탭 메뉴 */
+.tab-menu button {
+	padding: 10px 20px;
+	border: 1px solid #d4cdf0;
+	border-bottom: none;
+	background: #eee;
+	cursor: pointer;
+}
+
+.tab-menu button.active {
+	background: #9b8fd4;
+	color: white;
+	border-color: #9b8fd4;
+}
+
+.tab-menu button:first-child {
+	border-radius: 8px 0 0 0px;
+}
+
+.tab-menu button:last-child {
+	border-radius: 0 8px 0px 0;
+}
+
+/* 2. 리뷰 메인 카드 및 상품별 요약 레이아웃 */
+.content-card {
+	background-color: white;
+	border: 1px solid #eee;
+	padding: 30px;
+	border-radius: 10px;
+	margin-bottom: 20px;
+	position: relative;
+	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+}

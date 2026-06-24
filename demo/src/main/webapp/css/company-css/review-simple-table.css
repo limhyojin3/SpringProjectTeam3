@@ -1,0 +1,57 @@
+@charset "UTF-8";
+
+/* 1. 무료 리뷰 간결한 보기 테이블 전용 스타일 */
+.simple-review-table {
+	width: 100%;
+	border-collapse: collapse;
+	margin-bottom: 20px;
+}
+
+.simple-review-table th {
+	background-color: #f5f2fc;
+	color: #555;
+	font-weight: 600;
+	padding: 12px;
+	border-bottom: 2px solid #e0d7ff;
+	text-align: center;
+}
+
+.simple-review-table td {
+	padding: 12px;
+	border-bottom: 1px solid #eee;
+	text-align: center;
+	vertical-align: middle;
+}
+
+.simple-review-text-td {
+	color: #666;
+	font-size: 15px;
+	text-align: left !important;
+}
+
+.new-label {
+	background: #ff7f9f;
+	color: white;
+	font-size: 10px;
+	padding: 2px 4px;
+	border-radius: 3px;
+	vertical-align: middle;
+	margin-right: 5px;
+}
+
+.rating-num-highlight {
+	color: #ff6a00;
+	font-weight: bold;
+}
+
+/* 2. 데이터 비어있을 시 경고 카드 */
+.no-data-box {
+	text-align: center;
+	padding: 50px;
+}
+
+.no-data-title {
+	color: #ccc;
+	font-size: 1.5rem;
+	font-weight: 500;
+}

@@ -38,4 +38,13 @@ public interface ProductMapper {
 
 	// 💡 10. 동적 트리를 구축하기 위한 테이블의 전체 태그-중분류 사전 추출 단자
 	List<HashMap<String, Object>> selectAllTagsWithMedium();
+	
+	// 🎯 [신규 추가] 선택된 태그 글자들로 마스터 테이블의 진짜 고유 ID 리스트를 추출하는 단자
+    List<Integer> selectTagIdsByNames(List<String> tagNames);
+
+    // 🎯 [신규 추가] 추출된 태그 ID들과 신규 상품 번호를 product_tag_map 테이블에 적재하는 단자
+    int insertProductTagMap(Map<String, Object> map);
+
+    // 🎯 [신규 추가] 상품 수정 시 기존에 맵 테이블에 연결되어 있던 구형 다리들을 끊어내는 단자
+    int deleteProductTagMap(Long productNo);
 }
