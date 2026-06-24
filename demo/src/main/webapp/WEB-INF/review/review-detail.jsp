@@ -91,7 +91,7 @@
         }
         
         .comment-section { margin-top: 50px; border-top: 2px solid #fff0f3; padding-top: 30px; }
-        .comment-count { color: #ff4d6d; font-weight: bold; }
+        .comment-count { color: #f4a096; font-weight: bold; }
         .comment-item { padding: 20px 10px; border-bottom: 1px solid #fff0f3; transition: 0.2s; }
         .comment-item:hover { background-color: #fffafb; }
         .comment-user { font-weight: 600; color: #444; }
@@ -99,19 +99,31 @@
         .comment-content { margin-top: 10px; font-size: 0.95rem; color: #555; line-height: 1.5; }
         
         .reply-item { margin-left: 40px; background-color: #fcfcfc; border-left: 3px solid #ffccd5; }
-        .reply-mark { color: #ff4d6d; font-weight: bold; margin-right: 5px; }
+        .reply-mark { color: #f4a096; font-weight: bold; margin-right: 5px; }
         
         .comment-input-box { background: #fff9fa; border: 1px solid #ffccd5; padding: 20px; border-radius: 15px; margin-top: 30px; }
         .comment-input-box textarea { border: 1px solid #ffccd5; border-radius: 10px; resize: none; }
-        .btn-comment { background-color: #ff4d6d; border: none; color: white; border-radius: 8px; font-weight: bold; }
-        .btn-comment:hover { background-color: #ff3355; }
+        .btn-comment {
+            background-color: #f4a096;
+            border: none;
+            border-radius: 30px;
+            font-weight: 700;
+            color: #fff;
+            padding: 8px 24px;
+            transition: all 0.2s;
+            box-shadow: 1px 1px 2px #ffb3c1;
+        }
+        .btn-comment:hover {
+            background-color: #e0354f;
+            color: #fff;
+        }
         
         .comment-action-btns { font-size: 0.75rem; color: #aaa; }
         .comment-action-btns span { cursor: pointer; margin-left: 10px; }
-        .comment-action-btns span:hover { color: #ff4d6d; text-decoration: underline; }
+        .comment-action-btns span:hover { color: #f4a096; text-decoration: underline; }
         
         .comment-like-btn { display: inline-flex; align-items: center; gap: 8px !important; cursor: pointer; margin-left: 15px; }
-        .like-active { color: #ff4d6d !important; font-weight: bold; }
+        .like-active { color: #f4a096  !important; font-weight: bold; }
 
         /* 신고 모달 스타일 */
         .modal-header { background-color: #ff4d6d; color: white; }
@@ -158,12 +170,12 @@
 
         /* 마우스를 올렸을 때(Hover) 배경색과 텍스트 이동 효과 */
         .post-navigation li:hover {
-            background-color: #fff9fa; /* 메인 테마색 연한 버전 */
+            background-color: #fff5f7;
         }
 
         .post-navigation li:hover .nav-title {
-            color: #ff4d7d; /* 강조색으로 변경 */
-            transform: translateX(5px); /* 오른쪽으로 살짝 이동 */
+            color: #f4a096;
+            transform: translateX(5px);
         }
 
         /* 라벨 디자인 (이전글/다음글 뱃지) */
@@ -196,7 +208,7 @@
         }
 
         .post-navigation li:hover .nav-arrow {
-            color: #ff4d7d;
+            color: #f4a096;
         }
 
         /* 글이 없을 때 스타일 */
@@ -246,55 +258,243 @@
             margin-bottom: 15px;
         }
         /* 전체 카드 컨테이너 */
-.info-card-container {
-    border: 1px dotted #ffc1cc !important; /* 핑크색 점선 테두리 느낌 */
-    background-color: #fff;
-    margin-bottom: 30px;
-}
+        .info-card-container {
+            background-color: #fff;
+            margin-bottom: 30px;
+            border: 1.5px solid #ffd6e0 !important;
+            border-radius: 20px;
+        }
 
-/* 왼쪽 정보 아이템 간격 줄이기 */
-.info-item {
-    font-size: 0.95rem;
-    color: #333;
-    display: flex;
-    align-items: center;
-}
+        /* 왼쪽 정보 아이템 간격 줄이기 */
+        .info-item {
+            font-size: 0.95rem;
+            color: #333;
+            display: flex;
+            align-items: center;
+        }
 
-/* 상세 평가 박스 내부 스타일 */
-.evaluation-card {
-    border: 1px solid #dee2e6 !important;
-    font-size: 0.85rem;
-}
+        /* 상세 평가 박스 내부 스타일 */
+        .evaluation-card {
+            flex: 1;
+            border: 1px solid #dee2e6 !important;
+            font-size: 0.85rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        .eval-label {
+            color: #666;
+        }
 
-.eval-label {
-    color: #666;
-}
+        .eval-val {
+            color: #333;
+        }
 
-.eval-val {
-    color: #333;
-}
+        .evaluation-box-wrapper {
+            flex: 0 0 300px;
+            max-width: 300px;
+            display: flex;
+            flex-direction: column;
+        }
 
-/* 반응형 처리: 화면이 작아지면 위아래로 배치 */
-@media (max-width: 768px) {
-    .info-card-container {
-        flex-direction: column;
-    }
-    .evaluation-box-wrapper {
-        width: 100%;
-        max-width: 100%;
-        margin-top: 20px;
-    }
-}
-.nickname-link {
-    text-decoration: none; /* 밑줄 제거 */
-    color: inherit;       /* 기존 글자색 유지 */
-    cursor: pointer;
-}
 
-.nickname-link:hover {
-    text-decoration: underline; /* 호버 시 밑줄 효과 */
-    color: #555;                /* 살짝 다른 색상으로 강조 */
-}
+        /* 반응형 처리: 화면이 작아지면 위아래로 배치 */
+        @media (max-width: 768px) {
+            .info-card-container { flex-direction: column; }
+            .evaluation-box-wrapper {
+                width: 100%;
+                max-width: 100%;
+                flex: 0 0 100%;
+                margin-top: 20px;
+            }
+        }
+        .nickname-link {
+            text-decoration: none; /* 밑줄 제거 */
+            color: inherit;       /* 기존 글자색 유지 */
+            cursor: pointer;
+        }
+
+        .nickname-link:hover {
+            text-decoration: underline; /* 호버 시 밑줄 효과 */
+            color: #555;                /* 살짝 다른 색상으로 강조 */
+        }
+
+        /* 목록으로 버튼 */
+        .btn-list {
+            background: #fff;
+            border: 1.5px solid #ffd6e0;
+            border-radius: 30px;
+            color: #f4a096;
+            font-weight: 600;
+            padding: 8px 24px;
+            transition: all 0.2s;
+        }
+        .btn-list:hover {
+            background: #fff0f3;
+            border-color: #f4a096;
+            color: #f4a096;
+        }
+
+        /* 좋아요 버튼 */
+        .btn-like {
+            background-color: #f4a096;
+            border: none;
+            border-radius: 30px;
+            color: #fff;
+            font-weight: 700;
+            padding: 8px 32px;
+            transition: all 0.2s;
+            box-shadow: 1px 1px 2px #ffb3c1;
+        }
+        .btn-like:hover { background-color: #e0354f; color: #fff; }
+
+        /* 좋아요 취소 상태 */
+        .btn-like-cancel {
+            background: #fff;
+            border: 1.5px solid #f4a096;
+            border-radius: 30px;
+            color: #f4a096;
+            font-weight: 700;
+            padding: 8px 32px;
+            transition: all 0.2s;
+        }
+        .btn-like-cancel:hover { background: #fff0f3; }
+
+        /* 제목 */
+        .review-title { font-weight: 700; color: #444; }
+
+        /* 작성자/날짜, 조회수/좋아요 구분자 */
+        .review-meta-divider { color: #ffd6e0; margin: 0 6px; }
+
+        /* 정보 카드 컨테이너 배경 */
+        .info-card-container { background-color: #fff; }
+
+        /* AI 요약 박스 */
+        .ai-summary-box {
+            background-color: #fff5f7;
+            border: 1.5px solid #ffd6e0 !important;
+            border-radius: 12px;
+        }
+        .info-left-section { 
+            flex: 1; 
+            min-width: 0;  /* 추가 - 텍스트 overflow 방지 */
+        }
+
+        /* AI 요약 제목 색상 */
+        .ai-summary-title { color: #f4a096; }
+
+        /* AI 요약 본문 */
+        .ai-summary-content { line-height: 1.6; white-space: pre-line; }
+
+        /* 서비스 상세 평가 라벨 */
+        .evaluation-header-label { font-size: 0.9rem; color: #495057; }
+
+        /* 섹션 헤더 아이콘 핑크로 */
+        .evaluation-header .fa-check-circle { color: #f4a096; }
+
+        /* 평가 카드 배경 */
+        .evaluation-card-bg { background-color: #fcfcfc; }
+
+        /* 관리자 삭제/삭제된 댓글 텍스트 크기 */
+        .comment-del-text { font-size: 0.9em; }
+
+        /* 글 없을 때 nav-arrow 색상 */
+        .nav-arrow-none { color: #eee; }
+
+        /* 좋아요 버튼 탈퇴회원 비활성화 */
+        .btn-disabled { cursor: default; opacity: 0.5; }
+
+        /* 업체 정보 박스 */
+        .info-left-box {
+            background-color: #fcfcfc;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            padding: 12px 16px;
+            font-size: 0.85rem;
+        } 
+
+        /* 섹션 헤더 통일 */
+        .section-header-label {
+            font-size: 0.9rem;
+            color: #495057;
+            font-weight: 700;
+        }
+
+        .info-left-box .info-item b {
+            color: #333;
+            font-weight: 600;
+        }
+
+        .info-left-box .info-item i {
+            font-size: 0.85rem;
+            width: 16px;
+        }
+
+        .info-left-box .info-item {
+            font-size: 0.85rem;
+            color: #666;
+        }
+
+        .info-top-row {
+            gap: 12px;
+            align-items: stretch; /* 추가 - 양쪽 높이 동일하게 */
+        }
+
+        /* 유료/무료 뱃지 - 핑크 계열로 통일 */
+        .badge-paid-detail {
+            background: #fff0f3;
+            color: #f4a096;
+            border: 1.5px solid #ffd6e0;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-weight: 700;
+            font-size: 0.8rem;
+        }
+        .badge-free-detail {
+            background: #e7f5ff;
+            color: #4fc3f7;
+            border: 1.5px solid #a5d8ff;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-weight: 700;
+            font-size: 0.8rem;
+        }
+
+        .icon-pink { color: #f4a096; }
+
+        .btn-cancel {
+            background: #fff;
+            border: 1.5px solid #ffd6e0;
+            border-radius: 20px;
+            color: #f4a096;
+            font-weight: 600;
+            padding: 4px 16px;
+            transition: all 0.2s;
+        }
+        .btn-cancel:hover {
+            background: #fff0f3;
+            border-color: #f4a096;
+        }
+
+        .btn-summary-toggle {
+            color: #f4a096;
+            font-weight: 600;
+            font-size: 0.85rem;
+            background: none;
+            border: none;
+            padding: 0;
+        }
+
+        .btn-summary-toggle:hover {
+            color: #e0354f;
+        }
+
+        .comment-heart { color: #ffd6e0; }
+        .comment-heart.liked { color: #f4a096; }
+        .comment-like-btn small {color: #ffd6e0;}
+        .comment-like-btn small.like-active {color: #f4a096;}
+        .review-meta-right { gap: 10px; }
+
     </style>
 </head>
 <body>
@@ -305,112 +505,128 @@
         <div class="detail-container" v-if="info">
             <div class="border-bottom pb-3 mb-4">
                 <div class="d-flex justify-content-between align-items-start">
-                    <span :class="info.isPaid == 1 ? 'badge badge-danger' : 'badge badge-primary'">
+                    <span :class="info.isPaid == 1 ? 'badge-paid-detail' : 'badge-free-detail'">
                         {{ info.isPaid == 1 ? '유료리뷰' : '무료리뷰' }}
                     </span>
                     
                     <div v-if="info.userId !== sessionId && info.nickname !== '탈퇴회원'">
                         <button class="btn btn-sm btn-outline-secondary border-0" @click="openReportModal('REVIEW', reviewNo, info.userId)">
-                            <i class="fas fa-bullhorn text-danger mr-1"></i> <span class="small text-muted">신고</span>
+                            <i class="fas fa-bullhorn icon-pink mr-1"></i> <span class="small text-muted">신고</span>
                         </button>
                     </div>
                 </div>
-                <h2 class="mt-3" style="font-weight: 700; color: #222;">{{ info.title }}</h2>
+                <h2 class="mt-3 review-title">{{ info.title }}</h2>
                 <div class="d-flex justify-content-between align-items-center flex-wrap">
                     <small class="text-muted">
-                        작성자: 
-                        <a 
-                            v-if="info.nickname !== '탈퇴회원'"
+                        작성자:
+                        <a v-if="info.nickname !== '탈퇴회원'"
                             :href="'/userProfile.do?userId=' + info.userId" class="text-decoration-none text-dark">
                             <b :class="{'text-danger': info.nickname === '탈퇴회원'}">{{ info.nickname }}</b>
-                        </a> 
+                        </a>
                         <b v-else class="text-danger">{{ info.nickname }}</b>
-                        | {{ info.regDate }}
+                        <span class="review-meta-divider">|</span> {{ info.regDate }}
                     </small>
-                    <small class="text-muted"><i class="far fa-eye"></i> {{ info.viewCnt }} | <i class="far fa-heart text-danger"></i> {{ info.likeCnt }}</small>
+                    <small class="text-muted">
+                        <small class="text-muted d-flex align-items-center review-meta-right">
+                            <span><i class="far fa-eye"></i> {{ info.viewCnt }}</span>
+                            <span><i class="far fa-heart icon-pink"></i> {{ info.likeCnt }}</span>
+                        </small>
+                    </small>
                 </div>
             </div>
 
-            <div class="info-card-container d-flex justify-content-between align-items-start p-4 border rounded shadow-sm" style="background-color: #fff;">
-                <div class="info-left-section" style="flex: 1;">
-                    <div class="info-item mb-2">
-                        <i class="fas fa-store mr-2 text-danger"></i> 
-                        <b>업체 : </b>  {{info.comName || info.externalName}}
-                    </div>
-                    <div class="info-item mb-2" v-if="info.productName">
-                        <i class="fas fa-box-open mr-2 text-danger"></i> 
-                        <b>이용 상품 : </b> <span class="text-primary font-weight-bold">{{ info.productName }}</span>
-                    </div>
-                    <div class="info-item mb-2">
-                        <i class="fas fa-won-sign mr-2 text-danger"></i> 
-                        <b>비용 : </b> {{ Number(info.totalCost || 0).toLocaleString() }}원
-                    </div>
-                    <div class="info-item mb-2">
-                        <i class="fas fa-star mr-2 text-warning"></i> 
-                        <b>작성자 평점 : </b> {{ info.rating }} / 5
+            <div class="info-card-container p-4">
+                <div class="d-flex justify-content-between mb-3 info-top-row">
+
+                    <!-- 업체 정보 -->
+                    <div class="info-left-section">
+                        <div class="evaluation-header mb-2">
+                            <i class="fas fa-check-circle text-secondary"></i>
+                            <span class="ml-1 section-header-label">업체 정보</span>
+                        </div>
+                        <div class="info-left-box">
+                            <div class="row no-gutters">
+                                <div class="col-6 mb-2">
+                                    <span class="eval-label"><i class="fas fa-store mr-1 icon-pink"></i> 업체 :</span>
+                                    <span class="eval-val font-weight-bold ml-1">{{info.comName || info.externalName}}</span>
+                                </div>
+                                <div class="col-6 mb-2" v-if="info.productName">
+                                    <span class="eval-label"><i class="fas fa-box-open mr-1 icon-pink"></i> 이용 상품 :</span>
+                                    <span class="text-primary font-weight-bold ml-1">{{ info.productName }}</span>
+                                </div>
+                                <div class="col-6 mb-2">
+                                    <span class="eval-label"><i class="fas fa-won-sign mr-1 icon-pink"></i> 비용 :</span>
+                                    <span class="eval-val font-weight-bold ml-1">{{ Number(info.totalCost || 0).toLocaleString() }}원</span>
+                                </div>
+                                <div class="col-6 mb-2">
+                                    <span class="eval-label"><i class="fas fa-star mr-1 text-warning"></i> 작성자 평점 :</span>
+                                    <span class="eval-val font-weight-bold ml-1">{{ info.rating }} / 5</span>
+                                </div>
+                                <div class="col-6" v-if="info.avgCompanyRating > 0">
+                                    <span class="eval-label"><i class="fas fa-star mr-1 text-primary"></i> 업체 평균 평점 :</span>
+                                    <span class="font-weight-bold text-primary ml-1">{{ parseFloat(info.avgCompanyRating).toFixed(1) }} / 5</span>
+                                </div>
+                                <div class="col-6">
+                                    <span class="eval-label"><i class="fas fa-link mr-1 icon-pink"></i> 경로 :</span>
+                                    <span class="eval-val font-weight-bold ml-1">{{ info.bookingSource }}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div> 
+
+                    <!-- 서비스 상세 평가 -->
+                    <div class="evaluation-box-wrapper">
+                        <div class="evaluation-header mb-2">
+                            <i class="fas fa-check-circle text-secondary"></i>
+                            <span class="ml-1 section-header-label">서비스 상세 평가</span>
+                        </div>
+                        <div class="evaluation-card p-3 border rounded evaluation-card-bg">
+                            <div class="row no-gutters">
+                                <div class="col-6 mb-2">
+                                    <span class="eval-label"><i class="fas fa-tshirt mr-1"></i> 상품 상태 :</span>
+                                    <span class="eval-val font-weight-bold ml-1">{{ info.dressCondition }}</span>
+                                </div>
+                                <div class="col-6 mb-2">
+                                    <span class="eval-label"><i class="fas fa-user-tie mr-1"></i> 전문성 :</span>
+                                    <span class="eval-val font-weight-bold ml-1">{{ info.professionalism }}</span>
+                                </div>
+                                <div class="col-6">
+                                    <span class="eval-label"><i class="fas fa-hourglass-half mr-1"></i> 대기 시간 :</span>
+                                    <span class="eval-val font-weight-bold ml-1" :class="info.waitingTimeStatus === 'Y' ? 'text-danger' : ''">
+                                        {{ info.waitingTimeStatus === 'Y' ? info.waitingDuration : '없음' }}
+                                    </span>
+                                </div>
+                                <div class="col-6">
+                                    <span class="eval-label"><i class="fas fa-money-bill-wave mr-1"></i> 추가금 강요 :</span>
+                                    <span class="eval-val font-weight-bold ml-1" :class="info.extraChargeForce === 'Y' ? 'text-danger' : ''">
+                                        {{ info.extraChargeForce === 'Y' ? '있음' : '없음' }}
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
                     </div>
 
-                    <div class="info-item mb-2" v-if="info.avgCompanyRating > 0">
-                        <i class="fas fa-star mr-2 text-primary"></i> 
-                        <b>업체 평균 평점 : </b> 
-                        <span class="font-weight-bold text-primary">
-                            {{ parseFloat(info.avgCompanyRating).toFixed(1) }} / 5
-                        </span>
-                        <small class="text-muted">(전체 {{ info.totalCount }}개 리뷰 기준)</small>
-                    </div>
-                    <div class="info-item">
-                        <i class="fas fa-link mr-2 text-danger"></i> 
-                        <b>경로 : </b> {{ info.bookingSource }}
-                    </div>
                 </div>
 
-                <div class="evaluation-box-wrapper" style="flex: 1; max-width: 400px;">
-                    <div id="ai-summary-box" class="my-4 p-4 border rounded shadow-sm" style="background-color: #f8f9fa;" v-if="aiSummary">
-                        <div class="d-flex justify-content-between align-items-center mb-2">
-                            <div class="font-weight-bold" style="color: #4a90e2;">
-                                <i class="fas fa-magic mr-1"></i> ✨ AI 요약
-                            </div>
-                            <button class="btn btn-sm btn-light border-0" @click="isSummaryOpen = !isSummaryOpen">
-                                {{ isSummaryOpen ? '접기 ▲' : '펼치기 ▼' }}
-                            </button>
+                <!-- 하단: AI 요약 전체 너비 -->
+                <div id="ai-summary-box" class="p-4 border rounded shadow-sm ai-summary-box" v-if="aiSummary">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <div class="font-weight-bold ai-summary-title">
+                            <i class="fas fa-magic mr-1"></i> ✨ AI 요약
                         </div>
-                        <div v-show="isSummaryOpen" class="mt-2 text-muted" style="line-height: 1.6; white-space: pre-line;">
-                            {{ aiSummary }}
-                        </div>
+                        <button class="btn-summary-toggle" @click="isSummaryOpen = !isSummaryOpen">
+                            {{ isSummaryOpen ? '접기 ▲' : '펼치기 ▼' }}
+                        </button>
                     </div>
-                    <div id="ai-loading-box" class="my-4 p-4 border rounded shadow-sm text-center" style="background-color: #f8f9fa;" v-else-if="!aiSummary && !errorOccurred">
-                        <div class="spinner-border spinner-border-sm text-primary mr-2" role="status"></div>
-                        <span>AI가 리뷰를 요약하고 있습니다...</span>
-                    </div>
-                    <div class="evaluation-header mb-2">
-                        <i class="fas fa-check-circle text-secondary"></i> 
-                        <span class="font-weight-bold ml-1" style="font-size: 0.9rem; color: #495057;">서비스 상세 평가</span>
-                    </div>
-                    <div class="evaluation-card p-3 border rounded" style="background-color: #fcfcfc;">
-                        <div class="row no-gutters">
-                            <div class="col-6 mb-2">
-                                <span class="eval-label">👗 상품 상태 :</span> 
-                                <span class="eval-val font-weight-bold ml-1">{{ info.dressCondition }}</span>
-                            </div>
-                            <div class="col-6 mb-2">
-                                <span class="eval-label">👨‍🏫 전문성 :</span> 
-                                <span class="eval-val font-weight-bold ml-1">{{ info.professionalism }}</span>
-                            </div>
-                            <div class="col-6">
-                                <span class="eval-label">⏳ 대기 시간 :</span> 
-                                <span class="eval-val font-weight-bold ml-1" :class="info.waitingTimeStatus === 'Y' ? 'text-danger' : '분'">
-                                    {{ info.waitingTimeStatus === 'Y' ? info.waitingDuration : '없음' }}
-                                </span>
-                            </div>
-                            <div class="col-6">
-                                <span class="eval-label">💸 추가금 강요 :</span> 
-                                <span class="eval-val font-weight-bold ml-1" :class="info.extraChargeForce === 'Y' ? 'text-danger' : ''">
-                                    {{ info.extraChargeForce === 'Y' ? '있음' : '없음' }}
-                                </span>
-                            </div>
-                        </div>
+                    <div v-show="isSummaryOpen" class="mt-2 text-muted ai-summary-content">
+                        {{ aiSummary }}
                     </div>
                 </div>
+                <div id="ai-loading-box" class="p-4 border rounded shadow-sm text-center ai-summary-box" v-else-if="!aiSummary && !errorOccurred">
+                    <div class="spinner-border spinner-border-sm text-primary mr-2" role="status"></div>
+                    <span>AI가 리뷰를 요약하고 있습니다...</span>
+                </div>
+
             </div>
             
 
@@ -455,11 +671,13 @@
 
             <div class="review-content" v-html="info.content"></div>
 
-            <div class="text-center border-bottom pb-5">
-                <button class="btn btn-light border mr-2 px-4" @click="fnBack">목록으로</button>
-                
-                <button :class="info.isLiked > 0 ? 'btn-danger' : 'btn-outline-danger'" 
-                        class="btn px-5 shadow-sm" 
+            <div class="text-center">
+                <button class="btn btn-list mr-2 px-4" @click="fnBack">
+                    <i class="fas fa-list mr-1"></i>목록으로
+                </button>
+        
+                <button :class="info.isLiked > 0 ? 'btn-like-cancel' : 'btn-like'"
+                        class="btn px-5 shadow-sm"
                         @click="info.nickname !== '탈퇴회원' ? fnLike() : null"
                         :style="info.nickname === '탈퇴회원' ? 'cursor: default; opacity: 0.5;' : ''">
                     <i class="fas fa-heart mr-1"></i> {{ info.isLiked > 0 ? '좋아요 취소' : '좋아요' }} {{ info.likeCnt }}
@@ -483,17 +701,17 @@
                                         
                                         <span v-else class="text-danger">{{ item.nickname }}</span>
                                     </template>
-                                    
+                                    <!-- 관리자 삭제 댓글 -->
                                     <template v-else>
-                                        <b v-if="item.delRole === 'ADMIN'" class="text-danger" style="font-size: 0.9em;">[관리자 삭제]</b>
-                                        <b v-else class="text-muted" style="font-size: 0.9em;">[삭제된 댓글]</b>
+                                        <b v-if="item.delRole === 'ADMIN'" class="text-danger comment-del-text">[관리자 삭제]</b>
+                                        <b v-else class="text-muted comment-del-text">[삭제된 댓글]</b>
                                     </template>
                                 </span>
                                 <span class="comment-date">{{ item.regDate }}</span>
                                 
                                 <span v-if="item.isDeleted == 0 && item.nickname !== '탈퇴회원' && info.nickname !== '탈퇴회원'" 
                                     class="comment-like-btn ml-3" @click="fnCommentLike(item)">
-                                    <i :class="item.isLiked > 0 ? 'fas fa-heart text-danger' : 'far fa-heart text-muted'"></i>
+                                    <i :class="item.isLiked > 0 ? 'fas fa-heart icon-pink' : 'far fa-heart comment-heart'"></i>
                                     <small :class="{'like-active': item.isLiked > 0}">{{ item.likeCnt }}</small>
                                 </span>
                             </div>
@@ -506,7 +724,7 @@
 
                                     <span v-if="item.userId !== sessionId && sessionRole !== 'ADMIN'" 
                                         @click="openReportModal('COMMENT', item.commentNo, item.userId)" 
-                                        class="report-link text-danger">
+                                        class="report-link icon-pink">
                                         <i class="fas fa-exclamation-triangle"></i> 신고
                                     </span>
                                 </template>
@@ -534,7 +752,7 @@
                             <div v-else class="mt-2">
                                 <textarea class="form-control edit-textarea" v-model="item.content" rows="2"></textarea>
                                 <div class="text-right mt-2">
-                                    <button class="btn btn-sm btn-light border mr-1" @click="fnCancelEdit(item)">취소</button>
+                                    <button class="btn btn-sm btn-cancel mr-1" @click="fnCancelEdit(item)">취소</button>
                                     <button class="btn btn-sm btn-comment" @click="fnUpdateComment(item)">수정완료</button>
                                 </div>
                             </div>
@@ -577,24 +795,24 @@
                 <!-- 다음글 (위쪽) -->
                 <li v-if="reviewDetail && reviewDetail.nextNo" @click="fnGoDetail(reviewDetail.nextNo)">
                     <span class="nav-label">Next</span>
-                    <span class="nav-arrow">▲</span>
+                    <span class="nav-arrow nav-arrow-none">▲</span>
                     <span class="nav-title">{{ reviewDetail.nextTitle }}</span>
                 </li>
                 <li v-else class="nav-none">
                     <span class="nav-label">Next</span>
-                    <span class="nav-arrow" style="color:#eee">▲</span>
+                    <span class="nav-arrow nav-arrow-none">▲</span>
                     <span class="nav-title">다음 글이 없습니다.</span>
                 </li>
 
                 <!-- 이전글 (아래쪽) -->
                 <li v-if="reviewDetail && reviewDetail.prevNo" @click="fnGoDetail(reviewDetail.prevNo)">
                     <span class="nav-label">Prev</span>
-                    <span class="nav-arrow">▼</span>
+                    <span class="nav-arrow nav-arrow-none">▼</span>
                     <span class="nav-title">{{ reviewDetail.prevTitle }}</span>
                 </li>
                 <li v-else class="nav-none">
                     <span class="nav-label">Prev</span>
-                    <span class="nav-arrow" style="color:#eee">▼</span>
+                    <span class="nav-arrow nav-arrow-none">▼</span>
                     <span class="nav-title">이전 글이 없습니다.</span>
                 </li>
             </ul>
@@ -606,7 +824,9 @@
             <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title">🚨 신고하기</h5>
+                        <h5 class="modal-title">
+                            <i class="fas fa-exclamation-circle mr-1"></i> 신고하기
+                        </h5>
                         <button type="button" class="close text-white" data-dismiss="modal"><span>&times;</span></button>
                     </div>
                     <div class="modal-body">
@@ -676,6 +896,7 @@
                     ],
                     aiSummary: "",       // 요약 데이터 저장용
                     isSummaryOpen: true, // 접기/펴기 상태
+                    errorOccurred: false,
                    
                 };
             },
@@ -763,6 +984,7 @@
                             console.error("AI 요약 실패:", e);
                             // 에러 시 사용자에게 알려줄 메시지
                             this.aiSummary = "요약 정보를 불러오지 못했습니다.";
+                            this.errorOccurred = true;  // ← 추가
                         }
                     });
                 },

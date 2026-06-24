@@ -861,5 +861,56 @@
         )
 	</insert>
 	
+	<!-- 챗봇 추천 기능 -->
+	<select id="getTopReviewedProducts" resultType="hashmap">
+	    SELECT p.product_no, p.product_name, p.large_category, 
+	           p.medium_category, p.original_price, COUNT(r.review_no) AS review_cnt
+	    FROM product p
+	    JOIN review r ON p.product_no = r.product_no
+	    WHERE p.is_active = 1
+	    AND r.approval_status = 'APPROVED'
+	    GROUP BY p.product_no, p.product_name, p.large_category, p.medium_category, p.original_price
+	    ORDER BY review_cnt DESC
+	    LIMIT 5
+	</select>
+	<!-- 상품 평균 비용 -->
+	<select id="getAverageProductPrice" resultType="hashmap">
+	    SELECT 
+	        large_category,
+	        medium_category,
+	        ROUND(AVG(original_price)) AS avg_price,
+	        COUNT(*) AS product_cnt
+	    FROM product
+	    WHERE is_active = 1
+	    GROUP BY large_category, medium_category
+	    ORDER BY large_category, medium_category
+	</select>
+	<!-- 가장 저렴한 상품 -->
+	<select id="getCheapestProducts" resultType="hashmap" parameterType="String">
+	    SELECT p.product_name, p.large_category, p.medium_category, p.original_price
+	    FROM product p
+	    WHERE p.is_active = 1
+	    <if test="category != null and category != ''">
+	        AND (p.large_category LIKE CONCAT('%', #{category}, '%') 
+	          OR p.medium_category LIKE CONCAT('%', #{category}, '%'))
+	    </if>
+	    ORDER BY p.original_price ASC
+	    LIMIT 5
+	</select>
+	<!-- 리뷰 갯수와 카테고리 조회 -->
+	<select id="getMostReviewedProductsByCategory" resultType="hashmap" parameterType="String">
+	    SELECT p.product_name, p.large_category, p.medium_category, 
+	           COUNT(r.review_no) AS review_cnt
+	    FROM product p
+	    LEFT JOIN review r ON p.product_no = r.product_no
+	    WHERE p.is_active = 1
+	    <if test="category != null and category != ''">
+	        AND (p.large_category LIKE CONCAT('%', #{category}, '%') 
+	          OR p.medium_category LIKE CONCAT('%', #{category}, '%'))
+	    </if>
+	    GROUP BY p.product_no, p.product_name, p.large_category, p.medium_category
+	    ORDER BY review_cnt DESC
+	    LIMIT 5
+	</select>
 	
 </mapper>

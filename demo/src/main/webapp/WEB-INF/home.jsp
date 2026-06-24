@@ -9,6 +9,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">  <!-- ✅ 6.5.1만 유지 -->
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/common.css">
     <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/css/home-style.css">
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <link rel="shortcut icon" href="/images/marryviewlogo_v2.png">
     <link rel="apple-touch-icon" href="/images/marryviewlogo_v2.png">
     <link rel="manifest" href="/manifest.json">
@@ -173,13 +174,31 @@
                     </h3>
                 </div>
                 <div class="chat-messages" id="chatMessages">
-                    <div v-for="(msg, index) in messages" :key="index" :class="['message', msg.type]">
-                        <div class="message-content">{{ msg.text }}</div>
-                    </div>
+                    <!-- 퀵버튼 질문 -->
                     <div class="quick-questions">
                         <button v-for="q in quickQuestions" :key="q.label" @click="askQuickQuestion(q.text)" class="q-btn">
-                            {{ q.label }}
+                        {{ q.label }}
                         </button>
+                    </div>
+                    <div class="message bot" v-if="messages.length === 0">
+                        <div class="message-content">안녕하세요! 메리뷰 AI 가이드입니다. 궁금한 점을 입력해주세요!</div>
+                    </div>
+                    <div v-for="(msg, index) in messages" :key="index" :class="['message', msg.type]">
+                        <div class="message-content" v-if="msg.type === 'bot'" v-html="renderMarkdown(msg.text)"></div>
+                        <div class="message-content" v-else>{{ msg.text }}</div>
+                        <a v-if="msg.link" :href="msg.link.url" class="chat-link-btn">
+                            {{ msg.link.text }}
+                        </a>
+                    </div>
+                    <!-- ✅ 로딩 말풍선 맨 아래로 -->
+                    <div v-if="isLoading" class="message bot">
+                        <div class="message-content">
+                            <div class="typing-indicator">
+                                <span></span>
+                                <span></span>
+                                <span></span>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <div class="chat-input-area">
@@ -201,13 +220,13 @@
                     postList: [],
                     isChatOpen: false, 
                     userInput: "",
-                    messages: [{ type: 'bot', text: '안녕하세요! 메리뷰 AI 가이드입니다. 무엇을 도와드릴까요?' }],
+                    messages: [],
                     isLoading: false,
                     quickQuestions: [
                         { label: '서비스 소개', text: '메리뷰는 어떤 서비스인가요?' },
-                        { label: '웨딩홀 추천', text: '인기 있는 웨딩홀 추천해줘' },
+                        { label: '인기 상품 추천', text: '메리뷰 인기 상품 추천해줘' },
                         { label: '리뷰 작성법', text: '리뷰 작성은 어떻게 하나요?' },
-                        { label: '이벤트 혜택', text: '베스트 리뷰 혜택이 뭐야?' },
+                        { label: '쿠폰 사용법', text: '쿠폰 적용은 어떻게 하나요?' },
                         { label: '준비 순서', text: '결혼 준비 순서 알려줘' }
                     ],
                     isEventOpen: false,
@@ -298,14 +317,24 @@
                     let reply = this.checkFixedReply(userMsg);
                     if (reply) {
                         setTimeout(() => {
-                            this.messages.push({ type: 'bot', text: reply });
+                            this.messages.push({ 
+                                type: 'bot',
+                                text: reply.text,
+                                link: reply.link
+                            });
                             this.isLoading = false;
                             this.scrollToBottom();
                         }, 500);
                     } else {
                         try {
                             const response = await axios.post('/ask', { prompt: userMsg });
-                            this.messages.push({ type: 'bot', text: response.data.answer });
+                            const answer = response.data.answer;
+                            const hasLink = userMsg.includes('메리뷰 인기 상품') || userMsg.includes('상품 추천') || userMsg.includes('인기 상품');
+                            this.messages.push({ 
+                                type: 'bot', 
+                                text: answer,
+                                link: hasLink ? { text: '→ 상품 찾기 페이지로 바로가기', url: '/productCategoryTag.do' } : null
+                            });
                         } catch (error) {
                             this.messages.push({ type: 'bot', text: '죄송합니다. AI 연결에 실패했어요. 😢' });
                         } finally {
@@ -317,11 +346,10 @@
                 checkFixedReply(question) {
                     const q = question.trim();
                     const replies = {
-                        '메리뷰는 어떤 서비스인가요?': "🌸 메리뷰는 신랑, 신부님들의 리얼한 웨딩 후기를 공유하는 플랫폼입니다!",
-                        '인기 있는 웨딩홀 추천해줘': "현재 가장 인기 있는 곳은 '강남 메리웨딩홀'과 '잠실 루프탑 가든'입니다!",
-                        '리뷰 작성은 어떻게 하나요?': "마이페이지 > '리뷰 쓰기' 버튼을 눌러주세요! 사진 3장 이상 첨부 시 혜택이 커집니다.",
-                        '베스트 리뷰 혜택이 뭐야?': "매달 5분을 선정하여 스타벅스 기프티콘과 파트너사 할인권을 드립니다!",
-                        '결혼 준비 순서 알려줘': "상견례 > 홀 투어 > 스드메 예약 > 신혼여행 순을 추천드려요! 👰🤵"
+                        '메리뷰는 어떤 서비스인가요?': { text: "🌸 메리뷰는 신랑, 신부님들의 리얼한 웨딩 후기를 공유하는 플랫폼입니다!", link: { text: '→ 회사 소개 바로가기', url: '/about.do' } },
+                        '리뷰 작성은 어떻게 하나요?': { text: "[리얼 리뷰] > '리뷰 작성' 버튼을 눌러주세요! 사진 3장 이상 첨부 시 혜택이 커집니다.", link: { text: '→ 리뷰 작성 바로가기', url: '/api/review/list.do' } },
+                        '쿠폰 적용은 어떻게 하나요?': { text: "[마이페이지] > '쿠폰' 에서 쿠폰 번호를 입력하세요. 패스권 결제 시 적용 가능합니다.", link: { text: '→ 쿠폰함 바로가기', url: '/myCouponPage.do' } },
+                        '결혼 준비 순서 알려줘': { text: "상견례 > 홀 투어 > 스드메 예약 > 신혼여행 순을 추천드려요! 커뮤니티에서 더 많은 정보를 얻어보세요. 👰🤵", link: { text: '→ 커뮤니티 바로가기', url: '/api/community/list.do' } }
                     };
                     return replies[q] || null;
                 },
@@ -335,6 +363,9 @@
                     this.slideInterval = setInterval(() => {
                         this.currentSlide = (this.currentSlide + 1) % this.slides.length;
                     }, 4000);
+                },
+                renderMarkdown(text) {
+                    return marked.parse(text);
                 },
             },
             mounted() {

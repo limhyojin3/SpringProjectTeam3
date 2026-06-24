@@ -25,10 +25,4 @@ public class GeminiController {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
-    public class PageController {
-        @GetMapping("/chat-bot")
-        public String goChatPage() {
-            return "/common/chat-bot"; // geminiChat.jsp를 찾아서 열어줌
-        }
-    }
 }
