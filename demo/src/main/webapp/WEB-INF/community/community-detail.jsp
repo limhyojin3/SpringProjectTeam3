@@ -9,119 +9,386 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     
     <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/common.css">
 
     <style>
-        :root { 
-            --primary-color: #ff4d6d; 
-            --secondary-color: #ff85a1;
-            --bg-soft: #fffafa;
-            --dark-text: #2d2d2d;
-            --light-gray: #f8f9fa;
-        }
+:root{
+    --primary-color:#ff4d6d;
+    --secondary-color:#ff85a1;
+    --bg-soft:#fffafa;
+    --dark-text:#2d2d2d;
+    --light-gray:#f8f9fa;
+}
 
-        body { background-color: var(--bg-soft); font-family: 'Pretendard', sans-serif; }
+body{
+    background: linear-gradient(
+        180deg,
+        #fff5f7 0%,
+        #ffffff 300px,
+        #ffffff 100%
+    );
+    overflow-x:hidden;
+    position:relative;
+}
 
-        .main-content { padding: 60px 20px; max-width: 1000px; margin: 0 auto; min-height: 1000px; }
-        
-        /* 게시글 카드 레이아웃 */
-        .post-card { 
-            background: #fff; padding: 50px; border-radius: 30px; 
-            box-shadow: 0 10px 40px rgba(255, 77, 109, 0.05);
-            border: 1px solid rgba(255, 77, 109, 0.1);
-        }
+.main-content{
+    padding:80px 20px;
+    max-width:1000px;
+    margin:0 auto;
+    min-height:1000px;
+}
 
-        /* 헤더 섹션 */
-        .post-header { border-bottom: 1px solid #f0f0f0; padding-bottom: 30px; margin-bottom: 40px; }
-        .category-tag { 
-            display: inline-block; padding: 6px 18px; background: #fff0f3; 
-            color: var(--primary-color); border-radius: 50px; font-weight: 700; 
-            font-size: 14px; margin-bottom: 20px; 
-        }
-        .post-title { font-size: 38px; color: var(--dark-text); font-weight: 800; margin-bottom: 20px; letter-spacing: -1.5px; }
-        .post-info { display: flex; align-items: center; gap: 15px; color: #999; font-size: 15px; }
-        .author-name { color: #444; font-weight: 700; }
+.post-card{
+    background:#fff;
+    padding:60px;
+    border-radius:35px;
+    border:1px solid #ffe4ec;
+    box-shadow:0 20px 50px rgba(255,77,109,.08);
+}
 
-        /* 본문 내용 */
-        .post-content { 
-            padding: 20px 0 60px; line-height: 1.8; min-height: 350px; 
-            font-size: 18px; color: #444; 
-        }
-        .post-content img { max-width: 100%; height: auto; border-radius: 20px; margin: 25px 0; box-shadow: 0 5px 15px rgba(0,0,0,0.05); }
+.post-header{
+    border-bottom:1px solid #f3f3f3;
+    padding-bottom:35px;
+    margin-bottom:45px;
+}
 
-        /* 하단 반응 및 버튼 영역 */
-        .bottom-area { 
-            display: flex; justify-content: space-between; align-items: center;
-            padding-top: 30px; border-top: 1px solid #f0f0f0; 
-        }
-        
-        .btn-like { 
-            background: #fff; color: var(--primary-color); border: 2px solid #fff0f3; 
-            padding: 12px 28px; border-radius: 50px; font-weight: 700; transition: 0.3s;
-            box-shadow: 0 4px 10px rgba(255, 77, 109, 0.1);
-        }
-        .btn-like:hover { transform: scale(1.05); background: #fff0f3; }
+.category-tag{
+    display:inline-block;
+    padding:8px 18px;
+    background:linear-gradient(135deg,#ffe4ec,#fff0f3);
+    color:#ff4d6d;
+    border-radius:999px;
+    font-size:14px;
+    font-weight:800;
+    margin-bottom:20px;
+}
 
-        .right-btns button { padding: 12px 25px; border-radius: 14px; font-weight: 700; border: none; transition: 0.2s; margin-left: 8px; }
-        .btn-list { background: var(--light-gray); color: #777; }
-        .btn-edit { background: #333; color: #fff; }
-        .btn-delete { background: #ffb3c1; color: #fff; }
+.post-title{
+    font-size:42px;
+    font-weight:900;
+    line-height:1.3;
+    margin-bottom:20px;
+    background:linear-gradient(135deg,#ff4d6d,#ff85a1);
+    -webkit-background-clip:text;
+    -webkit-text-fill-color:transparent;
+}
 
-        /* 댓글 섹션 */
-        .comment-section { margin-top: 60px; padding-bottom: 100px; }
-        .comment-title { font-weight: 800; font-size: 22px; margin-bottom: 25px; color: var(--dark-text); }
-        .comment-title b { color: var(--primary-color); }
+.post-info{
+    display:flex;
+    align-items:center;
+    gap:15px;
+    color:#999;
+    font-size:15px;
+}
 
-        /* 댓글 쓰기 상자 */
-        .comment-write-box { 
-            background: #fff; padding: 25px; border-radius: 20px; 
-            border: 1px solid #f0f0f0; box-shadow: 0 5px 15px rgba(0,0,0,0.02);
-        }
-        .comment-write-box textarea { 
-            border: none; background: #fafafa; border-radius: 15px; 
-            padding: 15px; font-size: 15px; transition: 0.3s;
-        }
-        .comment-write-box textarea:focus { background: #fff; box-shadow: 0 0 0 2px var(--primary-color); outline: none; }
-        .btn-primary-sm { background: var(--primary-color); color: white; padding: 10px 25px; border-radius: 12px; border: none; font-weight: 700; }
+.author-name{
+    color:#ff4d6d;
+    font-weight:800;
+}
 
-        /* 댓글 아이템 */
-        .comment-item { padding: 25px 0; border-bottom: 1px solid #f5f5f5; transition: 0.3s; }
-        .is-reply { 
-            margin-left: 50px; background-color: #fff9fa; padding: 20px 25px; 
-            border-radius: 20px; border-bottom: none; margin-top: 10px; 
-            position: relative;
-        }
-        .is-reply::before { content: '↳'; position: absolute; left: -25px; top: 20px; color: #ccc; font-size: 20px; }
+.post-content{
+    padding:40px 0 70px;
+    min-height:350px;
+    font-size:18px;
+    line-height:2;
+    color:#444;
+}
 
-        .comment-header { display: flex; justify-content: space-between; margin-bottom: 10px; font-size: 15px; }
-        .comment-body { color: #555; line-height: 1.6; font-size: 16px; }
-        .comment-footer { display: flex; align-items: center; gap: 15px; margin-top: 12px; }
-        
-        .comment-like-btn { cursor: pointer; color: #999; font-size: 14px; display: flex; align-items: center; gap: 5px; }
-        .action-link { font-size: 13px; color: #bbb; cursor: pointer; font-weight: 600; }
-        .action-link:hover { color: var(--primary-color); }
+.post-content img{
+    max-width:100%;
+    height:auto;
+    border-radius:25px;
+    margin:30px 0;
+    box-shadow:0 10px 25px rgba(0,0,0,.08);
+}
 
-        /* 신고 버튼 */
-        .btn-report { background: transparent; color: #ff8a8a; border: 1px solid #ffeded; padding: 6px 14px; border-radius: 8px; font-size: 13px; font-weight: 700; }
-        .btn-report:hover { background: #fff0f0; color: #dc3545; }
+.bottom-area{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding-top:35px;
+    border-top:1px solid #f3f3f3;
+}
 
-        .nickname-link {
-            text-decoration: none; /* 밑줄 제거 */
-            color: inherit;       /* 기존 글자색 유지 */
-            cursor: pointer;
-        }
+.btn-like{
+    background:#fff;
+    color:#ff4d6d;
+    border:2px solid #ffe4ec;
+    padding:14px 32px;
+    border-radius:999px;
+    font-weight:800;
+    box-shadow:0 8px 20px rgba(255,77,109,.12);
+    transition:.25s;
+}
 
-        .nickname-link:hover {
-            text-decoration: underline; /* 호버 시 밑줄 효과 */
-            color: #555;                /* 살짝 다른 색상으로 강조 */
-        }
-    </style>
+.btn-like:hover{
+    background:#fff5f7;
+    transform:translateY(-2px);
+}
+
+.right-btns button{
+    padding:12px 25px;
+    border:none;
+    border-radius:14px;
+    font-weight:700;
+    margin-left:8px;
+    transition:.2s;
+}
+
+.right-btns button:hover{
+    transform:translateY(-2px);
+}
+
+.btn-list{
+    background:#f8f9fa;
+    color:#666;
+}
+
+.btn-edit{
+    background:#ff85a1;
+    color:#fff;
+}
+
+.btn-delete{
+    background:#ff4d6d;
+    color:#fff;
+}
+
+.comment-section{
+    margin-top:70px;
+    padding-bottom:100px;
+}
+
+.comment-title{
+    font-size:24px;
+    font-weight:900;
+    color:#333;
+    margin-bottom:25px;
+}
+
+.comment-title b{
+    color:#ff4d6d;
+}
+
+.comment-write-box{
+    background:#fff;
+    padding:30px;
+    border-radius:25px;
+    border:1px solid #ffe4ec;
+    box-shadow:0 10px 25px rgba(255,77,109,.05);
+}
+
+.comment-write-box textarea{
+    background:#fff8fa;
+    border:none;
+    border-radius:15px;
+    padding:15px;
+    font-size:15px;
+}
+
+.comment-write-box textarea:focus{
+    background:#fff;
+    outline:none;
+    box-shadow:0 0 0 3px rgba(255,77,109,.15);
+}
+
+.btn-primary-sm{
+    background:linear-gradient(135deg,#ff4d6d,#ff85a1);
+    color:#fff;
+    border:none;
+    border-radius:12px;
+    padding:10px 25px;
+    font-weight:700;
+}
+
+.comment-item{
+    padding:28px 0;
+    border-bottom:1px solid #fff1f4;
+    transition:.25s;
+}
+
+.comment-item:hover{
+    background:#fffafb;
+}
+
+.is-reply{
+    margin-left:50px;
+    background:#fff7f9;
+    padding:20px 25px;
+    border-radius:20px;
+    margin-top:10px;
+    border:none;
+    position:relative;
+}
+
+.is-reply::before{
+    content:"↳";
+    position:absolute;
+    left:-25px;
+    top:20px;
+    color:#ffb3c1;
+    font-size:20px;
+}
+
+.comment-header{
+    display:flex;
+    justify-content:space-between;
+    margin-bottom:10px;
+    font-size:15px;
+}
+
+.comment-body{
+    color:#555;
+    line-height:1.8;
+    font-size:16px;
+}
+
+.comment-footer{
+    display:flex;
+    align-items:center;
+    gap:15px;
+    margin-top:12px;
+}
+
+.comment-like-btn{
+    cursor:pointer;
+    color:#999;
+    font-size:14px;
+    display:flex;
+    align-items:center;
+    gap:5px;
+}
+
+.comment-like-btn:hover{
+    color:#ff4d6d;
+}
+
+.action-link{
+    font-size:13px;
+    color:#bbb;
+    cursor:pointer;
+    font-weight:700;
+}
+
+.action-link:hover{
+    color:#ff4d6d;
+}
+
+.btn-report{
+    background:#fff7f9;
+    color:#ff4d6d;
+    border:1px solid #ffd6df;
+    padding:7px 14px;
+    border-radius:10px;
+    font-size:13px;
+    font-weight:700;
+}
+
+.btn-report:hover{
+    background:#ffe8ee;
+}
+
+.nickname-link{
+    text-decoration:none;
+    color:inherit;
+}
+
+.nickname-link:hover{
+    color:#ff4d6d;
+    text-decoration:none;
+}
+
+.nickname-container{
+    position:relative;
+    display:inline-block;
+}
+
+.profile-hover-modal{
+    position:absolute;
+    top:50%;
+    left:110%;
+    width:190px;
+    background:#fff;
+    border-radius:18px;
+    padding:16px;
+    border:1px solid #ffe4ec;
+    box-shadow:0 15px 35px rgba(255,77,109,.15);
+    z-index:9999;
+    transform:translateY(-50%) scale(.95);
+    opacity:0;
+    animation:profilePopup .25s ease-out forwards;
+}
+
+.profile-hover-modal::before{
+    content:"";
+    position:absolute;
+    left:-8px;
+    top:50%;
+    transform:translateY(-50%);
+    border-top:8px solid transparent;
+    border-bottom:8px solid transparent;
+    border-right:8px solid white;
+}
+
+@keyframes profilePopup{
+    from{
+        opacity:0;
+        transform:translateY(-50%) scale(.9);
+    }
+    to{
+        opacity:1;
+        transform:translateY(-50%) scale(1);
+    }
+    
+}
+.petal{
+    position:fixed;
+    top:-50px;
+    pointer-events:none;
+    z-index:-1;
+    opacity:.25;
+
+    animation:
+        fall linear infinite,
+        sway ease-in-out infinite;
+}
+
+@keyframes fall{
+    from{
+        transform:translateY(-50px) rotate(0deg);
+    }
+    to{
+        transform:translateY(110vh) rotate(360deg);
+    }
+}
+
+@keyframes sway{
+    0%,100%{
+        margin-left:0;
+    }
+    50%{
+        margin-left:40px;
+    }
+}
+</style>
 </head>
 <body>
     <jsp:include page="/WEB-INF/common/header.jsp" />
-    
+    <div class="petal">🤍</div>
+<div class="petal">🤍</div>
+<div class="petal">🤍</div>
+<div class="petal">🌸</div>
+<div class="petal">🌸</div>
+<div class="petal">🌸</div>
+<div class="petal">🤍</div>
+<div class="petal">🤍</div>
+<div class="petal">🤍</div>
+<div class="petal">🌸</div>
+<div class="petal">🌸</div>
+<div class="petal">🌸</div>
     <div id="app">
         <main class="main-content">
             <template v-if="post && post.postNo">
@@ -193,17 +460,67 @@
                     <div class="comment-list">
                         <div v-for="item in commentList" :key="item.commentNo" :class="['comment-item', { 'is-reply': item.parentNo }]">
                             <div class="comment-header">
-                                <b :class="{'text-muted': item.nickname === '탈퇴회원' || item.isDeleted == 1}">
-                                   <a v-if="item.isDeleted == 0 && item.nickname !== '탈퇴회원'" 
-                                        :href="'/userProfile.do?userId=' + item.userId" 
-                                        style="text-decoration: none; color: inherit;">
-                                        @{{ item.nickname }}
-                                    </a>
-                                    <b v-else class="text-danger">{{ item.nickname }}</b>
-                                    <template v-else-if="item.delRole === 'ADMIN'">[관리자 삭제]</template>
-                                    <template v-else>[삭제된 댓글]</template>
-                                </b>
-                                <span class="text-muted small">{{ item.regDate }}</span>
+
+                                <div>
+                                    <!-- 정상 댓글 -->
+                                    <template v-if="item.isDeleted == 0 && item.nickname !== '탈퇴회원'">
+
+                                        <div class="nickname-container"
+                                            @mouseenter="fnShowHover(item.userId)"
+                                            @mouseleave="fnHideHover">
+
+                                            <a :href="'/userProfile.do?userId=' + item.userId"
+                                            class="nickname-link">
+                                                @{{ item.nickname }}
+                                            </a>
+
+                                            <div v-if="hoverUserId === item.userId && hoverInfo"
+                                                class="profile-hover-modal">
+
+                                                <div style="text-align:center;">
+
+                                                    <img
+                                                        :src="'/img/profile/' + (hoverInfo.info.profileImg || 'heart.png')"
+                                                        style="width:50px;height:50px;border-radius:50%;object-fit:cover;">
+
+                                                    <div class="mt-2 font-weight-bold">
+                                                        {{ hoverInfo.info.nickName }}
+                                                    </div>
+
+                                                    <div style="font-size:12px;color:#666;">
+                                                        게시글 {{ hoverInfo.postTotal }}
+                                                        |
+                                                        리뷰 {{ hoverInfo.reviewTotal }}
+                                                    </div>
+
+                                                </div>
+
+                                            </div>
+
+                                        </div>
+
+                                    </template>
+
+                                    <!-- 탈퇴회원 -->
+                                    <template v-else-if="item.nickname === '탈퇴회원'">
+                                        <span class="text-danger">탈퇴회원</span>
+                                    </template>
+
+                                    <!-- 관리자 삭제 -->
+                                    <template v-else-if="item.delRole === 'ADMIN'">
+                                        <span class="text-muted">[관리자 삭제]</span>
+                                    </template>
+
+                                    <!-- 일반 삭제 -->
+                                    <template v-else>
+                                        <span class="text-muted">[삭제된 댓글]</span>
+                                    </template>
+                                </div>
+
+                                <span class="text-muted small">
+                                    {{ item.regDate }}
+                                </span>
+
                             </div>
 
                             <div class="comment-body mt-2">
@@ -318,10 +635,28 @@
                         target_user_id: '',
                         report_title: '',
                         report_content: ''
-                    }
+                    },
+                    hoverUserId : null,
+                    hoverInfo : null,
                 };
             },
             methods: {
+                fnShowHover(userId) {
+                    this.hoverUserId = userId;
+
+                    axios.get('/userProfileSimple.dox', {
+                        params : {
+                            userId : userId
+                        }
+                    }).then(res => {
+                        this.hoverInfo = res.data;
+                    });
+                },
+
+                fnHideHover() {
+                    this.hoverUserId = null;
+                    this.hoverInfo = null;
+                },
                 fnGetDetail() {
                     $.ajax({
                         url: "/api/community/getPost.dox",
@@ -516,8 +851,15 @@
                 }
                 
             },
-            mounted() { this.fnGetDetail(); }
+            mounted() { this.fnGetDetail(); 
+             document.querySelectorAll('.petal').forEach(el => {
+                el.style.left = Math.random() * 100 + 'vw';
+                el.style.fontSize = (20 + Math.random() * 20) + 'px';
+                el.style.animationDuration = (10 + Math.random() * 10) + 's';
+                el.style.animationDelay = Math.random() * 5 + 's';
+            });}
         }).mount('#app');
     </script>
 </body>
+
 </html>
