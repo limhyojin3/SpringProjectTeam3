@@ -59,6 +59,7 @@
             if ((type === 'COMMUNITY' || type === 'POST') && number) return contextPath + '/api/community/detail.do?postNo=' + number;
             if (type === 'INQUIRY') return contextPath + (sessionRole === 'ADMIN' ? '/adminInquiry.do' : '/userMyPage-cs.do');
             if (type === 'REPORT') return contextPath + (sessionRole === 'ADMIN' ? '/adminReport.do' : '/userMyPage-cs.do');
+            if (type === 'COMPANY') return contextPath + (sessionRole === 'ADMIN' ? '/adminPayment.do' : '/partnerManagement.do');
             return '';
         }
 

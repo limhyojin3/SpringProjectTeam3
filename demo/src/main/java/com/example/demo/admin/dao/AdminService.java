@@ -16,14 +16,21 @@ import com.example.demo.admin.mapper.AdminMapper;
 import com.example.demo.admin.model.Admin;
 import com.example.demo.common.Message;
 import java.util.Map;
+import org.springframework.beans.factory.annotation.Value;
+import java.util.ArrayList;
 
 @Service
 public class AdminService {
+	
 	@Autowired
 	AdminMapper adminMapper;
+	
 	@Autowired
 	NotificationService notificationService;
-
+	
+	@Value("${cloudinary.cloud-name}")
+	private String cloudinaryCloudName;
+	
 	public HashMap<String, Object> getSalesList(HashMap<String, Object> map) {
 		HashMap<String, Object> resultMap = new HashMap<String, Object>();
 		try {
@@ -105,6 +112,183 @@ public class AdminService {
 			resultMap.put("message", Message.MSG_SERVER_ERR);
 		}
 		return resultMap;
+	}
+	
+	public HashMap<String, Object> getReceiptReviewDetail(
+	        HashMap<String, Object> map) {
+
+	    HashMap<String, Object> resultMap =
+	            new HashMap<>();
+
+	    try {
+	        HashMap<String, Object> detail =
+	                adminMapper
+	                    .selectReceiptReviewDetail(map);
+
+	        if (detail == null) {
+	            resultMap.put("result", "fail");
+	            resultMap.put(
+	                "message",
+	                "리뷰 정보를 찾을 수 없습니다."
+	            );
+	            return resultMap;
+	        }
+
+	        String receiptName =
+	                stringValue(
+	                    detail.get("receiptName")
+	                );
+
+	        detail.put(
+	        	    "receiptUrl",
+	        	    buildCloudinaryImageUrl(receiptName)
+	        	);
+
+	        boolean hasReceipt =
+	                receiptName != null
+	                && !receiptName.isBlank();
+
+	        boolean reservationLinked =
+	                numberValue(
+	                    detail.get("reservationLinked")
+	                ) > 0;
+
+	        boolean internalCatalog =
+	                detail.get("companyNo") != null;
+
+	        if (reservationLinked) {
+	            detail.put(
+	                "evidenceScope",
+	                "INTERNAL_TRANSACTION"
+	            );
+	            detail.put(
+	                "evidenceLabel",
+	                "메리뷰 예약 정보 연동"
+	            );
+	            detail.put(
+	                "evidenceDescription",
+	                "메리뷰 예약 정보와 제출 증빙을 함께 확인할 수 있습니다."
+	            );
+
+	        } else if (internalCatalog) {
+	            detail.put(
+	                "evidenceScope",
+	                "INTERNAL_CATALOG"
+	            );
+	            detail.put(
+	                "evidenceLabel",
+	                "메리뷰 등록 업체·상품"
+	            );
+	            detail.put(
+	                "evidenceDescription",
+	                "등록 업체·상품 정보는 있으나 메리뷰 예약·결제와 연동된 리뷰는 아닙니다."
+	            );
+
+	        } else {
+	            detail.put(
+	                "evidenceScope",
+	                "EXTERNAL_EVIDENCE"
+	            );
+	            detail.put(
+	                "evidenceLabel",
+	                "외부 업체 증빙 제출"
+	            );
+	            detail.put(
+	                "evidenceDescription",
+	                "메리뷰 정보망 밖의 거래로 실제 결제 여부까지 확인할 수 없습니다."
+	            );
+	        }
+
+	        List<HashMap<String, Object>> warnings =
+	                new ArrayList<>();
+
+	        if (!hasReceipt) {
+	            warnings.add(
+	                warning(
+	                    "MISSING_RECEIPT",
+	                    "HIGH",
+	                    "첨부된 영수증 또는 결제 증빙이 없습니다."
+	                )
+	            );
+	        }
+
+	        if (!reservationLinked
+	                && internalCatalog) {
+
+	            warnings.add(
+	                warning(
+	                    "NOT_TRANSACTION_LINKED",
+	                    "INFO",
+	                    "업체·상품 선택 정보만 존재합니다. 메리뷰 예약 또는 결제 완료를 의미하지 않습니다."
+	                )
+	            );
+	        }
+
+	        if (!internalCatalog) {
+	            warnings.add(
+	                warning(
+	                    "EXTERNAL_VERIFICATION_LIMIT",
+	                    "INFO",
+	                    "외부 업체 거래는 진위를 보증하지 않고, 증빙과 리뷰 사이의 명백한 모순만 검토합니다."
+	                )
+	            );
+	        }
+
+	        detail.put(
+	            "reviewStatus",
+	            hasReceipt
+	                ? "MANUAL_REVIEW"
+	                : "REVIEW_REQUIRED"
+	        );
+
+	        detail.put("warnings", warnings);
+
+	        detail.put(
+	            "policyNotice",
+	            "확인할 수 없음과 허위를 구분합니다. 자동 결과만으로 승인 또는 반려하지 않습니다."
+	        );
+
+	        resultMap.put("detail", detail);
+	        resultMap.put("result", "success");
+
+	    } catch (Exception e) {
+	        System.out.println(e.getMessage());
+
+	        resultMap.put("result", "fail");
+	        resultMap.put(
+	            "message",
+	            Message.MSG_SERVER_ERR
+	        );
+	    }
+
+	    return resultMap;
+	}
+
+	private HashMap<String, Object> warning(
+	        String type,
+	        String level,
+	        String message) {
+
+	    HashMap<String, Object> warning =
+	            new HashMap<>();
+
+	    warning.put("type", type);
+	    warning.put("level", level);
+	    warning.put("message", message);
+
+	    return warning;
+	}
+
+	private int numberValue(Object value) {
+	    return value instanceof Number
+	            ? ((Number) value).intValue()
+	            : 0;
+	}
+
+	private String stringValue(Object value) {
+	    return value == null
+	            ? null
+	            : String.valueOf(value);
 	}
 	
 	public HashMap<String, Object> editReviewApprove(HashMap<String, Object> map) {
@@ -1002,10 +1186,17 @@ System.out.println(resultMap);
 		HashMap<String, Object> resultMap = new HashMap<>();
 
 		try {
-			adminMapper.updateCompanyReg(map);
-			adminMapper.updateCompanyRegPaid(map);
-			resultMap.put("result", "success");
-			resultMap.put("message", "제휴 업체 등록에 성공했습니다");
+			int memberResult = adminMapper.updateCompanyReg(map);
+			int companyResult = adminMapper.updateCompanyRegPaid(map);
+
+			if (memberResult > 0 && companyResult > 0) {
+				resultMap.put("result", "success");
+				resultMap.put("message", "제휴 업체 등록에 성공했습니다");
+			} else {
+				throw new IllegalStateException(
+					"제휴 업체 등록 대상이 존재하지 않거나 이미 처리되었습니다."
+				);
+			}
 
 
 		} catch (Exception e) {
@@ -1017,5 +1208,25 @@ System.out.println(resultMap);
 		}
 
 		return resultMap;
+	}
+	
+	private String buildCloudinaryImageUrl(
+	        String storedName) {
+
+	    if (storedName == null
+	            || storedName.isBlank()) {
+	        return null;
+	    }
+
+	    // 과거 데이터가 전체 URL이면 그대로 사용
+	    if (storedName.startsWith("http://")
+	            || storedName.startsWith("https://")) {
+	        return storedName;
+	    }
+
+	    return "https://res.cloudinary.com/"
+	            + cloudinaryCloudName
+	            + "/image/upload/"
+	            + storedName;
 	}
 }

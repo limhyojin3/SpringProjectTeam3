@@ -209,7 +209,9 @@
                 var labels = {
                     MATCH: '매칭', MESSAGE: '메시지', REVIEW: '리뷰', REVIEW_APPROVED: '리뷰', REVIEW_REJECTED: '리뷰',
                     SYSTEM: '안내', RESERVATION: '예약', PAYMENT: '결제', INQUIRY_ANSWERED: '문의',
-                    INQUIRY_RECEIVED: '문의', REPORT_RECEIVED: '신고', REPORT_WARNING: '신고', REPORT_RESULT: '신고'
+                    INQUIRY_RECEIVED: '문의', REPORT_RECEIVED: '신고', REPORT_WARNING: '신고', REPORT_RESULT: '신고',
+                    PARTNER_APPROVED: '업체 승인',
+                    PARTNER_APPLICATION_RECEIVED: '제휴 신청'
                 };
                 return labels[type] || type || '새 소식';
             },
@@ -218,7 +220,9 @@
                 var icons = {
                     MATCH: '♥', MESSAGE: '✉', REVIEW: '★', REVIEW_APPROVED: '★', REVIEW_REJECTED: '★',
                     SYSTEM: 'i', RESERVATION: '✓', PAYMENT: '₩', INQUIRY_ANSWERED: '?',
-                    INQUIRY_RECEIVED: '?', REPORT_RECEIVED: '!', REPORT_WARNING: '!', REPORT_RESULT: '!'
+                    INQUIRY_RECEIVED: '?', REPORT_RECEIVED: '!', REPORT_WARNING: '!', REPORT_RESULT: '!',
+                    PARTNER_APPROVED: '✓',
+                    PARTNER_APPLICATION_RECEIVED: '₩'
                 };
                 return icons[type] || '♥';
             },

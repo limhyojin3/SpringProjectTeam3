@@ -50,4 +50,8 @@ public interface NotificationMapper {
 	int insertPostCommentedForAuthor(HashMap<String, Object> map);
 	
 	int insertCompanyReviewReceived(HashMap<String, Object> map);
+
+	int insertPartnerApproved(HashMap<String, Object> map);
+
+	int insertPartnerApplicationReceived(HashMap<String, Object> map);
 }
