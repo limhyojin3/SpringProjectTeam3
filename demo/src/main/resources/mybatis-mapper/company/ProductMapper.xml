@@ -22,10 +22,10 @@
 			p.deposit,
 			p.reg_date,
 			c.com_name,
-			/* 💡 고도화 핵심: 어제 우리가 구축한 검색 필터 하드웨어를 100% 보존하기 위해, 
-			   SELECT 절 내부에서 해당 상품의 모든 태그 텍스트들을 콤마로 예쁘게 묶어 공급하는 독립 서브쿼리 레일 이식 */
+			/* 💡 [디버깅 격리 조치] GROUP_CONCAT 내부에 DISTINCT를 주입하여, 
+			   설령 매핑 데이터에 중복 다리가 놓여있더라도 화면 송출 시에는 무조건 종류별로 1번만 나오도록 차단막 장착 */
 			(
-				SELECT GROUP_CONCAT(pt_all.tag SEPARATOR ',')
+				SELECT GROUP_CONCAT(DISTINCT pt_all.tag SEPARATOR ',')
 				FROM product_tag_map ptm_all
 				INNER JOIN product_tag pt_all ON ptm_all.tag_id = pt_all.id
 				WHERE ptm_all.product_no = p.product_no
@@ -79,9 +79,9 @@
 			p.deposit,
 			p.reg_date,
 			c.com_name,
-			/* 상세 조회 시에도 프론트엔드 태그 노출 방어벽을 위해 동일 서브쿼리 매핑 적용 */
+			/* 상세 조회 시에도 중복으로 태그가 뻥튀기되는 현상을 차단하기 위해 동일하게 DISTINCT 필터 수술 집행 */
 			(
-				SELECT GROUP_CONCAT(pt_all.tag SEPARATOR ',')
+				SELECT GROUP_CONCAT(DISTINCT pt_all.tag SEPARATOR ',')
 				FROM product_tag_map ptm_all
 				INNER JOIN product_tag pt_all ON ptm_all.tag_id = pt_all.id
 				WHERE ptm_all.product_no = p.product_no
@@ -160,6 +160,28 @@
  
 	<delete id="deleteProduct" parameterType="map">
 		DELETE FROM product WHERE product_no = #{productNo}
+	</delete>
+
+	<select id="selectTagIdsByNames" parameterType="list" resultType="integer">
+		SELECT id 
+		FROM product_tag 
+		WHERE tag IN
+		<foreach collection="list" item="tag" open="(" separator="," close=")">
+			#{tag}
+		</foreach>
+	</select>
+
+	<insert id="insertProductTagMap" parameterType="map">
+		INSERT INTO product_tag_map (product_no, tag_id)
+		VALUES
+		<foreach collection="tagIds" item="tagId" separator=",">
+			(#{productNo}, #{tagId})
+		</foreach>
+	</insert>
+
+	<delete id="deleteProductTagMap" parameterType="long">
+		DELETE FROM product_tag_map 
+		WHERE product_no = #{productNo}
 	</delete>
 	
 </mapper>

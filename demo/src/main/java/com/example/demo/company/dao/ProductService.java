@@ -81,29 +81,38 @@ public class ProductService {
 		return resultMap;
 	}
 
+	// 🎯 [디버깅 고도화] 수정하기 비즈니스 로직 연쇄 매핑 관로 정비 완료
 	@Transactional(rollbackFor = Exception.class)
 	public HashMap<String, Object> editProduct(Product product) {
 		HashMap<String, Object> resultMap = new HashMap<String, Object>();
 		try {
+			// 1. 기존 상품 기본 정보 업데이트 실행
 			int result = productMapper.updateProduct(product);
-			int result1 = 0;
 
-			if (product.getUniqueNewTagsOnly() != null && !product.getUniqueNewTagsOnly().isEmpty()) {
-				Map<String, Object> tagParamMap = new HashMap<String, Object>();
-				tagParamMap.put("uniqueNewTagsOnly", product.getUniqueNewTagsOnly());
-				result1 = productMapper.insertUniqueNewTagsOnly(tagParamMap);
-			}
-			
 			if (result > 0) {
-				if (result1 > 0) {
-					resultMap.put("result", "success");
-					resultMap.put("message", Message.MSG_ADD);
-					resultMap.put("message1", "태그도 추가되었어요!");
-				} else {
-					resultMap.put("result", "success");
-					resultMap.put("message", Message.MSG_ADD);
-					resultMap.put("message1", "태그는 추가된게 없네요!");
+				// 2. [수정 연동 핵심] 기존에 product_tag_map에 연결되어 있던 매핑 관계선을 깔끔하게 폭파 청소
+				productMapper.deleteProductTagMap(product.getProductNo());
+				
+				// 3. 유저가 칩으로 새로 찍어 올린 태그 문자열 리스트가 존재한다면 다리 재정립 착수
+				if (product.getUniqueNewTagsOnly() != null && !product.getUniqueNewTagsOnly().isEmpty()) {
+					// 글자 리스트를 던져 마스터 테이블의 실제 등록된 ID 넘버링 수급
+					List<Integer> tagIds = productMapper.selectTagIdsByNames(product.getUniqueNewTagsOnly());
+					
+					if (tagIds != null && !tagIds.isEmpty()) {
+						Map<String, Object> mapParam = new HashMap<String, Object>();
+						mapParam.put("productNo", product.getProductNo());
+						mapParam.put("tagIds", tagIds);
+						
+						// 매핑 다리 테이블에 최종 이식 배정
+						productMapper.insertProductTagMap(mapParam);
+					}
 				}
+				
+				resultMap.put("result", "success");
+				resultMap.put("message", Message.MSG_ADD);
+			} else {
+				resultMap.put("result", "fail");
+				resultMap.put("message", "변경 대상 상품이 존재하지 않습니다.");
 			}
 		} catch (Exception e) {
 			System.out.println(e.getMessage());
@@ -113,28 +122,35 @@ public class ProductService {
 		return resultMap;
 	}
 
+	// 🎯 [디버깅 고도화] 등록하기 비즈니스 로직 연쇄 매핑 관로 정비 완료
+	@Transactional(rollbackFor = Exception.class)
 	public HashMap<String, Object> addProduct(Product product) {
 		HashMap<String, Object> resultMap = new HashMap<String, Object>();
 		try {
+			// 1. 상품 기본 정보 인서트 집행 (성공 시useGeneratedKeys에 의해 product 객체 내부에 신규 productNo 자동 꽂힘)
 			int result = productMapper.insertProduct(product);
-			int result1 = 0;
 
-			if (product.getUniqueNewTagsOnly() != null && !product.getUniqueNewTagsOnly().isEmpty()) {
-				Map<String, Object> tagParamMap = new HashMap<String, Object>();
-				tagParamMap.put("uniqueNewTagsOnly", product.getUniqueNewTagsOnly());
-				result1 = productMapper.insertUniqueNewTagsOnly(tagParamMap);
+			// 2. 인서트가 완벽히 성공했고, 유저가 찍은 태그 칩 문자열 리스트가 존재한다면 맵 매핑 구역 가동
+			if (result > 0 && product.getUniqueNewTagsOnly() != null && !product.getUniqueNewTagsOnly().isEmpty()) {
+				// 프론트에서 날아온 ["내추럴한", "러블리한"] 글자 주머니로 기존 마스터 태그 테이블의 진짜 ID 리스트([15, 16]) 수급
+				List<Integer> tagIds = productMapper.selectTagIdsByNames(product.getUniqueNewTagsOnly());
+				
+				if (tagIds != null && !tagIds.isEmpty()) {
+					Map<String, Object> mapParam = new HashMap<String, Object>();
+					mapParam.put("productNo", product.getProductNo()); // 따끈따끈한 신규 생성 상품 PK 번호 매핑
+					mapParam.put("tagIds", tagIds);
+					
+					// 3. 엉뚱한 마스터 인서트를 차단하고, 진짜 원하던 연결 테이블인 product_tag_map에 정석 배정 인서트!
+					productMapper.insertProductTagMap(mapParam);
+				}
 			}
 
 			if (result > 0) {
-				if (result1 > 0) {
-					resultMap.put("result", "success");
-					resultMap.put("message", Message.MSG_ADD);
-					resultMap.put("message1", "태그도 추가되었어요!");
-				} else {
-					resultMap.put("result", "success");
-					resultMap.put("message", Message.MSG_ADD);
-					resultMap.put("message1", "태그는 추가된게 없네요!");
-				}
+				resultMap.put("result", "success");
+				resultMap.put("message", Message.MSG_ADD);
+			} else {
+				resultMap.put("result", "fail");
+				resultMap.put("message", "상품 등록 처리에 실패했습니다.");
 			}
 		} catch (Exception e) {
 			System.out.println(e.getMessage());
