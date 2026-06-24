@@ -17,7 +17,7 @@ public class Member {
 	String regDate; //가입 일시
 	String lastLogin; //마지막 로그인 시간
 	String previousPayment; //마지막 결제 수단
-	//
+	//  
 	// user_detail table에 있는 컬럼들 입니다.
 	String name; //이름 
 	String nickname; //닉네임
