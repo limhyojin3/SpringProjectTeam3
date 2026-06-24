@@ -131,6 +131,12 @@ public class AdminController {
 	public String adminMyPass(Model model) {
 		return "admin/adminMyPass";
 	}
+	
+	//운영정책
+	@RequestMapping("/operationPolicy.do")
+	public String operationPolicy() {
+	    return "/common/operation_policy";
+	}
 
 	@RequestMapping(value = "/sales.dox", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
 	@ResponseBody
