@@ -766,4 +766,20 @@ public class MemberService {
 	    
 	    memberMapper.insertChatLog(log);
 	}
+	// 챗봇 추천
+	public List<HashMap<String, Object>> getTopReviewedProducts() {
+	    return memberMapper.getTopReviewedProducts();
+	}
+	// 챗봇 평균 비용
+	public List<HashMap<String, Object>> getAverageProductPrice() {
+	    return memberMapper.getAverageProductPrice();
+	}
+	// 가장 저렴한 상품
+	public List<HashMap<String, Object>> getCheapestProducts(String category) {
+	    return memberMapper.getCheapestProducts(category);
+	}
+	// 리뷰 갯수와 카테고리 조회
+	public List<HashMap<String, Object>> getMostReviewedProductsByCategory(String category) {
+	    return memberMapper.getMostReviewedProductsByCategory(category);
+	}
 }

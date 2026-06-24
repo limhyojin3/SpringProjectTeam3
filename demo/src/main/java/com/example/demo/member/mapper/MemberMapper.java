@@ -154,6 +154,14 @@ public interface MemberMapper {
 	
 	// *챗봇 로그* 
 	int insertChatLog(ChatLog chatLog);
+	// 챗봇 추천 기능
+	List<HashMap<String, Object>> getTopReviewedProducts();
+	// 챗봇 평균 비용 계산
+	List<HashMap<String, Object>> getAverageProductPrice();
+	// 가장 저렴한 상품
+	List<HashMap<String, Object>> getCheapestProducts(String category);
+	// 리뷰 갯수와 카테고리 조회
+	List<HashMap<String, Object>> getMostReviewedProductsByCategory(String category);
 	
 	// 소셜 로그인
 	// 카카오 로그인
