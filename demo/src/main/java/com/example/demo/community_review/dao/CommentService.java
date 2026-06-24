@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.example.demo.community_review.mapper.CommentMapper;
+import com.example.demo.admin.dao.NotificationService;
 
 @Service
 public class CommentService {
@@ -15,6 +16,9 @@ public class CommentService {
     @Autowired
     private CommentMapper commentMapper;
 
+    @Autowired
+    private NotificationService notificationService;
+    
     // 리뷰 댓글 목록
     public List<Map<String, Object>> getReviewCommentList(Map<String, Object> map) {
         return commentMapper.selectReviewCommentList(map);
@@ -22,7 +26,13 @@ public class CommentService {
 
     // 리뷰 댓글 등록
     public int addReviewComment(Map<String, Object> map) {
-        return commentMapper.insertReviewComment(map);
+    	int result = commentMapper.insertReviewComment(map);
+
+        if (result > 0) {
+            notificationService.createReviewCommented(map.get("commentNo"));
+        }
+
+        return result;
     }
     
     // 커뮤 댓글 목록
@@ -32,7 +42,13 @@ public class CommentService {
 
     // 커뮤 댓글 등록
     public int addCommunityComment(Map<String, Object> map) {
-        return commentMapper.insertCommunityComment(map);
+    	int result = commentMapper.insertCommunityComment(map);
+
+        if (result > 0) {
+            notificationService.createPostCommented(map.get("commentNo"));
+        }
+
+        return result;
     }
 
     // 댓글 수정

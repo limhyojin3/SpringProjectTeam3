@@ -3,7 +3,10 @@
 
 <mapper namespace="com.example.demo.company.mapper.ProductInquiryMapper">
 
-	<insert id="insertInquiryProduct" parameterType="map">
+	<insert id="insertInquiryProduct" parameterType="map"
+		useGeneratedKeys="true"
+        keyProperty="inquiryNo"
+        keyColumn="inquiry_no">
 		INSERT INTO inquiry_product(user_id, company_no, product_no,
 		inquiry_title, inquiry_contents, inquiry_ans, inquiry_date)
 		VALUES(#{userId}, #{companyNo}, #{productNo}, #{inquiryTitle},

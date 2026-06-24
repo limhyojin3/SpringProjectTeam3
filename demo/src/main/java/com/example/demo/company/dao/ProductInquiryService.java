@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.example.demo.common.Message;
 import com.example.demo.company.mapper.ProductInquiryMapper;
 import com.example.demo.company.model.ProductInquiry;
+import com.example.demo.admin.dao.NotificationService;
 
 @Service
 public class ProductInquiryService {
@@ -17,12 +18,17 @@ public class ProductInquiryService {
 	@Autowired
 	private ProductInquiryMapper productInquiryMapper;
 
+	@Autowired
+	private NotificationService notificationService;
+	
 	public HashMap<String, Object> addInquiryProduct(HashMap<String, Object> map) {
 		HashMap<String, Object> resultMap = new HashMap<String, Object>();
 		try {
 			int result = productInquiryMapper.insertInquiryProduct(map);
 
 			if (result > 0) {
+				notificationService.createProductInquiryReceived(map.get("inquiryNo"));
+				
 				resultMap.put("result", "success");
 				resultMap.put("message", Message.MSG_ADD);
 			}
@@ -59,6 +65,8 @@ public class ProductInquiryService {
 				int result1 = productInquiryMapper.updateInquiryAnsStatus(map);
 
 				if (result > 0 && result1 > 0) {
+					notificationService.createProductInquiryAnswered(map.get("inquiryNo"));
+					
 					resultMap.put("result", "success");
 					resultMap.put("message", Message.MSG_ADD);
 				}
