@@ -522,4 +522,61 @@
 	    ON DUPLICATE KEY UPDATE
 	        notification_no = notification_no
 	</insert>
+
+	<!-- 업체 제휴 승인 완료 시 해당 업체 계정에 알림 -->
+	<insert id="insertPartnerApproved" parameterType="hashmap">
+	    INSERT INTO notification (
+	        receiver_id,
+	        sender_id,
+	        notification_type,
+	        content,
+	        target_type,
+	        target_no
+	    )
+	    SELECT
+	        c.user_id,
+	        #{senderId},
+	        'PARTNER_APPROVED',
+	        CONCAT(
+	            COALESCE(c.com_name, '업체'),
+	            '의 제휴 업체 등록이 승인되었습니다.'
+	        ),
+	        'COMPANY',
+	        c.company_no
+	    FROM company c
+	    WHERE c.user_id = #{userId}
+	    AND c.user_id IS NOT NULL
+	    ON DUPLICATE KEY UPDATE
+	        notification_no = notification_no
+	</insert>
+
+	<!-- 업체 제휴 등록비 결제 완료 시 활성 관리자에게 알림 -->
+	<insert id="insertPartnerApplicationReceived" parameterType="hashmap">
+	    INSERT INTO notification (
+	        receiver_id,
+	        sender_id,
+	        notification_type,
+	        content,
+	        target_type,
+	        target_no
+	    )
+	    SELECT
+	        m.user_id,
+	        #{senderId},
+	        'PARTNER_APPLICATION_RECEIVED',
+	        CONCAT(
+	            COALESCE(c.com_name, '업체'),
+	            '의 제휴 등록비 결제가 완료되었습니다. 등록 검토가 필요합니다.'
+	        ),
+	        'COMPANY',
+	        c.company_no
+	    FROM member m
+	    INNER JOIN company c
+	        ON c.company_no = #{companyNo}
+	    WHERE m.role = 'ADMIN'
+	    AND m.status = 'ACTIVE'
+	    AND c.user_id IS NOT NULL
+	    ON DUPLICATE KEY UPDATE
+	        notification_no = notification_no
+	</insert>
 </mapper>

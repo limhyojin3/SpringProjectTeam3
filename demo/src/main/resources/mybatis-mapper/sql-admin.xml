@@ -112,6 +112,65 @@
 	LIMIT #{pageSize} OFFSET #{offSet}
 	</select>
 	
+	
+		<!-- 관리자 영수증 검토 보조 상세 -->
+	<select id="selectReceiptReviewDetail"
+	        parameterType="hashmap"
+	        resultType="hashmap">
+	
+	    SELECT
+	        r.review_no AS reviewNo,
+	        r.user_id AS userId,
+	        r.title AS title,
+	        r.approval_status AS approvalStatus,
+	
+	        r.company_no AS companyNo,
+	        r.product_no AS productNo,
+	        r.res_no AS resNo,
+	
+	        r.external_name AS externalName,
+	        r.booking_source AS bookingSource,
+	        r.total_cost AS totalCost,
+	        r.receipt_name AS receiptName,
+	
+	        c.com_name AS companyName,
+	        p.product_name AS productName,
+	
+	        CASE
+	            WHEN r.res_no IS NOT NULL
+	             AND rs.res_no IS NOT NULL
+	            THEN 1
+	            ELSE 0
+	        END AS reservationLinked,
+	
+	        DATE_FORMAT(
+	            rs.use_date,
+	            '%Y-%m-%d'
+	        ) AS reservationUseDate,
+	
+	        (
+	            SELECT MAX(pr.amount)
+	            FROM payment_reservation pr
+	            WHERE pr.res_no = r.res_no
+	              AND pr.pay_status = 'SUCCESS'
+	        ) AS linkedPaymentAmount
+	
+	    FROM review r
+	
+	    LEFT JOIN company c
+	        ON c.company_no = r.company_no
+	
+	    LEFT JOIN product p
+	        ON p.product_no = r.product_no
+	
+	    LEFT JOIN reservation rs
+	        ON rs.res_no = r.res_no
+	
+	    WHERE r.review_no = #{reviewNo}
+	
+	</select>
+	
+		
 	<!--Review 페이지네이션 count-->
 	<select id="selectReviewCount" parameterType="hashmap" resultType="int">
 		SELECT COUNT(*) FROM review WHERE 1=1

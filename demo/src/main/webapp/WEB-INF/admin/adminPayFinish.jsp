@@ -69,12 +69,6 @@
                     text-align: center;
                 }
 
-                /* 제목 */
-                .ring-box {
-                    font-size: 42px;
-                    margin-bottom: 10px;
-                }
-
                 .pay-title {
                     font-size: 52px;
                     font-weight: 300;
@@ -280,8 +274,6 @@
                 <div class="middle">
                     <div class="main">
                         <div class="pay-finish-box">
-
-                            <div class="ring-box">💍</div>
 
                             <h2 class="pay-title">
                                 결제가 <span>완료</span>되었습니다

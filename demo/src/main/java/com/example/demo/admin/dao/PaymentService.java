@@ -279,10 +279,20 @@ public class PaymentService {
 			map.put("finalAmount", finalAmount);
 
 			completeRegistrationPayment(map);
+
+			boolean notificationCreated =
+				notificationService.createPartnerApplicationReceived(
+					map.get("companyNo"),
+					String.valueOf(map.get("userId"))
+				);
 		
 			result.put("result", "success");
 			result.put("payNo", map.get("payNo"));
 			result.put("message", "결제 완료");
+			result.put(
+				"notificationResult",
+				notificationCreated ? "success" : "fail"
+			);
 
 		} catch (Exception e) {
 			e.printStackTrace();

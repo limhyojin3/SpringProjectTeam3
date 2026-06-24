@@ -280,4 +280,30 @@ public class NotificationService {
                 .insertCompanyReviewReceived(map) > 0;
         });
     }
+
+    public boolean createPartnerApproved(
+            String userId,
+            String senderId) {
+
+        return tryCreate("업체 제휴 승인", () -> {
+            HashMap<String, Object> map = createBaseMap(senderId);
+            map.put("userId", userId);
+
+            return notificationMapper
+                .insertPartnerApproved(map) > 0;
+        });
+    }
+
+    public boolean createPartnerApplicationReceived(
+            Object companyNo,
+            String senderId) {
+
+        return tryCreate("업체 제휴 결제 접수", () -> {
+            HashMap<String, Object> map = createBaseMap(senderId);
+            map.put("companyNo", companyNo);
+
+            return notificationMapper
+                .insertPartnerApplicationReceived(map) > 0;
+        });
+    }
 }
