@@ -1,0 +1,42 @@
+/* ==========================================================================
+   업체 상세 프로필 및 독립 패키지 쇼룸 전용 핑크 테마 스타일시트
+   ========================================================================== */
+
+/* 독립형 마스터 업체 프로필 상자 커스텀 사양 */
+.company-detail-profile-card {
+	border-left: 5px solid #ff7f9f !important;
+	background-color: #ffffff;
+	border-radius: 8px;
+	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+	padding: 25px !important;
+}
+
+/* 업체 정보 내 서브 텍스트 보정 */
+.company-detail-location {
+	font-size: 0.95rem;
+	color: #6c757d;
+}
+
+/* 핑크 포인트 소개글 박스 */
+.company-detail-intro-container {
+	margin-top: 15px;
+	background-color: #fff0f3;
+	padding: 15px;
+	border-radius: 8px;
+	border: 1px solid #fff5f6;
+}
+
+.company-detail-intro-title {
+	color: #d6336c !important;
+	font-weight: bold;
+	font-size: 1rem;
+	margin-bottom: 6px;
+}
+
+/* 하단 전용 상품 쇼룸 인디케이터 바 */
+.company-showroom-title-bar {
+	border-left: 4px solid #ff7f9f;
+	padding-left: 10px;
+	margin-top: 30px;
+	margin-bottom: 20px;
+}

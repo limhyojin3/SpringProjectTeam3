@@ -154,4 +154,12 @@ public class ProductController {
 		HashMap<String, Object> treeData = productMetadataService.getCategoryTree();
 		return new Gson().toJson(treeData);
 	}
+
+	/* 💡 [신규 개통] 브라우저와 통신하며 실시간 하트 스위칭 결과를 JSON 포맷으로 사출하는 비동기 창구 */
+	@ResponseBody
+	@PostMapping("/companyLikeToggle.dox")
+	public String companyLikeToggle(@RequestParam HashMap<String, Object> map) throws Exception {
+		HashMap<String, Object> resultMap = productCommandService.toggleCompanyLike(map);
+		return new Gson().toJson(resultMap);
+	}
 }

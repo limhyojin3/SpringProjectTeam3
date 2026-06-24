@@ -16,6 +16,13 @@
 	border-radius: 4px;
 }
 
+/* 너무 바짝 붙어있던 상품 패키지 / 등록 업체 찾기 탭 간격 시원하게 벌리기 */
+.master-toggle-container {
+	display: flex;
+	gap: 25px !important; /* 간격을 25px로 대폭 넓혀 답답함 해소 */
+	margin-bottom: 20px;
+}
+
 /* ==========================================================================
    2. 카테고리 & 태그 필터 검색 영역 (대/중/소 구조)
    ========================================================================== */
@@ -28,6 +35,12 @@
 	display: flex;
 	flex-direction: column;
 	gap: 20px;
+}
+
+/* 업체 찾기 모드일 때 상단 필터를 고급스러운 보라색 테두리로 유지 */
+.company-slim-filter {
+	border: 2px solid #f3efff !important;
+	background-color: #faf9fe !important;
 }
 
 /* 대분류 대형 상단 탭 스타일 */
@@ -60,6 +73,21 @@
 	color: #fff;
 	border-color: #ff7f9f;
 	box-shadow: 0 4px 10px rgba(255, 127, 159, 0.25);
+}
+
+/* 등록 업체 탭 및 대분류 활성화 시 세련된 보라색 테마 적용 */
+.master-toggle-container .large-tab-btn:last-child.active {
+	background-color: #8b5cf6 !important;
+	border-color: #8b5cf6 !important;
+	color: #ffffff !important;
+	box-shadow: 0 4px 12px rgba(139, 92, 246, 0.25) !important;
+}
+
+.company-slim-filter .large-tab-btn.active {
+	background-color: #7c3aed !important;
+	border-color: #7c3aed !important;
+	color: #ffffff !important;
+	box-shadow: 0 4px 10px rgba(124, 58, 237, 0.2) !important;
 }
 
 /* 중분류 및 소분류 타이틀 */
@@ -108,14 +136,14 @@
 	font-weight: bold;
 }
 
-/* 💡 신규 추가: 쿠팡 스타일 태그 2개 초과 선택 시 미선택 단추 잠금 비활성화 디자인 */
+/* 쿠팡 스타일 태그 2개 초과 선택 시 미선택 단추 잠금 비활성화 디자인 */
 .chip-toggle-label.disabled {
-	opacity: 0.4;                     /* 불투명도를 낮춰서 잠긴 느낌 부여 */
-	cursor: not-allowed !important;   /* 마우스 올릴 때 금지 마크 표시 */
-	background: #f8f9fa !important;   /* 회색 톤 배경 처리 */
-	border-color: #e9ecef !important; /* 선 테두리 무력화 */
-	color: #adb5bd !important;        /* 글자색 흐리게 */
-	pointer-events: none;             /* HTML단 클릭 이벤트 강제 물리 차단 */
+	opacity: 0.4;
+	cursor: not-allowed !important;
+	background: #f8f9fa !important;
+	border-color: #e9ecef !important;
+	color: #adb5bd !important;
+	pointer-events: none;
 }
 
 /* 결혼 분위기 소분류 박스 */
@@ -169,6 +197,7 @@
 	transition: all 0.3s ease;
 	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
 	cursor: pointer;
+	position: relative; /* 하트 찜 버튼 절대 배치를 위한 기준점 */
 }
 
 .product-item:hover {
@@ -198,6 +227,7 @@
 	display: flex;
 	flex-direction: column;
 	gap: 8px;
+	min-height: 140px; /* 내부 요소가 가격을 하단 구석으로 밀 수 있도록 최소 높이 강제 밀봉 */
 }
 
 .product-info h4 {
@@ -205,6 +235,7 @@
 	font-size: 1.2rem;
 	color: #333;
 	font-weight: 700;
+	padding-right: 60px; /* 우측 상단 하트 버튼과의 충돌 예외 방어 여백 */
 }
 
 .product-info .product-content {
@@ -214,11 +245,15 @@
 	line-height: 1.5;
 }
 
+/* 💡 [정밀 수술] 가격을 완전한 우측 하단 끝 구석탱이로 순간이동 정렬 */
 .product-info .product-price {
-	margin-top: auto;
-	font-weight: bold;
-	color: #ff1493;
-	font-size: 1.1rem;
+	margin-top: auto;          /* 가로 행 내부에서 바닥으로 쿵 떨어지게 설정 */
+	width: 100%;               /* 100% 가로축 방을 다 쓰게 만들어 우측 정렬 유도 */
+	text-align: right;         /* 텍스트를 오른쪽 정렬 */
+	font-weight: 700;
+	font-size: 1.35rem;        /* 💡 유저 피드백: 글씨 크기 대폭 확대 감행 */
+	color: #d6336c;            /* 💡 유저 피드백: 형광 형빛 핑크를 지우고, 화면과 잘 녹아드는 고급스러운 로즈 핑크 톤 다운 */
+	padding-right: 5px;
 }
 
 .product-tags-wrapper {
@@ -232,4 +267,58 @@
 	background: #fff0f3;
 	padding: 2px 6px;
 	border-radius: 4px;
+}
+
+/* 찜 하트 버튼을 카드의 완벽한 [우측 상단]으로 정밀 붙박이 조준 */
+.like-chip-btn {
+	position: absolute !important;
+	top: 20px;
+	right: 20px;
+	display: flex;
+	align-items: center;
+	gap: 5px;
+	background: #fff;
+	padding: 4px 10px !important;
+	border-radius: 20px !important;
+	border: 1px solid #ffe0e6;
+	font-size: 0.85rem;
+	cursor: pointer;
+	z-index: 10;
+}
+
+.product-info .like-chip-btn.active {
+	background-color: #ffe4e6 !important;
+	border-color: #ff7f9f !important;
+	color: #ff7f9f !important;
+}
+
+/* 답답하던 왼쪽 세로선을 완전히 제거하고 보라색 사방 테두리 마감 */
+.product-item.company-card-item {
+	border: 1px solid #ede9fe !important;
+	background-color: #ffffff;
+	transition: all 0.2s ease-in-out;
+}
+
+.product-item.company-card-item:hover {
+	box-shadow: 0 6px 16px rgba(167, 139, 250, 0.15) !important;
+	transform: translateY(-2px);
+	border-color: #a78bfa !important;
+}
+
+/* 한 줄 소개 박스 배경을 빼고 차분한 회색 폰트로 교체 */
+.product-item.company-card-item .company-intro-box {
+	background-color: transparent !important;
+	border: none !important;
+	padding: 0 !important;
+	color: #777 !important;
+	font-size: 0.92rem;
+	margin-top: 4px;
+}
+
+/* 업체 카드 전용 하트 찜 버튼 활성화 스타일 (보라색 그라데이션) */
+.product-item.company-card-item .like-chip-btn.active {
+	background: linear-gradient(135deg, #c084fc 0%, #a78bfa 100%) !important;
+	border-color: #a78bfa !important;
+	color: #ffffff !important;
+	box-shadow: 0 2px 8px rgba(167, 139, 250, 0.3) !important;
 }

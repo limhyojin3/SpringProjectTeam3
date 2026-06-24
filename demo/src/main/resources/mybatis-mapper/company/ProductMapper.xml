@@ -22,8 +22,10 @@
 			p.deposit,
 			p.reg_date,
 			c.com_name,
-			/* 💡 [디버깅 격리 조치] GROUP_CONCAT 내부에 DISTINCT를 주입하여, 
-			   설령 매핑 데이터에 중복 다리가 놓여있더라도 화면 송출 시에는 무조건 종류별로 1번만 나오도록 차단막 장착 */
+			c.com_intro AS comIntro,
+			c.com_address AS comAddress,
+			(SELECT COUNT(*) FROM company_like WHERE company_no = p.company_no) AS likeCnt,
+			(SELECT COUNT(*) FROM company_like WHERE company_no = p.company_no AND user_id = #{loginUserId}) AS isLiked,
 			(
 				SELECT GROUP_CONCAT(DISTINCT pt_all.tag SEPARATOR ',')
 				FROM product_tag_map ptm_all
@@ -79,7 +81,10 @@
 			p.deposit,
 			p.reg_date,
 			c.com_name,
-			/* 상세 조회 시에도 중복으로 태그가 뻥튀기되는 현상을 차단하기 위해 동일하게 DISTINCT 필터 수술 집행 */
+			c.com_intro AS comIntro,
+			c.com_address AS comAddress,
+			(SELECT COUNT(*) FROM company_like WHERE company_no = p.company_no) AS likeCnt,
+			(SELECT COUNT(*) FROM company_like WHERE company_no = p.company_no AND user_id = #{loginUserId}) AS isLiked,
 			(
 				SELECT GROUP_CONCAT(DISTINCT pt_all.tag SEPARATOR ',')
 				FROM product_tag_map ptm_all
@@ -182,6 +187,22 @@
 	<delete id="deleteProductTagMap" parameterType="long">
 		DELETE FROM product_tag_map 
 		WHERE product_no = #{productNo}
+	</delete>
+
+	<select id="checkCompanyLike" parameterType="hashmap" resultType="int">
+		SELECT COUNT(*) 
+		FROM company_like 
+		WHERE user_id = #{loginUserId} AND company_no = #{companyNo}
+	</select>
+
+	<insert id="insertCompanyLike" parameterType="hashmap">
+		INSERT INTO company_like (user_id, company_no)
+		VALUES (#{loginUserId}, #{companyNo})
+	</insert>
+
+	<delete id="deleteCompanyLike" parameterType="hashmap">
+		DELETE FROM company_like 
+		WHERE user_id = #{loginUserId} AND company_no = #{companyNo}
 	</delete>
 	
 </mapper>
