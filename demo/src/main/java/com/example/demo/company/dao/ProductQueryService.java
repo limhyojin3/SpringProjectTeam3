@@ -39,6 +39,7 @@ public class ProductQueryService {
 				}
 			}
 
+			// 💡 MyBatis XML 개정으로 인해 map에 담긴 loginUserId가 자동으로 서브쿼리에 바인딩됩니다.
 			List<Product> list = productMapper.selectProductList(map);
 
 			resultMap.put("list", list);
@@ -55,6 +56,7 @@ public class ProductQueryService {
 	public HashMap<String, Object> getProduct(HashMap<String, Object> map) {
 		HashMap<String, Object> resultMap = new HashMap<String, Object>();
 		try {
+			// 💡 단건 상세 조회 시에도 동일하게 업체 정보와 실시간 찜 상태가 바인딩됩니다.
 			Product info = productMapper.selectProduct(map);
 
 			List<String> currentProductTags = new ArrayList<>();
