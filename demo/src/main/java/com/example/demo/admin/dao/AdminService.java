@@ -648,39 +648,33 @@ public class AdminService {
 	// 목록에서 신고승인인듯?
 	@Transactional
 	public HashMap<String, Object> approveReport(HashMap<String, Object> map) {
+	    HashMap<String, Object> resultMap = new HashMap<>();
+	    String answerContent = String.valueOf(map.getOrDefault("answerContent", "")).trim();
 
-		HashMap<String, Object> resultMap = new HashMap<>();
+	    if (answerContent.isEmpty()) {
+	        resultMap.put("result", "fail");
+	        resultMap.put("message", "신고자에게 보낼 답변을 입력해주세요.");
+	        return resultMap;
+	    }
 
-		try {
-			// 1. 신고 처리 완료 (action_status = 1)
-			adminMapper.updateReportApprove(map);
+	    try {
+	        int updated = adminMapper.updateReportApprove(map);
 
-			// 2. 신고 누적 수 조회 (승인된 것만)
-//			int count = adminMapper.selectReportHistory(map);
-			// 신고수 1이상인 회원 조회
-			
-			// 3. 3회 이상이면 자동 정지
-//			if (count >= 3) {
-//
-//				map.put("status", "STOP");
-//				adminMapper.updateMemberStatus(map);
-//
-//				// 이력 기록
-//				map.put("action_type", "BAN");
-//				map.put("reason", "신고 누적 3회 자동 정지");
-//
-//				adminMapper.insertBanHistory(map);
-//			}
-//			resultMap.put("count", count);
-			resultMap.put("result", "success");
+	        if (updated == 0) {
+	            resultMap.put("result", "fail");
+	            resultMap.put("message", "이미 처리되었거나 존재하지 않는 신고입니다.");
+	            return resultMap;
+	        }
 
-		} catch (Exception e) {
-			System.out.println(e.getMessage());
-			resultMap.put("result", "fail");
-			throw e; // 트랜잭션 롤백
-		}
+	        resultMap.put("result", "success");
+	        resultMap.put("message", "신고 승인 처리가 완료되었습니다.");
+	    } catch (Exception e) {
+	        resultMap.put("result", "fail");
+	        resultMap.put("message", Message.MSG_SERVER_ERR);
+	        throw e;
+	    }
 
-		return resultMap;
+	    return resultMap;
 	}
 
 	// 회원 상세 신고 누적횟수, 이력 조회
@@ -759,20 +753,40 @@ public class AdminService {
 	}
 
 	// 신고 반려
+	@Transactional
 	public HashMap<String, Object> rejectReport(HashMap<String, Object> map) {
-		System.out.println("reportReject map: " + map);
-		HashMap<String, Object> resultMap = new HashMap<>();
+	    HashMap<String, Object> resultMap = new HashMap<>();
+	    String answerContent = String.valueOf(map.getOrDefault("answerContent", "")).trim();
 
-		try {
-			int result = adminMapper.updateReportReject(map);
-			System.out.println("update result: " + result);
-			resultMap.put("result", "success");
-		} catch (Exception e) {
-			System.out.println(e.getMessage());
-			resultMap.put("result", "fail");
-		}
+	    if (answerContent.isEmpty()) {
+	        resultMap.put("result", "fail");
+	        resultMap.put("message", "신고자에게 보낼 답변을 입력해주세요.");
+	        return resultMap;
+	    }
 
-		return resultMap;
+	    try {
+	        int updated = adminMapper.updateReportReject(map);
+
+	        if (updated == 0) {
+	            resultMap.put("result", "fail");
+	            resultMap.put("message", "이미 처리되었거나 존재하지 않는 신고입니다.");
+	            return resultMap;
+	        }
+
+	        resultMap.put("result", "success");
+	        resultMap.put("message", "신고 반려 처리가 완료되었습니다.");
+	    } catch (Exception e) {
+	        resultMap.put("result", "fail");
+	        resultMap.put("message", Message.MSG_SERVER_ERR);
+	        throw e;
+	    }
+
+	    return resultMap;
+	}
+	
+	// 답변 전송 성공
+	public boolean completeReportAnswer(HashMap<String, Object> map) {
+	    return adminMapper.updateReportAnswerStatus(map) > 0;
 	}
 	
 	// 댓글로 게시판 추적

@@ -84,7 +84,8 @@ public class NotificationService {
     public boolean createReportResult(
             Object reportNo,
             String senderId,
-            boolean approved) {
+            boolean approved,
+            String answerContent) {
 
         return tryCreate("신고 처리 결과", () -> {
             HashMap<String, Object> map = createBaseMap(senderId);
@@ -95,15 +96,13 @@ public class NotificationService {
             );
             map.put(
                 "content",
-                approved
-                    ? "신고하신 내용이 승인 처리되었습니다."
-                    : "신고하신 내용이 반려되었습니다."
+                (approved ? "[신고 승인] " : "[신고 반려] ") + answerContent
             );
 
             boolean reporterCreated =
                 notificationMapper.insertReportResultForReporter(map) > 0;
 
-            if (approved) {
+            if (reporterCreated && approved) {
                 // 대상자가 없는 신고라면 0건이어도 정상입니다.
                 notificationMapper.insertReportWarningForTarget(map);
             }
