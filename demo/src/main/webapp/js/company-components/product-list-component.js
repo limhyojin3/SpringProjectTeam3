@@ -121,7 +121,7 @@ const productListComponent = {
 						thumbnail: item.comImgUrl || item.thumbnail,
 						isLiked: item.isLiked,
 						likeCnt: item.likeCnt
-					});
+					}); 
 				}
 			});
 			return Array.from(storeMap.values());
