@@ -68,7 +68,7 @@ const companyDetailComponent = {
 								isLiked: p.isLiked,
 								likeCnt: p.likeCnt,
 								companyNo: p.companyNo,
-								/* 💡 [데이터선 추가] 예약금 정산 컴포넌트가 낙하산으로 요구하는 보증금 알맹이 수혈 통로 개통 */
+								/* 예약금 정산 컴포넌트가 낙하산으로 요구하는 보증금 알맹이 수혈 통로 개통 */
 								deposit: p.deposit 
 							};
 						});
@@ -99,6 +99,11 @@ const companyDetailComponent = {
 				isLiked: item.isLiked,
 				likeCnt: item.likeCnt,
 				comName: self.companyInfo.comName, // 마스터 상단 바구니에 고여있는 진짜 업체명을 수혈!
+				com_name: self.companyInfo.comName,
+				
+				/* 💡 [정밀 저격 완공] productInquiryTemplate.jsp의 {{ product.company }} 바인딩이 숟가락으로 떠먹을 수 있도록 변수 완벽 적치 도킹 */
+				company: self.companyInfo.comName,
+				
 				deposit: item.deposit
 			};
 			
