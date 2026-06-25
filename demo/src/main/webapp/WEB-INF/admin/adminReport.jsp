@@ -205,12 +205,9 @@
                                 <div>
                                     <select v-model="processStatus" @change="fnGetReportList">
                                         <option value="ALL">처리상태</option>
-                                        <option value="WAIT_ACTION">처리대기</option> <!-- action_status = 0 -->
-                                        <!-- <option value="WAIT_ANSWER">답변대기</option> -->
-                                        <!-- action_status = 1 -->
+                                        <option value="WAIT_ACTION">처리대기</option>
+                                        <option value="WAIT_ANSWER">답변대기</option>
                                         <option value="COMPLETED">처리완료</option>
-                                        <!-- action_status = 1 -->
-                                        <option value="REJECTED">반려</option>
                                     </select>
                                 </div>
                                 <div>
@@ -320,23 +317,34 @@
                                         <p><b>내용:</b> {{ selectedReport.reportContent }}</p>
                                         <!-- 반려 사유 -->
                                         <div class="reject-box">
-                                            <label>반려 사유</label>
-                                            <textarea v-model="rejectReason" placeholder="반려 사유를 입력하세요"
-                                                class="form-control"></textarea>
+                                            <label>신고자에게 보낼 처리 답변</label>
+                                            <textarea v-model.trim="answerContent" maxlength="500"
+                                                placeholder="승인 또는 반려 사유와 처리 결과를 입력하세요." class="form-control"
+                                                ></textarea>
+                                            <small class="text-muted">
+                                                이 내용은 신고 처리 알림과 마이페이지에 표시됩니다.
+                                            </small>
                                         </div>
                                     </div>
                                     <!-- 버튼 -->
-                                    <div class="modal-footer">
+                                    <div class="modal-footer" v-if="selectedReport">
                                         <button class="btn btn-success"
                                             @click="fnView(selectedReport.targetType, selectedReport.uniTargetId)">
                                             관련 글 보기
                                         </button>
+
                                         <button class="btn btn-success" @click="fnApprove(selectedReport)">
-                                            승인
+                                            {{ selectedReport.actionStatus == 0 ? '승인' : '승인으로 수정' }}
                                         </button>
 
                                         <button class="btn btn-danger" @click="fnReject(selectedReport)">
-                                            반려
+                                            {{ selectedReport.actionStatus == 0 ? '반려' : '반려로 수정' }}
+                                        </button>
+
+                                        <button
+                                            v-if="selectedReport.actionStatus != 0 && selectedReport.answerStatus == 0"
+                                            class="btn btn-warning" @click="fnRetryAnswer(selectedReport)">
+                                            답변 알림 재전송
                                         </button>
 
                                         <button class="btn btn-secondary" data-dismiss="modal">
@@ -465,16 +473,19 @@
                     },
 
                     getStatusClass(r) {
-                        if (r.actionStatus == 0) return "waiting";     // 처리대기
-                        if (r.actionStatus == 1) return "complete";    // 승인
-                        if (r.actionStatus == 2) return "status-reject"; // 반려
+                        if (r.actionStatus == 0) return "waiting";
+                        if (r.answerStatus == 0) return "waiting";
+                        if (r.actionStatus == 2) return "status-reject";
+                        return "complete";
                     },
 
                     getStatusText(r) {
-                        if (r.actionStatus == 0) return "대기";
-                        if (r.actionStatus == 2) return "반려";
-                        // if (r.actionStatus == 1 && r.answerStatus == 0) return "답변대기";
-                        return "완료";
+                        if (r.actionStatus == 0) return "처리대기";
+                        if (r.actionStatus == 1 && r.answerStatus == 0) return "승인·답변대기";
+                        if (r.actionStatus == 2 && r.answerStatus == 0) return "반려·답변대기";
+                        if (r.actionStatus == 1 && r.answerStatus == 1) return "승인완료";
+                        if (r.actionStatus == 2 && r.answerStatus == 1) return "반려완료";
+                        return "상태확인";
                     },
 
                     formatDate(date) {
@@ -491,8 +502,12 @@
                             data: { reportNo: reportNo },
                             success: function (res) {
                                 console.log(res);
+                                if (res.result !== "success" || !res.info) {
+                                    alert("신고 상세 정보를 불러오지 못했습니다.");
+                                    return;
+                                }
                                 self.selectedReport = res.info;
-                                self.rejectReason = "";
+                                self.answerContent = res.info.answerContent || "";
                                 $("#reportModal").modal("show");
                             }
                         });
@@ -609,23 +624,47 @@
                     fnApprove(r) {
                         let self = this;
 
-                        if (!confirm("승인하시겠습니까?")) {
-                            return
-                        };
+                        if (!self.answerContent.trim()) {
+                            alert("신고자에게 보낼 답변을 입력해주세요.");
+                            return;
+                        }
+
+                        let confirmMessage = r.actionStatus == 0
+                            ? "신고를 승인하고 답변 알림을 보내시겠습니까?"
+                            : "기존 처리 결과를 승인으로 수정하고 다시 알리시겠습니까?";
+
+                        if (!confirm(confirmMessage)) {
+                            return;
+                        }
 
                         $.ajax({
-                            url: "http://localhost:8080/reportApprove.dox",
+                            url: "/reportApprove.dox",
                             type: "POST",
+                            dataType: "json",
                             data: {
                                 reportNo: r.reportNo,
+                                answerContent: self.answerContent,
                                 target_id: r.uniTargetId,
                                 target_type: r.targetType,
                                 admin_id: self.sessionId
                             },
                             success: function (res) {
-                                alert("승인 완료");
+                                if (res.result !== "success") {
+                                    alert(res.message || "승인 처리에 실패했습니다.");
+                                    return;
+                                }
+
+                                if (res.notificationResult === "fail") {
+                                    alert("승인 처리는 완료됐지만 알림 전송에 실패했습니다.");
+                                } else {
+                                    alert("승인 및 답변 전송이 완료되었습니다.");
+                                }
+
                                 self.fnGetReportList();
                                 $("#reportModal").modal("hide");
+                            },
+                            error: function () {
+                                alert("서버 통신 중 오류가 발생했습니다.");
                             }
                         });
                     },
@@ -633,25 +672,81 @@
                     fnReject(r) {
                         let self = this;
 
-                        if (!confirm("반려하시겠습니까?")) {
-                            return
-                        };
+                        if (!self.answerContent.trim()) {
+                            alert("신고자에게 보낼 반려 답변을 입력해주세요.");
+                            return;
+                        }
+
+                        let confirmMessage = r.actionStatus == 0
+                            ? "신고를 반려하고 답변 알림을 보내시겠습니까?"
+                            : "기존 처리 결과를 반려로 수정하고 다시 알리시겠습니까?";
+
+                        if (!confirm(confirmMessage)) {
+                            return;
+                        }
 
                         $.ajax({
-                            url: "http://localhost:8080/reportReject.dox",
+                            url: "/reportReject.dox",
                             type: "POST",
+                            dataType: "json",
                             data: {
                                 reportNo: r.reportNo,
-                                rejectReason: self.rejectReason
+                                answerContent: self.answerContent,
+
+                                // 기존 로직 호환용
+                                rejectReason: self.answerContent,
+                                target_id: r.uniTargetId,
+                                target_type: r.targetType,
+                                admin_id: self.sessionId
                             },
-                            success: function () {
-                                alert("반려 완료");
+                            success: function (res) {
+                                if (res.result !== "success") {
+                                    alert(res.message || "반려 처리에 실패했습니다.");
+                                    return;
+                                }
+
+                                if (res.notificationResult === "fail") {
+                                    alert("반려 처리는 완료됐지만 알림 전송에 실패했습니다.");
+                                } else {
+                                    alert("반려 및 답변 전송이 완료되었습니다.");
+                                }
+
                                 self.fnGetReportList();
-                                self.rejectReason = "";
+                                self.answerContent = "";
                                 $("#reportModal").modal("hide");
+                            },
+                            error: function () {
+                                alert("서버 통신 중 오류가 발생했습니다.");
                             }
                         });
                     },
+
+                    fnRetryAnswer(r) {
+                        let self = this;
+
+                        if (!confirm("저장된 답변으로 알림을 다시 보내시겠습니까?")) {
+                            return;
+                        }
+
+                        $.ajax({
+                            url: "/reportAnswerRetry.dox",
+                            type: "POST",
+                            dataType: "json",
+                            data: { reportNo: r.reportNo },
+                            success: function (res) {
+                                alert(res.message || "처리가 완료되었습니다.");
+
+                                if (res.result === "success") {
+                                    self.fnGetReportList();
+                                    $("#reportModal").modal("hide");
+                                }
+                            },
+                            error: function () {
+                                alert("답변 알림 재전송 중 오류가 발생했습니다.");
+                            }
+                        });
+                    },
+
                     fnOpenKillModal() {
                         $("#killModal").modal("show");
                     }

@@ -275,22 +275,17 @@
 	<if
 		test="processStatus != null and processStatus != 'ALL'">
 		<choose>
-			<!-- 조치대기: 조치 자체가 아직 안 된 상태 -->
-			<when test="processStatus == 'WAIT_ACTION'">
-				AND action_status = 0
-			</when>
-			<!-- 답변대기: 조치는 했지만 답변(통보)은 안 나간 상태 -->
-			<!--<when test="processStatus == 'WAIT_ANSWER'">
-				AND action_status = 1 AND answer_status = 0
-			</when>-->
-			<!-- 처리완료: 조치와 답변 모두 끝난 상태 -->
-			<when test="processStatus == 'COMPLETED'">
-				AND action_status = 1 <!-- AND answer_status = 1-->
-			</when>
-			<!-- 반려: 반려 조치-->
-			<when test="processStatus == 'REJECTED'">
-				AND action_status = 2 <!--AND answer_status = 0-->
-			</when>
+		    <when test="processStatus == 'WAIT_ACTION'">
+		        AND action_status = 0
+		    </when>
+		    <when test="processStatus == 'WAIT_ANSWER'">
+		        AND action_status IN (1, 2)
+		        AND answer_status = 0
+		    </when>
+		    <when test="processStatus == 'COMPLETED'">
+		        AND action_status IN (1, 2)
+		        AND answer_status = 1
+		    </when>
 		</choose>
 	</if>
 	<!-- 정렬 -->
@@ -379,22 +374,17 @@
 	<if
 		test="processStatus != null and processStatus != 'ALL'">
 		<choose>
-			<!-- 조치대기: 조치 자체가 아직 안 된 상태 -->
-			<when test="processStatus == 'WAIT_ACTION'">
-				AND action_status = 0
-			</when>
-			<!-- 답변대기: 조치는 했지만 답변(통보)은 안 나간 상태 -->
-			<when test="processStatus == 'WAIT_ANSWER'">
-				AND action_status = 1 AND answer_status = 0
-			</when>
-			<!-- 처리완료: 조치와 답변 모두 끝난 상태 -->
-			<when test="processStatus == 'COMPLETED'">
-				AND action_status = 1 AND answer_status = 1
-			</when>
-			<!-- 반려: 반려 조치-->
-			<when test="processStatus == 'REJECTED'">
-				AND action_status = 2 AND answer_status = 0
-			</when>
+		    <when test="processStatus == 'WAIT_ACTION'">
+		        AND action_status = 0
+		    </when>
+		    <when test="processStatus == 'WAIT_ANSWER'">
+		        AND action_status IN (1, 2)
+		        AND answer_status = 0
+		    </when>
+		    <when test="processStatus == 'COMPLETED'">
+		        AND action_status IN (1, 2)
+		        AND answer_status = 1
+		    </when>
 		</choose>
 	</if>
 	</select>
@@ -973,6 +963,8 @@
 		END AS UNI_TARGET_ID,
 		REPORT_TITLE,
 		REPORT_CONTENT,
+		ANSWER_CONTENT AS answerContent,
+		REJECT_REASON,
 		ANSWER_STATUS,
 		ACTION_STATUS,
 		REG_DATE
@@ -1043,19 +1035,32 @@
 	<!-- 단일 신고 승인-->
 	<update id="updateReportApprove" parameterType="hashmap">
 		UPDATE report
-		SET action_status = 1
-		WHERE report_no = #{reportNo}
+	    SET action_status = 1,
+	        answer_status = 0,
+	        answer_content = #{answerContent},
+	        reject_reason = NULL
+	    WHERE report_no = #{reportNo}
 	</update>
 
 	<!-- 신고 반려 -->
 	<update id="updateReportReject" parameterType="hashmap">
 		UPDATE report
-		SET action_status = 2,
-			reject_reason = #{rejectReason}
-		WHERE report_no = #{reportNo}
+	    SET action_status = 2,
+	        answer_status = 0,
+	        answer_content = #{answerContent},
+	        reject_reason = #{answerContent}
+	    WHERE report_no = #{reportNo}
 	</update>
 
-
+	<!-- 신고자 알림 생성 성공 -->
+<update id="updateReportAnswerStatus" parameterType="hashmap">
+    UPDATE report
+    SET answer_status = 1
+    WHERE report_no = #{reportNo}
+      AND action_status IN (1, 2)
+      AND answer_status = 0
+</update>
+	
 	<!-- 결제 관리-->
 	<select id="selectPaymentList" parameterType="hashmap" resultType="com.example.demo.admin.model.Admin">
 	    SELECT * FROM payment

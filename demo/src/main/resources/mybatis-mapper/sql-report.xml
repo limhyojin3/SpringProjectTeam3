@@ -33,6 +33,7 @@
             report_title AS reportTitle,
             report_content AS reportContent,
             answer_status AS answerStatus,
+            answer_content AS answerContent,
             action_status AS actionStatus,
             reg_date AS regDate,
             target_title AS targetTitle
