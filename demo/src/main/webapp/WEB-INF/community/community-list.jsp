@@ -14,6 +14,9 @@
     
     
 <style>
+    *, *::before, *::after {
+        box-sizing: border-box !important;
+    }
     :root{
         --primary:#ff5c8a;
         --primary-light:#fff1f5;
@@ -26,23 +29,17 @@
     }
 
     /* 전체 */
-    body{
-        background:
-            radial-gradient(circle at top left,#ffe8ef 0%,transparent 30%),
-            radial-gradient(circle at top right,#fff1f5 0%,transparent 25%),
-            #fff;
+    body {
+        overflow-y: scroll !important;
+        scrollbar-gutter: stable !important;
         font-family:'Pretendard',sans-serif;
         margin:0;
         padding:0;
         color:var(--dark);
-    }
-
-    /* 메인 */
-    .main-content{
-        max-width:1200px;
-        margin:auto;
-        padding:80px 20px;
-        min-height:100vh;
+        background:
+            radial-gradient(circle at top left,#ffe8ef 0%,transparent 30%),
+            radial-gradient(circle at top right,#fff1f5 0%,transparent 25%),
+            #fff;
     }
 
     /* 헤더 */
@@ -54,7 +51,7 @@
     .header-area h2{
         font-size:48px;
         font-weight:900;
-        color:#222;
+        color:#555;
         margin-bottom:15px;
         letter-spacing:-2px;
     }
@@ -86,12 +83,11 @@
     }
 
     .tab-item:hover{
-        transform:translateY(-3px);
         color:var(--primary);
     }
 
     .tab-item.active{
-        background:linear-gradient(135deg,#ff5c8a,#ff8fa9);
+        background:linear-gradient(135deg,#f4a096,#ff8fa9);
         color:white;
         border:none;
         box-shadow:0 10px 25px rgba(255,92,138,.3);
@@ -117,20 +113,35 @@
         border:none !important;
         border-radius:50px !important;
         padding:0 28px !important;
-        background:linear-gradient(135deg,#ff5c8a,#ff8fa9);
+        background:linear-gradient(135deg,#f4a096,#ff8fa9);
         color:white;
         font-weight:700;
         box-shadow:0 8px 20px rgba(255,92,138,.25);
     }
 
     /* 게시판 */
-    .board-list-container{
-        background:white;
-        border-radius:30px;
-        overflow:hidden;
+    .board-list-container {
+        background: white;
+        border-radius: 30px;
+        overflow: hidden;
         box-shadow:
-        0 20px 60px rgba(255,92,138,.08),
-        0 4px 15px rgba(0,0,0,.03);
+            0 20px 60px rgba(255,92,138,.08),
+            0 4px 15px rgba(0,0,0,.03);
+        /* 게시글 10개 기준 평균 높이를 고려해 최소 높이를 고정 */
+        min-height: auto;
+        display: flex;
+        flex-direction: column;
+        transition: opacity 0.2s ease;
+    }
+
+    /* 데이터가 없을 때 나오는 박스도 부모 높이를 꽉 채우도록 설정 */
+    .board-list-container .text-center.p-5 {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        min-height: 600px; /* '작성된 게시물이 없습니다' 화면에서도 높이 유지 */
     }
 
     /* 헤더 */
@@ -160,13 +171,11 @@
         transform:translateY(-2px);
     }
 
-    .list-item::after{
+    .list-item::after {
         content:'';
         position:absolute;
-        left:0;
-        top:0;
-        width:4px;
-        height:100%;
+        left:0; top:0;
+        width:4px; height:100%; /* 여기에 가로 4px이 생김 */
         background:transparent;
         transition:.25s;
     }
@@ -284,7 +293,7 @@
     }
 
     .icon-heart{
-        color:#ff5c8a;
+        color:#f4a096;
     }
 
     /* 프로필 호버 */
@@ -356,7 +365,7 @@
     }
 
     .pagination .active .page-link{
-        background:linear-gradient(135deg,#ff5c8a,#ff8fa9);
+        background:linear-gradient(135deg,#f4a096,#ff8fa9);
         color:white !important;
         box-shadow:0 8px 20px rgba(255,92,138,.25);
     }
@@ -374,7 +383,7 @@
         height:75px;
         border:none;
         border-radius:26px;
-        background:linear-gradient(135deg,#ff5c8a,#ff8fa9);
+        background:linear-gradient(135deg,#f4a096,#ff8fa9);
         color:white;
         font-size:30px;
         box-shadow:
@@ -418,7 +427,7 @@
 
     /* Total Posts */
     .text-primary{
-        color:#ff5c8a !important;
+        color:#f4a096 !important;
     }
 
     /* 모바일 */
@@ -451,13 +460,13 @@
         }
     }
     /* 배경 꽃잎 */
-    .petal{
-        position:fixed;
-        top:-80px;
-        pointer-events:none;
-        z-index:0;
-        opacity:.22;
-
+    .petal {
+        position: fixed;
+        top: -80px;
+        pointer-events: none;
+        z-index: 0;
+        opacity: .3;  /* 살짝 더 진하게 */
+        font-size: 60px;  /* 추가 - 기본 크기 키우기 */
         animation:
             petalFall linear infinite,
             petalSway ease-in-out infinite;
@@ -502,218 +511,227 @@
     }
 
     .sort-item:hover{
-        transform:translateY(-2px);
-        color:#ff5c8a;
+        color:#f4a096;
     }
 
     .sort-item.active{
-        background:linear-gradient(135deg,#ff5c8a,#ff8fa9);
+        background:linear-gradient(135deg,#f4a096,#ff8fa9);
         color:white;
         border:none;
         box-shadow:0 10px 25px rgba(255,92,138,.25);
     }
-.popular-board{
-    background:#fff;
-    border-radius:24px;
-    padding:25px;
-    margin-bottom:40px;
+    
+    .popular-board {
+        background:#fff;
+        border-radius:24px;
+        padding:25px;
+        margin-bottom:40px;
+        box-shadow: 0 10px 30px rgba(255,92,138,.08);
+        border:1px solid #ffe4ec;
+        min-height: 200px;  /* 추가 */
+    }
 
-    box-shadow:
-    0 10px 30px rgba(255,92,138,.08);
+    .popular-title{
+        font-size:20px;
+        font-weight:900;
+        color:#ff5c8a;
+        margin-bottom:18px;
+    }
 
-    border:1px solid #ffe4ec;
-}
+    .popular-item{
+        display:flex;
+        align-items:center;
+        justify-content:space-between;
 
-.popular-title{
-    font-size:20px;
-    font-weight:900;
-    color:#ff5c8a;
-    margin-bottom:18px;
-}
+        padding:14px 10px;
 
-.popular-item{
-    display:flex;
-    align-items:center;
-    justify-content:space-between;
+        border-bottom:1px solid #f7f7f7;
 
-    padding:14px 10px;
+        cursor:pointer;
 
-    border-bottom:1px solid #f7f7f7;
+        transition:.2s;
+    }
 
-    cursor:pointer;
+    .popular-item:last-child{
+        border-bottom:none;
+    }
 
-    transition:.2s;
-}
+    .popular-item:hover{
+        background:#fff7fa;
+        border-radius:12px;
+    }
 
-.popular-item:last-child{
-    border-bottom:none;
-}
+    .popular-rank{
+        width:40px;
+        font-weight:900;
+        color:#ff5c8a;
+    }
 
-.popular-item:hover{
-    background:#fff7fa;
-    border-radius:12px;
-}
+    .popular-subject{
+        flex:1;
+        font-weight:700;
+        color:#333;
+    }
 
-.popular-rank{
-    width:40px;
-    font-weight:900;
-    color:#ff5c8a;
-}
+    .popular-stat{
+        color:#999;
+        font-size:.9rem;
+    }
+    .badge-best{
+        display:inline-block;
 
-.popular-subject{
-    flex:1;
-    font-weight:700;
-    color:#333;
-}
+        padding:4px 10px;
+        margin-right:8px;
 
-.popular-stat{
-    color:#999;
-    font-size:.9rem;
-}
-.badge-best{
-    display:inline-block;
+        border-radius:8px;
 
-    padding:4px 10px;
-    margin-right:8px;
+        background:linear-gradient(
+            135deg,
+            #ffd700,
+            #ffb300
+        );
 
-    border-radius:8px;
+        color:white;
+        font-size:11px;
+        font-weight:900;
 
-    background:linear-gradient(
-        135deg,
-        #ffd700,
-        #ffb300
-    );
-
-    color:white;
-    font-size:11px;
-    font-weight:900;
-
-    box-shadow:
-        0 4px 12px rgba(255,193,7,.4);
-
-    animation:bestGlow 2s infinite;
-}
-@keyframes bestGlow{
-
-    0%{
-        transform:scale(1);
         box-shadow:
-            0 0 5px rgba(255,215,0,.4),
-            0 0 10px rgba(255,215,0,.2);
-    }
+            0 4px 12px rgba(255,193,7,.4);
 
-    50%{
-        transform:scale(1.08);
+        animation:bestGlow 2s infinite;
+    }
+    @keyframes bestGlow{
+
+        0%{
+            transform:scale(1);
+            box-shadow:
+                0 0 5px rgba(255,215,0,.4),
+                0 0 10px rgba(255,215,0,.2);
+        }
+
+        50%{
+            transform:scale(1.08);
+            box-shadow:
+                0 0 15px rgba(255,215,0,.8),
+                0 0 25px rgba(255,215,0,.5);
+        }
+
+        100%{
+            transform:scale(1);
+            box-shadow:
+                0 0 5px rgba(255,215,0,.4),
+                0 0 10px rgba(255,215,0,.2);
+        }
+    }
+    .badge-hot{
+        display:inline-block;
+
+        padding:4px 10px;
+        margin-right:8px;
+
+        border-radius:8px;
+
+        background:linear-gradient(
+            135deg,
+            #ff5c8a,
+            #ff8fa9
+        );
+
+        color:white;
+        font-size:11px;
+        font-weight:900;
+
         box-shadow:
-            0 0 15px rgba(255,215,0,.8),
-            0 0 25px rgba(255,215,0,.5);
+            0 4px 12px rgba(255,92,138,.3);
+
+        animation:hotPulse 1.5s infinite;
+    }
+    @keyframes hotPulse{
+
+        0%{
+            transform:scale(1);
+        }
+
+        50%{
+            transform:scale(1.08);
+        }
+
+        100%{
+            transform:scale(1);
+        }
+    }
+    .badge-king{
+        display:inline-block;
+
+        padding:4px 10px;
+        margin-right:8px;
+
+        border-radius:8px;
+
+        background:linear-gradient(
+            135deg,
+            #7c3aed,
+            #a855f7
+        );
+
+        color:white;
+        font-size:11px;
+        font-weight:900;
+
+        animation:bestGlow 1.5s infinite;
+    }
+    .author-box{
+        display:flex;
+        flex-direction:column;
+        gap:4px;
     }
 
-    100%{
-        transform:scale(1);
-        box-shadow:
-            0 0 5px rgba(255,215,0,.4),
-            0 0 10px rgba(255,215,0,.2);
+    .post-date{
+        font-size:11px;
+        color:#b5b5b5;
+        padding-left:4px;
     }
-}
-.badge-hot{
-    display:inline-block;
-
-    padding:4px 10px;
-    margin-right:8px;
-
-    border-radius:8px;
-
-    background:linear-gradient(
-        135deg,
-        #ff5c8a,
-        #ff8fa9
-    );
-
-    color:white;
-    font-size:11px;
-    font-weight:900;
-
-    box-shadow:
-        0 4px 12px rgba(255,92,138,.3);
-
-    animation:hotPulse 1.5s infinite;
-}
-@keyframes hotPulse{
-
-    0%{
-        transform:scale(1);
+    .title-meta{
+        margin-top:6px;
+        font-size:12px;
+        color:#aaa;
+        font-weight:600;
+        display:flex;
+        align-items:center;
+        gap:6px;
     }
-
-    50%{
-        transform:scale(1.08);
+    .title-meta span{
+        color:#ddd;
+    }
+    .title-main{
+        line-height:1.4;
+    }
+    .title-meta .writer{
+        color:#f4a096;
+        font-weight:700;
+    }
+    .meta-nickname{
+        color:#f4a096 !important;
+        font-weight:800;
+        text-decoration:none !important;
+    }
+        /* 컨텐츠가 꽃잎 위로 올라오게 */
+    #app {
+        position: relative;
+        z-index: 2;
     }
 
-    100%{
-        transform:scale(1);
+    /* 3. 중앙 정렬 컨텐츠 가로폭 고정 */
+    .main-content {
+        width: 100% !important;
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 80px 20px;
+        min-height: 100vh;
+        position: relative;
+        z-index: 2;
     }
-}
-.badge-king{
-    display:inline-block;
 
-    padding:4px 10px;
-    margin-right:8px;
-
-    border-radius:8px;
-
-    background:linear-gradient(
-        135deg,
-        #7c3aed,
-        #a855f7
-    );
-
-    color:white;
-    font-size:11px;
-    font-weight:900;
-
-    animation:bestGlow 1.5s infinite;
-}
-.author-box{
-    display:flex;
-    flex-direction:column;
-    gap:4px;
-}
-
-.post-date{
-    font-size:11px;
-    color:#b5b5b5;
-    padding-left:4px;
-}
-.title-meta{
-    margin-top:6px;
-    font-size:12px;
-    color:#aaa;
-    font-weight:600;
-    display:flex;
-    align-items:center;
-    gap:6px;
-}
-.title-meta span{
-    color:#ddd;
-}
-.title-main{
-    line-height:1.4;
-}
-.title-meta .writer{
-    color:#ff5c8a;
-    font-weight:700;
-}
-.meta-nickname{
-    color:#ff5c8a !important;
-    font-weight:800;
-    text-decoration:none !important;
-}
-    /* 컨텐츠가 꽃잎 위로 올라오게 */
-    #app,
-    .main-content{
-        position:relative;
-        z-index:2;
-    }
     .col-date{
         width:90px;
         text-align:right;
@@ -722,93 +740,116 @@
         font-weight:700;
         flex-shrink:0;
     }
+    .petal-heart i { color: #f4a096; }
+    .header-area h2 i {
+        color: #f4a096;
+    }
+    .popular-stat .fa-heart {
+        color: #f4a096;
+    }
+
+    .popular-stat .fa-eye {
+        color: #aaa;
+    }
+
+   /* 카테고리 탭 아이콘 색상 - 파스텔 */
+    .tab-item .fa-smile { color: #7eb8d4; }        /* 자유 - 파스텔 블루 */
+    .tab-item .fa-gem { color: #f4a096; }          /* 결혼 - 파스텔 핑크 */
+    .tab-item .fa-users { color: #7bc99a; }        /* 가족행사 - 파스텔 그린 */
+    .tab-item .fa-baby { color: #f0c070; }         /* 육아출산 - 파스텔 옐로 */
+    .tab-item .fa-comment-dots { color: #b39ddb; } /* 고민 - 파스텔 퍼플 */
+    .tab-item .fa-briefcase { color: #90a4ae; }    /* 직장 - 파스텔 그레이 */
+
+    /* active 상태일 때는 흰색으로 */
+    .tab-item.active i {
+        color: white !important;
+    }
+
+    /* 정렬 탭 아이콘 색상 - 파스텔 */
+    .sort-item .fa-clock { color: #7eb8d4; }   /* 최신순 - 파스텔 블루 */
+    .sort-item .fa-fire { color: #f4a096; }    /* 인기순 - 파스텔 핑크 */
+    .sort-item .fa-eye { color: #7bc99a; }     /* 조회순 - 파스텔 그린 */
+    .sort-item .fa-heart { color: #f0a0b8; }   /* 좋아요순 - 파스텔 로즈 */
+
+    /* active 상태일 때는 흰색으로 */
+    .sort-item.active i {
+        color: white !important;
+    }
 
 </style>
 </head>
 <body>
     <jsp:include page="/WEB-INF/common/header.jsp" />
-    <div class="petal">🌸</div>
-    <div class="petal">💗</div>
-    <div class="petal">🌸</div>
-    <div class="petal">💗</div>
-    <div class="petal">🌸</div>
-    <div class="petal">💗</div>
-    <div class="petal">🌸</div>
-    <div class="petal">💗</div>
-    <div class="petal">🌸</div>
-    <div class="petal">💗</div>
+    <div class="petal petal-heart"><i class="fas fa-heart"></i></div>
+    <div class="petal petal-heart"><i class="fas fa-heart"></i></div>
+    <div class="petal petal-heart"><i class="fas fa-heart"></i></div>
+    <div class="petal petal-heart"><i class="fas fa-heart"></i></div>
+    <div class="petal petal-heart"><i class="fas fa-heart"></i></div>
+    <div class="petal petal-heart"><i class="fas fa-heart"></i></div>
+    <div class="petal petal-heart"><i class="fas fa-heart"></i></div>
+    <div class="petal petal-heart"><i class="fas fa-heart"></i></div>
+    <div class="petal petal-heart"><i class="fas fa-heart"></i></div>
+    <div class="petal petal-heart"><i class="fas fa-heart"></i></div>
+    <div class="petal petal-heart"><i class="fas fa-heart"></i></div>
+    <div class="petal petal-heart"><i class="fas fa-heart"></i></div>
+    <div class="petal petal-heart"><i class="fas fa-heart"></i></div>
+    <div class="petal petal-heart"><i class="fas fa-heart"></i></div>
+    <div class="petal petal-heart"><i class="fas fa-heart"></i></div>
+    <div class="petal petal-heart"><i class="fas fa-heart"></i></div>
 
     <div id="app">
         <main class="main-content">
             <!-- 상단 헤더 -->
             <header class="header-area">
-                <h2>💬 Marry Community</h2>
+                <h2><i class="fas fa-comments mr-3"></i>Marry Community</h2>
                 <p>예비 부부들의 생생한 이야기와 꿀팁을 확인하세요.</p>
             </header>
 
             <!-- 카테고리 탭 -->
             <div class="category-tabs">
-                <div v-for="cate in categoryList" :key="cate.value" 
-                     :class="['tab-item', { active: searchCategory === cate.value }]"
-                     @click="fnChangeCategory(cate.value)">
+                <div v-for="cate in categoryList" :key="cate.value"
+                    :class="['tab-item', { active: searchCategory === cate.value }]"
+                    @click="fnChangeCategory(cate.value)">
+                    <i v-if="cate.icon" :class="['fas', cate.icon, 'mr-1']"></i>
                     {{ cate.label }}
                 </div>
             </div>
             <!-- 인기글 -->
-            <div class="popular-board mb-5" v-if="popularList.length > 0">
-
+            <div class="popular-board mb-5" v-show="popularList.length > 0">
                 <div class="popular-title">
-                    🔥 실시간 인기글
+                    <i class="fas fa-fire mr-2"></i>실시간 인기글
                 </div>
-
                 <div class="popular-item"
                     v-for="(item,index) in popularList"
                     :key="item.postNo"
                     @click="fnDetail(item.postNo)">
 
-                    <span class="popular-rank">
-                    {{ getRank(index) }}
-                    </span>
-
-                    
+                    <span class="popular-rank" v-html="getRank(index)"></span>
 
                     <span class="popular-subject">
                         {{ item.title }}
                     </span>
 
                     <span class="popular-stat">
-                        ❤️ {{ item.likeCnt }}
-                        👁 {{ item.viewCnt }}
+                        <i class="fas fa-heart mr-1"></i>{{ item.likeCnt }}
+                        <i class="fas fa-eye ml-2 mr-1"></i>{{ item.viewCnt }}
                     </span>
-
                 </div>
-
             </div>
 
             <!-- 정렬 버튼 -->
             <div class="sort-tabs">
-                <div
-                    :class="['sort-item', { active: sortType === 'latest' }]"
-                    @click="fnChangeSort('latest')">
-                    🕒 최신순
+                <div :class="['sort-item', { active: sortType === 'latest' }]" @click="fnChangeSort('latest')">
+                    <i class="fas fa-clock mr-1"></i>최신순
                 </div>
-
-                <div
-                    :class="['sort-item', { active: sortType === 'popular' }]"
-                    @click="fnChangeSort('popular')">
-                    🔥 인기순
+                <div :class="['sort-item', { active: sortType === 'popular' }]" @click="fnChangeSort('popular')">
+                    <i class="fas fa-fire mr-1"></i>인기순
                 </div>
-
-                <div
-                    :class="['sort-item', { active: sortType === 'view' }]"
-                    @click="fnChangeSort('view')">
-                    👀 조회순
+                <div :class="['sort-item', { active: sortType === 'view' }]" @click="fnChangeSort('view')">
+                    <i class="fas fa-eye mr-1"></i>조회순
                 </div>
-
-                <div
-                    :class="['sort-item', { active: sortType === 'like' }]"
-                    @click="fnChangeSort('like')">
-                    ❤️ 좋아요순
+                <div :class="['sort-item', { active: sortType === 'like' }]" @click="fnChangeSort('like')">
+                    <i class="fas fa-heart mr-1"></i>좋아요순
                 </div>
             </div>
             <!-- 상단 검색바 -->
@@ -822,100 +863,97 @@
             </div>
 
             <!-- 게시판 리스트 -->
-<div class="board-list-container">
-    <div class="list-header d-none d-md-flex">
-        <div class="col-no">No.</div>
-        <div class="col-cate">Category</div>
-        <div class="col-title">Subject</div>
-        <div class="col-date">Date</div>
-    </div>
+            <div class="board-list-container">
+                <div class="list-header d-none d-md-flex">
+                    <div class="col-no">No.</div>
+                    <div class="col-cate">Category</div>
+                    <div class="col-title">Subject</div>
+                    <div class="col-date">Date</div>
+                </div>
 
-    <div v-for="item in list" :key="item.postNo" class="list-item" @click="fnDetail(item.postNo)">
-        <div class="col-no">{{ item.postNo }}</div>
+                <div v-for="item in list" :key="item.postNo" class="list-item" @click="fnDetail(item.postNo)">
+                    <div class="col-no">{{ item.postNo }}</div>
 
-        <div class="col-cate">
-            <span :class="['badge-cate', 'cate-' + (item.category || 'default')]">
-                {{ getCategoryLabel(item.category) || '기타' }}
-            </span>
-        </div>
+                    <div class="col-cate">
+                        <span :class="['badge-cate', 'cate-' + (item.category || 'default')]">
+                            {{ getCategoryLabel(item.category) || '기타' }}
+                        </span>
+                    </div>
 
-        <div class="col-title">
-            <div class="title-main">
-                <span v-if="popularList.length > 0 && item.postNo === popularList[0].postNo" class="badge-king">
-                    👑 KING
-                </span>
+                    <div class="col-title">
+                        <div class="title-main">
+                            <span v-if="popularList.length > 0 && item.postNo === popularList[0].postNo" class="badge-king">
+                                <i class="fas fa-crown mr-1"></i>KING
+                            </span>
+                            <span v-else-if="bestPosts.includes(item.postNo)" class="badge-best">
+                                <i class="fas fa-trophy mr-1"></i>BEST
+                            </span>
+                            <span v-else-if="item.viewCnt >= 100 || item.commentCnt >= 10" class="badge-hot">
+                                <i class="fas fa-fire mr-1"></i>HOT
+                            </span>
 
-                <span v-else-if="bestPosts.includes(item.postNo)" class="badge-best">
-                    🏆 BEST
-                </span>
+                            {{ item.title }}
 
-                <span v-else-if="item.viewCnt >= 100 || item.commentCnt >= 10" class="badge-hot">
-                    🔥 HOT
-                </span>
+                            <span v-if="item.imgYn === 'Y'" style="margin-left:8px;color:#ff4d6d;font-size:.9rem;">
+                                <i class="fas fa-image"></i>
+                            </span>
 
-                {{ item.title }}
+                            <span v-if="item.commentCnt > 0" class="comment-count">
+                                ({{ item.commentCnt }})
+                            </span>
+                        </div>
 
-                <span v-if="item.imgYn === 'Y'" style="margin-left:8px;color:#ff4d6d;font-size:.9rem;">
-                    <i class="fas fa-image"></i>
-                </span>
+                        <div class="title-meta" @click.stop>
+                            <span class="nickname-container"
+                                @mouseenter="fnShowHover(item.userId, item.postNo)"
+                                @mouseleave="fnHideHover">
 
-                <span v-if="item.commentCnt > 0" class="comment-count">
-                    ({{ item.commentCnt }})
-                </span>
-            </div>
+                                <a v-if="item.nickname !== '탈퇴회원'"
+                                    :href="'/userProfile.do?userId=' + item.userId"
+                                    class="nickname-link meta-nickname">
+                                    @{{ item.nickname }}
+                                </a>
 
-            <div class="title-meta" @click.stop>
-                <span class="nickname-container"
-                    @mouseenter="fnShowHover(item.userId, item.postNo)"
-                    @mouseleave="fnHideHover">
+                                <b v-else class="text-danger meta-nickname">
+                                    @{{ item.nickname }}
+                                </b>
 
-                    <a v-if="item.nickname !== '탈퇴회원'"
-                        :href="'/userProfile.do?userId=' + item.userId"
-                        class="nickname-link meta-nickname">
-                        @{{ item.nickname }}
-                    </a>
+                                <div v-if="hoverUserId === item.userId && hoverPostNo === item.postNo && hoverInfo"
+                                    class="profile-hover-modal">
 
-                    <b v-else class="text-danger meta-nickname">
-                        @{{ item.nickname }}
-                    </b>
+                                    <div style="text-align:center;">
+                                        <img
+                                            :src="'/img/profile/' + (hoverInfo.info.profileImg || 'heart.png')"
+                                            style="width:50px;height:50px;border-radius:50%;object-fit:cover;display:block;margin:0 auto;">
 
-                    <div v-if="hoverUserId === item.userId && hoverPostNo === item.postNo && hoverInfo"
-                        class="profile-hover-modal">
+                                        <div class="mt-2 font-weight-bold">
+                                            {{ hoverInfo.info.nickName }}
+                                        </div>
 
-                        <div style="text-align:center;">
-                            <img
-                                :src="'/img/profile/' + (hoverInfo.info.profileImg || 'heart.png')"
-                                style="width:50px;height:50px;border-radius:50%;object-fit:cover;display:block;margin:0 auto;">
+                                        <div style="font-size:12px;color:#666;">
+                                            게시글 {{ hoverInfo.postTotal }} | 리뷰 {{ hoverInfo.reviewTotal }}
+                                        </div>
+                                    </div>
+                                </div>
+                            </span>
 
-                            <div class="mt-2 font-weight-bold">
-                                {{ hoverInfo.info.nickName }}
-                            </div>
-
-                            <div style="font-size:12px;color:#666;">
-                                게시글 {{ hoverInfo.postTotal }} | 리뷰 {{ hoverInfo.reviewTotal }}
-                            </div>
+                            <span>·</span>
+                            조회 {{ item.viewCnt }}
+                            <span>·</span>
+                            좋아요 {{ item.likeCnt }}
                         </div>
                     </div>
-                </span>
-
-                <span>·</span>
-                조회 {{ item.viewCnt }}
-                <span>·</span>
-                좋아요 {{ item.likeCnt }}
+                    <div class="col-date">
+                        {{ formatTime(item.regDate) }}
+                    </div>
+                </div>
+                <div v-if="list.length == 0" class="text-center p-5">
+                    <div class="mb-3" style="font-size:50px;opacity:.3;">
+                        <i class="fas fa-folder-open"></i>
+                    </div>
+                    <p style="color:#999;font-weight:500;">작성된 게시물이 없습니다.</p>
+                </div>
             </div>
-        </div>
-
-        <div class="col-date">
-            {{ formatTime(item.regDate) }}
-        </div>
-    </div>
-
-    <div v-if="list.length == 0" class="text-center p-5">
-        <div class="mb-3" style="font-size:50px;opacity:.3;">📂</div>
-        <p style="color:#999;font-weight:500;">작성된 게시물이 없습니다.</p>
-    </div>
-</div>
-
             <!-- 페이지네이션 -->
             <nav class="mt-5">
                 <ul class="pagination justify-content-center">
@@ -959,13 +997,13 @@
                     searchType: "all",
                     searchCategory: "전체",
                     categoryList: [
-                        { label: "전체", value: "전체" },
-                        { label: "🎈 자유", value: "자유" },
-                        { label: "💍 결혼", value: "결혼" },
-                        { label: "👨‍👩‍👧‍👦 가족행사", value: "가족행사" },
-                        { label: "👶 육아출산", value: "육아출산" },
-                        { label: "💬 고민", value: "고민" },
-                        { label: "💼 직장", value: "직장" }
+                        { label: "전체", value: "전체", icon: null },
+                        { label: "자유", value: "자유", icon: "fa-smile" },
+                        { label: "결혼", value: "결혼", icon: "fa-gem " },
+                        { label: "가족행사", value: "가족행사", icon: "fa-users" },
+                        { label: "육아출산", value: "육아출산", icon: "fa-baby" },
+                        { label: "고민", value: "고민", icon: "fa-comment-dots" },
+                        { label: "직장", value: "직장", icon: "fa-briefcase" }
                     ],
                     currentPage: 1,
                     pageSize: 10,
@@ -1012,6 +1050,8 @@
                     this.hoverInfo = null;
                 },
                 fnList() {
+                    // 페이드 아웃
+                    document.querySelector('.board-list-container').classList.add('board-list-fade');
                     const nParam = {
                         searchKeyword: this.searchKeyword,
                         searchType: this.searchType,
@@ -1030,6 +1070,10 @@
                             this.list = data.list; 
                             this.sessionId = data.sessionId;
                             this.totalCount = data.count; 
+                            // 페이드 인
+                            this.$nextTick(() => {
+                                document.querySelector('.board-list-container').classList.remove('board-list-fade');
+                            });
                         },
                         error: (xhr) => console.error("데이터 로드 실패")
                     });
@@ -1045,25 +1089,34 @@
                         }
                     })
                 },
-                getRank(index){
-                    if(index==0) return "🥇";
-                    if(index==1) return "🥈";
-                    if(index==2) return "🥉";
-                    return index+1;
+                getRank(index) {
+                    if(index === 0) return '<i class="fas fa-medal" style="color:#FFD700;"></i>';
+                    if(index === 1) return '<i class="fas fa-medal" style="color:#C0C0C0;"></i>';
+                    if(index === 2) return '<i class="fas fa-medal" style="color:#CD7F32;"></i>';
+                    return index + 1;
                 },
                 fnSearch() {
                     this.currentPage = 1;
                     this.fnList();
                 },
-                fnChangeSort(type) {
-                    this.sortType = type;
-                    this.currentPage = 1;
-                    this.fnList();
-                },
                 fnChangeCategory(value) {
+                    const scrollY = window.scrollY;
                     this.searchCategory = value;
                     this.currentPage = 1;
                     this.fnList();
+                    this.$nextTick(() => {
+                        window.scrollTo(0, scrollY);
+                    });
+                },
+
+                fnChangeSort(type) {
+                    const scrollY = window.scrollY;
+                    this.sortType = type;
+                    this.currentPage = 1;
+                    this.fnList();
+                    this.$nextTick(() => {
+                        window.scrollTo(0, scrollY);
+                    });
                 },
                 fnPageChange(page) {
                     if (page < 1 || page > this.totalPageCount) return;
@@ -1115,12 +1168,9 @@
                  this.fnPopularList();
                  document.querySelectorAll('.petal').forEach(el => {
                     el.style.left = Math.random() * 100 + 'vw';
-                    el.style.fontSize =
-                        (18 + Math.random() * 18) + 'px';
-                    el.style.animationDuration =
-                        (12 + Math.random() * 10) + 's';
-                    el.style.animationDelay =
-                        Math.random() * 5 + 's';
+                    el.style.fontSize = (24 + Math.random() * 24) + 'px';  /* 18~36 → 24~48 */
+                    el.style.animationDuration = (12 + Math.random() * 10) + 's';
+                    el.style.animationDelay = -(Math.random() * 10) + 's';  /* 음수로 처음부터 보이게 */
                 });
             }
         }).mount('#app');

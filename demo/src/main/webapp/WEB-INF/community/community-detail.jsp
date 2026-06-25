@@ -16,8 +16,8 @@
 
     <style>
 :root{
-    --primary-color:#ff4d6d;
-    --secondary-color:#ff85a1;
+    --primary-color:#f4a096;
+    --secondary-color:#ffb3c1;
     --bg-soft:#fffafa;
     --dark-text:#2d2d2d;
     --light-gray:#f8f9fa;
@@ -55,25 +55,21 @@ body{
     margin-bottom:45px;
 }
 
-.category-tag{
-    display:inline-block;
-    padding:8px 18px;
-    background:linear-gradient(135deg,#ffe4ec,#fff0f3);
-    color:#ff4d6d;
-    border-radius:999px;
-    font-size:14px;
-    font-weight:800;
-    margin-bottom:20px;
+.category-tag {
+    display: inline-block;
+    padding: 8px 18px;
+    border-radius: 999px;
+    font-size: 14px;
+    font-weight: 800;
+    margin-bottom: 20px;
 }
 
-.post-title{
-    font-size:42px;
-    font-weight:900;
-    line-height:1.3;
-    margin-bottom:20px;
-    background:linear-gradient(135deg,#ff4d6d,#ff85a1);
-    -webkit-background-clip:text;
-    -webkit-text-fill-color:transparent;
+.post-title {
+    font-size: 42px;
+    font-weight: 900;
+    line-height: 1.3;
+    margin-bottom: 20px;
+    color: #555;
 }
 
 .post-info{
@@ -85,7 +81,7 @@ body{
 }
 
 .author-name{
-    color:#ff4d6d;
+    color:#f4a096;
     font-weight:800;
 }
 
@@ -107,25 +103,25 @@ body{
 
 .bottom-area{
     display:flex;
-    justify-content:space-between;
+    justify-content:center;
     align-items:center;
+    gap:12px;
     padding-top:35px;
     border-top:1px solid #f3f3f3;
 }
 
 .btn-like{
-    background:#fff;
-    color:#ff4d6d;
-    border:2px solid #ffe4ec;
+    background: linear-gradient(135deg, #f4a096, #ff85a1);
+    color: #fff;
+    border: none;
     padding:14px 32px;
     border-radius:999px;
     font-weight:800;
-    box-shadow:0 8px 20px rgba(255,77,109,.12);
+    box-shadow:0 8px 20px rgba(255,77,109,.2);
     transition:.25s;
 }
 
 .btn-like:hover{
-    background:#fff5f7;
     transform:translateY(-2px);
 }
 
@@ -134,8 +130,9 @@ body{
     border:none;
     border-radius:14px;
     font-weight:700;
-    margin-left:8px;
+    margin-left:0;   /* 기존 8px → 0 */
     transition:.2s;
+    box-shadow:0 8px 20px rgba(138, 134, 135, 0.2);
 }
 
 .right-btns button:hover{
@@ -196,7 +193,7 @@ body{
 }
 
 .btn-primary-sm{
-    background:linear-gradient(135deg,#ff4d6d,#ff85a1);
+    background:linear-gradient(135deg, #f4a096, #ff85a1);
     color:#fff;
     border:none;
     border-radius:12px;
@@ -385,22 +382,98 @@ body{
         margin-left:40px;
     }
 }
+/* 댓글 이미지 첨부 영역 */
+.comment-file-area {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 12px;
+}
+
+.comment-file-btn {
+    background: #fff;
+    border: 1px solid #ffd6df;
+    color: #f4a096;
+    padding: 8px 15px;
+    border-radius: 12px;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.comment-file-btn:hover {
+    background: #fff5f7;
+}
+
+.comment-image-preview-box {
+    display: flex;
+    align-items: center;
+    margin-top: 12px;
+    padding: 10px;
+    background: #fff;
+    border: 1px solid #ffe4ec;
+    border-radius: 14px;
+}
+
+.comment-image-preview {
+    width: 100px;
+    height: 100px;
+    object-fit: cover;
+    border-radius: 12px;
+    border: 1px solid #eee;
+}
+
+.comment-image-remove {
+    margin-left: 10px;
+    border: 1px solid #ddd;
+    background: #fff;
+    color: #888;
+    border-radius: 9px;
+    padding: 6px 11px;
+    font-size: 12px;
+}
+
+.comment-uploaded-image {
+    display: block;
+    max-width: 320px;
+    max-height: 320px;
+    margin-top: 12px;
+    object-fit: contain;
+    border-radius: 14px;
+    border: 1px solid #eee;
+    cursor: pointer;
+}
+
+.petal-heart i { color: #f4a096; }
+
+.cate-자유 { background: #e0f2fe; color: #0369a1; }
+.cate-결혼 { background: #ffe4ec; color: #be185d; }
+.cate-가족행사 { background: #dcfce7; color: #15803d; }
+.cate-육아출산 { background: #fef3c7; color: #b45309; }
+.cate-고민 { background: #ede9fe; color: #6d28d9; }
+.cate-직장 { background: #e2e8f0; color: #334155; }
+.cate-default { background: #f3f4f6; color: #6b7280; }
+
 </style>
 </head>
 <body>
     <jsp:include page="/WEB-INF/common/header.jsp" />
-    <div class="petal">🤍</div>
-<div class="petal">🤍</div>
-<div class="petal">🤍</div>
-<div class="petal">🌸</div>
-<div class="petal">🌸</div>
-<div class="petal">🌸</div>
-<div class="petal">🤍</div>
-<div class="petal">🤍</div>
-<div class="petal">🤍</div>
-<div class="petal">🌸</div>
-<div class="petal">🌸</div>
-<div class="petal">🌸</div>
+    <div class="petal petal-heart"><i class="fas fa-heart"></i></div>
+    <div class="petal petal-heart"><i class="fas fa-heart"></i></div>
+    <div class="petal petal-heart"><i class="fas fa-heart"></i></div>
+    <div class="petal petal-heart"><i class="fas fa-heart"></i></div>
+    <div class="petal petal-heart"><i class="fas fa-heart"></i></div>
+    <div class="petal petal-heart"><i class="fas fa-heart"></i></div>
+    <div class="petal petal-heart"><i class="fas fa-heart"></i></div>
+    <div class="petal petal-heart"><i class="fas fa-heart"></i></div>
+    <div class="petal petal-heart"><i class="fas fa-heart"></i></div>
+    <div class="petal petal-heart"><i class="fas fa-heart"></i></div>
+    <div class="petal petal-heart"><i class="fas fa-heart"></i></div>
+    <div class="petal petal-heart"><i class="fas fa-heart"></i></div>
+    <div class="petal petal-heart"><i class="fas fa-heart"></i></div>
+    <div class="petal petal-heart"><i class="fas fa-heart"></i></div>
+    <div class="petal petal-heart"><i class="fas fa-heart"></i></div>
+    <div class="petal petal-heart"><i class="fas fa-heart"></i></div>
     <div id="app">
         <main class="main-content">
             <template v-if="post && post.postNo">
@@ -408,7 +481,9 @@ body{
                     <!-- 게시글 헤더 -->
                     <div class="post-header">
                         <div class="d-flex justify-content-between align-items-center mb-2">
-                            <span class="category-tag"># {{ post.category || '일반' }}</span>
+                            <span :class="['category-tag', 'cate-' + (post.category || 'default')]">
+                                # {{ post.category || '일반' }}
+                            </span>
                             <button v-if="sessionId && post.userId !== sessionId && post.nickname !== '탈퇴회원'" 
                                     class="btn-report" 
                                     @click="fnOpenReportModal('POST', post.postNo, post.userId)">
@@ -435,9 +510,9 @@ body{
 
                     <!-- 하단 반응/버튼 -->
                     <div class="bottom-area">
-                        <button class="btn-like" @click="post.nickname !== '탈퇴회원' ? fnPostLike() : null" :style="post.nickname === '탈퇴회원' ? 'cursor: default; opacity: 0.7;' : ''">
-                            <span v-if="post && post.isLiked > 0">❤️</span>
-                            <span v-else>🤍</span>
+                        <button class="btn-like" @click="post.nickname !== '탈퇴회원' ? fnPostLike() : null"
+                            :style="post.nickname === '탈퇴회원' ? 'cursor: default; opacity: 0.7;' : ''">
+                            <i :class="post && post.isLiked > 0 ? 'fas fa-heart' : 'far fa-heart'"></i>
                             좋아요 {{ post.likeCnt || 0 }}
                         </button>
                         
@@ -458,10 +533,47 @@ body{
                     <h5 class="comment-title">댓글 <b>{{ commentList.length }}</b></h5>
                     
                     <!-- 댓글 입력 -->
-                    <div class="comment-write-box mb-5" v-if="sessionId && post.nickname !== '탈퇴회원'">
-                        <textarea v-model="newComment" class="form-control" placeholder="따뜻한 댓글을 남겨주세요." rows="3"></textarea>
-                        <div class="text-right mt-3">
-                            <button class="btn-primary-sm" @click="fnAddComment(null)">등록하기</button>
+                    <div class="comment-write-box mb-5"
+                        v-if="sessionId && post.nickname !== '탈퇴회원'">
+
+                        <textarea v-model="newComment"
+                                class="form-control"
+                                placeholder="따뜻한 댓글을 남겨주세요."
+                                rows="3"></textarea>
+
+                        <!-- 첨부 이미지 미리보기 -->
+                        <div v-if="commentPreview" class="comment-image-preview-box">
+                            <img :src="commentPreview"
+                                class="comment-image-preview"
+                                alt="첨부 이미지 미리보기">
+
+                            <button type="button"
+                                    class="comment-image-remove"
+                                    @click="fnRemoveCommentImage">
+                                이미지 취소
+                            </button>
+                        </div>
+
+                        <div class="comment-file-area">
+                            <div>
+                                <input type="file"
+                                    ref="commentFileInput"
+                                    accept="image/*"
+                                    style="display:none;"
+                                    @change="fnSelectCommentImage">
+
+                                <button type="button"
+                                        class="comment-file-btn"
+                                        @click="$refs.commentFileInput.click()">
+                                    <i class="far fa-image"></i>
+                                    사진 첨부
+                                </button>
+                            </div>
+
+                            <button class="btn-primary-sm"
+                                    @click="fnAddComment(null)">
+                                등록하기
+                            </button>
                         </div>
                     </div>
                     <div v-else-if="post.nickname === '탈퇴회원'" class="alert alert-light text-center py-4" style="border-radius: 20px;">
@@ -530,7 +642,13 @@ body{
                                 <template v-else>
                                     <!-- [수정 기능 추가] 수정 모드가 아닐 때 -->
                                     <div v-if="!item.isEdit">
-                                        {{ item.content }}
+                                        <div>{{ item.content }}</div>
+
+                                        <img v-if="item.imgUrl"
+                                            :src="item.imgUrl"
+                                            class="comment-uploaded-image"
+                                            alt="댓글 첨부 이미지"
+                                            @click="fnOpenCommentImage(item.imgUrl)">
                                     </div>
                                     <!-- [수정 기능 추가] 수정 모드일 때 -->
                                     <div v-else class="edit-box">
@@ -564,10 +682,50 @@ body{
                             </div>
 
                             <!-- 답글 입력창 -->
-                            <div class="mt-3 p-3 bg-white shadow-sm rounded" v-if="item.isDeleted == 0 && item.showReply && item.nickname !== '탈퇴회원' && post.nickname !== '탈퇴회원'">
-                                <textarea v-model="item.replyContent" class="form-control border-0 bg-light" rows="2" placeholder="답글을 작성하세요..."></textarea>
-                                <div class="text-right mt-2">
-                                    <button class="btn btn-sm btn-dark px-3" @click="fnAddComment(item)">답글 등록</button>
+                            <div class="mt-3 p-3 bg-white shadow-sm rounded"
+                                v-if="item.isDeleted == 0
+                                    && item.showReply
+                                    && item.nickname !== '탈퇴회원'
+                                    && post.nickname !== '탈퇴회원'">
+
+                                <textarea v-model="item.replyContent"
+                                        class="form-control border-0 bg-light"
+                                        rows="2"
+                                        placeholder="답글을 작성하세요..."></textarea>
+
+                                <!-- 대댓글 이미지 미리보기 -->
+                                <div v-if="item.replyPreview" class="comment-image-preview-box">
+                                    <img :src="item.replyPreview"
+                                        class="comment-image-preview"
+                                        alt="답글 이미지 미리보기">
+
+                                    <button type="button"
+                                            class="comment-image-remove"
+                                            @click="fnRemoveReplyImage(item)">
+                                        이미지 취소
+                                    </button>
+                                </div>
+
+                                <div class="comment-file-area">
+                                    <div>
+                                        <input type="file"
+                                            :ref="'replyFileInput_' + item.commentNo"
+                                            accept="image/*"
+                                            style="display:none;"
+                                            @change="fnSelectReplyImage($event, item)">
+
+                                        <button type="button"
+                                                class="comment-file-btn"
+                                                @click="fnOpenReplyFileInput(item)">
+                                            <i class="far fa-image"></i>
+                                            사진 첨부
+                                        </button>
+                                    </div>
+
+                                    <button class="btn btn-sm btn-dark px-3"
+                                            @click="fnAddComment(item)">
+                                        답글 등록
+                                    </button>
                                 </div>
                             </div>
                         </div>
@@ -624,6 +782,8 @@ body{
                     post: {}, 
                     commentList: [],
                     newComment: "",
+                    commentFile: null,
+                    commentPreview: "",
                     sessionId: "${sessionId}",
                     sessionRole: "${sessionRole}",
                     reportInfo: {
@@ -716,28 +876,92 @@ body{
                         data: JSON.stringify({ postNo: this.postNo, userId: this.sessionId }),
                         success: (res) => {
                             const data = (typeof res === "string") ? JSON.parse(res) : res;
-                            this.commentList = data.list.map(c => ({...c, showReply: false, replyContent: "", isEdit:false}));
+                            this.commentList = (data.list || []).map(c => ({
+                                ...c,
+                                showReply: false,
+                                replyContent: "",
+                                replyFile: null,
+                                replyPreview: "",
+                                isEdit: false
+                            }));
                         }
                     });
                 },
                 fnAddComment(parentItem) {
-                    const content = parentItem ? parentItem.replyContent : this.newComment;
-                    if(!content) return alert("내용을 입력하세요.");
+                    const isReply = parentItem != null;
+
+                    const content = isReply
+                        ? parentItem.replyContent
+                        : this.newComment;
+
+                    const file = isReply
+                        ? parentItem.replyFile
+                        : this.commentFile;
+
+                    if (!content || !content.trim()) {
+                        return alert("내용을 입력하세요.");
+                    }
+
+                    if (!this.sessionId || this.sessionId === "null") {
+                        return alert("로그인이 필요합니다.");
+                    }
+
+                    const formData = new FormData();
+
+                    formData.append("postNo", this.postNo);
+                    formData.append("userId", this.sessionId);
+                    formData.append("content", content.trim());
+
+                    if (isReply) {
+                        formData.append("parentNo", parentItem.commentNo);
+                    }
+
+                    if (file) {
+                        // Controller의 @RequestParam 이름과 동일해야 함
+                        formData.append("files", file);
+                    }
+
                     $.ajax({
                         url: "/api/comment/comm-add.dox",
                         type: "POST",
-                        contentType: "application/json",
-                        data: JSON.stringify({
-                            postNo: this.postNo,
-                            userId: this.sessionId,
-                            content: content,
-                            parentNo: parentItem ? parentItem.commentNo : null
-                        }),
+                        data: formData,
+
+                        // FormData에서는 반드시 false
+                        processData: false,
+                        contentType: false,
+
                         success: (res) => {
-                            this.newComment = "";
-                            this.fnGetComments();
+                            const data =
+                                typeof res === "string"
+                                    ? JSON.parse(res)
+                                    : res;
+
+                            if (data.result === "success") {
+                                if (isReply) {
+                                    parentItem.replyContent = "";
+                                    parentItem.showReply = false;
+                                    this.fnRemoveReplyImage(parentItem);
+                                } else {
+                                    this.newComment = "";
+                                    this.fnRemoveCommentImage();
+                                }
+
+                                this.fnGetComments();
+                            } else {
+                                alert("댓글 등록에 실패했습니다.");
+                            }
+                        },
+
+                        error: (xhr) => {
+                            console.error("댓글 등록 오류:", xhr);
+                            alert("댓글 등록 중 오류가 발생했습니다.");
                         }
                     });
+                },
+                fnOpenCommentImage(url) {
+                    if (url) {
+                        window.open(url, "_blank");
+                    }
                 },
                 fnCommentLike(item) {
                     if(!this.sessionId) return alert("로그인이 필요합니다.");
@@ -866,16 +1090,116 @@ body{
                         return Math.floor(diff / 86400) + "일 전";
                     }
                     return target.toLocaleDateString('ko-KR');
-                }
+                },
+                fnSelectCommentImage(event) {
+                    const file = event.target.files[0];
+
+                    if (!file) {
+                        return;
+                    }
+
+                    if (!file.type.startsWith("image/")) {
+                        alert("이미지 파일만 첨부할 수 있습니다.");
+                        event.target.value = "";
+                        return;
+                    }
+
+                    const maxSize = 10 * 1024 * 1024;
+
+                    if (file.size > maxSize) {
+                        alert("이미지는 10MB 이하만 첨부할 수 있습니다.");
+                        event.target.value = "";
+                        return;
+                    }
+
+                    if (this.commentPreview) {
+                        URL.revokeObjectURL(this.commentPreview);
+                    }
+
+                    this.commentFile = file;
+                    this.commentPreview = URL.createObjectURL(file);
+                },
+
+                fnRemoveCommentImage() {
+                    if (this.commentPreview) {
+                        URL.revokeObjectURL(this.commentPreview);
+                    }
+
+                    this.commentFile = null;
+                    this.commentPreview = "";
+
+                    if (this.$refs.commentFileInput) {
+                        this.$refs.commentFileInput.value = "";
+                    }
+                },
+                fnOpenReplyFileInput(item) {
+                    const refName = "replyFileInput_" + item.commentNo;
+                    const input = this.$refs[refName];
+
+                    // v-for 내부 ref는 배열로 잡히는 경우가 있음
+                    if (Array.isArray(input)) {
+                        input[0].click();
+                    } else if (input) {
+                        input.click();
+                    }
+                },
+
+                fnSelectReplyImage(event, item) {
+                    const file = event.target.files[0];
+
+                    if (!file) {
+                        return;
+                    }
+
+                    if (!file.type.startsWith("image/")) {
+                        alert("이미지 파일만 첨부할 수 있습니다.");
+                        event.target.value = "";
+                        return;
+                    }
+
+                    const maxSize = 10 * 1024 * 1024;
+
+                    if (file.size > maxSize) {
+                        alert("이미지는 10MB 이하만 첨부할 수 있습니다.");
+                        event.target.value = "";
+                        return;
+                    }
+
+                    if (item.replyPreview) {
+                        URL.revokeObjectURL(item.replyPreview);
+                    }
+
+                    item.replyFile = file;
+                    item.replyPreview = URL.createObjectURL(file);
+                },
+
+                fnRemoveReplyImage(item) {
+                    if (item.replyPreview) {
+                        URL.revokeObjectURL(item.replyPreview);
+                    }
+
+                    item.replyFile = null;
+                    item.replyPreview = "";
+
+                    const refName = "replyFileInput_" + item.commentNo;
+                    const input = this.$refs[refName];
+
+                    if (Array.isArray(input) && input[0]) {
+                        input[0].value = "";
+                    } else if (input) {
+                        input.value = "";
+                    }
+                },
                 
             },
-            mounted() { this.fnGetDetail(); 
-             document.querySelectorAll('.petal').forEach(el => {
-                el.style.left = Math.random() * 100 + 'vw';
-                el.style.fontSize = (20 + Math.random() * 20) + 'px';
-                el.style.animationDuration = (10 + Math.random() * 10) + 's';
-                el.style.animationDelay = Math.random() * 5 + 's';
-            });}
+            mounted() { 
+                this.fnGetDetail(); 
+                document.querySelectorAll('.petal').forEach(el => {
+                    el.style.left = Math.random() * 100 + 'vw';
+                    el.style.fontSize = (20 + Math.random() * 20) + 'px';
+                    el.style.animationDuration = (10 + Math.random() * 10) + 's';
+                    el.style.animationDelay = -(Math.random() * 10) + 's';
+                });}
         }).mount('#app');
     </script>
 </body>
