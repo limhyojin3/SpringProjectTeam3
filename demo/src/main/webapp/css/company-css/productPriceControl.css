@@ -15,17 +15,17 @@
 
 /* 볼드하고 큼직하게 강조된 프리미엄 금액 텍스트 */
 .price-tag-display {
-	font-size: 0.95rem;
-	font-weight: 500;
-	color: #333333;
+    font-size: 0.95rem;
+    font-weight: 500;
+    color: #555;
 }
 
 .price-value {
-	font-size: 1.5rem;
-	font-weight: 800;
-	color: #222222;
-	margin-right: 2px;
-	font-family: 'Montserrat', sans-serif;
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: #7b68c8;  /* #222222 → 보라 */
+    margin-right: 2px;
+    font-family: 'Montserrat', sans-serif;
 }
 
 /* 제어 버튼 서랍 가로 배치 */
@@ -40,7 +40,7 @@
 	background: #9b8fd4 !important;
 	color: #ffffff !important;
 	border: 1px solid #9b8fd4 !important;
-	border-radius: 8px !important;
+	border-radius: 20px !important;
 	cursor: pointer !important;
 	font-size: 13px !important;
 	font-weight: 700 !important;
@@ -61,7 +61,7 @@
 	background: #f4a096 !important;
 	color: #ffffff !important;
 	border: 1px solid #f4a096 !important;
-	border-radius: 8px !important;
+	border-radius: 20px !important;
 	cursor: pointer !important;
 	font-size: 13px !important;
 	font-weight: 700 !important;

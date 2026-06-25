@@ -18,7 +18,10 @@
             </div>
 
             <div v-if="reviewTab === 'detail'" class="content-card">
-                <h3>유료 리뷰 내역 : <span style="color: #ff1493;">새 리뷰 {{newReviewCnt}}건</span></h3>
+                <h3>
+                    <i class="fas fa-gem mr-2 icon-paid"></i>
+                    <span class="title-paid">유료 리뷰 내역</span> : <span class="res-count-highlight">새 리뷰 {{newReviewCnt}}건</span>
+                </h3>
                 <div v-for="(w, idx) in pagedRegisteredProductList" :key="idx">
                     <div class="review-header-info" style="margin-bottom: 10px;" @click="fnReviewDetails(w)">
                         <div class="review-thumb-box">
@@ -26,7 +29,7 @@
                         </div>
                         <div class="review-product-name">
                             <div class="ticket-no">No. {{ registeredProductList.length - ((reviewListPage - 1) * 5 + idx ) }}</div>
-                            <a href="javascript:;" style="text-decoration: none; color:#0b3f8e;"><strong>{{w.productName}}</strong></a>
+                            <a href="javascript:;" class="review-product-link"><strong>{{w.productName}}</strong></a>
                         </div>
                         <div class="review-count-badge">리뷰 갯수: {{w.reviewCount}}개 </div>
                     </div>
@@ -43,7 +46,10 @@
             </div>
 
             <div v-if="reviewTab === 'simple'" class="content-card">
-                <h3>무료 리뷰 내역 : <span style="color: #ff1493;">새 리뷰 {{newUnpaidReviewCnt}}건</span></h3>
+                <h3>
+                    <i class="fas fa-gift mr-2 icon-free"></i>
+                    <span class="title-free">무료 리뷰 내역</span> : <span class="res-count-highlight">새 리뷰 {{newUnpaidReviewCnt}}건</span>
+                </h3>
                 <div v-for="(w, idx) in pagedProductListForSimpleReviews" :key="idx">
                     <div class="review-header-info" style="margin-bottom: 10px;" @click="fnSimpleReviewDetails(w)">
                         <div class="review-thumb-box">
@@ -51,7 +57,7 @@
                         </div>
                         <div class="review-product-name">
                             <div class="ticket-no">No. {{ productListForSimpleReviews.length - ((reviewListPage - 1) * 5 + idx ) }}</div>
-                            <a href="javascript:;" style="text-decoration: none; color:#0b3f8e;"><strong>{{w.productName}}</strong></a>
+                            <a href="javascript:;" class="review-product-link"><strong>{{w.productName}}</strong></a>
                         </div>
                         <div class="review-count-badge">리뷰 갯수: {{w.reviewCount}}개 </div>
                     </div>

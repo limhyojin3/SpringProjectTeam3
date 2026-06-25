@@ -411,7 +411,7 @@
                                 <a href="/adminPass.do" class="btn-buy-pass">패스 구매하기</a>
                             </div>
                         </div>
-</div>
+                    </div>
                     <button class="btn-withdraw" @click="fnWithdraw()">탈퇴하기</button>
                 </div>
             </div>
@@ -451,6 +451,18 @@
         </div>
         <jsp:include page="/WEB-INF/common/footer.jsp" />
     </div>
+    <script>
+        const currentPath = window.location.pathname;
+        document.querySelectorAll('.nav-btn').forEach(btn => {
+            const onclick = btn.getAttribute('onclick');
+            if (!onclick) return;
+            const match = onclick.match(/'([^']+)'/);
+            if (!match) return;
+            if (currentPath.endsWith(match[1])) {
+                btn.classList.add('active');
+            }
+        });
+    </script>
 </body>
 <script>
     const app = Vue.createApp({

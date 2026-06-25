@@ -8,9 +8,11 @@
     <div class="product-management-list-container">
         <div class="productlist-productReg">
             <div class="section-header">
-                <h2>등록한 상품 <span class="header-count-badge">{{ registeredProductList.length }}</span></h2>
+                <h2><i class="fas fa-box mr-2"></i>등록한 상품 <span class="header-count-badge">{{ registeredProductList.length }}</span></h2>
             </div>
-            <button @click="fnRegPage()" class="btn-product-reg">✨ 신규 상품 등록</button>
+            <button @click="fnRegPage()" class="btn-product-reg">
+                <i class="fas fa-plus mr-1"></i> 신규 상품 등록
+            </button>
         </div>
         
         <div v-for="(i, idx) in fnPaginatedProductList" :key="idx" class="content-card PaginatedProductList">

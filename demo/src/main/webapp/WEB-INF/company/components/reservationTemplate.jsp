@@ -3,8 +3,10 @@
 
     <template id="reservation-section-template">
         <div>
-            <div class="section-header">
-                <h2>예약 관리 : <span style="color:#9b8fd4;">새 예약 {{ resCount }}건</span></h2>
+            <div class="productlist-productReg">
+                <div class="section-header">
+                    <h2><i class="fas fa-calendar-alt mr-2"></i>예약 관리 : <span class="res-count-highlight">새 예약 {{ resCount }}건</span></h2>
+                </div>
             </div>
 
             <div v-if="!selectedRes">
@@ -18,11 +20,12 @@
                         </div>
                         <div class="ticket-name">{{ res.productName }}</div>
                         <div class="ticket-date">예약 날짜/시간 : {{ res.useDate }} {{ res.useTime }}</div>
-                        <div style="margin-top:6px;">
+                        <div class="ticket-status-wrap">
                             <span class="ticket-status"
                                 :class="res.resStatus === 'WAIT' ? 'wait' : res.resStatus === 'CANCEL' ? 'cancel' : 'done'">
-                                {{ getResStatusText(res.resStatus)}}
+                                {{ res.resStatus === 'WAIT' ? '결제 대기' : res.resStatus === 'CANCEL' ? '취소된 예약' : '완료된 예약' }}
                             </span>
+
                         </div>
                     </div>
                     <div class="ticket-detail-label">DETAIL</div>
@@ -44,49 +47,53 @@
             </div>
 
             <div v-else>
-                <button class="btn-back" @click="selectedRes = null">← 목록으로</button>
-                <table>
-                    <tr>
-                        <th>예약 상품</th>
-                        <td>{{ selectedRes.productName }}</td>
-                    </tr>
-                    <tr>
-                        <th>예약 내용</th>
-                        <td>{{ selectedRes.resContent === '' ? '요청사항 없음' : selectedRes.resContent }}</td>
-                    </tr>
-                    <tr>
-                        <th>예약저장</th>
-                        <td>{{ selectedRes.resDate ? selectedRes.resDate.substring(0, 10) : '' }} {{ selectedRes.resTime
-                            ? selectedRes.resTime.substring(0, 5) : '' }}</td>
-                    </tr>
-                    <tr>
-                        <th>예약결제</th>
-                        <td>{{ selectedRes.payDate === undefined ? '(미결제)' : '(결제완료) ' + selectedRes.payDate }}</td>
-                    </tr>
-                    <tr>
-                        <th>예약 날짜/시간</th>
-                        <td>{{ selectedRes.useDate }} {{ selectedRes.useTime ? selectedRes.useTime.substring(0, 5) : ''
-                            }}</td>
-                    </tr>
-                    <tr>
-                        <th>예약자명</th>
-                        <td>{{ selectedRes.resUserId }}</td>
-                    </tr>
-                    <tr>
-                        <th>연락처</th>
-                        <td>{{ selectedRes.tel }}</td>
-                    </tr>
-                    <tr>
-                        <th>예약금</th>
-                        <td>{{ Number(selectedRes.deposit).toLocaleString() }}원</td>
-                    </tr>
-                    <tr>
-                        <th>예약 처리상태</th>
-                        <td
-                            :style="selectedRes.resStatus === 'WAIT' ? 'color:#3714ff;' : selectedRes.resStatus === 'CANCEL' ? 'color:red;' : ''">
-                            {{ selectedRes.resStatus }}</td>
-                    </tr>
-                </table>
+                <button class="res-btn-back " @click="selectedRes = null">← 목록으로</button>
+                <div class="reservation-detail">
+                    <table>
+                        <tr>
+                            <th>예약 상품</th>
+                            <td>{{ selectedRes.productName }}</td>
+                        </tr>
+                        <tr>
+                            <th>예약 내용</th>
+                            <td>{{ selectedRes.resContent === '' ? '요청사항 없음' : selectedRes.resContent }}</td>
+                        </tr>
+                        <tr>
+                            <th>예약저장</th>
+                            <td>{{ selectedRes.resDate ? selectedRes.resDate.substring(0, 10) : '' }} {{ selectedRes.resTime
+                                ? selectedRes.resTime.substring(0, 5) : '' }}</td>
+                        </tr>
+                        <tr>
+                            <th>예약결제</th>
+                            <td>{{ selectedRes.payDate === undefined ? '(미결제)' : '(결제완료) ' + selectedRes.payDate }}</td>
+                        </tr>
+                        <tr>
+                            <th>예약 날짜/시간</th>
+                            <td>{{ selectedRes.useDate }} {{ selectedRes.useTime ? selectedRes.useTime.substring(0, 5) : ''
+                                }}</td>
+                        </tr>
+                        <tr>
+                            <th>예약자명</th>
+                            <td>{{ selectedRes.resUserId }}</td>
+                        </tr>
+                        <tr>
+                            <th>연락처</th>
+                            <td>{{ selectedRes.tel }}</td>
+                        </tr>
+                        <tr>
+                            <th>예약금</th>
+                            <td class="price-highlight">{{ Number(selectedRes.deposit).toLocaleString() }}원</td>
+                        </tr>
+                        <tr>
+                            <th>예약 처리상태</th>
+                            <td :class="selectedRes.resStatus === 'WAIT' ? 'status-wait' : 
+                                        selectedRes.resStatus === 'CANCEL' ? 'status-cancel' : 'status-done'">
+                                {{ selectedRes.resStatus === 'WAIT' ? '결제 대기' : 
+                                selectedRes.resStatus === 'CANCEL' ? '취소된 예약' : '완료된 예약' }}
+                            </td>
+                        </tr>
+                    </table>
+                </div>
             </div>
         </div>
     </template>
