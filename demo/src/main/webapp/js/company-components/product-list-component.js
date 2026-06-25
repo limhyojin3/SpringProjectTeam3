@@ -44,7 +44,7 @@ const productListComponent = {
 				if (newVal) {
 					this.localProductList = JSON.parse(JSON.stringify(newVal));
 					
-					// 💡 [전역 하트 공유선 역정렬 싱크] 상세방에서 바꾸고 뒤로가기 눌렀을 때, 메모리 저장소 값을 가져와 강제 동기화 수행!
+					// [전역 하트 공유선 역정렬 싱크] 상세방에서 바꾸고 뒤로가기 눌렀을 때, 메모리 저장소 값을 가져와 강제 동기화 수행!
 					if (window.LIVE_COMPANY_LIKE) {
 						this.localProductList.forEach(p => {
 							if (window.LIVE_COMPANY_LIKE[p.companyNo] !== undefined) {
@@ -95,7 +95,8 @@ const productListComponent = {
 			this.$emit('update-filter-list', {
 				largeCategory: this.selectLargeCategory,
 				mediumCategory: this.selectCategory,
-				tags: this.selectTags.join(',')
+				tags: this.selectTags.join(','),
+				loginUserId: this.userid // 💡 [파이프라인 완공] 최초 리스트 호출 시 세션 ID를 누락 없이 공급하여 첫 클릭 롤백 버그 원천 박멸!
 			});
 		},
 		
@@ -137,7 +138,7 @@ const productListComponent = {
 			});
 		},
 		
-		// 2번 트랙: 🎯 [업체 좋아요 정밀 타격 완공] 메인 화면 등록 업체 탭 하트 실시간 온오프 처리 스위치선
+		// 2번 트랙: 업체 좋아요 실시간 온오프 처리 스위치선
 		fnToggleCompanyLike(comp) {
 			var self = this;
 			if (!self.userid) {
@@ -147,7 +148,7 @@ const productListComponent = {
 			const targetCompanyNo = comp.companyNo;
 			window.LIVE_COMPANY_LIKE = window.LIVE_COMPANY_LIKE || {};
 
-			// 💡 [선제 UI 스위칭] 통신 딜레이 버그 브레이커 발동 -> 누르는 즉시 UI를 강제 반전 및 메모리 주입
+			// [선제 UI 스위칭] 통신 딜레이 버그 브레이커 발동 -> 누르는 즉시 UI를 강제 반전 및 메모리 주입
 			const currentStatus = comp.isCompanyLiked === 1;
 			const newStatus = currentStatus ? 0 : 1;
 
@@ -234,7 +235,7 @@ const productListComponent = {
 						comIntro: item.comIntro,
 						comAddress: item.comAddress,
 						thumbnail: item.comImgUrl || item.thumbnail,
-						isCompanyLiked: item.isCompanyLiked // 진짜 업체 좋아요 연동선 바인딩 완료
+						isCompanyLiked: item.isCompanyLiked 
 					});
 				}
 			});
