@@ -277,10 +277,10 @@
 }
 
 /* ==========================================================================
-   4. 🃏 메인 상품 패키지 찾기 전용 수직형 포켓몬 카드 그리드 (3열 완전체)
+   4. 🃏 [전역 마스터 수술 완공] 수직형 포켓몬 카드 그리드 정렬 파트
    ========================================================================== */
 
-.product-pokemon-grid {
+.product-pokemon-grid, .company-pokemon-grid {
 	display: grid !important;
 	grid-template-columns: repeat(3, 1fr) !important; /* 가로폭을 정확히 3등분 분할 */
 	gap: 25px !important;                              /* 카드 간 여백 시원하게 지정 */
@@ -289,9 +289,10 @@
 	align-items: stretch !important;                   /* 높이를 자동 통일 */
 }
 
-.product-pokemon-grid .product-item {
+/* 메인 및 상세 격자판 내부 공통 아이템 세로화 */
+.product-pokemon-grid .product-item, .company-pokemon-grid .product-item {
 	display: flex !important;
-	flex-direction: column !important; /* 세로 구조 반전 */
+	flex-direction: column !important; 
 	background: #ffffff !important;
 	border: 1px solid #eee !important;
 	border-radius: 12px !important;
@@ -304,13 +305,13 @@
 	transition: all 0.25s ease-in-out !important;
 }
 
-.product-pokemon-grid .product-item:hover {
+.product-pokemon-grid .product-item:hover, .company-pokemon-grid .product-item:hover {
 	transform: translateY(-4px) !important;
 	box-shadow: 0 8px 24px rgba(255, 127, 159, 0.15) !important;
 	border-color: #ff7f9f !important;
 }
 
-.product-pokemon-grid .product-img-box {
+.product-pokemon-grid .product-img-box, .company-pokemon-grid .product-img-box {
 	width: 100% !important;
 	height: 190px !important;         
 	border-radius: 8px !important;
@@ -319,68 +320,66 @@
 	flex-shrink: 0 !important;
 }
 
-.product-pokemon-grid .product-img-box img {
+.product-pokemon-grid .product-img-box img, .company-pokemon-grid .product-img-box img {
 	width: 100% !important;
 	height: 100% !important;
 	object-fit: cover !important;
 }
 
-.product-pokemon-grid .product-info {
+.product-pokemon-grid .product-info, .company-pokemon-grid .product-info {
 	display: flex !important;
 	flex-direction: column !important;
 	gap: 6px !important;
 	min-height: auto !important;      
 	flex-grow: 1 !important;          
 	padding: 0 !important;
+	width: 100% !important;            /* 내부 부모 가로선을 100%로 꽉 채움 */
 }
 
-.product-pokemon-grid .product-info h4 {
+.product-pokemon-grid .product-info h4, .company-pokemon-grid .product-info h4 {
 	font-size: 1.1rem !important;
 	font-weight: 700 !important;
 	color: #222 !important;
 	margin: 4px 0 0 0 !important;
-	padding-right: 0 !important;
 }
 
-.product-pokemon-grid .product-info .product-content {
+.product-pokemon-grid .product-info .product-content, .company-pokemon-grid .product-info .product-content {
 	font-size: 0.9rem !important;
 	color: #666 !important;
 	line-height: 1.4 !important;
 	margin: 0 0 4px 0 !important;
 }
 
-.product-pokemon-grid .product-tags-wrapper {
+.product-pokemon-grid .product-tags-wrapper, .company-pokemon-grid .product-tags-wrapper {
 	display: flex !important;
 	flex-wrap: wrap !important;
 	gap: 5px !important;
 	margin-bottom: 10px !important;
 }
 
-/* 💡 금액 행의 너비를 100%로 꽉 채워 양끝 정렬의 든든한 뼈대 완성 */
-.product-pokemon-grid .product-price-row {
+/* 🎯 [치료 구역 명시] 가로 폭을 100%로 확실히 늘려서 space-between 톱니바퀴 정위치 가동 */
+.product-price-row {
 	display: flex !important;
-	justify-content: space-between !important; 
+	justify-content: space-between !important; /* 금액은 왼쪽 끝, 하트는 무조건 오른쪽 끝 정렬 */
 	align-items: center !important;
-	margin-top: auto !important;               
-	width: 100% !important;
-	border-top: 1px dashed #f1f5f9 !important; 
+	margin-top: auto !important;               /* 언제나 카드의 맨 바닥 쪽으로 고정 */
+	width: 100% !important;                    /* 오그라들지 않게 가로폭 100% 철벽 마감 */
+	border-top: 1px dashed #ffe0e6 !important; /* 양쪽 화면 모두 이쁜 핑크 점선 경계선 일치화 수혈 */
 	padding-top: 10px !important;
-	box-sizing: border-box !important;
+	box-sizing: border-box !important;         /* 패딩으로 인해 가로선 삐져나가지 않게 방어 */
 }
 
-.product-pokemon-grid .product-info .product-price {
+.product-pokemon-grid .product-info .product-price, .company-pokemon-grid .product-info .product-price {
 	font-size: 1.25rem !important;
 	color: #ff1493 !important;         
 	font-weight: 700 !important;
 	margin: 0 !important;
-	width: auto !important;
 	text-align: left !important;
 }
 
-/* 💡 [정밀 수술 적용] 유저 가이드라인 100% 충족형 하트 버튼 칩 */
-.product-pokemon-grid .product-item .like-chip-btn {
+/* 수직형 그리드 전용 공통 하트 버튼 배지 명세 */
+.product-item .like-chip-btn {
 	position: static !important;       
-	margin-left: auto !important;      /* 어떤 방해가 있어도 오른쪽 구석 끝자리 강제 밀착 고정 */
 	display: inline-flex !important;
 	align-items: center !important;
 	gap: 5px !important;
@@ -390,16 +389,16 @@
 	cursor: pointer !important;
 	transition: all 0.2s ease !important;
 	
-	/* 🤍 클릭 안 되어 있을 때 사양 명시 */
+	/* 🤍 클릭 안 되어 있을 때 공통 사양 */
 	background-color: #ffffff !important;
 	border: 1px solid #ffe0e6 !important;
 	color: #d6336c !important;
 }
 
-/* ❤️ 클릭 되어 활성화(active) 되었을 때 사양 명시 */
-.product-pokemon-grid .product-item .like-chip-btn.active {
-	background-color: #ff7f9f !important; /* 오직 버튼 칩 내부만 분홍색으로 꽉 채움 */
-	border: none !important;              /* 어설픈 테두리 흔적 완전 파괴 */
-	color: #ffffff !important;            /* 내부 하트 기호와 숫자를 새하얗고 또렷하게 고정 */
+/* ❤️ 클릭 되어 활성화(active) 되었을 때 공통 사양 */
+.product-item .like-chip-btn.active {
+	background-color: #ff7f9f !important; /* 칩 내부 배지만 이쁜 분홍색 원본 충전 */
+	border: none !important;              /* 지저분한 테두리선 흔적 파괴 */
+	color: #ffffff !important;            /* 내부 글씨(하트와 숫자)를 흰색으로 선명하게 고정 */
 	box-shadow: 0 2px 6px rgba(255, 127, 159, 0.2) !important;
 }
