@@ -85,7 +85,30 @@
 	            </otherwise>
 	        </choose> 
 	    </if>
-	    ORDER BY p.reg_date DESC
+	    <!-- 정렬 -->
+	    <choose>
+	        <!-- 최신순 -->
+	        <when test="sortType == 'latest'">
+	            ORDER BY p.reg_date DESC
+	        </when>
+	        <!-- 조회순 -->
+	        <when test="sortType == 'view'">
+	            ORDER BY p.view_cnt DESC, p.reg_date DESC
+	        </when>
+	        <!-- 좋아요순 -->
+	        <when test="sortType == 'like'">
+	            ORDER BY p.like_cnt DESC, p.reg_date DESC
+	        </when>
+	        <!-- 인기순 -->
+	        <when test="sortType == 'popular'">
+	            ORDER BY (p.like_cnt * 3 + p.view_cnt) DESC
+	        </when>
+	        <!-- 기본값 -->
+	        <otherwise>
+	            ORDER BY p.reg_date DESC
+	        </otherwise>
+	    </choose>
+	   
 	    LIMIT #{startIndex}, #{pageSize}
 	</select>
 	

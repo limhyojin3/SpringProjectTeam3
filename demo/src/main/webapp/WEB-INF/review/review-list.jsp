@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <title>리뷰 커뮤니티 - MarryView</title>
     <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
@@ -153,7 +154,7 @@
         
     /* 카드 그리드 레이아웃 */
     .review-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 25px; padding: 20px 0; }
-    .review-card { background: #fff; border-radius: 15px; overflow: hidden; border: 1px solid #eee; transition: all 0.3s ease; cursor: pointer; display: flex; flex-direction: column; position: relative; height: 100%; }
+    .review-card { background: #fff; border-radius: 15px; overflow: visible; border: 1px solid #eee; transition: all 0.3s ease; cursor: pointer; display: flex; flex-direction: column; position: relative; height: 100%; }
    .review-card:hover {
         transform: translateY(-8px);
         box-shadow: 0 12px 24px rgba(0,0,0,0.1);
@@ -542,6 +543,89 @@
         color: #f4a096;
         font-size: 1.6rem;
     }
+    /* 닉네임 영역 */
+        .nickname-container{
+            position:relative;
+            display:inline-block;
+        }
+
+        /* 프로필 카드 */
+        .profile-hover-modal{
+            position:absolute;
+            left:50%;
+            bottom:calc(100% + 12px);
+
+            transform:translateX(-50%);
+            
+
+            width:230px;
+            padding:18px;
+
+            background:rgba(255,255,255,.95);
+            backdrop-filter:blur(15px);
+
+            border:1px solid rgba(255,255,255,.8);
+            border-radius:22px;
+
+            box-shadow:
+                0 20px 50px rgba(255,92,138,.18),
+                0 5px 15px rgba(0,0,0,.06);
+
+            z-index:99999;
+
+            animation:profilePopup .28s cubic-bezier(.22,1,.36,1);
+
+            pointer-events:none;
+        }
+
+        /* 꼬리 */
+        .profile-hover-modal::after{
+            content:"";
+            position:absolute;
+            left:0px;
+            bottom:-8px;
+
+            width:16px;
+            height:16px;
+
+            background:white;
+
+            transform:
+                translateX(-50%)
+                rotate(45deg);
+
+            border-right:1px solid rgba(255,255,255,.8);
+            border-bottom:1px solid rgba(255,255,255,.8);
+        }
+
+        .profile-hover-modal img{
+            width:64px;
+            height:64px;
+            border-radius:50%;
+            object-fit:cover;
+            display:block;
+            margin:0 auto 10px;
+
+            border:3px solid #ffe4ec;
+        }
+
+        @keyframes profilePopup{
+            0%{
+                opacity:0;
+                transform:
+                    translateX(-50%)
+                    translateY(12px)
+                    scale(.92);
+            }
+
+            100%{
+                opacity:1;
+                transform:
+                    translateX(-50%)
+                    translateY(0)
+                    scale(1);
+            }
+        }
     </style>
 </head>
 <body>
@@ -764,10 +848,50 @@
                         </div>
 
                         <div class="card-info-row">
-                            <a v-if="item.nickname !== '탈퇴회원'" :href="'/userProfile.do?userId=' + item.userId" class="nickname-link">
-                                <span><i class="far fa-user-circle mr-1"></i>{{ item.nickname }}</span>
+                            <div class="nickname-container" 
+                            @mouseenter="fnShowHover(item.userId, item.reviewNo)" 
+                            @mouseleave="fnHideHover">
+                            
+                            <a v-if="item.nickname !== '탈퇴회원'" 
+                            :href="'/userProfile.do?userId=' + item.userId" 
+                            class="nickname-link">
+                                <span class="nickname">@{{ item.nickname }}</span>
                             </a>
-                            <b v-else class="text-danger">{{ item.nickname }}</b>
+                            <b v-else class="text-danger">@{{ item.nickname }}</b>
+
+                            <div v-if="hoverUserId === item.userId 
+                                        && hoverReviewNo === item.reviewNo 
+                                        && hoverInfo"
+                                class="profile-hover-modal">
+
+                                <div style="text-align:center;">
+
+                                    <img
+                                        :src="'/img/profile/' + (hoverInfo.info.profileImg || 'heart.png')"
+                                        style="
+                                            width:50px;
+                                            height:50px;
+                                            border-radius:50%;
+                                            object-fit:cover;
+                                            display:block;
+                                            margin:0 auto;
+                                        ">
+
+                                    <div class="mt-2 font-weight-bold">
+                                        {{ hoverInfo.info.nickName }}
+                                    </div>
+
+                                    <div style="font-size:12px;color:#666;">
+                                        게시글 {{ hoverInfo.postTotal }}
+                                        |
+                                        리뷰 {{ hoverInfo.reviewTotal }}
+                                    </div>
+
+                                </div>
+
+                            </div>
+                        </div>
+                           
                             <span>{{ item.regDate }}</span>
                         </div>
                     </div>
@@ -830,8 +954,10 @@
                         '결혼': ['스튜디오', '드레스', '메이크업'],
                         '가족행사': ['가족사진', '돌잔치', '아이생일파티', '기념일', '부모님생신'],
                         '친구와함께': ['우정사진', '브라이덜샤워', '파티룸']
-                    }
-                    
+                    },
+                    hoverUserId : null,
+                    hoverInfo : null,
+                    hoverReviewNo : null,
                 };
             },
             computed: {
@@ -847,6 +973,20 @@
                 totalPageCount() { return Math.ceil(this.totalCount / this.pageSize); }
             },
             methods: {
+                fnShowHover(userId, reviewNo) {
+                    this.hoverUserId = userId;
+                    this.hoverReviewNo = reviewNo;
+                    // 서버에서 데이터 가져오기
+                    axios.get('/userProfileSimple.dox', { params: { userId: userId  } })
+                        .then(res => {
+                            this.hoverInfo = res.data; // 서버에서 보낸 info, reviewTotal, postTotal 저장
+                        });
+                },
+                fnHideHover() {
+                    this.hoverUserId = null;
+                    this.hoverPostNo = null; // 초기화
+                    this.hoverInfo = null;
+                },
                 fnGetUserTicket() {
                     if(!this.sessionId) return;
                     $.ajax({

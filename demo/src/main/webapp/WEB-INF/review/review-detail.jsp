@@ -6,6 +6,7 @@
     <meta charset="UTF-8">
     <title>리뷰 상세보기</title>
     <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
@@ -495,6 +496,89 @@
         .comment-like-btn small.like-active {color: #f4a096;}
         .review-meta-right { gap: 10px; }
 
+        /* 닉네임 영역 */
+        .nickname-container{
+            position:relative;
+            display:inline-block;
+        }
+
+        /* 프로필 카드 */
+        .profile-hover-modal{
+            position:absolute;
+            left:50%;
+            bottom:calc(100% + 12px);
+
+            transform:translateX(-50%);
+            
+
+            width:230px;
+            padding:18px;
+
+            background:rgba(255,255,255,.95);
+            backdrop-filter:blur(15px);
+
+            border:1px solid rgba(255,255,255,.8);
+            border-radius:22px;
+
+            box-shadow:
+                0 20px 50px rgba(255,92,138,.18),
+                0 5px 15px rgba(0,0,0,.06);
+
+            z-index:99999;
+
+            animation:profilePopup .28s cubic-bezier(.22,1,.36,1);
+
+            pointer-events:none;
+        }
+
+        /* 꼬리 */
+        .profile-hover-modal::after{
+            content:"";
+            position:absolute;
+            left:0px;
+            bottom:-8px;
+
+            width:16px;
+            height:16px;
+
+            background:white;
+
+            transform:
+                translateX(-50%)
+                rotate(45deg);
+
+            border-right:1px solid rgba(255,255,255,.8);
+            border-bottom:1px solid rgba(255,255,255,.8);
+        }
+
+        .profile-hover-modal img{
+            width:64px;
+            height:64px;
+            border-radius:50%;
+            object-fit:cover;
+            display:block;
+            margin:0 auto 10px;
+
+            border:3px solid #ffe4ec;
+        }
+
+        @keyframes profilePopup{
+            0%{
+                opacity:0;
+                transform:
+                    translateX(-50%)
+                    translateY(12px)
+                    scale(.92);
+            }
+
+            100%{
+                opacity:1;
+                transform:
+                    translateX(-50%)
+                    translateY(0)
+                    scale(1);
+            }
+        }
     </style>
 </head>
 <body>
@@ -692,19 +776,44 @@
                             <div>
                                 <span v-if="item.parentNo" class="reply-mark">ㄴ</span>
                                 <span class="comment-user">
-                                    <template v-if="item.isDeleted == 0">
-                                        <a v-if="item.nickname !== '탈퇴회원'" 
-                                        :href="'/userProfile.do?userId=' + item.userId" 
-                                        class="text-decoration-none text-dark">
-                                            <span :class="{'text-danger': item.nickname === '탈퇴회원'}">{{ item.nickname }}</span>
-                                        </a>
-                                        
-                                        <span v-else class="text-danger">{{ item.nickname }}</span>
+                                    <!-- 정상 댓글 -->
+                                    <template v-if="item.isDeleted == 0 && item.nickname !== '탈퇴회원'">
+                                        <div class="nickname-container"
+                                            @mouseenter="fnShowHover(item.userId)"
+                                            @mouseleave="fnHideHover">
+                                            <a :href="'/userProfile.do?userId=' + item.userId"
+                                            class="nickname-link">
+                                                @{{ item.nickname }}
+                                            </a>
+                                            <div v-if="hoverUserId === item.userId && hoverInfo"
+                                                class="profile-hover-modal">
+                                                <div style="text-align:center;">
+                                                    <img
+                                                        :src="'/img/profile/' + (hoverInfo.info.profileImg || 'heart.png')"
+                                                        style="width:50px;height:50px;border-radius:50%;object-fit:cover;">
+                                                    <div class="mt-2 font-weight-bold">
+                                                        {{ hoverInfo.info.nickName }}
+                                                    </div>
+                                                    <div style="font-size:12px;color:#666;">
+                                                        게시글 {{ hoverInfo.postTotal }}
+                                                        |
+                                                        리뷰 {{ hoverInfo.reviewTotal }}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
                                     </template>
-                                    <!-- 관리자 삭제 댓글 -->
+                                    <!-- 탈퇴회원 -->
+                                    <template v-else-if="item.nickname === '탈퇴회원'">
+                                        <span class="text-danger">탈퇴회원</span>
+                                    </template>
+                                    <!-- 관리자 삭제 -->
+                                    <template v-else-if="item.delRole === 'ADMIN'">
+                                        <span class="text-muted">[관리자 삭제]</span>
+                                    </template>
+                                    <!-- 일반 삭제 -->
                                     <template v-else>
-                                        <b v-if="item.delRole === 'ADMIN'" class="text-danger comment-del-text">[관리자 삭제]</b>
-                                        <b v-else class="text-muted comment-del-text">[삭제된 댓글]</b>
+                                        <span class="text-muted">[삭제된 댓글]</span>
                                     </template>
                                 </span>
                                 <span class="comment-date">{{ item.regDate }}</span>
@@ -897,10 +1006,28 @@
                     aiSummary: "",       // 요약 데이터 저장용
                     isSummaryOpen: true, // 접기/펴기 상태
                     errorOccurred: false,
+                    hoverUserId : null,
+                    hoverInfo : null,
                    
                 };
             },
             methods: {
+                fnShowHover(userId) {
+                    this.hoverUserId = userId;
+
+                    axios.get('/userProfileSimple.dox', {
+                        params : {
+                            userId : userId
+                        }
+                    }).then(res => {
+                        this.hoverInfo = res.data;
+                    });
+                },
+
+                fnHideHover() {
+                    this.hoverUserId = null;
+                    this.hoverInfo = null;
+                },
                 fnGetDetail() {
                     $.ajax({
                         url: "/api/review/detail.dox",

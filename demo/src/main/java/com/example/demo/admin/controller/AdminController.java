@@ -21,6 +21,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import jakarta.servlet.http.HttpServletRequest;
 import com.example.demo.admin.dao.NotificationService;
+import com.example.demo.admin.model.Admin;
 
 @Controller
 public class AdminController {
@@ -130,6 +131,12 @@ public class AdminController {
 	@RequestMapping("/adminMyPass.do")
 	public String adminMyPass(Model model) {
 		return "admin/adminMyPass";
+	}
+	
+	//운영정책
+	@RequestMapping("/operationPolicy.do")
+	public String operationPolicy() {
+	    return "/common/operation_policy";
 	}
 
 	@RequestMapping(value = "/sales.dox", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
@@ -430,41 +437,107 @@ public class AdminController {
 	// 신고 단일 승인
 	@RequestMapping(value = "/reportApprove.dox", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
 	@ResponseBody
-	public String reportApprove(Model model, @RequestParam HashMap<String, Object> map, HttpSession session)
-			throws Exception {
+	public String reportApprove(
+	        @RequestParam HashMap<String, Object> map,
+	        HttpSession session) {
 
-		HashMap<String, Object> resultMap = new HashMap<>();
+	    HashMap<String, Object> resultMap = adminService.approveReport(map);
 
-		resultMap = adminService.approveReport(map);
+	    if ("success".equals(resultMap.get("result"))) {
+	        boolean notificationCreated = notificationService.createReportResult(
+	            map.get("reportNo"),
+	            (String) session.getAttribute("sessionId"),
+	            true,
+	            (String) map.get("answerContent")
+	        );
 
-		if ("success".equals(resultMap.get("result"))) {
-			boolean notificationCreated = notificationService.createReportResult(map.get("reportNo"),
-					(String) session.getAttribute("sessionId"), true);
+	        if (notificationCreated) {
+	            adminService.completeReportAnswer(map);
+	        }
 
-			putNotificationResult(resultMap, notificationCreated);
-		}
+	        putNotificationResult(resultMap, notificationCreated);
+	    }
 
-		return new Gson().toJson(resultMap);
+	    return new Gson().toJson(resultMap);
 	}
 
 	// 신고 반려
 	@RequestMapping(value = "/reportReject.dox", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
 	@ResponseBody
-	public String reportReject(@RequestParam HashMap<String, Object> map, HttpSession session) {
-		HashMap<String, Object> resultMap = new HashMap<>();
+	public String reportReject(
+	        @RequestParam HashMap<String, Object> map,
+	        HttpSession session) {
 
-		resultMap = adminService.rejectReport(map);
+	    HashMap<String, Object> resultMap = adminService.rejectReport(map);
 
-		if ("success".equals(resultMap.get("result"))) {
-			boolean notificationCreated = notificationService.createReportResult(map.get("reportNo"),
-					(String) session.getAttribute("sessionId"), false);
+	    if ("success".equals(resultMap.get("result"))) {
+	        boolean notificationCreated = notificationService.createReportResult(
+	            map.get("reportNo"),
+	            (String) session.getAttribute("sessionId"),
+	            false,
+	            (String) map.get("answerContent")
+	        );
 
-			putNotificationResult(resultMap, notificationCreated);
-		}
+	        if (notificationCreated) {
+	            adminService.completeReportAnswer(map);
+	        }
 
-		return new Gson().toJson(resultMap);
+	        putNotificationResult(resultMap, notificationCreated);
+	    }
+
+	    return new Gson().toJson(resultMap);
 	}
+	
+	//알림 재전송
+	@RequestMapping(value = "/reportAnswerRetry.dox", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
+	@ResponseBody
+	public String reportAnswerRetry(
+	        @RequestParam HashMap<String, Object> map,
+	        HttpSession session) {
 
+	    HashMap<String, Object> resultMap = new HashMap<>();
+	    HashMap<String, Object> detailResult = adminService.getReportDetail(map);
+	    Admin report = (Admin) detailResult.get("info");
+
+	    if (report == null || report.getActionStatus() == 0) {
+	        resultMap.put("result", "fail");
+	        resultMap.put("message", "아직 처리되지 않은 신고입니다.");
+	        return new Gson().toJson(resultMap);
+	    }
+
+	    if (report.getAnswerStatus() == 1) {
+	        resultMap.put("result", "fail");
+	        resultMap.put("message", "이미 답변 알림이 전송된 신고입니다.");
+	        return new Gson().toJson(resultMap);
+	    }
+
+	    String answerContent = report.getAnswerContent();
+	    if (answerContent == null || answerContent.trim().isEmpty()) {
+	        resultMap.put("result", "fail");
+	        resultMap.put("message", "저장된 답변 내용이 없습니다.");
+	        return new Gson().toJson(resultMap);
+	    }
+
+	    boolean notificationCreated = notificationService.createReportResult(
+	        report.getReportNo(),
+	        (String) session.getAttribute("sessionId"),
+	        report.getActionStatus() == 1,
+	        answerContent
+	    );
+
+	    if (notificationCreated) {
+	        adminService.completeReportAnswer(map);
+	        resultMap.put("result", "success");
+	        resultMap.put("message", "답변 알림을 다시 전송했습니다.");
+	    } else {
+	        resultMap.put("result", "fail");
+	        resultMap.put("message", "답변 알림 재전송에 실패했습니다.");
+	    }
+
+	    putNotificationResult(resultMap, notificationCreated);
+	    return new Gson().toJson(resultMap);
+	}
+	
 	// 회원 상세 신고 누적횟수, 이력 조회
 	@RequestMapping(value = "/reportInfoList.dox", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
 	@ResponseBody

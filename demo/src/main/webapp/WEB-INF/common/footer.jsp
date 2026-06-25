@@ -6,6 +6,7 @@
             <a href="/about.do">회사소개</a>
             <a href="/privacy.do">개인정보처리방침</a>
             <a href="/terms.do">이용약관</a>
+			<a href="${pageContext.request.contextPath}/operationPolicy.do">메리뷰 정책</a>
             <a href="/partner.do">파트너 입점문의</a>
         </div>
         <div>고객센터 <span class="footer-tel">1588-0000</span></div>

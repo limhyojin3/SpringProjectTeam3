@@ -2,56 +2,75 @@
 
 /* 1. 무료 리뷰 간결한 보기 테이블 전용 스타일 */
 .simple-review-table {
-	width: 100%;
-	border-collapse: collapse;
-	margin-bottom: 20px;
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    margin-bottom: 20px;
+    border-radius: 12px;
+    overflow: hidden;
+    border: 1px solid #ede9f8;
+    box-shadow: 0 2px 8px rgba(155, 143, 212, 0.08);
 }
 
+
 .simple-review-table th {
-	background-color: #f5f2fc;
-	color: #555;
-	font-weight: 600;
-	padding: 12px;
-	border-bottom: 2px solid #e0d7ff;
-	text-align: center;
+    background-color: #f5f2fc;
+    color: #7b68c8;  /* 보라 */
+    font-weight: 700;
+    padding: 12px 16px;
+    border-bottom: 2px solid #d4cdf0;
+    text-align: center;
 }
 
 .simple-review-table td {
-	padding: 12px;
-	border-bottom: 1px solid #eee;
-	text-align: center;
-	vertical-align: middle;
+    padding: 14px 16px;
+    border-bottom: 1px solid #ede9f8;  /* 보라 계열 */
+    text-align: center;
+    vertical-align: middle;
+    color: #444;
 }
 
 .simple-review-text-td {
-	color: #666;
-	font-size: 15px;
-	text-align: left !important;
+    color: #555;
+    font-size: 14px;
+    text-align: left !important;
 }
 
+.simple-review-table tr:last-child td {
+    border-bottom: none;
+}
+
+.simple-review-table tr:hover td {
+    background: #fdfcff;
+}
+
+/* NEW 배지 보라로 */
 .new-label {
-	background: #ff7f9f;
-	color: white;
-	font-size: 10px;
-	padding: 2px 4px;
-	border-radius: 3px;
-	vertical-align: middle;
-	margin-right: 5px;
+    background: #9b8fd4;  /* 핑크 → 보라 */
+    color: white;
+    font-size: 10px;
+    padding: 2px 6px;
+    border-radius: 10px;
+    vertical-align: middle;
+    margin-right: 5px;
+    font-weight: 700;
 }
 
+/* 평점 강조 */
 .rating-num-highlight {
-	color: #ff6a00;
-	font-weight: bold;
+    color: #f0a500;  /* 골드 */
+    font-weight: bold;
 }
 
 /* 2. 데이터 비어있을 시 경고 카드 */
 .no-data-box {
-	text-align: center;
-	padding: 50px;
+    text-align: center;
+    padding: 50px;
+    color: #ccc;
 }
 
 .no-data-title {
-	color: #ccc;
-	font-size: 1.5rem;
-	font-weight: 500;
+    color: #ccc;
+    font-size: 1.3rem;
+    font-weight: 500;
 }
