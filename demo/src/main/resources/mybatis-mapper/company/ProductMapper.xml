@@ -27,6 +27,7 @@
 			c.img_url AS comImgUrl, 
 			(SELECT COUNT(*) FROM product_like WHERE product_no = p.product_no) AS likeCnt,
 			(SELECT COUNT(*) FROM product_like WHERE product_no = p.product_no AND user_id = #{loginUserId}) AS isLiked,
+			(SELECT COUNT(*) FROM company_like WHERE company_no = p.company_no AND user_id = #{loginUserId}) AS isCompanyLiked,
 			(
 				SELECT GROUP_CONCAT(DISTINCT pt_all.tag SEPARATOR ',')
 				FROM product_tag_map ptm_all
@@ -90,13 +91,14 @@
 			c.img_url AS comImgUrl,
 			(SELECT COUNT(*) FROM product_like WHERE product_no = p.product_no) AS likeCnt,
 			(SELECT COUNT(*) FROM product_like WHERE product_no = p.product_no AND user_id = #{loginUserId}) AS isLiked,
+			(SELECT COUNT(*) FROM company_like WHERE company_no = p.company_no AND user_id = #{loginUserId}) AS isCompanyLiked,
 			(
 				SELECT GROUP_CONCAT(DISTINCT pt_all.tag SEPARATOR ',')
 				FROM product_tag_map ptm_all
 				INNER JOIN product_tag pt_all ON ptm_all.tag_id = pt_all.id
 				WHERE ptm_all.product_no = p.product_no
 			) AS tag
-		FROM p product p
+		FROM product p
 		LEFT JOIN company c ON p.company_no = c.company_no
 		WHERE p.product_no = #{productNo}
 	</select>

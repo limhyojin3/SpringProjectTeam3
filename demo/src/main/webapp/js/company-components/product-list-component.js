@@ -43,6 +43,15 @@ const productListComponent = {
 			handler(newVal) {
 				if (newVal) {
 					this.localProductList = JSON.parse(JSON.stringify(newVal));
+					
+					// 💡 [전역 하트 공유선 역정렬 싱크] 상세방에서 바꾸고 뒤로가기 눌렀을 때, 메모리 저장소 값을 가져와 강제 동기화 수행!
+					if (window.LIVE_COMPANY_LIKE) {
+						this.localProductList.forEach(p => {
+							if (window.LIVE_COMPANY_LIKE[p.companyNo] !== undefined) {
+								p.isCompanyLiked = window.LIVE_COMPANY_LIKE[p.companyNo];
+							}
+						});
+					}
 				} else {
 					this.localProductList = [];
 				}
@@ -80,7 +89,7 @@ const productListComponent = {
 		},
 		// 실시간 필터 가교: 부모 창의 jQuery AJAX 메인 조회 함수를 자동 호출하도록 유도
 		triggerFilterReload() {
-			// 💡 [기능적 독립 마감 완공] 자식 고유의 비즈니스 메서드 내부에서 안전하게 전역 카테고리 컨텍스트 기록!
+			// 자식 고유의 비즈니스 메서드 내부에서 안전하게 전역 카테고리 컨텍스트 기록!
 			window.CURRENT_LARGE_CATEGORY = this.selectLargeCategory;
 			
 			this.$emit('update-filter-list', {
@@ -128,34 +137,55 @@ const productListComponent = {
 			});
 		},
 		
-		// 2번 트랙: 추후 추가될 상단 대장 프로필 전용 '업체 즐겨찾기' 선행 마중물 메서드 (원형 엄격 보존)
+		// 2번 트랙: 🎯 [업체 좋아요 정밀 타격 완공] 메인 화면 등록 업체 탭 하트 실시간 온오프 처리 스위치선
 		fnToggleCompanyLike(comp) {
 			var self = this;
 			if (!self.userid) {
 				alert("로그인 후 이용 가능합니다.");
 				return;
 			}
+			const targetCompanyNo = comp.companyNo;
+			window.LIVE_COMPANY_LIKE = window.LIVE_COMPANY_LIKE || {};
+
+			// 💡 [선제 UI 스위칭] 통신 딜레이 버그 브레이커 발동 -> 누르는 즉시 UI를 강제 반전 및 메모리 주입
+			const currentStatus = comp.isCompanyLiked === 1;
+			const newStatus = currentStatus ? 0 : 1;
+
+			window.LIVE_COMPANY_LIKE[targetCompanyNo] = newStatus;
+			self.localProductList.forEach(p => {
+				if (p.companyNo === targetCompanyNo) {
+					p.isCompanyLiked = newStatus;
+				}
+			});
+
 			$.ajax({
 				url: '/companyLikeToggle.dox',
 				type: 'POST',
 				data: {
-					companyNo: comp.companyNo,
+					companyNo: targetCompanyNo,
 					loginUserId: self.userid
 				},
 				dataType: 'json',
 				success: function(data) {
 					if (data.result === 'success') {
-						if (data.status === 'liked') {
-							comp.isLiked = 1;
-							comp.likeCnt = (comp.likeCnt || 0) + 1;
-						} else {
-							comp.isLiked = 0;
-							comp.likeCnt = Math.max(0, (comp.likeCnt || 0) - 1);
-						}
+						const finalStatus = data.status === 'liked' ? 1 : 0;
+						window.LIVE_COMPANY_LIKE[targetCompanyNo] = finalStatus;
+						self.localProductList.forEach(p => {
+							if (p.companyNo === targetCompanyNo) {
+								p.isCompanyLiked = finalStatus;
+							}
+						});
 					}
 				},
 				error: function(xhr, status, error) {
 					console.error("독립형 업체 찾기 내 실시간 하트 토글 실패:", error);
+					// 네트워크 에러 시 안전하게 예전 상태로 롤백 복구
+					window.LIVE_COMPANY_LIKE[targetCompanyNo] = currentStatus ? 1 : 0;
+					self.localProductList.forEach(p => {
+						if (p.companyNo === targetCompanyNo) {
+							p.isCompanyLiked = currentStatus ? 1 : 0;
+						}
+					});
 				}
 			});
 		}
@@ -204,8 +234,7 @@ const productListComponent = {
 						comIntro: item.comIntro,
 						comAddress: item.comAddress,
 						thumbnail: item.comImgUrl || item.thumbnail,
-						isLiked: item.isLiked,
-						likeCnt: item.likeCnt
+						isCompanyLiked: item.isCompanyLiked // 진짜 업체 좋아요 연동선 바인딩 완료
 					});
 				}
 			});

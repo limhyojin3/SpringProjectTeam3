@@ -8,8 +8,11 @@
 		</div>
 
 		<div class="filter-section company-detail-profile-card">
-			<div class="company-card-header">
+			<div class="company-card-header" style="display: flex !important; justify-content: space-between !important; align-items: center !important; width: 100% !important;">
 				<h2 class="font-weight-bold text-dark m-0">{{ companyInfo.comName }}</h2>
+				<div @click.stop="fnToggleCompanyLike" :class="['like-chip-btn', { active: companyInfo.isCompanyLiked === 1 }]" style="position: static !important; margin: 0 !important;">
+					<span>{{ companyInfo.isCompanyLiked === 1 ? '❤️' : '🤍' }}</span>
+				</div>
 			</div>
 			<p class="company-detail-location mt-1">📍 업장 소재지: {{ companyInfo.comAddress || '등록된 주소 정보가 없습니다.' }}</p>
 			

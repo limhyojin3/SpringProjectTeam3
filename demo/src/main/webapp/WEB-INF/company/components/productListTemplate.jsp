@@ -101,8 +101,8 @@
 				<div class="product-info">
 					<div class="company-card-header">
 						<h4>{{ comp.comName }}</h4>
-						<div @click.stop="fnToggleCompanyLike(comp)" :class="['like-chip-btn', { active: comp.isLiked === 1 }]">
-							<span>{{ comp.isLiked === 1 ? '❤️' : '🤍' }}</span>
+						<div @click.stop="fnToggleCompanyLike(comp)" :class="['like-chip-btn', { active: comp.isCompanyLiked === 1 }]">
+							<span>{{ comp.isCompanyLiked === 1 ? '❤️' : '🤍' }}</span>
 						</div>
 					</div>
 					<p class="company-location-text">📍 위치: {{ comp.comAddress || '주소 정보 없음' }}</p>

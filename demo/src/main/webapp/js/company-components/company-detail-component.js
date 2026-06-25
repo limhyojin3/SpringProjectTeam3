@@ -31,7 +31,7 @@ const companyDetailComponent = {
 				type: 'POST',
 				data: {
 					companyNo: self.companyNo,
-					largeCategory: window.CURRENT_LARGE_CATEGORY || '', // 💡 [기능적 독립 개통] 메인에서 보던 대분류 탭 컨텍스트를 주머니에 담아 저격 사출!
+					largeCategory: window.CURRENT_LARGE_CATEGORY || '', // [기능적 독립 개통] 메인에서 보던 대분류 탭 컨텍스트를 주머니에 담아 저격 사출!
 					loginUserId: self.userid
 				},
 				dataType: 'json',
@@ -39,10 +39,22 @@ const companyDetailComponent = {
 					if (data.result === 'success' && data.list && data.list.length > 0) {
 						// 1. 순수 상위 업체 프로필 세팅 (JOIN 쿼리의 첫 번째 인덱스 맵에서 추출)
 						const firstItem = data.list[0];
+						
+						// 💡 [전역 하트 공유선 순방향 싱크] 진입 시 전역 레지스트리에 저장된 최신 상태가 있다면 DB 결과보다 우선 수혈하여 증발 차단!
+						window.LIVE_COMPANY_LIKE = window.LIVE_COMPANY_LIKE || {};
+						let currentLikeState = firstItem.isCompanyLiked;
+						if (window.LIVE_COMPANY_LIKE[self.companyNo] !== undefined) {
+							currentLikeState = window.LIVE_COMPANY_LIKE[self.companyNo];
+						} else {
+							// 레지스트리에 흔적이 없으면 최초 DB 데이터를 캐싱 저장소에 보관
+							window.LIVE_COMPANY_LIKE[self.companyNo] = firstItem.isCompanyLiked;
+						}
+
 						self.companyInfo = {
 							comName: firstItem.comName,
 							comAddress: firstItem.comAddress,
-							comIntro: firstItem.comIntro
+							comIntro: firstItem.comIntro,
+							isCompanyLiked: currentLikeState // 전역 조율선 통과 버전 매핑 완료
 						};
 						
 						// 2. 해당 업체 고유의 하위 패키지 리스트 포맷 가공 대입
@@ -60,7 +72,7 @@ const companyDetailComponent = {
 						});
 					} else {
 						self.companyProducts = [];
-						self.companyInfo = { comName: '미등록 제휴업체', comAddress: '', comIntro: '' };
+						self.companyInfo = { comName: '미등록 제휴업체', comAddress: '', comIntro: '', isCompanyLiked: 0 };
 					}
 				},
 				error: function(xhr, status, error) {
@@ -69,7 +81,7 @@ const companyDetailComponent = {
 			});
 		},
 		
-		/* 💡 [대수술 완공] 1번 트랙: 포켓몬 카드 각각의 '상품 고유 번호(productNo)'를 겨냥한 개별 찜 엔진 */
+		/* [대수술 완공] 1번 트랙: 포켓몬 카드 각각의 '상품 고유 번호(productNo)'를 겨냥한 개별 찜 엔진 */
 		fnToggleProductLike(item) {
 			var self = this;
 			if (!self.userid) {
@@ -77,10 +89,10 @@ const companyDetailComponent = {
 				return;
 			}
 			$.ajax({
-				url: '/productLikeToggle.dox', /* 👈 신규 product_like 연동 엔드포인트 조준 */
+				url: '/productLikeToggle.dox', 
 				type: 'POST',
 				data: {
-					productNo: item.productNo,   /* 👈 업체 번호가 아닌 진짜 상품 고유의 식별키 사출 */
+					productNo: item.productNo,   
 					loginUserId: self.userid
 				},
 				dataType: 'json',
@@ -102,30 +114,44 @@ const companyDetailComponent = {
 			});
 		},
 		
-		/* 💡 미래 자산 확보: 2번 트랙: 추후 추가될 상단 대장 프로필 전용 '업체 즐겨찾기' 선행 마중물 메서드 */
+		/* 💡 [마스터 완전 가동] 2번 트랙: 상단 대장 프로필 전용 '업체 즐겨찾기' 실시간 타격 통신 엔진 완공 */
 		fnToggleCompanyLike() {
 			var self = this;
 			if (!self.userid) {
 				alert("로그인 후 이용 가능합니다.");
 				return;
 			}
+			if (!self.companyNo) return;
+			
+			window.LIVE_COMPANY_LIKE = window.LIVE_COMPANY_LIKE || {};
+			
+			// 💡 [선제 UI 스위칭] 통신 딜레이 버그 브레이커 발동 -> 누르는 즉시 상세방 상단 헤더 하트 반전 및 메모리 기록소에 각인
+			const currentStatus = self.companyInfo.isCompanyLiked === 1;
+			const newStatus = currentStatus ? 0 : 1;
+
+			self.companyInfo.isCompanyLiked = newStatus;
+			window.LIVE_COMPANY_LIKE[self.companyNo] = newStatus;
+			
 			$.ajax({
-				url: '/companyLikeToggle.dox', /* 👈 기존 업체 전용 테이블 엔드포인트 보존 */
+				url: '/companyLikeToggle.dox',
 				type: 'POST',
 				data: {
-					companyNo: self.companyNo,   /* 👈 부모가 쥐고 있는 마스터 업체 번호 투사 */
+					companyNo: self.companyNo,   
 					loginUserId: self.userid
 				},
 				dataType: 'json',
 				success: function(data) {
 					if (data.result === 'success') {
-						// 나중에 상단 업체 프로필 우측에 하트 UI 만드실 때 이 구역 안에서 
-						// self.companyInfo.isLiked 상태를 스위칭하도록 살만 채우시면 끝납니다!
-						alert("업체 즐겨찾기 토글 성공 (상태: " + data.status + ")");
+						const finalStatus = data.status === 'liked' ? 1 : 0;
+						self.companyInfo.isCompanyLiked = finalStatus;
+						window.LIVE_COMPANY_LIKE[self.companyNo] = finalStatus;
 					}
 				},
 				error: function(xhr, status, error) {
-					console.error("미래 자산용 업체 마스터 즐겨찾기 통신 예외:", error);
+					console.error("업체 마스터 즐겨찾기 실시간 동기화 통신 예외:", error);
+					// 네트워크 이상 시 예전 상태 원복 및 공유선 복구
+					self.companyInfo.isCompanyLiked = currentStatus ? 1 : 0;
+					window.LIVE_COMPANY_LIKE[self.companyNo] = currentStatus ? 1 : 0;
 				}
 			});
 		}
