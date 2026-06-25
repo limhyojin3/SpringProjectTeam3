@@ -19,7 +19,7 @@
 	color: #6c757d;
 }
 
-/* 2. 업체 소개 한 줄 안내 (유저 피드백: 배경과 테두리를 투명하게 걷어냄) */
+/* 2. 업체 소개 한 줄 안내 (배경과 테두리를 투명하게 걷어내어 여백 극대화) */
 .company-detail-intro-container {
 	margin-top: 15px;
 	background-color: transparent !important; /* 연보라색 배경 상자 제거 */
@@ -64,46 +64,43 @@
 }
 
 /* ==========================================================================
-   4. [대분리 격리 독립 완결] 하단 수직형 포켓몬 카드 그리드 쇼룸 시스템
+   4. 하단 추천 패키지 상품 격리형 수직 포켓몬 카드 (한 줄에 3개 그리드)
    ========================================================================== */
 
-/* 💡 독자 울타리인 .company-pokemon-grid 자식들에게만 스타일을 투사하여 외부 화면 간섭을 완벽히 소독 차단 */
 .company-pokemon-grid {
 	display: grid !important;
 	grid-template-columns: repeat(3, 1fr) !important; /* 정확하게 한 줄에 3개씩 분할 안착 */
-	gap: 25px !important;                              /* 포켓몬 카드 상하좌우 호흡 간격 시원하게 배치 */
+	gap: 25px !important;                              
 	margin-top: 15px !important;
 	margin-bottom: 40px !important;
-	align-items: stretch !important;                   /* 내부 텍스트 양이 달라도 외곽 박스 높이를 균등 일치 */
+	align-items: stretch !important;                   
 }
 
-/* 💡 가로형 플렉스를 차단하고 세로형(Column) 3분할 앨범 카드로 리빌딩 */
 .company-pokemon-grid .product-item {
 	display: flex !important;
-	flex-direction: column !important; /* 레이아웃의 방향을 수직 수직으로 강제 회전 */
+	flex-direction: column !important; /* 세로 구조로 전격 교체 */
+	align-items: stretch !important;
 	background: #ffffff !important;
 	border: 1px solid #eee !important;
 	border-radius: 12px !important;
 	padding: 16px !important;
 	gap: 12px !important;
-	position: relative !important;     /* 하트 버튼을 카드 우측 상단에 띄우기 위한 중심 기준 개설 */
+	position: relative !important;     
 	box-shadow: 0 3px 10px rgba(0, 0, 0, 0.03) !important;
-	margin-bottom: 0 !important;       /* 마진 간섭 해제 */
+	margin-bottom: 0 !important;       
 	transition: all 0.25s ease-in-out !important;
-	width: 100% !important;            /* 격자 너비 100% 가득 사용 */
+	width: 100% !important;
 }
 
-/* 마우스 올릴 때 은은한 연보라색 그림자와 함께 카드가 붕 뜨는 트렌디한 효과 */
 .company-pokemon-grid .product-item:hover {
 	transform: translateY(-4px) !important;
 	box-shadow: 0 8px 24px rgba(167, 139, 250, 0.15) !important;
 	border-color: #a78bfa !important;
 }
 
-/* 💡 이미지 크기 완벽 복원: 사방 찌그러짐을 없애고 꽉 차고 웅장하게 고정 */
 .company-pokemon-grid .product-img-box {
 	width: 100% !important;
-	height: 190px !important;         /* 190px 높이 공간을 완벽히 독점하여 화질 선명도 회복 */
+	height: 190px !important;         
 	border-radius: 8px !important;
 	overflow: hidden !important;
 	margin: 0 !important;
@@ -113,20 +110,18 @@
 .company-pokemon-grid .product-img-box img {
 	width: 100% !important;
 	height: 100% !important;
-	object-fit: cover !important;     /* 늘어짐 방지 비율 맞춤 정밀 세팅 */
+	object-fit: cover !important;
 }
 
-/* 텍스트 컴포넌트 하단 압축 배치 */
 .company-pokemon-grid .product-info {
 	display: flex !important;
 	flex-direction: column !important;
 	gap: 6px !important;
-	min-height: auto !important;      /* 구형 가로형 140px 고정 한계선을 파괴 */
+	min-height: auto !important;      
 	flex-grow: 1 !important;
 	padding: 0 !important;
 }
 
-/* 포켓몬 카드용 타이틀 명세 */
 .company-pokemon-grid .product-info h4 {
 	font-size: 1.1rem !important;
 	font-weight: 700 !important;
@@ -134,7 +129,6 @@
 	margin: 4px 0 0 0 !important;
 }
 
-/* 설명글 명세 */
 .company-pokemon-grid .product-info .product-content {
 	font-size: 0.9rem !important;
 	color: #666 !important;
@@ -142,33 +136,49 @@
 	margin: 0 0 10px 0 !important;
 }
 
-/* 금액과 찜 버튼이 담긴 하단 행을 카드 최하단에 정착 고정 */
+/* 💡 바닥 정렬 수평선 너비 100% 확장 잠금 가동 */
 .company-pokemon-grid .product-price-row {
 	display: flex !important;
-	justify-content: space-between !important; /* 가격은 왼쪽, 하트는 오른쪽에 수평 배치 */
+	justify-content: space-between !important; 
 	align-items: center !important;
-	margin-top: auto !important;       /* 설명문 본문이 짧아도 금액 라인은 무조건 카드 맨 밑바닥 정착 */
+	margin-top: auto !important;       
 	width: 100% !important;
-	border-top: 1px dashed #f1f5f9;   /* 구분 점선 추가로 디테일 향상 */
+	border-top: 1px dashed #f1f5f9;   
 	padding-top: 10px;
 }
 
-/* 다운톤 로즈 핑크 금액 디자인 스타일링 */
 .company-pokemon-grid .product-info .product-price {
 	font-size: 1.2rem !important;
-	color: #d6336c !important;         /* 부드러운 고급 로즈 핑크 유지 */
+	color: #d6336c !important;         
 	font-weight: 700 !important;
 	margin: 0 !important;
 	width: auto !important;
 	text-align: left !important;
 }
 
-/* 💡 포켓몬 카드 우측 하단 금액 옆에 밀착 매립 조준된 실시간 찜 단추 */
-.company-pokemon-grid .like-chip-btn {
-	position: static !important;       /* 절대 배치를 풀고 하단 행 내부에 유연하게 인라인 안착 */
-	padding: 3px 8px !important;
+/* 💡 [통일 조준 완결] 상세방 내부 상품 하트 단추도 메인과 100% 동일한 분홍 배지 공식 대입 */
+.company-pokemon-grid .product-item .like-chip-btn {
+	position: static !important;       
+	margin-left: auto !important;      /* 무조건 오른쪽 끝자리 정위치 고정 */
+	display: inline-flex !important;
+	align-items: center !important;
+	gap: 5px !important;
+	padding: 3px 10px !important;
 	border-radius: 20px !important;
-	border: 1px solid #ffe0e6 !important;
 	font-size: 0.82rem !important;
+	cursor: pointer !important;
+	transition: all 0.2s ease !important;
+	
+	/* 🤍 클릭 안 되어 있을 때 사양 동일 명시 */
 	background-color: #ffffff !important;
+	border: 1px solid #ffe0e6 !important;
+	color: #d6336c !important;
+}
+
+/* ❤️ 클릭 되어 활성화(active) 되었을 때 사양 동일 명시 (보라색 잔재 완전 파괴) */
+.company-pokemon-grid .product-item .like-chip-btn.active {
+	background-color: #ff7f9f !important; /* 보라색 버리고 시그니처 핑크 충전 */
+	border: none !important;              
+	color: #ffffff !important;            /* 내부 하트 기호와 숫자를 새하얗고 또렷하게 출력 */
+	box-shadow: 0 2px 6px rgba(255, 127, 159, 0.2) !important;
 }

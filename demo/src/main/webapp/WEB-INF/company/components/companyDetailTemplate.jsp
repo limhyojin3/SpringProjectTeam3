@@ -38,7 +38,7 @@
 					
 					<div class="product-price-row">
 						<p class="product-price m-0">{{ Number(item.productPrice).toLocaleString() }}원</p>
-						<div @click.stop="fnToggleLike(item)" :class="['chip-toggle-label', 'like-chip-btn', { active: item.isLiked === 1 }]">
+						<div @click.stop="fnToggleProductLike(item)" :class="['chip-toggle-label', 'like-chip-btn', { active: item.isLiked === 1 }]">
 							<span>{{ item.isLiked === 1 ? '❤️' : '🤍' }}</span>
 							<span class="like-count-num">{{ item.likeCnt || 0 }}</span>
 						</div>

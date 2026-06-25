@@ -155,11 +155,19 @@ public class ProductController {
 		return new Gson().toJson(treeData);
 	}
 
-	/* 💡 [신규 개통] 브라우저와 통신하며 실시간 하트 스위칭 결과를 JSON 포맷으로 사출하는 비동기 창구 */
+	/* 💡 company_like 단선 제어 전용 실시간 하트 온오프 비동기 창구 */
 	@ResponseBody
 	@PostMapping("/companyLikeToggle.dox")
 	public String companyLikeToggle(@RequestParam HashMap<String, Object> map) throws Exception {
 		HashMap<String, Object> resultMap = productCommandService.toggleCompanyLike(map);
+		return new Gson().toJson(resultMap);
+	}
+
+	/* 💡 [신규 개통] 브라우저 상품 패키지 3열 격자판 하트와 통신하며 실시간 product_like 스위칭 결과를 사출하는 비동기 창구 */
+	@ResponseBody
+	@PostMapping("/productLikeToggle.dox")
+	public String productLikeToggle(@RequestParam HashMap<String, Object> map) throws Exception {
+		HashMap<String, Object> resultMap = productCommandService.toggleProductLike(map);
 		return new Gson().toJson(resultMap);
 	}
 }
