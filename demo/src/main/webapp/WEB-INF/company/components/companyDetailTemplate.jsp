@@ -8,9 +8,9 @@
 		</div>
 
 		<div class="filter-section company-detail-profile-card">
-			<div class="company-card-header" style="display: flex !important; justify-content: space-between !important; align-items: center !important; width: 100% !important;">
+			<div class="company-card-header">
 				<h2 class="font-weight-bold text-dark m-0">{{ companyInfo.comName }}</h2>
-				<div @click.stop="fnToggleCompanyLike" :class="['like-chip-btn', { active: companyInfo.isCompanyLiked === 1 }]" style="position: static !important; margin: 0 !important;">
+				<div @click.stop="fnToggleCompanyLike" :class="['like-chip-btn', { active: companyInfo.isCompanyLiked === 1 }]">
 					<span>{{ companyInfo.isCompanyLiked === 1 ? '❤️' : '🤍' }}</span>
 				</div>
 			</div>
