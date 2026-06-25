@@ -181,7 +181,7 @@ public class CommunityController {
     }
 
  // --- [사이드바용 인기 게시글 조회 (AJAX)] ---
-    @PostMapping("/popular.dox")
+    @PostMapping("/popularList.dox")
     @ResponseBody
     public String getPopularList() {
         HashMap<String, Object> resultMap = new HashMap<>();

@@ -158,15 +158,15 @@ body{
 }
 
 .comment-section{
-    margin-top:70px;
-    padding-bottom:100px;
+    margin-top:55px;
+    padding-bottom:90px;
 }
 
 .comment-title{
-    font-size:24px;
+    font-size:23px;
     font-weight:900;
     color:#333;
-    margin-bottom:25px;
+    margin-bottom:20px;
 }
 
 .comment-title b{
@@ -175,10 +175,10 @@ body{
 
 .comment-write-box{
     background:#fff;
-    padding:30px;
-    border-radius:25px;
+    padding:24px;
+    border-radius:22px;
     border:1px solid #ffe4ec;
-    box-shadow:0 10px 25px rgba(255,77,109,.05);
+    box-shadow:0 8px 22px rgba(255,77,109,.05);
 }
 
 .comment-write-box textarea{
@@ -204,59 +204,70 @@ body{
     font-weight:700;
 }
 
+/* 댓글 카드 */
 .comment-item{
-    padding:28px 0;
-    border-bottom:1px solid #fff1f4;
+    padding:18px 20px;
+    margin-bottom:10px;
+    border:1px solid #fff0f3;
+    border-radius:18px;
+    background:#fff;
+    box-shadow:0 4px 14px rgba(255,77,109,.04);
     transition:.25s;
+    position:relative;
+    overflow:visible;
 }
 
 .comment-item:hover{
-    background:#fffafb;
+    background:#fff9fb;
+    border-color:#ffd6df;
 }
 
+/* 대댓글 */
 .is-reply{
-    margin-left:50px;
-    background:#fff7f9;
-    padding:20px 25px;
-    border-radius:20px;
-    margin-top:10px;
-    border:none;
+    margin-left:38px;
+    background:#fff8fa;
+    padding:16px 18px;
+    border-radius:16px;
+    margin-top:8px;
+    border:1px solid #ffe4ec;
     position:relative;
 }
 
 .is-reply::before{
     content:"↳";
     position:absolute;
-    left:-25px;
-    top:20px;
+    left:-24px;
+    top:16px;
     color:#ffb3c1;
-    font-size:20px;
+    font-size:19px;
 }
 
 .comment-header{
     display:flex;
     justify-content:space-between;
-    margin-bottom:10px;
-    font-size:15px;
+    align-items:center;
+    margin-bottom:6px;
+    font-size:14px;
 }
 
 .comment-body{
-    color:#555;
-    line-height:1.8;
-    font-size:16px;
+    color:#333;
+    line-height:1.6;
+    font-size:15px;
+    margin-top:6px;
 }
 
 .comment-footer{
     display:flex;
     align-items:center;
-    gap:15px;
-    margin-top:12px;
+    gap:12px;
+    margin-top:10px;
 }
 
 .comment-like-btn{
     cursor:pointer;
     color:#999;
-    font-size:14px;
+    font-size:13px;
     display:flex;
     align-items:center;
     gap:5px;
@@ -267,8 +278,8 @@ body{
 }
 
 .action-link{
-    font-size:13px;
-    color:#bbb;
+    font-size:12px;
+    color:#999;
     cursor:pointer;
     font-weight:700;
 }
@@ -293,11 +304,12 @@ body{
 
 .nickname-link{
     text-decoration:none;
-    color:inherit;
+    color:#ff4d6d;
+    font-weight:800;
 }
 
 .nickname-link:hover{
-    color:#ff4d6d;
+    color:#e0354f;
     text-decoration:none;
 }
 
@@ -306,6 +318,7 @@ body{
     display:inline-block;
 }
 
+/* 프로필 호버 모달 */
 .profile-hover-modal{
     position:absolute;
     top:50%;
@@ -342,7 +355,6 @@ body{
         opacity:1;
         transform:translateY(-50%) scale(1);
     }
-    
 }
 .petal{
     position:fixed;
@@ -412,7 +424,7 @@ body{
                             </a>
                             <b v-else class="text-danger">{{ post.nickname }}</b>
                             <span class="text-light">|</span>
-                            <span>{{ post.regDate }}</span>
+                            <span>{{ formatTime(post.regDate) }}</span>
                             <span class="text-light">|</span>
                             <span>조회 {{ post.viewCnt }}</span>
                         </div>
@@ -460,57 +472,42 @@ body{
                     <div class="comment-list">
                         <div v-for="item in commentList" :key="item.commentNo" :class="['comment-item', { 'is-reply': item.parentNo }]">
                             <div class="comment-header">
-
                                 <div>
                                     <!-- 정상 댓글 -->
                                     <template v-if="item.isDeleted == 0 && item.nickname !== '탈퇴회원'">
-
                                         <div class="nickname-container"
                                             @mouseenter="fnShowHover(item.userId)"
                                             @mouseleave="fnHideHover">
-
                                             <a :href="'/userProfile.do?userId=' + item.userId"
                                             class="nickname-link">
                                                 @{{ item.nickname }}
                                             </a>
-
                                             <div v-if="hoverUserId === item.userId && hoverInfo"
                                                 class="profile-hover-modal">
-
                                                 <div style="text-align:center;">
-
                                                     <img
                                                         :src="'/img/profile/' + (hoverInfo.info.profileImg || 'heart.png')"
                                                         style="width:50px;height:50px;border-radius:50%;object-fit:cover;">
-
                                                     <div class="mt-2 font-weight-bold">
                                                         {{ hoverInfo.info.nickName }}
                                                     </div>
-
                                                     <div style="font-size:12px;color:#666;">
                                                         게시글 {{ hoverInfo.postTotal }}
                                                         |
                                                         리뷰 {{ hoverInfo.reviewTotal }}
                                                     </div>
-
                                                 </div>
-
                                             </div>
-
                                         </div>
-
                                     </template>
-
                                     <!-- 탈퇴회원 -->
                                     <template v-else-if="item.nickname === '탈퇴회원'">
                                         <span class="text-danger">탈퇴회원</span>
                                     </template>
-
                                     <!-- 관리자 삭제 -->
                                     <template v-else-if="item.delRole === 'ADMIN'">
                                         <span class="text-muted">[관리자 삭제]</span>
                                     </template>
-
                                     <!-- 일반 삭제 -->
                                     <template v-else>
                                         <span class="text-muted">[삭제된 댓글]</span>
@@ -518,7 +515,7 @@ body{
                                 </div>
 
                                 <span class="text-muted small">
-                                    {{ item.regDate }}
+                                    {{ formatTime(item.regDate) }}
                                 </span>
 
                             </div>
@@ -848,6 +845,27 @@ body{
                             }
                         }
                     });
+                },
+                formatTime(date) {
+                    const now = new Date();
+                    const target = new Date(date);
+                    const diff = Math.floor((now - target) / 1000);
+                    if(diff < 60){
+                        return "방금 전";
+                    }
+                    if(diff < 3600){
+                        return Math.floor(diff / 60) + "분 전";
+                    }
+                    if(diff < 86400){
+                        return Math.floor(diff / 3600) + "시간 전";
+                    }
+                    if(diff < 172800){
+                        return "어제";
+                    }
+                    if(diff < 604800){
+                        return Math.floor(diff / 86400) + "일 전";
+                    }
+                    return target.toLocaleDateString('ko-KR');
                 }
                 
             },

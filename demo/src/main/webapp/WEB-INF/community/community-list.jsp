@@ -197,10 +197,10 @@
     }
 
     .col-info{
-        width:330px;
+        width:180px;
         display:flex;
         align-items:center;
-        justify-content:space-between;
+        justify-content:flex-start;
         position:relative;
     }
 
@@ -262,6 +262,7 @@
         border-radius:12px;
         font-weight:800;
         transition:.25s;
+        display: inline-block;
     }
 
     .nickname:hover{
@@ -289,6 +290,7 @@
     /* 프로필 호버 */
     .nickname-container{
         position:relative;
+         display:inline-block;
     }
 
     .profile-hover-modal{
@@ -478,13 +480,249 @@
             margin-left:60px;
         }
     }
+    /* 정렬 버튼 */
+    .sort-tabs{
+        display:flex;
+        justify-content:center;
+        gap:12px;
+        margin-bottom:25px;
+        flex-wrap:wrap;
+    }
 
+    .sort-item{
+        padding:10px 22px;
+        border-radius:999px;
+        background:white;
+        border:1px solid #f2f2f2;
+        cursor:pointer;
+        font-weight:700;
+        color:#777;
+        transition:.25s;
+        box-shadow:0 4px 15px rgba(0,0,0,.03);
+    }
+
+    .sort-item:hover{
+        transform:translateY(-2px);
+        color:#ff5c8a;
+    }
+
+    .sort-item.active{
+        background:linear-gradient(135deg,#ff5c8a,#ff8fa9);
+        color:white;
+        border:none;
+        box-shadow:0 10px 25px rgba(255,92,138,.25);
+    }
+.popular-board{
+    background:#fff;
+    border-radius:24px;
+    padding:25px;
+    margin-bottom:40px;
+
+    box-shadow:
+    0 10px 30px rgba(255,92,138,.08);
+
+    border:1px solid #ffe4ec;
+}
+
+.popular-title{
+    font-size:20px;
+    font-weight:900;
+    color:#ff5c8a;
+    margin-bottom:18px;
+}
+
+.popular-item{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+
+    padding:14px 10px;
+
+    border-bottom:1px solid #f7f7f7;
+
+    cursor:pointer;
+
+    transition:.2s;
+}
+
+.popular-item:last-child{
+    border-bottom:none;
+}
+
+.popular-item:hover{
+    background:#fff7fa;
+    border-radius:12px;
+}
+
+.popular-rank{
+    width:40px;
+    font-weight:900;
+    color:#ff5c8a;
+}
+
+.popular-subject{
+    flex:1;
+    font-weight:700;
+    color:#333;
+}
+
+.popular-stat{
+    color:#999;
+    font-size:.9rem;
+}
+.badge-best{
+    display:inline-block;
+
+    padding:4px 10px;
+    margin-right:8px;
+
+    border-radius:8px;
+
+    background:linear-gradient(
+        135deg,
+        #ffd700,
+        #ffb300
+    );
+
+    color:white;
+    font-size:11px;
+    font-weight:900;
+
+    box-shadow:
+        0 4px 12px rgba(255,193,7,.4);
+
+    animation:bestGlow 2s infinite;
+}
+@keyframes bestGlow{
+
+    0%{
+        transform:scale(1);
+        box-shadow:
+            0 0 5px rgba(255,215,0,.4),
+            0 0 10px rgba(255,215,0,.2);
+    }
+
+    50%{
+        transform:scale(1.08);
+        box-shadow:
+            0 0 15px rgba(255,215,0,.8),
+            0 0 25px rgba(255,215,0,.5);
+    }
+
+    100%{
+        transform:scale(1);
+        box-shadow:
+            0 0 5px rgba(255,215,0,.4),
+            0 0 10px rgba(255,215,0,.2);
+    }
+}
+.badge-hot{
+    display:inline-block;
+
+    padding:4px 10px;
+    margin-right:8px;
+
+    border-radius:8px;
+
+    background:linear-gradient(
+        135deg,
+        #ff5c8a,
+        #ff8fa9
+    );
+
+    color:white;
+    font-size:11px;
+    font-weight:900;
+
+    box-shadow:
+        0 4px 12px rgba(255,92,138,.3);
+
+    animation:hotPulse 1.5s infinite;
+}
+@keyframes hotPulse{
+
+    0%{
+        transform:scale(1);
+    }
+
+    50%{
+        transform:scale(1.08);
+    }
+
+    100%{
+        transform:scale(1);
+    }
+}
+.badge-king{
+    display:inline-block;
+
+    padding:4px 10px;
+    margin-right:8px;
+
+    border-radius:8px;
+
+    background:linear-gradient(
+        135deg,
+        #7c3aed,
+        #a855f7
+    );
+
+    color:white;
+    font-size:11px;
+    font-weight:900;
+
+    animation:bestGlow 1.5s infinite;
+}
+.author-box{
+    display:flex;
+    flex-direction:column;
+    gap:4px;
+}
+
+.post-date{
+    font-size:11px;
+    color:#b5b5b5;
+    padding-left:4px;
+}
+.title-meta{
+    margin-top:6px;
+    font-size:12px;
+    color:#aaa;
+    font-weight:600;
+    display:flex;
+    align-items:center;
+    gap:6px;
+}
+.title-meta span{
+    color:#ddd;
+}
+.title-main{
+    line-height:1.4;
+}
+.title-meta .writer{
+    color:#ff5c8a;
+    font-weight:700;
+}
+.meta-nickname{
+    color:#ff5c8a !important;
+    font-weight:800;
+    text-decoration:none !important;
+}
     /* 컨텐츠가 꽃잎 위로 올라오게 */
     #app,
     .main-content{
         position:relative;
         z-index:2;
     }
+    .col-date{
+        width:90px;
+        text-align:right;
+        color:#aaa;
+        font-size:12px;
+        font-weight:700;
+        flex-shrink:0;
+    }
+
 </style>
 </head>
 <body>
@@ -516,7 +754,63 @@
                     {{ cate.label }}
                 </div>
             </div>
+            <!-- 인기글 -->
+            <div class="popular-board mb-5" v-if="popularList.length > 0">
 
+                <div class="popular-title">
+                    🔥 실시간 인기글
+                </div>
+
+                <div class="popular-item"
+                    v-for="(item,index) in popularList"
+                    :key="item.postNo"
+                    @click="fnDetail(item.postNo)">
+
+                    <span class="popular-rank">
+                    {{ getRank(index) }}
+                    </span>
+
+                    
+
+                    <span class="popular-subject">
+                        {{ item.title }}
+                    </span>
+
+                    <span class="popular-stat">
+                        ❤️ {{ item.likeCnt }}
+                        👁 {{ item.viewCnt }}
+                    </span>
+
+                </div>
+
+            </div>
+
+            <!-- 정렬 버튼 -->
+            <div class="sort-tabs">
+                <div
+                    :class="['sort-item', { active: sortType === 'latest' }]"
+                    @click="fnChangeSort('latest')">
+                    🕒 최신순
+                </div>
+
+                <div
+                    :class="['sort-item', { active: sortType === 'popular' }]"
+                    @click="fnChangeSort('popular')">
+                    🔥 인기순
+                </div>
+
+                <div
+                    :class="['sort-item', { active: sortType === 'view' }]"
+                    @click="fnChangeSort('view')">
+                    👀 조회순
+                </div>
+
+                <div
+                    :class="['sort-item', { active: sortType === 'like' }]"
+                    @click="fnChangeSort('like')">
+                    ❤️ 좋아요순
+                </div>
+            </div>
             <!-- 상단 검색바 -->
             <div class="d-flex justify-content-between align-items-center mb-4 px-3">
                 <div class="text-muted small">Total <span class="text-primary font-weight-bold">{{ totalCount }}</span> Posts</div>
@@ -528,86 +822,99 @@
             </div>
 
             <!-- 게시판 리스트 -->
-            <div class="board-list-container">
-                <div class="list-header d-none d-md-flex">
-                    <div class="col-no">No.</div>
-                    <div class="col-cate">Category</div>
-                    <div class="col-title">Subject</div>
-                    <div class="col-info">Author / Status</div>
-                </div>
-                
-                <div v-for="item in list" :key="item.postNo" class="list-item" @click="fnDetail(item.postNo)">
-                    <div class="col-no">{{ item.postNo }}</div>
-                    <div class="col-cate">
-                        <span :class="['badge-cate', 'cate-' + (item.category || 'default')]">
-                            {{ getCategoryLabel(item.category) || '기타' }}
-                        </span>
-                    </div>
-                    <div class="col-title">
-                        {{ item.title }}
-                        <span v-if="item.imgYn === 'Y'" style="margin-left: 8px; color: #ff4d6d; font-size: 0.9rem;">
-                            <i class="fas fa-image"></i>
-                        </span>
-                        <span v-if="item.commentCnt > 0" class="comment-count">({{ item.commentCnt }})</span>
-                    </div>
-                    <div class="col-info" style="position: relative;">
-                        <div class="nickname-container" 
-                            @mouseenter="fnShowHover(item.userId, item.postNo)" 
-                            @mouseleave="fnHideHover">
-                            
-                            <a v-if="item.nickname !== '탈퇴회원'" 
-                            :href="'/userProfile.do?userId=' + item.userId" 
-                            class="nickname-link">
-                                <span class="nickname">@{{ item.nickname }}</span>
-                            </a>
-                            <b v-else class="text-danger">@{{ item.nickname }}</b>
+<div class="board-list-container">
+    <div class="list-header d-none d-md-flex">
+        <div class="col-no">No.</div>
+        <div class="col-cate">Category</div>
+        <div class="col-title">Subject</div>
+        <div class="col-date">Date</div>
+    </div>
 
-                            <div v-if="hoverUserId === item.userId 
-                                        && hoverPostNo === item.postNo 
-                                        && hoverInfo"
-                                class="profile-hover-modal">
+    <div v-for="item in list" :key="item.postNo" class="list-item" @click="fnDetail(item.postNo)">
+        <div class="col-no">{{ item.postNo }}</div>
 
-                                <div style="text-align:center;">
+        <div class="col-cate">
+            <span :class="['badge-cate', 'cate-' + (item.category || 'default')]">
+                {{ getCategoryLabel(item.category) || '기타' }}
+            </span>
+        </div>
 
-                                    <img
-                                        :src="'/img/profile/' + (hoverInfo.info.profileImg || 'heart.png')"
-                                        style="
-                                            width:50px;
-                                            height:50px;
-                                            border-radius:50%;
-                                            object-fit:cover;
-                                            display:block;
-                                            margin:0 auto;
-                                        ">
+        <div class="col-title">
+            <div class="title-main">
+                <span v-if="popularList.length > 0 && item.postNo === popularList[0].postNo" class="badge-king">
+                    👑 KING
+                </span>
 
-                                    <div class="mt-2 font-weight-bold">
-                                        {{ hoverInfo.info.nickName }}
-                                    </div>
+                <span v-else-if="bestPosts.includes(item.postNo)" class="badge-best">
+                    🏆 BEST
+                </span>
 
-                                    <div style="font-size:12px;color:#666;">
-                                        게시글 {{ hoverInfo.postTotal }}
-                                        |
-                                        리뷰 {{ hoverInfo.reviewTotal }}
-                                    </div>
+                <span v-else-if="item.viewCnt >= 100 || item.commentCnt >= 10" class="badge-hot">
+                    🔥 HOT
+                </span>
 
-                                </div>
+                {{ item.title }}
 
+                <span v-if="item.imgYn === 'Y'" style="margin-left:8px;color:#ff4d6d;font-size:.9rem;">
+                    <i class="fas fa-image"></i>
+                </span>
+
+                <span v-if="item.commentCnt > 0" class="comment-count">
+                    ({{ item.commentCnt }})
+                </span>
+            </div>
+
+            <div class="title-meta" @click.stop>
+                <span class="nickname-container"
+                    @mouseenter="fnShowHover(item.userId, item.postNo)"
+                    @mouseleave="fnHideHover">
+
+                    <a v-if="item.nickname !== '탈퇴회원'"
+                        :href="'/userProfile.do?userId=' + item.userId"
+                        class="nickname-link meta-nickname">
+                        @{{ item.nickname }}
+                    </a>
+
+                    <b v-else class="text-danger meta-nickname">
+                        @{{ item.nickname }}
+                    </b>
+
+                    <div v-if="hoverUserId === item.userId && hoverPostNo === item.postNo && hoverInfo"
+                        class="profile-hover-modal">
+
+                        <div style="text-align:center;">
+                            <img
+                                :src="'/img/profile/' + (hoverInfo.info.profileImg || 'heart.png')"
+                                style="width:50px;height:50px;border-radius:50%;object-fit:cover;display:block;margin:0 auto;">
+
+                            <div class="mt-2 font-weight-bold">
+                                {{ hoverInfo.info.nickName }}
+                            </div>
+
+                            <div style="font-size:12px;color:#666;">
+                                게시글 {{ hoverInfo.postTotal }} | 리뷰 {{ hoverInfo.reviewTotal }}
                             </div>
                         </div>
-
-                        <div class="stat-group">
-                            <span><i class="far fa-eye icon-view"></i>{{ item.viewCnt }}</span>
-                            <span class="icon-heart"><i class="fas fa-heart"></i> {{ item.likeCnt }}</span>
-                        </div>
                     </div>
-                </div>
+                </span>
 
-                <!-- 데이터 없을 때 -->
-                <div v-if="list.length == 0" class="text-center p-5">
-                    <div class="mb-3" style="font-size: 50px; opacity: 0.3;">📂</div>
-                    <p style="color: #999; font-weight: 500;">작성된 게시물이 없습니다.</p>
-                </div>
+                <span>·</span>
+                조회 {{ item.viewCnt }}
+                <span>·</span>
+                좋아요 {{ item.likeCnt }}
             </div>
+        </div>
+
+        <div class="col-date">
+            {{ formatTime(item.regDate) }}
+        </div>
+    </div>
+
+    <div v-if="list.length == 0" class="text-center p-5">
+        <div class="mb-3" style="font-size:50px;opacity:.3;">📂</div>
+        <p style="color:#999;font-weight:500;">작성된 게시물이 없습니다.</p>
+    </div>
+</div>
 
             <!-- 페이지네이션 -->
             <nav class="mt-5">
@@ -666,8 +973,10 @@
                     pageBlockSize: 5,
                     hoverPostNo : null,    
                     hoverInfo: null, // 호버한 유저의 정보가 담길 곳
-                    hoverUserId: null // 현재 호버 중인 유저의 ID
-                    
+                    hoverUserId: null, // 현재 호버 중인 유저의 ID
+                    sortType: "latest", // latest, view, like, popular
+                    popularList : [],
+                    bestPosts : [],
                 };
             },
             computed: {
@@ -707,6 +1016,7 @@
                         searchKeyword: this.searchKeyword,
                         searchType: this.searchType,
                         category: this.searchCategory === "전체" ? "" : this.searchCategory,
+                        sortType: this.sortType,
                         startIndex: (this.currentPage - 1) * this.pageSize,
                         pageSize: this.pageSize
                     };
@@ -724,8 +1034,29 @@
                         error: (xhr) => console.error("데이터 로드 실패")
                     });
                 },
-                
+                fnPopularList() {
+                    $.ajax({
+                        url : "/api/community/popularList.dox",
+                        type : "POST",
+                        dataType : "json",
+                        success : (data)=>{
+                            this.popularList = data.list;
+                            this.bestPosts = data.list.map(item => item.postNo);
+                        }
+                    })
+                },
+                getRank(index){
+                    if(index==0) return "🥇";
+                    if(index==1) return "🥈";
+                    if(index==2) return "🥉";
+                    return index+1;
+                },
                 fnSearch() {
+                    this.currentPage = 1;
+                    this.fnList();
+                },
+                fnChangeSort(type) {
+                    this.sortType = type;
                     this.currentPage = 1;
                     this.fnList();
                 },
@@ -756,10 +1087,32 @@
                     // categoryList에서 value가 일치하는 항목을 찾아 label을 반환
                     const found = this.categoryList.find(c => c.value === val);
                     return found ? found.label : val;
-                }
+                },
+                formatTime(date) {
+                    const now = new Date();
+                    const target = new Date(date);
+                    const diff = Math.floor((now - target) / 1000);
+                    if(diff < 60){
+                        return "방금 전";
+                    }
+                    if(diff < 3600){
+                        return Math.floor(diff / 60) + "분 전";
+                    }
+                    if(diff < 86400){
+                        return Math.floor(diff / 3600) + "시간 전";
+                    }
+                    if(diff < 172800){
+                        return "어제";
+                    }
+                    if(diff < 604800){
+                        return Math.floor(diff / 86400) + "일 전";
+                    }
+                    return target.toLocaleDateString('ko-KR');
+                },
             },
             mounted() {
                 this.fnList();
+                 this.fnPopularList();
                  document.querySelectorAll('.petal').forEach(el => {
                     el.style.left = Math.random() * 100 + 'vw';
                     el.style.fontSize =
