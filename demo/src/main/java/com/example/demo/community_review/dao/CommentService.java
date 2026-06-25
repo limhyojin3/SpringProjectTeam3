@@ -2,13 +2,16 @@ package com.example.demo.community_review.dao;
 
 import java.util.List;
 import java.util.Map;
+import java.io.File;
+import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
-import com.example.demo.community_review.mapper.CommentMapper;
 import com.example.demo.admin.dao.NotificationService;
+import com.example.demo.community_review.mapper.CommentMapper; 
 
 @Service
 public class CommentService {
@@ -19,20 +22,40 @@ public class CommentService {
     @Autowired
     private NotificationService notificationService;
     
+    @Autowired
+    private FileService fileService;
+    
     // 리뷰 댓글 목록
     public List<Map<String, Object>> getReviewCommentList(Map<String, Object> map) {
         return commentMapper.selectReviewCommentList(map);
     }
 
     // 리뷰 댓글 등록
-    public int addReviewComment(Map<String, Object> map) {
-    	int result = commentMapper.insertReviewComment(map);
+    public int addReviewComment(Map<String, Object> map, MultipartFile[] files) {
 
-        if (result > 0) {
-            notificationService.createReviewCommented(map.get("commentNo"));
+        try {
+            if (files != null && files.length > 0 && !files[0].isEmpty()) {
+                Map<String, String> fileInfo = fileService.uploadFile(files[0]);
+
+                if (fileInfo != null) {
+                    map.put("imgUrl", fileInfo.get("imgUrl"));
+                }
+            } else {
+                map.put("imgUrl", null);
+            }
+
+            int result = commentMapper.insertReviewComment(map);
+
+            if (result > 0) {
+                notificationService.createReviewCommented(map.get("commentNo"));
+            }
+
+            return result;
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return 0;
         }
-
-        return result;
     }
     
     // 커뮤 댓글 목록
@@ -41,14 +64,31 @@ public class CommentService {
     }
 
     // 커뮤 댓글 등록
-    public int addCommunityComment(Map<String, Object> map) {
-    	int result = commentMapper.insertCommunityComment(map);
+    public int addCommunityComment(Map<String, Object> map, MultipartFile[] files) {
 
-        if (result > 0) {
-            notificationService.createPostCommented(map.get("commentNo"));
-        }
+    	 try {
+             if (files != null && files.length > 0 && !files[0].isEmpty()) {
+                 Map<String, String> fileInfo = fileService.uploadFile(files[0]);
 
-        return result;
+                 if (fileInfo != null) {
+                     map.put("imgUrl", fileInfo.get("imgUrl"));
+                 }
+             } else {
+                 map.put("imgUrl", null);
+             }
+
+             int result = commentMapper.insertCommunityComment(map);
+
+             if (result > 0) {
+                 notificationService.createReviewCommented(map.get("commentNo"));
+             }
+
+             return result;
+
+         } catch (Exception e) {
+             e.printStackTrace();
+             return 0;
+         }
     }
 
     // 댓글 수정
