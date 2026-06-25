@@ -20,6 +20,7 @@
 				🏢 등록 업체 찾기
 			</button>
 		</div>
+		
 		<div v-if="searchMode === 'product'" class="filter-section">
 			<div class="large-category-container">
 				<button v-for="(value, key) in categoriesData" 
@@ -58,6 +59,7 @@
 				</div>
 			</div>
 		</div>
+		
 		<div v-if="searchMode === 'company'" class="filter-section company-slim-filter">
 			<div class="large-category-container" style="border-bottom: none; padding-bottom: 0;">
 				<button v-for="(value, key) in categoriesData" 
@@ -83,14 +85,14 @@
 					</div>
 					<div class="product-price-row">
 						<p class="product-price">{{Number(item.price).toLocaleString()}}원</p>
-						<div @click.stop="$emit('toggle-like', item)" :class="['chip-toggle-label', 'like-chip-btn', { active: item.isLiked === 1 }]">
+						<div @click.stop="fnToggleProductLike(item)" :class="['like-chip-btn', { active: item.isLiked === 1 }]">
 							<span>{{ item.isLiked === 1 ? '❤️' : '🤍' }}</span>
-							<span class="like-count-num">{{ item.likeCnt || 0 }}</span>
 						</div>
 					</div>
 				</div>
 			</div>
 		</div>
+		
 		<div v-if="searchMode === 'company'">
 			<div v-for="comp in uniqueCompanies" :key="comp.companyNo" class="product-item company-card-item" @click="$emit('go-company-detail', comp.companyNo)">
 				<div class="product-img-box">
@@ -99,9 +101,8 @@
 				<div class="product-info">
 					<div class="company-card-header">
 						<h4>{{ comp.comName }}</h4>
-						<div @click.stop="$emit('toggle-like', comp)" :class="['chip-toggle-label', 'like-chip-btn', { active: comp.isLiked === 1 }]">
-							<span>{{ comp.isLiked === 1 ? '❤️' : '🤍' }}</span>
-							<span class="like-count-num">{{ comp.likeCnt || 0 }}</span>
+						<div @click.stop="fnToggleCompanyLike(comp)" :class="['like-chip-btn', { active: comp.isCompanyLiked === 1 }]">
+							<span>{{ comp.isCompanyLiked === 1 ? '❤️' : '🤍' }}</span>
 						</div>
 					</div>
 					<p class="company-location-text">📍 위치: {{ comp.comAddress || '주소 정보 없음' }}</p>

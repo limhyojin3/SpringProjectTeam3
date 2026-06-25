@@ -9,7 +9,9 @@ const productListComponent = {
 			selectLargeCategory: '결혼', // 초기 기본 활성화 대분류값
 			selectCategory: '',         // 중분류 단일 선택 라디오 버튼 값
 			selectTags: [],             // 선택된 소분류 태그 배열
-			categoriesData: {}          // DB에서 수혈받을 카테고리 트리 저장소
+			categoriesData: {},          // DB에서 수혈받을 카테고리 트리 저장소
+			userid: window.SESSION_ID || '' , // 전역 세션선 직통 연결
+			localProductList: []         // [개인 지갑] 부모 간섭을 차단하기 위한 자체 독립 반응형 자산
 		};
 	},
 	created() {
@@ -36,6 +38,27 @@ const productListComponent = {
 		this.triggerFilterReload();
 	},
 	watch: {
+		// 부모의 지갑(productList)에 돈이 들어오면 내 지갑(localProductList)에 깊은 복사로 즉시 이사 보관
+		productList: {
+			handler(newVal) {
+				if (newVal) {
+					this.localProductList = JSON.parse(JSON.stringify(newVal));
+					
+					// [전역 하트 공유선 역정렬 싱크] 상세방에서 바꾸고 뒤로가기 눌렀을 때, 메모리 저장소 값을 가져와 강제 동기화 수행!
+					if (window.LIVE_COMPANY_LIKE) {
+						this.localProductList.forEach(p => {
+							if (window.LIVE_COMPANY_LIKE[p.companyNo] !== undefined) {
+								p.isCompanyLiked = window.LIVE_COMPANY_LIKE[p.companyNo];
+							}
+						});
+					}
+				} else {
+					this.localProductList = [];
+				}
+			},
+			deep: true,
+			immediate: true
+		},
 		// 상품 찾기 ↔ 업체 찾기 탭이 스위칭되는 순간을 정밀 포착합니다.
 		searchMode(newVal) {
 			// 새로고침된 것처럼 대분류를 무조건 '결혼'으로 강제 고정하고, 남아있던 하위 값들을 깨끗하게 지웁니다.
@@ -66,10 +89,105 @@ const productListComponent = {
 		},
 		// 실시간 필터 가교: 부모 창의 jQuery AJAX 메인 조회 함수를 자동 호출하도록 유도
 		triggerFilterReload() {
+			// 자식 고유의 비즈니스 메서드 내부에서 안전하게 전역 카테고리 컨텍스트 기록!
+			window.CURRENT_LARGE_CATEGORY = this.selectLargeCategory;
+			
 			this.$emit('update-filter-list', {
 				largeCategory: this.selectLargeCategory,
 				mediumCategory: this.selectCategory,
-				tags: this.selectTags.join(',')
+				tags: this.selectTags.join(','),
+				loginUserId: this.userid // 💡 [파이프라인 완공] 최초 리스트 호출 시 세션 ID를 누락 없이 공급하여 첫 클릭 롤백 버그 원천 박멸!
+			});
+		},
+		
+		// 1번 트랙: 가짜 인형 분신 대신 진짜 지갑 속 알맹이를 찾아내 직접 수정하는 하트 통신 엔진
+		fnToggleProductLike(item) {
+			var self = this;
+			if (!self.userid) {
+				alert("로그인 후 이용 가능합니다.");
+				return;
+			}
+			
+			const targetId = item.productNo || item.id;
+			
+			$.ajax({
+				url: '/productLikeToggle.dox',
+				type: 'POST',
+				data: {
+					productNo: targetId,
+					loginUserId: self.userid
+				},
+				dataType: 'json',
+				success: function(data) {
+					if (data.result === 'success') {
+						const realItem = self.localProductList.find(p => (p.productNo || p.id) === targetId);
+						if (realItem) {
+							if (data.status === 'liked') {
+								realItem.isLiked = 1;
+								realItem.likeCnt = (realItem.likeCnt || 0) + 1;
+							} else {
+								realItem.isLiked = 0;
+								realItem.likeCnt = Math.max(0, (realItem.likeCnt || 0) - 1);
+							}
+						}
+					}
+				},
+				error: function(xhr, status, error) {
+					console.error("독립형 상품 찾기 내 실시간 하트 토글 실패:", error);
+				}
+			});
+		},
+		
+		// 2번 트랙: 업체 좋아요 실시간 온오프 처리 스위치선
+		fnToggleCompanyLike(comp) {
+			var self = this;
+			if (!self.userid) {
+				alert("로그인 후 이용 가능합니다.");
+				return;
+			}
+			const targetCompanyNo = comp.companyNo;
+			window.LIVE_COMPANY_LIKE = window.LIVE_COMPANY_LIKE || {};
+
+			// [선제 UI 스위칭] 통신 딜레이 버그 브레이커 발동 -> 누르는 즉시 UI를 강제 반전 및 메모리 주입
+			const currentStatus = comp.isCompanyLiked === 1;
+			const newStatus = currentStatus ? 0 : 1;
+
+			window.LIVE_COMPANY_LIKE[targetCompanyNo] = newStatus;
+			self.localProductList.forEach(p => {
+				if (p.companyNo === targetCompanyNo) {
+					p.isCompanyLiked = newStatus;
+				}
+			});
+
+			$.ajax({
+				url: '/companyLikeToggle.dox',
+				type: 'POST',
+				data: {
+					companyNo: targetCompanyNo,
+					loginUserId: self.userid
+				},
+				dataType: 'json',
+				success: function(data) {
+					if (data.result === 'success') {
+						const finalStatus = data.status === 'liked' ? 1 : 0;
+						window.LIVE_COMPANY_LIKE[targetCompanyNo] = finalStatus;
+						self.localProductList.forEach(p => {
+							if (p.companyNo === targetCompanyNo) {
+								p.isCompanyLiked = finalStatus;
+							}
+						});
+					}
+				},
+				error: function(xhr, status, error) {
+					console.error("독립형 업체 찾기 내 실시간 하트 토글 실패:", error);
+					// 네트워크 에러 시 안전하게 예전 상태로 롤백 복구
+					window.LIVE_COMPANY_LIKE[targetCompanyNo] = currentStatus ? 1 : 0;
+					self.localProductList.forEach(p => {
+						if (p.companyNo === targetCompanyNo) {
+							p.isCompanyLiked = currentStatus ? 1 : 0;
+						}
+					});
+				}
 			});
 		}
 	},
@@ -83,10 +201,10 @@ const productListComponent = {
 			if (!this.selectLargeCategory || !this.selectCategory) return [];
 			return this.categoriesData[this.selectLargeCategory]?.tags?.[this.selectCategory] || [];
 		},
-		// 백엔드에서 받아온 상품 리스트의 태그 문자열을 안전하게 자바스크립트 배열로 정제
+		// 부모의 props 대신 자식 내 자체 지갑(localProductList) 자산을 기반으로 복사본 정제 수행
 		filteredList() {
-			if (!this.productList) return [];
-			return this.productList.map(item => {
+			if (!this.localProductList) return [];
+			return this.localProductList.map(item => {
 				let parsedTag = [];
 				if (item.tag) {
 					if (typeof item.tag === 'string') {
@@ -116,11 +234,8 @@ const productListComponent = {
 						comName: item.comName,
 						comIntro: item.comIntro,
 						comAddress: item.comAddress,
-						// 💡 [2교시 요구사항 완결] 백엔드가 매퍼 XML을 통해 새로 개통해준 진짜 회사 이미지(comImgUrl)를 정밀 매핑선에 도킹!
-						// 데이터베이스에 등록된 회사 이미지가 만약 없을 경우를 대비해 기존 상품 썸네일을 안전 자산 백업(Fallback)으로 지정
 						thumbnail: item.comImgUrl || item.thumbnail,
-						isLiked: item.isLiked,
-						likeCnt: item.likeCnt
+						isCompanyLiked: item.isCompanyLiked 
 					});
 				}
 			});

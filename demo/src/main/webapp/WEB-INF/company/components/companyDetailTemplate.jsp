@@ -10,6 +10,9 @@
 		<div class="filter-section company-detail-profile-card">
 			<div class="company-card-header">
 				<h2 class="font-weight-bold text-dark m-0">{{ companyInfo.comName }}</h2>
+				<div @click.stop="fnToggleCompanyLike" :class="['like-chip-btn', { active: companyInfo.isCompanyLiked === 1 }]">
+					<span>{{ companyInfo.isCompanyLiked === 1 ? '❤️' : '🤍' }}</span>
+				</div>
 			</div>
 			<p class="company-detail-location mt-1">📍 업장 소재지: {{ companyInfo.comAddress || '등록된 주소 정보가 없습니다.' }}</p>
 			
@@ -38,9 +41,8 @@
 					
 					<div class="product-price-row">
 						<p class="product-price m-0">{{ Number(item.productPrice).toLocaleString() }}원</p>
-						<div @click.stop="fnToggleProductLike(item)" :class="['chip-toggle-label', 'like-chip-btn', { active: item.isLiked === 1 }]">
+						<div @click.stop="fnToggleProductLike(item)" :class="['like-chip-btn', { active: item.isLiked === 1 }]">
 							<span>{{ item.isLiked === 1 ? '❤️' : '🤍' }}</span>
-							<span class="like-count-num">{{ item.likeCnt || 0 }}</span>
 						</div>
 					</div>
 				</div>

@@ -47,6 +47,8 @@ public class Product {
 	private String content;
 	private Long price;
 	private String company;
+	
+	private int isCompanyLiked;
 
 	// MyBatis 조인 매핑 시 하위 호환성을 완벽히 유지하기 위한 커스텀 특화 세터
 	public void setComName(String comName) {

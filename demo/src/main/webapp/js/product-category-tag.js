@@ -15,7 +15,10 @@ const app = createApp({
 			myInquiry1: {},           // 단건 문의 상세 정보 주머니
 			userid: window.SESSION_ID || '', // 로그인 연동 세션 ID
 			
-			/* 💡 [구조 재조정 추가] 자식 업체 목록에서 쏘아올린 고유 업체 번호를 저장할 독립 레일용 센서 방 */
+			/* 💡 [콘솔 경고 소독 완공] 부모 템플릿 프레임과 완벽 연동되는 전용 탭 복원선 변수 정식 선언 */
+			currentSearchMode: 'product',
+			
+			/* 💡 자식 업체 목록에서 쏘아올린 고유 업체 번호를 저장할 독립 레일용 센서 방 */
 			selectedCompanyNo: null
 		};
 	},
@@ -47,7 +50,7 @@ const app = createApp({
 			});
 		},
 		
-		/* 💡 [구조 재조정 추가] 독립형 업체 목록 자식이 쏘아올린 무전을 수신하여 업체 상세 레일로 상태를 전이시키는 핸들러 */
+		/* 💡 독립형 업체 목록 자식이 쏘아올린 무전을 수신하여 업체 상세 레일로 상태를 전이시키는 핸들러 */
 		goCompanyDetailPage(companyNo) {
 			this.selectedCompanyNo = companyNo; // 클릭된 고유 업체 번호를 부모 센서 방에 격납
 			this.productPage = 'companyDetail'; // 화면을 업체 상세 레이아웃 컴포넌트로 전격 스위칭
@@ -74,7 +77,7 @@ const app = createApp({
 		onDetailReserve(reserveData) {
 			this.selectedDate = reserveData.date;
 			this.selectedTime = reserveData.time;
-			this.res_content = reserveData.content; // 유저님이 작성하신 "ㅁㄴㄴㅁㅇ" 가 이 방으로 안전하게 정착합니다!
+			this.res_content = reserveData.content; // 유저님이 작성하신 내용이 이 방으로 안전하게 정착합니다!
 			this.productPage = 'payment';
 			window.scrollTo(0, 0); // 화면 상단으로 쾌적하게 스크롤 포커싱
 		},
@@ -122,13 +125,13 @@ if (typeof inquiryDetailComponent !== 'undefined') {
 	app.component('inquiry-detail-component', inquiryDetailComponent);
 } 
 
-/* 💡 [구조 재조정 추가] 새롭게 개설되는 독립형 업체 목록 및 상세 자식 컴포넌트들의 가동 의존성 엔진 등록선 */
+/* 💡 새롭게 개설되는 독립형 업체 목록 및 상세 자식 컴포넌트들의 가동 의존성 엔진 등록선 */
 if (typeof companyListComponent !== 'undefined') {
 	app.component('company-list-component', companyListComponent);
 }
 if (typeof companyDetailComponent !== 'undefined') {
 	app.component('company-detail-component', companyDetailComponent);
-}
+} 
 
 // Vue 3 앱 구동 시작
 app.mount('#app');

@@ -11,6 +11,7 @@
 	padding: 25px !important;
 	display: flex !important;
 	flex-direction: column !important;
+	position: relative !important;        /* 💡 [여백 균형 개정] 우상단 마스터 하트의 절대 좌표 정렬을 위해 부모 자격 수립 */
 }
 
 /* 업체 정보 내 서브 텍스트 보정 */
@@ -144,7 +145,7 @@
 	margin-top: auto !important;       
 	width: 100% !important;
 	border-top: 1px dashed #f1f5f9;   
-	padding-top: 10px;
+	padding-top: 6px !important;
 }
 
 .company-pokemon-grid .product-info .product-price {
@@ -156,29 +157,63 @@
 	text-align: left !important;
 }
 
-/* 💡 [통일 조준 완결] 상세방 내부 상품 하트 단추도 메인과 100% 동일한 분홍 배지 공식 대입 */
+/* 🎯 [하위 패키지 상품 리스트용 하트 버튼] 투명 히트박스 명세 보존 */
 .company-pokemon-grid .product-item .like-chip-btn {
 	position: static !important;       
-	margin-left: auto !important;      /* 무조건 오른쪽 끝자리 정위치 고정 */
+	margin-left: auto !important;      
 	display: inline-flex !important;
 	align-items: center !important;
-	gap: 5px !important;
-	padding: 3px 10px !important;
-	border-radius: 20px !important;
-	font-size: 0.82rem !important;
-	cursor: pointer !important;
-	transition: all 0.2s ease !important;
-	
-	/* 🤍 클릭 안 되어 있을 때 사양 동일 명시 */
-	background-color: #ffffff !important;
-	border: 1px solid #ffe0e6 !important;
-	color: #d6336c !important;
+	justify-content: center !important;
+	width: 36px !important;     
+	height: 36px !important;    
+	cursor: pointer !important;     /* 💡 🖱️ 마우스 호버 시 클릭할 수 있다는 손가락 기호 주입 */
+	user-select: none !important;
+	transition: transform 0.15s ease-in-out !important;
+	font-size: 1.35rem !important; 
+	background: transparent !important;
+	border: none !important;
+	box-shadow: none !important;
+	padding: 0 !important;
 }
 
-/* ❤️ 클릭 되어 활성화(active) 되었을 때 사양 동일 명시 (보라색 잔재 완전 파괴) */
 .company-pokemon-grid .product-item .like-chip-btn.active {
-	background-color: #ff7f9f !important; /* 보라색 버리고 시그니처 핑크 충전 */
+	background: transparent !important; 
 	border: none !important;              
-	color: #ffffff !important;            /* 내부 하트 기호와 숫자를 새하얗고 또렷하게 출력 */
-	box-shadow: 0 2px 6px rgba(255, 127, 159, 0.2) !important;
+	box-shadow: none !important;
+}
+
+.company-pokemon-grid .product-item .like-chip-btn:active {
+	transform: scale(1.25) !important;
+}
+
+/* 👑 [마스터 프로필 헤더 하트 황금비율 교정] 크기 시원하게 벌크업 + 우상단 25px 완벽한 사방 대칭 + 마우스 포인터 강제 조준 */
+.company-detail-profile-card .like-chip-btn {
+	position: absolute !important;
+	top: 25px !important;       /* 카드 탑 마진 25px과 완벽 매칭 */
+	right: 25px !important;     /* 카드 라이트 마진 25px과 완벽 매칭 */
+	width: 40px !important;     /* 커진 하트 알맹이에 맞춰 터치 존 40px 최적화 */
+	height: 40px !important;
+	font-size: 1.7rem !important; /* 💡 기존 1.35rem에서 1.7rem으로 위풍당당하게 스케일업! */
+	cursor: pointer !important;  /* 💡 🖱️ 마우스 호버 시 손가락 포인터 피드백 수혈 */
+	display: inline-flex !important;
+	align-items: center !important;
+	justify-content: center !important;
+	user-select: none !important;
+	transition: transform 0.15s ease-in-out !important;
+	
+	background: transparent !important;
+	border: none !important;
+	box-shadow: none !important;
+	padding: 0 !important;
+}
+
+/* 마스터 하트도 활성화 시 투명 레이아웃 전면 사수 */
+.company-detail-profile-card .like-chip-btn.active {
+	background: transparent !important;
+	border: none !important;
+	box-shadow: none !important;
+}
+
+.company-detail-profile-card .like-chip-btn:active {
+	transform: scale(1.25) !important;
 }
