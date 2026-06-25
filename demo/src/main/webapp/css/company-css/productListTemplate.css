@@ -26,21 +26,31 @@
 /* ==========================================================================
    2. 카테고리 & 태그 필터 검색 영역 (대/중/소 구조)
    ========================================================================== */
-.filter-section {
-	background: #fff;
-	padding: 24px;
-	border-radius: 12px;
-	border: 1px solid #ff7f9f;
-	margin-bottom: 30px;
-	display: flex;
-	flex-direction: column;
-	gap: 20px;
+/* 💡 [명세선 격상 완공] 태그와 클래스를 결합하여 다른 상위 파일의 간섭 우선순위를 완벽하게 압도 */
+div.filter-section {
+	padding: 24px !important;
+	border: none !important;
+	background: #fff5f6 !important;
+	border-radius: 24px !important;
+	margin-top: 25px !important;
+	margin-bottom: 30px !important;
+	display: flex !important;
+	flex-direction: column !important;
+	gap: 20px !important;
+	box-shadow: 0 6px 24px rgba(255, 127, 159, 0.06) !important;
+	
+	/* 💡 [초강력 핵심 안전장치] 내부 알맹이 요소들이 뾰족하게 삐져나와 라운딩을 가리던 현상을 원천 차단! */
+	overflow: hidden !important; 
 }
 
-/* 업체 찾기 모드일 때 상단 필터를 고급스러운 보라색 테두리로 유지 */
-.company-slim-filter {
-	border: 2px solid #ede9fe !important;
-	background-color: #faf9fe !important;
+/* 🔮 등록 업체 찾기 모드일 때도 상단 필터를 부드러운 우윳빛 연보라 면 디자인과 대형 곡률 강제 집도 */
+div.company-slim-filter {
+	border: none !important;
+	background-color: #f5f3ff !important;
+	border-radius: 24px !important;
+	margin-top: 25px !important;
+	box-shadow: 0 6px 24px rgba(167, 139, 250, 0.06) !important;
+	overflow: hidden !important;
 }
 
 /* 대분류 대형 상단 탭 스타일 */
@@ -77,14 +87,14 @@
 	box-shadow: 0 4px 10px rgba(255, 127, 159, 0.25);
 }
 
-/* 🔮 [라벤더 조색 완공] 등록 업체 찾기 단추 마우스 호버 시 핑크색 차단 -> 우윳빛 연보라 전환 */
+/* 등록 업체 찾기 단추 마우스 호버 시 핑크색 차단 -> 우윳빛 연보라 전환 */
 .master-toggle-container .large-tab-btn:last-child:hover:not(.active) {
 	background-color: #f5f3ff !important;
 	border-color: #a78bfa !important;
 	color: #8b5cf6 !important;
 }
 
-/* 🔮 [라벤더 조색 완공] 등록 업체 찾기 단추 클릭 활성화 시 진한 보라 피하고 적당히 이쁜 소프트 라벤더 매핑 */
+/* 등록 업체 찾기 단추 클릭 활성화 시 진한 보라 피하고 적당히 이쁜 소프트 라벤더 매핑 */
 .master-toggle-container .large-tab-btn:last-child.active {
 	background-color: #a78bfa !important;
 	border-color: #a78bfa !important;
@@ -92,14 +102,14 @@
 	box-shadow: 0 4px 12px rgba(167, 139, 250, 0.2) !important;
 }
 
-/* 🔮 [라벤더 조색 완공] 등록 업체 모드 내부 대분류 상세 필터 탭 호버 정렬 */
+/* 등록 업체 모드 내부 대분류 상세 필터 탭 호버 정렬 */
 .company-slim-filter .large-tab-btn:hover:not(.active) {
 	background-color: #f5f3ff !important;
 	border-color: #a78bfa !important;
 	color: #8b5cf6 !important;
 }
 
-/* 🔮 [라벤더 조색 완공] 등록 업체 모드 내부 대분류 상세 필터 활성화 시 부드러운 중간톤 라벤더 동기화 안착 */
+/* 등록 업체 모드 내부 대분류 상세 필터 활성화 시 부드러운 중간톤 라벤더 동기화 안착 */
 .company-slim-filter .large-tab-btn.active {
 	background-color: #a78bfa !important;
 	border-color: #a78bfa !important;
@@ -156,7 +166,7 @@
 /* 쿠팡 스타일 태그 2개 초과 선택 시 미선택 단추 잠금 비활성화 디자인 */
 .chip-toggle-label.disabled {
 	opacity: 0.4;
-	cursor: not-allowed !important;
+	cursor: not-allowed !important; 
 	background: #f8f9fa !important;
 	border-color: #e9ecef !important;
 	color: #adb5bd !important;
