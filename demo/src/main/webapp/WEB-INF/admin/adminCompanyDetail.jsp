@@ -56,7 +56,7 @@
             <div class="middle">
                 <jsp:include page="/WEB-INF/admin/adminNavi.jsp" />
                 <div class="main">
-                    <div class="detail-container" v-if="company">
+                    <div class="detail-container admin-detail-page" v-if="company">
                         <!-- 상단 -->
                         <div class="detail-header">
                             <div class="detail-top">
@@ -83,7 +83,9 @@
                         <div class="card p-3 mb-3">
                             <h5>👤 회원 정보</h5>
                             <div class="row">
-                                <div class="col-4"><b>ID</b><br>{{ company.userId }}</div>
+                                <div class="col-4"><b>ID</b><br><span class="admin-id-text" :title="company.userId">
+                                        {{ company.userId }}
+                                    </span></div>
                                 <div class="col-4"><b>유형</b><br>{{ getRoleText(company.role) }}</div>
                                 <div class="col-4"><b>전화</b><br>{{ company.tel }}</div>
 
@@ -183,7 +185,11 @@
                                     <tr v-for="(item, index) in banHistoryList" :key="index">
                                         <td>{{ item.actionType === 'BAN' ? '정지' : '해제' }}</td>
                                         <td>{{ item.reason || '-' }}</td>
-                                        <td>{{ item.adminId }}</td>
+                                        <td class="admin-id-cell">
+                                            <span class="admin-id-text" :title="item.adminId">
+                                                {{ item.adminId }}
+                                            </span>
+                                        </td>
                                         <td>{{ item.banRegDate }}</td>
                                     </tr>
                                 </tbody>

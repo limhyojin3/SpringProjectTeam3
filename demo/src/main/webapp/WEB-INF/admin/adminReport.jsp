@@ -241,7 +241,11 @@
 
                                     <td><input type="checkbox" :value="r.reportNo" v-model="selectedReports"></td>
                                     <td>{{ r.reportNo }}</td>
-                                    <td>{{ r.targetUserId}}</td>
+                                    <td class="admin-id-cell">
+                                        <span class="admin-id-text" :title="r.targetUserId">
+                                            {{ r.targetUserId }}
+                                        </span>
+                                    </td>
                                     <td>
                                         <span class="type-tag" :class="'tag-' + r.targetType.toLowerCase()">
                                             {{ r.targetType }}
@@ -319,8 +323,8 @@
                                         <div class="reject-box">
                                             <label>신고자에게 보낼 처리 답변</label>
                                             <textarea v-model.trim="answerContent" maxlength="500"
-                                                placeholder="승인 또는 반려 사유와 처리 결과를 입력하세요." class="form-control"
-                                                ></textarea>
+                                                placeholder="승인 또는 반려 사유와 처리 결과를 입력하세요."
+                                                class="form-control"></textarea>
                                             <small class="text-muted">
                                                 이 내용은 신고 처리 알림과 마이페이지에 표시됩니다.
                                             </small>
