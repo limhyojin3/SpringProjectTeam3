@@ -7,7 +7,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.example.demo.community_review.dao.CommentService;
 import com.google.gson.Gson;
@@ -33,13 +35,18 @@ public class CommentController {
         return gson.toJson(resultMap);
     }
  
-    // 리뷰 댓글 등록
     @PostMapping("/review-add.dox")
-    public String addReviewComment(@RequestBody Map<String, Object> map) {
-        int n = commentService.addReviewComment(map);
+    public String addReviewComment(
+            @RequestParam Map<String, Object> map,
+            @RequestParam(value="files", required=false) MultipartFile[] files
+    ) {
+
+        int n = commentService.addReviewComment(map, files);
+
         Map<String, Object> resultMap = new HashMap<>();
         resultMap.put("result", n > 0 ? "success" : "fail");
-        return new Gson().toJson(resultMap);
+
+        return gson.toJson(resultMap);
     }
     
     //  커뮤 댓글 목록 조회
@@ -54,11 +61,17 @@ public class CommentController {
  
     // 커뮤 댓글 등록
     @PostMapping("/comm-add.dox")
-    public String addCommunityComment(@RequestBody Map<String, Object> map) {
-        int n = commentService.addCommunityComment(map);
+    public String addCommunityComment(
+            @RequestParam Map<String, Object> map,
+            @RequestParam(value="files", required=false) MultipartFile[] files
+    ) {
+
+        int n = commentService.addCommunityComment(map, files);
+
         Map<String, Object> resultMap = new HashMap<>();
         resultMap.put("result", n > 0 ? "success" : "fail");
-        return new Gson().toJson(resultMap);
+
+        return gson.toJson(resultMap);
     }
 
     // 수정

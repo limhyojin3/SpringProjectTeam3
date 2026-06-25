@@ -192,7 +192,7 @@
     	SELECT user_id FROM Community_Post WHERE post_no = #{postNo}
 	</select>
 	
-	<select id="selectPopularPostList" resultType="hashmap">
+	<select id="selectPopularPostList" resultType="hashmap"> 
 	    SELECT 
 	        p.post_no AS postNo,
 	        p.title,
