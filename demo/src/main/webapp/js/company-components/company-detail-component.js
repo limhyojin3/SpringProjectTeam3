@@ -40,7 +40,7 @@ const companyDetailComponent = {
 						// 1. 순수 상위 업체 프로필 세팅 (JOIN 쿼리의 첫 번째 인덱스 맵에서 추출)
 						const firstItem = data.list[0];
 						
-						// 💡 [전역 하트 공유선 순방향 싱크] 진입 시 전역 레지스트리에 저장된 최신 상태가 있다면 DB 결과보다 우선 수혈하여 증발 차단!
+						// [전역 하트 공유선 순방향 싱크] 진입 시 전역 레지스트리에 저장된 최신 상태가 있다면 DB 결과보다 우선 수혈하여 증발 차단!
 						window.LIVE_COMPANY_LIKE = window.LIVE_COMPANY_LIKE || {};
 						let currentLikeState = firstItem.isCompanyLiked;
 						if (window.LIVE_COMPANY_LIKE[self.companyNo] !== undefined) {
@@ -67,7 +67,9 @@ const companyDetailComponent = {
 								imgUrl: p.thumbnail,
 								isLiked: p.isLiked,
 								likeCnt: p.likeCnt,
-								companyNo: p.companyNo
+								companyNo: p.companyNo,
+								/* 💡 [데이터선 추가] 예약금 정산 컴포넌트가 낙하산으로 요구하는 보증금 알맹이 수혈 통로 개통 */
+								deposit: p.deposit 
 							};
 						});
 					} else {
@@ -81,7 +83,30 @@ const companyDetailComponent = {
 			});
 		},
 		
-		/* [대수술 완공] 1번 트랙: 포켓몬 카드 각각의 '상품 고유 번호(productNo)'를 겨냥한 개별 찜 엔진 */
+		/* 💡 [다차원 라우팅 완공] 추천 상품 카드를 눌렀을 때 메인 상품 상세방 규격으로 데이터 포맷을 정렬 포장하여 발송하는 단자 */
+		fnGoProductDetail(item) {
+			var self = this;
+			
+			// 메인 리스트 및 productDetailTemplate이 상시 탐독하는 표준 프로덕트 VO 아키텍처 포맷으로 완벽 리팩토링 변환
+			const standardProductPayload = {
+				productNo: item.productNo,
+				id: item.productNo,
+				companyNo: item.companyNo,
+				name: item.productName,
+				content: item.productContent,
+				price: item.productPrice,
+				thumbnail: item.imgUrl,
+				isLiked: item.isLiked,
+				likeCnt: item.likeCnt,
+				comName: self.companyInfo.comName, // 마스터 상단 바구니에 고여있는 진짜 업체명을 수혈!
+				deposit: item.deposit
+			};
+			
+			// 부모 창(productCategoryTag.jsp)의 전용 우회 단축선으로 패키지 상자 투척 무전 발사!
+			this.$emit('go-product-detail', standardProductPayload);
+		},
+		
+		/* 1번 트랙: 포켓몬 카드 각각의 '상품 고유 번호(productNo)'를 겨냥한 개별 찜 엔진 */
 		fnToggleProductLike(item) {
 			var self = this;
 			if (!self.userid) {
@@ -114,7 +139,7 @@ const companyDetailComponent = {
 			});
 		},
 		
-		/* 💡 [마스터 완전 가동] 2번 트랙: 상단 대장 프로필 전용 '업체 즐겨찾기' 실시간 타격 통신 엔진 완공 */
+		/* 2번 트랙: 상단 대장 프로필 전용 '업체 즐겨찾기' 실시간 타격 통신 엔진 완공 */
 		fnToggleCompanyLike() {
 			var self = this;
 			if (!self.userid) {
@@ -125,7 +150,7 @@ const companyDetailComponent = {
 			
 			window.LIVE_COMPANY_LIKE = window.LIVE_COMPANY_LIKE || {};
 			
-			// 💡 [선제 UI 스위칭] 통신 딜레이 버그 브레이커 발동 -> 누르는 즉시 상세방 상단 헤더 하트 반전 및 메모리 기록소에 각인
+			// [선제 UI 스위칭] 통신 딜레이 버그 브레이커 발동 -> 누르는 즉시 상세방 상단 헤더 하트 반전 및 메모리 기록소에 각인
 			const currentStatus = self.companyInfo.isCompanyLiked === 1;
 			const newStatus = currentStatus ? 0 : 1;
 

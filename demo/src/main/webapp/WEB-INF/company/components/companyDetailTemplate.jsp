@@ -8,6 +8,7 @@
 		</div>
 
 		<div class="filter-section company-detail-profile-card">
+			<!-- [마스터 헤더 하트 구조 복원] CSS Absolute 명세와 완벽 연동되도록 레이아웃 간섭선을 걷어낸 깔끔한 클래스 선 수립 -->
 			<div class="company-card-header">
 				<h2 class="font-weight-bold text-dark m-0">{{ companyInfo.comName }}</h2>
 				<div @click.stop="fnToggleCompanyLike" :class="['like-chip-btn', { active: companyInfo.isCompanyLiked === 1 }]">
@@ -31,7 +32,8 @@
 		</div>
 
 		<div class="company-pokemon-grid">
-			<div v-for="item in companyProducts" :key="item.productNo" class="product-item">
+			<!-- 💡 [다차원 라우팅 도킹] 추천 상품 포켓몬 카드를 누르면 상세방으로 텔레포트하도록 클릭 리스너 연결 완공 -->
+			<div v-for="item in companyProducts" :key="item.productNo" class="product-item" @click="fnGoProductDetail(item)">
 				<div class="product-img-box">
 					<img :src="item.imgUrl" :alt="item.productName">
 				</div>

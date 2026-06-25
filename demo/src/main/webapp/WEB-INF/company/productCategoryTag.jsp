@@ -39,7 +39,8 @@
                     <div v-if="currentMenu === 'main' && productPage === 'companyDetail'">
                         <company-detail-component
                             :company-no="selectedCompanyNo"
-                            @back="productPage = 'list'" />
+                            @back="productPage = 'list'"
+                            @go-product-detail="goProductDetailPageFromCompany" />
                     </div>
 
                     <div v-if="currentMenu === 'main' && productPage === 'detail'">
