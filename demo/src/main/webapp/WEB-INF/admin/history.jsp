@@ -74,9 +74,9 @@
             /* 원앙 이미지 */
             .history-deco-img {
                 position: absolute;
-                top: 0px;
-                left: -240px;
-                width: 400px;
+                top: 20px;
+                left: -360px;
+                width: 340px;
                 z-index: 0;
                 /* 글자 뒤로 배치 */
                 pointer-events: none;
@@ -86,8 +86,9 @@
             .history-deco-img2 {
                 position: absolute;
                 top: 865px;
-                left: 937px;
-                width: 400px;
+                right: -360px;
+                left: auto;
+                width: 300px;
                 z-index: 0;
                 /* 글자 뒤로 배치 */
                 pointer-events: none;
