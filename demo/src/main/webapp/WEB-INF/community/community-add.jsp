@@ -7,7 +7,7 @@
     <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
     <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
-    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <!-- Quill Editor -->
     <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
     <script src="https://cdn.quilljs.com/1.3.6/quill.min.js"></script>
@@ -15,7 +15,7 @@
 
     <style>
         :root { 
-            --primary-color: #ff4d6d; 
+            --primary-color: #f4a096; 
             --secondary-color: #ff85a1;
             --bg-soft: #fffafa;
             --dark-text: #2d2d2d;
@@ -30,7 +30,7 @@
         
         /* 헤더 섹션 */
         .write-header { text-align: center; margin-bottom: 40px; }
-        .write-header h2 { font-size: 34px; font-weight: 800; color: var(--dark-text); margin-bottom: 12px; }
+        .write-header h2 { font-size: 34px; font-weight: 800; color: #555; margin-bottom: 12px; }
         .write-header .sub-title { color: #999; font-size: 16px; }
 
         /* 작성 카드 레이아웃 */
@@ -93,14 +93,31 @@
         .btn-group { margin-top: 40px; display: flex; justify-content: center; gap: 15px; padding-bottom: 60px; }
         .btn-common { padding: 18px 65px; cursor: pointer; border: none; border-radius: 16px; font-size: 17px; font-weight: 700; transition: 0.3s; }
         .btn-save { background-color: var(--primary-color); color: white; }
-        .btn-save:hover { background-color: #ff1a4a; transform: translateY(-3px); box-shadow: 0 8px 20px rgba(255, 77, 109, 0.25); }
-        .btn-cancel { background-color: #eee; color: #777; }
-        .btn-cancel:hover { background-color: #e2e2e2; }
+        .btn-save:hover { background-color: #f4a096; transform: translateY(-3px); box-shadow: 0 8px 20pxrgba(244, 160, 150, 0.25); }
+        .btn-cancel:hover { background-color: #e2e2e2; transform: translateY(-3px); color: #888;}
 
         /* 모바일 대응 (화면이 작을 때 카드 패딩 축소) */
         @media (max-width: 768px) {
             .write-card { padding: 25px; border-radius: 16px; }
             .btn-common { padding: 15px 40px; }
+        }
+
+        /* 카테고리 칩 아이콘 색상 */
+        .cate-item .fa-smile { color: #7eb8d4; }
+        .cate-item .fa-gem { color: #f4a096; }
+        .cate-item .fa-users { color: #7bc99a; }
+        .cate-item .fa-baby { color: #f0c070; }
+        .cate-item .fa-comment-dots { color: #b39ddb; }
+        .cate-item .fa-briefcase { color: #90a4ae; }
+
+        /* active 시 아이콘 흰색 */
+        .cate-item.active i {
+            color: white !important;
+        }
+
+        /* 헤더 h2 아이콘 인라인 스타일 분리 */
+        .write-header h2 i {
+            color: #f4a096;
         }
     </style>
 </head>
@@ -110,7 +127,7 @@
     <div id="app">
         <main class="main-content">
             <div class="write-header">
-                <h2>✍️ 새 글 작성</h2>
+                <h2><i class="fas fa-pen-nib mr-2"></i>새 글 작성</h2>
                 <p class="sub-title">메리뷰 가족들과 소중한 일상과 정보를 공유해보세요.</p>
             </div>
             
@@ -119,11 +136,12 @@
                 <div class="write-row">
                     <label>카테고리</label>
                     <div class="category-group">
-                        <div v-for="item in categoryList" 
-                             :key="item.value"
-                             class="cate-item" 
-                             :class="{ active: category === item.value }"
-                             @click="category = item.value">
+                        <div v-for="item in categoryList"
+                            :key="item.value"
+                            class="cate-item"
+                            :class="{ active: category === item.value }"
+                            @click="category = item.value">
+                            <i :class="['fas', item.icon, 'mr-1']"></i>
                             {{ item.label }}
                         </div>
                     </div>
@@ -158,12 +176,12 @@
                     title: "",
                     category: "자유",
                     categoryList: [
-                        { label: "🎈 자유게시판", value: "자유" },
-                        { label: "💍 결혼", value: "결혼" },
-                        { label: "👨‍👩‍👧‍👦 가족행사", value: "가족행사" },
-                        { label: "👶 육아출산", value: "육아출산" },
-                        { label: "💬 고민", value: "고민" },
-                        { label: "💼 직장", value: "직장" }
+                        { label: "자유게시판", value: "자유", icon: "fa-smile" },
+                        { label: "결혼", value: "결혼", icon: "fa-gem" },
+                        { label: "가족행사", value: "가족행사", icon: "fa-users" },
+                        { label: "육아출산", value: "육아출산", icon: "fa-baby" },
+                        { label: "고민", value: "고민", icon: "fa-comment-dots" },
+                        { label: "직장", value: "직장", icon: "fa-briefcase" }
                     ],
                     userId: "${sessionId}",
                     quill: null

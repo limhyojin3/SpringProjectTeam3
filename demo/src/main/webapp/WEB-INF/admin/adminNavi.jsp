@@ -26,7 +26,7 @@
                     <a href="${pageContext.request.contextPath}/adminBoard.do"></a>
                 </div>
                 <div class="hover-view">
-                    <a href="${pageContext.request.contextPath}/adminBoard.do">게시판</a>
+                    <a href="${pageContext.request.contextPath}/adminBoard.do">게시글</a>
                     <a href="${pageContext.request.contextPath}/adminReview.do">리뷰</a>
                 </div>
             </div>

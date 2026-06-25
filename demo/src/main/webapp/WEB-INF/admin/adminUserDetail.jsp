@@ -58,7 +58,7 @@
                 <jsp:include page="/WEB-INF/admin/adminNavi.jsp" />
 
                 <div class="main">
-                    <div class="detail-container" v-if="selectedUser">
+                    <div class="detail-container admin-detail-page" v-if="selectedUser">
                         <!-- 상단 -->
                         <div class="detail-header">
                             <div class="detail-top">
@@ -86,7 +86,12 @@
                         <div class="card p-3 mb-3">
                             <h5>👤 회원 정보</h5>
                             <div class="row">
-                                <div class="col-4"><b>ID</b><br>{{ selectedUser.userId }}</div>
+                                <div class="col-4">
+                                    <b>ID</b><br>
+                                    <span class="admin-id-text" :title="selectedUser.userId">
+                                        {{ selectedUser.userId }}
+                                    </span>
+                                </div>
                                 <div class="col-4"><b>이름</b><br>{{ selectedUser.name }}</div>
                                 <div class="col-4"><b>닉네임</b><br>{{ selectedUser.nickName || '-' }}</div>
 
@@ -170,7 +175,11 @@
                                     <tr v-for="(item, index) in banHistoryList" :key="index">
                                         <td>{{ item.actionType === 'BAN' ? '정지' : '해제' }}</td>
                                         <td>{{ item.reason || '-' }}</td>
-                                        <td>{{ item.adminId }}</td>
+                                        <td class="admin-id-cell">
+                                            <span class="admin-id-text" :title="item.adminId">
+                                                {{ item.adminId }}
+                                            </span>
+                                        </td>
                                         <td>{{ item.banRegDate }}</td>
                                     </tr>
                                 </tbody>

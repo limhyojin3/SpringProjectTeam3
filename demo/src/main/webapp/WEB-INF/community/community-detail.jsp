@@ -16,8 +16,8 @@
 
     <style>
 :root{
-    --primary-color:#ff4d6d;
-    --secondary-color:#ff85a1;
+    --primary-color:#f4a096;
+    --secondary-color:#ffb3c1;
     --bg-soft:#fffafa;
     --dark-text:#2d2d2d;
     --light-gray:#f8f9fa;
@@ -55,25 +55,21 @@ body{
     margin-bottom:45px;
 }
 
-.category-tag{
-    display:inline-block;
-    padding:8px 18px;
-    background:linear-gradient(135deg,#ffe4ec,#fff0f3);
-    color:#ff4d6d;
-    border-radius:999px;
-    font-size:14px;
-    font-weight:800;
-    margin-bottom:20px;
+.category-tag {
+    display: inline-block;
+    padding: 8px 18px;
+    border-radius: 999px;
+    font-size: 14px;
+    font-weight: 800;
+    margin-bottom: 20px;
 }
 
-.post-title{
-    font-size:42px;
-    font-weight:900;
-    line-height:1.3;
-    margin-bottom:20px;
-    background:linear-gradient(135deg,#ff4d6d,#ff85a1);
-    -webkit-background-clip:text;
-    -webkit-text-fill-color:transparent;
+.post-title {
+    font-size: 42px;
+    font-weight: 900;
+    line-height: 1.3;
+    margin-bottom: 20px;
+    color: #555;
 }
 
 .post-info{
@@ -85,7 +81,7 @@ body{
 }
 
 .author-name{
-    color:#ff4d6d;
+    color:#f4a096;
     font-weight:800;
 }
 
@@ -107,25 +103,25 @@ body{
 
 .bottom-area{
     display:flex;
-    justify-content:space-between;
+    justify-content:center;
     align-items:center;
+    gap:12px;
     padding-top:35px;
     border-top:1px solid #f3f3f3;
 }
 
 .btn-like{
-    background:#fff;
-    color:#ff4d6d;
-    border:2px solid #ffe4ec;
+    background: linear-gradient(135deg, #f4a096, #ff85a1);
+    color: #fff;
+    border: none;
     padding:14px 32px;
     border-radius:999px;
     font-weight:800;
-    box-shadow:0 8px 20px rgba(255,77,109,.12);
+    box-shadow:0 8px 20px rgba(255,77,109,.2);
     transition:.25s;
 }
 
 .btn-like:hover{
-    background:#fff5f7;
     transform:translateY(-2px);
 }
 
@@ -134,8 +130,9 @@ body{
     border:none;
     border-radius:14px;
     font-weight:700;
-    margin-left:8px;
+    margin-left:0;   /* 기존 8px → 0 */
     transition:.2s;
+    box-shadow:0 8px 20px rgba(138, 134, 135, 0.2);
 }
 
 .right-btns button:hover{
@@ -196,7 +193,7 @@ body{
 }
 
 .btn-primary-sm{
-    background:linear-gradient(135deg,#ff4d6d,#ff85a1);
+    background:linear-gradient(135deg, #f4a096, #ff85a1);
     color:#fff;
     border:none;
     border-radius:12px;
@@ -396,7 +393,7 @@ body{
 .comment-file-btn {
     background: #fff;
     border: 1px solid #ffd6df;
-    color: #ff4d6d;
+    color: #f4a096;
     padding: 8px 15px;
     border-radius: 12px;
     font-size: 13px;
@@ -446,22 +443,37 @@ body{
     border: 1px solid #eee;
     cursor: pointer;
 }
+
+.petal-heart i { color: #f4a096; }
+
+.cate-자유 { background: #e0f2fe; color: #0369a1; }
+.cate-결혼 { background: #ffe4ec; color: #be185d; }
+.cate-가족행사 { background: #dcfce7; color: #15803d; }
+.cate-육아출산 { background: #fef3c7; color: #b45309; }
+.cate-고민 { background: #ede9fe; color: #6d28d9; }
+.cate-직장 { background: #e2e8f0; color: #334155; }
+.cate-default { background: #f3f4f6; color: #6b7280; }
+
 </style>
 </head>
 <body>
     <jsp:include page="/WEB-INF/common/header.jsp" />
-    <div class="petal">🤍</div>
-<div class="petal">🤍</div>
-<div class="petal">🤍</div>
-<div class="petal">🌸</div>
-<div class="petal">🌸</div>
-<div class="petal">🌸</div>
-<div class="petal">🤍</div>
-<div class="petal">🤍</div>
-<div class="petal">🤍</div>
-<div class="petal">🌸</div>
-<div class="petal">🌸</div>
-<div class="petal">🌸</div>
+    <div class="petal petal-heart"><i class="fas fa-heart"></i></div>
+    <div class="petal petal-heart"><i class="fas fa-heart"></i></div>
+    <div class="petal petal-heart"><i class="fas fa-heart"></i></div>
+    <div class="petal petal-heart"><i class="fas fa-heart"></i></div>
+    <div class="petal petal-heart"><i class="fas fa-heart"></i></div>
+    <div class="petal petal-heart"><i class="fas fa-heart"></i></div>
+    <div class="petal petal-heart"><i class="fas fa-heart"></i></div>
+    <div class="petal petal-heart"><i class="fas fa-heart"></i></div>
+    <div class="petal petal-heart"><i class="fas fa-heart"></i></div>
+    <div class="petal petal-heart"><i class="fas fa-heart"></i></div>
+    <div class="petal petal-heart"><i class="fas fa-heart"></i></div>
+    <div class="petal petal-heart"><i class="fas fa-heart"></i></div>
+    <div class="petal petal-heart"><i class="fas fa-heart"></i></div>
+    <div class="petal petal-heart"><i class="fas fa-heart"></i></div>
+    <div class="petal petal-heart"><i class="fas fa-heart"></i></div>
+    <div class="petal petal-heart"><i class="fas fa-heart"></i></div>
     <div id="app">
         <main class="main-content">
             <template v-if="post && post.postNo">
@@ -469,7 +481,9 @@ body{
                     <!-- 게시글 헤더 -->
                     <div class="post-header">
                         <div class="d-flex justify-content-between align-items-center mb-2">
-                            <span class="category-tag"># {{ post.category || '일반' }}</span>
+                            <span :class="['category-tag', 'cate-' + (post.category || 'default')]">
+                                # {{ post.category || '일반' }}
+                            </span>
                             <button v-if="sessionId && post.userId !== sessionId && post.nickname !== '탈퇴회원'" 
                                     class="btn-report" 
                                     @click="fnOpenReportModal('POST', post.postNo, post.userId)">
@@ -496,9 +510,9 @@ body{
 
                     <!-- 하단 반응/버튼 -->
                     <div class="bottom-area">
-                        <button class="btn-like" @click="post.nickname !== '탈퇴회원' ? fnPostLike() : null" :style="post.nickname === '탈퇴회원' ? 'cursor: default; opacity: 0.7;' : ''">
-                            <span v-if="post && post.isLiked > 0">❤️</span>
-                            <span v-else>🤍</span>
+                        <button class="btn-like" @click="post.nickname !== '탈퇴회원' ? fnPostLike() : null"
+                            :style="post.nickname === '탈퇴회원' ? 'cursor: default; opacity: 0.7;' : ''">
+                            <i :class="post && post.isLiked > 0 ? 'fas fa-heart' : 'far fa-heart'"></i>
                             좋아요 {{ post.likeCnt || 0 }}
                         </button>
                         
@@ -1178,13 +1192,14 @@ body{
                 },
                 
             },
-            mounted() { this.fnGetDetail(); 
-             document.querySelectorAll('.petal').forEach(el => {
-                el.style.left = Math.random() * 100 + 'vw';
-                el.style.fontSize = (20 + Math.random() * 20) + 'px';
-                el.style.animationDuration = (10 + Math.random() * 10) + 's';
-                el.style.animationDelay = Math.random() * 5 + 's';
-            });}
+            mounted() { 
+                this.fnGetDetail(); 
+                document.querySelectorAll('.petal').forEach(el => {
+                    el.style.left = Math.random() * 100 + 'vw';
+                    el.style.fontSize = (20 + Math.random() * 20) + 'px';
+                    el.style.animationDuration = (10 + Math.random() * 10) + 's';
+                    el.style.animationDelay = -(Math.random() * 10) + 's';
+                });}
         }).mount('#app');
     </script>
 </body>

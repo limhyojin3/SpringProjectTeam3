@@ -320,5 +320,79 @@
 			    document.removeEventListener('mv:notification-changed', this.notificationChangedHandler);
 			}
         }
+		
+		
     }).mount('#app');
+
+//푸터충돌방지
+	var footer = document.querySelector('footer');
+	    var sideElements = document.querySelectorAll(
+	        '.side-visual, .product-ad-rail, .wedding-celebration-rail'
+	    );
+
+		function stopSideBeforeFooter() {
+		    if (!footer) return;
+
+		    var footerTop = footer.getBoundingClientRect().top;
+		    var gap = 20;
+
+		    var video = document.querySelector('.side-visual--left');
+		    var product = document.querySelector('.product-ad-rail');
+		    var right = document.querySelector('.wedding-celebration-rail');
+
+		    /* 왼쪽: 가장 아래에 있는 상품광고를 기준으로 함께 이동 */
+		    if (video && product) {
+		        var previousLeft =
+		            parseFloat(product.style.getPropertyValue('--footer-overlap')) || 0;
+
+		        var productOriginalBottom =
+		            product.getBoundingClientRect().bottom + previousLeft;
+
+		        var leftOverlap = Math.max(
+		            0,
+		            productOriginalBottom - footerTop + gap
+		        );
+
+		        video.style.setProperty(
+		            '--footer-overlap',
+		            leftOverlap + 'px'
+		        );
+
+		        product.style.setProperty(
+		            '--footer-overlap',
+		            leftOverlap + 'px'
+		        );
+		    }
+
+		    /* 오른쪽은 따로 계산 */
+		    if (right) {
+		        var previousRight =
+		            parseFloat(right.style.getPropertyValue('--footer-overlap')) || 0;
+
+		        var rightOriginalBottom =
+		            right.getBoundingClientRect().bottom + previousRight;
+
+		        var rightOverlap = Math.max(
+		            0,
+		            rightOriginalBottom - footerTop + gap
+		        );
+
+		        right.style.setProperty(
+		            '--footer-overlap',
+		            rightOverlap + 'px'
+		        );
+		    }
+		}
+
+	    window.addEventListener('scroll', stopSideBeforeFooter, {
+	        passive: true
+	    });
+
+	    window.addEventListener('resize', stopSideBeforeFooter);
+
+	    stopSideBeforeFooter();
+
+//
+	
+	
 })();

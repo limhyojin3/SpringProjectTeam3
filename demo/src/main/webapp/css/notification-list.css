@@ -1169,6 +1169,22 @@
             border-radius: 8px;
             filter: none;
         }
+		
+		.side-visual {
+		    top: calc(50% - var(--footer-overlap, 0px));
+		}
+
+		.product-ad-rail {
+		    top: calc(
+		        50% + min(27.5vh, 260px) + 14px
+		        - var(--footer-overlap, 0px)
+		    );
+		}
+
+		.wedding-celebration-rail {
+		    top: calc(50% + 24px - var(--footer-overlap, 0px));
+		}
+		
         @keyframes pageFadeUp {
             from { opacity: 0; transform: translateY(22px); }
             to { opacity: 1; transform: translateY(0); }
@@ -1228,3 +1244,5 @@
                 animation-iteration-count: 1 !important;
             }
         }
+		
+		
