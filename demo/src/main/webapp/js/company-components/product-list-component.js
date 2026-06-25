@@ -9,7 +9,9 @@ const productListComponent = {
 			selectLargeCategory: '결혼', // 초기 기본 활성화 대분류값
 			selectCategory: '',         // 중분류 단일 선택 라디오 버튼 값
 			selectTags: [],             // 선택된 소분류 태그 배열
-			categoriesData: {}          // DB에서 수혈받을 카테고리 트리 저장소
+			categoriesData: {},          // DB에서 수혈받을 카테고리 트리 저장소
+			userid: window.SESSION_ID || '', // 전역 세션선 직통 연결
+			localProductList: []         // [개인 지갑] 부모 간섭을 차단하기 위한 자체 독립 반응형 자산
 		};
 	},
 	created() {
@@ -36,6 +38,18 @@ const productListComponent = {
 		this.triggerFilterReload();
 	},
 	watch: {
+		// 부모의 지갑(productList)에 돈이 들어오면 내 지갑(localProductList)에 깊은 복사로 즉시 이사 보관
+		productList: {
+			handler(newVal) {
+				if (newVal) {
+					this.localProductList = JSON.parse(JSON.stringify(newVal));
+				} else {
+					this.localProductList = [];
+				}
+			},
+			deep: true,
+			immediate: true
+		},
 		// 상품 찾기 ↔ 업체 찾기 탭이 스위칭되는 순간을 정밀 포착합니다.
 		searchMode(newVal) {
 			// 새로고침된 것처럼 대분류를 무조건 '결혼'으로 강제 고정하고, 남아있던 하위 값들을 깨끗하게 지웁니다.
@@ -71,6 +85,80 @@ const productListComponent = {
 				mediumCategory: this.selectCategory,
 				tags: this.selectTags.join(',')
 			});
+		},
+		
+		// 💡 [정밀 타격 격파 완공] 1번 트랙: 가짜 인형 분신 대신 진짜 지갑 속 알맹이를 찾아내 직접 수정하는 하트 통신 엔진
+		fnToggleProductLike(item) {
+			var self = this;
+			if (!self.userid) {
+				alert("로그인 후 이용 가능합니다.");
+				return;
+			}
+			
+			// 1. 화면에 렌더링된 가짜 분신(item)의 고유 ID를 갈취합니다.
+			const targetId = item.productNo || item.id;
+			
+			$.ajax({
+				url: '/productLikeToggle.dox',
+				type: 'POST',
+				data: {
+					productNo: targetId,
+					loginUserId: self.userid
+				},
+				dataType: 'json',
+				success: function(data) {
+					if (data.result === 'success') {
+						// 2. 🎯 [정밀 타격 수술] 임시 복사본(item) 대신 진짜 독립 지갑 내부에서 주민번호가 똑같은 진짜 원본 상품을 찾아냅니다.
+						const realItem = self.localProductList.find(p => (p.productNo || p.id) === targetId);
+						
+						if (realItem) {
+							// 3. 임시 분신 인형이 아닌 진짜 지갑 속 원본 알맹이를 수정하여 Vue 반응형 불꽃을 즉시 점화시킵니다!
+							if (data.status === 'liked') {
+								realItem.isLiked = 1;
+								realItem.likeCnt = (realItem.likeCnt || 0) + 1;
+							} else {
+								realItem.isLiked = 0;
+								realItem.likeCnt = Math.max(0, (realItem.likeCnt || 0) - 1);
+							}
+						}
+					}
+				},
+				error: function(xhr, status, error) {
+					console.error("독립형 상품 찾기 내 실시간 하트 토글 실패:", error);
+				}
+			});
+		},
+		
+		// 💡 [철저히 보존] 2번 트랙: 미래 확장 지침에 따라 손끝 하나 대지 않고 원형 그대로 사수한 업체 마스터 즐겨찾기 스위치선
+		fnToggleCompanyLike(comp) {
+			var self = this;
+			if (!self.userid) {
+				alert("로그인 후 이용 가능합니다.");
+				return;
+			}
+			$.ajax({
+				url: '/companyLikeToggle.dox',
+				type: 'POST',
+				data: {
+					companyNo: comp.companyNo,
+					loginUserId: self.userid
+				},
+				dataType: 'json',
+				success: function(data) {
+					if (data.result === 'success') {
+						if (data.status === 'liked') {
+							comp.isLiked = 1;
+							comp.likeCnt = (comp.likeCnt || 0) + 1;
+						} else {
+							comp.isLiked = 0;
+							comp.likeCnt = Math.max(0, (comp.likeCnt || 0) - 1);
+						}
+					}
+				},
+				error: function(xhr, status, error) {
+					console.error("독립형 업체 찾기 내 실시간 하트 토글 실패:", error);
+				}
+			});
 		}
 	},
 	computed: {
@@ -83,10 +171,10 @@ const productListComponent = {
 			if (!this.selectLargeCategory || !this.selectCategory) return [];
 			return this.categoriesData[this.selectLargeCategory]?.tags?.[this.selectCategory] || [];
 		},
-		// 백엔드에서 받아온 상품 리스트의 태그 문자열을 안전하게 자바스크립트 배열로 정제
+		// 부모의 props 대신 자식 내 자체 지갑(localProductList) 자산을 기반으로 복사본 정제 수행
 		filteredList() {
-			if (!this.productList) return [];
-			return this.productList.map(item => {
+			if (!this.localProductList) return [];
+			return this.localProductList.map(item => {
 				let parsedTag = [];
 				if (item.tag) {
 					if (typeof item.tag === 'string') {
@@ -116,12 +204,10 @@ const productListComponent = {
 						comName: item.comName,
 						comIntro: item.comIntro,
 						comAddress: item.comAddress,
-						// 💡 [2교시 요구사항 완결] 백엔드가 매퍼 XML을 통해 새로 개통해준 진짜 회사 이미지(comImgUrl)를 정밀 매핑선에 도킹!
-						// 데이터베이스에 등록된 회사 이미지가 만약 없을 경우를 대비해 기존 상품 썸네일을 안전 자산 백업(Fallback)으로 지정
 						thumbnail: item.comImgUrl || item.thumbnail,
 						isLiked: item.isLiked,
 						likeCnt: item.likeCnt
-					}); 
+					});
 				}
 			});
 			return Array.from(storeMap.values());
