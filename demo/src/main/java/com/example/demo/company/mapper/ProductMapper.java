@@ -48,12 +48,21 @@ public interface ProductMapper {
 	// 13. 상품 수정 시 기존에 맵 테이블에 연결되어 있던 구형 다리들을 끊어내는 단자
 	int deleteProductTagMap(Long productNo);
 
-	// 💡 [신규 추가] 특정 업체의 좋아요 상태를 확인하는 단자
+	// 💡 특정 업체의 좋아요 상태를 확인하는 단자
 	int checkCompanyLike(HashMap<String, Object> map);
 
-	// 💡 [신규 추가] 특정 업체의 좋아요(찜)를 추가하는 단자
+	// 💡 특정 업체의 좋아요(찜)를 추가하는 단자
 	int insertCompanyLike(HashMap<String, Object> map);
 
-	// 💡 [신규 추가] 특정 업체의 좋아요(찜)를 취소하는 단자
+	// 💡 특정 업체의 좋아요(찜)를 취소하는 단자
 	int deleteCompanyLike(HashMap<String, Object> map);
+
+	// 💡 [신규 추가] 특정 상품의 좋아요 여부 확인 단자 인터페이스
+	int checkProductLike(HashMap<String, Object> map);
+
+	// 💡 [신규 추가] 특정 상품의 좋아요 추가 단자 인터페이스
+	int insertProductLike(HashMap<String, Object> map);
+
+	// 💡 [신규 추가] 특정 상품의 좋아요 취소 단자 인터페이스
+	int deleteProductLike(HashMap<String, Object> map);
 }

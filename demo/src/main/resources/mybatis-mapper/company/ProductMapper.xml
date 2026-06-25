@@ -24,8 +24,9 @@
 			c.com_name,
 			c.com_intro AS comIntro,
 			c.com_address AS comAddress,
-			(SELECT COUNT(*) FROM company_like WHERE company_no = p.company_no) AS likeCnt,
-			(SELECT COUNT(*) FROM company_like WHERE company_no = p.company_no AND user_id = #{loginUserId}) AS isLiked,
+			c.img_url AS comImgUrl, 
+			(SELECT COUNT(*) FROM product_like WHERE product_no = p.product_no) AS likeCnt,
+			(SELECT COUNT(*) FROM product_like WHERE product_no = p.product_no AND user_id = #{loginUserId}) AS isLiked,
 			(
 				SELECT GROUP_CONCAT(DISTINCT pt_all.tag SEPARATOR ',')
 				FROM product_tag_map ptm_all
@@ -41,6 +42,9 @@
 		<where>
 			<if test="userid != null and userid != ''">
 				AND c.user_id = #{userid}
+			</if>
+			<if test="companyNo != null and companyNo != ''">
+				AND p.company_no = #{companyNo}
 			</if>
 			<if test="largeCategory != null and largeCategory != ''">
 				AND p.large_category = #{largeCategory}
@@ -83,15 +87,16 @@
 			c.com_name,
 			c.com_intro AS comIntro,
 			c.com_address AS comAddress,
-			(SELECT COUNT(*) FROM company_like WHERE company_no = p.company_no) AS likeCnt,
-			(SELECT COUNT(*) FROM company_like WHERE company_no = p.company_no AND user_id = #{loginUserId}) AS isLiked,
+			c.img_url AS comImgUrl,
+			(SELECT COUNT(*) FROM product_like WHERE product_no = p.product_no) AS likeCnt,
+			(SELECT COUNT(*) FROM product_like WHERE product_no = p.product_no AND user_id = #{loginUserId}) AS isLiked,
 			(
 				SELECT GROUP_CONCAT(DISTINCT pt_all.tag SEPARATOR ',')
 				FROM product_tag_map ptm_all
 				INNER JOIN product_tag pt_all ON ptm_all.tag_id = pt_all.id
 				WHERE ptm_all.product_no = p.product_no
 			) AS tag
-		FROM product p
+		FROM p product p
 		LEFT JOIN company c ON p.company_no = c.company_no
 		WHERE p.product_no = #{productNo}
 	</select>
@@ -203,6 +208,22 @@
 	<delete id="deleteCompanyLike" parameterType="hashmap">
 		DELETE FROM company_like 
 		WHERE user_id = #{loginUserId} AND company_no = #{companyNo}
+	</delete>
+
+	<select id="checkProductLike" parameterType="hashmap" resultType="int">
+		SELECT COUNT(*) 
+		FROM product_like 
+		WHERE user_id = #{loginUserId} AND product_no = #{productNo}
+	</select>
+
+	<insert id="insertProductLike" parameterType="hashmap">
+		INSERT INTO product_like (user_id, product_no)
+		VALUES (#{loginUserId}, #{productNo})
+	</insert>
+
+	<delete id="deleteProductLike" parameterType="hashmap">
+		DELETE FROM product_like 
+		WHERE user_id = #{loginUserId} AND product_no = #{productNo}
 	</delete>
 	
 </mapper>

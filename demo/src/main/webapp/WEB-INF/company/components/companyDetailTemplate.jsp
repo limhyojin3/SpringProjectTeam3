@@ -4,7 +4,7 @@
 <script type="text/x-template" id="company-detail-template">
 	<div>
 		<div class="top-action-bar">
-			<button @click="$emit('back')" class="btn-sub-action">⬅️ 업체 목록으로 돌아가기</button>
+			<button @click="$emit('back')" class="btn-sub-action">← 뒤로가기</button>
 		</div>
 
 		<div class="filter-section company-detail-profile-card">
@@ -27,19 +27,21 @@
 			</h3>
 		</div>
 
-		<div v-for="item in companyProducts" :key="item.productNo" class="product-item">
-			<div class="product-img-box">
-				<img :src="item.imgUrl" :alt="item.productName">
-			</div>
-			<div class="product-info">
-				<h4 class="font-weight-bold">{{ item.productName }}</h4>
-				<p class="product-content">{{ item.productContent }}</p>
-				
-				<div class="product-price-row">
-					<p class="product-price m-0">{{ Number(item.productPrice).toLocaleString() }}원</p>
-					<div @click.stop="fnToggleLike(item)" :class="['chip-toggle-label', 'like-chip-btn', { active: item.isLiked === 1 }]">
-						<span>{{ item.isLiked === 1 ? '❤️' : '🤍' }}</span>
-						<span class="like-count-num">{{ item.likeCnt || 0 }}</span>
+		<div class="company-pokemon-grid">
+			<div v-for="item in companyProducts" :key="item.productNo" class="product-item">
+				<div class="product-img-box">
+					<img :src="item.imgUrl" :alt="item.productName">
+				</div>
+				<div class="product-info">
+					<h4 class="font-weight-bold">{{ item.productName }}</h4>
+					<p class="product-content">{{ item.productContent }}</p>
+					
+					<div class="product-price-row">
+						<p class="product-price m-0">{{ Number(item.productPrice).toLocaleString() }}원</p>
+						<div @click.stop="fnToggleProductLike(item)" :class="['chip-toggle-label', 'like-chip-btn', { active: item.isLiked === 1 }]">
+							<span>{{ item.isLiked === 1 ? '❤️' : '🤍' }}</span>
+							<span class="like-count-num">{{ item.likeCnt || 0 }}</span>
+						</div>
 					</div>
 				</div>
 			</div>

@@ -1,14 +1,16 @@
 /* ==========================================================================
-   업체 상세 프로필 및 독립 패키지 쇼룸 전용 핑크 테마 스타일시트
+   업체 상세 프로필 및 독립 패키지 쇼룸 전용 라벤더 연보라 테마 스타일시트 (companyDetail.css)
    ========================================================================== */
 
-/* 독립형 마스터 업체 프로필 상자 커스텀 사양 */
+/* 1. 상단 대장 업체 프로필 메인 카드 */
 .company-detail-profile-card {
-	border-left: 5px solid #ff7f9f !important;
+	border: 1px solid #ede9fe !important; /* 사방 테두리를 부드러운 라벤더 보라로 슬림하게 마감 */
 	background-color: #ffffff;
-	border-radius: 8px;
-	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+	border-radius: 12px;                  /* 카드의 각진 모서리를 둥글고 세련되게 보정 */
+	box-shadow: 0 4px 12px rgba(167, 139, 250, 0.05); /* 은은한 퍼플 그림자 효과 */
 	padding: 25px !important;
+	display: flex !important;
+	flex-direction: column !important;
 }
 
 /* 업체 정보 내 서브 텍스트 보정 */
@@ -17,26 +19,166 @@
 	color: #6c757d;
 }
 
-/* 핑크 포인트 소개글 박스 */
+/* 2. 업체 소개 한 줄 안내 (배경과 테두리를 투명하게 걷어내어 여백 극대화) */
 .company-detail-intro-container {
 	margin-top: 15px;
-	background-color: #fff0f3;
-	padding: 15px;
-	border-radius: 8px;
-	border: 1px solid #fff5f6;
+	background-color: transparent !important; /* 연보라색 배경 상자 제거 */
+	border: none !important;                  /* 테두리선 완전히 빼기 */
+	padding: 0 !important;                     /* 불필요해진 안쪽 여백 완전히 청소 */
 }
 
 .company-detail-intro-title {
-	color: #d6336c !important;
+	color: #6d28d9 !important; /* 진분홍 타이틀 글자를 차분하고 격식 있는 딥 퍼플 색상으로 매핑 */
 	font-weight: bold;
 	font-size: 1rem;
 	margin-bottom: 6px;
 }
 
-/* 하단 전용 상품 쇼룸 인디케이터 바 */
+/* 3. 하단 전용 상품 쇼룸 인디케이터 바 라인 색상 보정 */
 .company-showroom-title-bar {
-	border-left: 4px solid #ff7f9f;
+	border-left: 4px solid #a78bfa !important; /* 선 테두리 포인트를 연보라색 단색으로 깔맞춤 */
 	padding-left: 10px;
 	margin-top: 30px;
 	margin-bottom: 20px;
+}
+
+/* 우측 상단 뒤로가기 버튼 디자인 (라벤더 룩앤필 동기화) */
+.company-detail-profile-card button,
+.company-detail-profile-card .btn-back {
+	background-color: #ffffff !important;
+	border: 1px solid #ede9fe !important;
+	color: #6d28d9 !important;
+	padding: 6px 14px !important;
+	border-radius: 6px !important;
+	font-size: 0.88rem !important;
+	font-weight: 500 !important;
+	cursor: pointer;
+	transition: all 0.2s ease;
+	align-self: flex-end;
+}
+
+.company-detail-profile-card button:hover,
+.company-detail-profile-card .btn-back:hover {
+	background-color: #f5f3ff !important;
+	border-color: #a78bfa !important;
+}
+
+/* ==========================================================================
+   4. 하단 추천 패키지 상품 격리형 수직 포켓몬 카드 (한 줄에 3개 그리드)
+   ========================================================================== */
+
+.company-pokemon-grid {
+	display: grid !important;
+	grid-template-columns: repeat(3, 1fr) !important; /* 정확하게 한 줄에 3개씩 분할 안착 */
+	gap: 25px !important;                              
+	margin-top: 15px !important;
+	margin-bottom: 40px !important;
+	align-items: stretch !important;                   
+}
+
+.company-pokemon-grid .product-item {
+	display: flex !important;
+	flex-direction: column !important; /* 세로 구조로 전격 교체 */
+	align-items: stretch !important;
+	background: #ffffff !important;
+	border: 1px solid #eee !important;
+	border-radius: 12px !important;
+	padding: 16px !important;
+	gap: 12px !important;
+	position: relative !important;     
+	box-shadow: 0 3px 10px rgba(0, 0, 0, 0.03) !important;
+	margin-bottom: 0 !important;       
+	transition: all 0.25s ease-in-out !important;
+	width: 100% !important;
+}
+
+.company-pokemon-grid .product-item:hover {
+	transform: translateY(-4px) !important;
+	box-shadow: 0 8px 24px rgba(167, 139, 250, 0.15) !important;
+	border-color: #a78bfa !important;
+}
+
+.company-pokemon-grid .product-img-box {
+	width: 100% !important;
+	height: 190px !important;         
+	border-radius: 8px !important;
+	overflow: hidden !important;
+	margin: 0 !important;
+	flex-shrink: 0 !important;
+}
+
+.company-pokemon-grid .product-img-box img {
+	width: 100% !important;
+	height: 100% !important;
+	object-fit: cover !important;
+}
+
+.company-pokemon-grid .product-info {
+	display: flex !important;
+	flex-direction: column !important;
+	gap: 6px !important;
+	min-height: auto !important;      
+	flex-grow: 1 !important;
+	padding: 0 !important;
+}
+
+.company-pokemon-grid .product-info h4 {
+	font-size: 1.1rem !important;
+	font-weight: 700 !important;
+	color: #222 !important;
+	margin: 4px 0 0 0 !important;
+}
+
+.company-pokemon-grid .product-info .product-content {
+	font-size: 0.9rem !important;
+	color: #666 !important;
+	line-height: 1.4 !important;
+	margin: 0 0 10px 0 !important;
+}
+
+/* 💡 바닥 정렬 수평선 너비 100% 확장 잠금 가동 */
+.company-pokemon-grid .product-price-row {
+	display: flex !important;
+	justify-content: space-between !important; 
+	align-items: center !important;
+	margin-top: auto !important;       
+	width: 100% !important;
+	border-top: 1px dashed #f1f5f9;   
+	padding-top: 10px;
+}
+
+.company-pokemon-grid .product-info .product-price {
+	font-size: 1.2rem !important;
+	color: #d6336c !important;         
+	font-weight: 700 !important;
+	margin: 0 !important;
+	width: auto !important;
+	text-align: left !important;
+}
+
+/* 💡 [통일 조준 완결] 상세방 내부 상품 하트 단추도 메인과 100% 동일한 분홍 배지 공식 대입 */
+.company-pokemon-grid .product-item .like-chip-btn {
+	position: static !important;       
+	margin-left: auto !important;      /* 무조건 오른쪽 끝자리 정위치 고정 */
+	display: inline-flex !important;
+	align-items: center !important;
+	gap: 5px !important;
+	padding: 3px 10px !important;
+	border-radius: 20px !important;
+	font-size: 0.82rem !important;
+	cursor: pointer !important;
+	transition: all 0.2s ease !important;
+	
+	/* 🤍 클릭 안 되어 있을 때 사양 동일 명시 */
+	background-color: #ffffff !important;
+	border: 1px solid #ffe0e6 !important;
+	color: #d6336c !important;
+}
+
+/* ❤️ 클릭 되어 활성화(active) 되었을 때 사양 동일 명시 (보라색 잔재 완전 파괴) */
+.company-pokemon-grid .product-item .like-chip-btn.active {
+	background-color: #ff7f9f !important; /* 보라색 버리고 시그니처 핑크 충전 */
+	border: none !important;              
+	color: #ffffff !important;            /* 내부 하트 기호와 숫자를 새하얗고 또렷하게 출력 */
+	box-shadow: 0 2px 6px rgba(255, 127, 159, 0.2) !important;
 }
