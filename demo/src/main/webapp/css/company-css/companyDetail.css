@@ -4,31 +4,30 @@
 
 /* 1. 상단 대장 업체 프로필 메인 카드 */
 .company-detail-profile-card {
-	border: 1px solid #ede9fe !important; /* 사방 테두리를 부드러운 라벤더 보라로 슬림하게 마감 */
+	border: 1px solid #ede9fe !important; 
 	background-color: #ffffff;
-	border-radius: 12px;                  /* 카드의 각진 모서리를 둥글고 세련되게 보정 */
-	box-shadow: 0 4px 12px rgba(167, 139, 250, 0.05); /* 은은한 퍼플 그림자 효과 */
+	border-radius: 12px;                  
+	box-shadow: 0 4px 12px rgba(167, 139, 250, 0.05); 
 	padding: 25px !important;
 	display: flex !important;
 	flex-direction: column !important;
 }
 
-/* 업체 정보 내 서브 텍스트 보정 */
 .company-detail-location {
 	font-size: 0.95rem;
 	color: #6c757d;
 }
 
-/* 2. 업체 소개 한 줄 안내 (배경과 테두리를 투명하게 걷어내어 여백 극대화) */
+/* 2. 업체 소개 한 줄 안내 */
 .company-detail-intro-container {
 	margin-top: 15px;
-	background-color: transparent !important; /* 연보라색 배경 상자 제거 */
-	border: none !important;                  /* 테두리선 완전히 빼기 */
-	padding: 0 !important;                     /* 불필요해진 안쪽 여백 완전히 청소 */
+	background-color: transparent !important; 
+	border: none !important;                  
+	padding: 0 !important;                     
 }
 
 .company-detail-intro-title {
-	color: #6d28d9 !important; /* 진분홍 타이틀 글자를 차분하고 격식 있는 딥 퍼플 색상으로 매핑 */
+	color: #6d28d9 !important; 
 	font-weight: bold;
 	font-size: 1rem;
 	margin-bottom: 6px;
@@ -36,13 +35,13 @@
 
 /* 3. 하단 전용 상품 쇼룸 인디케이터 바 라인 색상 보정 */
 .company-showroom-title-bar {
-	border-left: 4px solid #a78bfa !important; /* 선 테두리 포인트를 연보라색 단색으로 깔맞춤 */
+	border-left: 4px solid #a78bfa !important; 
 	padding-left: 10px;
 	margin-top: 30px;
 	margin-bottom: 20px;
 }
 
-/* 우측 상단 뒤로가기 버튼 디자인 (라벤더 룩앤필 동기화) */
+/* 우측 상단 뒤로가기 버튼 디자인 */
 .company-detail-profile-card button,
 .company-detail-profile-card .btn-back {
 	background-color: #ffffff !important;
@@ -69,7 +68,7 @@
 
 .company-pokemon-grid {
 	display: grid !important;
-	grid-template-columns: repeat(3, 1fr) !important; /* 정확하게 한 줄에 3개씩 분할 안착 */
+	grid-template-columns: repeat(3, 1fr) !important; 
 	gap: 25px !important;                              
 	margin-top: 15px !important;
 	margin-bottom: 40px !important;
@@ -78,7 +77,7 @@
 
 .company-pokemon-grid .product-item {
 	display: flex !important;
-	flex-direction: column !important; /* 세로 구조로 전격 교체 */
+	flex-direction: column !important; 
 	align-items: stretch !important;
 	background: #ffffff !important;
 	border: 1px solid #eee !important;
@@ -136,7 +135,6 @@
 	margin: 0 0 10px 0 !important;
 }
 
-/* 💡 바닥 정렬 수평선 너비 100% 확장 잠금 가동 */
 .company-pokemon-grid .product-price-row {
 	display: flex !important;
 	justify-content: space-between !important; 
@@ -144,7 +142,7 @@
 	margin-top: auto !important;       
 	width: 100% !important;
 	border-top: 1px dashed #f1f5f9;   
-	padding-top: 10px;
+	padding-top: 6px !important; /* 투명 히트박스와의 균형을 위해 간격 살짝 조정 */
 }
 
 .company-pokemon-grid .product-info .product-price {
@@ -156,29 +154,35 @@
 	text-align: left !important;
 }
 
-/* 💡 [통일 조준 완결] 상세방 내부 상품 하트 단추도 메인과 100% 동일한 분홍 배지 공식 대입 */
+/* 🎯 [투명 히트박스 소독 완료] 지긋지긋한 구형 동그라미/알약 배경, 테두리, 패딩 잔재 완전 파괴! */
 .company-pokemon-grid .product-item .like-chip-btn {
 	position: static !important;       
-	margin-left: auto !important;      /* 무조건 오른쪽 끝자리 정위치 고정 */
+	margin-left: auto !important;      
 	display: inline-flex !important;
 	align-items: center !important;
-	gap: 5px !important;
-	padding: 3px 10px !important;
-	border-radius: 20px !important;
-	font-size: 0.82rem !important;
+	justify-content: center !important;
+	width: 36px !important;     /* 보이지 않는 가로 클릭 방어벽 */
+	height: 36px !important;    /* 보이지 않는 세로 클릭 방어벽 */
 	cursor: pointer !important;
-	transition: all 0.2s ease !important;
+	user-select: none !important;
+	transition: transform 0.15s ease-in-out !important;
+	font-size: 1.35rem !important; /* 하트 크기를 위풍당당하게 펌핑 */
 	
-	/* 🤍 클릭 안 되어 있을 때 사양 동일 명시 */
-	background-color: #ffffff !important;
-	border: 1px solid #ffe0e6 !important;
-	color: #d6336c !important;
+	/* 🫥 어떤 상황에서도 눈에 보이는 껍데기를 생성하지 않도록 철저히 통제 */
+	background: transparent !important;
+	border: none !important;
+	box-shadow: none !important;
+	padding: 0 !important;
 }
 
-/* ❤️ 클릭 되어 활성화(active) 되었을 때 사양 동일 명시 (보라색 잔재 완전 파괴) */
+/* ❤️ 활성화(active) 되었을 때도 분홍색 배경이나 테두리가 절대 살아나지 못하게 투명 잠금 */
 .company-pokemon-grid .product-item .like-chip-btn.active {
-	background-color: #ff7f9f !important; /* 보라색 버리고 시그니처 핑크 충전 */
+	background: transparent !important; 
 	border: none !important;              
-	color: #ffffff !important;            /* 내부 하트 기호와 숫자를 새하얗고 또렷하게 출력 */
-	box-shadow: 0 2px 6px rgba(255, 127, 159, 0.2) !important;
+	box-shadow: none !important;
+}
+
+/* 클릭 타격 시 쫀득하게 튕겨주는 모바일형 인터랙션 햅틱 피드백 유지 */
+.company-pokemon-grid .product-item .like-chip-btn:active {
+	transform: scale(1.25) !important;
 }

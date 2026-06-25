@@ -85,9 +85,8 @@
 					</div>
 					<div class="product-price-row">
 						<p class="product-price">{{Number(item.price).toLocaleString()}}원</p>
-						<div @click.stop="fnToggleProductLike(item)" :class="['chip-toggle-label', 'like-chip-btn', { active: item.isLiked === 1 }]">
+						<div @click.stop="fnToggleProductLike(item)" :class="['like-chip-btn', { active: item.isLiked === 1 }]">
 							<span>{{ item.isLiked === 1 ? '❤️' : '🤍' }}</span>
-							<span class="like-count-num">{{ item.likeCnt || 0 }}</span>
 						</div>
 					</div>
 				</div>
@@ -102,9 +101,8 @@
 				<div class="product-info">
 					<div class="company-card-header">
 						<h4>{{ comp.comName }}</h4>
-						<div @click.stop="fnToggleCompanyLike(comp)" :class="['chip-toggle-label', 'like-chip-btn', { active: comp.isLiked === 1 }]">
+						<div @click.stop="fnToggleCompanyLike(comp)" :class="['like-chip-btn', { active: comp.isLiked === 1 }]">
 							<span>{{ comp.isLiked === 1 ? '❤️' : '🤍' }}</span>
-							<span class="like-count-num">{{ comp.likeCnt || 0 }}</span>
 						</div>
 					</div>
 					<p class="company-location-text">📍 위치: {{ comp.comAddress || '주소 정보 없음' }}</p>
