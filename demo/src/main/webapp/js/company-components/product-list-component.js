@@ -10,7 +10,7 @@ const productListComponent = {
 			selectCategory: '',         // 중분류 단일 선택 라디오 버튼 값
 			selectTags: [],             // 선택된 소분류 태그 배열
 			categoriesData: {},          // DB에서 수혈받을 카테고리 트리 저장소
-			userid: window.SESSION_ID || '', // 전역 세션선 직통 연결
+			userid: window.SESSION_ID || '' , // 전역 세션선 직통 연결
 			localProductList: []         // [개인 지갑] 부모 간섭을 차단하기 위한 자체 독립 반응형 자산
 		};
 	},
@@ -80,6 +80,9 @@ const productListComponent = {
 		},
 		// 실시간 필터 가교: 부모 창의 jQuery AJAX 메인 조회 함수를 자동 호출하도록 유도
 		triggerFilterReload() {
+			// 💡 [기능적 독립 마감 완공] 자식 고유의 비즈니스 메서드 내부에서 안전하게 전역 카테고리 컨텍스트 기록!
+			window.CURRENT_LARGE_CATEGORY = this.selectLargeCategory;
+			
 			this.$emit('update-filter-list', {
 				largeCategory: this.selectLargeCategory,
 				mediumCategory: this.selectCategory,
@@ -87,7 +90,7 @@ const productListComponent = {
 			});
 		},
 		
-		// 💡 [정밀 타격 격파 완공] 1번 트랙: 가짜 인형 분신 대신 진짜 지갑 속 알맹이를 찾아내 직접 수정하는 하트 통신 엔진
+		// 1번 트랙: 가짜 인형 분신 대신 진짜 지갑 속 알맹이를 찾아내 직접 수정하는 하트 통신 엔진
 		fnToggleProductLike(item) {
 			var self = this;
 			if (!self.userid) {
@@ -95,7 +98,6 @@ const productListComponent = {
 				return;
 			}
 			
-			// 1. 화면에 렌더링된 가짜 분신(item)의 고유 ID를 갈취합니다.
 			const targetId = item.productNo || item.id;
 			
 			$.ajax({
@@ -108,11 +110,8 @@ const productListComponent = {
 				dataType: 'json',
 				success: function(data) {
 					if (data.result === 'success') {
-						// 2. 🎯 [정밀 타격 수술] 임시 복사본(item) 대신 진짜 독립 지갑 내부에서 주민번호가 똑같은 진짜 원본 상품을 찾아냅니다.
 						const realItem = self.localProductList.find(p => (p.productNo || p.id) === targetId);
-						
 						if (realItem) {
-							// 3. 임시 분신 인형이 아닌 진짜 지갑 속 원본 알맹이를 수정하여 Vue 반응형 불꽃을 즉시 점화시킵니다!
 							if (data.status === 'liked') {
 								realItem.isLiked = 1;
 								realItem.likeCnt = (realItem.likeCnt || 0) + 1;
@@ -129,7 +128,7 @@ const productListComponent = {
 			});
 		},
 		
-		// 💡 [철저히 보존] 2번 트랙: 미래 확장 지침에 따라 손끝 하나 대지 않고 원형 그대로 사수한 업체 마스터 즐겨찾기 스위치선
+		// 2번 트랙: 추후 추가될 상단 대장 프로필 전용 '업체 즐겨찾기' 선행 마중물 메서드 (원형 엄격 보존)
 		fnToggleCompanyLike(comp) {
 			var self = this;
 			if (!self.userid) {

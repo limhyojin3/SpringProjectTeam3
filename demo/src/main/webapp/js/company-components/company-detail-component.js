@@ -31,6 +31,7 @@ const companyDetailComponent = {
 				type: 'POST',
 				data: {
 					companyNo: self.companyNo,
+					largeCategory: window.CURRENT_LARGE_CATEGORY || '', // 💡 [기능적 독립 개통] 메인에서 보던 대분류 탭 컨텍스트를 주머니에 담아 저격 사출!
 					loginUserId: self.userid
 				},
 				dataType: 'json',
@@ -79,7 +80,7 @@ const companyDetailComponent = {
 				url: '/productLikeToggle.dox', /* 👈 신규 product_like 연동 엔드포인트 조준 */
 				type: 'POST',
 				data: {
-					productNo: item.productNo,   /* 👈 업체 번호가 아닌 진짜 상품 고유의 주민번호 사출 */
+					productNo: item.productNo,   /* 👈 업체 번호가 아닌 진짜 상품 고유의 식별키 사출 */
 					loginUserId: self.userid
 				},
 				dataType: 'json',
@@ -118,7 +119,7 @@ const companyDetailComponent = {
 				dataType: 'json',
 				success: function(data) {
 					if (data.result === 'success') {
-						// TODO: 나중에 상단 업체 프로필 우측에 하트 UI 만드실 때 이 구역 안에서 
+						// 나중에 상단 업체 프로필 우측에 하트 UI 만드실 때 이 구역 안에서 
 						// self.companyInfo.isLiked 상태를 스위칭하도록 살만 채우시면 끝납니다!
 						alert("업체 즐겨찾기 토글 성공 (상태: " + data.status + ")");
 					}
