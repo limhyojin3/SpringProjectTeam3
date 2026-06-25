@@ -249,8 +249,12 @@
                             <tbody>
                                 <tr v-for="r in reviewList" :key="r.reviewNo">
                                     <td>{{ r.reviewNo }}</td>
-                                    <td>{{ r.userId }}</td>
-                                    <td class="text-left" :title="r.reviewContent">
+                                    <td class="admin-id-cell">
+                                        <span class="admin-id-text" :title="r.userId">
+                                            {{ r.userId }}
+                                        </span>
+                                    </td>
+                                    <td class="text-left" :title="r.title">
                                         {{ r.title }}
                                     </td>
                                     <td class="status-text">{{ getStatusText(r.approvalStatus) }}</td>

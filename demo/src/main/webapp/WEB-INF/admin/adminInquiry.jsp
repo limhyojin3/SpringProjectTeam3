@@ -139,7 +139,11 @@
 
                                     <td>{{item.inquiryNo}}</td>
                                     <td>{{item.inquiryType}}</td>
-                                    <td>{{item.userId}}</td>
+                                    <td class="admin-id-cell">
+                                        <span class="admin-id-text" :title="item.userId">
+                                            {{ item.userId }}
+                                        </span>
+                                    </td>
 
                                     <td class="text-left">
                                         {{item.title}}

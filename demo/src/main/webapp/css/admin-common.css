@@ -180,32 +180,17 @@ input.form-control {
 	border-radius: 4px
 }
 
-/* 검색 버튼 (딥 그린) */
-.keyword-group button {
-    background-color: #1A1A2E;
-    color: white;
-    border: 1px solid #1A1A2E;
-    padding: 0 15px;
-}
-
-.keyword-group button:hover {
-    background-color: #16213E;
-    /* 호버 시에도 살짝 그림자를 주면 생동감이 생깁니다 */
-    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-}
-
-/* 초기화 버튼 (레드 아웃라인) */
+.keyword-group button,
 .filter-group button {
-    background: #1A1A2E;
-    border: 1px solid #1A1A2E;
-    color: white;
-    padding: 0 15px;
+    background: #334155;
+    border-color: #334155;
+    color: #fff;
 }
 
+.keyword-group button:hover,
 .filter-group button:hover {
-    background-color: #16213E;
-    color: white;
-	box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    background: #1e293b;
+    border-color: #1e293b;
 }
 
 
@@ -367,8 +352,8 @@ table button:hover{
 	vertical-align: middle;
 }
 
-.table tr:hover {
-	background: #f4f6f3 !important;
+.table tbody tr:hover > td {
+	background: #f1f5f9 !important;
 	transition: background-color 0.2s;
 }
 
@@ -436,4 +421,139 @@ table button:hover{
 
 .empty-row {
 	pointer-events: none;
+}
+
+/* 회원/업체 상세 페이지 공통 카드 */
+.admin-detail-page {
+    --detail-surface: #f8f9fc;
+    --detail-strong: #e5e8f1;
+    --detail-border: #dfe4ee;
+    --detail-navy: #334155;
+}
+
+.admin-detail-page .detail-header,
+.admin-detail-page > .card {
+    background: var(--detail-surface);
+    border: 1px solid var(--detail-border);
+    box-shadow: 0 6px 18px rgba(15, 23, 42, 0.12);
+}
+
+.admin-detail-page > .card {
+    padding: 22px 24px !important;
+    border-radius: 16px;
+}
+
+.admin-detail-page > .card > h5 {
+    color: var(--detail-navy);
+    font-size: 17px;
+    font-weight: 800;
+    padding-bottom: 13px;
+    margin-bottom: 18px;
+    border-bottom: 1px solid var(--detail-border);
+}
+
+.admin-detail-page .summary-box {
+    min-height: 84px;
+    background: var(--detail-strong);
+    color: var(--detail-navy);
+    border: 1px solid #d8deea;
+}
+
+/* 긴 ID 말줄임 */
+.admin-id-cell {
+    width: 170px;
+    max-width: 170px;
+}
+
+.admin-id-text {
+    display: inline-block;
+    width: 100%;
+    max-width: 100%;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    vertical-align: bottom;
+    cursor: help;
+}
+
+/* 상세 페이지 ID는 조금 넓게 */
+.admin-detail-page .admin-id-text {
+    max-width: 230px;
+}
+
+/* 관리자 모달 공통 닫기 버튼 */
+.modal .modal-header .close {
+    width: 36px;
+    height: 36px;
+    margin: -6px -6px -6px auto;
+    padding: 0;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    border: none;
+    border-radius: 10px;
+    background: transparent;
+    color: #64748b;
+
+    font-size: 24px;
+    line-height: 1;
+    opacity: 1;
+    text-shadow: none;
+    box-shadow: none;
+
+    transition:
+        background-color 0.2s,
+        color 0.2s;
+}
+
+.modal .modal-header .close:hover {
+    background: #fff1f2;
+    color: #e11d48;
+
+    opacity: 1;
+    box-shadow: none;
+    transform: none;
+}
+
+.modal .modal-header .close:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(225, 29, 72, 0.14);
+}
+
+/* =========================
+   관리자 모달 공통 디자인
+========================= */
+
+.modal .modal-content {
+    overflow: hidden;
+    border: 1px solid #dbe2ec;
+    border-radius: 18px;
+    background: #f8f9fc;
+    box-shadow: 0 24px 60px rgba(15, 23, 42, 0.25);
+}
+
+.modal .modal-header {
+    align-items: flex-start;
+    padding: 22px 26px;
+    background: linear-gradient(135deg, #e5e8f1, #f1f5f9);
+    border-bottom: 1px solid #d8deea;
+}
+
+.modal .modal-title {
+    color: #1e293b;
+    font-weight: 800;
+}
+
+.modal .modal-body {
+    padding: 24px;
+    background: #f1f5f9;
+}
+
+.modal .modal-footer {
+    gap: 8px;
+    padding: 16px 24px;
+    background: #e5e8f1;
+    border-top: 1px solid #d1d9e6;
 }

@@ -139,7 +139,11 @@
                                             {{ getRoleText(company.role) }}
                                         </span>
                                     </td>
-                                    <td>{{company.userId}}</td>
+                                    <td class="admin-id-cell">
+                                        <span class="admin-id-text" :title="company.userId">
+                                            {{ company.userId }}
+                                        </span>
+                                    </td>
                                     <td>{{company.companyName}}</td>
                                     <td>{{company.ceoName}}</td>
                                     <td>

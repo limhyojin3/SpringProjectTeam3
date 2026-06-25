@@ -77,8 +77,14 @@
                                     :class="{ 'active-row': selectedBoard && selectedBoard.userId === board.userId }">
                                     <td>{{board.postNo}}</td>
                                     <td>{{board.category}}</td>
-                                    <td>{{board.title}}</td>
-                                    <td>{{board.userId}}</td>
+                                    <td class="text-left" :title="board.title">
+                                        {{ board.title }}
+                                    </td>
+                                    <td class="admin-id-cell">
+                                        <span class="admin-id-text" :title="board.userId">
+                                            {{ board.userId }}
+                                        </span>
+                                    </td>
                                     <td>{{ formatDate(board.regDate) }}</td>
                                     <td>
                                         <button @click="fnSelectBoard(board)">보기</button>
