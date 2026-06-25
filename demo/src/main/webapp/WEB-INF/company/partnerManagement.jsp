@@ -13,11 +13,16 @@
         <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
         <script src="/js/page-change.js"></script>
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
-
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
         <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
         <script src="https://cdn.quilljs.com/1.3.6/quill.min.js"></script>
         <link rel="stylesheet" href="${pageContext.request.contextPath}/css/common.css">
         <link rel="stylesheet" href="${pageContext.request.contextPath}/css/partner-management.css">
+    <style>
+        body {
+                background: linear-gradient(180deg, #ede9f8 0%, #ffffff 400px, #ffffff 100%) !important;
+            }
+    </style>
     </head>
     
     <body>
@@ -31,17 +36,27 @@
                             <div class="left-banner">
                                 <div class="nav-container">
                                     <div class="nav-title">업체페이지</div>
-                                    <button class="nav-btn" @click="handleMenuClick('main')">업체페이지</button>
-                                    <button class="nav-btn" @click="handleMenuClick('product')">상품 관리</button>
-                                    <button class="nav-btn" @click="handleMenuClick('reservation')">예약 관리</button>
-                                    <button class="nav-btn" @click="handleMenuClick('inquiry')">문의 내역</button>
-                                    <button class="nav-btn" @click="handleMenuClick('review')">리뷰 내역</button>
+                                    <button class="nav-btn" :class="{active: currentMenu === 'main'}" @click="handleMenuClick('main')">
+                                        <i class="fas fa-home mr-2"></i>업체페이지
+                                    </button>
+                                    <button class="nav-btn" :class="{active: currentMenu === 'product'}" @click="handleMenuClick('product')">
+                                        <i class="fas fa-box mr-2"></i>상품 관리
+                                    </button>
+                                    <button class="nav-btn" :class="{active: currentMenu === 'reservation'}" @click="handleMenuClick('reservation')">
+                                        <i class="fas fa-calendar-alt mr-2"></i>예약 관리
+                                    </button>
+                                    <button class="nav-btn" :class="{active: currentMenu === 'inquiry'}" @click="handleMenuClick('inquiry')">
+                                        <i class="fas fa-comment-dots mr-2"></i>문의 내역
+                                    </button>
+                                    <button class="nav-btn" :class="{active: currentMenu === 'review'}" @click="handleMenuClick('review')">
+                                        <i class="fas fa-star mr-2"></i>리뷰 내역
+                                    </button>
                                 </div>
                             </div>
                         </aside>
                         <main>
                             <div v-if="currentMenu === 'main'">
-                                <main-menu-component :user="user" @reg-ptn="fnRegPTN" />
+                                <main-menu-component :user="user" @reg-ptn="fnRegPTN" @menu-change="handleMenuClick" />
                             </div>
                             <div v-if="currentMenu === 'product'">
                                 <product-section-component />

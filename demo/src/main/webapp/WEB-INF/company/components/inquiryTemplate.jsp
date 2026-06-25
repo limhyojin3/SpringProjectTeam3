@@ -4,38 +4,48 @@
 
 <template id="inquiry-section-template">
     <div> 
-        <div v-if="viewPage === 'main'">
-            <div class="section-header">
-                <h2>문의 관리 : <span style="color:#9b8fd4;">전체 문의 {{ inquiryList ? inquiryList.length : 0 }}건</span></h2>
+    <div v-if="viewPage === 'main'">
+            <div class="productlist-productReg">
+                <div class="section-header">
+                    <h2><i class="fas fa-comment-dots mr-2"></i>문의 관리 : <span class="res-count-highlight">전체 문의 {{ inquiryList ? inquiryList.length : 0 }}건</span></h2>
+                </div>
             </div>
+
             <div class="content-card" v-for="i in fnPaginatedInquiry" :key="i">
-                <div style="display: flex;">
-                    <div style="width: 100px; height: 100px;  margin-right: 20px; text-align: center;">
+                <div class="inquiry-product-header">
+                    <div class="inquiry-thumb-wrap">
                         <img :src="fnThumbnail(i)" :alt="i.productName" class="productImg">
                     </div>
-                    <h3>상품명 : <span style="color: #d6336c;">{{i.productName}}</span> </h3>
+                    <div class="inquiry-product-info">
+                        <span class="inquiry-product-badge">상품명</span>
+                        <span class="inquiry-product-name">{{i.productName}}</span>
+                    </div>
                 </div>
-                <table>
-                    <tr>
-                        <th>제목</th>
-                        <td>{{i.inquiryTitle}}</td>
-                    </tr>
-                    <tr>
-                        <th>작성자</th>
-                        <td>{{i.userId}}</td>
-                    </tr>
-                    <tr>
-                        <th>내용</th>
-                        <td>{{i.inquiryContents}}</td>
-                    </tr>
-                    <tr>
-                        <th>답변 여부</th>
-                        <td v-if="i.inquiryAns == 1" style="color:#0099ff">답변 완료</td>
-                        <td v-else>아직 답변하지 않음</td>
-                    </tr>
-                </table>
-                <button class="btn-reply" @click="fnAnswerToProductInquiry(i)">답변하기</button>
-            </div>
+                <div class="inquiry-section">
+                    <table>
+                        <tr>
+                            <th>제목</th>
+                            <td>{{i.inquiryTitle}}</td>
+                        </tr>
+                        <tr>
+                            <th>작성자</th>
+                            <td>{{i.userId}}</td>
+                        </tr>
+                        <tr>
+                            <th>내용</th>
+                            <td>{{i.inquiryContents}}</td>
+                        </tr>
+                        <tr>
+                            <th>답변 여부</th>
+                            <td v-if="i.inquiryAns == 1" class="status-done">답변 완료</td>
+                            <td v-else class="status-wait">아직 답변하지 않음</td>
+                        </tr>
+                    </table>
+                </div>
+                <button class="btn-reply" @click="fnAnswerToProductInquiry(i)">
+                    <i class="fas fa-pen mr-1"></i>답변하기
+                </button>
+            </div>  <!-- content-card 닫힘 -->
             
             <div class="pagination1">
                 <a @click="fnPrevPage" href="javascript:;" :class="{ 'disabled-arrow': currentPage === 1 }">◀</a>
@@ -62,32 +72,34 @@
 
                 <div class="original-inquiry-box">
                     <h3 class="original-inquiry-title">원본 문의 내용</h3>
-                    <table class="original-inquiry-table">
-                        <colgroup>
-                            <col class="table-col-label">
-                            <col class="table-col-content">
-                            <col class="table-col-label">
-                            <col class="table-col-content">
-                        </colgroup>
-                        <tr>
-                            <th>문의 번호</th>
-                            <td>{{ inquiryDetails.inquiryNo }}</td>
-                            <th>작성자 ID</th>
-                            <td>{{ inquiryDetails.userId }}</td>
-                        </tr>
-                        <tr>
-                            <th>문의 제목</th>
-                            <td colspan="3" class="text-bold">
-                                {{ inquiryDetails.inquiryTitle }}
-                            </td>
-                        </tr>
-                        <tr>
-                            <th class="valign-top">문의 내용</th>
-                            <td colspan="3" class="text-pre-wrap">
-                                {{ inquiryDetails.inquiryContents }}
-                            </td>
-                        </tr>
-                    </table>
+                    <div class="inquiry-section">
+                        <table class="original-inquiry-table">
+                            <colgroup>
+                                <col class="table-col-label">
+                                <col class="table-col-content">
+                                <col class="table-col-label">
+                                <col class="table-col-content">
+                            </colgroup>
+                            <tr>
+                                <th>문의 번호</th>
+                                <td>{{ inquiryDetails.inquiryNo }}</td>
+                                <th>작성자 ID</th>
+                                <td>{{ inquiryDetails.userId }}</td>
+                            </tr>
+                            <tr>
+                                <th>문의 제목</th>
+                                <td colspan="3" class="text-bold">
+                                    {{ inquiryDetails.inquiryTitle }}
+                                </td>
+                            </tr>
+                            <tr>
+                                <th class="valign-top">문의 내용</th>
+                                <td colspan="3" class="text-pre-wrap">
+                                    {{ inquiryDetails.inquiryContents }}
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
                 </div>
 
                 <div class="answer-write-box">

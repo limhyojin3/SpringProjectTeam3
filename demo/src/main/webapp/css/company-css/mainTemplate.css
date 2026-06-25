@@ -11,27 +11,41 @@
 }
 
 /* 1. 상단 환영 타이틀 타이포그래피 정밀 튜닝 */
+.dashboard-welcome-box {
+    background: #fff;
+    border: 1.5px solid #e8e2f8;
+    border-radius: 12px;
+    padding: 20px 24px;
+    margin-bottom: 16px;
+    box-shadow: 0 2px 8px rgba(155, 143, 212, 0.08);
+    display: flex;
+    align-items: center;
+    gap: 16px;
+	border-left: 4px solid #9b8fd4;
+}
+
 .dashboard-welcome-msg {
-	font-size: 1.65rem;
-	font-weight: 700;
-	color: #2c2c2c;
-	margin-bottom: 25px;
-	padding-left: 0;
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #555;
+    margin: 0;
 	letter-spacing: -0.5px;
 }
 
-/* 업체명 강조 시그니처 컬러 폰트 */
+/* 환영 메시지 업체명 색상 - 보라로 */
 .welcome-highlight {
-	color: #ff4da6;
+	font-size: 1.3rem;  /* 업체명은 크게 유지 */
+	color: #9b8fd4
 }
 
 /* 2. 구형 흰색 대형 카드를 완전 대체하는 슬림 액션 바 트랙 */
 .dashboard-action-bar {
-	background: #ffffff;
-	border: 1px solid #f1f1f1;
-	border-radius: 12px;
-	padding: 24px 30px;
-	box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
+    background: #ffffff;
+    border: 1.5px solid #e8e2f8;  /* 보라 계열 테두리 */
+    border-radius: 12px;
+    padding: 24px 30px;
+    box-shadow: 0 2px 8px rgba(155, 143, 212, 0.08);
+    border-left: 4px solid #9b8fd4;  /* 마이페이지처럼 왼쪽 포인트 */
 }
 
 /* 가로 듀얼 트랙 정렬용 플렉스 레일 개통 */
@@ -69,9 +83,10 @@
 
 /* ⏳ 일반 회원사: 차분하고 부드러운 머스타드 소프트 크림 틴트 테마 */
 .badge-premium-label.npartner {
-	background: #fff6e0;
-	color: #d49200;
+    background: #9b8fd4;  /* 보라로 */
+    color: #fff;          /* 흰 글씨 */
 }
+
 
 /* 👑 공식 제휴사: 압도적인 품격을 선사하는 미드나잇 딥차콜 & 백금 앙상블 조합 */
 .badge-premium-label.partner {
@@ -111,23 +126,24 @@
 
 /* 5. 🎯 완벽 수정: px 단위를 deg 각도로 전격 교정하고, 
       흰색 글씨가 눈부시게 폭발하도록 채도를 깊고 진하게 튜닝한 진짜 리얼 골드 마스터 버튼 */
-.premium-dashboard-wrapper .btn-premium-upgrade {
-	background: linear-gradient(135deg, #ffb400 0%, #ff7a00 100%) !important; /* 💡 135deg 교정 및 딥 오렌지골드 배합 */
-	color: #ffffff !important;
-	border: none !important;
-	padding: 14px 28px !important;
-	border-radius: 30px !important;
-	font-weight: 700 !important;
-	cursor: pointer !important;
-	font-size: 0.92rem !important;
-	letter-spacing: -0.3px !important;
-	transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1) !important;
-	box-shadow: 0 4px 15px rgba(255, 122, 0, 0.35) !important;
-}
+	  .premium-dashboard-wrapper .btn-premium-upgrade {
+	      background: linear-gradient(135deg, #ffc940 0%, #ffaa00 100%) !important;
+	      color: #ffffff !important;
+	      border: none !important;
+	      padding: 14px 28px !important;
+	      border-radius: 30px !important;
+	      font-weight: 700 !important;
+	      cursor: pointer !important;
+	      font-size: 0.92rem !important;
+	      transition: all 0.25s !important;
+	      box-shadow: 0 4px 15px rgba(255, 180, 0, 0.35) !important;
+	      white-space: nowrap !important;  /* 추가 - 텍스트 줄바꿈 방지 */
+	      min-width: 220px !important;     /* 추가 - 최소 너비 */
+	  }
 
 .premium-dashboard-wrapper .btn-premium-upgrade:hover {
 	transform: translateY(-3px) !important;
-	box-shadow: 0 8px 25px rgba(255, 122, 0, 0.55) !important;
+	box-shadow: 0 8px 25px rgba(255, 180, 0, 0.55) !important;
 	filter: brightness(1.08) !important;
 }
 
@@ -135,8 +151,65 @@
 	transform: translateY(-1px) !important;
 }
 
+.premium-dashboard-wrapper .btn-premium-upgrade i {
+    color: #fff700;  /* 노란색으로 눈에 띄게 */
+}
+
 /* 크라운 왕관의 미세한 명품 모션 애니메이션 */
 @keyframes crownBounce {
 	0%, 100% { transform: translateY(0) rotate(0deg); }
 	50% { transform: translateY(-4px) rotate(3deg); }
+}
+
+/* 바로가기 카드 */
+.dashboard-shortcut-row {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    margin-top: 24px;
+}
+
+.shortcut-card {
+    background: #fff;
+    border: 1.5px solid #e8e2f8;
+	border-left: 4px solid #9b8fd4;
+    border-radius: 12px;
+    padding: 24px 16px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+    transition: all 0.2s;
+    color: #9b8fd4;
+    font-size: 0.9rem;
+    font-weight: 600;
+    box-shadow: 0 2px 8px rgba(155, 143, 212, 0.12);  /* 추가 */
+}
+
+.shortcut-card i {
+    font-size: 1.5rem;
+    color: #9b8fd4;
+}
+
+.shortcut-card:hover {
+    background: #ede9f8;
+    border-color: #9b8fd4;
+    transform: translateY(-3px);
+    box-shadow: 0 4px 12px rgba(155, 143, 212, 0.2);
+}
+/* 파트너사 혜택 문구 */
+.fee-notice {
+    font-size: 0.8rem;
+    color: #9b8fd4;
+    font-weight: 500;
+    background: #ede9f8;
+    padding: 6px 12px;
+    border-radius: 8px;
+    margin-top: 4px;
+}
+
+.fee-notice b {
+    font-weight: 800;
+    color: #7b68c8;
 }
