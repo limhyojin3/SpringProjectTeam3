@@ -13,6 +13,7 @@ public class Report {
     private String reportTitle; // report_title (신고 제목)
     private String reportContent;// report_content (신고 내용)
     private int answerStatus;   // answer_status (답변 여부)
+    private String answerContent;  // 관리자가 신고자에게 보낸 처리 답변
     private int actionStatus;   // action_status (조치 여부)
     private Timestamp regDate;  // reg_date (신고일)
     private String targetTitle; // 신고한 게시글 제목

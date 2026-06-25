@@ -183,7 +183,7 @@
 }
 
 /* ==========================================================================
-   3. 상품 리스트 카드 목록 영역
+   3. [기본 호환] 등록 업체 찾기용 오리지널 가로형 카드 명세
    ========================================================================== */
 .product-item {
 	display: flex;
@@ -197,13 +197,7 @@
 	transition: all 0.3s ease;
 	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
 	cursor: pointer;
-	position: relative; /* 하트 찜 버튼 절대 배치를 위한 기준점 */
-}
-
-.product-item:hover {
-	transform: translateY(-3px);
-	box-shadow: 0 6px 15px rgba(255, 127, 159, 0.2);
-	border-color: #ff7f9f;
+	position: relative;
 }
 
 .product-img-box {
@@ -227,38 +221,7 @@
 	display: flex;
 	flex-direction: column;
 	gap: 8px;
-	min-height: 140px; /* 내부 요소가 가격을 하단 구석으로 밀 수 있도록 최소 높이 강제 밀봉 */
-}
-
-.product-info h4 {
-	margin: 0;
-	font-size: 1.2rem;
-	color: #333;
-	font-weight: 700;
-	padding-right: 60px; /* 우측 상단 하트 버튼과의 충돌 예외 방어 여백 */
-}
-
-.product-info .product-content {
-	margin: 0;
-	color: #777;
-	font-size: 0.95rem;
-	line-height: 1.5;
-}
-
-/* 💡 [정밀 수술] 가격을 완전한 우측 하단 끝 구석탱이로 순간이동 정렬 */
-.product-info .product-price {
-	margin-top: auto;          /* 가로 행 내부에서 바닥으로 쿵 떨어지게 설정 */
-	width: 100%;               /* 100% 가로축 방을 다 쓰게 만들어 우측 정렬 유도 */
-	text-align: right;         /* 텍스트를 오른쪽 정렬 */
-	font-weight: 700;
-	font-size: 1.35rem;        /* 💡 유저 피드백: 글씨 크기 대폭 확대 감행 */
-	color: #d6336c;            /* 💡 유저 피드백: 형광 형빛 핑크를 지우고, 화면과 잘 녹아드는 고급스러운 로즈 핑크 톤 다운 */
-	padding-right: 5px;
-}
-
-.product-tags-wrapper {
-	display: flex;
-	gap: 5px;
+	min-height: 140px;
 }
 
 .tag-span {
@@ -269,8 +232,28 @@
 	border-radius: 4px;
 }
 
-/* 찜 하트 버튼을 카드의 완벽한 [우측 상단]으로 정밀 붙박이 조준 */
-.like-chip-btn {
+.product-item.company-card-item {
+	border: 1px solid #ede9fe !important;
+	background-color: #ffffff;
+	transition: all 0.2s ease-in-out;
+}
+
+.product-item.company-card-item:hover {
+	box-shadow: 0 6px 16px rgba(167, 139, 250, 0.15) !important;
+	transform: translateY(-2px);
+	border-color: #a78bfa !important;
+}
+
+.product-item.company-card-item .company-intro-box {
+	background-color: transparent !important;
+	border: none !important;
+	padding: 0 !important;
+	color: #777 !important;
+	font-size: 0.92rem;
+	margin-top: 4px;
+}
+
+.product-item.company-card-item .like-chip-btn {
 	position: absolute !important;
 	top: 20px;
 	right: 20px;
@@ -286,39 +269,137 @@
 	z-index: 10;
 }
 
-.product-info .like-chip-btn.active {
-	background-color: #ffe4e6 !important;
-	border-color: #ff7f9f !important;
-	color: #ff7f9f !important;
-}
-
-/* 답답하던 왼쪽 세로선을 완전히 제거하고 보라색 사방 테두리 마감 */
-.product-item.company-card-item {
-	border: 1px solid #ede9fe !important;
-	background-color: #ffffff;
-	transition: all 0.2s ease-in-out;
-}
-
-.product-item.company-card-item:hover {
-	box-shadow: 0 6px 16px rgba(167, 139, 250, 0.15) !important;
-	transform: translateY(-2px);
-	border-color: #a78bfa !important;
-}
-
-/* 한 줄 소개 박스 배경을 빼고 차분한 회색 폰트로 교체 */
-.product-item.company-card-item .company-intro-box {
-	background-color: transparent !important;
-	border: none !important;
-	padding: 0 !important;
-	color: #777 !important;
-	font-size: 0.92rem;
-	margin-top: 4px;
-}
-
-/* 업체 카드 전용 하트 찜 버튼 활성화 스타일 (보라색 그라데이션) */
 .product-item.company-card-item .like-chip-btn.active {
 	background: linear-gradient(135deg, #c084fc 0%, #a78bfa 100%) !important;
 	border-color: #a78bfa !important;
 	color: #ffffff !important;
 	box-shadow: 0 2px 8px rgba(167, 139, 250, 0.3) !important;
+}
+
+/* ==========================================================================
+   4. 🃏 메인 상품 패키지 찾기 전용 수직형 포켓몬 카드 그리드 (3열 완전체)
+   ========================================================================== */
+
+.product-pokemon-grid {
+	display: grid !important;
+	grid-template-columns: repeat(3, 1fr) !important; /* 가로폭을 정확히 3등분 분할 */
+	gap: 25px !important;                              /* 카드 간 여백 시원하게 지정 */
+	margin-top: 15px !important;
+	margin-bottom: 40px !important;
+	align-items: stretch !important;                   /* 높이를 자동 통일 */
+}
+
+.product-pokemon-grid .product-item {
+	display: flex !important;
+	flex-direction: column !important; /* 세로 구조 반전 */
+	background: #ffffff !important;
+	border: 1px solid #eee !important;
+	border-radius: 12px !important;
+	padding: 16px !important;
+	gap: 12px !important;
+	position: relative !important;
+	box-shadow: 0 3px 10px rgba(0, 0, 0, 0.03) !important;
+	margin-bottom: 0 !important;
+	width: 100% !important;
+	transition: all 0.25s ease-in-out !important;
+}
+
+.product-pokemon-grid .product-item:hover {
+	transform: translateY(-4px) !important;
+	box-shadow: 0 8px 24px rgba(255, 127, 159, 0.15) !important;
+	border-color: #ff7f9f !important;
+}
+
+.product-pokemon-grid .product-img-box {
+	width: 100% !important;
+	height: 190px !important;         
+	border-radius: 8px !important;
+	overflow: hidden !important;
+	margin: 0 !important;
+	flex-shrink: 0 !important;
+}
+
+.product-pokemon-grid .product-img-box img {
+	width: 100% !important;
+	height: 100% !important;
+	object-fit: cover !important;
+}
+
+.product-pokemon-grid .product-info {
+	display: flex !important;
+	flex-direction: column !important;
+	gap: 6px !important;
+	min-height: auto !important;      
+	flex-grow: 1 !important;          
+	padding: 0 !important;
+}
+
+.product-pokemon-grid .product-info h4 {
+	font-size: 1.1rem !important;
+	font-weight: 700 !important;
+	color: #222 !important;
+	margin: 4px 0 0 0 !important;
+	padding-right: 0 !important;
+}
+
+.product-pokemon-grid .product-info .product-content {
+	font-size: 0.9rem !important;
+	color: #666 !important;
+	line-height: 1.4 !important;
+	margin: 0 0 4px 0 !important;
+}
+
+.product-pokemon-grid .product-tags-wrapper {
+	display: flex !important;
+	flex-wrap: wrap !important;
+	gap: 5px !important;
+	margin-bottom: 10px !important;
+}
+
+/* 💡 금액 행의 너비를 100%로 꽉 채워 양끝 정렬의 든든한 뼈대 완성 */
+.product-pokemon-grid .product-price-row {
+	display: flex !important;
+	justify-content: space-between !important; 
+	align-items: center !important;
+	margin-top: auto !important;               
+	width: 100% !important;
+	border-top: 1px dashed #f1f5f9 !important; 
+	padding-top: 10px !important;
+	box-sizing: border-box !important;
+}
+
+.product-pokemon-grid .product-info .product-price {
+	font-size: 1.25rem !important;
+	color: #ff1493 !important;         
+	font-weight: 700 !important;
+	margin: 0 !important;
+	width: auto !important;
+	text-align: left !important;
+}
+
+/* 💡 [정밀 수술 적용] 유저 가이드라인 100% 충족형 하트 버튼 칩 */
+.product-pokemon-grid .product-item .like-chip-btn {
+	position: static !important;       
+	margin-left: auto !important;      /* 어떤 방해가 있어도 오른쪽 구석 끝자리 강제 밀착 고정 */
+	display: inline-flex !important;
+	align-items: center !important;
+	gap: 5px !important;
+	padding: 3px 10px !important;
+	border-radius: 20px !important;
+	font-size: 0.82rem !important;
+	cursor: pointer !important;
+	transition: all 0.2s ease !important;
+	
+	/* 🤍 클릭 안 되어 있을 때 사양 명시 */
+	background-color: #ffffff !important;
+	border: 1px solid #ffe0e6 !important;
+	color: #d6336c !important;
+}
+
+/* ❤️ 클릭 되어 활성화(active) 되었을 때 사양 명시 */
+.product-pokemon-grid .product-item .like-chip-btn.active {
+	background-color: #ff7f9f !important; /* 오직 버튼 칩 내부만 분홍색으로 꽉 채움 */
+	border: none !important;              /* 어설픈 테두리 흔적 완전 파괴 */
+	color: #ffffff !important;            /* 내부 하트 기호와 숫자를 새하얗고 또렷하게 고정 */
+	box-shadow: 0 2px 6px rgba(255, 127, 159, 0.2) !important;
 }

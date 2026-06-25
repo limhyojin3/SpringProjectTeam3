@@ -20,7 +20,6 @@
 				🏢 등록 업체 찾기
 			</button>
 		</div>
-
 		<div v-if="searchMode === 'product'" class="filter-section">
 			<div class="large-category-container">
 				<button v-for="(value, key) in categoriesData" 
@@ -59,7 +58,6 @@
 				</div>
 			</div>
 		</div>
-
 		<div v-if="searchMode === 'company'" class="filter-section company-slim-filter">
 			<div class="large-category-container" style="border-bottom: none; padding-bottom: 0;">
 				<button v-for="(value, key) in categoriesData" 
@@ -72,17 +70,12 @@
 			</div>
 		</div>
 
-		<div v-if="searchMode === 'product'">
+		<div v-if="searchMode === 'product'" class="product-pokemon-grid">
 			<div v-for="item in filteredList" :key="item.id" class="product-item" @click="$emit('go-detail', item)">
 				<div class="product-img-box">
 					<img :src="item.thumbnail" :alt="item.name">
 				</div>
 				<div class="product-info">
-					<div class="company-badge-row">
-						<span class="tag-span company-location-badge">
-							📍 [{{ item.comName }}] {{ item.comAddress ? item.comAddress.split(' ').slice(0, 2).join(' ') : '지역 미지정' }}
-						</span>
-					</div>
 					<h4>{{item.name}}</h4>
 					<p class="product-content">{{item.content}}</p>
 					<div v-if="item.tag" class="product-tags-wrapper">
@@ -98,7 +91,6 @@
 				</div>
 			</div>
 		</div>
-
 		<div v-if="searchMode === 'company'">
 			<div v-for="comp in uniqueCompanies" :key="comp.companyNo" class="product-item company-card-item" @click="$emit('go-company-detail', comp.companyNo)">
 				<div class="product-img-box">

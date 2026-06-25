@@ -99,7 +99,7 @@ public interface AdminMapper {
 	public void batchReject(HashMap<String, Object> map);
 
 	// 단일 신고
-	public void updateReportApprove(HashMap<String, Object> map);
+	public int updateReportApprove(HashMap<String, Object> map);
 
 	// 신고 상세 조회
 	public Admin selectReportDetail(HashMap<String, Object> map);
@@ -107,6 +107,9 @@ public interface AdminMapper {
 	// 신고 반려
 	public int updateReportReject(HashMap<String, Object> map);
 
+	// 신고자 알림 전송 성공 처리
+	int updateReportAnswerStatus(HashMap<String, Object> map);
+	
 	// 신고 누적 횟수
 	public int selectReportHistory(HashMap<String, Object> map);
 

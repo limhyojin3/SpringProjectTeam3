@@ -93,7 +93,7 @@ public class ProductCommandService {
 		return resultMap;
 	}
 
-	/* 💡 [신규 확장] company_like 단선 제어 전용 실시간 하트 온오프 비즈니스 스위치 */
+	/* 💡 company_like 단선 제어 전용 실시간 하트 온오프 비즈니스 스위치 */
 	@Transactional(rollbackFor = Exception.class)
 	public HashMap<String, Object> toggleCompanyLike(HashMap<String, Object> map) {
 		HashMap<String, Object> resultMap = new HashMap<String, Object>();
@@ -104,6 +104,29 @@ public class ProductCommandService {
 				resultMap.put("status", "unliked");
 			} else {
 				productMapper.insertCompanyLike(map);
+				resultMap.put("status", "liked");
+			}
+			resultMap.put("result", "success");
+			resultMap.put("message", Message.MSG_ADD);
+		} catch (Exception e) {
+			System.out.println(e.getMessage());
+			resultMap.put("result", "fail");
+			resultMap.put("message", Message.MSG_SERVER_ERR);
+		}
+		return resultMap;
+	}
+
+	/* 💡 [신규 개통] 2번 트랙: product_like 테이블 제어 전용 실시간 패키지 하트 독립 스위치 */
+	@Transactional(rollbackFor = Exception.class)
+	public HashMap<String, Object> toggleProductLike(HashMap<String, Object> map) {
+		HashMap<String, Object> resultMap = new HashMap<String, Object>();
+		try {
+			int count = productMapper.checkProductLike(map);
+			if (count > 0) {
+				productMapper.deleteProductLike(map);
+				resultMap.put("status", "unliked");
+			} else {
+				productMapper.insertProductLike(map);
 				resultMap.put("status", "liked");
 			}
 			resultMap.put("result", "success");
