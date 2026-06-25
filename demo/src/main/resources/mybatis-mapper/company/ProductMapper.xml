@@ -24,7 +24,7 @@
 			c.com_name,
 			c.com_intro AS comIntro,
 			c.com_address AS comAddress,
-			(SELECT COUNT(*) FROM company_like WHERE company_no = p.company_no) AS likeCnt,
+			c.img_url AS comImgUrl, (SELECT COUNT(*) FROM company_like WHERE company_no = p.company_no) AS likeCnt,
 			(SELECT COUNT(*) FROM company_like WHERE company_no = p.company_no AND user_id = #{loginUserId}) AS isLiked,
 			(
 				SELECT GROUP_CONCAT(DISTINCT pt_all.tag SEPARATOR ',')
@@ -41,6 +41,9 @@
 		<where>
 			<if test="userid != null and userid != ''">
 				AND c.user_id = #{userid}
+			</if>
+			<if test="companyNo != null and companyNo != ''">
+				AND p.company_no = #{companyNo}
 			</if>
 			<if test="largeCategory != null and largeCategory != ''">
 				AND p.large_category = #{largeCategory}
@@ -83,6 +86,7 @@
 			c.com_name,
 			c.com_intro AS comIntro,
 			c.com_address AS comAddress,
+			c.img_url AS comImgUrl,
 			(SELECT COUNT(*) FROM company_like WHERE company_no = p.company_no) AS likeCnt,
 			(SELECT COUNT(*) FROM company_like WHERE company_no = p.company_no AND user_id = #{loginUserId}) AS isLiked,
 			(

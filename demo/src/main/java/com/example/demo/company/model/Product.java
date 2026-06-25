@@ -53,4 +53,5 @@ public class Product {
 		this.comName = comName;
 		this.company = comName;
 	}
+	private String comImgUrl;
 }
