@@ -165,6 +165,11 @@
                             <img :src="best.thumbnailUrl || '/images/marryviewlogo_v3.png'" 
                                 :class="{'no-img-default': !best.thumbnailUrl, 'is-blurred': shouldBlur(best)}"
                                 @error="(e) => e.target.src = '/images/marryviewlogo_v3.png'">
+                                 <div v-if="shouldBlur(best)" class="premium-lock-guide">
+                                    <i class="fas fa-lock"></i>
+                                    <strong>유료 리뷰</strong>
+                                    <span>열람권을 사용하면 확인할 수 있습니다.</span>
+                                </div>
                         </div>
 
                         <div class="best-info">
@@ -199,6 +204,11 @@
                             :class="{'default-logo': !item.thumbnailUrl, 'is-blurred': shouldBlur(item)}"
                             @error="(e) => e.target.src = '/images/marryviewlogo_v3.png'"
                             alt="리뷰 썸네일">
+                            <div v-if="shouldBlur(item)" class="premium-lock-guide">
+                                <i class="fas fa-lock"></i>
+                                <strong>유료 리뷰</strong>
+                                <span>열람권을 사용하면 확인할 수 있습니다.</span>
+                            </div>
                     </div>
 
                     <div class="card-body-custom">

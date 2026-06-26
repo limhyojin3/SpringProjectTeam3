@@ -134,14 +134,30 @@
                 },
                 fnPopularList() {
                     $.ajax({
-                        url : "/api/community/popularList.dox",
-                        type : "POST",
-                        dataType : "json",
-                        success : (data)=>{
-                            this.popularList = data.list;
-                            this.bestPosts = data.list.map(item => item.postNo);
+                        url: "/api/community/popularList.dox",
+                        type: "POST",
+                        dataType: "json",
+
+                        success: (data) => {
+                            console.log("인기글 API 전체 응답:", data);
+                            console.log("인기글 목록:", data.list);
+
+                            this.popularList = data.list || [];
+                            this.bestPosts = this.popularList.map(item => item.postNo);
+
+                            console.log("Vue popularList:", this.popularList);
+                        },
+
+                        error: (xhr, status, error) => {
+                            console.error("인기글 불러오기 실패");
+                            console.error("상태:", xhr.status);
+                            console.error("응답:", xhr.responseText);
+                            console.error("오류:", error);
+
+                            this.popularList = [];
+                            this.bestPosts = [];
                         }
-                    })
+                    });
                 },
                 getRank(index) {
                     if(index === 0) return '<i class="fas fa-medal" style="color:#FFD700;"></i>';
