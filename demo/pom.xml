@@ -12,7 +12,7 @@
 	<artifactId>marryview</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>marryview</name>
-	<description>Demo project for Spring Boot</description>
+	<description>marryview project for Spring Boot</description>
 	
 	<packaging>war</packaging>
 	<properties>
