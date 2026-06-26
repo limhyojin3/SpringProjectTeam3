@@ -22,7 +22,7 @@ public class CompanyController {
 	@RequestMapping("/partnerManagement.do")
 	public String partnerManagement(Model model) throws Exception {
 		return "/company/partnerManagement";
-	}
+	} 
 	
 	/* 단건 업체 기본 프로필 및 회원 정보 조회 */
 	@RequestMapping(value = "/company.dox", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
