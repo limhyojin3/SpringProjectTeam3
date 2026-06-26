@@ -11,7 +11,7 @@
 	<groupId>com.example</groupId>
 	<artifactId>marryview</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>demo</name>
+	<name>marryview</name>
 	<description>Demo project for Spring Boot</description>
 	
 	<packaging>war</packaging>
