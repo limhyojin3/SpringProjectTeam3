@@ -2,11 +2,11 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <<<<<<< HEAD
-<mapper namespace="com.example.demo.admin.mapper.NotificationMapper">
+<mapper namespace="com.example.marryview.admin.mapper.NotificationMapper">
 
 	<select id="selectNotificationList"
 		parameterType="hashmap"
-		resultType="com.example.demo.admin.model.Notification">
+		resultType="com.example.marryview.admin.model.Notification">
 =======
 <mapper namespace="com.example.marryview.admin.mapper.NotificationMapper">
 

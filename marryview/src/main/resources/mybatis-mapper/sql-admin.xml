@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <<<<<<< HEAD
-<mapper namespace="com.example.demo.admin.mapper.AdminMapper">
+<mapper namespace="com.example.marryview.admin.mapper.AdminMapper">
 
 	<select id="selectSalesList" parameterType="hashmap"
-		resultType="com.example.demo.admin.model.Admin">
+		resultType="com.example.marryview.admin.model.Admin">
 		SELECT
 		DATE_FORMAT(pay_date, '%Y-%m') AS sale_month,
 		SUM(amount) AS total_revenue,
@@ -17,7 +17,7 @@
 
 	<!--adminMain에 쓰일 요약 용도-->
 	<select id="selectClientsList" parameterType="hashmap"
-		resultType="com.example.demo.admin.model.Admin"> SELECT
+		resultType="com.example.marryview.admin.model.Admin"> SELECT
 		DATE_FORMAT(REG_DATE, '%Y-%m') AS USER_MONTH, Count(*) AS USER_COUNT
 		FROM MEMBER WHERE 1=1 
 		<if test="role != null and role != 'ALL'">
@@ -46,7 +46,7 @@
 
 <!-- 리뷰게시판 글 목록 -->
 	<select id="selectReviewList" parameterType="hashmap"
-		resultType="com.example.demo.admin.model.Admin">
+		resultType="com.example.marryview.admin.model.Admin">
 		SELECT
 		REVIEW_NO,
 		USER_ID,
@@ -233,7 +233,7 @@
 
 <!-- 신고 게시판 검색어 필터 -->
 	<select id="selectReportList" parameterType="hashmap"
-		resultType="com.example.demo.admin.model.Admin"> SELECT REPORT_NO,
+		resultType="com.example.marryview.admin.model.Admin"> SELECT REPORT_NO,
 	REPORTER_ID, TARGET_TYPE, 
 		CASE WHEN TARGET_TYPE = 'MEMBER' THEN
 		TARGET_USER_ID ELSE CAST(TARGET_ID AS CHAR) 
@@ -396,7 +396,7 @@
 <!-- 패스권 결제페이지?-->
 	<select id="selectPassList"
         parameterType="hashmap"
-        resultType="com.example.demo.admin.model.Admin">
+        resultType="com.example.marryview.admin.model.Admin">
 
     SELECT
         PP.PASS_NO AS passNo,
@@ -422,7 +422,7 @@
 	</select>
 
 	<select id="selectPassInfo" parameterType="hashmap"
-		resultType="com.example.demo.admin.model.Admin">
+		resultType="com.example.marryview.admin.model.Admin">
 		SELECT *
 		FROM PAYMENT P
 		INNER JOIN PAYMENT_PASS P2 ON P.PAY_NO = P2.PAY_NO
@@ -459,7 +459,7 @@
 <!-- 관리자 문의 게시판 -->
 	<!-- 문의 목록 조회-->
 	<select id="selectInquiryList" parameterType="hashmap"
-		resultType="com.example.demo.admin.model.Admin"> SELECT * FROM inquiry
+		resultType="com.example.marryview.admin.model.Admin"> SELECT * FROM inquiry
 	WHERE 1=1 <if test="status != null and status != 'ALL'">
 			AND status = #{status}
 		</if>
@@ -516,7 +516,7 @@
 
 	<!--  전체 회원목록 페이지 + 회원들 신고수까지 조인, 필터, 페이지네이션-->
 	<select id="selectUserList" parameterType="hashmap"
-		resultType="com.example.demo.admin.model.Admin">
+		resultType="com.example.marryview.admin.model.Admin">
 		SELECT
 		M.USER_ID AS userId,
 		U.NAME AS name,
@@ -617,7 +617,7 @@
 
 	<!-- 회원 상세 조회 -->
 	<select id="selectUserDetail" parameterType="hashmap"
-		resultType="com.example.demo.admin.model.Admin">
+		resultType="com.example.marryview.admin.model.Admin">
 
 		SELECT
 		M.USER_ID AS userId,
@@ -648,7 +648,7 @@
 
 	<!-- 전체 업체목록 페이지 필터 페이지네이션-->
 	<select id="selectCompanyList" parameterType="hashmap"
-		resultType="com.example.demo.admin.model.Admin">
+		resultType="com.example.marryview.admin.model.Admin">
 		SELECT
 		M.USER_ID AS userId,
 		C.COM_NAME AS companyName,
@@ -759,7 +759,7 @@
 	</select>
 	<!-- 업체 상세 조회 -->
 	<select id="selectCompanyDetail" parameterType="hashmap"
-		resultType="com.example.demo.admin.model.Admin">
+		resultType="com.example.marryview.admin.model.Admin">
 
 		SELECT
 		M.USER_ID AS userId,
@@ -789,7 +789,7 @@
 	<!-- 게시글 목록 조회 -->
 	<!-- 게시글 목록 페이지 필터 페이지네이션-->
 	<select id="selectBoardList" parameterType="hashmap"
-		resultType="com.example.demo.admin.model.Admin">
+		resultType="com.example.marryview.admin.model.Admin">
 		SELECT
 		p.post_no AS postNo,
 		p.user_id AS userId,
@@ -903,7 +903,7 @@
 
 	<!-- 게시글 상세 -->
 <select id="selectPostDetail" parameterType="hashmap"
-        resultType="com.example.demo.admin.model.Admin">
+        resultType="com.example.marryview.admin.model.Admin">
 
     SELECT
         p.post_no        AS postNo,
@@ -936,7 +936,7 @@
     AND ACTION_STATUS = 1
 	</select>
 	<!-- 신고게시판 전 회원 2회이상 조회 -->
-	<select id="selectKillHistory" parameterType="hashmap" resultType="com.example.demo.admin.model.Admin">
+	<select id="selectKillHistory" parameterType="hashmap" resultType="com.example.marryview.admin.model.Admin">
 		select target_user_id AS targetUserId, r.killCount
 		from(
 		SELECT target_user_id, COUNT(*) AS killCount
@@ -948,7 +948,7 @@
 	</select>
 	
 	<!-- 회원 상세 신고 이력 조회 -->
-	<select id="selectReportInfoList" parameterType="hashmap" resultType="com.example.demo.admin.model.Admin">
+	<select id="selectReportInfoList" parameterType="hashmap" resultType="com.example.marryview.admin.model.Admin">
 		SELECT
 		report_content,
 		reporter_id,
@@ -961,7 +961,7 @@
 
 	<!-- 신고 상세 조회-->
 	<select id="selectReportDetail" parameterType="hashmap"
-		resultType="com.example.demo.admin.model.Admin">
+		resultType="com.example.marryview.admin.model.Admin">
 
 		SELECT
 		REPORT_NO,
@@ -985,7 +985,7 @@
 	</select>
 
 	<!-- 정지 이력 조회 -->
-	<select id="selectBanHistory" parameterType="hashmap" resultType="com.example.demo.admin.model.Admin">
+	<select id="selectBanHistory" parameterType="hashmap" resultType="com.example.marryview.admin.model.Admin">
 		SELECT
 		target_id AS targetId,
 		target_type AS targetType,
@@ -1073,13 +1073,13 @@
 </update>
 	
 	<!-- 결제 관리-->
-	<select id="selectPaymentList" parameterType="hashmap" resultType="com.example.demo.admin.model.Admin">
+	<select id="selectPaymentList" parameterType="hashmap" resultType="com.example.marryview.admin.model.Admin">
 	    SELECT * FROM payment
 	    ORDER BY pay_no DESC
 	    LIMIT #{pageSize} OFFSET #{offSet}
 	</select>
 	
-	<select id="selectPassPaymentList" parameterType="hashmap" resultType="com.example.demo.admin.model.Admin">
+	<select id="selectPassPaymentList" parameterType="hashmap" resultType="com.example.marryview.admin.model.Admin">
 	    SELECT p.pay_no AS payNo,
         p.user_id AS userId,
         p.amount AS amount,
@@ -1093,7 +1093,7 @@
 	    LIMIT #{pageSize} OFFSET #{offSet}
 	</select>
 	
-	<select id="selectReservationPaymentList" parameterType="hashmap" resultType="com.example.demo.admin.model.Admin">
+	<select id="selectReservationPaymentList" parameterType="hashmap" resultType="com.example.marryview.admin.model.Admin">
 	    <!--SELECT
 	    p.pay_no AS payNo,
         p.user_id AS userId,
@@ -1130,7 +1130,7 @@
 	    LIMIT #{pageSize} OFFSET #{offSet}
 	</select>
 	
-	<select id="selectRegistrationPaymentList" parameterType="hashmap" resultType="com.example.demo.admin.model.Admin">
+	<select id="selectRegistrationPaymentList" parameterType="hashmap" resultType="com.example.marryview.admin.model.Admin">
 	    SELECT
 	    p.user_id AS userId,
 	    p.pay_no AS payNo,
@@ -1171,7 +1171,7 @@
 
 
 	<!-- 상품 관리 -->
-	<select id="selectAdminProductList" parameterType="hashmap" resultType="com.example.demo.admin.model.Admin">
+	<select id="selectAdminProductList" parameterType="hashmap" resultType="com.example.marryview.admin.model.Admin">
     SELECT
         p.product_no AS productNo,
         p.company_no AS companyNo,
@@ -1251,7 +1251,7 @@
 	<!-- 상품 상세 -->
     <select id="selectProductInfo"
             parameterType="hashmap"
-            resultType="com.example.demo.admin.model.Admin">
+            resultType="com.example.marryview.admin.model.Admin">
 
         SELECT
             p.product_no       AS productNo,
@@ -1272,7 +1272,7 @@
 
     </select>
 	<!-- 쿠폰 관리-->	
-	<select id="selectCouponList" parameterType="hashmap" resultType="com.example.demo.admin.model.Admin">
+	<select id="selectCouponList" parameterType="hashmap" resultType="com.example.marryview.admin.model.Admin">
     SELECT
         coupon_code AS couponCode,
         coupon_name AS couponName,
@@ -1344,7 +1344,7 @@
 	</delete>
 	<!--패스관리-->
 	<!-- 패스목록-->
-	<select id="selectAllPassList" parameterType="hashmap" resultType="com.example.demo.admin.model.Admin">
+	<select id="selectAllPassList" parameterType="hashmap" resultType="com.example.marryview.admin.model.Admin">
     SELECT
         pass_no AS passNo,
         pass_name AS passName,
@@ -1469,7 +1469,7 @@
 <!-- 마이 패스 페이지-->
 	<!-- 패스 결제 내역 조회 -->
 	<select id="selectMyPassList" parameterType="hashmap"
-	    resultType="com.example.demo.admin.model.Admin">
+	    resultType="com.example.marryview.admin.model.Admin">
 =======
 <mapper namespace="com.example.marryview.admin.mapper.AdminMapper">
 

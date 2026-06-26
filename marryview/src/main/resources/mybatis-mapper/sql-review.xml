@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <<<<<<< HEAD
-<mapper namespace="com.example.demo.community_review.mapper.ReviewMapper">
+<mapper namespace="com.example.marryview.community_review.mapper.ReviewMapper">
 
 	<!-- 리뷰 제목 조회 -->
 	<select id="getReviewTitle" resultType="string">
@@ -288,7 +288,7 @@
 	</select>
     
     <!-- 리뷰 등록 -->
-    <insert id="insertReview" parameterType="com.example.demo.community_review.model.Review">
+    <insert id="insertReview" parameterType="com.example.marryview.community_review.model.Review">
 =======
 <mapper namespace="com.example.marryview.community_review.mapper.ReviewMapper">
 

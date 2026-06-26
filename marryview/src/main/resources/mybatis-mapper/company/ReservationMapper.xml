@@ -2,10 +2,10 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <<<<<<< HEAD
-<mapper namespace="com.example.demo.company.mapper.ReservationMapper">
+<mapper namespace="com.example.marryview.company.mapper.ReservationMapper">
 
 	<select id="selectReservation" parameterType="map"
-		resultType="com.example.demo.company.model.Reservation">
+		resultType="com.example.marryview.company.model.Reservation">
 		SELECT
 			r.res_no,
 			r.res_status,
@@ -62,7 +62,7 @@
 	</insert>
 
 	<select id="selectMyReservationList" parameterType="map"
-		resultType="com.example.demo.company.model.Reservation">
+		resultType="com.example.marryview.company.model.Reservation">
 =======
 <mapper namespace="com.example.marryview.company.mapper.ReservationMapper">
 

@@ -3,11 +3,11 @@
 	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <<<<<<< HEAD
-<mapper namespace="com.example.demo.member.mapper.MemberMapper">
+<mapper namespace="com.example.marryview.member.mapper.MemberMapper">
 	<!-- 일반 유저-->
 
 	<!-- MAMBER ID 검색 -->
-	<select id="selectMember" parameterType="hashmap" resultType="com.example.demo.member.model.Member">
+	<select id="selectMember" parameterType="hashmap" resultType="com.example.marryview.member.model.Member">
 	    SELECT M.*, D.NAME, D.NICKNAME, D.GENDER, D.EMAIL, D.WEDDING_DATE
 	    FROM MEMBER M
 	    LEFT JOIN USER_DETAIL D ON M.USER_ID = D.USER_ID
@@ -93,7 +93,7 @@
 	</select>
 	
 	<!--내 정보 수정을 위한 유저 정보 조회-->
-	<select id="selectMemberInfo" parameterType="String" resultType="com.example.demo.member.model.Member">
+	<select id="selectMemberInfo" parameterType="String" resultType="com.example.marryview.member.model.Member">
 	    SELECT
 	        M.USER_ID as userId,
 	        M.TEL as tel,
@@ -155,7 +155,7 @@
 	</select>
 	
 	<!-- 카카오 ID로 회원 조회 -->
-	<select id="selectMemberByKakaoId" parameterType="String" resultType="com.example.demo.member.model.Member">
+	<select id="selectMemberByKakaoId" parameterType="String" resultType="com.example.marryview.member.model.Member">
 	    SELECT * FROM member WHERE user_id = #{kakaoId}
 	</select>
 	
@@ -274,7 +274,7 @@
 	
 	<!-- 열람권 잔여 횟수 조회 -->
 	<select id="selectPassWallet" parameterType="String" 
-		resultType="com.example.demo.member.model.Member">
+		resultType="com.example.marryview.member.model.Member">
 	    SELECT 
 	        UPW.pass_no,
 	        UPW.remaining_count,
@@ -286,7 +286,7 @@
 	</select>
 	<!-- 멤버십 결제 내역 조회 -->
 	<select id="selectPassWalletList" parameterType="hashmap"
-	    resultType="com.example.demo.member.model.Member">
+	    resultType="com.example.marryview.member.model.Member">
 	    SELECT
 	        PP.pass_no,
 	        PP.item_name,
@@ -329,7 +329,7 @@
 	</insert>
 	
 	<!-- 내 예약 목록 조회 -->
-	<select id="selectMyReservationList" parameterType="map" resultType="com.example.demo.member.model.Member">
+	<select id="selectMyReservationList" parameterType="map" resultType="com.example.marryview.member.model.Member">
 	    SELECT
 	        R.res_no,
 	        R.res_date,
@@ -356,7 +356,7 @@
 	<!-- 내 리뷰 조회 내역 -->
 	<!-- 유료 리뷰 열람 내역 -->
 	<select id="selectMyPaidReviewList" parameterType="hashmap"
-	    resultType="com.example.demo.member.model.Member">
+	    resultType="com.example.marryview.member.model.Member">
 	    SELECT
 	        R.review_no,
 	        R.title,
@@ -387,7 +387,7 @@
 	
 	<!-- 무료 리뷰 열람 내역 -->
 	<select id="selectMyFreeReviewList" parameterType="hashmap"
-	    resultType="com.example.demo.member.model.Member">
+	    resultType="com.example.marryview.member.model.Member">
 	    SELECT
 	        R.review_no,
 	        R.title,
@@ -415,7 +415,7 @@
 	
 	<!-- 내가 쓴 글 조회 -->
 	<select id="selectMyPostList" parameterType="hashmap"
-	    resultType="com.example.demo.member.model.Member">
+	    resultType="com.example.marryview.member.model.Member">
 	    SELECT 
         post_no,
 	        category,
@@ -439,7 +439,7 @@
 	
 	<!-- 내가 쓴 리뷰 조회 -->
 	<select id="selectMyReviewList" parameterType="hashmap"
-	    resultType="com.example.demo.member.model.Member">
+	    resultType="com.example.marryview.member.model.Member">
 	    SELECT 
 	        review_no,
 	        title,
@@ -460,7 +460,7 @@
 	
 	<!-- 내가 쓴 댓글 조회 -->
 	<select id="selectMyCommentList" parameterType="hashmap"
-	    resultType="com.example.demo.member.model.Member">
+	    resultType="com.example.marryview.member.model.Member">
 	    SELECT 
 	        comment_no,
 	        content,
@@ -483,7 +483,7 @@
 	
 	<!-- 업체 좋아요 조회 -->
 	<select id="selectMyCompanyLikeList" parameterType="hashmap"
-	    resultType="com.example.demo.member.model.Member">
+	    resultType="com.example.marryview.member.model.Member">
 	    SELECT 
 	        CL.like_no,
 	        CL.company_no,
@@ -503,7 +503,7 @@
 	
 	<!-- 글 좋아요 조회 -->
 	<select id="selectMyPostLikeList" parameterType="hashmap"
-	    resultType="com.example.demo.member.model.Member">
+	    resultType="com.example.marryview.member.model.Member">
 	    SELECT 
 		        CL.like_no,
 	        CL.post_no,
@@ -529,7 +529,7 @@
 	
 	<!-- 리뷰 좋아요 조회 -->
 	<select id="selectMyReviewLikeList" parameterType="hashmap"
-	    resultType="com.example.demo.member.model.Member">
+	    resultType="com.example.marryview.member.model.Member">
 	    SELECT 
 	        RL.like_no,
 	        RL.review_no,
@@ -598,7 +598,7 @@
 	
 	<!-- 내 문의 내역 조회 -->
 	<select id="selectMyInquiryList" parameterType="hashmap"
-	    resultType="com.example.demo.member.model.Member">
+	    resultType="com.example.marryview.member.model.Member">
 	    SELECT
 	        inquiry_no,
 	        inquiry_type,
@@ -620,7 +620,7 @@
 	
 	<!-- 내 신고 내역 조회 -->
 	<select id="selectMyReportList" parameterType="hashmap"
-	    resultType="com.example.demo.member.model.Member">
+	    resultType="com.example.marryview.member.model.Member">
 	    SELECT
 	        report_no,
 	        target_type,
@@ -658,7 +658,7 @@
 	</select>
 	
 	<!-- 사용자 프로필 기본 정보 조회 -->
-	<select id="selectUserProfile" parameterType="String" resultType="com.example.demo.member.model.Member">
+	<select id="selectUserProfile" parameterType="String" resultType="com.example.marryview.member.model.Member">
 	    SELECT
 	        M.USER_ID as userId,
 	        IFNULL(D.NICKNAME, M.USER_ID) as nickName,
@@ -669,7 +669,7 @@
 	</select>
 	
 	<!-- 사용자가 쓴 리뷰 목록 -->
-	<select id="selectUserReviewList" parameterType="hashmap" resultType="com.example.demo.member.model.Member">
+	<select id="selectUserReviewList" parameterType="hashmap" resultType="com.example.marryview.member.model.Member">
 	    SELECT
 	        REVIEW_NO as reviewNo,
 	        TITLE as title,
@@ -682,7 +682,7 @@
 	</select>
 	
 	<!-- 사용자가 쓴 게시글 목록 -->
-	<select id="selectUserPostList" parameterType="hashmap" resultType="com.example.demo.member.model.Member">
+	<select id="selectUserPostList" parameterType="hashmap" resultType="com.example.marryview.member.model.Member">
 	    SELECT
 	        POST_NO as postNo,
 	        TITLE as title,
@@ -696,7 +696,7 @@
 	</select>
 	
 	<!-- 사용자가 쓴 댓글 목록 -->
-	<select id="selectUserCommentList" parameterType="hashmap" resultType="com.example.demo.member.model.Member">
+	<select id="selectUserCommentList" parameterType="hashmap" resultType="com.example.marryview.member.model.Member">
 	    SELECT
 	        COMMENT_NO as commentNo,
 	        CONTENT as content,
@@ -810,7 +810,7 @@
 	
 	<!-- 메인 홈 출력 -->
 	<!-- 메인 최근 리뷰 4개 -->
-	<select id="selectMainReviewList" parameterType="String" resultType="com.example.demo.member.model.Member">
+	<select id="selectMainReviewList" parameterType="String" resultType="com.example.marryview.member.model.Member">
 	    SELECT
 	        R.review_no,
 	        R.title,
@@ -832,7 +832,7 @@
 	</select>
 	
 	<!-- 메인 커뮤니티 인기글 3개 -->
-	<select id="selectMainPostList" resultType="com.example.demo.member.model.Member">
+	<select id="selectMainPostList" resultType="com.example.marryview.member.model.Member">
 	    SELECT 
 	        post_no,
 	        title,
@@ -846,7 +846,7 @@
 	</select>
 	
 	<!-- 챗봇 로그 -->
-	<insert id="insertChatLog" parameterType="com.example.demo.member.model.ChatLog">
+	<insert id="insertChatLog" parameterType="com.example.marryview.member.model.ChatLog">
 =======
 <mapper namespace="com.example.marryview.member.mapper.MemberMapper">
 	<!-- 일반 유저-->
