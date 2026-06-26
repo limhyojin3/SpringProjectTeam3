@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.example.demo.community_review.mapper.CommunityMapper">
+<mapper namespace="com.example.marryview.community_review.mapper.CommunityMapper">
 	
 	<!-- 커뮤니티 게시글 제목 조회 -->
 	<select id="getPostTitle" resultType="string">
@@ -44,7 +44,7 @@
 	    </if>
 	</select>
     
-	<select id="selectPostList" parameterType="hashmap" resultType="com.example.demo.community_review.model.Community">
+	<select id="selectPostList" parameterType="hashmap" resultType="com.example.marryview.community_review.model.Community">
 	    SELECT 
 	        p.post_no AS postNo,
 	        p.user_id AS userId,
@@ -113,7 +113,7 @@
 	</select>
 	
 	<!-- ?? 아마 상세내용일건데 필요없는거 같지만 혹시모르니 냅둠. -->
-    <select id="selectPostById" resultType="com.example.demo.community_review.model.Community">
+    <select id="selectPostById" resultType="com.example.marryview.community_review.model.Community">
         SELECT * FROM Community_Post WHERE post_no = #{postNo}
     </select>
     
@@ -163,7 +163,7 @@
 	</update>
 	
 	<!-- 커뮤니티 게시글 상세 내용 -->
-	<select id="selectPostDetail" parameterType="hashmap" resultType="com.example.demo.community_review.model.Community">
+	<select id="selectPostDetail" parameterType="hashmap" resultType="com.example.marryview.community_review.model.Community">
 	    SELECT 
 	        p.post_no AS postNo,
 	        p.user_id AS userId,
