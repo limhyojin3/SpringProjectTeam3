@@ -19,7 +19,7 @@
     <script src="/js/page-change.js"></script>
 </head>
 <style>
-    /* 홈 css에 있어요!!! */
+    /* 홈 css에 있어요!!!ddddd!! */
 </style>
 <body>
     <jsp:include page="/WEB-INF/common/header.jsp" />
