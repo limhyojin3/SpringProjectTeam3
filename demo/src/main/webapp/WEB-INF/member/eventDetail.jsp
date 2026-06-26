@@ -12,7 +12,7 @@
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/common.css">
     <style>
         body {
-            background: linear-gradient(180deg, #e0f4ff 0%, #ffffff 400px, #ffffff 100%);
+           background: linear-gradient(180deg, #eaf6fb 0%, #ffffff 400px, #ffffff 100%)!important;
         }
         .event-detail-wrap {
             max-width: 800px;
@@ -30,7 +30,7 @@
             margin-bottom: 30px;
             text-decoration: none;
         }
-        .back-btn:hover { color: #64b4dc; }
+        .back-btn:hover { color: #5bbdd0; }
 
         .event-img {
             width: 100%;
@@ -46,8 +46,8 @@
             font-weight: 700;
             padding: 4px 12px;
             border-radius: 20px;
-            background: #e0f4ff;
-            color: #64b4dc;
+            background: #eaf6fb;
+            color: #5bbdd0;
             margin-bottom: 12px;
         }
         .event-title {
@@ -62,16 +62,17 @@
             line-height: 1.8;
             margin-bottom: 32px;
             padding: 24px;
-            background: #f8fbff;
+            background: #f4fafc;
             border-radius: 12px;
-            border-left: 4px solid #64b4dc;
+            border-left: 4px solid #7ec8d8;
         }
         .event-info-box {
             background: white;
-            border: 1px solid #e0f0f8;
+            border: 1px solid #d6eef5;
             border-radius: 16px;
             padding: 24px;
             margin-bottom: 32px;
+            box-shadow: 0 4px 16px rgba(94,189,208,0.08);
         }
         .event-info-box h4 {
             font-size: 15px;
@@ -88,24 +89,24 @@
         }
         .event-info-label {
             font-weight: 700;
-            color: #64b4dc;
+            color: #5bbdd0;
             min-width: 80px;
         }
         .apply-btn {
             display: block;
             width: 100%;
             padding: 18px;
-            background: #64b4dc;
+            background: linear-gradient(135deg, #7ec8d8, #5bbdd0);
             color: white;
             border: none;
-            border-radius: 12px;
+            border-radius: 999px;
             font-size: 16px;
             font-weight: 700;
             cursor: pointer;
             text-align: center;
             transition: background 0.2s;
         }
-        .apply-btn:hover { background: #4a9fc8; }
+        .apply-btn:hover { background: linear-gradient(135deg, #5bbdd0, #4aafc2); }
 
         /* 준비중 모달 */
         .prep-modal-bg {
@@ -130,7 +131,7 @@
         .prep-modal p { font-size: 13px; color: #aaa; line-height: 1.7; margin-bottom: 24px; }
         .prep-modal-btn {
             padding: 10px 32px;
-            background: #64b4dc;
+            background: linear-gradient(135deg, #7ec8d8, #5bbdd0);
             color: white;
             border: none;
             border-radius: 8px;
@@ -138,11 +139,91 @@
             font-weight: 700;
             cursor: pointer;
         }
+
+        .summer-deco-wrap {
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 0;
+            overflow: hidden;
+        }
+
+        .summer-deco {
+            position: absolute;
+            color: #a8dde9;
+            opacity: 0.3;
+        }
+
+        .event-detail-wrap {
+            position: relative;
+            z-index: 1;
+        }
+
+        .reward-highlight {
+            display: flex;
+            justify-content: center;
+            background: linear-gradient(135deg, #eaf6fb, #d6eef5);
+            border-radius: 16px;
+            padding: 32px;
+            margin-bottom: 24px;
+        }
+
+        .reward-highlight-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .reward-emoji {
+            font-size: 80px;
+            line-height: 1.2;
+        }
+
+        .reward-amount {
+            font-size: 26px;
+            font-weight: 900;
+            color: #2c2c2c;
+            background: #e0f4ff;
+            padding: 4px 20px;
+            border-radius: 8px;
+        }
+
+        .reward-label {
+            font-size: 15px;
+            font-weight: 800;
+            color: #333;
+            background: #e0f4ff;
+            padding: 3px 16px;
+            border-radius: 8px;
+        }
+
+        .reward-sub {
+            font-size: 12px;
+            color: #888;
+        }
+
+        .reward-img {
+            width: 160px;
+            height: 160px;
+            object-fit: contain;
+            margin-bottom: 8px;
+        }
     </style>
 </head>
 <body>
     <jsp:include page="/WEB-INF/common/header.jsp" />
     <div id="app">
+        <!-- 여름 배경 데코 -->
+        <div class="summer-deco-wrap">
+            <i class="fas fa-fish summer-deco" style="top:8%; left:3%; font-size:120px; transform:rotate(20deg);"></i>
+            <i class="fas fa-sun summer-deco" style="top:15%; right:5%; font-size:150px;"></i>
+            <i class="fas fa-water summer-deco" style="top:40%; left:1%; font-size:100px;"></i>
+            <i class="fas fa-umbrella-beach summer-deco" style="top:55%; right:2%; font-size:130px;"></i>
+            <i class="fas fa-fish summer-deco" style="top:70%; left:5%; font-size:90px; transform:rotate(-15deg) scaleX(-1);"></i>
+            <i class="fas fa-sun summer-deco" style="top:80%; right:6%; font-size:110px;"></i>
+            <i class="fas fa-water summer-deco" style="top:90%; left:2%; font-size:80px;"></i>
+        </div>
         <!-- 준비중 모달 -->
         <div class="prep-modal-bg" v-if="showPrep" @click.self="showPrep = false">
             <div class="prep-modal">
@@ -201,6 +282,15 @@
                     여름 휴가 사진을 리뷰로 남겨주세요!<br>
                     베스트 리뷰로 선정되신 분께 휴가비 50만원을 지원해드립니다. 🌊<br><br>
                     신나는 여름 추억을 메리뷰와 함께 나눠주세요!
+                </div>
+                <!-- 이벤트 2 혜택 카드 - event-desc 아래, event-info-box 위에 추가 -->
+                <div class="reward-highlight">
+                    <div class="reward-highlight-item">
+                        <img src="/img/event/dollar-icon.png" class="reward-img" alt="휴가비 지원">
+                        <span class="reward-amount">50만원</span>
+                        <span class="reward-label">추첨 1명</span>
+                        <span class="reward-sub">베스트 리뷰 선정</span>
+                    </div>
                 </div>
                 <div class="event-info-box">
                     <h4>이벤트 안내</h4>
