@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="com.example.demo.company.mapper.ReservationMapper">
+<mapper namespace="com.example.marryview.company.mapper.ReservationMapper">
 
 	<select id="selectReservation" parameterType="map"
-		resultType="com.example.demo.company.model.Reservation">
+		resultType="com.example.marryview.company.model.Reservation">
 		SELECT
 			r.res_no,
 			r.res_status,
@@ -61,7 +61,7 @@
 	</insert>
 
 	<select id="selectMyReservationList" parameterType="map"
-		resultType="com.example.demo.company.model.Reservation">
+		resultType="com.example.marryview.company.model.Reservation">
 		SELECT 
 			r.res_no,
 			r.user_id,
