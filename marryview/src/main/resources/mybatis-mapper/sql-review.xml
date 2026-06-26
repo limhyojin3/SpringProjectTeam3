@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<<<<<<< HEAD
 <mapper namespace="com.example.demo.community_review.mapper.ReviewMapper">
 
 	<!-- 리뷰 제목 조회 -->
@@ -288,6 +289,296 @@
     
     <!-- 리뷰 등록 -->
     <insert id="insertReview" parameterType="com.example.demo.community_review.model.Review">
+=======
+<mapper namespace="com.example.marryview.community_review.mapper.ReviewMapper">
+
+	<!-- 리뷰 제목 조회 -->
+	<select id="getReviewTitle" resultType="string">
+        SELECT title 
+        FROM Review 
+        WHERE review_no = #{targetId}
+    </select>
+
+	<select id="selectReviewCount" parameterType="hashmap" resultType="int">
+	    SELECT COUNT(*)
+	    FROM Review r
+	    LEFT OUTER JOIN Company c ON r.company_no = c.company_no
+	    WHERE r.approval_status = 'APPROVED'
+	    
+	    <if test="isPaid != null and isPaid != '' or isPaid == 0">
+	        AND r.is_paid = #{isPaid}
+	    </if>
+	    
+	    <if test="largeCategory != null and largeCategory != '' and largeCategory != '전체' and largeCategory != 'all'">
+	        AND r.large_category = #{largeCategory}
+	    </if>
+	    <if test="mediumCategory != null and mediumCategory != '' and mediumCategory != 'all'">
+	        AND r.medium_category = #{mediumCategory}
+	    </if>
+	    
+	    <if test="searchKeyword != null and searchKeyword != ''">
+	        <choose>
+	            <when test="searchType == 'company'"> AND c.com_name LIKE CONCAT('%', #{searchKeyword}, '%') </when>
+	            <when test="searchType == 'content'"> AND r.content LIKE CONCAT('%', #{searchKeyword}, '%') </when>
+	            <otherwise>
+	                AND (c.com_name LIKE CONCAT('%', #{searchKeyword}, '%') OR r.content LIKE CONCAT('%', #{searchKeyword}, '%'))
+	            </otherwise>
+	        </choose>
+	    </if>
+	</select>
+	
+	<!-- 리뷰 목록 조회 -->
+    <select id="selectReviewList" parameterType="hashmap" resultType="hashmap">
+	    SELECT 
+	        r.review_no AS reviewNo,
+	        r.large_category AS largeCategory,
+    		r.medium_category AS mediumCategory, 
+	        CASE 
+	            WHEN m.status = 'WITHDRAWN' THEN '탈퇴회원'
+	            ELSE d.nickname 
+	        END AS nickname,
+	        r.user_id AS userId, 
+	        r.rating AS rating,
+	        r.view_cnt AS viewCnt,
+	        r.like_cnt AS likeCnt,
+	        r.title,
+	        r.is_paid AS isPaid,
+	        r.content AS content,
+	        r.img_url AS imgUrl,   
+	        r.stored_name AS storedName,
+	        IFNULL(r.thumbnail_url, r.img_url) AS thumbnailUrl, 
+	        IFNULL(c.com_name, '일반 리뷰') AS comName,
+	        CASE 
+	            WHEN r.company_no IS NULL OR r.company_no = 0 THEN '외부업체'
+	            ELSE '제휴업체'
+	        END AS comType,
+	        (SELECT COUNT(*) FROM comment com WHERE com.review_no = r.review_no) AS commentCnt,
+	        (SELECT IFNULL(AVG(r2.rating), 0) FROM Review r2 WHERE r2.company_no = r.company_no AND r2.approval_status = 'APPROVED') AS avgRating,
+	        CASE 
+	            WHEN r.stored_name IS NOT NULL OR (r.img_url IS NOT NULL AND r.img_url != '') THEN 'Y'
+	            ELSE 'N'
+	        END AS hasImg,
+	        DATE_FORMAT(r.reg_date, '%Y-%m-%d') AS regDate,
+	        <!-- [추가] 열람 기록 확인 로직 -->
+	        CASE 
+	            WHEN log.review_no IS NOT NULL THEN 'ALREADY_VIEWED'
+	            ELSE 'NOT_VIEWED'
+	        END AS viewStatus
+	        
+	    FROM Review r
+	    LEFT OUTER JOIN Company c ON r.company_no = c.company_no
+	    LEFT JOIN MEMBER m ON r.user_id = m.user_id
+	    LEFT JOIN USER_DETAIL d ON r.user_id = d.user_id
+	    
+	    <!-- [추가] 사용자의 열람 로그 조인 (sessionId가 있을 때만 유효하게 작동) -->
+    	LEFT OUTER JOIN Pass_Usage_Log log ON r.review_no = log.review_no AND log.user_id = #{sessionId}
+	    WHERE r.approval_status = 'APPROVED'
+	    
+	   <if test="largeCategory != null and largeCategory != '' and largeCategory != '전체' and largeCategory != 'all'">
+		    AND r.large_category = #{largeCategory}
+		</if>	
+		<if test="mediumCategory != null and mediumCategory != '' and mediumCategory != 'all'">
+		    AND r.medium_category = #{mediumCategory}
+		</if>
+	
+	    <if test="isPaid != null and isPaid != '' or isPaid == 0">
+	        AND r.is_paid = #{isPaid}
+	    </if>
+	
+	    <!--<if test="category != null and category != '' and category != 'all'">
+	        AND JSON_CONTAINS(c.com_type, JSON_QUOTE(#{category}))
+	    </if>-->
+	
+	    <if test="searchKeyword != null and searchKeyword != ''">
+	        <choose>
+	            <when test="searchType == 'company'">
+	                AND c.com_name LIKE CONCAT('%', #{searchKeyword}, '%')
+	            </when>
+	            <when test="searchType == 'title'">
+	                AND r.title LIKE CONCAT('%', #{searchKeyword}, '%')
+	            </when>
+	            <when test="searchType == 'content'">
+	                AND r.content LIKE CONCAT('%', #{searchKeyword}, '%')
+	            </when>
+	            <otherwise>
+	                AND (c.com_name LIKE CONCAT('%', #{searchKeyword}, '%')
+	                OR r.title LIKE CONCAT('%', #{searchKeyword}, '%')
+	                OR r.content LIKE CONCAT('%', #{searchKeyword}, '%'))
+	            </otherwise>
+	        </choose>
+	    </if>
+	    
+	    <choose>
+	        <when test="orderType == 'views'">
+	            ORDER BY r.view_cnt DESC, r.reg_date DESC
+	        </when>
+	        <when test="orderType == 'likes'">
+	            ORDER BY r.like_cnt DESC, r.reg_date DESC
+	        </when>
+	        <otherwise>
+	            ORDER BY r.reg_date DESC
+	        </otherwise>
+	    </choose>
+	    LIMIT #{startIndex}, #{pageSize}
+	</select>
+
+	<!-- 상세 리뷰 조회 -->
+	<select id="selectReviewDetail" parameterType="hashmap" resultType="hashmap">
+	    SELECT 
+	        r.review_no AS reviewNo,
+	        CASE 
+	            WHEN m.status = 'WITHDRAWN' THEN '탈퇴회원'
+	            ELSE d.nickname 
+	        END AS nickname,
+	        r.user_id AS userId,
+	        r.company_no AS companyNo,
+	        r.res_no AS resNo,
+	        r.rating AS rating,
+	        r.approval_status AS approvalStatus,
+	        r.view_cnt AS viewCnt,
+	        r.like_cnt AS likeCnt,
+	        r.is_paid AS isPaid,
+	        r.receipt_name AS receiptName,
+	        r.title AS title,
+	        r.content AS content,
+	        r.summary AS summary,
+	        r.booking_source AS bookingSource,
+	        r.original_name AS originalName,
+	        r.stored_name AS storedName,
+	        r.img_url AS imgUrl,
+	        r.img_description AS imgDescription,
+	        r.total_cost AS totalCost,
+	        r.external_name AS externalName,
+	        r.dress_condition AS dressCondition, 
+	        r.professionalism, 
+	        r.waiting_time_status AS waitingTimeStatus, 
+	        r.waiting_duration AS waitingDuration, 
+	        r.extra_charge_force AS extraChargeForce,
+	        DATE_FORMAT(r.reg_date, '%Y-%m-%d %H:%i') AS regDate,
+	        c.com_name AS comName,
+	        p.product_name AS productName,
+	        (SELECT COUNT(*) FROM Review_Like WHERE review_no = r.review_no AND user_id = #{userId}) AS isLiked,
+	        
+	        <!-- [추가] 해당 업체 전체 평균 별점 -->
+	        (SELECT IFNULL(AVG(r2.rating), 0) FROM Review r2 
+	         WHERE r2.company_no = r.company_no AND r2.approval_status = 'APPROVED') AS avgCompanyRating,
+	    
+	        <!-- 이전글 정보 -->
+	        (SELECT review_no FROM Review 
+	         WHERE review_no <![CDATA[ < ]]> r.review_no AND approval_status = 'APPROVED' 
+	         ORDER BY review_no DESC LIMIT 1) AS prevNo,
+	        (SELECT title FROM Review 
+	         WHERE review_no <![CDATA[ < ]]> r.review_no AND approval_status = 'APPROVED' 
+	         ORDER BY review_no DESC LIMIT 1) AS prevTitle,
+	         
+	        <!-- 다음글 정보 -->
+	        (SELECT review_no FROM Review 
+	         WHERE review_no <![CDATA[ > ]]> r.review_no AND approval_status = 'APPROVED' 
+	         ORDER BY review_no ASC LIMIT 1) AS nextNo,
+	        (SELECT title FROM Review 
+	         WHERE review_no <![CDATA[ > ]]> r.review_no AND approval_status = 'APPROVED' 
+	         ORDER BY review_no ASC LIMIT 1) AS nextTitle
+	        
+	    FROM Review r
+	    LEFT OUTER JOIN Company c ON r.company_no = c.company_no
+	    LEFT OUTER JOIN product p ON r.product_no = p.product_no
+	    LEFT JOIN MEMBER m ON r.user_id = m.user_id
+	    LEFT JOIN USER_DETAIL d ON r.user_id = d.user_id
+	    WHERE r.review_no = #{reviewNo}  
+	</select>
+	
+	<!-- 베스트 리뷰 3개 -->
+	
+	<select id="selectBestReviewList" resultType="hashmap">
+	    SELECT 
+	        r.review_no AS reviewNo,
+	        r.user_id AS userId,              <!-- 유효성 로직용 아이디 -->
+	        u.nickname AS nickname,           <!-- 화면 출력용 닉네임 -->
+	        r.title,
+	        IFNULL(r.thumbnail_url, r.img_url) AS thumbnailUrl,
+	        r.img_url AS imgUrl,
+	        r.like_cnt AS likeCnt,
+	        r.view_cnt AS viewCnt,
+	        r.is_paid AS isPaid,
+	        IFNULL(c.com_name, '일반 리뷰') AS comName,
+	        CASE 
+	            WHEN (r.img_url IS NOT NULL AND r.img_url != '') 
+	                 OR (r.stored_name IS NOT NULL AND r.stored_name != '') THEN 'Y'
+	            ELSE 'N'
+	        END AS hasImg,
+	        <!-- [추가] 열람 기록 확인 로직 -->
+	        CASE 
+	            WHEN p.review_no IS NOT NULL THEN 'ALREADY_VIEWED'
+	            ELSE 'NOT_VIEWED'
+	        END AS viewStatus
+	        
+	    FROM Review r
+	    LEFT OUTER JOIN Company c ON r.company_no = c.company_no
+	    LEFT OUTER JOIN user_detail u ON r.user_id = u.user_id  <!-- 유저 테이블 조인 추가 -->
+	    <!-- [추가] 열람 로그 조인 -->
+    	LEFT OUTER JOIN Pass_Usage_Log p ON r.review_no = p.review_no AND p.user_id = #{sessionId}
+	    WHERE r.approval_status = 'APPROVED'
+	    ORDER BY r.like_cnt DESC, r.view_cnt DESC
+	    LIMIT 3
+	</select>
+
+	<!-- 조회 수 증가 -->
+    <update id="updateViewCount" parameterType="hashmap">
+        UPDATE Review 
+        SET view_cnt = view_cnt + 1 
+        WHERE review_no = #{reviewNo}
+    </update>
+
+	<!-- 상세 업체 조회 -->
+    <select id="selectCompanyDetail" parameterType="hashmap" resultType="hashmap">
+        SELECT 
+            company_no AS companyNo,
+            com_name AS comName,
+            com_address AS comAddress
+        FROM Company
+        WHERE company_no = #{companyNo}
+    </select>
+    
+    <!-- 특정 업체의 상품 명 -->
+    <select id="selectProductListByCompany" parameterType="hashmap" resultType="hashmap">
+	    SELECT 
+	        product_no AS productNo,
+	        product_name AS productName,
+	        original_price AS originalPrice
+	    FROM Product
+	    WHERE company_no = #{companyNo}
+	      AND is_active = 1
+	    <if test="largeCategory != null and largeCategory != ''">
+	        AND large_category = #{largeCategory}
+	    </if>
+	    <if test="mediumCategory != null and mediumCategory != ''">
+	        AND medium_category = #{mediumCategory}
+	    </if>
+	</select>
+    
+    
+    <!-- 현재 등록된 업체 -->
+    <select id="selectActiveCompanyList" parameterType="hashmap" resultType="hashmap">
+	    SELECT DISTINCT 
+	        c.company_no AS companyNo, 
+	        c.com_name AS comName,
+	        p.large_category AS largeCategory, 
+	        p.medium_category AS mediumCategory
+	    FROM Company c
+	    JOIN Product p ON c.company_no = p.company_no
+	    WHERE (c.status = 'ACTIVE' OR c.status IS NULL)
+	    <if test="largeCategory != null and largeCategory != ''">
+	        AND p.large_category = #{largeCategory}
+	    </if>
+	    <if test="mediumCategory != null and mediumCategory != ''">
+	        AND p.medium_category = #{mediumCategory}
+	    </if>
+	    ORDER BY c.com_name ASC 
+	</select>
+    
+    <!-- 리뷰 등록 -->
+    <insert id="insertReview" parameterType="com.example.marryview.community_review.model.Review">
+>>>>>>> branch 'dev_' of https://github.com/limhyojin3/SpringProjectTeam3.git
         INSERT INTO Review (
             user_id, 
             company_no,

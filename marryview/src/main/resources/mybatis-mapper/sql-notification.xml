@@ -1,11 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
+<<<<<<< HEAD
 <mapper namespace="com.example.demo.admin.mapper.NotificationMapper">
 
 	<select id="selectNotificationList"
 		parameterType="hashmap"
 		resultType="com.example.demo.admin.model.Notification">
+=======
+<mapper namespace="com.example.marryview.admin.mapper.NotificationMapper">
+
+	<select id="selectNotificationList"
+		parameterType="hashmap"
+		resultType="com.example.marryview.admin.model.Notification">
+>>>>>>> branch 'dev_' of https://github.com/limhyojin3/SpringProjectTeam3.git
 		SELECT
 		notification_no AS notificationNo,
 		receiver_id AS receiverId,
