@@ -3,9 +3,9 @@
 
 <script type="text/x-template" id="product-list-template">
     <div>
-        <div class="top-action-bar">
-            <button @click="$emit('go-my-res')" class="btn-sub-action">나의 예약 보러가기</button>
-            <button @click="$emit('go-my-inquiry')" class="btn-sub-action">나의 문의 보러가기</button>
+        <div class="top-action-bar" v-if="!isCompanyUser">
+            <button @click="fnGoMyReservation" class="btn-sub-action">나의 예약 보러가기</button>
+            <button @click="fnGoMyInquiry" class="btn-sub-action">나의 문의 보러가기</button>
         </div>
 
         <div class="master-toggle-container">

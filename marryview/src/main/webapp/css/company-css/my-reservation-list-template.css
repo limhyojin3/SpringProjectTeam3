@@ -49,10 +49,21 @@
 }
 
 /* 💡 무분별한 인라인 색상 코드를 걷어내기 위한 역할별 서브 클래스(Modifier) 매핑 */
-.res-tab-capsule-btn.all { color: #777; }
-.res-tab-capsule-btn.ing { color: #ff66b2; }
-.res-tab-capsule-btn.done { color: #4dadff; }
-.res-tab-capsule-btn.cancel { color: #b5abab; }
+.res-tab-capsule-btn.all {
+	color: #777;
+}
+
+.res-tab-capsule-btn.ing {
+	color: #ff66b2;
+}
+
+.res-tab-capsule-btn.done {
+	color: #4dadff;
+}
+
+.res-tab-capsule-btn.cancel {
+	color: #b5abab;
+}
 
 /* 💡 캡슐 버튼 호버 및 활성화(Active) 인터랙션 이식 */
 .res-tab-capsule-btn:hover {
@@ -137,19 +148,23 @@
 }
 
 .status-message.WAIT {
-	color: #ff9800; /* 대기 상태 노란색 */
+	color: #ff9800;
+	/* 대기 상태 노란색 */
 }
 
 .status-message.CONFIRM {
-	color: #4caf50; /* 확정 상태 초록색 */
+	color: #4caf50;
+	/* 확정 상태 초록색 */
 }
 
 .status-message.DONE {
-	color: #9e9e9e; /* 완료/만료 상태 회색 */
+	color: #9e9e9e;
+	/* 완료/만료 상태 회색 */
 }
 
 .status-message.CANCEL {
-	color: #f44336; /* 취소 상태 빨간색 */
+	color: #f44336;
+	/* 취소 상태 빨간색 */
 }
 
 /* 티켓 오른쪽 가장자리 절취선 세로 텍스트 데코 영역 */
@@ -164,4 +179,43 @@
 	font-size: 0.6rem;
 	color: #ddd;
 	letter-spacing: 2px;
+}
+
+.my-res-empty-box {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	padding: 50px 20px;
+	background: #ffffff;
+	border: 1px dashed #ffe0e6;
+	border-radius: 16px;
+	margin-top: 20px;
+	box-shadow: 0 4px 15px rgba(255, 127, 159, 0.02);
+	text-align: center;
+}
+
+.my-res-empty-box .empty-icon {
+	font-size: 2.8rem;
+	margin-bottom: 12px;
+	animation: bounceEmpty 2s infinite ease-in-out;
+}
+
+.my-res-empty-box .empty-text {
+	font-size: 1.05rem;
+	font-weight: 700;
+	color: #888888;
+	margin: 0;
+}
+
+@keyframes bounceEmpty {
+
+	0%,
+	100% {
+		transform: translateY(0);
+	}
+
+	50% {
+		transform: translateY(-6px);
+	}
 }
