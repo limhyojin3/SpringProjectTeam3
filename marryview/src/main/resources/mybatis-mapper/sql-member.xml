@@ -444,7 +444,8 @@
 	        title,
 	        rating,
 	        reg_date,
-	        approval_status
+	        approval_status,
+	        thumbnail_url
 	    FROM review
 	    WHERE user_id = #{userId}
 	    ORDER BY reg_date DESC
@@ -555,16 +556,19 @@
 	<!-- 리뷰 좋아요 조회 -->
 	<select id="selectMyReviewLikeList" parameterType="hashmap"
 	    resultType="com.example.marryview.member.model.Member">
-	    SELECT 
+	    SELECT
 	        RL.like_no,
 	        RL.review_no,
 	        R.title,
 	        R.rating,
-	        R.reg_date
+	        R.reg_date,
+	        R.thumbnail_url,
+	        U.nickname AS user_nick
 	    FROM review_like RL
 	    JOIN review R ON RL.review_no = R.review_no
+	    JOIN user_detail U ON R.user_id = U.user_id
 	    WHERE RL.user_id = #{userId}
-	    AND R.user_id != #{userId} <!-- 본인 리뷰 제외 -->
+	    AND R.user_id != #{userId}
 	    ORDER BY RL.like_no DESC
 	    LIMIT #{pageSize} OFFSET #{offset}
 	</select>
@@ -605,6 +609,12 @@
 	    DELETE FROM company_like
 	    WHERE like_no = #{likeNo}
 	    AND user_id = #{userId}
+	</delete>
+	
+	<!-- 상품 좋아요 삭제 -->
+	<delete id="deleteMyProductLike" parameterType="hashmap">
+	    DELETE FROM product_like
+	    WHERE like_no = #{likeNo}
 	</delete>
 	
 	<!-- 글 좋아요 삭제 -->

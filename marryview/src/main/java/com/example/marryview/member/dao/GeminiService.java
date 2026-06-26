@@ -50,6 +50,9 @@ public class GeminiService {
 
     public String getContents(String prompt) {
         try {
+        	String systemInstruction = "당신은 메리뷰의 친절한 고객 상담 AI입니다. " +
+                    "항상 존댓말(~요, ~습니다)을 사용하고 공손하게 답변해주세요. " +
+                    "반말은 절대 사용하지 마세요.\n\n";
             // 추천 관련 키워드 감지
             String context = "";
             boolean hasCategory = !detectCategory(prompt).isEmpty();
@@ -72,7 +75,7 @@ public class GeminiService {
             }
             if (prompt.contains("비용") || prompt.contains("가격") || prompt.contains("평균") || prompt.contains("저렴") || prompt.contains("얼마")) {
                 List<HashMap<String, Object>> avgPrices = memberService.getAverageProductPrice();
-                System.out.println("가격 데이터: " + avgPrices);  // ✅ 임시 로그
+//                System.out.println("가격 데이터: " + avgPrices);  // ✅ 임시 로그
                 StringBuilder sb = new StringBuilder();
                 sb.append("다음은 메리뷰에 등록된 상품의 카테고리별 평균 가격입니다:\n");
                 for (HashMap<String, Object> p : avgPrices) {
@@ -121,7 +124,7 @@ public class GeminiService {
             }
 
             String requestUrl = apiUrl + "?key=" + geminiApiKey;
-            ChatRequest request = new ChatRequest(context + prompt);
+            ChatRequest request = new ChatRequest(systemInstruction + context + prompt);
             ChatResponse response = restTemplate.postForObject(requestUrl, request, ChatResponse.class);
             return response.getCandidates().get(0).getContent().getParts().get(0).getText();
         } catch (Exception e) {

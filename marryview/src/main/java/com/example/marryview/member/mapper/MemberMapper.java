@@ -98,6 +98,8 @@ public interface MemberMapper {
 	int deleteMyComment(HashMap<String, Object> map);
 	// 업체 좋아요 취소
 	int deleteMyCompanyLike(HashMap<String, Object> map);
+	// 상품 좋아요 취소
+	void deleteMyProductLike(HashMap<String, Object> map);
 	// 글 좋아요 취소
 	int deleteMyPostLike(HashMap<String, Object> map);
 	// 리뷰 좋아요 취소

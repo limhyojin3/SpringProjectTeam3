@@ -89,6 +89,9 @@
             background-color: white;
             color: #444;
             border-top: 1px solid #f5f5f5;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
 
         .review-card-title:last-child {
@@ -159,6 +162,7 @@
             width: 100%;
             height: 100%;
             object-fit: cover;
+            object-position:  center 5%;
         }
 
         /* 빈 메시지 */

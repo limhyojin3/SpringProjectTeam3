@@ -240,6 +240,10 @@
             position: relative;
         }
 
+        .company-like-card-wrap {
+            position: relative;
+        }
+
         .company-like-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
@@ -257,7 +261,7 @@
 
         .company-like-card:hover {
             transform: translateY(-4px);
-            box-shadow: 0 8px 20px rgba(224,122,138,0.15);
+            box-shadow: 0 8px 20px rgba(224, 122, 138, 0.15);
         }
 
         .company-like-card img {
@@ -279,9 +283,141 @@
 
         .company-like-card-body .c-address {
             font-size: 12px;
+            color: #e07a8a;
+            cursor: pointer;
+            margin-top: 4px;
+        }
+
+        .company-like-card-body .c-address:hover {
+            text-decoration: underline;
+        }
+
+        .like-cancel-btn {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            background: rgba(255,255,255,0.9);
+            color: #e07a8a;
+            border: none;
+            border-radius: 20px;
+            padding: 6px 12px;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.2s;
+            z-index: 1;
+        }
+
+        .like-cancel-btn:hover {
+            background: #e07a8a;
+            color: white;
+        }
+
+        .like-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid #e07a8a;
+        }
+
+        .like-header h4 {
+            margin-bottom: 0;
+            padding-bottom: 0;
+            border-bottom: none;
+        }
+        .btn-more-link {
+            display: inline-block;
+            padding: 8px 20px;
+            background: #fff0f3;
+            color: #e07a8a;
+            border: 1px solid #ffc7c2;
+            border-radius: 999px;
+            font-size: 13px;
+            font-weight: 700;
+            text-decoration: none;
+            transition: 0.2s;
+            white-space: nowrap;
+        }
+
+        .btn-more-link:hover {
+            background: #e07a8a;
+            color: white;
+            text-decoration: none;
+        }
+
+        .review-like-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+            margin-bottom: 20px;
+        }
+
+        .review-like-card-wrap {
+            position: relative;
+        }
+
+        .review-like-card {
+            border: 1px solid #ffc7c2;
+            border-radius: 12px;
+            overflow: hidden;
+            transition: 0.2s;
+            height: 250px; /* 높이 고정 */
+            display: flex;
+            flex-direction: column;
+        }
+
+        .review-like-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 20px rgba(224,122,138,0.15);
+            cursor: pointer;
+        }
+
+        .review-like-card img {
+            width: 100%;
+            height: 180px;
+            object-fit: cover;
+            flex-shrink: 0;
+        }
+
+        .review-like-card-body {
+            padding: 12px;
+            height: 70px; /* 고정 높이 */
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between; /* 제목 위, 메타 아래 고정 */
+        }
+
+        .review-like-card-body .r-title {
+            font-size: 14px;
+            font-weight: 700;
+            color: #333;
+            margin-bottom: 6px;
+            display: -webkit-box;
+            -webkit-line-clamp: 1;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            flex-shrink: 0; /* 높이 찌그러짐 방지 */
+        }
+
+        .review-like-card-body .r-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .review-like-card-body .r-rating {
+            font-size: 12px;
+            color: #f0b429;
+        }
+
+        .review-like-card-body .r-author {
+            font-size: 12px;
             color: #999;
         }
-        
+
     </style>
 </head>
 <body>
@@ -294,13 +430,27 @@
                 <jsp:include page="/WEB-INF/common/mypage-nav.jsp" />
 
                 <div class="right-sections">
-                    <h4><i class="fas fa-heart"></i> 좋아요 목록</h4>
+                    <div class="like-header">
+                        <h4><i class="fas fa-heart"></i> 좋아요 목록</h4>
+                        <a v-if="reviewTab === 'company'" href="/productCategoryTag.do" class="btn-more-link">
+                            <i class="fas fa-store"></i> 더 많은 업체 보러가기
+                        </a>
+                        <a v-if="reviewTab === 'product'" href="/productCategoryTag.do" class="btn-more-link">
+                            <i class="fas fa-shopping-bag"></i> 더 많은 상품 보러가기
+                        </a>
+                        <a v-if="reviewTab === 'review'" href="/api/review/list.do" class="btn-more-link">
+                            <i class="fas fa-shopping-bag"></i> 더 많은 리뷰 보러가기
+                        </a>
+                        <a v-if="reviewTab === 'post'" href="/api/community/list.do" class="btn-more-link">
+                            <i class="fas fa-shopping-bag"></i> 더 많은 인기글 보러가기
+                        </a>
+                    </div>
                     <!-- 탭 버튼 -->
                     <div class="write-tab-wrap">
                         <button class="write-tab" :class="{'active-tab': reviewTab === 'company'}" @click="switchReviewTab('company')">업체</button>
                         <button class="write-tab" :class="{'active-tab': reviewTab === 'product'}" @click="switchReviewTab('product')">상품</button>
-                        <button class="write-tab" :class="{'active-tab': reviewTab === 'post'}" @click="switchReviewTab('post')">글</button>
                         <button class="write-tab" :class="{'active-tab': reviewTab === 'review'}" @click="switchReviewTab('review')">리뷰</button>
+                        <button class="write-tab" :class="{'active-tab': reviewTab === 'post'}" @click="switchReviewTab('post')">글</button>
                     </div>
                     <!-- 좋아요 업체 테이블 -->
                     <div v-if="reviewTab === 'company'">
@@ -308,14 +458,18 @@
                             좋아요한 업체가 없습니다.
                         </div>
                         <div class="company-like-grid">
-                            <div class="company-like-card" 
-                                v-for="like in companyLikeList" 
-                                :key="like.likeNo"
-                                @click="fnGoCompany(like.companyNo, like.comAddress)">
-                                <img :src="like.imgUrl || '/img/default_logo.png'" alt="업체 이미지">
-                                <div class="company-like-card-body">
-                                    <div class="c-name">{{ like.comName }}</div>
-                                    <div class="c-address">{{ like.comAddress }}</div>
+                            <div class="company-like-card-wrap" v-for="like in companyLikeList" :key="like.likeNo">
+                                <button class="like-cancel-btn" @click.stop="fnDeleteCompanyLike(like.likeNo)">
+                                    <i class="fas fa-heart-broken"></i> 찜 취소
+                                </button>
+                                <div class="company-like-card">
+                                    <img :src="like.imgUrl || '/img/default_logo.png'" alt="업체 이미지">
+                                    <div class="company-like-card-body">
+                                        <div class="c-name">{{ like.comName }}</div>
+                                        <div class="c-address" @click.stop="fnOpenMap(like.comAddress)">
+                                            <i class="fas fa-map-marker-alt"></i> {{ like.comAddress }}
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -327,8 +481,10 @@
                         </div>
                         <div class="product-like-grid">
                             <div class="product-like-card-wrap" v-for="like in productLikeList" :key="like.like_no">
-                                <input type="checkbox" class="product-like-card-check" :value="like.like_no" v-model="selectedProductLikes">
-                                <div class="product-like-card" @click="fnGoProduct(like.product_no)">
+                                <button class="like-cancel-btn" @click.stop="fnDeleteProductLike(like.like_no)">
+                                    <i class="fas fa-heart-broken"></i> 찜 취소
+                                </button>
+                                <div class="product-like-card">
                                     <img :src="like.img_url || '/img/default_logo.png'" alt="상품 이미지">
                                     <div class="product-like-card-body">
                                         <div class="p-name">{{ like.product_name }}</div>
@@ -339,7 +495,29 @@
                             </div>
                         </div>
                     </div>
-
+                    <!-- 좋아요 리뷰 테이블 -->
+                    <div v-if="reviewTab === 'review'">
+                        <div v-if="reviewLikeList.length === 0" class="text-center py-4" style="color:#999;">
+                            좋아요한 리뷰가 없습니다.
+                        </div>
+                        <div class="review-like-grid">
+                            <div class="review-like-card-wrap" v-for="like in reviewLikeList" :key="like.likeNo">
+                                <button class="like-cancel-btn" @click.stop="fnDeleteReviewLike(like.likeNo)">
+                                    <i class="fas fa-heart-broken"></i> 찜 취소
+                                </button>
+                                <div class="review-like-card" @click="fnGoReview(like.reviewNo)">
+                                    <img :src="like.thumbnailUrl || '/img/default_logo.png'" alt="리뷰 이미지">
+                                    <div class="review-like-card-body">
+                                        <div class="r-title">{{ like.title }}</div>
+                                        <div class="r-meta">
+                                            <div class="r-rating"><i class="fas fa-star"></i> {{ like.rating }}</div>
+                                            <div class="r-author">{{ like.userNick }}</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                     <!-- 좋아요 글 테이블 -->
                     <div v-if="reviewTab === 'post'">
                         <table class="write-table" >
@@ -364,34 +542,6 @@
                                     <td class="col-title">{{ like.title }}</td>
                                     <td>{{ like.category }}</td>
                                     <td>{{ like.viewCnt }}</td>
-                                    <td>{{ like.regDate }}</td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-
-                    <!-- 좋아요 리뷰 테이블 -->
-                    <div v-if="reviewTab === 'review'">
-                        <table class="write-table">
-                            <thead>
-                                <tr>
-                                    <th class="col-check"><input type="checkbox" @click="selectAllReviewLikes()"></th>
-                                    <th class="col-no">번호</th>
-                                    <th class="col-title">제목</th>
-                                    <th>평점</th>
-                                    <th class="col-date">작성일</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr v-if="reviewLikeList.length === 0">
-                                    <td colspan="4">좋아요한 리뷰가 없습니다.</td>
-                                </tr>
-                                <tr v-for="like in reviewLikeList" :key="like.likeNo"
-                                    @click="fnGoReview(like.reviewNo)">
-                                    <td @click.stop><input type="checkbox" :value="like.likeNo" v-model="selectedReviewLikes"></td>
-                                    <td>{{ like.likeNo }}</td>
-                                    <td class="col-title">{{ like.title }}</td>
-                                    <td><i class="fa-solid fa-star"></i> {{ like.rating }}</td>
                                     <td>{{ like.regDate }}</td>
                                 </tr>
                             </tbody>
@@ -626,6 +776,30 @@
                     .then(res => {
                         self.selectedCompany = res.data.company;
                         self.showCompanyModal = true;
+                    });
+            },
+            fnDeleteProductLike: function(likeNo) {
+                if(!confirm("상품 찜을 취소하시겠습니까?")) return;
+                axios.post("/deleteMyProductLike.dox", { likeNo: String(likeNo) })
+                    .then(() => {
+                        this.fetchProductLikeList(this.productCurrentPage);
+                    });
+            },
+            fnDeleteCompanyLike: function(likeNo) {
+                if(!confirm("업체 찜을 취소하시겠습니까?")) return;
+                axios.post("/deleteMyCompanyLike.dox", { likeNo: String(likeNo) })
+                    .then(() => {
+                        this.fetchCompanyLikeList(this.companyCurrentPage);
+                    });
+            },
+            fnOpenMap: function(address) {
+                window.open('https://map.kakao.com/link/search/' + encodeURIComponent(address));
+            },
+            fnDeleteReviewLike: function(likeNo) {
+                if(!confirm("리뷰 좋아요를 취소하시겠습니까?")) return;
+                axios.post("/deleteMyReviewLike.dox", { likeNo: String(likeNo) })
+                    .then(() => {
+                        this.fetchReviewLikeList(this.reviewCurrentPage);
                     });
             },
         }, // methods
