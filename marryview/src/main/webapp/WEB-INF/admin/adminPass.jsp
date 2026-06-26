@@ -38,9 +38,9 @@
 
             body {
                 background:
-                    radial-gradient(circle at top left, #ffeef4 0%, transparent 35%),
-                    radial-gradient(circle at right bottom, #eef4ff 0%, transparent 30%),
-                    #f8f9fb;
+                    radial-gradient(circle at top left, rgba(255, 238, 244, 0.95) 0%, transparent 36%),
+                    radial-gradient(circle at right bottom, rgba(255, 228, 236, 0.75) 0%, transparent 34%),
+                    linear-gradient(180deg, #fff0f5 0%, #fff8fb 420px, #ffffff 100%) !important;
             }
 
             .main {
@@ -313,16 +313,16 @@
 
             /* 카드 */
             .pass-card {
-                background: rgba(255, 255, 255, .88);
+                background: rgba(255, 255, 255, .92);
                 backdrop-filter: blur(8px);
-                border: 1px solid rgba(255, 255, 255, .7);
+                border: 1.5px solid rgba(232, 138, 162, .28);
                 border-radius: 24px;
                 padding: 35px 28px;
                 text-align: center;
                 position: relative;
                 overflow: hidden;
-                box-shadow: var(--shadow);
-                transition: .25s ease;
+                box-shadow: 0 14px 32px rgba(232, 138, 162, .10);
+                transition: transform .28s ease, box-shadow .28s ease, border-color .28s ease;
             }
 
             .pass-card::before {
@@ -340,7 +340,8 @@
 
             .pass-card:hover {
                 transform: translateY(-10px);
-                box-shadow: 0 20px 45px rgba(0, 0, 0, .12);
+                border-color: rgba(232, 138, 162, .55);
+                box-shadow: 0 22px 48px rgba(232, 138, 162, .18);
             }
 
             /* 이름 */
@@ -370,10 +371,12 @@
             /* 설명 */
             .pass-review {
                 margin: 18px 0 24px;
-                color: #666;
+                color: #7a5d66;
                 font-size: 15px;
-                background: #fafafa;
-                padding: 12px;
+                font-weight: 600;
+                background: rgba(255, 248, 251, .58);
+                border: 1px solid rgba(232, 138, 162, .12);
+                padding: 11px 12px;
                 border-radius: 12px;
             }
 
@@ -439,18 +442,26 @@
             }
 
             .pass-description {
-                min-height: 70px;
-                margin-bottom: 28px;
-                padding: 22px 28px;
-                border-radius: 18px;
-                background: #fcf6f9;
-                box-shadow: 0 10px 25px rgba(0, 0, 0, .06);
+                min-height: 58px;
+                margin: 0 auto 30px;
+                padding: 0 24px;
+                background: transparent;
+                box-shadow: none;
+                border-radius: 0;
                 font-size: 17px;
                 font-weight: 600;
-                color: #555;
+                color: #6f5d66;
                 text-align: center;
                 line-height: 1.7;
-                transition: .3s ease;
+                max-width: 900px;
+                opacity: 1;
+                transform: translateY(0);
+                transition: opacity .45s ease, transform .45s ease;
+            }
+
+            .pass-description.is-fading {
+                opacity: 0;
+                transform: translateY(6px);
             }
 
             /* ===== 결제 모달 ===== */
@@ -695,22 +706,45 @@
 
             /* 잘팔린거!!!! */
             .best-pass-card {
-                border: 2px solid #ff6b8a;
-                box-shadow: 0 10px 28px rgba(255, 107, 138, 0.22);
+                border: 2px solid rgba(216, 111, 140, .75);
+                box-shadow:
+                    0 18px 46px rgba(216, 111, 140, .24),
+                    0 0 0 5px rgba(232, 138, 162, .10);
+                transform: translateY(-4px);
+            }
+
+            .best-pass-card:hover {
+                transform: translateY(-12px);
+                border-color: rgba(216, 111, 140, .95);
+                box-shadow:
+                    0 24px 58px rgba(216, 111, 140, .30),
+                    0 0 0 6px rgba(232, 138, 162, .16);
+            }
+
+            .best-pass-card::before {
+                background:
+                    linear-gradient(135deg, rgba(232, 138, 162, .16), rgba(255, 248, 234, .18));
             }
 
             .best-pass-badge {
                 position: absolute;
                 top: 14px;
                 right: 14px;
-                padding: 6px 13px;
-                border-radius: 20px;
-                background: linear-gradient(135deg, #ff6b8a, #ff416c);
+                padding: 7px 14px;
+                border-radius: 999px;
+                background: linear-gradient(135deg, #ff6b8a, #d86f8c);
                 color: white;
                 font-size: 12px;
-                font-weight: 800;
+                font-weight: 900;
                 letter-spacing: 1px;
-                box-shadow: 0 5px 12px rgba(255, 65, 108, 0.3);
+                box-shadow: 0 8px 18px rgba(216, 111, 140, .35);
+                z-index: 2;
+            }
+
+            .best-pass-card .pass-review {
+                background: rgba(255, 249, 237, .62);
+                border-color: rgba(217, 178, 111, .22);
+                color: #7a5a2c;
             }
 
             .pass-sales-count {
@@ -731,7 +765,7 @@
                         <div class="pass-header">
                             <h2 class="brand-title">MarryViewPass</h2>
                         </div>
-                        <div class="pass-description">
+                        <div class="pass-description" :class="{ 'is-fading': descFading }">
                             {{ hoverText }}
                         </div>
                         <div class="pass-grid">
@@ -913,6 +947,7 @@
                         isPaying: false,
                         hoverText: "실제 신부들의 진짜 경험만 담았습니다.후회 없는 스드메 선택, MarryViewPass에서 시작하세요",
                         defaultText: "실제 신부들의 진짜 경험만 담았습니다.후회 없는 스드메 선택, MarryViewPass에서 시작하세요",
+                        descFading: false,
                         couponList: [],
                         selectedCoupon: null,
                         isCouponApplied: false,
@@ -1161,6 +1196,7 @@
                         self.couponCode = "";
                         self.couponList = [];
                         self.fnCheck(pass);
+                        self.isCouponApplied = false;
                     },
 
                     toggleAll() {
@@ -1177,14 +1213,30 @@
                     closeModal: function () {
                         this.isModalOpen = false;
                         this.selectedPass = null;
+                        this.selectedCoupon = null;
+                        this.isCouponApplied = false;
+                        this.discountAmount = 0;
+                        this.finalPrice = 0;
+                        this.couponCode = "";
+                        this.couponList = [];
                     },
 
                     changeDesc(pass) {
-                        this.hoverText = pass.description || pass.passName + " 상품입니다.";
+                        this.descFading = true;
+
+                        setTimeout(() => {
+                            this.hoverText = pass.description || pass.passName + " 상품입니다.";
+                            this.descFading = false;
+                        }, 180);
                     },
 
                     resetDesc() {
-                        this.hoverText = this.defaultText;
+                        this.descFading = true;
+
+                        setTimeout(() => {
+                            this.hoverText = this.defaultText;
+                            this.descFading = false;
+                        }, 180);
                     }
 
                 }, // methods
