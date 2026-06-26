@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="com.example.demo.company.mapper.ProductInquiryMapper">
+<mapper namespace="com.example.marryview.company.mapper.ProductInquiryMapper">
 
 	<insert id="insertInquiryProduct" parameterType="map"
 		useGeneratedKeys="true"
@@ -14,7 +14,7 @@
 	</insert>
 
 	<select id="selectInquiryProductList" parameterType="map"
-		resultType="com.example.demo.company.model.ProductInquiry">
+		resultType="com.example.marryview.company.model.ProductInquiry">
 		SELECT
 			ip.inquiry_no,
 			ip.user_id,
@@ -53,7 +53,7 @@
 	</update>
 
 	<select id="selectInquiryAnsYn" parameterType="map"
-		resultType="com.example.demo.company.model.ProductInquiry">
+		resultType="com.example.marryview.company.model.ProductInquiry">
 		SELECT
 		ip.inquiry_no,
 		ip.inquiry_ans,
@@ -75,7 +75,7 @@
 	</update>
 
 	<select id="selectMyInquiryList" parameterType="map"
-		resultType="com.example.demo.company.model.ProductInquiry">
+		resultType="com.example.marryview.company.model.ProductInquiry">
 		SELECT
 		ip.inquiry_no,
 		p.product_no,
@@ -97,7 +97,7 @@
 	</select>
 
 	<select id="selectInquiry1Answer" parameterType="map"
-		resultType="com.example.demo.company.model.ProductInquiry">
+		resultType="com.example.marryview.company.model.ProductInquiry">
 		SELECT
 		ip.inquiry_no,
 		c.user_id,
