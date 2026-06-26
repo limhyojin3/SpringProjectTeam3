@@ -474,6 +474,36 @@ public class AdminService {
 		return resultMap;
 	}
 
+	@Transactional
+	public HashMap<String, Object> completeInquiryAnswer(
+	        HashMap<String, Object> map) {
+
+	    HashMap<String, Object> resultMap = new HashMap<>();
+
+	    String answerContent =
+	        String.valueOf(map.getOrDefault("answerContent", "")).trim();
+
+	    if (answerContent.isEmpty()) {
+	        resultMap.put("result", "fail");
+	        resultMap.put("message", "답변을 입력해주세요.");
+	        return resultMap;
+	    }
+
+	    map.put("answerContent", answerContent);
+
+	    int updated = adminMapper.updateAnswerAndStatus(map);
+
+	    resultMap.put("result", updated > 0 ? "success" : "fail");
+	    resultMap.put(
+	        "message",
+	        updated > 0
+	            ? "답변 등록 및 완료 처리가 완료되었습니다."
+	            : "문의 정보를 찾을 수 없습니다."
+	    );
+
+	    return resultMap;
+	}
+	
 	public HashMap<String, Object> editAnswer(HashMap<String, Object> map) {
 		HashMap<String, Object> resultMap = new HashMap<String, Object>();
 		try {
@@ -499,20 +529,28 @@ public class AdminService {
 		return resultMap;
 	}
 	
-	public HashMap<String, Object> editAnswerStatus(HashMap<String, Object> map) {
-		HashMap<String, Object> resultMap = new HashMap<String, Object>();
-		try {
-			
-			adminMapper.updateInquiryStatus(map);
-			resultMap.put("message", Message.MSG_EDIT);
-			
-		} catch (Exception e) {
-			// TODO: handle exception
-			System.out.println(e.getMessage());
-			resultMap.put("result", "fail");
-			resultMap.put("message", Message.MSG_SERVER_ERR);
-		}
-		return resultMap;
+	public HashMap<String, Object> editAnswerStatus(
+	        HashMap<String, Object> map) {
+
+	    HashMap<String, Object> resultMap = new HashMap<>();
+
+	    try {
+	        int updated = adminMapper.updateInquiryStatus(map);
+
+	        resultMap.put("result", updated > 0 ? "success" : "fail");
+	        resultMap.put(
+	            "message",
+	            updated > 0
+	                ? "문의 상태가 변경되었습니다."
+	                : "문의 정보를 찾을 수 없습니다."
+	        );
+	    } catch (Exception e) {
+	        System.out.println(e.getMessage());
+	        resultMap.put("result", "fail");
+	        resultMap.put("message", Message.MSG_SERVER_ERR);
+	    }
+
+	    return resultMap;
 	}
 
 	// 관리자 전체 회원목록 페이지

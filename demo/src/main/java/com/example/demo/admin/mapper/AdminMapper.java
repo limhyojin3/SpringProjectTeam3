@@ -66,7 +66,7 @@ public interface AdminMapper {
 
 	int updateAnswer(HashMap<String, Object> map);
 
-	void updateInquiryStatus(HashMap<String, Object> map);
+	int updateInquiryStatus(HashMap<String, Object> map);
 
 	// 관리자 전체 회원목록 페이지
 	public List<Admin> selectUserList(HashMap<String, Object> map);
@@ -200,4 +200,6 @@ public interface AdminMapper {
 	int updateCompanyReg(HashMap<String, Object> map);
 
 	int updateCompanyRegPaid(HashMap<String, Object> map);
+	
+	int updateAnswerAndStatus(HashMap<String, Object> map);
 }

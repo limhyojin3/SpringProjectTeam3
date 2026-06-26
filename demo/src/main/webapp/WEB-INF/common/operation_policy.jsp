@@ -22,7 +22,7 @@
             align-items: flex-end;
             background:
                 linear-gradient(to top, rgba(58, 32, 40, 0.65), rgba(58, 32, 40, 0.05)),
-                url('${pageContext.request.contextPath}/img/home_about5.jpg') center/cover;
+                url('${pageContext.request.contextPath}/img/marryViewPolicyBanner.jpg') center/cover;
         }
 
         .policy-hero-content {

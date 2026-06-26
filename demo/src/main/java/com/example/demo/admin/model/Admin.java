@@ -139,6 +139,7 @@ public class Admin {
 	String passName;
 	int price;
 	int reviewCnt;
+	int soldCount; // 정상 결제된 패스 판매 건수
 //	int isActive;
 	String description;
 	String itemName;

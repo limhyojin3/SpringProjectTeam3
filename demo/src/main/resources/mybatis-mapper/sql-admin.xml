@@ -393,18 +393,31 @@
 <!-- 전체 개수(페이징)영역 끝 -->
 
 <!-- 패스권 결제페이지?-->
-	<select id="selectPassList" parameterType="hashmap"
-		resultType="com.example.demo.admin.model.Admin">
-		SELECT
-		PASS_NO,
-		PASS_NAME,
-		PRICE,
-		REVIEW_CNT,
-		IS_ACTIVE,
-		REG_DATE,
-		description
-		FROM PASS_PRODUCT
-		WHERE IS_ACTIVE = 1
+	<select id="selectPassList"
+        parameterType="hashmap"
+        resultType="com.example.demo.admin.model.Admin">
+
+    SELECT
+        PP.PASS_NO AS passNo,
+        PP.PASS_NAME AS passName,
+        PP.PRICE AS price,
+        PP.REVIEW_CNT AS reviewCnt,
+        PP.IS_ACTIVE AS isActive,
+        PP.REG_DATE AS regDate,
+        PP.DESCRIPTION AS description,
+
+        (
+            SELECT COUNT(*)
+            FROM PAYMENT_PASS PPS
+            INNER JOIN PAYMENT P
+                ON P.PAY_NO = PPS.PAY_NO
+            WHERE PPS.PASS_NO = PP.PASS_NO
+              AND P.PAY_STATUS = 'SUCCESS'
+        ) AS soldCount
+
+    FROM PASS_PRODUCT PP
+    WHERE PP.IS_ACTIVE = 1
+    ORDER BY PP.PASS_NO ASC
 	</select>
 
 	<select id="selectPassInfo" parameterType="hashmap"
@@ -480,16 +493,13 @@
 		WHERE inquiry_no = #{inquiryNo}
 	</select>
 
-	<!--새로운 테이블에 답변을 저장하려했는데 이미 문의 테이블에 답변 컬럼이 있어서 삭제예정
-	<insert id="insertAnswer" parameterType="hashmap">
-		INSERT INTO inquiry (
-		inquiry_no,
-		answer_content
-		) VALUES (
-		#{inquiryNo},
-		#{answer}
-		)
-	</insert> 새로운 테이블에 답변을 저장하려했는데 이미 문의 테이블에 답변 컬럼이 있어서 삭제예정-->
+	<!-- 답변 등록과 완료 처리를 동시에 진행 -->
+	<update id="updateAnswerAndStatus" parameterType="hashmap">
+	    UPDATE inquiry
+	    SET answer_content = #{answerContent},
+	        status = 'DONE'
+	    WHERE inquiry_no = #{inquiryNo}
+	</update>
 
 	<update id="updateAnswer" parameterType="hashmap">
 		UPDATE inquiry

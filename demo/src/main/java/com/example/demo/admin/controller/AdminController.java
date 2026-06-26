@@ -301,23 +301,34 @@ public class AdminController {
 		return new Gson().toJson(resultMap);
 	}
 
-	@RequestMapping(value = "/inquiryAnswer.dox", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
-	@ResponseBody
-	public String inquiryAnswer(Model model, @RequestParam HashMap<String, Object> map, HttpSession session)
-			throws Exception {
-		HashMap<String, Object> resultMap = new HashMap<String, Object>();
-		resultMap = adminService.editAnswer(map);
+	@RequestMapping(
+		    value = "/inquiryAnswer.dox",
+		    method = RequestMethod.POST,
+		    produces = "application/json;charset=UTF-8"
+		)
+		@ResponseBody
+		public String inquiryAnswer(
+		        @RequestParam HashMap<String, Object> map,
+		        HttpSession session) {
 
-		if ("success".equals(resultMap.get("result"))) {
-			String adminId = (String) session.getAttribute("sessionId");
+		    HashMap<String, Object> resultMap =
+		        adminService.completeInquiryAnswer(map);
 
-			boolean notificationCreated = notificationService.createInquiryAnswered(map.get("inquiryNo"), adminId);
+		    if ("success".equals(resultMap.get("result"))) {
+		        String adminId =
+		            (String) session.getAttribute("sessionId");
 
-			putNotificationResult(resultMap, notificationCreated);
+		        boolean notificationCreated =
+		            notificationService.createInquiryAnswered(
+		                map.get("inquiryNo"),
+		                adminId
+		            );
+
+		        putNotificationResult(resultMap, notificationCreated);
+		    }
+
+		    return new Gson().toJson(resultMap);
 		}
-
-		return new Gson().toJson(resultMap);
-	}
 
 	@RequestMapping(value = "/changeAnswer.dox", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
 	@ResponseBody
@@ -328,6 +339,21 @@ public class AdminController {
 		return new Gson().toJson(resultMap);
 	}
 
+	@RequestMapping(
+		    value = "/inquiryAnswerUpdate.dox",
+		    method = RequestMethod.POST,
+		    produces = "application/json;charset=UTF-8"
+		)
+		@ResponseBody
+		public String inquiryAnswerUpdate(
+		        @RequestParam HashMap<String, Object> map) {
+
+		    HashMap<String, Object> resultMap =
+		        adminService.editAnswer(map);
+
+		    return new Gson().toJson(resultMap);
+		}
+	
 	// 관리자 전체 회원목록 페이지
 	@RequestMapping("/userList.dox")
 	@ResponseBody
