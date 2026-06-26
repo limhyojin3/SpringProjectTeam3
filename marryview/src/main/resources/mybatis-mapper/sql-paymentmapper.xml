@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="com.example.demo.admin.mapper.PaymentMapper">
+<mapper namespace="com.example.marryview.admin.mapper.PaymentMapper">
 
 	<insert id="insertPayment" parameterType="hashmap" useGeneratedKeys="true"
 		keyProperty="payNo">
@@ -175,7 +175,7 @@
 	
 <!-- 유저 잔여 쿠폰 조회-->	
 	<select id="selectCouponUseList" parameterType="hashmap" 
-	resultType="com.example.demo.admin.model.Payment">
+	resultType="com.example.marryview.admin.model.Payment">
 		SELECT
 		U.coupon_code AS couponCode,
 		C.coupon_name AS couponName,
@@ -217,7 +217,7 @@
 	
 	<!-- 쿠폰 검증 -->
 	<select id="selectCouponInfo" parameterType="hashmap"
-        resultType="com.example.demo.admin.model.Payment">
+        resultType="com.example.marryview.admin.model.Payment">
     SELECT
         U.coupon_code AS couponCode,
         C.coupon_name AS couponName,

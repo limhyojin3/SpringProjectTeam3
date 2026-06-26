@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="com.example.demo.company.mapper.ProductMapper">
+<mapper namespace="com.example.marryview.company.mapper.ProductMapper">
 
-	<select id="selectProductList" parameterType="map" resultType="com.example.demo.company.model.Product">
+	<select id="selectProductList" parameterType="map" resultType="com.example.marryview.company.model.Product">
 		SELECT 
 			p.product_no,
 			p.product_no AS id,
@@ -67,7 +67,7 @@
 		ORDER BY p.reg_date DESC
 	</select>
 
-	<select id="selectProduct" parameterType="map" resultType="com.example.demo.company.model.Product">
+	<select id="selectProduct" parameterType="map" resultType="com.example.marryview.company.model.Product">
 		SELECT 
 			p.product_no,
 			p.product_no AS id,
@@ -103,7 +103,7 @@
 		WHERE p.product_no = #{productNo}
 	</select>
 
-	<update id="updateProduct" parameterType="com.example.demo.company.model.Product">
+	<update id="updateProduct" parameterType="com.example.marryview.company.model.Product">
 		UPDATE product
 		<set>
 			<if test="productName != null">product_name = #{productName},</if>
@@ -118,7 +118,7 @@
 		WHERE product_no = #{productNo}
 	</update>
 
-	<insert id="insertProduct" parameterType="com.example.demo.company.model.Product" useGeneratedKeys="true" keyProperty="productNo">
+	<insert id="insertProduct" parameterType="com.example.marryview.company.model.Product" useGeneratedKeys="true" keyProperty="productNo">
 		INSERT INTO product(company_no, product_name, product_details, original_price, is_active, img_url, large_category, medium_category, deposit, reg_date)
 		VALUES(#{companyNo}, #{productName}, #{productDetails}, #{originalPrice}, #{isActive}, #{imgUrl}, #{largeCategory}, #{mediumCategory}, #{deposit}, NOW())
 	</insert>
@@ -127,7 +127,7 @@
 		SELECT tag FROM product_tag ORDER BY id ASC
 	</select>
 
-	<select id="selectProductListForTag" parameterType="map" resultType="com.example.demo.company.model.Product">
+	<select id="selectProductListForTag" parameterType="map" resultType="com.example.marryview.company.model.Product">
 		SELECT 
 			p.product_no,
 			p.product_no AS id,

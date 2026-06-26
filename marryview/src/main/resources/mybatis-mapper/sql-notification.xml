@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="com.example.demo.admin.mapper.NotificationMapper">
+<mapper namespace="com.example.marryview.admin.mapper.NotificationMapper">
 
 	<select id="selectNotificationList"
 		parameterType="hashmap"
-		resultType="com.example.demo.admin.model.Notification">
+		resultType="com.example.marryview.admin.model.Notification">
 		SELECT
 		notification_no AS notificationNo,
 		receiver_id AS receiverId,
