@@ -25,7 +25,7 @@ import com.example.demo.admin.model.Admin;
 
 @Controller
 public class AdminController {
-
+ 
 	@Autowired
 	AdminService adminService;
 
