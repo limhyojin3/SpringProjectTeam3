@@ -15,8 +15,14 @@ const app = createApp({
 			myInquiry1: {},           // 단건 문의 상세 정보 주머니
 			userid: window.SESSION_ID || '', // 로그인 연동 세션 ID
 			
-			/* 💡 [구조 재조정 추가] 자식 업체 목록에서 쏘아올린 고유 업체 번호를 저장할 독립 레일용 센서 방 */
-			selectedCompanyNo: null
+			/* 부모 템플릿 프레임과 완벽 연동되는 전용 탭 복원선 변수 정식 선언 */
+			currentSearchMode: 'product',
+			
+			/* 자식 업체 목록에서 쏘아올린 고유 업체 번호를 저장할 독립 레일용 센서 방 */
+			selectedCompanyNo: null,
+			
+			/* 💡 [히스토리 레지스트리 신설] 상품 상세방에서 뒤로가기를 누를 때 롤백 복귀할 목적지 변수 방 */
+			detailBackTarget: 'list'
 		};
 	},
 	methods: {
@@ -47,25 +53,38 @@ const app = createApp({
 			});
 		},
 		
-		/* 💡 [구조 재조정 추가] 독립형 업체 목록 자식이 쏘아올린 무전을 수신하여 업체 상세 레일로 상태를 전이시키는 핸들러 */
+		/* 독립형 업체 목록 자식이 쏘아올린 무전을 수신하여 업체 상세 레일로 상태를 전이시키는 핸들러 */
 		goCompanyDetailPage(companyNo) {
 			this.selectedCompanyNo = companyNo; // 클릭된 고유 업체 번호를 부모 센서 방에 격납
 			this.productPage = 'companyDetail'; // 화면을 업체 상세 레이아웃 컴포넌트로 전격 스위칭
 		},
 		
+		/* 💡 [메인 루트 진입] 메인 상품 목록에서 클릭 시에는 복귀 타겟을 'list'로 안전 조율 */
 		goDetailPage(item) {
+			this.detailBackTarget = 'list';
 			this.product1 = item;
 			this.productPage = 'detail';
 		},
+		
+		/* 💡 [상세방 우회 루트 신설] 업체 상세방 내 추천 상품을 클릭했을 때 작동하는 고도화 전용 다차원 라우터 선선 */
+		goProductDetailPageFromCompany(item) {
+			this.detailBackTarget = 'companyDetail'; // 🎯 뒤로가기를 대비해 직전 복귀 타겟을 '업체 상세'로 기록 변조!
+			this.product1 = item;
+			this.productPage = 'detail';
+		},
+		
 		goMyResPage() {
 			this.productPage = 'resultOfReservation';
 		},
 		goMyInquiryPage() {
 			this.productPage = 'myRealInquiryList';
 		},
+		
+		/* 💡 [추적 복귀 개정] 하드코딩 상수를 파괴하고, 유저가 인입된 이전 히스토리 목적지 궤도로 자석 롤백 처리 */
 		fnBack() {
-			this.productPage = 'list';
+			this.productPage = this.detailBackTarget;
 		},
+		
 		goInquiry() {
 			this.productPage = 'inquiry';
 		},
@@ -74,7 +93,7 @@ const app = createApp({
 		onDetailReserve(reserveData) {
 			this.selectedDate = reserveData.date;
 			this.selectedTime = reserveData.time;
-			this.res_content = reserveData.content; // 유저님이 작성하신 "ㅁㄴㄴㅁㅇ" 가 이 방으로 안전하게 정착합니다!
+			this.res_content = reserveData.content; // 유저님이 작성하신 내용이 이 방으로 안전하게 정착합니다!
 			this.productPage = 'payment';
 			window.scrollTo(0, 0); // 화면 상단으로 쾌적하게 스크롤 포커싱
 		},
@@ -122,7 +141,7 @@ if (typeof inquiryDetailComponent !== 'undefined') {
 	app.component('inquiry-detail-component', inquiryDetailComponent);
 } 
 
-/* 💡 [구조 재조정 추가] 새롭게 개설되는 독립형 업체 목록 및 상세 자식 컴포넌트들의 가동 의존성 엔진 등록선 */
+/* 새롭게 개설되는 독립형 업체 목록 및 상세 자식 컴포넌트들의 가동 의존성 엔진 등록선 */
 if (typeof companyListComponent !== 'undefined') {
 	app.component('company-list-component', companyListComponent);
 }
