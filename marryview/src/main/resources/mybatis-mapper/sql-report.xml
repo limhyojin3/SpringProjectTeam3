@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.example.demo.community_review.mapper.ReportMapper">
+<mapper namespace="com.example.marryview.community_review.mapper.ReportMapper">
 	
 	<!--신고 입력-->
     <insert id="insertReport" useGeneratedKeys="true" keyProperty="reportNo">
@@ -23,7 +23,7 @@
     </select>
 
 	<!-- 내 신고 내역 -->
-    <select id="selectMyReports" resultType="com.example.demo.community_review.model.Report">
+    <select id="selectMyReports" resultType="com.example.marryview.community_review.model.Report">
         SELECT 
             report_no AS reportNo,
             reporter_id AS reporterId,
