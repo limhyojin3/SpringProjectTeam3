@@ -18,7 +18,7 @@
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script src="/js/page-change.js"></script>
 </head>
-<style>
+<style> 
     /* 홈 css에 있어요. */
 </style>
 <body>
