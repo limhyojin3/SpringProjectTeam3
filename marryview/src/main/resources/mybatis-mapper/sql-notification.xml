@@ -132,7 +132,7 @@
 		target_user_id,
 		#{senderId},
 		'REPORT_WARNING',
-		'회원님의 콘텐츠에 대한 신고가 승인 처리되었습니다.',
+		'회원님의 콘텐츠가 커뮤니티 규정을 위반한 것으로 확인되어 신고가 승인되었습니다. 이후 지속해서 규정을 위반할 경우, 계정 이용이 제한될 수 있으니 주의해 주시기 바랍니다.',
 		target_type,
 		target_id
 		FROM report

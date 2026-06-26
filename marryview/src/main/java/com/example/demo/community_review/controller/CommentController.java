@@ -1,5 +1,5 @@
 package com.example.demo.community_review.controller; 
- 
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -15,7 +15,7 @@ import com.example.demo.community_review.dao.CommentService;
 import com.google.gson.Gson;
 
 import jakarta.servlet.http.HttpSession;
- 
+
 @RestController
 @RequestMapping("/api/comment")
 public class CommentController {

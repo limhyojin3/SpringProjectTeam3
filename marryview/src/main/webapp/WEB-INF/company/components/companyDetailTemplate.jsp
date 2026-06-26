@@ -7,9 +7,12 @@
 			<button @click="$emit('back')" class="btn-sub-action">← 뒤로가기</button>
 		</div>
 
-		<div class="filter-section company-detail-profile-card">
+		<div class="company-detail-profile-card">
 			<div class="company-card-header">
 				<h2 class="font-weight-bold text-dark m-0">{{ companyInfo.comName }}</h2>
+				<div @click.stop="fnToggleCompanyLike" :class="['like-chip-btn', { active: companyInfo.isCompanyLiked === 1 }]">
+					<span>{{ companyInfo.isCompanyLiked === 1 ? '❤️' : '🤍' }}</span>
+				</div>
 			</div>
 			<p class="company-detail-location mt-1">📍 업장 소재지: {{ companyInfo.comAddress || '등록된 주소 정보가 없습니다.' }}</p>
 			
@@ -28,7 +31,7 @@
 		</div>
 
 		<div class="company-pokemon-grid">
-			<div v-for="item in companyProducts" :key="item.productNo" class="product-item">
+			<div v-for="item in companyProducts" :key="item.productNo" class="product-item" @click="fnGoProductDetail(item)">
 				<div class="product-img-box">
 					<img :src="item.imgUrl" :alt="item.productName">
 				</div>
@@ -38,16 +41,15 @@
 					
 					<div class="product-price-row">
 						<p class="product-price m-0">{{ Number(item.productPrice).toLocaleString() }}원</p>
-						<div @click.stop="fnToggleProductLike(item)" :class="['chip-toggle-label', 'like-chip-btn', { active: item.isLiked === 1 }]">
+						<div @click.stop="fnToggleProductLike(item)" :class="['like-chip-btn', { active: item.isLiked === 1 }]">
 							<span>{{ item.isLiked === 1 ? '❤️' : '🤍' }}</span>
-							<span class="like-count-num">{{ item.likeCnt || 0 }}</span>
 						</div>
 					</div>
 				</div>
 			</div>
 		</div>
 		
-		<div v-if="companyProducts.length === 0" class="filter-section text-center p-5 text-muted">
+		<div v-if="companyProducts.length === 0" class="company-detail-profile-card text-center p-5 text-muted" style="box-shadow: none !important;">
 			현재 출고 준비 중인 패키지 상품이 존재하지 않는 업장입니다.
 		</div>
 	</div>

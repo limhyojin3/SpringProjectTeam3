@@ -16,22 +16,24 @@
             height: auto !important;
         }
         body {
-           background: linear-gradient(180deg, #e0f4ff 0%, #ffffff 400px, #ffffff 100%);
+            background: linear-gradient(180deg, #eaf6fb 0%, #ffffff 400px, #ffffff 100%);
         }
+
         .container-layout {
             min-height: unset !important;
         }
         /* ── 히어로 ── */
         .event-hero {
             width: 100%;
-            height: 340px;
+            height: 400px;
             background-image: url('/img/event/event2.jpg');
-            background-size: 70%;
-            background-position: center 50%;
+            background-size: cover;
+            background-position: center center;
             background-repeat: no-repeat;
             background-color: white;
             display: flex;
-            padding-bottom: 100px;
+            padding-top: 20px;
+            padding-bottom: 60px;
             flex-direction: column;
             align-items: center;
             justify-content: flex-end;
@@ -48,7 +50,7 @@
             position: absolute;
             inset: 0;
             background: 
-                linear-gradient(to right, rgba(255,255,255,0.85) 0%, rgba(255,255,255,0.1) 20%, rgba(255,255,255,0.1) 80%, rgba(255,255,255,0.85) 100%),
+                linear-gradient(to right, rgba(234,246,251,0.85) 0%, rgba(255,255,255,0.1) 20%, rgba(255,255,255,0.1) 80%, rgba(234,246,251,0.85) 100%),
                 linear-gradient(to bottom, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.2) 60%, rgba(255,255,255,0.95) 100%);
             z-index: 1;
         }
@@ -63,15 +65,6 @@
             height: 100px;
             background: linear-gradient(to bottom, transparent, white);
             z-index: 1;
-        }
-
-        /* 글씨는 그라데이션 위에 */
-        .event-hero h1,
-        .event-hero p {
-            position: relative;
-            z-index: 2;
-            color: #ffffff;  /* ✅ 흰 배경이니 어두운 색으로 */
-            text-shadow: 1px 1px 1px #7ec8c8 ;
         }
 
         /* ── 본문 ── */
@@ -91,7 +84,7 @@
             gap: 10px;
             margin-bottom: 24px;
             padding-bottom: 12px;
-            border-bottom: 2px solid #7ec8c8;
+            border-bottom: 2px solid #ffe4ec;
         }
 
         .section-badge {
@@ -99,7 +92,7 @@
             font-weight: 700;
             padding: 3px 10px;
             border-radius: 20px;
-            background: #64b4dc;
+            background: #7ec8d8;
             color: white;
             letter-spacing: 0.04em;
         }
@@ -127,6 +120,7 @@
             display: flex;
             flex-direction: column;  /* ✅ 이미지 위, 텍스트 아래 */
             cursor:pointer;
+            border: none; /* 추가 */
         }
 
 
@@ -163,7 +157,7 @@
 
         .fixed-card-body {
             background: white;
-            padding: 18px 20px;
+            padding: 24px 24px 28px;
             flex: 1;
         }
 
@@ -186,38 +180,38 @@
             font-weight: 700;
             padding: 4px 10px;
             border-radius: 20px;
-            background: #e8f6ff;
-            color: #64b4dc;
+            background: #eaf6fb;
+            color: #5bbdd0;
             border: 1px solid #b8e0f0;
         }
 
         /* ── 상시 이벤트 리스트 ── */
         .always-list {
-            display: flex;
-            flex-direction: column;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
             gap: 20px;
+            margin-bottom: 60px;
         }
 
         .always-card {
             background: white;
-            border: none;
             border-radius: 16px;
-            padding: 28px 32px;
-            display: flex;
-            align-items: center;
-            gap: 28px;
-            box-shadow: 0 2px 12px rgba(0,0,0,0.04);
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
             transition: transform 0.2s, box-shadow 0.2s;
             animation: fadeUp 0.6s ease forwards;
             opacity: 0;
+            display: flex;
+            flex-direction: column;
             cursor: pointer;
+            padding: 0;  /* 기존 패딩 제거 */
+            gap: 0;
         }
 
         .always-card:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 8px 28px rgba(155,143,212,0.2);
+            transform: translateY(-6px);
+            box-shadow: 0 12px 32px rgba(244,160,150,0.25);
         }
-
         .always-card:nth-child(1) { animation-delay: 0.4s; }
         .always-card:nth-child(2) { animation-delay: 0.5s; }
         .always-card:nth-child(3) { animation-delay: 0.6s; }
@@ -233,13 +227,63 @@
             flex-shrink: 0;
         }
 
+        .always-card-img {
+            width: 100%;
+            height: 220px;
+            background-size: cover;
+            background-position: center;
+            flex-shrink: 0;
+        }
+
+        .always-card-body {
+            background: white;
+            padding: 24px 24px 28px;
+            flex: 1;
+        }
+
+        .always-card-body .always-tag {
+            font-size: 11px;
+            font-weight: 700;
+            color: #5bbdd0;
+            background: #eaf6fb;
+            padding: 3px 10px;
+            border-radius: 20px;
+            display: inline-block;
+            margin-bottom: 10px;
+        }
+
+        .always-card-body h3 {
+            font-size: 15px;
+            font-weight: 700;
+            color: #333;
+            margin-bottom: 6px;
+        }
+
+        .always-card-body p {
+            font-size: 12px;
+            color: #aaa;
+            margin-bottom: 10px;
+            line-height: 1.6;
+        }
+
+        .always-card-body .gift-badge {
+            display: inline-block;
+            font-size: 11px;
+            font-weight: 700;
+            padding: 4px 10px;
+            border-radius: 20px;
+            background: #eaf6fb;
+            color: #5bbdd0;
+            border: 1px solid #b8e0f0;
+        }
+
         .always-content { flex: 1; }
 
         .always-content .always-tag {
             font-size: 11px;
             font-weight: 700;
-            color: #64b4dc;
-            background: #e8f6ff;
+            color: #5bbdd0;
+            background: #eaf6fb;
             padding: 3px 10px;
             border-radius: 20px;
             display: inline-block;
@@ -328,6 +372,36 @@
         }
         .event-deco-left  { position:absolute; font-size:140px; opacity:0.08; top:-20px; left:-20px; color:white; }
         .event-deco-right { position:absolute; font-size:120px; opacity:0.08; bottom:-10px; right:-10px; color:white; }
+
+        .summer-deco-wrap {
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 0;
+            overflow: hidden;
+        }
+
+        .summer-deco {
+            position: absolute;
+            color: #a8dde9;
+            opacity: 0.3;
+        }
+
+        /* 본문이 데코 위에 오도록 */
+        .event-hero,
+        .event-body {
+            position: relative;
+            z-index: 1;
+        }
+
+        .event-hero-title {
+            width: 800px;
+            max-width: 90%;
+            position: relative;
+            z-index: 2;
+            margin-bottom: 50px;
+        }
+
     </style>
 </head>
 <body>
@@ -342,11 +416,20 @@
                 <button class="prep-modal-btn" @click="showPrep = false">확인</button>
             </div>
         </div>
+        <!-- 여름 배경 데코 -->
+        <div class="summer-deco-wrap">
+            <i class="fas fa-fish summer-deco" style="top:8%; left:3%; font-size:120px; transform:rotate(20deg);"></i>
+            <i class="fas fa-sun summer-deco" style="top:15%; right:5%; font-size:150px;"></i>
+            <i class="fas fa-water summer-deco" style="top:40%; left:1%; font-size:100px;"></i>
+            <i class="fas fa-umbrella-beach summer-deco" style="top:55%; right:2%; font-size:130px;"></i>
+            <i class="fas fa-fish summer-deco" style="top:70%; left:5%; font-size:90px; transform:rotate(-15deg) scaleX(-1);"></i>
+            <i class="fas fa-sun summer-deco" style="top:80%; right:6%; font-size:110px;"></i>
+            <i class="fas fa-water summer-deco" style="top:90%; left:2%; font-size:80px;"></i>
+        </div>
         <!-- 히어로 -->
         <div class="event-hero">
             <i class="fas fa-sun event-deco-left"></i>
-            <h1>MarryView Summer Event</h1>
-            <p>메리뷰에서 메리하게! 여름을 함께 즐겨요 🌊</p>
+            <img src="/img/event/marry_view_summer_hero_title_v4.svg" alt="MarryView Summer Event" class="event-hero-title">
             <i class="fas fa-umbrella-beach event-deco-right"></i>
         </div>
 
@@ -405,55 +488,38 @@
             </div>
 
             <div class="always-list">
-
                 <!-- 브라이덜샤워 -->
                 <div class="always-card" @click="showPrep = true">
-                    <div class="always-icon" style="background:#fff0f5;">
-                        <i class="fas fa-heart" style="color:#f4a096;"></i>
-                    </div>
-                    <div class="always-content">
+                    <div class="always-card-img" style="background-image: url('/img/event/always_img1.jpg');"></div>
+                    <div class="always-card-body">
                         <span class="always-tag">BRIDAL SHOWER</span>
                         <h3>브라이덜샤워 이벤트</h3>
-                        <p>마이페이지에서 결혼 예정일을 입력하면 특별한 쿠폰 혜택을 드려요!<br>예비 신부님들의 설레는 준비를 메리뷰가 함께합니다</p>
-                    </div>
-                    <div class="always-reward">
-                        <div class="reward-icon"><i class="fas fa-ticket-alt"></i></div>
-                        <div class="reward-text">쿠폰 발급</div>
+                        <p>마이페이지에서 결혼 예정일을 입력하면<br>특별한 쿠폰 혜택을 드려요!</p>
+                        <span class="gift-badge"><i class="fas fa-gift"></i> 쿠폰 발급</span>
                     </div>
                 </div>
 
                 <!-- 첫돌 -->
                 <div class="always-card" @click="showPrep = true">
-                    <div class="always-icon" style="background:#fff9e6;">
-                        <i class="fas fa-baby" style="color:#f0b429;"></i>
-                    </div>
-                    <div class="always-content">
+                    <div class="always-card-img" style="background-image: url('/img/event/always_img2.jpg');"></div>
+                    <div class="always-card-body">
                         <span class="always-tag">FIRST BIRTHDAY</span>
                         <h3>우리 아이 첫돌 사진 리뷰 이벤트</h3>
-                        <p>소중한 첫돌 사진을 메리뷰에 리뷰로 남겨주세요!<br>베스트 리뷰로 선정되신 분께 기프트콘을 드립니다</p>
-                    </div>
-                    <div class="always-reward">
-                        <div class="reward-icon"><i class="fas fa-gift"></i></div>
-                        <div class="reward-text">기프트콘 증정</div>
+                        <p>소중한 첫돌 사진을 메리뷰에 리뷰로 남겨주세요!<br>베스트 리뷰 선정 시 기프트콘을 드립니다</p>
+                        <span class="gift-badge"><i class="fas fa-gift"></i> 기프트콘 증정</span>
                     </div>
                 </div>
 
                 <!-- 내가 제일 잘나가 -->
                 <div class="always-card" @click="showPrep = true">
-                    <div class="always-icon" style="background:#f0f5ff;">
-                        <i class="fas fa-crown" style="color:#9b8fd4;"></i>
-                    </div>
-                    <div class="always-content">
+                    <div class="always-card-img" style="background-image: url('/img/event/always_img3.jpg');"></div>
+                    <div class="always-card-body">
                         <span class="always-tag">BEST WEDDING</span>
                         <h3>내가 제일 잘나가 이벤트</h3>
-                        <p>제일로 즐거운 결혼식 사진을 올려주세요!<br>사진 콘테스트 선정 시 푸짐한 기프트콘 혜택을 드립니다</p>
-                    </div>
-                    <div class="always-reward">
-                        <div class="reward-icon"><i class="fas fa-trophy"></i></div>
-                        <div class="reward-text">기프트콘 증정</div>
+                        <p>제일로 즐거운 결혼식 사진을 올려주세요!<br>콘테스트 선정 시 푸짐한 기프트콘을 드립니다</p>
+                        <span class="gift-badge"><i class="fas fa-gift"></i> 기프트콘 증정</span>
                     </div>
                 </div>
-
             </div>
         </div>
 

@@ -134,7 +134,7 @@
 }
 
 /* 오른쪽 사이드바 영역 */
-.detail-right {
+.detail-right { 
 	flex: 3;
 	display: flex;
 	flex-direction: column;

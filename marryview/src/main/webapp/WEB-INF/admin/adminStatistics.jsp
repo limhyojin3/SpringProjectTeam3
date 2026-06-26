@@ -17,13 +17,19 @@
         <link rel="stylesheet" href="${pageContext.request.contextPath}/css/adminNavi.css">
         <link rel="stylesheet" href="${pageContext.request.contextPath}/css/admin-common.css">
         <style>
-            .chart-area {}
+            .chart-area {
+                padding: 24px;
+                background: #f8f9fc;
+                border: 1px solid #dfe4ee;
+                border-radius: 16px;
+                box-shadow: 0 6px 18px rgba(15, 23, 42, 0.08);
+            }
 
             .chart-area div {
                 width: auto;
                 height: auto;
             }
-            
+
             .stats-summary-grid {
                 display: grid;
                 grid-template-columns: repeat(3, 1fr);
@@ -35,11 +41,13 @@
             }
 
             .stats-mini-card {
-                background: #9ac2fc;
+                background: #f1f5f9;
+                border: 1px solid #d8e0eb;
+                border-top: 4px solid #64748b;
                 border-radius: 12px;
                 padding: 20px;
                 box-shadow: 0 4px 15px rgba(0, 0, 0, 0.06);
-                border: none;
+
                 transition: all 0.3s ease;
             }
 
@@ -64,9 +72,11 @@
             }
 
             .stats-mini-card:hover {
-                background: #ffe3e8;
+                background: #e5e8f1;
+                border-color: #cbd5e1;
+                border-top-color: #334155;
                 transform: translateY(-5px);
-                box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+                box-shadow: 0 10px 24px rgba(15, 23, 42, 0.12);
             }
 
             .up {
@@ -99,6 +109,10 @@
                         <div class="tab-menu">
                             <button :class="{active: activeTab == 'sales'}"
                                 @click="activeTab = 'sales'; fnGetSales();">월별 매출 현황</button>
+                            <button :class="{active: activeTab == 'passes'}"
+                                @click="activeTab = 'passes'; fnGetPassSales();">
+                                패스 판매
+                            </button>
                             <button :class="{active: activeTab == 'users'}"
                                 @click="activeTab = 'users'; fnGetUsers('USER');">일반 회원
                                 등록수</button>
@@ -114,6 +128,10 @@
                             <div v-if="activeTab == 'sales'">
                                 <h2>월별 매출 현황</h2>
                                 <div id="chart-sales"></div>
+                            </div>
+                            <div v-if="activeTab == 'passes'">
+                                <h2>패스별 판매 현황</h2>
+                                <div id="chart-passes"></div>
                             </div>
                             <div v-if="activeTab == 'users'">
                                 <h2>일반 회원 등록수</h2>
@@ -146,6 +164,25 @@
                                 <h3 :class="salesGrowthRate == 0 ? 'same' : (salesGrowthRate < 0 ? 'down' : 'up')">
                                     {{formatPercent(salesGrowthRate)}}%
                                 </h3>
+                            </div>
+
+                        </div>
+
+                        <div v-if="activeTab == 'passes'" class="stats-summary-grid">
+
+                            <div class="stats-mini-card">
+                                <p>전체 패스 판매</p>
+                                <h3>{{ passTotalSold.toLocaleString() }}건</h3>
+                            </div>
+
+                            <div class="stats-mini-card">
+                                <p>가장 많이 팔린 패스</p>
+                                <h3>{{ bestPassName || '-' }}</h3>
+                            </div>
+
+                            <div class="stats-mini-card">
+                                <p>BEST 패스 판매량</p>
+                                <h3>{{ bestPassSold.toLocaleString() }}건</h3>
                             </div>
 
                         </div>
@@ -244,6 +281,12 @@
                         partnerGrowthRate: 0,
                         newCommer: 0,
                         affRate: 0,
+                        passNameList: [],
+                        passSoldList: [],
+                        passTotalSold: 0,
+                        bestPassName: "",
+                        bestPassSold: 0,
+                        chart: null,
                     };
                 },
                 methods: {
@@ -273,7 +316,7 @@
                                 toolbar: { show: false },
                                 animations: { enabled: true }
                             },
-                            colors: ['#FF4560'],
+                            colors: ['#475569'],
                             dataLabels: {
                                 enabled: false
                             },
@@ -285,7 +328,7 @@
 
                             markers: {
                                 size: 5,
-                                colors: ['#FF4560'],
+                                colors: ['#475569'],
                                 strokeColors: '#fff',
                                 strokeWidth: 2,
                                 hover: { size: 7 }
@@ -297,6 +340,142 @@
 
                         };
                         self.chart = new ApexCharts(document.querySelector("#chart-sales"), options);
+                        self.chart.render();
+                    },
+
+                    fnPassSalesChart: function () {
+                        let self = this;
+
+                        if (self.chart) {
+                            self.chart.destroy();
+                        }
+
+                        const options = {
+                            // 패스별 판매 건수
+                            series: self.passSoldList,
+
+                            // 패스 이름
+                            labels: self.passNameList,
+
+                            chart: {
+                                height: 380,
+                                type: "donut",
+                                toolbar: {
+                                    show: false
+                                },
+                                dropShadow: {
+                                    enabled: true,
+                                    top: 6,
+                                    left: 2,
+                                    blur: 8,
+                                    opacity: 0.18
+                                }
+                            },
+
+                            colors: [
+                                "#e88aa2",
+                                "#7c8db5",
+                                "#f3b562",
+                                "#76b7b2"
+                            ],
+
+                            stroke: {
+                                width: 4,
+                                colors: ["#ffffff"]
+                            },
+
+                            plotOptions: {
+                                pie: {
+                                    expandOnClick: true,
+
+                                    donut: {
+                                        size: "62%",
+
+                                        labels: {
+                                            show: true,
+
+                                            name: {
+                                                show: true,
+                                                fontSize: "15px",
+                                                color: "#64748b"
+                                            },
+
+                                            value: {
+                                                show: true,
+                                                fontSize: "25px",
+                                                fontWeight: 700,
+                                                formatter: function (value) {
+                                                    return Number(value).toLocaleString() + "건";
+                                                }
+                                            },
+
+                                            total: {
+                                                show: true,
+                                                label: "전체 판매",
+                                                fontSize: "14px",
+                                                color: "#64748b",
+
+                                                formatter: function () {
+                                                    return self.passTotalSold.toLocaleString() + "건";
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            },
+
+                            dataLabels: {
+                                enabled: true,
+
+                                formatter: function (percent) {
+                                    return percent.toFixed(1) + "%";
+                                }
+                            },
+
+                            legend: {
+                                position: "bottom",
+                                fontSize: "14px",
+
+                                formatter: function (name, options) {
+                                    const soldCount =
+                                        options.w.globals.series[options.seriesIndex];
+
+                                    return name + " · " +
+                                        Number(soldCount).toLocaleString() + "건";
+                                }
+                            },
+
+                            tooltip: {
+                                y: {
+                                    formatter: function (value) {
+                                        return Number(value).toLocaleString() + "건 판매";
+                                    }
+                                }
+                            },
+
+                            noData: {
+                                text: "패스 판매 데이터가 없습니다."
+                            },
+
+                            responsive: [{
+                                breakpoint: 768,
+                                options: {
+                                    chart: {
+                                        height: 330
+                                    },
+
+                                    legend: {
+                                        position: "bottom"
+                                    }
+                                }
+                            }]
+                        };
+
+                        self.chart = new ApexCharts(
+                            document.querySelector("#chart-passes"),
+                            options
+                        );
+
                         self.chart.render();
                     },
 
@@ -314,16 +493,16 @@
                                 height: 350,
                                 type: 'area',
                                 zoom: {
-                                enabled: false
+                                    enabled: false
+                                },
+                                toolbar: { show: false },
+                                animations: { enabled: true },
                             },
-                            toolbar: { show: false },
-                            animations: { enabled: true },
-                            },
-                            
+
                             xaxis: {
                                 categories: self.monthList
                             },
-                            colors: ['#FF4560'],
+                            colors: ['#475569'],
                             dataLabels: {
                                 enabled: false
                             },
@@ -335,7 +514,7 @@
 
                             markers: {
                                 size: 5,
-                                colors: ['#FF4560'],
+                                colors: ['#475569'],
                                 strokeColors: '#fff',
                                 strokeWidth: 2,
                                 hover: { size: 7 }
@@ -374,6 +553,51 @@
                                     self.monthList.push(data.list[i].saleMonth);
                                 }
                                 self.fnSalesChart();
+                            }
+                        });
+                    },
+
+                    fnGetPassSales: function () {
+                        let self = this;
+
+                        $.ajax({
+                            url: "/pass.dox",
+                            dataType: "json",
+                            type: "POST",
+                            data: {},
+
+                            success: function (data) {
+                                const list = data.list || [];
+
+                                self.passNameList = [];
+                                self.passSoldList = [];
+                                self.passTotalSold = 0;
+                                self.bestPassName = "";
+                                self.bestPassSold = 0;
+
+                                list.forEach(function (pass) {
+                                    const soldCount = Number(pass.soldCount || 0);
+
+                                    self.passNameList.push(pass.passName);
+                                    self.passSoldList.push(soldCount);
+                                    self.passTotalSold += soldCount;
+
+                                    // 체험용 패스는 BEST 선정에서 제외
+                                    if (Number(pass.passNo) !== 1 &&
+                                        soldCount > self.bestPassSold) {
+
+                                        self.bestPassName = pass.passName;
+                                        self.bestPassSold = soldCount;
+                                    }
+                                });
+
+                                self.$nextTick(function () {
+                                    self.fnPassSalesChart();
+                                });
+                            },
+
+                            error: function () {
+                                alert("패스 판매 통계를 불러오지 못했습니다.");
                             }
                         });
                     },
