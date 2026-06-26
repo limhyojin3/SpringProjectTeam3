@@ -24,7 +24,7 @@ const productEditCoreModule = {
         };
     },
 
-    // 2. 🎯 데이터 실시간 스냅샷 비교 엔진 연산부 원형 보존
+    // 2. 데이터 실시간 스냅샷 비교 엔진 연산부 원형 보존
     computed: {
         isModified() {
             if (this.uploadFile !== null) {
@@ -87,16 +87,28 @@ const productEditCoreModule = {
                         self.availableTags = self.categoryTree['결혼'].tags[medium];
                     }
 
+                    // 💡 [지독한 쌍따옴표/홀따옴표 유령 찌꺼기 원천 소독 세척 구간]
+                    // 데이터가 주머니에 들어오는 관로에 정규식 .replace(/["']/g, '') 필터를 바인딩하여 
+                    // 무조건 맑고 정갈한 알맹이 글자만 selectedTags 주머니에 담기도록 전면 개정 마감했습니다.
                     if (data.tagList && Array.isArray(data.tagList)) {
-                        self.selectedTags = [...data.tagList];
-                    } else if (typeof self.oneProductDetails.tag === 'string') {
+                        self.selectedTags = data.tagList.map(t => String(t).replace(/["']/g, '').trim());
+                    } else if (typeof self.oneProductDetails.tag === 'string' && self.oneProductDetails.tag.trim() !== '') {
                         try {
-                            self.selectedTags = JSON.parse(self.oneProductDetails.tag);
+                            let parsed = JSON.parse(self.oneProductDetails.tag);
+                            if (Array.isArray(parsed)) {
+                                self.selectedTags = parsed.map(t => String(t).replace(/["']/g, '').trim());
+                            } else {
+                                self.selectedTags = self.oneProductDetails.tag.split(',').map(t => String(t).replace(/["']/g, '').trim()).filter(t => t !== '');
+                            }
                         } catch (e) {
-                            self.selectedTags = [];
+                            // JSON 파싱 실패 시 일반 콤마 분리 문자열 가복구 트랙 작동
+                            self.selectedTags = self.oneProductDetails.tag.split(',').map(t => String(t).replace(/["']/g, '').trim()).filter(t => t !== '');
                         }
+                    } else {
+                        self.selectedTags = [];
                     }
 
+                    // 정제 마감된 깨끗한 주머니 상태를 기준으로 초기 변경 불가 기준점 스냅샷 안전 락(Lock)!
                     self.originalSnapshot = JSON.stringify({
                         name: self.oneProductDetails.productName || '',
                         large: self.oneProductDetails.largeCategory || '',
@@ -199,7 +211,7 @@ const productEditCoreModule = {
                 productNo: '', productName: '', largeCategory: '', mediumCategory: '',
                 productDetails: '', originalPrice: '', deposit: '', imgUrl: '', isActive: 1
             };
-            this.$emit('back');
+            this.$emit('back'); 
         }
     }
 };
