@@ -573,6 +573,20 @@ public class MemberService {
 	public int getMyCompanyLikeCount(String userId) {
 	    return memberMapper.selectMyCompanyLikeCount(userId);
 	}
+	//상품 좋아요 조회
+	public List<HashMap<String, Object>> getMyProductLikeList(String userId, int page) {
+	    HashMap<String, Object> map = new HashMap<>();
+	    map.put("userId", userId);
+	    map.put("pageSize", 5);
+	    map.put("offset", (page - 1) * 5);
+	    return memberMapper.selectMyProductLikeList(map);
+	}
+
+	public int getMyProductLikeCount(String userId) {
+	    HashMap<String, Object> map = new HashMap<>();
+	    map.put("userId", userId);
+	    return memberMapper.selectMyProductLikeCount(map);
+	}
 	// 글 좋아요 조회
 	public List<Member> getMyPostLikeList(String userId, int page) {
 		HashMap<String, Object> map = new HashMap<>();

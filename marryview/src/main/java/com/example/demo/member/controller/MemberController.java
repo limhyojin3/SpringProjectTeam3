@@ -566,6 +566,20 @@ public class MemberController {
 	    result.put("currentPage", page);
 	    return result;
 	}
+	// 상품 좋아요 조회
+	@GetMapping("/myProductLikeList.dox")
+	@ResponseBody
+	public Map<String, Object> getMyProductLikeList(
+	        @RequestParam(defaultValue = "1") int page,
+	        HttpSession session) {
+	    String userId = (String) session.getAttribute("sessionId");
+	    Map<String, Object> result = new HashMap<>();
+	    result.put("list", memberService.getMyProductLikeList(userId, page));
+	    result.put("totalCount", memberService.getMyProductLikeCount(userId));
+	    result.put("pageSize", 5);
+	    result.put("currentPage", page);
+	    return result;
+	}
 	// 글 좋아요 조회
 	@GetMapping("/myPostLikeList.dox")
 	@ResponseBody

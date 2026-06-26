@@ -180,6 +180,108 @@
         i {
             margin-right: 8px;
         }
+
+        .product-like-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+            margin-bottom: 20px;
+        }
+
+        .product-like-card {
+            border: 1px solid #ffc7c2;
+            border-radius: 12px;
+            overflow: hidden;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .product-like-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 20px rgba(224,122,138,0.15);
+        }
+
+        .product-like-card img {
+            width: 100%;
+            height: 150px;
+            object-fit: cover;
+        }
+
+        .product-like-card-body {
+            padding: 12px;
+        }
+
+        .product-like-card-body .p-name {
+            font-size: 14px;
+            font-weight: 700;
+            color: #333;
+            margin-bottom: 4px;
+        }
+
+        .product-like-card-body .p-company {
+            font-size: 12px;
+            color: #999;
+            margin-bottom: 8px;
+        }
+
+        .product-like-card-body .p-price {
+            font-size: 14px;
+            font-weight: 700;
+            color: #e07a8a;
+        }
+
+        .product-like-card-check {
+            position: absolute;
+            top: 8px;
+            left: 8px;
+        }
+
+        .product-like-card-wrap {
+            position: relative;
+        }
+
+        .company-like-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+            margin-bottom: 20px;
+        }
+
+        .company-like-card {
+            border: 1px solid #ffc7c2;
+            border-radius: 12px;
+            overflow: hidden;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .company-like-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 20px rgba(224,122,138,0.15);
+        }
+
+        .company-like-card img {
+            width: 100%;
+            height: 150px;
+            object-fit: cover;
+        }
+
+        .company-like-card-body {
+            padding: 12px;
+        }
+
+        .company-like-card-body .c-name {
+            font-size: 14px;
+            font-weight: 700;
+            color: #333;
+            margin-bottom: 4px;
+        }
+
+        .company-like-card-body .c-address {
+            font-size: 12px;
+            color: #999;
+        }
+        
     </style>
 </head>
 <body>
@@ -196,30 +298,46 @@
                     <!-- 탭 버튼 -->
                     <div class="write-tab-wrap">
                         <button class="write-tab" :class="{'active-tab': reviewTab === 'company'}" @click="switchReviewTab('company')">업체</button>
+                        <button class="write-tab" :class="{'active-tab': reviewTab === 'product'}" @click="switchReviewTab('product')">상품</button>
                         <button class="write-tab" :class="{'active-tab': reviewTab === 'post'}" @click="switchReviewTab('post')">글</button>
                         <button class="write-tab" :class="{'active-tab': reviewTab === 'review'}" @click="switchReviewTab('review')">리뷰</button>
                     </div>
-                    <!-- 좋아한 상품 테이블 -->
+                    <!-- 좋아요 업체 테이블 -->
                     <div v-if="reviewTab === 'company'">
-                        <table class="write-table" >
-                            <thead>
-                                <tr>
-                                    <th class="col-check"><input type="checkbox" @click="selectAllCompanyLikes()"></th>
-                                    <th class="col-no">번호</th>
-                                    <th class="col-title">업체명</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr v-if="companyLikeList.length === 0">
-                                    <td colspan="3">좋아요한 업체가 없습니다.</td>
-                                </tr>
-                                <tr v-for="like in companyLikeList" :key="like.likeNo">
-                                    <td @click.stop><input type="checkbox" :value="like.likeNo" v-model="selectedCompanyLikes"></td>
-                                    <td>{{ like.likeNo }}</td>
-                                    <td class="col-title">{{ like.comName }}</td>
-                                </tr>
-                            </tbody>
-                        </table>
+                        <div v-if="companyLikeList.length === 0" class="text-center py-4" style="color:#999;">
+                            좋아요한 업체가 없습니다.
+                        </div>
+                        <div class="company-like-grid">
+                            <div class="company-like-card" 
+                                v-for="like in companyLikeList" 
+                                :key="like.likeNo"
+                                @click="fnGoCompany(like.companyNo, like.comAddress)">
+                                <img :src="like.imgUrl || '/img/default_logo.png'" alt="업체 이미지">
+                                <div class="company-like-card-body">
+                                    <div class="c-name">{{ like.comName }}</div>
+                                    <div class="c-address">{{ like.comAddress }}</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- 좋아요 상품 테이블 -->
+                    <div v-if="reviewTab === 'product'">
+                        <div v-if="productLikeList.length === 0" class="text-center py-4" style="color:#999;">
+                            좋아요한 상품이 없습니다.
+                        </div>
+                        <div class="product-like-grid">
+                            <div class="product-like-card-wrap" v-for="like in productLikeList" :key="like.like_no">
+                                <input type="checkbox" class="product-like-card-check" :value="like.like_no" v-model="selectedProductLikes">
+                                <div class="product-like-card" @click="fnGoProduct(like.product_no)">
+                                    <img :src="like.img_url || '/img/default_logo.png'" alt="상품 이미지">
+                                    <div class="product-like-card-body">
+                                        <div class="p-name">{{ like.product_name }}</div>
+                                        <div class="p-company">{{ like.com_name }}</div>
+                                        <div class="p-price">{{ Number(like.original_price).toLocaleString() }}원</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
 
                     <!-- 좋아요 글 테이블 -->
@@ -295,6 +413,20 @@
                                     @click="fetchCompanyLikeList(companyCurrentPage + 1)"
                                     :disabled="companyCurrentPage === Math.ceil(companyTotalCount / pageSize)">다음</button>
                         </template>
+                        <template v-else-if="reviewTab === 'product'">
+                            <button class="btn-review-index"
+                                    @click="fetchProductLikeList(productCurrentPage - 1)"
+                                    :disabled="productCurrentPage === 1">이전</button>
+                            <button class="btn-review-index"
+                                    v-for="p in Math.ceil(productTotalCount / pageSize)" :key="'product-'+p"
+                                    :class="p === productCurrentPage ? 'active-page' : ''"
+                                    @click="fetchProductLikeList(p)">
+                                {{ p }}
+                            </button>
+                            <button class="btn-review-index"
+                                    @click="fetchProductLikeList(productCurrentPage + 1)"
+                                    :disabled="productCurrentPage === Math.ceil(productTotalCount / pageSize)">다음</button>
+                        </template>
 
                         <template v-else-if="reviewTab === 'post'">
                             <button class="btn-review-index"
@@ -351,6 +483,7 @@
                 companyLikeList: [],
                 postLikeList: [],
                 reviewLikeList: [],
+                productLikeList: [],
                 // 페이지
                 companyCurrentPage: 1,
                 postCurrentPage: 1,
@@ -358,11 +491,17 @@
                 companyTotalCount: 0,
                 postTotalCount: 0,
                 reviewTotalCount: 0,
+                productCurrentPage: 1,
+                productTotalCount: 0,
                 pageSize: 5,
                 // 체크 박스
                 selectedCompanyLikes: [],
                 selectedPostLikes: [],
-                selectedReviewLikes: []
+                selectedReviewLikes: [],
+                selectedProductLikes: [],
+
+                selectedCompany: null,
+                showCompanyModal: false,
             };
         },
         methods: {
@@ -462,6 +601,33 @@
                     });
                 }
             },
+            fetchProductLikeList: function(page) {
+                let self = this;
+                axios.get("/myProductLikeList.dox?page=" + page)
+                    .then(res => {
+                        self.productLikeList = res.data.list;
+                        self.productTotalCount = res.data.totalCount;
+                        self.productCurrentPage = res.data.currentPage;
+                    });
+            },
+            selectAllProductLikes: function() {
+                if(this.selectedProductLikes.length === this.productLikeList.length) {
+                    this.selectedProductLikes = [];
+                } else {
+                    this.selectedProductLikes = this.productLikeList.map(l => l.like_no);
+                }
+            },
+            fnGoProduct: function(productNo) {
+                location.href = '/productCategoryTag.do?productNo=' + productNo;
+            },
+            fnGoCompany: function(companyNo) {
+                let self = this;
+                axios.post("/company.dox", new URLSearchParams({ companyNo: companyNo }))
+                    .then(res => {
+                        self.selectedCompany = res.data.company;
+                        self.showCompanyModal = true;
+                    });
+            },
         }, // methods
         mounted() {
             // 처음 시작할 때 실행되는 부분
@@ -469,6 +635,7 @@
             this.fetchCompanyLikeList(1);
             this.fetchPostLikeList(1);
             this.fetchReviewLikeList(1);
+            this.fetchProductLikeList(1);
         }
     });
 
