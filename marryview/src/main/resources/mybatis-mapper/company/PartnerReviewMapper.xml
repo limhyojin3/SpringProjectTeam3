@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<<<<<<< HEAD
 <mapper namespace="com.example.marryview.company.mapper.PartnerReviewMapper">
 
 	<select id="selectReviewCnt" parameterType="map" resultType="hashmap">
@@ -55,61 +54,6 @@
 	</select>
 	
 	<select id="selectSimpleReviewDetails3" parameterType="map" resultType="com.example.marryview.company.model.Review">
-=======
-<mapper namespace="com.example.marryview.company.mapper.PartnerReviewMapper">
-
-	<select id="selectReviewCnt" parameterType="map" resultType="hashmap">
-		SELECT p.product_no AS productNo, p.product_name AS productName, p.img_url AS imgUrl, COUNT(review_no) AS reviewCount 
-		FROM product p
-		LEFT JOIN review r ON p.product_no = r.product_no AND r.is_paid = 1
-		WHERE p.company_no = (
-			SELECT company_no FROM company c WHERE c.user_id = #{userId}
-		)
-		GROUP BY p.product_no, p.product_name, p.img_url
-		ORDER BY p.reg_date DESC
-	</select>
-
-	<select id="selectSimpleReviewCnt" parameterType="map" resultType="hashmap">
-		SELECT p.product_no AS productNo, p.product_name AS productName, p.img_url AS imgUrl, COUNT(review_no) AS reviewCount 
-		FROM product p
-		LEFT JOIN review r ON p.product_no = r.product_no AND r.is_paid = 0
-		WHERE p.company_no = (
-			SELECT company_no FROM company c WHERE c.user_id = #{userId}
-		)
-		GROUP BY p.product_no, p.product_name, p.img_url
-		ORDER BY p.reg_date DESC 
-	</select>
- 
-	<select id="selectNewReviewCnt" parameterType="map" resultType="hashmap">
-		SELECT COUNT(company_no) AS reviewCount 
-		FROM review r 
-		WHERE r.is_paid = 1 AND updated = 1 
-		AND r.company_no = (
-			SELECT company_no FROM company c WHERE user_id = #{userId}
-		)
-	</select>
-
-	<select id="selectNewSimpleReviewCnt" parameterType="map" resultType="hashmap">
-		SELECT COUNT(company_no) AS reviewCount 
-		FROM review r 
-		WHERE r.is_paid = 0 AND updated = 1 
-		AND r.company_no = (
-			SELECT company_no FROM company c WHERE user_id = #{userId}
-		)
-	</select>
-	
-	<select id="selectReviewDetails3" parameterType="map" resultType="com.example.marryview.company.model.Review">
-		SELECT r.reg_date AS regDate, r.img_description AS imgDescription, r.is_paid AS isPaid, 
-		       r.review_no AS reviewNo, r.user_id AS userId, r.company_no AS companyNo, 
-		       r.product_no AS productNo, r.rating AS rating, r.content AS content, 
-		       r.thumbnail_url AS thumbnailUrl, r.updated AS updated
-		FROM review r
-		WHERE is_paid = 1 AND product_no = #{productNo}
-		ORDER BY r.reg_date DESC
-	</select>
-	
-	<select id="selectSimpleReviewDetails3" parameterType="map" resultType="com.example.marryview.company.model.Review">
->>>>>>> branch 'dev_' of https://github.com/limhyojin3/SpringProjectTeam3.git
 		SELECT r.review_no AS reviewNo, r.content AS content, r.user_id AS userId, 
 		       r.rating AS rating, r.updated AS updated, r.reg_date AS regDate
 		FROM review r 

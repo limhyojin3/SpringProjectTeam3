@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<<<<<<< HEAD
 <mapper namespace="com.example.marryview.company.mapper.ReservationMapper">
 
 	<select id="selectReservation" parameterType="map"
@@ -63,69 +62,6 @@
 
 	<select id="selectMyReservationList" parameterType="map"
 		resultType="com.example.marryview.company.model.Reservation">
-=======
-<mapper namespace="com.example.marryview.company.mapper.ReservationMapper">
-
-	<select id="selectReservation" parameterType="map"
-		resultType="com.example.marryview.company.model.Reservation">
-		SELECT
-			r.res_no,
-			r.res_status,
-			r.user_id AS res_user_id,
-			r.product_no,
-			p.product_name,
-			r.res_date,
-			r.res_time,
-			r.res_content,
-			r.use_date,
-			r.use_time,
-			p.deposit,
-			m.tel,
-			r.pay_date
-		FROM company c
-		JOIN product p ON c.company_no = p.company_no
-		JOIN reservation r ON p.product_no = r.product_no
-		LEFT JOIN member m ON m.user_id = r.user_id
-		WHERE c.user_id = #{userId}
-		ORDER BY r.res_date DESC, r.res_time DESC
-	</select>
-
-	<select id="selectNewResCnt" parameterType="map"
-		resultType="String">
-		SELECT COUNT(RES_NO) AS new_res_cnt
-		FROM company c
-		JOIN product p ON c.company_no = p.company_no
-		JOIN reservation r ON p.product_no = r.product_no
-		LEFT JOIN member m ON m.user_id = r.user_id
-		WHERE c.user_id = #{userId} AND r.res_status = 'WAIT'
-	</select>
-
-	<select id="selectBookedTimes" parameterType="map"
-		resultType="String">
-		SELECT r.use_time 
-		FROM reservation r
-		WHERE r.product_no = #{productNo} AND r.res_status = 'WAIT'
-		<choose>
-			<when test="useDate != null and useDate != ''">
-				AND r.use_date = #{useDate}
-			</when> 
-			<otherwise>
-				AND 1=0
-			</otherwise>
-		</choose>
-	</select>
-
-	<insert id="insertReservation" parameterType="map"
-		useGeneratedKeys="true"
-        keyProperty="resNo"
-        keyColumn="res_no">
-		INSERT INTO reservation(user_id, product_no, company_no, res_date, res_time, res_status, res_content, use_date, use_time, pay_date, pay_no)
-		VALUES(#{userId}, #{productNo}, #{companyNo}, NOW(), NOW(), 'WAIT', #{resContent}, #{useDate}, #{useTime}, NULL, NULL)
-	</insert>
-
-	<select id="selectMyReservationList" parameterType="map"
-		resultType="com.example.marryview.company.model.Reservation">
->>>>>>> branch 'dev_' of https://github.com/limhyojin3/SpringProjectTeam3.git
 		SELECT 
 			r.res_no,
 			r.user_id,

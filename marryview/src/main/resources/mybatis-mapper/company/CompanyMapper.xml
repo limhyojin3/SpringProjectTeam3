@@ -1,15 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-
-<<<<<<< HEAD
 <mapper namespace="com.example.marryview.company.mapper.CompanyMapper">
-
 	<select id="selectCompany" parameterType="hashmap" resultType="com.example.marryview.company.model.PartnerMember">
-=======
-<mapper namespace="com.example.marryview.company.mapper.CompanyMapper">
 
-	<select id="selectCompany" parameterType="hashmap" resultType="com.example.marryview.company.model.PartnerMember">
->>>>>>> branch 'dev_' of https://github.com/limhyojin3/SpringProjectTeam3.git
 		SELECT 
 			m.user_id AS userId,
 			m.password,
