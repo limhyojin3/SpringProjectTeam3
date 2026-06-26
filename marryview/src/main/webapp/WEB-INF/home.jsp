@@ -18,8 +18,8 @@
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script src="/js/page-change.js"></script>
 </head>
-<style> 
-    /* 홈 css에 있어요. */
+<style>
+    /* 홈 css에 있어요!!! */
 </style>
 <body>
     <jsp:include page="/WEB-INF/common/header.jsp" />
