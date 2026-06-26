@@ -180,6 +180,92 @@
         i {
             margin-right: 8px;
         }
+
+        /* 작성 리뷰 카드 그리드 */
+        .my-review-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .my-review-card {
+            border: 1px solid #f0e0e0;
+            border-radius: 12px;
+            overflow: hidden;
+            cursor: pointer;
+            transition: 0.2s;
+            display: flex;
+            flex-direction: column;
+            background: white;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+            position: relative;
+        }
+
+        .my-review-card:hover {
+            box-shadow: 0 6px 20px rgba(244, 160, 150, 0.25);
+            transform: translateY(-3px);
+        }
+
+        .my-review-thumbnail {
+            width: 100%;
+            height: 140px;
+            background-color: #fff0f3;
+            overflow: hidden;
+        }
+
+        .my-review-thumbnail img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: center 10%;
+        }
+
+        .my-review-card-body {
+            padding: 12px;
+            height: 70px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .my-review-card-body .r-title {
+            font-size: 13px;
+            font-weight: 700;
+            color: #444;
+            display: -webkit-box;
+            -webkit-line-clamp: 1;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .my-review-card-body .r-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .my-review-card-body .r-rating {
+            font-size: 12px;
+            color: #f0b429;
+        }
+
+        .my-review-card-body .r-status {
+            font-size: 11px;
+            color: #aaa;
+        }
+
+        /* 체크박스 */
+        .my-review-check {
+            position: absolute;
+            top: 8px;
+            left: 8px;
+            width: 16px;
+            height: 16px;
+            cursor: pointer;
+            z-index: 1;
+        }
     </style>
 </head>
 <body>
@@ -194,9 +280,36 @@
                     <h4><i class="fas fa-pen"></i>내가 쓴 글/리뷰/댓글 목록</h4>
                     <!-- 탭 버튼 -->
                     <div class="write-tab-wrap">
-                        <button class="write-tab" :class="{'active-tab': reviewTab === 'post'}" @click="switchReviewTab('post')">작성 글</button>
                         <button class="write-tab" :class="{'active-tab': reviewTab === 'review'}" @click="switchReviewTab('review')">작성 리뷰</button>
+                        <button class="write-tab" :class="{'active-tab': reviewTab === 'post'}" @click="switchReviewTab('post')">작성 글</button>
                         <button class="write-tab" :class="{'active-tab': reviewTab === 'comment'}" @click="switchReviewTab('comment')">작성 댓글</button>
+                    </div>
+
+                    <!-- 작성 리뷰 탭 -->
+                    <div v-if="reviewTab === 'review'">
+                        <div v-if="reviewList.length === 0" class="empty-msg" style="text-align:center;padding:60px 0;color:#bbb;font-size:14px;">
+                            작성한 리뷰가 없습니다.
+                        </div>
+                        <div class="my-review-grid" v-else>
+                            <div class="my-review-card" v-for="review in reviewList" :key="review.reviewNo"
+                                @click="fnGoReview(review.reviewNo)">
+                                <input class="my-review-check" type="checkbox"
+                                    :value="review.reviewNo"
+                                    v-model="selectedReviews"
+                                    @click.stop>
+                                <div class="my-review-thumbnail">
+                                    <img v-if="review.thumbnailUrl" :src="review.thumbnailUrl" @error="handleImgError">
+                                    <img v-else src="/img/default_logo.png">
+                                </div>
+                                <div class="my-review-card-body">
+                                    <div class="r-title">{{ review.title }}</div>
+                                    <div class="r-meta">
+                                        <div class="r-rating"><i class="fas fa-star"></i> {{ review.rating }}</div>
+                                        <div class="r-status">{{ review.regDate ? review.regDate.substring(0, 10) : '' }}</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
 
                     <!-- 작성 글 리뷰 테이블 -->
@@ -228,37 +341,7 @@
                             </tbody>
                         </table>
                 
-                    </div>
-
-                    <!-- 작성 리뷰 테이블 -->
-                    <div v-if="reviewTab === 'review'">
-                        <table class="write-table" >
-                            <thead>
-                                <tr>
-                                    <th class="col-check"><input type="checkbox" @click="selectAllReviews()"></th>
-                                    <th class="col-no">번호</th>
-                                    <th class="col-title">제목</th>
-                                    <th>평점</th>
-                                    <th>승인상태</th>
-                                    <th class="col-date">작성일</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr v-if="reviewList.length === 0">
-                                    <td colspan="6">작성한 리뷰가 없습니다.</td>
-                                </tr>
-                                <tr v-for="review in reviewList" :key="review.reviewNo"
-                                    @click="fnGoReview(review.reviewNo)">
-                                    <td @click.stop><input type="checkbox" :value="review.reviewNo" v-model="selectedReviews"></td>
-                                    <td>{{ review.reviewNo }}</td>
-                                    <td class="col-title">{{ review.title }}</td>
-                                    <td>{{ review.rating }}</td>
-                                    <td>{{ review.approvalStatus }}</td>
-                                    <td>{{ review.regDate }}</td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
+                    </div>       
 
                     <!-- 작성 댓글 테이블 -->
                     <div v-if="reviewTab === 'comment'">
@@ -358,7 +441,7 @@
     const app = Vue.createApp({
         data() {
             return {
-                reviewTab: 'post',  // 'post' or 'review' or 'comment'
+                reviewTab: 'review',  // 'post' or 'review' or 'comment'
                 postList: [],
                 reviewList: [],
                 commentList: [],
@@ -471,6 +554,13 @@
                         self.selectedComments = [];
                         self.fetchCommentList(self.commentCurrentPage);
                     });
+                }
+            },
+            handleImgError: function(event) {
+                if (event.target) {
+                    event.target.style.display = 'none';
+                    const parent = event.target.parentElement;
+                    if (parent) parent.style.backgroundColor = '#ffc7c2';
                 }
             },
         }, // methods

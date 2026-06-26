@@ -573,13 +573,27 @@ public class MemberService {
 	public int getMyCompanyLikeCount(String userId) {
 	    return memberMapper.selectMyCompanyLikeCount(userId);
 	}
+	// 상품 좋아요 조회
+	public List<HashMap<String, Object>> getMyProductLikeList(String userId, int page) {
+	    HashMap<String, Object> map = new HashMap<>();
+	    map.put("userId", userId);
+	    map.put("pageSize", 5);
+	    map.put("offset", (page - 1) * 5);
+	    return memberMapper.selectMyProductLikeList(map);
+	}
+
+	public int getMyProductLikeCount(String userId) {
+	    HashMap<String, Object> map = new HashMap<>();
+	    map.put("userId", userId);
+	    return memberMapper.selectMyProductLikeCount(map);
+	}
 	// 글 좋아요 조회
 	public List<Member> getMyPostLikeList(String userId, int page) {
 		HashMap<String, Object> map = new HashMap<>();
 	    map.put("userId", userId);
 	    map.put("pageSize", 5);
 	    map.put("offset", (page - 1) * 5);
-	    System.out.println("userId: " + userId);
+//	    System.out.println("userId: " + userId);
 	    return memberMapper.selectMyPostLikeList(map);
 	}
 	// 페이지 사이징
@@ -624,6 +638,12 @@ public class MemberService {
 	    map.put("userId", userId);
 	    map.put("likeNo", likeNo);
 	    return memberMapper.deleteMyCompanyLike(map);
+	}
+	// 상품 좋아요 취소
+	public void deleteMyProductLike(String likeNo) {
+	    HashMap<String, Object> map = new HashMap<>();
+	    map.put("likeNo", likeNo);
+	    memberMapper.deleteMyProductLike(map);
 	}
 	// 글 좋아요 취소
 	public int deleteMyPostLike(String userId, String likeNo) {
