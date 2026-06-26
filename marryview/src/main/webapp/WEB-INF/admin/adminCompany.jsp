@@ -84,7 +84,7 @@
             <div class="middle">
                 <jsp:include page="/WEB-INF/admin/adminNavi.jsp" />
                 <div class="main">
-                    <div class="container">
+                    <div class="container admin-fade-up delay-1">
 
                         <h2>업체 관리</h2>
                         <!-- 필터 영역 -->

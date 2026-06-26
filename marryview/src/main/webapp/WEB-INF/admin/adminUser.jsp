@@ -64,7 +64,7 @@
             <div class="middle">
                 <jsp:include page="/WEB-INF/admin/adminNavi.jsp" />
                 <div class="main">
-                    <div class="container">
+                    <div class="container admin-fade-up delay-1">
 
                         <h2>회원 관리</h2>
 

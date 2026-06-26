@@ -302,6 +302,18 @@ table button:hover{
 	position: relative;
 }
 
+.tab-menu button::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    right: 50%;
+    height: 4px;
+    background-color: #334155;
+    border-radius: 4px 4px 0 0;
+    transition: left .28s ease, right .28s ease;
+}
+
 .tab-menu button:hover {
 	color: #334155;
 	transform: translateY(-2px);
@@ -313,14 +325,24 @@ table button:hover{
 }
 
 .tab-menu button.active::after {
-    content: "";
-    position: absolute;
-    bottom: 0;      /* tab-menu의 border-bottom과 겹치게 배치 */
-    left: 0;
+	left: 0;
     right: 0;
-    height: 4px;    /* 선 두께 */
-    background-color: #334155; /* 페이지네이션과 같은 색 */
-    border-radius: 4px; /* 선의 양 끝만 둥글게 깎아 직선 느낌 유지 */
+}
+
+/* 탭 콘텐츠 전환 애니메이션 */
+.tab-fade-slide-enter-active,
+.tab-fade-slide-leave-active {
+    transition: opacity .24s ease, transform .24s ease;
+}
+
+.tab-fade-slide-enter-from {
+    opacity: 0;
+    transform: translateY(8px);
+}
+
+.tab-fade-slide-leave-to {
+    opacity: 0;
+    transform: translateY(-4px);
 }
 
 /*테이블*/
@@ -556,4 +578,50 @@ table button:hover{
     padding: 16px 24px;
     background: #e5e8f1;
     border-top: 1px solid #d1d9e6;
+}
+
+/* 관리자 페이지 진입 시 카드 등장 애니메이션 */
+.admin-fade-up {
+    opacity: 0;
+    animation: adminFadeUp .45s ease forwards;
+}
+
+.admin-fade-up.delay-1 {
+    animation-delay: .06s;
+}
+
+.admin-fade-up.delay-2 {
+    animation-delay: .12s;
+}
+
+.admin-fade-up.delay-3 {
+    animation-delay: .18s;
+}
+
+.admin-fade-up.delay-4 {
+    animation-delay: .24s;
+}
+
+.admin-fade-up.delay-5 {
+    animation-delay: .30s;
+}
+
+.admin-fade-up.delay-6 {
+    animation-delay: .36s;
+}
+
+.admin-fade-up.delay-7 {
+    animation-delay: .50s;
+}
+
+@keyframes adminFadeUp {
+    from {
+        opacity: 0;
+        transform: translateY(12px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
