@@ -129,127 +129,137 @@
                                 <h2>월별 매출 현황</h2>
                                 <div id="chart-sales"></div>
                             </div>
-                            <div v-if="activeTab == 'passes'">
+
+                            <div v-else-if="activeTab == 'passes'">
                                 <h2>패스별 판매 현황</h2>
                                 <div id="chart-passes"></div>
                             </div>
-                            <div v-if="activeTab == 'users'">
-                                <h2>일반 회원 등록수</h2>
+
+                            <div v-else-if="activeTab == 'users'">
+                                <h2>일반 회원 등록 수</h2>
                                 <div id="chart-users"></div>
                             </div>
-                            <div v-if="activeTab == 'nPartners'">
-                                <h2>일반 업체 등록수</h2>
+
+                            <div v-else-if="activeTab == 'nPartners'">
+                                <h2>일반 업체 등록 수</h2>
                                 <div id="chart-nPartners"></div>
                             </div>
-                            <div v-if="activeTab == 'partners'">
-                                <h2>제휴 업체 등록수</h2>
+
+                            <div v-else-if="activeTab == 'partners'">
+                                <h2>제휴 업체 등록 수</h2>
                                 <div id="chart-partners"></div>
                             </div>
                         </div>
+                        <transition name="tab-fade-slide" mode="out-in">
+                            <div :key="'summary-' + activeTab">
+                                <div v-if="activeTab == 'sales'" class="stats-summary-grid">
 
-                        <div v-if="activeTab == 'sales'" class="stats-summary-grid">
+                                    <div class="stats-mini-card">
+                                        <p>이번달 매출</p>
+                                        <h3>{{salesNow.toLocaleString()}}</h3>
+                                    </div>
 
-                            <div class="stats-mini-card">
-                                <p>이번달 매출</p>
-                                <h3>{{salesNow.toLocaleString()}}</h3>
+                                    <div class="stats-mini-card">
+                                        <p>저번달 매출</p>
+                                        <h3>{{salesBefore.toLocaleString()}}</h3>
+                                    </div>
+
+                                    <div class="stats-mini-card">
+                                        <p>증감률</p>
+                                        <h3
+                                            :class="salesGrowthRate == 0 ? 'same' : (salesGrowthRate < 0 ? 'down' : 'up')">
+                                            {{formatPercent(salesGrowthRate)}}%
+                                        </h3>
+                                    </div>
+
+                                </div>
+
+                                <div v-else-if="activeTab == 'passes'" class="stats-summary-grid">
+
+                                    <div class="stats-mini-card">
+                                        <p>전체 패스 판매</p>
+                                        <h3>{{ passTotalSold.toLocaleString() }}건</h3>
+                                    </div>
+
+                                    <div class="stats-mini-card">
+                                        <p>가장 많이 팔린 패스</p>
+                                        <h3>{{ bestPassName || '-' }}</h3>
+                                    </div>
+
+                                    <div class="stats-mini-card">
+                                        <p>BEST 패스 판매량</p>
+                                        <h3>{{ bestPassSold.toLocaleString() }}건</h3>
+                                    </div>
+
+                                </div>
+
+                                <div v-else-if="activeTab == 'users'" class="stats-summary-grid">
+
+                                    <div class="stats-mini-card">
+                                        <p>이번달 회원 수</p>
+                                        <h3>{{userNow.toLocaleString()}}</h3>
+                                    </div>
+
+                                    <div class="stats-mini-card">
+                                        <p>저번달 회원 수</p>
+                                        <h3>{{userBefore.toLocaleString()}}</h3>
+                                    </div>
+
+                                    <div class="stats-mini-card">
+                                        <p>증감률</p>
+                                        <h3
+                                            :class="userGrowthRate == 0 ? 'same' : (userGrowthRate < 0 ? 'down' : 'up')">
+                                            {{formatPercent(userGrowthRate)}}%
+                                        </h3>
+                                    </div>
+
+                                </div>
+
+                                <div v-else-if="activeTab == 'nPartners'" class="stats-summary-grid">
+
+                                    <div class="stats-mini-card">
+                                        <p>이번달 일반 업체 수</p>
+                                        <h3>{{nPartnerNow.toLocaleString()}}</h3>
+                                    </div>
+
+                                    <div class="stats-mini-card">
+                                        <p>저번달 일반 업체 수</p>
+                                        <h3>{{nPartnerBefore.toLocaleString()}}</h3>
+                                    </div>
+
+                                    <div class="stats-mini-card">
+                                        <p>증감률</p>
+                                        <h3
+                                            :class="nPartnerGrowthRate == 0 ? 'same' : (nPartnerGrowthRate < 0 ? 'down' : 'up')">
+                                            {{formatPercent(nPartnerGrowthRate)}}%
+                                        </h3>
+                                    </div>
+
+                                </div>
+
+                                <div v-else-if="activeTab == 'partners'" class="stats-summary-grid">
+
+                                    <div class="stats-mini-card">
+                                        <p>이번달 일반 업체 수</p>
+                                        <h3>{{partnerNow.toLocaleString()}}</h3>
+                                    </div>
+
+                                    <div class="stats-mini-card">
+                                        <p>저번달 일반 업체 수</p>
+                                        <h3>{{partnerBefore.toLocaleString()}}</h3>
+                                    </div>
+
+                                    <div class="stats-mini-card">
+                                        <p>증감률</p>
+                                        <h3
+                                            :class="partnerGrowthRate == 0 ? 'same' : (partnerGrowthRate < 0 ? 'down' : 'up')">
+                                            {{formatPercent(partnerGrowthRate)}}%
+                                        </h3>
+                                    </div>
+
+                                </div>
                             </div>
-
-                            <div class="stats-mini-card">
-                                <p>저번달 매출</p>
-                                <h3>{{salesBefore.toLocaleString()}}</h3>
-                            </div>
-
-                            <div class="stats-mini-card">
-                                <p>증감률</p>
-                                <h3 :class="salesGrowthRate == 0 ? 'same' : (salesGrowthRate < 0 ? 'down' : 'up')">
-                                    {{formatPercent(salesGrowthRate)}}%
-                                </h3>
-                            </div>
-
-                        </div>
-
-                        <div v-if="activeTab == 'passes'" class="stats-summary-grid">
-
-                            <div class="stats-mini-card">
-                                <p>전체 패스 판매</p>
-                                <h3>{{ passTotalSold.toLocaleString() }}건</h3>
-                            </div>
-
-                            <div class="stats-mini-card">
-                                <p>가장 많이 팔린 패스</p>
-                                <h3>{{ bestPassName || '-' }}</h3>
-                            </div>
-
-                            <div class="stats-mini-card">
-                                <p>BEST 패스 판매량</p>
-                                <h3>{{ bestPassSold.toLocaleString() }}건</h3>
-                            </div>
-
-                        </div>
-
-                        <div v-if="activeTab == 'users'" class="stats-summary-grid">
-
-                            <div class="stats-mini-card">
-                                <p>이번달 회원 수</p>
-                                <h3>{{userNow.toLocaleString()}}</h3>
-                            </div>
-
-                            <div class="stats-mini-card">
-                                <p>저번달 회원 수</p>
-                                <h3>{{userBefore.toLocaleString()}}</h3>
-                            </div>
-
-                            <div class="stats-mini-card">
-                                <p>증감률</p>
-                                <h3 :class="userGrowthRate == 0 ? 'same' : (userGrowthRate < 0 ? 'down' : 'up')">
-                                    {{formatPercent(userGrowthRate)}}%
-                                </h3>
-                            </div>
-
-                        </div>
-
-                        <div v-if="activeTab == 'nPartners'" class="stats-summary-grid">
-
-                            <div class="stats-mini-card">
-                                <p>이번달 일반 업체 수</p>
-                                <h3>{{nPartnerNow.toLocaleString()}}</h3>
-                            </div>
-
-                            <div class="stats-mini-card">
-                                <p>저번달 일반 업체 수</p>
-                                <h3>{{nPartnerBefore.toLocaleString()}}</h3>
-                            </div>
-
-                            <div class="stats-mini-card">
-                                <p>증감률</p>
-                                <h3
-                                    :class="nPartnerGrowthRate == 0 ? 'same' : (nPartnerGrowthRate < 0 ? 'down' : 'up')">
-                                    {{formatPercent(nPartnerGrowthRate)}}%
-                                </h3>
-                            </div>
-
-                        </div>
-
-                        <div v-if="activeTab == 'partners'" class="stats-summary-grid">
-
-                            <div class="stats-mini-card">
-                                <p>이번달 일반 업체 수</p>
-                                <h3>{{partnerNow.toLocaleString()}}</h3>
-                            </div>
-
-                            <div class="stats-mini-card">
-                                <p>저번달 일반 업체 수</p>
-                                <h3>{{partnerBefore.toLocaleString()}}</h3>
-                            </div>
-
-                            <div class="stats-mini-card">
-                                <p>증감률</p>
-                                <h3 :class="partnerGrowthRate == 0 ? 'same' : (partnerGrowthRate < 0 ? 'down' : 'up')">
-                                    {{formatPercent(partnerGrowthRate)}}%
-                                </h3>
-                            </div>
-
-                        </div>
+                        </transition>
                     </div>
                 </div>
             </div>

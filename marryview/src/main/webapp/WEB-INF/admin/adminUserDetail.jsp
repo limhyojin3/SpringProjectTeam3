@@ -60,7 +60,7 @@
                 <div class="main">
                     <div class="detail-container admin-detail-page" v-if="selectedUser">
                         <!-- 상단 -->
-                        <div class="detail-header">
+                        <div class="detail-header admin-fade-up delay-1">
                             <div class="detail-top">
                                 <button class="btn-back" @click="fnPage('/adminUser.do')">
                                     <i class="fas fa-bars"></i>
@@ -83,7 +83,7 @@
                         </div>
 
                         <!-- ===== 1. 회원 기본 정보 ===== -->
-                        <div class="card p-3 mb-3">
+                        <div class="card p-3 mb-3 admin-fade-up delay-3">
                             <h5>👤 회원 정보</h5>
                             <div class="row">
                                 <div class="col-4">
@@ -108,7 +108,7 @@
                         </div>
 
                         <!-- ===== 2. 활동 요약 ===== -->
-                        <div class="card p-3 mb-3">
+                        <div class="card p-3 mb-3 admin-fade-up delay-5">
                             <h5>📊 활동 요약</h5>
                             <div class="row text-center align-items-stretch">
                                 <div class="col-3">
@@ -139,7 +139,7 @@
                         </div>
 
                         <!-- ===== 3. 신고 이력 ===== -->
-                        <div class="card p-3 mb-3">
+                        <div class="card p-3 mb-3 admin-fade-up delay-6">
                             <h5>🚨 신고 이력</h5>
                             <table class="table table-sm table-bordered mt-2">
                                 <thead>
@@ -160,7 +160,7 @@
                         </div>
 
                         <!-- ===== 4. 정지 이력 ===== -->
-                        <div class="card p-3 mb-3">
+                        <div class="card p-3 mb-3 admin-fade-up delay-6">
                             <h5>🔨 정지 이력</h5>
                             <table class="table table-sm table-bordered mt-2">
                                 <thead>
@@ -187,14 +187,14 @@
                         </div>
 
                         <!-- ===== 5. 제재 처리 ===== -->
-                        <div class="card p-3 mb-3" v-if="selectedUser.status !== 'STOP'">
+                        <div class="card p-3 mb-3 admin-fade-up delay-6" v-if="selectedUser.status !== 'STOP'">
                             <h5 class="text-danger">🚫 정지 처리</h5>
                             <input class="form-control mb-2" v-model="banReason" placeholder="정지 사유 입력"
                                 @keyup.enter="fnBanUser" />
                             <button class="btn btn-danger btn-block" @click="fnBanUser">정지</button>
                         </div>
 
-                        <div class="card p-3" v-if="selectedUser.status === 'STOP'">
+                        <div class="card p-3 admin-fade-up delay-6" v-if="selectedUser.status === 'STOP'">
                             <h5 class="text-success">✅ 정지 해제</h5>
                             <input class="form-control mb-2" v-model="unbanReason" placeholder="해제 사유 입력"
                                 @keyup.enter="fnUnbanUser" />
