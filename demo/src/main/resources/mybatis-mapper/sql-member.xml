@@ -44,11 +44,36 @@
 	    )
 	</insert>
 	
+	<!-- 탈퇴 회원 재활성화 - MEMBER 테이블 UPDATE -->
+	<update id="reactivateMember" parameterType="hashmap">
+	    UPDATE MEMBER
+	    SET PASSWORD = #{password},
+	        TEL = #{userTel},
+	        STATUS = 'ACTIVE',
+	        OUT_DATE = NULL,
+	        REG_DATE = NOW()
+	    WHERE USER_ID = #{userId}
+	</update>
+	
+	<!-- 탈퇴 회원 재활성화 - USER_DETAIL 테이블 UPDATE -->
+	<update id="reactivateUserDetail" parameterType="hashmap">
+	    UPDATE USER_DETAIL
+	    SET NAME = #{name},
+	        NICKNAME = #{userId},
+	        GENDER = #{gender},
+	        EMAIL = #{email},
+	        WEDDING_DATE = #{weddingDate,jdbcType=DATE},
+	        ANNIVERSARY_DATE = #{anniversaryDate,jdbcType=DATE},
+	        MARITAL_STATUS = #{maritalStatus}
+	    WHERE USER_ID = #{userId}
+	</update>
+	
 	<!-- member table에서 user id 중복체크 -->
 	<select id="selectUserId" parameterType="hashmap" resultType="int">
 	    SELECT COUNT(*) 
 	    FROM MEMBER 
 	    WHERE USER_ID = #{userId}
+	    AND STATUS != 'WITHDRAWN'
 	</select>
 	
 	<!--USER_DETAIL table에서 USER EMAIL 중복체크-->
@@ -58,23 +83,37 @@
 	    WHERE EMAIL = #{email}
 	</select>
 	
+	<!-- MEMBER table에서 전화번호 중복체크 -->
+	<select id="selectUserPhone" parameterType="hashmap" resultType="int">
+	    SELECT COUNT(*)
+	    FROM MEMBER
+	    WHERE REPLACE(TEL, '-', '') = #{tel}
+	    AND STATUS != 'WITHDRAWN'
+	</select>
+	
 	<!--내 정보 수정을 위한 유저 정보 조회-->
 	<select id="selectMemberInfo" parameterType="String" resultType="com.example.demo.member.model.Member">
-	    SELECT 
+	    SELECT
 	        M.USER_ID as userId,
 	        M.TEL as tel,
 	        D.NAME as name,
 	        D.EMAIL as email,
-	        /* 닉네임이 null이면 userId를 nickName으로 가져옴 */
 	        IFNULL(D.NICKNAME, M.USER_ID) as nickName,
 	        D.GENDER as gender,
 	        D.WEDDING_DATE as weddingDate,
-	        D.ANNIVERSARY_DATE as anniversaryDate,   <!-- ✅ 추가 -->
-	        D.MARITAL_STATUS as maritalStatus        <!-- ✅ 추가 -->
+	        D.ANNIVERSARY_DATE as anniversaryDate,
+	        D.MARITAL_STATUS as maritalStatus,
+	        D.PROFILE_IMG as profileImg
 	    FROM MEMBER M
 	    LEFT OUTER JOIN USER_DETAIL D ON M.USER_ID = D.USER_ID
 	    WHERE M.USER_ID = #{userId}
 	</select>
+	<!-- 프로필 이미지 수정 -->
+	<update id="updateProfileImg" parameterType="hashmap">
+	    UPDATE USER_DETAIL
+	    SET PROFILE_IMG = #{profileImg}
+	    WHERE USER_ID = #{userId}
+	</update>
 	<!--내 정보 수정 업데이트-->
 	<!--멤버 테이블 업데이트-->
 	<update id="updateMember" parameterType="map">
@@ -91,10 +130,12 @@
 	        EMAIL = #{email},
 	        GENDER = #{gender},
 	        NICKNAME = #{nickName},
-	        WEDDING_DATE = #{weddingDate}
+	        WEDDING_DATE = #{weddingDate},
+	        MARITAL_STATUS = #{maritalStatus},
+        	ANNIVERSARY_DATE = #{anniversaryDate}
 	    WHERE USER_ID = #{userId}
 	</update>
-	
+
 	<!--회원 탈퇴 (db 삭제하지 않고 status를 변경합니다.)-->
 	<update id="updateUserStatus" parameterType="map">
 	    UPDATE MEMBER
@@ -103,6 +144,35 @@
 	        OUT_DATE = NOW()
 	    WHERE USER_ID = #{userId}
 	</update>
+	
+	<!-- 탈퇴 후 재가입 방지 체크 -->
+	<select id="selectWithdrawnDate" parameterType="map" resultType="string">
+	    SELECT OUT_DATE
+	    FROM MEMBER
+	    WHERE USER_ID = #{userId}
+	    AND STATUS = 'WITHDRAWN'
+	</select>
+	
+	<!-- 카카오 ID로 회원 조회 -->
+	<select id="selectMemberByKakaoId" parameterType="String" resultType="com.example.demo.member.model.Member">
+	    SELECT * FROM member WHERE user_id = #{kakaoId}
+	</select>
+	
+	<!-- 카카오 회원 자동 가입 -->
+	<insert id="insertKakaoMember" parameterType="hashmap">
+	    INSERT INTO member (user_id, password, role, status, reg_date)
+	    VALUES (#{userId}, #{password}, 'USER', 'ACTIVE', NOW())
+	</insert>
+	
+	<!-- 카카오 회원 user_detail insert -->
+	<insert id="insertKakaoMemberDetail" parameterType="hashmap">
+	    INSERT INTO user_detail (user_id, name, nickname, email)
+	    VALUES (#{userId}, #{name}, #{nickname}, #{email})
+	</insert>
+	
+	<select id="selectNicknameByUserId" parameterType="String" resultType="String">
+	    SELECT nickname FROM user_detail WHERE user_id = #{userId}
+	</select>
 	
 	<!-- 쿠폰 조회 -->
 	<select id="selectUserCouponList" parameterType="hashmap" resultType="hashmap">
@@ -416,11 +486,11 @@
 	    SELECT 
 	        CL.like_no,
 	        CL.company_no,
-	        C.com_name,
-	        C.com_type
+	        C.com_name
 	    FROM company_like CL
 	    JOIN company C ON CL.company_no = C.company_no
 	    WHERE CL.user_id = #{userId}
+	    ORDER BY CL.like_no DESC 
 	    LIMIT #{pageSize} OFFSET #{offset}
 	</select>
 	<!-- 페이지 -->
@@ -444,6 +514,7 @@
 	    JOIN community_post CP ON CL.post_no = CP.post_no
 	    WHERE CL.user_id = #{userId}
 	    AND CP.user_id != #{userId}
+	    ORDER BY CL.like_no DESC
 	    LIMIT #{pageSize} OFFSET #{offset}
 	</select>
 	<!-- 페이지 -->
@@ -468,6 +539,7 @@
 	    JOIN review R ON RL.review_no = R.review_no
 	    WHERE RL.user_id = #{userId}
 	    AND R.user_id != #{userId} <!-- 본인 리뷰 제외 -->
+	    ORDER BY RL.like_no DESC
 	    LIMIT #{pageSize} OFFSET #{offset}
 	</select>
 	<!-- 페이지 -->
@@ -584,6 +656,69 @@
 	    AND YEAR(issued_at) = #{year}
 	</select>
 	
+	<!-- 사용자 프로필 기본 정보 조회 -->
+	<select id="selectUserProfile" parameterType="String" resultType="com.example.demo.member.model.Member">
+	    SELECT
+	        M.USER_ID as userId,
+	        IFNULL(D.NICKNAME, M.USER_ID) as nickName,
+	        D.PROFILE_IMG as profileImg
+	    FROM MEMBER M
+	    LEFT JOIN USER_DETAIL D ON M.USER_ID = D.USER_ID
+	    WHERE M.USER_ID = #{userId}
+	</select>
+	
+	<!-- 사용자가 쓴 리뷰 목록 -->
+	<select id="selectUserReviewList" parameterType="hashmap" resultType="com.example.demo.member.model.Member">
+	    SELECT
+	        REVIEW_NO as reviewNo,
+	        TITLE as title,
+	        REG_DATE as regDate,
+	        VIEW_CNT as viewCnt
+	    FROM REVIEW
+	    WHERE USER_ID = #{userId}
+	    ORDER BY REG_DATE DESC
+	    LIMIT #{pageSize} OFFSET #{offset}
+	</select>
+	
+	<!-- 사용자가 쓴 게시글 목록 -->
+	<select id="selectUserPostList" parameterType="hashmap" resultType="com.example.demo.member.model.Member">
+	    SELECT
+	        POST_NO as postNo,
+	        TITLE as title,
+	        REG_DATE as regDate,
+	        VIEW_CNT as viewCnt,
+	        CATEGORY as category
+	    FROM COMMUNITY_POST
+	    WHERE USER_ID = #{userId}
+	    ORDER BY REG_DATE DESC
+	    LIMIT #{pageSize} OFFSET #{offset}
+	</select>
+	
+	<!-- 사용자가 쓴 댓글 목록 -->
+	<select id="selectUserCommentList" parameterType="hashmap" resultType="com.example.demo.member.model.Member">
+	    SELECT
+	        COMMENT_NO as commentNo,
+	        CONTENT as content,
+	        REG_DATE as regDate
+	    FROM COMMENT
+	    WHERE USER_ID = #{userId}
+	    ORDER BY REG_DATE DESC
+	    LIMIT #{pageSize} OFFSET #{offset}
+	</select>
+	
+	<!-- 페이징 -->
+	<select id="selectUserReviewCount" parameterType="String" resultType="int">
+	    SELECT COUNT(*) FROM REVIEW WHERE USER_ID = #{userId}
+	</select>
+	
+	<select id="selectUserPostCount" parameterType="String" resultType="int">
+	    SELECT COUNT(*) FROM COMMUNITY_POST WHERE USER_ID = #{userId}
+	</select>
+	
+	<select id="selectUserCommentCount" parameterType="String" resultType="int">
+	    SELECT COUNT(*) FROM COMMENT WHERE USER_ID = #{userId}
+	</select>
+	
 	<!-- 구분선  -->
 	
 	<!-- 업체 유저-->
@@ -615,10 +750,9 @@
 	</insert>
 	<!-- company 테이블 INSERT -->
 	<insert id="insertCompany" parameterType="hashmap">
-	    INSERT INTO COMPANY (COM_NAME, COM_TYPE, USER_ID, COM_ADDRESS, BIZ_NO, CEO_NAME, COM_TEL, COM_EMAIL, REGISTRATION_FEE)
+	    INSERT INTO COMPANY (COM_NAME, USER_ID, COM_ADDRESS, BIZ_NO, CEO_NAME, COM_TEL, COM_EMAIL, REGISTRATION_FEE)
 	    VALUES (
 	        #{comName},
-	        #{comType},
 	        #{userId},
 	        #{comAddress, jdbcType=VARCHAR},
 	        #{bizNo},
@@ -683,16 +817,16 @@
 	        R.reg_date,
 	        R.is_paid,
 	        R.user_id,
+	        R.like_cnt AS likeCnt,  <!-- COUNT 대신 컬럼 직접 사용 -->
+	        R.view_cnt AS viewCnt,
 	        IFNULL(R.thumbnail_url, R.img_url) AS thumbnailUrl,
-	        <!-- 추가: 현재 로그인한 유저가 이미 구매한 리뷰인지 여부 -->
-	        CASE WHEN PUL.user_id IS NOT NULL THEN 1 ELSE 0 END AS is_purchased
+	        CASE WHEN PUL.user_id IS NOT NULL THEN 1 ELSE 0 END AS is_purchased,
+	        UD.nickname AS userNick
 	    FROM review R
-	    <!-- 추가: pass_usage_log 조인으로 구매 여부 확인 -->
-	    LEFT JOIN pass_usage_log PUL
-	        ON R.review_no = PUL.review_no
-	        AND PUL.user_id = #{userId}
+	    LEFT JOIN pass_usage_log PUL ON R.review_no = PUL.review_no AND PUL.user_id = #{userId}
+	    LEFT JOIN user_detail UD ON R.user_id = UD.user_id
 	    WHERE R.approval_status = 'APPROVED'
-	    ORDER BY R.reg_date DESC
+	    ORDER BY R.like_cnt DESC
 	    LIMIT 4
 	</select>
 	
@@ -727,5 +861,56 @@
         )
 	</insert>
 	
+	<!-- 챗봇 추천 기능 -->
+	<select id="getTopReviewedProducts" resultType="hashmap">
+	    SELECT p.product_no, p.product_name, p.large_category, 
+	           p.medium_category, p.original_price, COUNT(r.review_no) AS review_cnt
+	    FROM product p
+	    JOIN review r ON p.product_no = r.product_no
+	    WHERE p.is_active = 1
+	    AND r.approval_status = 'APPROVED'
+	    GROUP BY p.product_no, p.product_name, p.large_category, p.medium_category, p.original_price
+	    ORDER BY review_cnt DESC
+	    LIMIT 5
+	</select>
+	<!-- 상품 평균 비용 -->
+	<select id="getAverageProductPrice" resultType="hashmap">
+	    SELECT 
+	        large_category,
+	        medium_category,
+	        ROUND(AVG(original_price)) AS avg_price,
+	        COUNT(*) AS product_cnt
+	    FROM product
+	    WHERE is_active = 1
+	    GROUP BY large_category, medium_category
+	    ORDER BY large_category, medium_category
+	</select>
+	<!-- 가장 저렴한 상품 -->
+	<select id="getCheapestProducts" resultType="hashmap" parameterType="String">
+	    SELECT p.product_name, p.large_category, p.medium_category, p.original_price
+	    FROM product p
+	    WHERE p.is_active = 1
+	    <if test="category != null and category != ''">
+	        AND (p.large_category LIKE CONCAT('%', #{category}, '%') 
+	          OR p.medium_category LIKE CONCAT('%', #{category}, '%'))
+	    </if>
+	    ORDER BY p.original_price ASC
+	    LIMIT 5
+	</select>
+	<!-- 리뷰 갯수와 카테고리 조회 -->
+	<select id="getMostReviewedProductsByCategory" resultType="hashmap" parameterType="String">
+	    SELECT p.product_name, p.large_category, p.medium_category, 
+	           COUNT(r.review_no) AS review_cnt
+	    FROM product p
+	    LEFT JOIN review r ON p.product_no = r.product_no
+	    WHERE p.is_active = 1
+	    <if test="category != null and category != ''">
+	        AND (p.large_category LIKE CONCAT('%', #{category}, '%') 
+	          OR p.medium_category LIKE CONCAT('%', #{category}, '%'))
+	    </if>
+	    GROUP BY p.product_no, p.product_name, p.large_category, p.medium_category
+	    ORDER BY review_cnt DESC
+	    LIMIT 5
+	</select>
 	
 </mapper>

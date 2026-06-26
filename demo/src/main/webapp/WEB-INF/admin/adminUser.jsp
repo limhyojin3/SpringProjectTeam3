@@ -19,7 +19,7 @@
             .table tr:hover {
                 cursor: pointer;
             }
-            
+
             /* 상태 배지 */
             .status-badge {
                 padding: 4px 8px;
@@ -113,7 +113,11 @@
                                     :class="{ 'active-row': selectedUser && selectedUser.userId === user.userId }"
                                     @click="selectUser(user)">
 
-                                    <td>{{user.userId}}</td>
+                                    <td class="admin-id-cell">
+                                        <span class="admin-id-text" :title="user.userId">
+                                            {{ user.userId }}
+                                        </span>
+                                    </td>
                                     <td>{{user.name}}</td>
                                     <td>{{user.nickName || '-'}}</td>
 

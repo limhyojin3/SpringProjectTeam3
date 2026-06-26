@@ -7,7 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MarryView - 회원가입</title>
     <script src="https://code.jquery.com/jquery-3.7.1.js" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
-    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
     <script src="/js/page-change.js"></script>
     <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script> <!--주소 api-->
     <style>
@@ -27,7 +27,10 @@
             margin-bottom: 18px;
             cursor: pointer;
         }
-        .logo-wrap img { height: 64px; }
+        .logo-wrap img { 
+            height: 64px;
+            filter: hue-rotate(200deg);
+        }
 
         .join-card {
             width: 100%;
@@ -54,7 +57,7 @@
         }
 
         .form-label {
-            background: #f4a096;
+            background: #9b8fd4;
             color: white;
             width: 90px;
             min-width: 90px;
@@ -74,7 +77,7 @@
             min-width: 0;
             display: flex;
             flex-direction: column;
-            border: 1px solid #f4a096;
+            border: 1px solid #9b8fd4;
             border-left: none;
             border-radius: 0 6px 6px 0;
             overflow: hidden;
@@ -91,7 +94,7 @@
             background: #fff;
         }
         .form-input + .form-input {
-            border-top: 1px solid #f4a096;
+            border-top: 1px solid #9b8fd4;
         }
         .form-input.disabled { background: #f5f5f5; }
 
@@ -124,7 +127,7 @@
         input[type="radio"] {
             margin-left: 12px;
             margin-right: 4px;
-            accent-color: #f4a096;
+            accent-color: #9b8fd4;
         }
 
         .email-id-input {
@@ -165,7 +168,7 @@
         .btn-check {
             align-self: stretch;
             padding: 0 14px;
-            background: #f0b429;
+            background: #98b5fd;
             color: white;
             border: none;
             border-radius: 0 6px 6px 0;
@@ -182,7 +185,7 @@
         .btn-submit {
             width: 100%;
             height: 48px;
-            background: #f4a096;
+            background: #9b8fd4;
             color: white;
             border: none;
             border-radius: 6px;
@@ -216,11 +219,11 @@
             transition: all 0.3s;
         }
         .step-dot.active {
-            background: #f4a096;
+            background: #9b8fd4;
             color: white;
         }
         .step-dot.done {
-            background: #f4a096;
+            background: #9b8fd4;
             color: white;
             opacity: 0.5;
         }
@@ -231,7 +234,7 @@
             transition: background 0.3s;
         }
         .step-line.done {
-            background: #f4a096;
+            background: #9b8fd4;
             opacity: 0.5;
         }
         .step-label {
@@ -264,7 +267,7 @@
         .btn-next {
             flex: 2;
             height: 48px;
-            background: #f4a096;
+            background: #9b8fd4;
             color: white;
             border: none;
             border-radius: 6px;
@@ -275,6 +278,162 @@
             transition: opacity 0.2s;
         }
         .btn-next:hover { opacity: 0.88; }
+
+        /* ── 약관 동의 ── */
+        .terms-wrap {
+             margin: 16px 0 8px; 
+        }
+        .terms-box { 
+            border: 1px solid #9b8fd4; 
+            border-radius: 6px; 
+            overflow: hidden; 
+        }
+        .terms-header {
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            padding: 10px 14px; 
+            background: #fff8f8; 
+        }
+        .terms-header span {
+             font-size: 13px; 
+             color: #555; 
+        }
+        .terms-view-btn {
+             font-size: 12px; 
+             color: #9b8fd4; 
+             cursor: pointer; 
+             text-decoration: underline; 
+        }
+        .terms-check-row {
+             padding: 10px 14px; 
+             display: flex; 
+             align-items: center; 
+             gap: 8px; 
+             border-top: 1px solid #f9ddd9; 
+        }
+        .terms-check-row input[type="checkbox"] {
+             accent-color: #9b8fd4; 
+             width: 16px; 
+             height: 16px; 
+        }
+        .terms-check-row label {
+             font-size: 13px; 
+             color: #555; 
+             cursor: pointer; 
+        }
+        .terms-modal-overlay {
+            position: fixed; 
+            top: 0; 
+            left: 0; 
+            width: 100%; 
+            height: 100%; 
+            background: rgba(0,0,0,0.4); 
+            z-index: 9999; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+        }
+        .terms-modal {
+            background: #fff; 
+            width: 90%; 
+            max-width: 520px; 
+            max-height: 80vh; 
+            border-radius: 12px; 
+            overflow: hidden; 
+            display: flex; 
+            flex-direction: column; 
+        }
+        .terms-modal-header {
+             padding: 16px 20px; 
+             border-bottom: 1px solid #eee; 
+             display: flex; 
+             justify-content: space-between; 
+             align-items: center; 
+        }
+        .terms-modal-header span {
+             font-weight: 700; 
+             font-size: 15px; 
+             color: #333;
+        }
+        .terms-modal-close {
+             cursor: pointer; 
+             color: #aaa; 
+             font-size: 20px; 
+            }
+        .terms-modal-body {
+             padding: 20px; 
+             overflow-y: auto; 
+             flex: 1; 
+             font-size: 13px; 
+             color: #555; 
+             line-height: 1.8; 
+        }
+        .terms-date {
+             color: #aaa; 
+             font-size: 12px; 
+             margin-bottom: 16px; 
+        }
+        .terms-section-title {
+             font-weight: 700; 
+             color: #333; 
+             margin-bottom: 6px; 
+        }
+        .terms-section-content {
+             margin-bottom: 16px; 
+        }
+        .terms-section-content p {
+             margin-bottom: 4px; 
+        }
+        .terms-modal-footer {
+             border-top: 1px solid #eee; 
+             padding-top: 16px; 
+             display: flex; 
+             align-items: center; 
+             gap: 10px; 
+        }
+        .terms-modal-footer input[type="checkbox"] {
+             accent-color: #9b8fd4; 
+             width: 16px; 
+             height: 16px; 
+        }
+        .terms-modal-footer label {
+             font-size: 13px; 
+             color: #555; 
+             cursor: pointer; 
+        }
+        .terms-modal-confirm {
+             margin-left: auto; 
+             padding: 8px 20px; 
+             background: #9b8fd4; 
+             color: white; 
+             border: none; 
+             border-radius: 6px; 
+             font-size: 13px; 
+             cursor: pointer; 
+        }
+        .terms-modal-confirm:hover {
+             opacity: 0.88; 
+        }
+        .pwd-strength-bar {
+            width: 100%;
+            height: 4px;
+            background: #eee;
+            border-radius: 4px;
+            margin-top: 4px;
+        }
+        .pwd-strength-fill {
+            height: 100%;
+            border-radius: 4px;
+            transition: width 0.3s;
+        }
+        .pwd-strength-fill.weak { width: 33%; background: #ff4d4d; }
+        .pwd-strength-fill.normal { width: 66%; background: #ffaa00; }
+        .pwd-strength-fill.strong { width: 100%; background: #4caf50; }
+
+        .weak { color: #ff4d4d; }
+        .normal { color: #ffaa00; }
+        .strong { color: #4caf50; }
     </style>
 </head>
 <body>
@@ -296,9 +455,9 @@
                     <div class="step-dot" :class="{active: step===3}">3</div>
                 </div>
                 <div style="display:flex; justify-content:center; gap:25px; margin-bottom:20px;">
-                    <span class="step-label" :style="{color: step>=1 ? '#f4a096' : '#bbb'}">기본정보</span>
-                    <span class="step-label" :style="{color: step>=2 ? '#f4a096' : '#bbb'}">본인인증</span>
-                    <span class="step-label" :style="{color: step>=3 ? '#f4a096' : '#bbb'}">비밀번호</span>
+                    <span class="step-label" :style="{color: step>=1 ? '#9b8fd4' : '#bbb'}">기본정보</span>
+                    <span class="step-label" :style="{color: step>=2 ? '#9b8fd4' : '#bbb'}">본인인증</span>
+                    <span class="step-label" :style="{color: step>=3 ? '#9b8fd4' : '#bbb'}">비밀번호</span>
                 </div>
             </div>
 
@@ -377,23 +536,6 @@
                     </div>
                     <button class="btn-check" @click="fnCheckEmail()">중복체크</button>
                 </div>
-
-                <!-- 업체 분류 -->
-                <div class="form-row">
-                    <div class="form-label">업체 분류</div>
-                    <div class="row-body">
-                        <div class="form-input">
-                            <select v-model="info.comType">
-                                <option value="">선택해주세요</option>
-                                <option value="STUDIO">스튜디오</option>
-                                <option value="DRESS">드레스</option>
-                                <option value="MAKEUP">메이크업</option>
-                                <option value="SNAP">스냅</option>
-                            </select>
-                        </div>
-                    </div>
-                </div>
-
                 <div class="step-btn-wrap">
                     <button class="btn-next" @click="step=2">다음 →</button>
                 </div>
@@ -463,6 +605,10 @@
                                 :disabled="!(isVerified && isBizVerified)"
                                 placeholder="영문+숫자 8자 이상">
                         </div>
+                        <!-- ✅ 추가 -->
+                        <div class="msg-box" :class="{'show': pwdStrengthMsg, 'disabled': !(isVerified && isBizVerified)}">
+                            <span :class="pwdStrengthClass">{{ pwdStrengthMsg }}</span>
+                        </div>
                         <div class="form-input" :class="{'disabled': !(isVerified && isBizVerified)}">
                             <input type="password" v-model="info.passwordConfirm"
                                 :disabled="!(isVerified && isBizVerified)"
@@ -492,7 +638,62 @@
                             :style="{color: isAddressMatch ? 'green' : 'red'}">{{ addressMsg }}</div>
                     </div>
                 </div>
+                <!-- 약관 동의 -->
+                <div class="terms-wrap">
+                    <div class="terms-box">
+                        <div class="terms-header">
+                            <span>MarryView 이용약관 (필수)</span>
+                            <span class="terms-view-btn" @click="showTermsModal=true">약관 보기</span>
+                        </div>
+                        <div class="terms-check-row">
+                            <input type="checkbox" id="agreeTerms" v-model="isTermsAgreed">
+                            <label for="agreeTerms">이용약관에 동의합니다.</label>
+                        </div>
+                    </div>
+                </div>
 
+                <!-- 약관 모달 -->
+                <div class="terms-modal-overlay" v-if="showTermsModal">
+                    <div class="terms-modal">
+                        <div class="terms-modal-header">
+                            <span>MarryView 이용약관</span>
+                            <span class="terms-modal-close" @click="showTermsModal=false">✕</span>
+                        </div>
+                        <div class="terms-modal-body">
+                            <p class="terms-date">시행일: 2025년 01월 01일</p>
+                            <p class="terms-section-title">제1조 (목적)</p>
+                            <div class="terms-section-content">
+                                <p>이 약관은 MarryView가 운영하는 웨딩 리뷰 플랫폼의 이용 조건 및 절차, 회사와 이용자 간의 권리·의무 및 책임 사항을 규정함을 목적으로 합니다.</p>
+                            </div>
+                            <p class="terms-section-title">제4조 (회원가입 및 관리)</p>
+                            <div class="terms-section-content">
+                                <p>· 만 14세 미만의 아동은 회원가입을 할 수 없습니다.</p>
+                                <p>· 하나의 이메일 계정으로 하나의 회원 계정만 생성할 수 있습니다.</p>
+                                <p>· 아이디와 비밀번호는 본인이 직접 관리하여야 하며, 제3자에게 양도하거나 공유할 수 없습니다.</p>
+                            </div>
+                            <p class="terms-section-title">제6조 (리뷰 작성 규정)</p>
+                            <div class="terms-section-content">
+                                <p>· 리뷰는 해당 업체를 실제로 예약·이용한 회원만 작성할 수 있습니다.</p>
+                                <p>· 허위 리뷰, 광고성 리뷰, 욕설·비방 등이 포함된 리뷰는 삭제될 수 있습니다.</p>
+                            </div>
+                            <p class="terms-section-title">제9조 (금지행위)</p>
+                            <div class="terms-section-content">
+                                <p>· 타인의 계정 도용, 허위 정보 가입 금지</p>
+                                <p>· 크롤링·자동화 스크립트 사용 금지</p>
+                                <p>· 허위 리뷰 작성 및 조직적 리뷰 조작 금지</p>
+                            </div>
+                            <p class="terms-section-title">제10조 (개인정보 보호)</p>
+                            <div class="terms-section-content">
+                                <p>· 회사는 관련 법령에 따라 회원의 개인정보를 보호하며, 동의 없이 제3자에게 제공하지 않습니다.</p>
+                            </div>
+                            <div class="terms-modal-footer">
+                                <input type="checkbox" id="modalAgree" v-model="isTermsAgreed">
+                                <label for="modalAgree">동의합니다.</label>
+                                <button class="terms-modal-confirm" @click="showTermsModal=false">확인</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
                 <div class="step-btn-wrap">
                     <button class="btn-prev" @click="step=2">← 이전</button>
                     <button class="btn-next" @click="fnCompanyJoin()">가입하기</button>
@@ -519,7 +720,6 @@
                     // *company table
                     comName : "",
                     ceoName : "",
-                    comType : "STUDIO",
                     comAddress : "",
                     comAddressDetail: "",
                     comEmail : "", // [저장용] 중복체크 통과 시 합쳐진 전체 이메일 저장
@@ -554,6 +754,11 @@
 
                 addressMsg : "",
                 isAddressMatch:false, // 사업장 위치 입력 여부
+
+                isTermsAgreed: false, // 약관 동의
+                showTermsModal: false, // 약관 동의 모달
+                pwdStrengthMsg: '',
+                pwdStrengthClass: '',
             };
         },
         methods: {
@@ -626,9 +831,12 @@
                     alert("사업장 주소를 입력해주세요.");
                     return;
                 }
-                // 추가
                 if(!self.info.comAddressDetail) {
                     alert("상세 주소를 입력해주세요.");
+                    return;
+                }
+                if(!self.isTermsAgreed) {
+                    alert("이용약관에 동의해주세요.");
                     return;
                 }
 
@@ -865,6 +1073,26 @@
             filterPassword: function() {
                 // 한글, 띄어쓰기 제거
                 this.info.password = this.info.password.replace(/[ㄱ-ㅎㅏ-ㅣ가-힣\s]/g, '');
+
+                 // 보안 단계 체크
+                let pwd = this.info.password;
+                let hasLetter = /[a-zA-Z]/.test(pwd);
+                let hasNumber = /[0-9]/.test(pwd);
+                let hasSpecial = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(pwd);
+                
+                if (!pwd) {
+                    this.pwdStrengthMsg = '';
+                    this.pwdStrengthClass = '';
+                } else if (pwd.length < 8 || !hasLetter || !hasNumber) {
+                    this.pwdStrengthMsg = '🔴 취약 - 영문+숫자 8자리 이상 입력해주세요.';
+                    this.pwdStrengthClass = 'weak';
+                } else if (hasSpecial) {
+                    this.pwdStrengthMsg = '🟢 강함 - 안전한 비밀번호입니다.';
+                    this.pwdStrengthClass = 'strong';
+                } else {
+                    this.pwdStrengthMsg = '🟡 보통 - 특수문자 추가 시 보안이 강해져요.';
+                    this.pwdStrengthClass = 'normal';
+                }
             },
             fnSearchAddress: function() {
                 new daum.Postcode({

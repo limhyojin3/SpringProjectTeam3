@@ -68,7 +68,7 @@
         .btn-confirm {
             width: 100%;
             padding: 15px;
-            background-color: #ff4d6d;
+            background-color: #e07a8a;
             color: white;
             border: none;
             border-radius: 5px;
@@ -79,7 +79,7 @@
         }
 
         .btn-confirm:hover {
-            background-color: #ff1a43;
+            background-color: #e07a8a;
         }
     </style>
 </head>
@@ -117,7 +117,18 @@
         </div>
         <jsp:include page="/WEB-INF/common/footer.jsp" />
     </div>
-
+    <script>
+        const currentPath = window.location.pathname;
+        document.querySelectorAll('.nav-btn').forEach(btn => {
+            const onclick = btn.getAttribute('onclick');
+            if (!onclick) return;
+            const match = onclick.match(/'([^']+)'/);
+            if (!match) return;
+            if (currentPath.endsWith(match[1])) {
+                btn.classList.add('active');
+            }
+        });
+    </script>
 <script>
     const app = Vue.createApp({
         data() {

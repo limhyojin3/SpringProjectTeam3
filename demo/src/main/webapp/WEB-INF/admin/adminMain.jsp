@@ -366,7 +366,11 @@
                                 <tbody>
                                     <tr v-for="item in reviewList.slice(0,5)">
                                         <td class="text" :title="item.title">{{item.title}}</td></a>
-                                        <td>{{item.userId}}</td>
+                                        <td class="admin-id-cell">
+                                            <span class="admin-id-text" :title="item.userId">
+                                                {{ item.userId }}
+                                            </span>
+                                        </td>
                                         <td>{{item.postDay}}</td>
                                     </tr>
                                 </tbody>
@@ -402,7 +406,11 @@
                                 <tbody>
                                     <tr v-for="item in reportList.slice(0,5)">
                                         <td class="text" :title="item.reportTitle">{{item.reportTitle}}</td>
-                                        <td>{{item.reporterId}}</td>
+                                        <td class="admin-id-cell">
+                                            <span class="admin-id-text" :title="item.reporterId">
+                                                {{ item.reporterId }}
+                                            </span>
+                                        </td>
                                         <td>{{item.reportDay}}</td>
                                     </tr>
                                 </tbody>
@@ -438,7 +446,11 @@
                                 <tbody>
                                     <tr v-for="item in inquiryList.slice(0,5)">
                                         <td class="text" :title="item.title">{{item.title}}</td>
-                                        <td>{{item.userId}}</td>
+                                        <td class="admin-id-cell">
+                                            <span class="admin-id-text" :title="item.userId">
+                                                {{ item.userId }}
+                                            </span>
+                                        </td>
                                         <td>{{formatDate(item.regDate)}}</td>
                                     </tr>
                                 </tbody>
@@ -583,7 +595,7 @@
                     formatDate(date) {
                         return date ? date.substring(0, 10) : '-';
                     },
-                    
+
                     fnAfterAllDone: function () {
                         let self = this;
                         self.newCommer = self.userNow + self.nPartnerNow + self.partnerNow;

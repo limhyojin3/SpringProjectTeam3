@@ -2,11 +2,16 @@ package com.example.demo.community_review.controller;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.example.demo.community_review.dao.CommunityService;
 import com.example.demo.community_review.model.Community;
@@ -175,5 +180,24 @@ public class CommunityController {
         return gson.toJson(resultMap);
     }
 
+ // --- [사이드바용 인기 게시글 조회 (AJAX)] ---
+    @PostMapping("/popularList.dox")
+    @ResponseBody
+    public String getPopularList() {
+        HashMap<String, Object> resultMap = new HashMap<>();
+        
+        try {
+            // 세션 체크 로직을 완전히 제거하여 비회원도 조회 가능하도록 수정
+            List<Map<String, Object>> popularList = communityService.selectPopularPostList();
+            
+            resultMap.put("list", popularList);
+            resultMap.put("result", "success");
+        } catch (Exception e) {
+            e.printStackTrace();
+            resultMap.put("result", "fail");
+        }
+        
+        return gson.toJson(resultMap);
+    }
  
 }

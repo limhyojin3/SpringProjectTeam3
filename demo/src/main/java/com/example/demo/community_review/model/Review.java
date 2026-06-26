@@ -50,4 +50,13 @@ public class Review {
     private int isViewed;           // 0: 안봄, 1: 봄
     private Timestamp usedAt;       // 유료 리뷰 사용 시간 (pass_usage_log)
     private Timestamp viewdAt;      // 무료 리뷰 조회 시간 (free_view_log)
+    
+//  ai요약
+
+    private String aiSummary; // 추가
+    private String summary; // 요약문 저장용
+
+    private String largeCategory;
+    private String mediumCategory;
+
 }

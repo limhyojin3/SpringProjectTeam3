@@ -14,32 +14,95 @@
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/mypage.css">
 
     <style>
-        .cs-list-title { font-size: 30px; font-weight: bold; text-align: center; margin-bottom: 20px; color: #333; }
-        .write-table { width: 100%; border-collapse: collapse; margin-bottom: 20px; font-size: 14px; }
-        .write-table th { background-color: #ffc7c2; padding: 10px; text-align: center; border: 1px solid #f4a096; font-weight: bold; }
-        .write-table td { padding: 10px; text-align: center; border: 1px solid #eee; color: #555; }
-        .write-table tr:hover { background-color: #fff0ef; }
-        .write-table td.col-title { text-align: left; cursor: pointer; }
-        .write-table td.col-title:hover { color: #f4a096; text-decoration: underline; }
-        .col-no { width: 80px; } .col-writer { width: 120px; } .col-status { width: 100px; }
-        .status-wait { color: #f4a096; font-weight: bold; }
-        .status-done { color: #9b8fd4; font-weight: bold; }
-        .cs-list-bottom { display: flex; justify-content: space-between; align-items: center; margin-top: 20px; }
-        .btn-cs-write { padding: 10px 25px; background-color: #f0b429; color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 14px; transition: 0.2s; }
-        .btn-cs-write:hover { opacity: 0.85; }
-        
-        /* 필터 스타일 */
-        .filter-area { display: flex; justify-content: flex-end; gap: 8px; margin-bottom: 15px; }
-        .filter-select { width: 150px; height: 38px; font-size: 14px; border: 1px solid #ddd; border-radius: 4px; }
+        /* 제목 */
+        .cs-list-title {
+            font-size: 20px;
+            font-weight: 700;
+            color: #333;
+            margin-bottom: 20px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid #e07a8a;
+            text-align: left;
+        }
 
-        /* 모달 내부 스타일 */
-        .modal-label { font-weight: bold; color: #333; margin-top: 10px; }
-        .answer-box { background-color: #f9f9f9; border-left: 4px solid #9b8fd4; padding: 15px; margin-top: 20px; }
-        
-        /* 페이징 스타일 */
-        .pagination .page-item.active .page-link { background-color: #f4a096; border-color: #f4a096; color: white; }
-        .pagination .page-link { color: #f4a096; }
-        
+        /* 필터 */
+        .filter-area {
+            display: flex;
+            justify-content: flex-end;
+            gap: 8px;
+            margin-bottom: 15px;
+        }
+
+        .filter-select {
+            width: 150px;
+            height: 38px;
+            font-size: 14px;
+            border: 1px solid #ffc7c2;
+            border-radius: 6px;
+            color: #555;
+            padding: 0 8px;
+        }
+
+        .filter-select:focus {
+            outline: none;
+            border-color: #e07a8a;
+        }
+
+        /* 테이블 */
+        .write-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+            font-size: 14px;
+        }
+
+        .write-table th {
+            background-color: #fff0f3;
+            padding: 12px 10px;
+            text-align: center;
+            border-bottom: 2px solid #e07a8a;
+            border-top: 1px solid #ffc7c2;
+            font-weight: 700;
+            color: #555;
+        }
+
+        .write-table td {
+            padding: 12px 10px;
+            text-align: center;
+            border-bottom: 1px solid #f5f5f5;
+            color: #555;
+        }
+
+        .write-table tr:hover td {
+            background-color: #fff9f9;
+        }
+
+        .write-table td.col-title {
+            text-align: left;
+            cursor: pointer;
+        }
+
+        .write-table td.col-title:hover {
+            color: #e07a8a;
+            text-decoration: underline;
+        }
+
+        .col-no { width: 60px; }
+        .col-writer { width: 120px; }
+        .col-status { width: 100px; }
+
+        /* 상태 배지 */
+        .status-wait {
+            color: #e07a8a;
+            font-weight: 700;
+        }
+
+        .status-done {
+            color: #9b8fd4;
+            font-weight: 700;
+        }
+
+        /* 페이지네이션 */
         .pagination-wrap {
             display: flex;
             justify-content: center;
@@ -54,8 +117,8 @@
             min-width: 34px;
             padding: 0 10px;
             background-color: #fff;
-            color: #f4a096;
-            border: 1.5px solid #f4a096;
+            color: #e07a8a;
+            border: 1px solid #ffc7c2;
             border-radius: 6px;
             cursor: pointer;
             font-size: 13px;
@@ -65,13 +128,15 @@
 
         .btn-page-arrow:hover,
         .btn-page-num:hover {
-            background-color: #f4a096;
+            background-color: #e07a8a;
             color: white;
+            border-color: #e07a8a;
         }
 
         .btn-page-num.active-page {
-            background-color: #f4a096;
+            background-color: #e07a8a;
             color: white;
+            border-color: #e07a8a;
             font-weight: bold;
         }
 
@@ -80,23 +145,85 @@
             cursor: not-allowed;
         }
 
+        /* 하단 버튼 영역 */
+        .cs-list-bottom {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 20px;
+        }
+
         .btn-back {
-            padding: 10px 30px;
-            background-color: #fff;
-            color: #f4a096;
-            border: 1.5px solid #f4a096;
+            padding: 8px 20px;
+            background-color: white;
+            color: #e07a8a;
+            border: 1px solid #ffc7c2;
             border-radius: 6px;
             cursor: pointer;
             font-size: 13px;
-            font-weight: 500;
+            font-weight: 600;
             transition: 0.2s;
         }
 
         .btn-back:hover {
-            background-color: #f4a096;
+            background-color: #e07a8a;
             color: white;
+            border-color: #e07a8a;
         }
 
+        .btn-cs-write {
+            padding: 8px 20px;
+            background-color: #e07a8a;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 600;
+            transition: 0.2s;
+        }
+
+        .btn-cs-write:hover {
+            background-color: #c9606f;
+        }
+
+        /* 모달 */
+        .modal-label {
+            font-weight: 700;
+            color: #333;
+            margin-top: 10px;
+        }
+
+        .answer-box {
+            background-color: #f8f6ff;
+            border-left: 4px solid #9b8fd4;
+            padding: 15px;
+            margin-top: 20px;
+            border-radius: 0 8px 8px 0;
+        }
+
+        /* 부트스트랩 모달 버튼 오버라이드 */
+        .btn-primary {
+            background-color: #e07a8a !important;
+            border-color: #e07a8a !important;
+        }
+
+        .btn-primary:hover {
+            background-color: #c9606f !important;
+            border-color: #c9606f !important;
+        }
+
+        .pagination .page-item.active .page-link {
+            background-color: #e07a8a;
+            border-color: #e07a8a;
+        }
+
+        .pagination .page-link {
+            color: #e07a8a;
+        }
+        i {
+            margin-right: 8px;
+        }
     </style>
 </head>
 <body>
@@ -107,7 +234,7 @@
                 <jsp:include page="/WEB-INF/common/mypage-nav.jsp" />
 
                 <div class="right-sections">
-                    <h3 class="cs-list-title">어떤 도움이 필요하세요?</h3>
+                    <h3 class="cs-list-title"><i class="fas fa-headset"></i>어떤 도움이 필요하세요?</h3>
 
                     <div class="filter-area">
                         <select class="filter-select" v-model="searchType" @change="fnGetList(1)">
@@ -238,10 +365,20 @@
                 </div>
             </div>
         </div>
-
         <jsp:include page="/WEB-INF/common/footer.jsp" />
     </div>
-
+    <script>
+        const currentPath = window.location.pathname;
+        document.querySelectorAll('.nav-btn').forEach(btn => {
+            const onclick = btn.getAttribute('onclick');
+            if (!onclick) return;
+            const match = onclick.match(/'([^']+)'/);
+            if (!match) return;
+            if (currentPath.endsWith(match[1])) {
+                btn.classList.add('active');
+            }
+        });
+    </script>
 <script>
     const app = Vue.createApp({
         data() {

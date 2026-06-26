@@ -119,6 +119,8 @@ public class Admin {
 	String proType;
 	String tag;
 	int deposit;
+	String largeCategory;
+	String mediumCategory;
 
 	// 쿠폰
 //	String couponCode;
@@ -137,6 +139,7 @@ public class Admin {
 	String passName;
 	int price;
 	int reviewCnt;
+	int soldCount; // 정상 결제된 패스 판매 건수
 //	int isActive;
 	String description;
 	String itemName;

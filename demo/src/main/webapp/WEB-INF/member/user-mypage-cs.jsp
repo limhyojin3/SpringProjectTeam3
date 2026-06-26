@@ -19,48 +19,60 @@
     <style>
         .cs-card {
             background-color: white;
-            border: 1px solid #eee;
-            border-radius: 12px;
-            padding: 30px;
+            border: 1px solid #f0e0e0;
+            border-radius: 16px;
+            padding: 40px;
             text-align: center;
             width: 550px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.04);
         }
 
         .cs-card h3 {
-            font-size: 25px;
-            font-weight: bold;
-            margin-bottom: 20px;
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 24px;
             color: #333;
+            padding-bottom: 12px;
+            border-bottom: 2px solid #e07a8a;
         }
 
         .cs-img {
             width: 100%;
-            margin-bottom: 20px;
+            height: 200px;  /* 고정 높이 */
+            object-fit: contain;
+            margin: 0 auto 28px;
+            display: block;
             border-radius: 8px;
         }
 
         .cs-btn {
-            display: block;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
             width: 100%;
-            padding: 14px 0;
-            margin-bottom: 10px;
+            padding: 16px 0;
+            margin-bottom: 12px;
             background-color: white;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            font-size: 20px;
-            font-weight: 500;
+            border: 1px solid #ffc7c2;
+            border-radius: 10px;
+            font-size: 15px;
+            font-weight: 600;
+            color: #555;
             cursor: pointer;
             transition: 0.2s;
         }
 
         .cs-btn:hover {
-            background-color: #f4a096;
+            background-color: #e07a8a;
             color: white;
-            border-color: #f4a096;
+            border-color: #e07a8a;
         }
 
-        /* 카드 가운데 정렬 */
+        .cs-btn:last-child {
+            margin-bottom: 0;
+        }
+
         .right-sections {
             display: flex;
             justify-content: center;
@@ -80,9 +92,13 @@
                 <div class="right-sections">
                     <div class="cs-card">
                         <h3>어떤 도움이 필요하세요?</h3>
-                        <img src="/img/mypage_require_pic.png" class="cs-img">
-                        <button class="cs-btn" @click="fnCsList()">1대1 문의작성/내역조회</button>
-                        <button class="cs-btn" @click="fnReport()">신고내역조회</button>
+                        <img src="/img/marry_logo.jfif" class="cs-img">
+                        <button class="cs-btn" @click="fnCsList()">
+                            <i class="fas fa-headset"></i> 1대1 문의작성/내역조회
+                        </button>
+                        <button class="cs-btn" @click="fnReport()">
+                            <i class="fas fa-flag"></i> 신고내역조회
+                        </button>
                     </div>
                 </div>
 
@@ -90,7 +106,18 @@
         </div>
         <jsp:include page="/WEB-INF/common/footer.jsp" />
     </div>
-
+    <script>
+        const currentPath = window.location.pathname;
+        document.querySelectorAll('.nav-btn').forEach(btn => {
+            const onclick = btn.getAttribute('onclick');
+            if (!onclick) return;
+            const match = onclick.match(/'([^']+)'/);
+            if (!match) return;
+            if (currentPath.endsWith(match[1])) {
+                btn.classList.add('active');
+            }
+        });
+    </script>
 <script>
     const app = Vue.createApp({
         data() {

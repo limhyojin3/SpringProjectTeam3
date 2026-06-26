@@ -139,7 +139,11 @@
 
                                     <td>{{item.inquiryNo}}</td>
                                     <td>{{item.inquiryType}}</td>
-                                    <td>{{item.userId}}</td>
+                                    <td class="admin-id-cell">
+                                        <span class="admin-id-text" :title="item.userId">
+                                            {{ item.userId }}
+                                        </span>
+                                    </td>
 
                                     <td class="text-left">
                                         {{item.title}}
@@ -221,18 +225,21 @@
 
                             <div class="modal-footer">
 
-                                <button class="btn btn-primary" @click="saveAnswer()">
-                                    저장
+                                <!-- 대기 중인 문의 -->
+                                <button class="btn btn-success" v-if="selected && selected.status === 'WAIT'"
+                                    @click="completeAnswer">
+                                    답변 완료
                                 </button>
 
-                                <button class="btn btn-success" v-if="selected && selected.status == 'WAIT'"
-                                    @click="fnchangeStatus('DONE')">
-                                    DONE
+                                <!-- 이미 완료된 문의 -->
+                                <button class="btn btn-primary" v-if="selected && selected.status === 'DONE'"
+                                    @click="updateAnswer">
+                                    수정 저장
                                 </button>
 
-                                <button class="btn btn-danger" v-if="selected && selected.status == 'DONE'"
-                                    @click="fnchangeStatus('WAIT')">
-                                    WAIT
+                                <button class="btn btn-warning" v-if="selected && selected.status === 'DONE'"
+                                    @click="reopenInquiry">
+                                    재처리하기
                                 </button>
 
                                 <button class="btn btn-secondary" data-dismiss="modal">
@@ -361,8 +368,109 @@
                                 // self.selected.answerContent = self.answerContent;
                             }
                         });
-                    }
+                    },
 
+                    completeAnswer() {
+                        let self = this;
+
+                        if (!self.answerContent.trim()) {
+                            alert("답변을 입력하세요.");
+                            return;
+                        }
+
+                        if (!confirm("답변을 등록하고 문의를 완료 처리하시겠습니까?")) {
+                            return;
+                        }
+
+                        $.ajax({
+                            url: "/inquiryAnswer.dox",
+                            type: "POST",
+                            dataType: "json",
+                            data: {
+                                inquiryNo: self.selected.inquiryNo,
+                                answerContent: self.answerContent
+                            },
+                            success: function (res) {
+                                if (res.result === "success") {
+                                    self.selected.answerContent = self.answerContent;
+                                    self.selected.status = "DONE";
+                                    self.fnGetList();
+
+                                    if (res.notificationResult === "fail") {
+                                        alert("답변은 저장됐지만 알림 발송에 실패했습니다.");
+                                    } else {
+                                        alert("답변이 등록되고 완료 처리되었습니다.");
+                                    }
+                                } else {
+                                    alert(res.message || "답변 처리에 실패했습니다.");
+                                }
+                            },
+                            error: function () {
+                                alert("서버 통신 중 오류가 발생했습니다.");
+                            }
+                        });
+                    },
+
+                    updateAnswer() {
+                        let self = this;
+
+                        if (!self.answerContent.trim()) {
+                            alert("답변을 입력하세요.");
+                            return;
+                        }
+
+                        $.ajax({
+                            url: "/inquiryAnswerUpdate.dox",
+                            type: "POST",
+                            dataType: "json",
+                            data: {
+                                inquiryNo: self.selected.inquiryNo,
+                                answerContent: self.answerContent
+                            },
+                            success: function (res) {
+                                if (res.result === "success") {
+                                    self.selected.answerContent = self.answerContent;
+                                    self.fnGetList();
+                                    alert("답변이 수정되었습니다.");
+                                } else {
+                                    alert(res.message || "답변 수정에 실패했습니다.");
+                                }
+                            },
+                            error: function () {
+                                alert("서버 통신 중 오류가 발생했습니다.");
+                            }
+                        });
+                    },
+
+                    reopenInquiry() {
+                        let self = this;
+
+                        if (!confirm("이 문의를 다시 처리 대기 상태로 변경하시겠습니까?")) {
+                            return;
+                        }
+
+                        $.ajax({
+                            url: "/changeAnswer.dox",
+                            type: "POST",
+                            dataType: "json",
+                            data: {
+                                inquiryNo: self.selected.inquiryNo,
+                                status: "WAIT"
+                            },
+                            success: function (res) {
+                                if (res.result === "success") {
+                                    self.selected.status = "WAIT";
+                                    self.fnGetList();
+                                    alert("다시 처리 대기 상태로 변경되었습니다.");
+                                } else {
+                                    alert(res.message || "상태 변경에 실패했습니다.");
+                                }
+                            },
+                            error: function () {
+                                alert("서버 통신 중 오류가 발생했습니다.");
+                            }
+                        });
+                    }
                 }, // methods
                 mounted() {
                     // 처음 시작할 때 실행되는 부분

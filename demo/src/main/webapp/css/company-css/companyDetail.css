@@ -1,0 +1,223 @@
+/* ==========================================================================
+   업체 상세 프로필 및 독립 패키지 쇼룸 전용 라벤더 연보라 테마 스타일시트 (companyDetail.css)
+   ========================================================================== */
+
+/* 1. 상단 대장 업체 프로필 메인 카드 */
+.company-detail-profile-card {
+	/* 💡 [명품 럭셔리 라벤더 룩앤필 전면 교정 완공] */
+	background-color: #ffffff !important;           /* 핑크색 습격을 파괴하는 철벽 고순도 화이트 마감 */
+	border: 1px solid rgba(167, 139, 250, 0.15) !important; /* 극초경량 소프트 라벤더 슬림 엣지 라인 */
+	border-radius: 20px !important;                  /* 카드의 각진 모서리를 메인 보드와 어울리게 둥글고 세련되게 보정 */
+	
+	/* 💡 [image_2ed5f3.png 예시 안개 그림자 복제 이식] 무채색 보랏빛을 안개처럼 넓고 맑게 펼치는 프리미엄 음영 주입 */
+	box-shadow: 0 15px 40px rgba(109, 40, 217, 0.025), 0 4px 12px rgba(0, 0, 0, 0.01) !important;
+	
+	padding: 25px !important;
+	display: flex !important;
+	flex-direction: column !important;
+	position: relative !important;        /* 우상단 마스터 하트의 절대 좌표 정렬을 위해 부모 자격 수립 */
+}
+
+/* 업체 정보 내 서브 텍스트 보정 */
+.company-detail-location {
+	font-size: 0.95rem;
+	color: #6c757d;
+}
+
+/* 2. 업체 소개 한 줄 안내 (배경과 테두리를 투명하게 걷어내어 여백 극대화) */
+.company-detail-intro-container {
+	margin-top: 15px;
+	background-color: transparent !important; /* 연보라색 배경 상자 제거 */
+	border: none !important;                  /* 테두리선 완전히 빼기 */
+	padding: 0 !important;                     /* 불필요해진 안쪽 여백 완전히 청소 */
+}
+
+.company-detail-intro-title {
+	color: #6d28d9 !important; /* 진분홍 타이틀 글자를 차분하고 격식 있는 딥 퍼플 색상으로 매핑 */
+	font-weight: bold;
+	font-size: 1rem;
+	margin-bottom: 6px;
+}
+
+/* 3. 하단 전용 상품 쇼룸 인디케이터 바 라인 색상 보정 */
+.company-showroom-title-bar {
+	border-left: 4px solid #a78bfa !important; /* 선 테두리 포인트를 연보라색 단색으로 깔맞춤 */
+	padding-left: 10px;
+	margin-top: 30px;
+	margin-bottom: 20px;
+}
+
+/* 우측 상단 뒤로가기 버튼 디자인 (라벤더 룩앤필 동기화) */
+.company-detail-profile-card button,
+.company-detail-profile-card .btn-back {
+	background-color: #ffffff !important;
+	border: 1px solid #ede9fe !important;
+	color: #6d28d9 !important;
+	padding: 6px 14px !important;
+	border-radius: 6px !important;
+	font-size: 0.88rem !important;
+	font-weight: 500 !important;
+	cursor: pointer;
+	transition: all 0.2s ease;
+	align-self: flex-end;
+}
+
+.company-detail-profile-card button:hover,
+.company-detail-profile-card .btn-back:hover {
+	background-color: #f5f3ff !important;
+	border-color: #a78bfa !important;
+}
+
+/* ==========================================================================
+   4. 하단 추천 패키지 상품 격리형 수직 포켓몬 카드 (한 줄에 3개 그리드)
+   ========================================================================== */
+
+.company-pokemon-grid {
+	display: grid !important;
+	grid-template-columns: repeat(3, 1fr) !important; /* 정확하게 한 줄에 3개씩 분할 안착 */
+	gap: 25px !important;                              
+	margin-top: 15px !important;
+	margin-bottom: 40px !important;
+	align-items: stretch !important;                   
+}
+
+.company-pokemon-grid .product-item {
+	display: flex !important;
+	flex-direction: column !important; /* 세로 구조로 전격 교체 */
+	align-items: stretch !important;
+	background: #ffffff !important;
+	border: 1px solid rgba(0, 0, 0, 0.04) !important;
+	border-radius: 16px !important;    /* 하단 상품 카드도 부드럽게 둥글리기 스케일업 */
+	padding: 16px !important;
+	gap: 12px !important;
+	position: relative !important;     
+	box-shadow: 0 4px 12px rgba(0, 0, 0, 0.02) !important;
+	margin-bottom: 0 !important;       
+	transition: all 0.25s ease-in-out !important;
+	width: 100% !important;
+}
+
+.company-pokemon-grid .product-item:hover {
+	transform: translateY(-4px) !important;
+	box-shadow: 0 12px 30px rgba(167, 139, 250, 0.12) !important;
+	border-color: #a78bfa !important;
+}
+
+.company-pokemon-grid .product-img-box {
+	width: 100% !important;
+	height: 190px !important;         
+	border-radius: 10px !important;
+	overflow: hidden !important;
+	margin: 0 !important;
+	flex-shrink: 0 !important;
+}
+
+.company-pokemon-grid .product-img-box img {
+	width: 100% !important;
+	height: 100% !important;
+	object-fit: cover !important;
+}
+
+.company-pokemon-grid .product-info {
+	display: flex !important;
+	flex-direction: column !important;
+	gap: 6px !important;
+	min-height: auto !important;      
+	flex-grow: 1 !important;
+	padding: 0 !important;
+}
+
+.company-pokemon-grid .product-info h4 {
+	font-size: 1.1rem !important;
+	font-weight: 700 !important;
+	color: #222 !important;
+	margin: 4px 0 0 0 !important;
+}
+
+.company-pokemon-grid .product-info .product-content {
+	font-size: 0.9rem !important;
+	color: #666 !important;
+	line-height: 1.4 !important;
+	margin: 0 0 10px 0 !important;
+}
+
+/* 💡 바닥 정렬 수평선 너비 100% 확장 잠금 가동 및 핑크 소독 완공 */
+.company-pokemon-grid .product-price-row {
+	display: flex !important;
+	justify-content: space-between !important; 
+	align-items: center !important;
+	margin-top: auto !important;       
+	width: 100% !important;
+	border-top: 1px dashed #ede9fe !important; /* 상품 구분선도 맑은 라벤더 점선으로 개정 */
+	padding-top: 8px !important;
+}
+
+.company-pokemon-grid .product-info .product-price {
+	font-size: 1.2rem !important;
+	color: #6d28d9 !important;         /* 상품 가격도 세련된 인텔리전트 보라색 포인트 피드로 개정 */
+	font-weight: 700 !important;
+	margin: 0 !important;
+	width: auto !important;
+	text-align: left !important;
+}
+
+/* 🎯 [하위 패키지 상품 리스트용 하트 버튼] 투명 히트박스 명세 보존 */
+.company-pokemon-grid .product-item .like-chip-btn {
+	position: static !important;       
+	margin-left: auto !important;      
+	display: inline-flex !important;
+	align-items: center !important;
+	justify-content: center !important;
+	width: 36px !important;     
+	height: 36px !important;    
+	cursor: pointer !important;     /* 💡 🖱️ 마우스 호버 시 클릭할 수 있다는 손가락 기호 주입 */
+	user-select: none !important;
+	transition: transform 0.15s ease-in-out !important;
+	font-size: 1.35rem !important; 
+	background: transparent !important;
+	border: none !important;
+	box-shadow: none !important;
+	padding: 0 !important;
+}
+
+.company-pokemon-grid .product-item .like-chip-btn.active {
+	background: transparent !important; 
+	border: none !important;              
+	box-shadow: none !important;
+}
+
+.company-pokemon-grid .product-item .like-chip-btn:active {
+	transform: scale(1.25) !important;
+}
+
+/* 👑 [마스터 프로필 헤더 하트 황금비율 교정] 크기 시원하게 벌크업 + 우상단 25px 완벽한 사방 대칭 + 마우스 포인터 강제 조준 */
+.company-detail-profile-card .like-chip-btn {
+	position: absolute !important;
+	top: 25px !important;       /* 카드 탑 마진 25px과 완벽 매칭 */
+	right: 25px !important;     /* 카드 라이트 마진 25px과 완벽 매칭 */
+	width: 40px !important;     /* 커진 하트 알맹이에 맞춰 터치 존 40px 최적화 */
+	height: 40px !important;
+	font-size: 1.7rem !important; /* 💡 기존 1.35rem에서 1.7rem으로 위풍당당하게 스케일업! */
+	cursor: pointer !important;  /* 💡 🖱️ 마우스 호버 시 손가락 포인터 피드백 수혈 */
+	display: inline-flex !important;
+	align-items: center !important;
+	justify-content: center !important;
+	user-select: none !important;
+	transition: transform 0.15s ease-in-out !important;
+	
+	background: transparent !important;
+	border: none !important;
+	box-shadow: none !important;
+	padding: 0 !important;
+}
+
+/* 마스터 하트도 활성화 시 투명 레이아웃 전면 사수 */
+.company-detail-profile-card .like-chip-btn.active {
+	background: transparent !important;
+	border: none !important;
+	box-shadow: none !important;
+}
+
+.company-detail-profile-card .like-chip-btn:active {
+	transform: scale(1.25) !important;
+}

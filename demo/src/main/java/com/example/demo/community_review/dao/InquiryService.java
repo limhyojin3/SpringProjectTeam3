@@ -10,17 +10,25 @@ import org.springframework.stereotype.Service;
 import com.example.demo.common.Message;
 import com.example.demo.community_review.mapper.InquiryMapper;
 import com.example.demo.community_review.model.Inquiry;
+import com.example.demo.admin.dao.NotificationService;
 
 @Service
 public class InquiryService {
 
     @Autowired
     private InquiryMapper inquiryMapper;
+    
+    @Autowired
+    private NotificationService notificationService;
 
     // 문의 등록
     public Map<String, Object> addInquiry(HashMap<String, Object> map) {
         Map<String, Object> resultMap = new HashMap<>();
         int res = inquiryMapper.insertInquiry(map);
+        notificationService.createInquiryReceived(
+        	    map.get("inquiryNo"),
+        	    (String) map.get("userId")
+        	);
         resultMap.put("result", res > 0 ? "success" : "fail");
         return resultMap;
     }

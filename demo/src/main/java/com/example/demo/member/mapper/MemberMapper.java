@@ -22,6 +22,10 @@ public interface MemberMapper {
 	int selectUserId(HashMap<String, Object> map);
 	// 이메일 중복 체크
 	int selectUserEmail(HashMap<String, Object> map);
+	// 전화번호 중복 체크
+	int selectUserPhone(HashMap<String, Object> map);
+	// 프로필 이미지 수정
+	void updateProfileImg(HashMap<String, Object> map);
 	// 유저 상세 정보 조회 (내 정보 수정)
 	Member selectMemberInfo(String userId);
 	// 유저 내 정보 수정(멤버 테이블)
@@ -30,6 +34,12 @@ public interface MemberMapper {
 	public int updateUserDetail(HashMap<String, Object> map);
 	// 유저 탈퇴 (status 상태를 WITHDRAWN로 변경)
 	public int updateUserStatus(HashMap<String, Object> map);
+	// 탈퇴 날짜조회
+	String selectWithdrawnDate(HashMap<String, Object> map);
+	// 탈퇴 회원 재활성화
+	void reactivateMember(HashMap<String, Object> map);
+	// 탈퇴 회원 재활성화 - USER_DETAIL 테이블 UPDATE
+	void reactivateUserDetail(HashMap<String, Object> map);
 	// 유저 쿠폰 조회
 	List<HashMap<String, Object>> selectUserCouponList(Map<String, Object> param);
 	// 유저 쿠폰 개수
@@ -100,7 +110,16 @@ public interface MemberMapper {
 	//결혼 기념일 확인
 	String selectAnniversaryDate(String userId);
 	int checkAnniversaryGiftcon(HashMap<String, Object> map);
-			
+	// 사용자 프로필 조회
+	Member selectUserProfile(String userId);
+	List<Member> selectUserReviewList(HashMap<String, Object> map);
+	List<Member> selectUserPostList(HashMap<String, Object> map);
+	List<Member> selectUserCommentList(HashMap<String, Object> map);
+	// 페이징
+	int selectUserReviewCount(String userId);
+	int selectUserPostCount(String userId);
+	int selectUserCommentCount(String userId);
+	
 	// * 유료리뷰 열람 시 *
 	// 열람 기록 확인
 	int selectUsageLog(HashMap<String, Object> map);
@@ -135,5 +154,20 @@ public interface MemberMapper {
 	
 	// *챗봇 로그* 
 	int insertChatLog(ChatLog chatLog);
+	// 챗봇 추천 기능
+	List<HashMap<String, Object>> getTopReviewedProducts();
+	// 챗봇 평균 비용 계산
+	List<HashMap<String, Object>> getAverageProductPrice();
+	// 가장 저렴한 상품
+	List<HashMap<String, Object>> getCheapestProducts(String category);
+	// 리뷰 갯수와 카테고리 조회
+	List<HashMap<String, Object>> getMostReviewedProductsByCategory(String category);
 	
+	// 소셜 로그인
+	// 카카오 로그인
+	Member selectMemberByKakaoId(String kakaoId);
+	void insertKakaoMember(HashMap<String, Object> map);
+	void insertKakaoMemberDetail(HashMap<String, Object> map);
+	// 네이버 로그인
+	String selectNicknameByUserId(String userId);
 }

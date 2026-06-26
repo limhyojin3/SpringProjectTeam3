@@ -112,6 +112,65 @@
 	LIMIT #{pageSize} OFFSET #{offSet}
 	</select>
 	
+	
+		<!-- 관리자 영수증 검토 보조 상세 -->
+	<select id="selectReceiptReviewDetail"
+	        parameterType="hashmap"
+	        resultType="hashmap">
+	
+	    SELECT
+	        r.review_no AS reviewNo,
+	        r.user_id AS userId,
+	        r.title AS title,
+	        r.approval_status AS approvalStatus,
+	
+	        r.company_no AS companyNo,
+	        r.product_no AS productNo,
+	        r.res_no AS resNo,
+	
+	        r.external_name AS externalName,
+	        r.booking_source AS bookingSource,
+	        r.total_cost AS totalCost,
+	        r.receipt_name AS receiptName,
+	
+	        c.com_name AS companyName,
+	        p.product_name AS productName,
+	
+	        CASE
+	            WHEN r.res_no IS NOT NULL
+	             AND rs.res_no IS NOT NULL
+	            THEN 1
+	            ELSE 0
+	        END AS reservationLinked,
+	
+	        DATE_FORMAT(
+	            rs.use_date,
+	            '%Y-%m-%d'
+	        ) AS reservationUseDate,
+	
+	        (
+	            SELECT MAX(pr.amount)
+	            FROM payment_reservation pr
+	            WHERE pr.res_no = r.res_no
+	              AND pr.pay_status = 'SUCCESS'
+	        ) AS linkedPaymentAmount
+	
+	    FROM review r
+	
+	    LEFT JOIN company c
+	        ON c.company_no = r.company_no
+	
+	    LEFT JOIN product p
+	        ON p.product_no = r.product_no
+	
+	    LEFT JOIN reservation rs
+	        ON rs.res_no = r.res_no
+	
+	    WHERE r.review_no = #{reviewNo}
+	
+	</select>
+	
+		
 	<!--Review 페이지네이션 count-->
 	<select id="selectReviewCount" parameterType="hashmap" resultType="int">
 		SELECT COUNT(*) FROM review WHERE 1=1
@@ -216,22 +275,17 @@
 	<if
 		test="processStatus != null and processStatus != 'ALL'">
 		<choose>
-			<!-- 조치대기: 조치 자체가 아직 안 된 상태 -->
-			<when test="processStatus == 'WAIT_ACTION'">
-				AND action_status = 0
-			</when>
-			<!-- 답변대기: 조치는 했지만 답변(통보)은 안 나간 상태 -->
-			<!--<when test="processStatus == 'WAIT_ANSWER'">
-				AND action_status = 1 AND answer_status = 0
-			</when>-->
-			<!-- 처리완료: 조치와 답변 모두 끝난 상태 -->
-			<when test="processStatus == 'COMPLETED'">
-				AND action_status = 1 <!-- AND answer_status = 1-->
-			</when>
-			<!-- 반려: 반려 조치-->
-			<when test="processStatus == 'REJECTED'">
-				AND action_status = 2 <!--AND answer_status = 0-->
-			</when>
+		    <when test="processStatus == 'WAIT_ACTION'">
+		        AND action_status = 0
+		    </when>
+		    <when test="processStatus == 'WAIT_ANSWER'">
+		        AND action_status IN (1, 2)
+		        AND answer_status = 0
+		    </when>
+		    <when test="processStatus == 'COMPLETED'">
+		        AND action_status IN (1, 2)
+		        AND answer_status = 1
+		    </when>
 		</choose>
 	</if>
 	<!-- 정렬 -->
@@ -320,22 +374,17 @@
 	<if
 		test="processStatus != null and processStatus != 'ALL'">
 		<choose>
-			<!-- 조치대기: 조치 자체가 아직 안 된 상태 -->
-			<when test="processStatus == 'WAIT_ACTION'">
-				AND action_status = 0
-			</when>
-			<!-- 답변대기: 조치는 했지만 답변(통보)은 안 나간 상태 -->
-			<when test="processStatus == 'WAIT_ANSWER'">
-				AND action_status = 1 AND answer_status = 0
-			</when>
-			<!-- 처리완료: 조치와 답변 모두 끝난 상태 -->
-			<when test="processStatus == 'COMPLETED'">
-				AND action_status = 1 AND answer_status = 1
-			</when>
-			<!-- 반려: 반려 조치-->
-			<when test="processStatus == 'REJECTED'">
-				AND action_status = 2 AND answer_status = 0
-			</when>
+		    <when test="processStatus == 'WAIT_ACTION'">
+		        AND action_status = 0
+		    </when>
+		    <when test="processStatus == 'WAIT_ANSWER'">
+		        AND action_status IN (1, 2)
+		        AND answer_status = 0
+		    </when>
+		    <when test="processStatus == 'COMPLETED'">
+		        AND action_status IN (1, 2)
+		        AND answer_status = 1
+		    </when>
 		</choose>
 	</if>
 	</select>
@@ -344,18 +393,31 @@
 <!-- 전체 개수(페이징)영역 끝 -->
 
 <!-- 패스권 결제페이지?-->
-	<select id="selectPassList" parameterType="hashmap"
-		resultType="com.example.demo.admin.model.Admin">
-		SELECT
-		PASS_NO,
-		PASS_NAME,
-		PRICE,
-		REVIEW_CNT,
-		IS_ACTIVE,
-		REG_DATE,
-		description
-		FROM PASS_PRODUCT
-		WHERE IS_ACTIVE = 1
+	<select id="selectPassList"
+        parameterType="hashmap"
+        resultType="com.example.demo.admin.model.Admin">
+
+    SELECT
+        PP.PASS_NO AS passNo,
+        PP.PASS_NAME AS passName,
+        PP.PRICE AS price,
+        PP.REVIEW_CNT AS reviewCnt,
+        PP.IS_ACTIVE AS isActive,
+        PP.REG_DATE AS regDate,
+        PP.DESCRIPTION AS description,
+
+        (
+            SELECT COUNT(*)
+            FROM PAYMENT_PASS PPS
+            INNER JOIN PAYMENT P
+                ON P.PAY_NO = PPS.PAY_NO
+            WHERE PPS.PASS_NO = PP.PASS_NO
+              AND P.PAY_STATUS = 'SUCCESS'
+        ) AS soldCount
+
+    FROM PASS_PRODUCT PP
+    WHERE PP.IS_ACTIVE = 1
+    ORDER BY PP.PASS_NO ASC
 	</select>
 
 	<select id="selectPassInfo" parameterType="hashmap"
@@ -431,16 +493,13 @@
 		WHERE inquiry_no = #{inquiryNo}
 	</select>
 
-	<!--새로운 테이블에 답변을 저장하려했는데 이미 문의 테이블에 답변 컬럼이 있어서 삭제예정
-	<insert id="insertAnswer" parameterType="hashmap">
-		INSERT INTO inquiry (
-		inquiry_no,
-		answer_content
-		) VALUES (
-		#{inquiryNo},
-		#{answer}
-		)
-	</insert> 새로운 테이블에 답변을 저장하려했는데 이미 문의 테이블에 답변 컬럼이 있어서 삭제예정-->
+	<!-- 답변 등록과 완료 처리를 동시에 진행 -->
+	<update id="updateAnswerAndStatus" parameterType="hashmap">
+	    UPDATE inquiry
+	    SET answer_content = #{answerContent},
+	        status = 'DONE'
+	    WHERE inquiry_no = #{inquiryNo}
+	</update>
 
 	<update id="updateAnswer" parameterType="hashmap">
 		UPDATE inquiry
@@ -593,7 +652,6 @@
 		M.USER_ID AS userId,
 		C.COM_NAME AS companyName,
 		C.COM_EMAIL AS companyEmail,
-		C.COM_TYPE AS comType,
 		C.COM_TEL AS comTel,
 		C.COM_ADDRESS AS comAddress,
 		M.LAST_LOGIN AS lastLogin,
@@ -706,7 +764,6 @@
 		M.USER_ID AS userId,
 		C.COM_NAME AS companyName,
 		C.COM_EMAIL AS companyEmail,
-		C.COM_TYPE AS comType,
 		C.COM_TEL AS comTel,
 		C.COM_ADDRESS AS comAddress,
 		M.LAST_LOGIN AS lastLogin,
@@ -916,6 +973,8 @@
 		END AS UNI_TARGET_ID,
 		REPORT_TITLE,
 		REPORT_CONTENT,
+		ANSWER_CONTENT AS answerContent,
+		REJECT_REASON,
 		ANSWER_STATUS,
 		ACTION_STATUS,
 		REG_DATE
@@ -986,19 +1045,32 @@
 	<!-- 단일 신고 승인-->
 	<update id="updateReportApprove" parameterType="hashmap">
 		UPDATE report
-		SET action_status = 1
-		WHERE report_no = #{reportNo}
+	    SET action_status = 1,
+	        answer_status = 0,
+	        answer_content = #{answerContent},
+	        reject_reason = NULL
+	    WHERE report_no = #{reportNo}
 	</update>
 
 	<!-- 신고 반려 -->
 	<update id="updateReportReject" parameterType="hashmap">
 		UPDATE report
-		SET action_status = 2,
-			reject_reason = #{rejectReason}
-		WHERE report_no = #{reportNo}
+	    SET action_status = 2,
+	        answer_status = 0,
+	        answer_content = #{answerContent},
+	        reject_reason = #{answerContent}
+	    WHERE report_no = #{reportNo}
 	</update>
 
-
+	<!-- 신고자 알림 생성 성공 -->
+<update id="updateReportAnswerStatus" parameterType="hashmap">
+    UPDATE report
+    SET answer_status = 1
+    WHERE report_no = #{reportNo}
+      AND action_status IN (1, 2)
+      AND answer_status = 0
+</update>
+	
 	<!-- 결제 관리-->
 	<select id="selectPaymentList" parameterType="hashmap" resultType="com.example.demo.admin.model.Admin">
 	    SELECT * FROM payment
@@ -1107,8 +1179,8 @@
         p.original_price AS originalPrice,
         p.is_active AS isActive,
         p.img_url AS imgUrl,
-        p.pro_type AS proType,
-        p.tag AS tag,
+        p.large_category AS largeCategory,
+        p.medium_category AS mediumCategory,
         p.deposit AS deposit,
         c.com_name AS comName
     FROM product p
@@ -1124,6 +1196,13 @@
         <if test="status != null and status != ''">
             AND p.is_active = #{status}
         </if>
+        <if test="largeCategory != null and largeCategory != ''">
+				AND LARGE_CATEGORY = #{largeCategory}
+		</if>
+
+		<if test="mediumCategory != null and mediumCategory != ''">
+			AND MEDIUM_CATEGORY = #{mediumCategory}
+		</if>
     </where>
     ORDER BY p.product_no DESC
     LIMIT #{pageSize} OFFSET #{offSet}
@@ -1181,8 +1260,8 @@
             p.original_price   AS originalPrice,
             p.is_active        AS isActive,
             p.img_url          AS imgUrl,
-            p.pro_type         AS proType,
-            p.tag              AS tag,
+            p.large_category         AS largeCategory,
+            p.medium_category              AS mediumCategory,
             p.deposit          AS deposit,
             c.com_name         AS comName
         FROM product p

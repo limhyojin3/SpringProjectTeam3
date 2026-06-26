@@ -10,7 +10,7 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/common.css">
     <!-- 카카오맵 API -->
-    <script type="text/javascript"src="//dapi.kakao.com/v2/maps/sdk.js?appkey=${kakaoMapKey}"></script>
+    <script type="text/javascript"src="//dapi.kakao.com/v2/maps/sdk.js?appkey=${kakaoMapKey}&autoload=false"></script>
     <style>
         /* 히어로 섹션 */
         .about-hero {
@@ -427,6 +427,7 @@
     // 카카오맵 마커
     kakao.maps.load(function() {
         const container = document.getElementById('kakaoMap');
+        if (!container) return;
         const options = {
             center: new kakao.maps.LatLng(37.4877, 126.7218),  // 부평 스테이션타워 좌표
             level: 3
@@ -442,15 +443,17 @@
         const infowindow = new kakao.maps.InfoWindow({
             content: `
                 <div style="
-                    padding: 10px 14px;
+                    padding: 6px 10px;
                     font-size: 13px;
                     font-family: 'Noto Sans KR', sans-serif;
-                    line-height: 1.7;
-                    min-width: 160px;
+                    line-height: 1.5;
+                    min-width: 170px;
+                    border: none;
+                    background: #fff;
                 ">
                     <strong style="color: #f4a096; font-size: 14px;">📍 메리뷰</strong><br>
-                    스테이션타워 7층<br>
-                    <span style="color: #888; font-size: 12px;">인천 부평구 경원대로 1366</span>
+                    <span style="font-size: 12px; font-weight: 500;">스테이션타워 7층</span><br>
+                    <span style="color: #888; font-size: 11px; display: block; margin-top: 2px;">인천 부평구 경원대로 1366</span>
                 </div>
             `
         });

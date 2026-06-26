@@ -15,4 +15,6 @@ public class Comment {
     private int isDeleted;     // 삭제 되었는지 관리 용도
     private Timestamp regDate; // 생성일
     private String nickname;
+    private String imgUrl;
+    
 }

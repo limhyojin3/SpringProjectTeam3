@@ -20,6 +20,7 @@
 	            ELSE IFNULL(d.nickname, c.user_id) 
 	        END AS nickname,
 	        c.content,
+	        c.img_url AS imgUrl,
 	        c.like_cnt AS likeCnt,
 	        c.parent_no AS parentNo,
 	        c.is_deleted AS isDeleted,
@@ -38,11 +39,15 @@
 	        c.reg_date ASC
 	</select>
 	
-	<insert id="insertReviewComment" parameterType="hashmap">
+	<insert id="insertReviewComment" parameterType="hashmap"
+		useGeneratedKeys="true"
+        keyProperty="commentNo"
+        keyColumn="comment_no">
 	    INSERT INTO comment (
 	        review_no, 
 	        user_id,
 	        content,
+	        img_url,
 	        reg_date,
 	        is_deleted,
 	        like_cnt,
@@ -51,6 +56,7 @@
 	        #{reviewNo},
 	        #{userId},
 	        #{content},
+	        #{imgUrl},
 	        NOW(),
 	        0,
 	        0,
@@ -68,6 +74,7 @@
 	            ELSE IFNULL(d.nickname, c.user_id) 
 	        END AS nickname,
 	        c.content,
+	        c.img_url AS imgUrl,
 	        c.like_cnt AS likeCnt,
 	        c.parent_no AS parentNo,
 	        c.is_deleted AS isDeleted,
@@ -86,11 +93,15 @@
 	        c.reg_date ASC
 	</select>
 	
-	<insert id="insertCommunityComment" parameterType="hashmap">
+	<insert id="insertCommunityComment" parameterType="hashmap"
+		useGeneratedKeys="true"
+        keyProperty="commentNo"
+        keyColumn="comment_no">
 	    INSERT INTO comment (
 	        post_no, 
 	        user_id,
 	        content,
+	        img_url,
 	        reg_date,
 	        is_deleted,
 	        like_cnt,
@@ -99,6 +110,7 @@
 	        #{postNo},
 	        #{userId},
 	        #{content},
+	        #{imgUrl},
 	        NOW(),
 	        0,
 	        0,

@@ -1,4 +1,4 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" isELIgnored="false"%>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -19,70 +19,78 @@
     <%-- ✅ 내 정보 수정 페이지 전용 스타일만 --%>
     <style>
         #edit-box {
-            width: 550px;
-            margin: 50px auto;
+            width: 480px;
+            margin: 40px auto;
             background: white;
-            border-radius: 12px;
-            padding: 30px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            border-radius: 16px;
+            padding: 36px;
+            box-shadow: 0 2px 16px rgba(0,0,0,0.08);
+        }
+
+        .edit-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: #333;
+            margin-bottom: 24px;
         }
 
         .form-row {
             display: flex;
-            align-items: flex-start;
-            margin-bottom: 2px;
+            flex-direction: column;
+            margin-bottom: 16px;
         }
 
         .form-label {
-            background: #f4a096;
-            color: white;
-            width: 120px;
-            min-height: 45px;
-            height: 45px;
-            align-self: flex-start;
-            display: flex;
-            align-items: center;
-            padding-left: 15px;
-            font-size: 14px;
-            flex-shrink: 0;
+            font-size: 13px;
+            color: #888;
+            margin-bottom: 6px;
+            font-weight: 500;
+            background: none;
+            color: #666;
+            width: auto;
+            height: auto;
+            padding: 0;
         }
 
         .form-input {
-            flex: 1;
-            padding: 0;
             display: flex;
             align-items: center;
-            height: 45px;
-            overflow: hidden;
-            border: 1px solid #eee;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            height: 44px;
+            padding: 0 12px;
+            background: white;
+            transition: border-color 0.2s;
+        }
+
+        .form-input:focus-within {
+            border-color: #f4a096;
         }
 
         .form-input.disabled {
-            background: #e0e0e0;
+            background: #f5f5f5;
         }
 
         input[type="text"],
         input[type="password"],
-        input[type="number"] {
-            box-sizing: border-box;
+        input[type="number"],
+        input[type="date"] {
             border: none;
             outline: none;
             flex: 1;
             font-size: 14px;
             background: transparent;
-            padding-left: 15px;
             height: 100%;
         }
 
         .btn-check {
-            margin-left: 5px;
-            background: #f0b429;
+            background: #f4a096;
             color: white;
             border: none;
-            padding: 6px 12px;
+            padding: 5px 10px;
             border-radius: 6px;
             cursor: pointer;
-            font-size: 13px;
+            font-size: 12px;
             white-space: nowrap;
             flex-shrink: 0;
         }
@@ -99,6 +107,15 @@
             cursor: pointer;
         }
 
+        .btn-wrap {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            margin-top: 24px;
+        }
+
+        .btn-check:hover { background: #e8897d; }
+
         .btn-submit:hover, .btn-check:hover {
             box-shadow: 1px 1px 2px gray;
         }
@@ -108,15 +125,16 @@
         }
 
         input[type="radio"] {
-            margin-left: 15px;
             margin-right: 5px;
-            vertical-align: middle;
+            margin-left: 12px;  /* 0 → 12px */
+            accent-color: #f4a096;
         }
 
         .msg-box {
             height: 18px;
             font-size: 11px;
-            padding-left: 5px;
+            padding-left: 4px;
+            margin-top: 4px;
             color: transparent;
         }
 
@@ -139,13 +157,12 @@
             cursor: pointer;
             padding: 0 5px;
             color: #999;
-            flex-shrink: 0;
         }
 
         .read-only-input {
-            background-color: #f9f9f9 !important;
+            background: transparent;
             cursor: not-allowed;
-            outline: none !important;
+            color: #999;
         }
 
         .read-only-input:focus {
@@ -154,16 +171,15 @@
         }
 
         .form-group {
-            display: flex !important;
-            align-items: center;
-            width: 100%;
+            display: flex;
+            flex-direction: column;
+            margin-bottom: 16px;
         }
 
         input:disabled {
             background-color: #f5f5f5;
             color: #999;
             cursor: not-allowed;
-            border: 1px solid #ddd;
         }
 
         .btn-check:disabled {
@@ -173,14 +189,14 @@
         }
         /* 수정하기 버튼 */
         .btn-update {
-            padding: 10px 25px;
+            padding: 10px 24px;
             background: #f4a096;
             color: white;
             border: none;
             border-radius: 8px;
             font-size: 14px;
             cursor: pointer;
-            transition: background 0.2s ease;
+            transition: background 0.2s;
         }
 
         .btn-update:hover {
@@ -189,15 +205,14 @@
 
         /* 취소 버튼 */
         .btn-cancel {
-            padding: 10px 25px;
+            padding: 10px 24px;
             background: white;
             color: #888;
             border: 1px solid #ddd;
             border-radius: 8px;
             font-size: 14px;
             cursor: pointer;
-            transition: all 0.2s ease;
-            margin-left: 10px;
+            transition: all 0.2s;
         }
 
         .btn-cancel:hover {
@@ -208,6 +223,16 @@
 </head>
 <body>
     <jsp:include page="/WEB-INF/common/header.jsp" />
+    <input type="hidden" id="maritalStatusVal" value="${member.maritalStatus}">
+    <input type="hidden" id="originalMaritalStatusVal" value="${member.maritalStatus}">
+    <input type="hidden" id="anniversaryDateVal" value="${member.anniversaryDate}">
+    <input type="hidden" id="emailVal" value="${member.email}">
+    <input type="hidden" id="userIdVal" value="${member.userId}">
+    <input type="hidden" id="nameVal" value="${member.name}">
+    <input type="hidden" id="telVal" value="${member.tel}">
+    <input type="hidden" id="nicknameVal" value="${member.nickname}">
+    <input type="hidden" id="genderVal" value="${member.gender}">
+    <input type="hidden" id="weddingDateVal" value="${member.weddingDate}">
     <div id="app">
         <div id="wrapper">
             <div class="main-content">
@@ -294,7 +319,7 @@
                                         @input="formatTel(); fnCheckTelChange();"
                                         maxlength="13"
                                         placeholder="010 1234 5678">
-                                    <button class="btn-check" v-if="isTelChanged && !isSmsVerified" @click="fnSendSms()">인증 요청</button>
+                                    <button class="btn-check" v-if="!isSmsVerified" @click="fnSendSms()">인증 요청</button>
                                 </div>
                                 <div class="msg-box"></div>
                             </div>
@@ -303,7 +328,7 @@
                         <div class="form-row">
                             <div class="form-label">인증번호</div>
                             <div class="input-wrap">
-                                <div class="form-input">
+                                <div class="form-input" :class="{ disabled: !isTelChanged || isSmsVerified }">
                                     <input type="number" v-model="info.authCode"
                                         @input="formatTel"
                                         maxlength="6"
@@ -314,16 +339,31 @@
                                 <div class="msg-box"></div>
                             </div>
                         </div>
-                        <!-- 기혼: 결혼기념일 (읽기 전용) -->
+                        <!-- 기혼/미혼 선택 -->
+                        <div class="form-row">
+                            <div class="form-label">결혼 여부</div>
+                            <div class="input-wrap">
+                                <div class="form-input">
+                                    <input type="radio" name="maritalStatus" v-model="maritalStatus" 
+                                        value="SINGLE" :disabled="!!info.anniversaryDate"> 미혼
+                                    <input type="radio" name="maritalStatus" v-model="maritalStatus" 
+                                        value="MARRIED" :disabled="!!info.anniversaryDate"> 기혼
+                                </div>
+                                <div class="msg-box" v-if="info.anniversaryDate" style="color:#aaa; height:auto;">
+                                    ※ 결혼 기념일 입력 후에는 변경이 불가합니다.
+                                </div>
+                            </div>
+                        </div>
+                        <!-- 기혼: 결혼기념일 -->
                         <div class="form-row" v-if="maritalStatus === 'MARRIED'">
                             <div class="form-label">결혼기념일</div>
                             <div class="input-wrap">
-                                <div class="form-input disabled">
-                                    <span style="padding-left:15px; font-size:14px; color:#999;">
-                                        {{ info.anniversaryDate }} &nbsp;🎊
-                                    </span>
+                                <div class="form-input" :class="{ disabled: !!info.anniversaryDate }">
+                                    <input type="date" v-model="info.anniversaryDate" 
+                                        :disabled="!!info.anniversaryDate"
+                                        :max="today">
                                 </div>
-                                <div class="msg-box" style="color:#aaa; height:auto; font-size:11px; padding:3px 5px;">
+                                <div class="msg-box" v-if="info.anniversaryDate" style="color:#aaa; height:auto;">
                                     ※ 결혼 기념일은 변경이 불가합니다.
                                 </div>
                             </div>
@@ -333,14 +373,16 @@
                         <div class="form-row" v-else>
                             <div class="form-label">결혼예정일</div>
                             <div class="input-wrap">
-                                <div class="form-input">
+                                <div class="form-input" >
                                     <input type="date" v-model="info.weddingDate" :min="today">
                                 </div>
                                 <div class="msg-box"></div>
                             </div>
                         </div>
-                        <button type="button" class="btn-update" @click="fnUserUpdate()">수정하기</button>
-                        <button type="button" class="btn-cancel" @click="fnCancel()">취소</button>
+                        <div class="btn-wrap">
+                            <button type="button" class="btn-cancel" @click="fnCancel()">취소</button>
+                            <button type="button" class="btn-update" @click="fnUserUpdate()">수정하기</button>
+                        </div>
                     </div>
                 </div>
 
@@ -348,7 +390,18 @@
         </div>
         <jsp:include page="/WEB-INF/common/footer.jsp" />
     </div>
-
+    <script>
+        const currentPath = window.location.pathname;
+        document.querySelectorAll('.nav-btn').forEach(btn => {
+            const onclick = btn.getAttribute('onclick');
+            if (!onclick) return;
+            const match = onclick.match(/'([^']+)'/);
+            if (!match) return;
+            if (currentPath.endsWith(match[1])) {
+                btn.classList.add('active');
+            }
+        });
+    </script>
 <script>
     const app = Vue.createApp({
         el: '#app',
@@ -381,8 +434,10 @@
                 emailDomainDirect: false,      // 직접입력 여부
                 isEmailAvailable: false,       // 중복체크 결과
                 emailMsg: "",                  // 이메일 메시지
-                maritalStatus: "", // 기혼,미혼 구분
-                today: new Date().toISOString().split('T')[0],
+                maritalStatus: "",
+                today: new Date().toISOString().split('T')[0],  // 추가
+                originalMaritalStatus: "",
+                anniversaryDateDisplay: "",
             };
         },
         methods: {
@@ -393,6 +448,17 @@
             fnUserUpdate: function () {
                 // 1.유효성 검사
                 let self = this;
+                console.log("maritalStatus:", self.maritalStatus);
+                console.log("originalMaritalStatus:", self.originalMaritalStatus);
+                console.log("anniversaryDate:", self.info.anniversaryDate);
+                // 기혼으로 변경하고 결혼기념일 입력한 경우 확인창
+                if (self.maritalStatus === 'MARRIED' && self.originalMaritalStatus !== 'MARRIED') {
+                    const dateMsg = self.anniversaryDateDisplay ? self.anniversaryDateDisplay : '미입력';
+                    if (!confirm(`결혼기념일을 ${dateMsg}로 등록하시겠습니까?\n한 번 등록하면 변경이 불가합니다.`)) {
+                        self.info.anniversaryDate = "";  // 추가
+                        return;
+                    }
+                }
                 if(!self.info.userTel) {
                     alert("전화번호를 입력해주세요.");
                     return;
@@ -420,7 +486,9 @@
                     userTel: self.info.userTel,    // 전화번호 (MEMBER)
                     gender: self.info.gender,      // 성별 (USER_DETAIL)
                     nickName: self.info.nickName,   // 닉네임 (USER_DETAIL)
-                    weddingDate: self.maritalStatus === 'SINGLE' ? self.info.weddingDate : null // 결혼 예정일
+                    maritalStatus: self.maritalStatus,
+                    weddingDate: self.maritalStatus === 'SINGLE' ? self.info.weddingDate : null, // 결혼 예정일
+                    anniversaryDate: self.maritalStatus === 'MARRIED' ? self.info.anniversaryDate : null  // 추가
                 };
                 if(!confirm("회원정보를 수정하시겠습니까?")) return;
 
@@ -562,13 +630,11 @@
             },
         }, // methods
         mounted() {
-            // 처음 시작할 때 실행되는 부분
-            let self = this;
-            let fullEmail = "${member.email}"; 
+            let fullEmail = document.getElementById('emailVal').value;
             
             if (fullEmail && fullEmail.includes('@')) {
                 let parts = fullEmail.split('@');
-                this.info.emailId = parts[0]; 
+                this.info.emailId = parts[0];
                 this.emailDomain = parts[1];
                 const defaultDomains = ['naver.com', 'gmail.com', 'nate.com', 'kakao.com', 'daum.net'];
                 if (!defaultDomains.includes(this.emailDomain)) {
@@ -576,21 +642,22 @@
                 }
             }
 
-            this.info.userId = "${member.userId}";
-            this.info.name = "${member.name}";
-            this.info.userEmail = "${member.email}";
-            this.info.userTel = "${member.tel}";
-            this.info.nickName = "${member.nickname}";
-            this.info.gender = "${member.gender}";
-            this.info.weddingDate = "${member.weddingDate}";
+            this.info.userId = document.getElementById('userIdVal').value;
+            this.info.name = document.getElementById('nameVal').value;
+            this.info.userEmail = fullEmail;
+            this.info.userTel = document.getElementById('telVal').value;
+            this.info.nickName = document.getElementById('nicknameVal').value;
+            this.info.gender = document.getElementById('genderVal').value;
+            this.info.weddingDate = document.getElementById('weddingDateVal').value;
 
-            this.originFullEmail = "${member.email}"; 
-            this.originTel = "${member.tel}";
+            this.originFullEmail = fullEmail;
+            this.originTel = this.info.userTel;
 
-            this.isEmailAvailable = true; 
-            this.isSmsVerified = true;
-            this.maritalStatus = "${member.maritalStatus}";
-            this.info.anniversaryDate = "${member.anniversaryDate}";
+            this.isEmailAvailable = true;
+            this.isSmsVerified = !this.info.userId.startsWith('kakao_') && !!this.info.userTel;
+            this.maritalStatus = document.getElementById('maritalStatusVal').value;
+            this.anniversaryDateDisplay = document.getElementById('anniversaryDateVal').value;
+            this.originalMaritalStatus = document.getElementById('originalMaritalStatusVal').value;
         }
     });
 

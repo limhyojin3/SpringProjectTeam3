@@ -9,7 +9,7 @@
     <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
     <script src="/js/page-change.js"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/common.css">
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 
@@ -18,29 +18,46 @@
 
     <%-- ✅ 좋아요 목록 페이지 전용 스타일만 --%>
     <style>
+        /* 탭 */
         .write-tab-wrap {
             display: flex;
-            gap: 0px;
+            gap: 0;
             margin-bottom: 20px;
         }
 
         .write-tab {
             flex: 1;
             padding: 12px 0;
-            border: 2px solid #f4a096;
+            border: 1px solid #ffc7c2;
             background-color: white;
             cursor: pointer;
             font-size: 14px;
-            font-weight: bold;
-            border-radius: 6px;
+            font-weight: 600;
             transition: 0.2s;
+            color: #e07a8a;
+            border-radius: 0;
         }
+
+        .write-tab:first-child { border-radius: 8px 0 0 8px; }
+        .write-tab:last-child { border-radius: 0 8px 8px 0; }
 
         .write-tab.active-tab {
-            background-color: #f4a096;
+            background-color: #e07a8a;
             color: white;
+            border-color: #e07a8a;
         }
 
+        /* 제목 */
+        h4 {
+            font-size: 18px;
+            font-weight: 700;
+            color: #333;
+            margin-bottom: 20px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid #e07a8a;
+        }
+
+        /* 테이블 */
         .write-table {
             width: 100%;
             border-collapse: collapse;
@@ -49,26 +66,29 @@
         }
 
         .write-table th {
-            background-color: #ffc7c2;
-            padding: 10px;
+            background-color: #fff0f3;
+            padding: 12px 10px;
             text-align: center;
-            border: 1px solid #f4a096;
-            font-weight: bold;
-        }
-
-        .write-table td {
-            padding: 10px;
-            text-align: center;
-            border: 1px solid #eee;
+            border-bottom: 2px solid #e07a8a;
+            border-top: 1px solid #ffc7c2;
+            font-weight: 700;
             color: #555;
         }
 
-        .write-table tr:hover {
-            background-color: #fff0ef;
+        .write-table td {
+            padding: 12px 10px;
+            text-align: center;
+            border-bottom: 1px solid #f5f5f5;
+            color: #555;
+        }
+
+        .write-table tr:hover td {
+            background-color: #fff9f9;
+            color: #e07a8a;
         }
 
         .col-check { width: 40px; }
-        .col-no    { width: 80px; }
+        .col-no    { width: 60px; }
         .col-date  { width: 120px; }
         .col-view  { width: 60px; }
         .col-like  { width: 60px; }
@@ -81,16 +101,15 @@
             cursor: pointer;
         }
 
-        .write-table td:nth-child(3):hover {
-            color: #f4a096;
-            text-decoration: underline;
-        }
+        .write-table tbody tr { cursor: pointer; }
 
+        /* 페이지네이션 */
         .review-index-wrap {
             display: flex;
             justify-content: center;
             align-items: center;
             gap: 6px;
+            margin-top: 20px;
         }
 
         .btn-review-index {
@@ -98,8 +117,8 @@
             min-width: 34px;
             padding: 0 10px;
             background-color: #fff;
-            color: #f4a096;
-            border: 1.5px solid #f4a096;
+            color: #e07a8a;
+            border: 1px solid #ffc7c2;
             border-radius: 6px;
             cursor: pointer;
             font-size: 13px;
@@ -108,13 +127,15 @@
         }
 
         .btn-review-index:hover {
-            background-color: #f4a096;
+            background-color: #e07a8a;
             color: white;
+            border-color: #e07a8a;
         }
 
         .btn-review-index.active-page {
-            background-color: #f4a096;
+            background-color: #e07a8a;
             color: white;
+            border-color: #e07a8a;
             font-weight: bold;
         }
 
@@ -123,54 +144,41 @@
             cursor: not-allowed;
         }
 
-        .btn-select-all {
-            padding: 8px 20px;
-            background-color: #f0b429;
-            color: white;
-            border: none;
-            border-radius: 6px;
-            cursor: pointer;
-            font-size: 13px;
-        }
-
+        /* 삭제 버튼 */
         .btn-delete {
-            padding: 8px 20px;
-            background-color: #f0b429;
-            color: white;
-            border: none;
+            position: absolute;
+            left: 0;
+            padding: 0 15px;
+            background-color: #fff0f3;
+            color: #e07a8a;
+            border: 1px solid #ffc7c2;
             border-radius: 6px;
             cursor: pointer;
             font-size: 13px;
+            font-weight: 600;
+            height: 34px;
+            line-height: 1;
+            transition: 0.2s;
         }
 
-        .btn-select-all:hover, .btn-delete:hover {
-            opacity: 0.85;
+        .btn-delete:hover {
+            background-color: #e07a8a;
+            color: white;
+            border-color: #e07a8a;
         }
 
-        .write-table tbody tr {
-            cursor: pointer;
-        }
+        /* 하단 컨트롤 */
         .bottom-controls {
             display: flex;
             align-items: center;
             justify-content: center;
             position: relative;
-            margin-top: 30px;
+            margin-top: 20px;
             padding: 10px 0;
             min-height: 40px;
         }
-        .bottom-controls .btn-delete {
-            position: absolute;
-            left: 0;
-            background-color: #f0b429;
-            color: white;
-            border: none;
-            padding: 0 15px;
-            border-radius: 4px;
-            cursor: pointer;
-            height: 32px;
-            line-height: 1;
-            font-size: 14px;
+        i {
+            margin-right: 8px;
         }
     </style>
 </head>
@@ -184,7 +192,7 @@
                 <jsp:include page="/WEB-INF/common/mypage-nav.jsp" />
 
                 <div class="right-sections">
-                    <h4>좋아요 목록</h4>
+                    <h4><i class="fas fa-heart"></i> 좋아요 목록</h4>
                     <!-- 탭 버튼 -->
                     <div class="write-tab-wrap">
                         <button class="write-tab" :class="{'active-tab': reviewTab === 'company'}" @click="switchReviewTab('company')">업체</button>
@@ -265,7 +273,7 @@
                                     <td @click.stop><input type="checkbox" :value="like.likeNo" v-model="selectedReviewLikes"></td>
                                     <td>{{ like.likeNo }}</td>
                                     <td class="col-title">{{ like.title }}</td>
-                                    <td>{{ like.rating }}</td>
+                                    <td><i class="fa-solid fa-star"></i> {{ like.rating }}</td>
                                     <td>{{ like.regDate }}</td>
                                 </tr>
                             </tbody>
@@ -323,6 +331,18 @@
     </div>
     <jsp:include page="/WEB-INF/common/footer.jsp" />
 </div>
+<script>
+        const currentPath = window.location.pathname;
+        document.querySelectorAll('.nav-btn').forEach(btn => {
+            const onclick = btn.getAttribute('onclick');
+            if (!onclick) return;
+            const match = onclick.match(/'([^']+)'/);
+            if (!match) return;
+            if (currentPath.endsWith(match[1])) {
+                btn.classList.add('active');
+            }
+        });
+    </script>
 <script>
     const app = Vue.createApp({
         data() {

@@ -19,23 +19,33 @@
     <%-- ✅ 멤버십 결제 내역 페이지 전용 스타일만 --%>
     <style>
         .pass-box {
-            background-color: #ffc7c2;
-            border-radius: 10px;
-            padding: 25px;
-            text-align: center;
-            margin-bottom: 20px;
+            background: #fff0f3;
+            border: 1px solid #ffc7c2;
+            border-radius: 16px;
+            padding: 20px 28px;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
         }
 
         .pass-box h3 {
-            font-size: 25px;
+            font-size: 15px;
+            font-weight: 700;
             color: #333;
-            margin-bottom: 10px;
+            margin-bottom: 4px;
         }
 
         .pass-box p {
-            font-size: 20px;
-            color: #666;
-            margin-bottom: 15px;
+            font-size: 13px;
+            color: #888;
+            margin: 0;
+        }
+
+        .pass-box .pass-icon {
+            font-size: 28px;
+            color: #e07a8a;
+            flex-shrink: 0;
         }
 
         .pay-section {
@@ -57,9 +67,13 @@
         }
 
         .sold {
-            background-color: #ccc;
-            color: #888;
+            background: #f5f5f5;
+            border-color: #ddd;
         }
+
+        .sold h3 { color: #aaa; }
+        .sold p { color: #bbb; }
+        .sold .pass-icon { color: #ccc; }
 
         .pagination-wrap {
             display: flex;
@@ -100,6 +114,21 @@
             opacity: 0.3;
             cursor: not-allowed;
         }
+
+        .btn-buy-pass {
+            padding: 8px 16px;
+            background: #e07a8a;
+            color: white;
+            border-radius: 20px;
+            font-size: 13px;
+            text-decoration: none;
+            white-space: nowrap;
+            flex-shrink: 0;
+        }
+        .btn-buy-pass:hover {
+            background: #c9606f;
+            color: white;
+        }
     </style>
 </head>
 <body>
@@ -111,18 +140,26 @@
                 <jsp:include page="/WEB-INF/common/mypage-nav.jsp" />
                 <div class="right-sections">
                     <section class="pay-section">
-                        <p class="pass-title">멤버십 결제 내역</p>
+                        <p class="pass-title"><i class="fas fa-credit-card"></i> 멤버십 결제 내역</p>
                         <div v-if="loaded && passList.length > 0">
                             <div v-for="pass in passList" :key="pass.passNo"
                                 :class="pass.remainingCount === 0 ? 'pass-box sold' : 'pass-box'">
-                                <h3>{{ pass.itemName }}</h3>
-                                <p>결제 : {{ pass.payDate }} ~ 잔여 {{ pass.remainingCount }}회
-                                    <span v-if="pass.remainingCount === 0">~ 소진완료</span>
-                                </p>
+                                <i class="fas fa-star pass-icon"></i>
+                                <div>
+                                    <h3>{{ pass.itemName }}</h3>
+                                    <p>결제: {{ pass.payDate }} · 잔여 <strong>{{ pass.remainingCount }}</strong>회
+                                        <span v-if="pass.remainingCount === 0">· 소진완료</span>
+                                    </p>
+                                </div>
                             </div>
                         </div>
                         <div class="pass-box" v-else-if="loaded">
-                            <h3>구매한 패스가 없습니다.</h3>
+                            <i class="fas fa-box-open pass-icon"></i>
+                            <div>
+                                <h3>구매한 패스가 없어요</h3>
+                                <p>패스를 구매하고 유료 리뷰를 열람해보세요!</p>
+                            </div>
+                            <a href="/adminPass.do" class="btn-buy-pass" style="margin-left:auto;">패스 구매하기</a>
                         </div>
                     </section>
                     <!-- 페이징 -->
@@ -141,6 +178,18 @@
         </div>
         <jsp:include page="/WEB-INF/common/footer.jsp" />
     </div>
+    <script>
+        const currentPath = window.location.pathname;
+        document.querySelectorAll('.nav-btn').forEach(btn => {
+            const onclick = btn.getAttribute('onclick');
+            if (!onclick) return;
+            const match = onclick.match(/'([^']+)'/);
+            if (!match) return;
+            if (currentPath.endsWith(match[1])) {
+                btn.classList.add('active');
+            }
+        });
+    </script>
 </body>
 <script>
     const app = Vue.createApp({

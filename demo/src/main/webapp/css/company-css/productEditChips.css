@@ -1,0 +1,143 @@
+@charset "UTF-8";
+
+/* ==========================================
+   SpringProjectTeam3 - 상품 수정 [2. 프리미엄 칩 시스템]
+   디버깅 사항: 대분류 Read-Only 잠금(disabled) 전용 인터랙션 및 스타일 추가
+   ========================================== */
+
+/* 칩 그룹 컨테이너 */
+.chip-group-zone {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+/* 프리미엄 칩 버튼 공통 기본 구조 */
+.premium-chip-btn {
+    padding: 8px 18px;
+    font-size: 13px;
+    font-weight: 500;
+    color: #64748b;
+    background-color: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 20px;
+    cursor: pointer;
+    outline: none !important;
+    box-shadow: none;
+    transition: all 0.2s ease;
+}
+
+/* 클릭/초점 집중 시 잔상 outline 제거 방어막 */
+.premium-chip-btn:focus, 
+.premium-chip-btn:active {
+    outline: none !important;
+    box-shadow: none;
+}
+
+/* 선택되지 않은 일반 활성 칩 마우스 호버 시에만 반응하도록 격리 */
+.premium-chip-btn:hover:not(.disabled-lock):not(.active-large):not(.active-medium):not(.active-tag):not(:disabled) {
+    background-color: #f1f5f9;
+    border-color: #cbd5e1;
+    color: #334155;
+}
+
+/* [대분류] 활성화 상태 - 골드 테마 오렌지 */
+.premium-chip-btn.active-large {
+    background: linear-gradient(135deg, #ff9e00, #ff6d00) !important;
+    border: 1px solid transparent !important;
+    color: #ffffff !important;
+    font-weight: 600;
+    box-shadow: 0 3px 8px rgba(255, 109, 0, 0.2) !important;
+}
+
+/* 대분류 호버 시 색상 흔들림 방지 고정 */
+.premium-chip-btn.active-large:hover,
+.premium-chip-btn.active-large:focus {
+    background: linear-gradient(135deg, #ff9e00, #ff6d00) !important;
+    border: 1px solid transparent !important;
+    color: #ffffff !important;
+    box-shadow: 0 3px 8px rgba(255, 109, 0, 0.2) !important;
+    outline: none !important;
+}
+
+/* [중분류] 활성화 상태 - 로맨틱 핑크 */
+.premium-chip-btn.active-medium {
+    background-color: #ff4081 !important;
+    background-image: none !important;
+    border: 1px solid #ff4081 !important;
+    color: #ffffff !important;
+    font-weight: 600;
+    box-shadow: 0 3px 8px rgba(255, 64, 129, 0.2) !important;
+}
+
+.premium-chip-btn.active-medium:hover,
+.premium-chip-btn.active-medium:focus {
+    background-color: #ff4081 !important;
+    border: 1px solid #ff4081 !important;
+    color: #ffffff !important;
+    box-shadow: 0 3px 8px rgba(255, 64, 129, 0.2) !important;
+    outline: none !important;
+}
+
+/* [태그] 활성화 상태 - 고급스러운 오키드 퍼플 */
+.premium-chip-btn.active-tag {
+    background-color: #ba55d3 !important;
+    background-image: none !important;
+    border: 1px solid #ba55d3 !important;
+    color: #ffffff !important;
+    font-weight: 600;
+    box-shadow: 0 3px 8px rgba(186, 85, 211, 0.2) !important;
+}
+
+.premium-chip-btn.active-tag:hover,
+.premium-chip-btn.active-tag:focus {
+    background-color: #ba55d3 !important;
+    border: 1px solid #ba55d3 !important;
+    color: #ffffff !important;
+    box-shadow: 0 3px 8px rgba(186, 85, 211, 0.2) !important;
+    outline: none !important;
+}
+
+/* 태그 최대 개수 도달 시 미선택 항목 잠금 처리 */
+.premium-chip-btn.disabled-lock {
+    background-color: #f1f5f9;
+    border-color: #e2e8f0;
+    color: #cbd5e1;
+    cursor: not-allowed;
+    opacity: 0.6;
+}
+
+/* 태그 개수 인디케이터 */
+.tag-count-indicator {
+    font-size: 12px;
+    color: #94a3b8;
+    margin-top: 6px;
+    text-align: right;
+}
+
+/* ------------------------------------------
+   🎯 [신규 추가] 대분류 수정 불가 잠금(disabled) 인터랙션 전용 스타일
+   ------------------------------------------ */
+
+/* 비활성화 칩 전체 마우스 커서 제한 */
+.premium-chip-btn:disabled {
+    cursor: not-allowed !important;
+}
+
+/* 기존에 활성화된 오렌지 대분류 칩이 잠긴 경우 -> 선명도와 그라데이션 유지하되 미세 투명도로 고정감 부여 */
+.premium-chip-btn.active-large:disabled {
+    background: linear-gradient(135deg, #ff9e00, #ff6d00) !important;
+    border: 1px solid transparent !important;
+    color: #ffffff !important;
+    opacity: 0.85 !important;
+    box-shadow: none !important;
+}
+
+/* 선택되지 않은 나머지 대분류 칩이 잠긴 경우 -> 호버 효과를 완벽 차단하고 은은하게 톤다운 처리 */
+.premium-chip-btn:disabled:not(.active-large):not(.active-medium):not(.active-tag) {
+    background-color: #f1f5f9 !important;
+    border-color: #e2e8f0 !important;
+    color: #cbd5e1 !important;
+    opacity: 0.5 !important;
+    box-shadow: none !important;
+}

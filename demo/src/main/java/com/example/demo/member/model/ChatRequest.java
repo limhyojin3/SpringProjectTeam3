@@ -47,7 +47,7 @@ public class ChatRequest {
         this.contents.add(content);
         this.generationConfig = new GenerationConfig();
         this.generationConfig.setCandidate_count(1);
-        this.generationConfig.setMax_output_tokens(1000);
+        this.generationConfig.setMax_output_tokens(4096); // 토큰 수, 한글1개 = 2-3토큰 소요
         this.generationConfig.setTemperature(0.7);
     }
 }

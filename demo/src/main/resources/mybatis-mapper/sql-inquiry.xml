@@ -3,7 +3,10 @@
 <mapper namespace="com.example.demo.community_review.mapper.InquiryMapper">
 
 	<!-- 문의 작성 -->
-    <insert id="insertInquiry" parameterType="map">
+    <insert id="insertInquiry" parameterType="map"
+    	useGeneratedKeys="true"
+        keyProperty="inquiryNo"
+        keyColumn="inquiry_no">
         INSERT INTO Inquiry (
             user_id, inquiry_type, title, content
         ) VALUES (

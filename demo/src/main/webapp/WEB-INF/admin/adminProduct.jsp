@@ -83,6 +83,21 @@
                                     <button @click="fnSearch()">검색</button>
                                 </div>
                                 <div class="filter-group">
+                                    <select v-model="largeCategory" @change="fnChangeLargeCategory">
+                                        <option value="">분류1</option>
+                                        <option v-for="category in largeCategoryList" :key="category" :value="category">
+                                            {{ category }}
+                                        </option>
+                                    </select>
+
+                                    <select v-model="mediumCategory" @change="fnCategorySearch"
+                                        :disabled="!largeCategory">
+                                        <option value="">분류2</option>
+                                        <option v-for="category in filteredMediumCategoryList" :key="category"
+                                            :value="category">
+                                            {{ category }}
+                                        </option>
+                                    </select>
                                     <select v-model="status" @change="fnGetList">
                                         <option value="">상태</option>
                                         <option value="1">판매중</option>
@@ -98,6 +113,8 @@
                                 <tr>
                                     <th>상품번호</th>
                                     <th>업체명</th>
+                                    <th>분류1</th>
+                                    <th>분류2</th>
                                     <th>상품명</th>
                                     <th>가격</th>
                                     <th>상태</th>
@@ -105,9 +122,14 @@
                                 </tr>
                             </thead>
                             <tbody>
+                                <tr v-if="list.length === 0" class="no-data-row">
+                                    <td colspan="8">조건에 맞는 상품이 없습니다.</td>
+                                </tr>
                                 <tr v-for="p in list" :key="p.productNo">
                                     <td>{{ p.productNo }}</td>
                                     <td>{{ p.comName}}</td>
+                                    <td>{{ p.largeCategory}}</td>
+                                    <td>{{ p.mediumCategory}}</td>
                                     <td>{{ p.productName }}</td>
                                     <td>{{ p.originalPrice.toLocaleString() }}</td>
                                     <td>
@@ -127,7 +149,7 @@
                                     </td>
                                 </tr>
                                 <tr v-for="n in emptyRows" class="empty-row">
-                                    <td colspan="7">&nbsp;</td>
+                                    <td colspan="8">&nbsp;</td>
                                 </tr>
                             </tbody>
                         </table>
@@ -161,7 +183,7 @@
                                         <option value="COUPON">쿠폰</option>
                                         <option value="GIFTCON">기프티콘</option>
                                     </select>
-                                    <button class="btn-done" @click="fnCouponModal()">등록</button>
+                                    <button class="btn-done" @click="fnCouponModal()">쿠폰등록</button>
                                     <button @click="fnResetSearch">초기화</button>
                                 </div>
                             </div>
@@ -407,8 +429,43 @@
                             reviewCnt: 0,
                             isActive: "1"
                         },
+                        largeCategory: "",
+                        mediumCategory: "",
+
+                        largeCategoryList: [
+                            "결혼",
+                            "가족행사",
+                            "친구와 함께"
+                        ],
+
+                        mediumCategoryMap: {
+                            "결혼": [
+                                "웨딩홀",
+                                "스튜디오",
+                                "드레스",
+                                "메이크업"
+                            ],
+                            "가족행사": [
+                                "돌잔치",
+                                "환갑",
+                                "칠순",
+                                "가족모임"
+                            ],
+                            "친구와 함께": [
+                                "파티룸",
+                                "여행",
+                                "체험"
+                            ]
+                        }
                     };
                 },
+
+                computed: {
+                    filteredMediumCategoryList() {
+                        return this.mediumCategoryMap[this.largeCategory] || [];
+                    }
+                },
+
                 methods: {
                     // 함수(메소드) - (key : function())
                     fnPage: function (url) {
@@ -420,13 +477,23 @@
                         this.activeTab = tab;
                         this.fnResetSearch();
                     },
+                    fnChangeLargeCategory() {
+                        // 분류1이 변경되면 기존 분류2 선택 제거
+                        this.mediumCategory = "";
+                        this.currentPage = 1;
+                        this.fnGetList();
+                    },
 
+                    fnCategorySearch() {
+                        this.currentPage = 1;
+                        this.fnGetList();
+                    },
                     fnResetSearch() {
-
                         this.keyword = "";
                         this.status = "";
+                        this.largeCategory = "";
+                        this.mediumCategory = "";
                         this.currentPage = 1;
-
                         this.fnGetList();
                     },
 
@@ -456,7 +523,9 @@
                                 pageSize: self.pageSize,
                                 offSet: self.pageSize * (self.currentPage - 1),
                                 keyword: self.keyword,
-                                status: self.status
+                                status: self.status,
+                                largeCategory: self.largeCategory,
+                                mediumCategory: self.mediumCategory,
                             },
                             success: function (res) {
                                 console.log("응답:", res);

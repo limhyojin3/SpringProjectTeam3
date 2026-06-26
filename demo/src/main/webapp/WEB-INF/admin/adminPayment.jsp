@@ -16,7 +16,6 @@
         <link rel="stylesheet" href="${pageContext.request.contextPath}/css/adminNavi.css">
         <link rel="stylesheet" href="${pageContext.request.contextPath}/css/admin-common.css">
         <style>
-
             /* 상태 뱃지 */
             .badge-success {
                 display: inline-block;
@@ -37,7 +36,6 @@
                 font-size: 13px;
                 font-weight: 600;
             }
-            
         </style>
     </head>
 
@@ -62,7 +60,7 @@
                             <thead>
                                 <tr>
                                     <th>결제번호</th>
-                                    <th>유저</th>
+                                    <th>아이디</th>
                                     <th>패스</th>
                                     <th>금액</th>
                                     <th>상태</th>
@@ -73,7 +71,11 @@
                             <tbody>
                                 <tr v-for="p in list" :key="p.payNo">
                                     <td>{{ p.payNo }}</td>
-                                    <td>{{ p.userId }}</td>
+                                    <td class="admin-id-cell">
+                                        <span class="admin-id-text" :title="p.userId">
+                                            {{ p.userId }}
+                                        </span>
+                                    </td>
                                     <td>{{ p.passName }}</td>
                                     <td>{{ p.amount.toLocaleString() }}</td>
                                     <td>{{ p.payStatus }}</td>
@@ -99,7 +101,7 @@
                                 <tr>
                                     <!-- <th>결제번호</th> -->
                                     <th>예약번호</th>
-                                    <th>유저</th>
+                                    <th>아이디</th>
                                     <th>상품명</th>
                                     <th>예약금</th>
                                     <th>예약일</th>
@@ -113,7 +115,11 @@
                                 <tr v-for="r in list" :key="r.payNo">
                                     <!-- <td>{{ r.payNo }}</td> -->
                                     <td>{{ r.resNo }}</td>
-                                    <td>{{ r.userId }}</td>
+                                    <td class="admin-id-cell">
+                                        <span class="admin-id-text" :title="r.userId">
+                                            {{ r.userId }}
+                                        </span>
+                                    </td>
                                     <td>{{ r.productName }}</td>
                                     <td>{{ r.amount.toLocaleString() }}</td>
                                     <td>{{ r.useDate }}</td>
@@ -121,7 +127,7 @@
                                     <td>{{ r.resStatus }}</td>
                                     <td>{{ formatDate(r.payDate) }}</td>
                                     <td>
-                                        <button class="btn-warn" @click="fnRefund2(r.payNo)" >환불
+                                        <button class="btn-warn" @click="fnRefund2(r.payNo)">환불
                                         </button>
                                     </td>
                                 </tr>
@@ -146,7 +152,11 @@
                             </thead>
                             <tbody>
                                 <tr v-for="c in list" :key="c.payNo">
-                                    <td>{{ c.userId }}</td>
+                                    <td class="admin-id-cell">
+                                        <span class="admin-id-text" :title="c.userId">
+                                            {{ c.userId }}
+                                        </span>
+                                    </td>
                                     <td>{{ c.payNo }}</td>
                                     <td>{{ c.comName }}</td>
                                     <td>{{ c.amount.toLocaleString() }}</td>

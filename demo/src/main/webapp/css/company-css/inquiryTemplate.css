@@ -1,0 +1,414 @@
+@charset "UTF-8";
+
+/* ==========================================================================
+   [inquiryTemplate.jsp] - 문의 관리 및 답변 등록 컴포넌트 전용 스타일
+   ========================================================================== */
+
+/* 1. 메인 문의 리스트 화면 레이아웃 */
+
+.section-header h2 {
+    border: none;
+    padding: 0;
+    margin: 0;
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: #444;
+}
+
+/* 문의 건수 강조 */
+.res-count-highlight {
+    color: #9b8fd4;
+    font-weight: 800;
+}
+
+.content-card {
+    background-color: #fdfcff;
+    border: 1px solid #ede9f8;
+    border-left: 4px solid #9b8fd4;
+    padding: 16px 20px;  /* 24px → 16px 20px */
+    border-radius: 12px;
+    margin-bottom: 12px;  /* 16px → 12px */
+    position: relative;
+    box-shadow: 0 2px 8px rgba(155, 143, 212, 0.08);
+    transition: all 0.2s;
+}
+
+.content-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(155, 143, 212, 0.15);
+}
+
+/* 상품 헤더 */
+.inquiry-product-header h3 {
+    margin: 0;
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: #888;
+    display: flex;
+    align-items: column;
+    gap: 8px;
+}
+
+/* 상품명 pill 배지 */
+.inquiry-product-badge {
+    display: inline-block;
+    background: #ede9f8;
+    color: #7b68c8;
+    font-size: 0.75rem;
+    font-weight: 700;
+    padding: 3px 10px;
+    border-radius: 20px;
+    border: 1px solid #d4cdf0;
+	width: fit-content;
+}
+
+.inquiry-product-header {
+    display: flex;
+    align-items: center;  /* 세로 중앙 정렬 */
+    gap: 16px;
+    margin-bottom: 12px;
+}
+
+.inquiry-product-info {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    justify-content: center;
+}
+
+.inquiry-thumb-wrap {
+    width: 120px;
+    height: 120px;
+    border-radius: 12px;
+    overflow: hidden;
+    flex-shrink: 0;
+    border: 1px solid #ede9f8;
+    background: #f5f2fc;
+}
+
+.productImg {
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+	border-radius: 10px;
+}
+
+.inquiry-thumb-wrap img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* 상품명 텍스트 */
+.inquiry-product-name {
+    color: #2c2c2c;
+    font-weight: 800;
+    font-size: 1.4rem;
+}
+
+/* 2. 일반 공통 테이블 스타일 */
+.inquiry-section table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    margin-top: 20px !important;
+    margin-bottom: 0 !important;
+    background-color: #fff;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(155, 143, 212, 0.06) !important;
+    border: 1px solid #ede9f8 !important;
+}
+
+.inquiry-section th {
+    width: 180px;
+    background-color: #f5f2fc !important;
+    color: #7b68c8 !important;
+    font-weight: 600;
+    text-align: left;
+    padding: 12px 16px !important;
+    border-bottom: 1px solid #ede9f8 !important;
+    border-right: 1px solid #ede9f8 !important;
+    font-size: 14px;
+}
+
+.inquiry-section td {
+    padding: 12px 16px !important;
+    color: #2d3748;
+    border-bottom: 1px solid #ede9f8 !important;
+    font-size: 14px;
+    line-height: 1.6;
+}
+
+.inquiry-section tr:last-child th,
+.inquiry-section tr:last-child td {
+    border-bottom: none;
+}
+
+/* 3. 답변하기 버튼 */
+.btn-reply {
+    background: #9b8fd4;
+    color: white;
+    margin-top: 16px;
+    padding: 10px 20px;
+    border: none;
+    display: block;
+    margin-left: auto;
+    cursor: pointer;
+    border-radius: 20px;
+    font-size: 14px;
+    font-weight: 600;
+    transition: 0.2s;
+    box-shadow: 0 4px 10px rgba(155, 143, 212, 0.3);
+}
+
+.btn-reply:hover {
+    background: #8577cd;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(155, 143, 212, 0.4);
+}
+
+/* 답변 상태 */
+.status-done { color: #43a047 !important; font-weight: 700; }
+.status-wait { color: #9b8fd4 !important; font-weight: 700; }
+
+/* 4. 하단 페이지네이션 */
+.pagination1 {
+	text-align: center;
+	margin-top: 25px;
+}
+
+.pagination1 a {
+	display: inline-block;
+	padding: 8px 12px;
+	margin: 0 4px;
+	text-decoration: none;
+	color: #666;
+	border-radius: 4px;
+	transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+	cursor: pointer;
+	border: 1px solid transparent;
+	font-weight: 500;
+}
+
+.pagination1 a:hover {
+	background: #ccc2ff;
+	color: white;
+	transform: translateY(-2px);
+	box-shadow: 0 4px 12px #9285d1;
+}
+
+.pagination1 a:active {
+	transform: translateY(0px);
+}
+
+/* ==========================================================================
+   5. 문의 답변 등록 폼 서브 페이지 (Inquiry Answer Page)
+   ========================================================================== */
+
+.answer-card-container {
+    padding: 25px;
+    border: 1px solid #e0d7ff;
+    border-radius: 12px;
+    background-color: #fff;
+    max-width: 800px;
+    margin: 20px auto;
+    box-shadow: 0 4px 15px rgba(155, 143, 212, 0.08);
+}
+
+.answer-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    padding-bottom: 12px;
+    border-bottom: 2px solid #9b8fd4;
+}
+
+.answer-card-title {
+    margin: 0;
+    font-size: 1.4rem;
+    color: #555;
+    font-weight: bold;
+}
+
+/* btn-back-to-list pill */
+.btn-back-to-list {
+    padding: 8px 20px;
+    background-color: #fff;
+    border: 1.5px solid #9b8fd4;
+    color: #9b8fd4;
+    border-radius: 20px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    font-weight: 600;
+    transition: all 0.2s ease;
+}
+
+.btn-back-to-list:hover {
+    background-color: #9b8fd4;
+    color: #fff;
+}
+
+/* 원본 문의 내용 영역 */
+.original-inquiry-box {
+    margin-bottom: 30px;
+    padding: 20px;
+    background-color: #faf9ff;
+    border-radius: 8px;
+    border: 1px solid #e0d7ff;
+}
+
+.original-inquiry-title {
+    margin-top: 0;
+    color: #6a5acd;
+    font-size: 1.1rem;
+    border-bottom: 1px solid #d1ccff;
+    padding-bottom: 8px;
+    font-weight: bold;
+}
+
+/* 답변 등록용 특수 내부 테이블 스타일 */
+.original-inquiry-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 15px;
+    font-size: 0.95rem;
+    background-color: #fff;
+    border-radius: 8px;
+    overflow: hidden;
+    border: 1px solid #eaeaea;
+}
+
+.original-inquiry-table th,
+.original-inquiry-table td {
+    padding: 12px;
+    border: 1px solid #eaeaea;
+    color: #333;
+}
+
+.original-inquiry-table th {
+    text-align: left;
+    color: #555;
+    font-weight: 600;
+}
+
+.table-col-label {
+    width: 20%;
+    background-color: #f5f2fc;
+}
+
+.table-col-content {
+    width: 30%;
+}
+
+/* 폼 유틸리티 보조 클래스 */
+.text-bold {
+    font-weight: bold;
+}
+
+.valign-top {
+    vertical-align: top;
+}
+
+.text-pre-wrap {
+    min-height: 120px;
+    white-space: pre-wrap;
+    line-height: 1.6;
+    color: #444;
+}
+
+/* 답변 작성 인풋 영역 */
+.answer-write-title {
+    margin-top: 0;
+    color: #333;
+    font-size: 1.1rem;
+    font-weight: bold;
+}
+
+.form-input-group {
+    margin-top: 15px;
+}
+
+.form-input-label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 600;
+    color: #555;
+    font-size: 0.95rem;
+}
+
+.form-input-text {
+    width: 50%;
+    padding: 12px;
+    border: 1px solid #d1ccff;
+    border-radius: 6px;
+    font-family: inherit;
+    font-size: 0.95rem;
+    box-sizing: border-box;
+    outline: none;
+    transition: border-color 0.2s;
+}
+
+.form-textarea-text {
+    width: 100%;
+    height: 200px;
+    padding: 12px;
+    border: 1px solid #d1ccff;
+    border-radius: 6px;
+    resize: vertical;
+    font-family: inherit;
+    font-size: 0.95rem;
+    box-sizing: border-box;
+    outline: none;
+    line-height: 1.6;
+    transition: border-color 0.2s;
+}
+
+.form-input-text:focus,
+.form-textarea-text:focus {
+    border-color: #9b8fd4;
+}
+
+/* 하단 액션 버튼 그룹 */
+.answer-action-buttons {
+    margin-top: 30px;
+    text-align: center;
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+}
+
+.btn-action-cancel {
+    padding: 12px 28px;
+    background-color: #fff;
+    border: 1px solid #ccc;
+    border-radius: 20px !important;
+    cursor: pointer;
+    font-size: 1rem;
+    color: #555;
+    font-weight: 500;
+    transition: all 0.2s ease;
+}
+
+.btn-action-cancel:hover {
+    background-color: #f5f5f5;
+}
+
+.btn-action-submit {
+    padding: 12px 28px;
+    background-color: #9b8fd4;
+    border: none;
+    border-radius: 20px !important;
+    cursor: pointer;
+    font-size: 1rem;
+    color: #fff;
+    font-weight: bold;
+    transition: all 0.2s ease;
+    box-shadow: 0 4px 10px rgba(155, 143, 212, 0.2);
+}
+
+.btn-action-submit:hover {
+    background-color: #8679c4;
+    transform: translateY(-1px);
+}

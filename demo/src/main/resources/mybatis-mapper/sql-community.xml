@@ -48,6 +48,7 @@
 	    SELECT 
 	        p.post_no AS postNo,
 	        p.user_id AS userId,
+	        IF(p.content LIKE CONCAT('%', CHAR(60), 'img%'), 'Y', 'N') AS imgYn,
 	        CASE 
 	            WHEN m.status = 'WITHDRAWN' THEN '탈퇴회원'
 	            ELSE IFNULL(d.nickname, p.user_id) 
@@ -82,9 +83,32 @@
 	                AND (p.title LIKE CONCAT('%', #{searchKeyword}, '%') 
 	                     OR p.user_id LIKE CONCAT('%', #{searchKeyword}, '%'))
 	            </otherwise>
-	        </choose>
+	        </choose> 
 	    </if>
-	    ORDER BY p.reg_date DESC
+	    <!-- 정렬 -->
+	    <choose>
+	        <!-- 최신순 -->
+	        <when test="sortType == 'latest'">
+	            ORDER BY p.reg_date DESC
+	        </when>
+	        <!-- 조회순 -->
+	        <when test="sortType == 'view'">
+	            ORDER BY p.view_cnt DESC, p.reg_date DESC
+	        </when>
+	        <!-- 좋아요순 -->
+	        <when test="sortType == 'like'">
+	            ORDER BY p.like_cnt DESC, p.reg_date DESC
+	        </when>
+	        <!-- 인기순 -->
+	        <when test="sortType == 'popular'">
+	            ORDER BY (p.like_cnt * 3 + p.view_cnt) DESC
+	        </when>
+	        <!-- 기본값 -->
+	        <otherwise>
+	            ORDER BY p.reg_date DESC
+	        </otherwise>
+	    </choose>
+	   
 	    LIMIT #{startIndex}, #{pageSize}
 	</select>
 	
@@ -166,6 +190,18 @@
 	<!-- 게시글 작성자인지 아닌지 구분해서 수정, 삭제 할 수 있도록 -->
 	<select id="selectPostAuthor" parameterType="hashmap" resultType="String">
     	SELECT user_id FROM Community_Post WHERE post_no = #{postNo}
+	</select>
+	
+	<select id="selectPopularPostList" resultType="hashmap"> 
+	    SELECT 
+	        p.post_no AS postNo,
+	        p.title,
+	        p.like_cnt AS likeCnt,
+	        p.view_cnt AS viewCnt
+	    FROM Community_Post p
+	    WHERE p.is_deleted = 0
+	    ORDER BY (p.like_cnt * 2 + p.view_cnt) DESC
+	    LIMIT 5
 	</select>
 	
 </mapper>

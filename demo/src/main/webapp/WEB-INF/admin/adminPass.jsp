@@ -343,26 +343,6 @@
                 box-shadow: 0 20px 45px rgba(0, 0, 0, .12);
             }
 
-            /* 추천 카드 자동 강조 */
-            .pass-card:nth-child(2) {
-                border: 2px solid var(--primary);
-            }
-
-            .pass-card:nth-child(2)::after {
-                content: "BEST PASS";
-                position: absolute;
-                top: 16px;
-                right: -34px;
-                background: linear-gradient(90deg, var(--primary), var(--primary-dark));
-                color: #fff;
-                width: 140px;
-                padding: 6px 0;
-                font-size: 12px;
-                font-weight: 800;
-                transform: rotate(35deg);
-                letter-spacing: 1px;
-            }
-
             /* 이름 */
             .pass-name {
                 font-size: 30px;
@@ -712,6 +692,33 @@
                     flex-direction: column;
                 }
             }
+
+            /* 잘팔린거!!!! */
+            .best-pass-card {
+                border: 2px solid #ff6b8a;
+                box-shadow: 0 10px 28px rgba(255, 107, 138, 0.22);
+            }
+
+            .best-pass-badge {
+                position: absolute;
+                top: 14px;
+                right: 14px;
+                padding: 6px 13px;
+                border-radius: 20px;
+                background: linear-gradient(135deg, #ff6b8a, #ff416c);
+                color: white;
+                font-size: 12px;
+                font-weight: 800;
+                letter-spacing: 1px;
+                box-shadow: 0 5px 12px rgba(255, 65, 108, 0.3);
+            }
+
+            .pass-sales-count {
+                margin-top: 10px;
+                color: #ff5c7a;
+                font-size: 13px;
+                font-weight: 700;
+            }
         </style>
     </head>
 
@@ -728,17 +735,26 @@
                             {{ hoverText }}
                         </div>
                         <div class="pass-grid">
-                            <div class="pass-card" v-for="pass in passList" @mouseenter="changeDesc(pass)"
+                            <div class="pass-card" v-for="pass in passList" :key="pass.passNo"
+                                :class="{ 'best-pass-card': pass.passNo == bestPassNo }" @mouseenter="changeDesc(pass)"
                                 @mouseleave="resetDesc">
+
+                                <div v-if="pass.passNo == bestPassNo" class="best-pass-badge">
+                                    BEST
+                                </div>
 
                                 <div class="pass-name">{{ pass.passName }}</div>
 
                                 <div class="pass-price">
-                                    {{ pass.price.toLocaleString() }}<span>원</span>
+                                    {{ pass.price.toLocaleString() }}원
                                 </div>
 
                                 <div class="pass-review">
                                     열람 가능한 리뷰 수: {{ pass.reviewCnt }}개
+                                </div>
+
+                                <div class="pass-sales-count" v-if="Number(pass.soldCount || 0) > 0">
+                                    지금까지 {{ pass.soldCount }}명이 선택했어요
                                 </div>
 
                                 <button class="pay-button" @click="openModal(pass)">
@@ -903,6 +919,34 @@
                         discountAmount: 0,
                         finalPrice: 0,
                     };
+                },
+                computed: {
+                    bestPassNo: function () {
+                        if (!this.passList || this.passList.length === 0) {
+                            return null;
+                        }
+
+                        // 체험용 패스(passNo 1)는 인기 순위에서 제외
+                        const paidPassList = this.passList.filter(function (pass) {
+                            return Number(pass.passNo) !== 1;
+                        });
+
+                        if (paidPassList.length === 0) {
+                            return null;
+                        }
+
+                        const bestPass = paidPassList.reduce(function (best, current) {
+                            return Number(current.soldCount || 0) >
+                                Number(best.soldCount || 0)
+                                ? current
+                                : best;
+                        });
+
+                        // 판매 기록이 하나도 없으면 배지를 표시하지 않음
+                        return Number(bestPass.soldCount || 0) > 0
+                            ? bestPass.passNo
+                            : null;
+                    }
                 },
                 methods: {
                     // 함수(메소드) - (key : function())
@@ -1165,7 +1209,7 @@
                             self.closeModal();
                         }
                     });
-                    
+
                     function createSakura() {
                         const current = document.querySelectorAll(".sakura").length;
                         if (current >= maxSakura) return;

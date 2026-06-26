@@ -12,6 +12,7 @@ import com.example.demo.community_review.mapper.CommunityMapper;
 import com.example.demo.community_review.mapper.ReportMapper;
 import com.example.demo.community_review.mapper.ReviewMapper;
 import com.example.demo.community_review.model.Report;
+import com.example.demo.admin.dao.NotificationService;
 
 @Service
 public class ReportService {
@@ -28,6 +29,8 @@ public class ReportService {
      private ReviewMapper reviewMapper;
      @Autowired
      private CommentMapper commentMapper;
+     @Autowired
+     private NotificationService notificationService;
 
     // 신고 등록 (중복 체크 + 타겟 제목 자동 추출 포함)
     public Map<String, Object> addReport(HashMap<String, Object> map) {
@@ -71,6 +74,10 @@ public class ReportService {
                 // 3. 신고 정보 저장
                 int res = reportMapper.insertReport(map);
                 if (res > 0) {
+                	notificationService.createReportReceived(
+                		    map.get("reportNo"),
+                		    (String) map.get("reporterId")
+                		);
                     resultMap.put("result", "success");
                 } else {
                     resultMap.put("result", "fail");

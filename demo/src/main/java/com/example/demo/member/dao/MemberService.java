@@ -18,14 +18,19 @@ import com.example.demo.member.model.Member;
 
 import jakarta.servlet.http.HttpSession;
 import java.time.LocalDate;
-
+import com.example.demo.admin.dao.NotificationService;
 
 @Service
 public class MemberService {
 	@Autowired
 	MemberMapper memberMapper;
 	
+	@Autowired
 	PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+	
+	@Autowired
+	private NotificationService notificationService;
+	
 	// *로그인 (일반,업체,관리자)*
 	public HashMap<String, Object> login(HashMap<String, Object> map, HttpSession session) {
 	    HashMap<String, Object> resultMap = new HashMap<>();
@@ -40,8 +45,9 @@ public class MemberService {
 	            resultMap.put("message", "아이디가 존재하지 않습니다.");
 	            return resultMap;
 	        }
-	        // 2-1. 계정 상태 체크 (추가!)
-	        if("WITHDRAWN".equals(member.getStatus())) { // 탈퇴 상태값에 맞춰 수정하세요
+	        
+	        // 2-1. 계정 상태 체크
+	        if("WITHDRAWN".equals(member.getStatus())) { 
 	            resultMap.put("loginResult", false);
 	            resultMap.put("message", "탈퇴 처리된 계정입니다.");
 	            return resultMap;
@@ -50,69 +56,80 @@ public class MemberService {
 	            resultMap.put("message", "이용이 정지된 계정입니다.");
 	            return resultMap;
 	        }
-		     // 3. role 체크 (비밀번호 비교 전에!)
-		    String tab = (String) map.get("tab");
-		    if(tab.equals("user")) {
-		        if(!member.getRole().equals("USER") && !member.getRole().equals("ADMIN")) {
-		          resultMap.put("loginResult", false);
-		          resultMap.put("message", "업체 로그인을 이용해주세요.");
-		          return resultMap;
-		        }
-		    } else if(tab.equals("company")) {
-		        if(!member.getRole().equals("PARTNER") && !member.getRole().equals("NPARTNER")) {
-		           resultMap.put("loginResult", false);
-		           resultMap.put("message", "일반 로그인을 이용해주세요.");
-		           return resultMap;
-		        }
-		    }
 	        
-	        // 4. 비밀번호 비교
-		    if(passwordEncoder.matches((String)map.get("password"), member.getPassword())) { // 암호화
+	        // 3. role 체크 (비밀번호 비교 전에!)
+	        String tab = (String) map.get("tab");
+	        if("user".equals(tab)) {
+	            if(!member.getRole().equals("USER")) {
+	                resultMap.put("loginResult", false);
+	                if(member.getRole().equals("ADMIN")) {
+	                    resultMap.put("message", "관리자 전용 페이지에서 로그인해주세요.");
+	                } else {
+	                    resultMap.put("message", "업체 로그인을 이용해주세요.");
+	                }
+	                return resultMap;
+	            }
+	        } else if("company".equals(tab)) {
+	            if(!member.getRole().equals("PARTNER") && !member.getRole().equals("NPARTNER")) {
+	                resultMap.put("loginResult", false);
+	                if(member.getRole().equals("ADMIN")) {
+	                    resultMap.put("message", "관리자 전용 페이지에서 로그인해주세요.");
+	                } else {
+	                    resultMap.put("message", "일반 로그인을 이용해주세요.");
+	                }
+	                return resultMap;
+	            }
+	        } else if("admin".equals(tab)) { 
+	            if(!member.getRole().equals("ADMIN")) {
+	                resultMap.put("loginResult", false);
+	                resultMap.put("message", "관리자 권한이 없는 계정입니다.");
+	                return resultMap;
+	            }
+	        }
+	        
+	        // 4. 비밀번호 비교 (중복되던 이중 구조 및 변수 선언 깔끔하게 통합)
+	        if(passwordEncoder.matches((String)map.get("password"), member.getPassword())) { 
 	            resultMap.put("loginResult", true);
 	            
-	         // tab은 위에서 이미 선언했으니까 그냥 사용 가능합니다.
-	         String displayName= ""; // 화면에 표시할 이름을 담을 변수
-	         if(tab.equals("company")) {
-//	        	System.out.println("DB에서 가져온 Member ID: " + member.getUserId()); // DB 객체 값
-	        	map.put("userId", member.getUserId());
-//	        	System.out.println(map.get("userId"));
-	        	displayName = memberMapper.selectCompany(map);
-	        	System.out.println("조회된 업체명: " + displayName);
-	            resultMap.put("message", displayName + "님 환영합니다.");
-	    
-	         } else {
-	        	displayName = member.getName();
-	            resultMap.put("message", displayName + "님 환영합니다.");
-	            
-	          }
-	          
-	         // url 분기
-	         if(member.getRole().equals("ADMIN")) { // 관리자 role
-	            resultMap.put("url", "/admin/main.do"); 
-	         } else if(member.getRole().equals("NPARTNER")) { // 업체롤 role
-	            resultMap.put("url", "/company10.do"); 
-	         } else {
+	            String displayName = ""; 
+	            if(tab.equals("company")) {
+	                map.put("userId", member.getUserId());
+	                displayName = memberMapper.selectCompany(map);
+	                resultMap.put("message", displayName + "님 환영합니다.");
+	            } else {
+	                displayName = member.getName();
+	                resultMap.put("message", displayName + "님 환영합니다.");
+	            }
+	              
+	            // url 분기
+	            if(member.getRole().equals("ADMIN")) { 
+	                resultMap.put("url", "/admin/main.do"); 
+	            } else if(member.getRole().equals("NPARTNER")) { 
+	                resultMap.put("url", "/company10.do"); 
+	            } else {
 	                resultMap.put("url", "/merryViewHome.do");
-	         }	            
+	            }	            
+	            
+	            // 세션 저장
 	            session.setAttribute("sessionId", member.getUserId());
 	            session.setAttribute("sessionName", displayName);
 	            session.setAttribute("sessionRole", member.getRole());
 	            
-	            // ✅ 결혼 기념일 기프트콘 체크 (일반 유저만)
+	            // 결혼 기념일 기프트콘 체크 (일반 유저만)
 	            if (member.getRole().equals("USER")) {
 	                giveAnniversaryGiftcon(member.getUserId());
 	            }
-	            
-	         }else {
+	        } else {
 	            resultMap.put("loginResult", false);
-	            resultMap.put("message", "비밀번호가 일치하지 않습니다."); // *메세지 부분은 일단 하드코딩 했지만 공용 메세지에 추가 후 변경 예정
+	            resultMap.put("message", "비밀번호가 일치하지 않습니다."); 
 	        }
 	        
 	    } catch(Exception e) {
 	        e.printStackTrace();
 	        resultMap.put("loginResult", false);
-	        resultMap.put("message", "로그인 중 오류가 발생했습니다."); // *공용 메세지 추가 후 변경 예정
+	        resultMap.put("message", "로그인 중 오류가 발생했습니다."); 
 	    }
+	    
 	    return resultMap;
 	}
 	//
@@ -192,13 +209,37 @@ public class MemberService {
 	    if(map.get("anniversaryDate") != null && map.get("anniversaryDate").toString().isEmpty()) {
 	        map.put("anniversaryDate", null);
 	    }
+	    
+	    // 탈퇴 이력 조회 (7일 체크 + 재활성화 분기에 재활용)
+	    String withdrawnDate = memberMapper.selectWithdrawnDate(map);
+	    if (withdrawnDate != null) {
+	        LocalDate outDate = LocalDate.parse(withdrawnDate.substring(0, 10));
+	        if (LocalDate.now().isBefore(outDate.plusDays(7))) {
+	            resultMap.put("result", "fail");
+	            resultMap.put("message", "탈퇴 후 7일간 재가입이 불가합니다.");
+	            return resultMap;
+	        }
+	    }
+	    
+	    // 구현은 해놓지만, 같은 번호로 가입 테스트 하려면 주석 처리해야함.
+	    // [전화번호 중복 가입 방지 - 테스트 완료 후 주석]
+//	     int phoneCount = memberMapper.selectUserPhone(map);
+//	     if (phoneCount > 0) {
+//	         resultMap.put("result", "fail");
+//	         resultMap.put("message", "이미 가입된 전화번호입니다.");
+//	         return resultMap;
+//	     }
+	    
 		try {
 			map.put("password", passwordEncoder.encode((String)map.get("password")));
-			// member 테이블 INSERT
-	        memberMapper.insertMember(map);
-	        // user_detail 테이블 INSERT
-	        memberMapper.insertUserDetail(map);
-	        
+			// ✅ 탈퇴 이력 있으면 UPDATE(재활성화), 없으면 INSERT
+	        if (withdrawnDate != null) {
+	            memberMapper.reactivateMember(map);
+	            memberMapper.reactivateUserDetail(map);
+	        } else {
+	            memberMapper.insertMember(map);
+	            memberMapper.insertUserDetail(map);
+	        }
 	        // --- [쿠폰 지급 로직 추가] ---
 	     	String userId = (String) map.get("userId");	
 	     	// [A] 회원가입 축하 쿠폰 지급
@@ -219,6 +260,11 @@ public class MemberService {
 		}
 		return resultMap;
 	}
+	// 전화번호 중복체크
+	public int checkPhoneDuplicate(HashMap<String, Object> map) {
+	    return memberMapper.selectUserPhone(map);
+	}
+	
 	// * 업체 회원 가입 *
 	@Transactional
 	public HashMap<String, Object> addCompany(HashMap<String, Object> map) {
@@ -255,14 +301,32 @@ public class MemberService {
 	}
 	
 	// * 유저 마이페이지 *
+	// 프로필 이미지 변경
+	public HashMap<String, Object> saveProfileImg(HashMap<String, Object> map) {
+	    HashMap<String, Object> resultMap = new HashMap<>();
+	    try {
+	        memberMapper.updateProfileImg(map);
+	        resultMap.put("result", "success");
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	        resultMap.put("result", "fail");
+	    }
+	    return resultMap;
+	}
 	// 내 정보 수정 - 비밀번호 확인
 	public HashMap<String, Object> checkPassword(HashMap<String, Object> map) {
 	    HashMap<String, Object> resultMap = new HashMap<String, Object>();
 	    try {
-	        Member member = memberMapper.selectMember(map); 
-	        
+	        // 카카오 유저 체크 먼저! (selectMember 호출 전에)
+	        String userId = (String) map.get("userId");
+	        if (userId != null && (userId.startsWith("kakao_") || userId.startsWith("naver_"))) {
+	            resultMap.put("result", "success");
+	            return resultMap;
+	        }
+
+	        // 일반 유저만 아래 로직 실행
+	        Member member = memberMapper.selectMember(map);
 	        if (member != null) {
-	            // 2. 암호화된 비밀번호 비교
 	            boolean isMatch = passwordEncoder.matches((String)map.get("password"), member.getPassword());
 	            resultMap.put("result", isMatch ? "success" : "fail");
 	        } else {
@@ -384,7 +448,15 @@ public class MemberService {
         // status는 'UNUSED'로, 발급일은 현재 시간으로 저장됩니다.
         int result = memberMapper.insertUserCoupon(map);
 
-        return (result > 0) ? "SUCCESS" : "FAIL";
+        if (result > 0) {
+            notificationService.createCouponIssued(
+                String.valueOf(map.get("userId")),
+                String.valueOf(map.get("couponCode"))
+            );
+            return "SUCCESS";
+        }
+
+        return "FAIL";
     }
 	// 쿠폰 발급 (회원가입 쿠폰, 결혼에정일 입력 시 지급 쿠폰)
 	@Transactional
@@ -397,6 +469,8 @@ public class MemberService {
 	    int duplicate = memberMapper.checkDuplicateCoupon(couponMap);
 	    if (duplicate == 0) {
 	        memberMapper.insertUserCoupon(couponMap);
+	        
+	        notificationService.createCouponIssued(userId, couponCode);
 	    }
 	}
 	// 기프트콘 조회
@@ -633,6 +707,45 @@ public class MemberService {
 	    return memberMapper.updatePassword(map);
 	}
 	
+	// 사용자 프로필 조회
+	public Member getUserProfile(String userId) {
+	    return memberMapper.selectUserProfile(userId);
+	}
+	// 사용자가 쓴 리뷰
+	public List<Member> getUserReviewList(String userId, int page) {
+	    HashMap<String, Object> map = new HashMap<>();
+	    map.put("userId", userId);
+	    map.put("pageSize", 5);
+	    map.put("offset", (page - 1) * 5);
+	    return memberMapper.selectUserReviewList(map);
+	}
+	// 사용자가 쓴 게시글
+	public List<Member> getUserPostList(String userId, int page) {
+	    HashMap<String, Object> map = new HashMap<>();
+	    map.put("userId", userId);
+	    map.put("pageSize", 5);
+	    map.put("offset", (page - 1) * 5);
+	    return memberMapper.selectUserPostList(map);
+	}
+	// 사용자가 쓴 댓글
+	public List<Member> getUserCommentList(String userId, int page) {
+	    HashMap<String, Object> map = new HashMap<>();
+	    map.put("userId", userId);
+	    map.put("pageSize", 5);
+	    map.put("offset", (page - 1) * 5);
+	    return memberMapper.selectUserCommentList(map);
+	}
+	// 페이징
+	public int getUserReviewCount(String userId) {
+	    return memberMapper.selectUserReviewCount(userId);
+	}
+	public int getUserPostCount(String userId) {
+	    return memberMapper.selectUserPostCount(userId);
+	}
+	public int getUserCommentCount(String userId) {
+	    return memberMapper.selectUserCommentCount(userId);
+	}
+	
 	// *메인 홈 출력* 
 	// 최근 리뷰
 	public List<Member> getMainReviewList(String userId) {
@@ -652,5 +765,21 @@ public class MemberService {
 	    log.setChatType(type);
 	    
 	    memberMapper.insertChatLog(log);
+	}
+	// 챗봇 추천
+	public List<HashMap<String, Object>> getTopReviewedProducts() {
+	    return memberMapper.getTopReviewedProducts();
+	}
+	// 챗봇 평균 비용
+	public List<HashMap<String, Object>> getAverageProductPrice() {
+	    return memberMapper.getAverageProductPrice();
+	}
+	// 가장 저렴한 상품
+	public List<HashMap<String, Object>> getCheapestProducts(String category) {
+	    return memberMapper.getCheapestProducts(category);
+	}
+	// 리뷰 갯수와 카테고리 조회
+	public List<HashMap<String, Object>> getMostReviewedProductsByCategory(String category) {
+	    return memberMapper.getMostReviewedProductsByCategory(category);
 	}
 }

@@ -21,6 +21,7 @@ import com.example.demo.member.dao.GeminiService;
 import com.example.demo.member.dao.MemberService;
 import com.example.demo.member.dao.SmsService;
 import com.example.demo.member.model.Member;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 
 import jakarta.servlet.http.HttpSession;
@@ -47,6 +48,12 @@ public class MemberController {
 		return "/home"; // 파일명
 	}
 	//
+	// 관리자 로그인
+	@RequestMapping("/admin/login.do") // 주소 
+	public String adminLogin(Model model) throws Exception {
+	    return "/member/admin-login";
+	}
+	
 	//*1. login (로그인)*
 	@RequestMapping("/login.do") // 주소 
 	public String login(Model model) throws Exception{
@@ -69,8 +76,8 @@ public class MemberController {
 	@PostMapping("/find-id-result.dox")
 	@ResponseBody
 	public Map<String, Object> findIdResult(@RequestBody Map<String, Object> map) {
-		System.out.println("userName: " + map.get("userName"));
-	    System.out.println("userTel: " + map.get("userTel"));
+//		System.out.println("userName: " + map.get("userName"));
+//	    System.out.println("userTel: " + map.get("userTel"));
 	    Map<String, Object> resultMap = new HashMap<>();
 	    String userId = memberService.findUserId(map);
 	    if (userId != null) {
@@ -112,9 +119,9 @@ public class MemberController {
         String authUserId = (String) session.getAttribute("authUserId");
         Boolean isVerified = (Boolean) session.getAttribute("isVerified");
 
-        System.out.println("세션 authUserId: " + authUserId);
-        System.out.println("세션 isVerified: " + isVerified);
-        System.out.println("요청 userId: " + map.get("userId"));
+//        System.out.println("세션 authUserId: " + authUserId);
+//        System.out.println("세션 isVerified: " + isVerified);
+//        System.out.println("요청 userId: " + map.get("userId"));
         
         // 세션에 저장된 ID와 요청온 ID가 일치하고, 인증된 상태여야 함
         if (isVerified != null && isVerified && authUserId.equals(map.get("userId"))) {
@@ -199,6 +206,13 @@ public class MemberController {
 	    return new Gson().toJson(resultMap);
 	}
 	// 3.마이페이지
+	// 3-0. 마이페이지 프로필 이미지 변경
+	@PostMapping("/saveProfileImg.dox")
+	@ResponseBody
+	public HashMap<String, Object> saveProfileImg(@RequestParam HashMap<String, Object> map, HttpSession session) {
+	    map.put("userId", session.getAttribute("sessionId"));
+	    return memberService.saveProfileImg(map);
+	}
 	// 3-1. 마이페이지 메인
 	@RequestMapping("/userMyPage.do") // 주소 
 	public String userMyPage(HttpSession session,Model model) throws Exception{
@@ -262,10 +276,12 @@ public class MemberController {
 	// 3-11. 내 정보 수정(비밀번호 확인페이지)
 	@PostMapping("/myPage-checkPw.do")
 	@ResponseBody
-	public String checkPassword(@RequestParam Map<String, Object> map) {
-	    HashMap<String, Object> serviceResult = memberService.checkPassword((HashMap<String, Object>) map); 
+	public String checkPassword(@RequestParam Map<String, Object> map, HttpSession session) {  // HttpSession 추가
+	    String sessionId = (String) session.getAttribute("sessionId");
+	    map.put("userId", sessionId);
+	    
+	    HashMap<String, Object> serviceResult = memberService.checkPassword((HashMap<String, Object>) map);
 	    String result = (String) serviceResult.get("result");
-	 
 	    return result;
 	}
 	// 3-12. 비밀번호 확인 성공 후 이동할 정보 수정 화면
@@ -273,7 +289,6 @@ public class MemberController {
 	public String myPageUpdateForm(HttpSession session, Model model) throws Exception {
 		// 1. 세션에서 로그인한 사용자의 아이디를 가져옵니다.
 	    String sessionId = (String) session.getAttribute("sessionId");
-	    System.out.println("세션에서 꺼낸 ID: " + sessionId); // <-- 여기가 null이면 로그인이 안 된 상태입니다.
 	    if (sessionId != null) {
 	        Member member = memberService.getMemberInfo(sessionId); 
 	        
@@ -281,6 +296,7 @@ public class MemberController {
 //	        System.out.println("마이페이지 조회 ID: " + sessionId);
 //	        System.out.println("DB 조회 전체 결과: " + member);
 //	        System.out.println("================================");
+	        System.out.println("maritalStatus: " + member.getMaritalStatus()); // 추가
 	        
 	        // 2. JSP로 전달
 	        model.addAttribute("member", member);
@@ -292,7 +308,7 @@ public class MemberController {
 	@RequestMapping(value = "/updateMemberInfo.dox", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
 	@ResponseBody
 	public String editMypage(@RequestParam HashMap<String, Object> map) throws Exception {
-		System.out.println("프론트에서 넘어온 데이터 전체: " + map);
+//		System.out.println("프론트에서 넘어온 데이터 전체: " + map);
 		HashMap<String, Object> resultMap = memberService.EditMemberInfo(map);
 	    return new Gson().toJson(resultMap);
 	}
@@ -698,6 +714,16 @@ public class MemberController {
 	@RequestMapping(value = "/sendSms.dox", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
 	@ResponseBody
 	public String sendSms(@RequestParam HashMap<String, Object> map) throws Exception {
+		// ✅ 전화번호 중복체크 (회원가입 시에만 체크)
+	    if ("join".equals(map.get("type"))) {
+	        int phoneCount = memberService.checkPhoneDuplicate(map);
+	        if (phoneCount > 0) {
+	            HashMap<String, Object> resultMap = new HashMap<>();
+	            resultMap.put("result", "fail");
+	            resultMap.put("message", "이미 가입된 전화번호입니다.");
+	            return new Gson().toJson(resultMap);
+	        }
+	    }
 	    HashMap<String, Object> resultMap = smsService.sendSms(map);
 	    return new Gson().toJson(resultMap);
 	}
@@ -723,7 +749,49 @@ public class MemberController {
 		    map.put("userId", userId);
 		    return memberService.decreasePass(map);
 		}
-	
+		
+	// 사용자 프로필 조회
+		@GetMapping("/userProfile.do")
+		public String userProfile(@RequestParam String userId, Model model) {
+		    Member profile = memberService.getUserProfile(userId);
+		    model.addAttribute("profile", profile);
+		    model.addAttribute("targetUserId", userId);
+		    return "member/userProfile";
+		}
+		
+		@RequestMapping(value = "/userProfileData.dox", method = RequestMethod.GET)
+		@ResponseBody
+		public HashMap<String, Object> userProfileData(
+		        @RequestParam String userId,
+		        @RequestParam(defaultValue = "1") int reviewPage,
+		        @RequestParam(defaultValue = "1") int postPage,
+		        @RequestParam(defaultValue = "1") int commentPage) {
+		    HashMap<String, Object> result = new HashMap<>();
+		    result.put("reviewList", memberService.getUserReviewList(userId, reviewPage));
+		    result.put("postList", memberService.getUserPostList(userId, postPage));
+		    result.put("commentList", memberService.getUserCommentList(userId, commentPage));
+		    result.put("reviewTotal", memberService.getUserReviewCount(userId));
+		    result.put("postTotal", memberService.getUserPostCount(userId));
+		    result.put("commentTotal", memberService.getUserCommentCount(userId));
+		    return result;
+		}
+		// 모달조회용
+	      @RequestMapping(value = "/userProfileSimple.dox", method = RequestMethod.GET)
+	      @ResponseBody
+	      public HashMap<String, Object> userProfileSimple(@RequestParam String userId) {
+	          HashMap<String, Object> result = new HashMap<>();
+	          
+	          // 1. 프로필 정보 (이미 구현된 것 재사용)
+	          result.put("info", memberService.getUserProfile(userId));
+	          
+	          // 2. 카운트 정보만 가져옴 (페이징 데이터 제외)
+	          result.put("reviewTotal", memberService.getUserReviewCount(userId));
+	          result.put("postTotal", memberService.getUserPostCount(userId));
+	          
+	          return result;
+	      }
+		
+	//
 	// *메인 홈 출력* 
 		@GetMapping("/mainPostList.dox")
 		@ResponseBody
@@ -814,5 +882,12 @@ public class MemberController {
 		    memberService.saveChatLog(userId, question, answer, type);
 
 		    return "success";
+		}
+		
+		// 이벤트 상세
+		@GetMapping("/eventDetail.do")
+		public String eventDetail(@RequestParam int eventId, Model model) {
+		    model.addAttribute("eventId", eventId);
+		    return "member/eventDetail";
 		}
 }

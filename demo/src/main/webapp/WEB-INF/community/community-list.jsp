@@ -6,137 +6,852 @@
     <title>커뮤니티 목록 - MarryView</title>
     <!-- 라이브러리 로드 -->
     <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/common.css">
     
     
-    <style>
-        :root { 
-            --primary-color: #ff4d6d; 
-            --secondary-color: #ff85a1;
-            --primary-light: rgba(255, 77, 109, 0.05);
-            --dark-color: #2d3436; 
-            --gray-color: #636e72;
+<style>
+    *, *::before, *::after {
+        box-sizing: border-box !important;
+    }
+    :root{
+        --primary:#ff5c8a;
+        --primary-light:#fff1f5;
+        --primary-soft:#ffe4ec;
+        --secondary:#ff85a1;
+        --dark:#2d3436;
+        --gray:#6b7280;
+        --line:#f3f4f6;
+        --white:#ffffff;
+    }
+
+    /* 전체 */
+    body {
+        overflow-y: scroll !important;
+        scrollbar-gutter: stable !important;
+        font-family:'Pretendard',sans-serif;
+        margin:0;
+        padding:0;
+        color:var(--dark);
+        background:
+            radial-gradient(circle at top left,#ffe8ef 0%,transparent 30%),
+            radial-gradient(circle at top right,#fff1f5 0%,transparent 25%),
+            #fff;
+    }
+
+    /* 헤더 */
+    .header-area{
+        text-align:center;
+        margin-bottom:60px;
+    }
+
+    .header-area h2{
+        font-size:48px;
+        font-weight:900;
+        color:#555;
+        margin-bottom:15px;
+        letter-spacing:-2px;
+    }
+
+    .header-area p{
+        color:#777;
+        font-size:18px;
+    }
+
+    /* 카테고리 */
+    .category-tabs{
+        display:flex;
+        justify-content:center;
+        flex-wrap:wrap;
+        gap:14px;
+        margin-bottom:45px;
+    }
+
+    .tab-item{
+        padding:13px 26px;
+        border-radius:999px;
+        background:white;
+        border:1px solid #f2f2f2;
+        cursor:pointer;
+        font-weight:700;
+        color:#777;
+        transition:.25s;
+        box-shadow:0 4px 15px rgba(0,0,0,.03);
+    }
+
+    .tab-item:hover{
+        color:var(--primary);
+    }
+
+    .tab-item.active{
+        background:linear-gradient(135deg,#f4a096,#ff8fa9);
+        color:white;
+        border:none;
+        box-shadow:0 10px 25px rgba(255,92,138,.3);
+    }
+
+    /* 검색 */
+    .search-box{
+        width:320px;
+        border:none !important;
+        border-radius:50px !important;
+        padding:14px 22px !important;
+        background:white;
+        box-shadow:0 6px 20px rgba(0,0,0,.05);
+    }
+
+    .search-box:focus{
+        box-shadow:
+        0 0 0 4px rgba(255,92,138,.15),
+        0 8px 25px rgba(0,0,0,.08);
+    }
+
+    .btn-search{
+        border:none !important;
+        border-radius:50px !important;
+        padding:0 28px !important;
+        background:linear-gradient(135deg,#f4a096,#ff8fa9);
+        color:white;
+        font-weight:700;
+        box-shadow:0 8px 20px rgba(255,92,138,.25);
+    }
+
+    /* 게시판 */
+    .board-list-container {
+        background: white;
+        border-radius: 30px;
+        overflow: hidden;
+        box-shadow:
+            0 20px 60px rgba(255,92,138,.08),
+            0 4px 15px rgba(0,0,0,.03);
+        /* 게시글 10개 기준 평균 높이를 고려해 최소 높이를 고정 */
+        min-height: auto;
+        display: flex;
+        flex-direction: column;
+        transition: opacity 0.2s ease;
+    }
+
+    /* 데이터가 없을 때 나오는 박스도 부모 높이를 꽉 채우도록 설정 */
+    .board-list-container .text-center.p-5 {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        min-height: 600px; /* '작성된 게시물이 없습니다' 화면에서도 높이 유지 */
+    }
+
+    /* 헤더 */
+    .list-header{
+        display:flex;
+        align-items:center;
+        background:linear-gradient(135deg,#fff7f9,#fff);
+        padding:22px 25px;
+        font-weight:800;
+        color:#555;
+        border-bottom:1px solid #f5f5f5;
+    }
+
+    /* 게시글 */
+    .list-item{
+        display:flex;
+        align-items:center;
+        padding:24px 25px;
+        border-bottom:1px solid #fafafa;
+        transition:.25s;
+        cursor:pointer;
+        position:relative;
+    }
+
+    .list-item:hover{
+        background:#fff8fa;
+        transform:translateY(-2px);
+    }
+
+    .list-item::after {
+        content:'';
+        position:absolute;
+        left:0; top:0;
+        width:4px; height:100%; /* 여기에 가로 4px이 생김 */
+        background:transparent;
+        transition:.25s;
+    }
+
+    .list-item:hover::after{
+        background:var(--primary);
+    }
+
+    /* 컬럼 */
+    .col-no{
+        width:70px;
+        text-align:center;
+        color:#bbb;
+        font-size:.9rem;
+    }
+
+    .col-cate{
+        width:120px;
+        text-align:center;
+    }
+
+    .col-title{
+        flex:1;
+        font-size:1.08rem;
+        font-weight:700;
+        color:#333;
+        padding:0 20px;
+    }
+
+    .col-info{
+        width:180px;
+        display:flex;
+        align-items:center;
+        justify-content:flex-start;
+        position:relative;
+    }
+
+    /* 댓글수 */
+    .comment-count{
+        color:var(--primary);
+        font-weight:800;
+        margin-left:6px;
+    }
+
+    /* 카테고리 */
+    .badge-cate{
+        border-radius:999px;
+        padding:7px 15px;
+        font-size:.8rem;
+        font-weight:800;
+    }
+
+    .cate-자유{
+        background:#e0f2fe;
+        color:#0369a1;
+    }
+
+    .cate-결혼{
+        background:#ffe4ec;
+        color:#be185d;
+    }
+
+    .cate-가족행사{
+        background:#dcfce7;
+        color:#15803d;
+    }
+
+    .cate-육아출산{
+        background:#fef3c7;
+        color:#b45309;
+    }
+
+    .cate-고민{
+        background:#ede9fe;
+        color:#6d28d9;
+    }
+
+    .cate-직장{
+        background:#e2e8f0;
+        color:#334155;
+    }
+
+    .cate-default{
+        background:#f3f4f6;
+        color:#6b7280;
+    }
+
+    /* 닉네임 */
+    .nickname{
+        background:#fff5f8;
+        color:#ff5c8a;
+        padding:7px 13px;
+        border-radius:12px;
+        font-weight:800;
+        transition:.25s;
+        display: inline-block;
+    }
+
+    .nickname:hover{
+        background:#ffe3ec;
+        transform:translateY(-1px);
+    }
+
+    .nickname-link{
+        text-decoration:none;
+        color:inherit;
+    }
+
+    /* 통계 */
+    .stat-group{
+        display:flex;
+        gap:18px;
+        color:#999;
+        font-weight:700;
+    }
+
+    .icon-heart{
+        color:#f4a096;
+    }
+
+    /* 프로필 호버 */
+    .nickname-container{
+        position:relative;
+         display:inline-block;
+    }
+
+    .profile-hover-modal{
+        position:absolute;
+        left:110%;
+        top:50%;
+        transform:translateY(-50%);
+        width:210px;
+
+        background:white;
+        border-radius:20px;
+        padding:18px;
+
+        border:1px solid #ffe4ec;
+
+        box-shadow:
+        0 15px 40px rgba(255,92,138,.15);
+
+        z-index:9999;
+
+        animation:popup .2s ease;
+    }
+
+    .profile-hover-modal img{
+        width:60px;
+        height:60px;
+        border-radius:50%;
+        object-fit:cover;
+        display:block;
+        margin:0 auto;
+        border:3px solid #ffe4ec;
+    }
+
+    .profile-hover-modal::before{
+        content:"";
+        position:absolute;
+        left:-8px;
+        top:50%;
+        transform:translateY(-50%);
+        border-top:8px solid transparent;
+        border-bottom:8px solid transparent;
+        border-right:8px solid white;
+    }
+
+    @keyframes popup{
+        from{
+            opacity:0;
+            transform:translateY(-50%) scale(.9);
+        }
+        to{
+            opacity:1;
+            transform:translateY(-50%) scale(1);
+        }
+    }
+
+    /* 페이지네이션 */
+    .pagination .page-link{
+        border:none;
+        border-radius:14px;
+        margin:0 4px;
+        color:#777;
+        font-weight:700;
+    }
+
+    .pagination .active .page-link{
+        background:linear-gradient(135deg,#f4a096,#ff8fa9);
+        color:white !important;
+        box-shadow:0 8px 20px rgba(255,92,138,.25);
+    }
+
+    /* 글쓰기 버튼 */
+    .write-btn-wrapper{
+        position:fixed;
+        right:40px;
+        bottom:40px;
+        z-index:999;
+    }
+
+    .btn-write{
+        width:75px;
+        height:75px;
+        border:none;
+        border-radius:26px;
+        background:linear-gradient(135deg,#f4a096,#ff8fa9);
+        color:white;
+        font-size:30px;
+        box-shadow:
+        0 15px 35px rgba(255,92,138,.35);
+        transition:.3s;
+        animation:pulse 2.5s infinite;
+    }
+    @keyframes pulse{
+        0%{
+            box-shadow:
+            0 0 0 0 rgba(255,92,138,.45),
+            0 15px 35px rgba(255,92,138,.35);
+        }
+        70%{
+            box-shadow:
+            0 0 0 18px rgba(255,92,138,0),
+            0 15px 35px rgba(255,92,138,.35);
+        }
+        100%{
+            box-shadow:
+            0 0 0 0 rgba(255,92,138,0),
+            0 15px 35px rgba(255,92,138,.35);
+        }
+    }
+    .btn-write i{
+        animation:bouncePen 2.5s infinite;
+    }
+
+    @keyframes bouncePen{
+        0%,100%{
+            transform:translateY(0);
+        }
+        50%{
+            transform:translateY(-4px);
+        }
+    }
+
+    .btn-write:hover{
+        transform:translateY(-5px) scale(1.08);
+    }
+
+    /* Total Posts */
+    .text-primary{
+        color:#f4a096 !important;
+    }
+
+    /* 모바일 */
+    @media(max-width:768px){
+
+        .header-area h2{
+            font-size:34px;
         }
 
-        body { 
-            /* 화사한 그라데이션 배경 적용 */
-            background: linear-gradient(180deg, #fff0f3 0%, #ffffff 400px, #ffffff 100%);
-            font-family: 'Pretendard', -apple-system, sans-serif;
-            margin: 0;
-            padding: 0;
+        .list-header{
+            display:none !important;
         }
 
-        /* 1. 메인 컨텐츠 영역 */
-        .main-content { padding: 80px 20px; max-width: 1140px; margin: 0 auto; min-height: 100vh; }
-        
-        /* 헤더 영역 */
-        .header-area { margin-bottom: 50px; text-align: center; }
-        .header-area h2 { font-size: 40px; font-weight: 900; color: var(--dark-color); margin-bottom: 15px; letter-spacing: -1.5px; }
-        .header-area p { color: var(--gray-color); font-size: 1.15rem; font-weight: 500; }
-
-        /* 2. 카테고리 탭 (유리 스타일링 적용) */
-        .category-tabs { display: flex; justify-content: center; gap: 15px; margin-bottom: 45px; }
-        .tab-item { 
-            padding: 12px 28px; cursor: pointer; border-radius: 50px; font-weight: 700; 
-            color: #888; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); 
-            background: rgba(255, 255, 255, 0.8); border: 1px solid #eee;
-            backdrop-filter: blur(5px);
-        }
-        .tab-item:hover { color: var(--primary-color); transform: translateY(-3px); }
-        .tab-item.active { 
-            background: var(--primary-color); color: white; border-color: var(--primary-color); 
-            box-shadow: 0 8px 20px rgba(255, 77, 109, 0.3); 
+        .list-item{
+            flex-direction:column;
+            align-items:flex-start;
+            gap:10px;
         }
 
-        /* 3. 게시판 리스트 디자인 */
-        .board-list-container { 
-            background: rgba(255, 255, 255, 0.9); border-radius: 24px; 
-            box-shadow: 0 15px 35px rgba(0,0,0,0.05); overflow: hidden; 
-            border: 1px solid rgba(255, 255, 255, 0.3);
-        }
-        
-        .list-header { 
-            display: flex; background: #fafafa; padding: 20px 25px; 
-            font-weight: 700; color: #444; border-bottom: 1px solid #f1f1f1; font-size: 0.95rem;
-            text-align: center;
-        }
-        
-        .list-item { 
-            display: flex; align-items: center; padding: 24px 25px; border-bottom: 1px solid #f9f9f9;
-            transition: all 0.25s ease; cursor: pointer; background: transparent;
-        }
-        .list-item:hover { background-color: var(--primary-light); transform: scale(1.005); }
-
-        /* 컬럼 너비 설정 */
-        .col-no { width: 70px; text-align: center; font-size: 0.85rem; color: #bbb; }
-        .col-cate { width: 110px; text-align: center; }
-        .col-title { flex: 1; padding: 0 25px; font-weight: 600; color: #333; font-size: 1.1rem; }
-        .col-info { width: 320px; display: flex; align-items: center; justify-content: space-between; font-size: 0.95rem; }
-        
-        /* 제목 및 댓글수 */
-        .comment-count { color: var(--primary-color); font-weight: 800; margin-left: 8px; }
-
-        /* 카테고리 뱃지 */
-        .badge-cate { padding: 6px 14px; border-radius: 10px; font-size: 0.78rem; font-weight: 800; display: inline-block; }
-        .cate-자유 { background: #eef2ff; color: #4f46e5; }
-        .cate-질문 { background: #fff7ed; color: #ea580c; }
-        .cate-정보 { background: #fdf2f8; color: #db2777; }
-        .cate-default { background: #f3f4f6; color: #6b7280; }
-        
-        /* 작성자 및 통계 */
-        .nickname { font-weight: 700; color: #555; background: #f8f9fa; padding: 4px 10px; border-radius: 6px; }
-        .stat-group { display: flex; gap: 18px; color: #a0a0a0; font-weight: 600; min-width: 130px; justify-content: flex-end; }
-        .icon-heart { color: var(--primary-color); }
-        .icon-view { margin-right: 4px; }
-
-        /* 4. 검색창 개선 */
-        .search-box { 
-            width: 280px; border-radius: 30px !important; border: 2px solid #f1f1f1; 
-            padding: 10px 20px; transition: 0.3s;
-        }
-        .search-box:focus { border-color: var(--primary-color); box-shadow: none; }
-        .btn-search { 
-            border-radius: 30px !important; padding: 8px 25px !important; 
-            background: var(--dark-color); border: none; color: white; font-weight: 700;
+        .col-no,
+        .col-cate,
+        .col-info,
+        .col-title{
+            width:100%;
+            padding:0;
         }
 
-        /* 페이지네이션 */
-        .pagination .page-link { border: none; color: #888; margin: 0 5px; border-radius: 12px; font-weight: 700; padding: 10px 18px; }
-        .pagination .active .page-link { background-color: var(--primary-color) !important; color: white !important; box-shadow: 0 5px 15px rgba(255, 77, 109, 0.2); }
-
-        /* 플로팅 글쓰기 버튼 */
-        .write-btn-wrapper { position: fixed; bottom: 50px; right: 50px; z-index: 1000; }
-        .btn-write { 
-            width: 70px; height: 70px; border-radius: 24px; background: var(--primary-color);
-            color: white; border: none; font-size: 30px; box-shadow: 0 12px 30px rgba(255, 77, 109, 0.4);
-            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); display: flex; align-items: center; justify-content: center;
+        .stat-group{
+            margin-top:8px;
         }
-        .btn-write:hover { transform: scale(1.1) rotate(5deg); background: #ff1a4a; }
-    </style>
+    }
+    /* 배경 꽃잎 */
+    .petal {
+        position: fixed;
+        top: -80px;
+        pointer-events: none;
+        z-index: 0;
+        opacity: .3;  /* 살짝 더 진하게 */
+        font-size: 60px;  /* 추가 - 기본 크기 키우기 */
+        animation:
+            petalFall linear infinite,
+            petalSway ease-in-out infinite;
+    }
+
+    @keyframes petalFall{
+        from{
+            transform:translateY(-100px) rotate(0deg);
+        }
+        to{
+            transform:translateY(120vh) rotate(360deg);
+        }
+    }
+
+    @keyframes petalSway{
+        0%,100%{
+            margin-left:0;
+        }
+        50%{
+            margin-left:60px;
+        }
+    }
+    /* 정렬 버튼 */
+    .sort-tabs{
+        display:flex;
+        justify-content:center;
+        gap:12px;
+        margin-bottom:25px;
+        flex-wrap:wrap;
+    }
+
+    .sort-item{
+        padding:10px 22px;
+        border-radius:999px;
+        background:white;
+        border:1px solid #f2f2f2;
+        cursor:pointer;
+        font-weight:700;
+        color:#777;
+        transition:.25s;
+        box-shadow:0 4px 15px rgba(0,0,0,.03);
+    }
+
+    .sort-item:hover{
+        color:#f4a096;
+    }
+
+    .sort-item.active{
+        background:linear-gradient(135deg,#f4a096,#ff8fa9);
+        color:white;
+        border:none;
+        box-shadow:0 10px 25px rgba(255,92,138,.25);
+    }
+    
+    .popular-board {
+        background:#fff;
+        border-radius:24px;
+        padding:25px;
+        margin-bottom:40px;
+        box-shadow: 0 10px 30px rgba(255,92,138,.08);
+        border:1px solid #ffe4ec;
+        min-height: 200px;  /* 추가 */
+    }
+
+    .popular-title{
+        font-size:20px;
+        font-weight:900;
+        color:#ff5c8a;
+        margin-bottom:18px;
+    }
+
+    .popular-item{
+        display:flex;
+        align-items:center;
+        justify-content:space-between;
+
+        padding:14px 10px;
+
+        border-bottom:1px solid #f7f7f7;
+
+        cursor:pointer;
+
+        transition:.2s;
+    }
+
+    .popular-item:last-child{
+        border-bottom:none;
+    }
+
+    .popular-item:hover{
+        background:#fff7fa;
+        border-radius:12px;
+    }
+
+    .popular-rank{
+        width:40px;
+        font-weight:900;
+        color:#ff5c8a;
+    }
+
+    .popular-subject{
+        flex:1;
+        font-weight:700;
+        color:#333;
+    }
+
+    .popular-stat{
+        color:#999;
+        font-size:.9rem;
+    }
+    .badge-best{
+        display:inline-block;
+
+        padding:4px 10px;
+        margin-right:8px;
+
+        border-radius:8px;
+
+        background:linear-gradient(
+            135deg,
+            #ffd700,
+            #ffb300
+        );
+
+        color:white;
+        font-size:11px;
+        font-weight:900;
+
+        box-shadow:
+            0 4px 12px rgba(255,193,7,.4);
+
+        animation:bestGlow 2s infinite;
+    }
+    @keyframes bestGlow{
+
+        0%{
+            transform:scale(1);
+            box-shadow:
+                0 0 5px rgba(255,215,0,.4),
+                0 0 10px rgba(255,215,0,.2);
+        }
+
+        50%{
+            transform:scale(1.08);
+            box-shadow:
+                0 0 15px rgba(255,215,0,.8),
+                0 0 25px rgba(255,215,0,.5);
+        }
+
+        100%{
+            transform:scale(1);
+            box-shadow:
+                0 0 5px rgba(255,215,0,.4),
+                0 0 10px rgba(255,215,0,.2);
+        }
+    }
+    .badge-hot{
+        display:inline-block;
+
+        padding:4px 10px;
+        margin-right:8px;
+
+        border-radius:8px;
+
+        background:linear-gradient(
+            135deg,
+            #ff5c8a,
+            #ff8fa9
+        );
+
+        color:white;
+        font-size:11px;
+        font-weight:900;
+
+        box-shadow:
+            0 4px 12px rgba(255,92,138,.3);
+
+        animation:hotPulse 1.5s infinite;
+    }
+    @keyframes hotPulse{
+
+        0%{
+            transform:scale(1);
+        }
+
+        50%{
+            transform:scale(1.08);
+        }
+
+        100%{
+            transform:scale(1);
+        }
+    }
+    .badge-king{
+        display:inline-block;
+
+        padding:4px 10px;
+        margin-right:8px;
+
+        border-radius:8px;
+
+        background:linear-gradient(
+            135deg,
+            #7c3aed,
+            #a855f7
+        );
+
+        color:white;
+        font-size:11px;
+        font-weight:900;
+
+        animation:bestGlow 1.5s infinite;
+    }
+    .author-box{
+        display:flex;
+        flex-direction:column;
+        gap:4px;
+    }
+
+    .post-date{
+        font-size:11px;
+        color:#b5b5b5;
+        padding-left:4px;
+    }
+    .title-meta{
+        margin-top:6px;
+        font-size:12px;
+        color:#aaa;
+        font-weight:600;
+        display:flex;
+        align-items:center;
+        gap:6px;
+    }
+    .title-meta span{
+        color:#ddd;
+    }
+    .title-main{
+        line-height:1.4;
+    }
+    .title-meta .writer{
+        color:#f4a096;
+        font-weight:700;
+    }
+    .meta-nickname{
+        color:#f4a096 !important;
+        font-weight:800;
+        text-decoration:none !important;
+    }
+        /* 컨텐츠가 꽃잎 위로 올라오게 */
+    #app {
+        position: relative;
+        z-index: 2;
+    }
+
+    /* 3. 중앙 정렬 컨텐츠 가로폭 고정 */
+    .main-content {
+        width: 100% !important;
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 80px 20px;
+        min-height: 100vh;
+        position: relative;
+        z-index: 2;
+    }
+
+    .col-date{
+        width:90px;
+        text-align:right;
+        color:#aaa;
+        font-size:12px;
+        font-weight:700;
+        flex-shrink:0;
+    }
+    .petal-heart i { color: #f4a096; }
+    .header-area h2 i {
+        color: #f4a096;
+    }
+    .popular-stat .fa-heart {
+        color: #f4a096;
+    }
+
+    .popular-stat .fa-eye {
+        color: #aaa;
+    }
+
+   /* 카테고리 탭 아이콘 색상 - 파스텔 */
+    .tab-item .fa-smile { color: #7eb8d4; }        /* 자유 - 파스텔 블루 */
+    .tab-item .fa-gem { color: #f4a096; }          /* 결혼 - 파스텔 핑크 */
+    .tab-item .fa-users { color: #7bc99a; }        /* 가족행사 - 파스텔 그린 */
+    .tab-item .fa-baby { color: #f0c070; }         /* 육아출산 - 파스텔 옐로 */
+    .tab-item .fa-comment-dots { color: #b39ddb; } /* 고민 - 파스텔 퍼플 */
+    .tab-item .fa-briefcase { color: #90a4ae; }    /* 직장 - 파스텔 그레이 */
+
+    /* active 상태일 때는 흰색으로 */
+    .tab-item.active i {
+        color: white !important;
+    }
+
+    /* 정렬 탭 아이콘 색상 - 파스텔 */
+    .sort-item .fa-clock { color: #7eb8d4; }   /* 최신순 - 파스텔 블루 */
+    .sort-item .fa-fire { color: #f4a096; }    /* 인기순 - 파스텔 핑크 */
+    .sort-item .fa-eye { color: #7bc99a; }     /* 조회순 - 파스텔 그린 */
+    .sort-item .fa-heart { color: #f0a0b8; }   /* 좋아요순 - 파스텔 로즈 */
+
+    /* active 상태일 때는 흰색으로 */
+    .sort-item.active i {
+        color: white !important;
+    }
+
+</style>
 </head>
 <body>
     <jsp:include page="/WEB-INF/common/header.jsp" />
+    <div class="petal petal-heart"><i class="fas fa-heart"></i></div>
+    <div class="petal petal-heart"><i class="fas fa-heart"></i></div>
+    <div class="petal petal-heart"><i class="fas fa-heart"></i></div>
+    <div class="petal petal-heart"><i class="fas fa-heart"></i></div>
+    <div class="petal petal-heart"><i class="fas fa-heart"></i></div>
+    <div class="petal petal-heart"><i class="fas fa-heart"></i></div>
+    <div class="petal petal-heart"><i class="fas fa-heart"></i></div>
+    <div class="petal petal-heart"><i class="fas fa-heart"></i></div>
+    <div class="petal petal-heart"><i class="fas fa-heart"></i></div>
+    <div class="petal petal-heart"><i class="fas fa-heart"></i></div>
+    <div class="petal petal-heart"><i class="fas fa-heart"></i></div>
+    <div class="petal petal-heart"><i class="fas fa-heart"></i></div>
+    <div class="petal petal-heart"><i class="fas fa-heart"></i></div>
+    <div class="petal petal-heart"><i class="fas fa-heart"></i></div>
+    <div class="petal petal-heart"><i class="fas fa-heart"></i></div>
+    <div class="petal petal-heart"><i class="fas fa-heart"></i></div>
 
     <div id="app">
         <main class="main-content">
             <!-- 상단 헤더 -->
             <header class="header-area">
-                <h2>💬 Marry Community</h2>
+                <h2><i class="fas fa-comments mr-3"></i>Marry Community</h2>
                 <p>예비 부부들의 생생한 이야기와 꿀팁을 확인하세요.</p>
             </header>
 
             <!-- 카테고리 탭 -->
             <div class="category-tabs">
-                <div v-for="cate in categories" :key="cate" 
-                     :class="['tab-item', { active: searchCategory === cate }]"
-                     @click="fnChangeCategory(cate)">
-                    {{ cate }}
+                <div v-for="cate in categoryList" :key="cate.value"
+                    :class="['tab-item', { active: searchCategory === cate.value }]"
+                    @click="fnChangeCategory(cate.value)">
+                    <i v-if="cate.icon" :class="['fas', cate.icon, 'mr-1']"></i>
+                    {{ cate.label }}
+                </div>
+            </div>
+            <!-- 인기글 -->
+            <div class="popular-board mb-5" v-show="popularList.length > 0">
+                <div class="popular-title">
+                    <i class="fas fa-fire mr-2"></i>실시간 인기글
+                </div>
+                <div class="popular-item"
+                    v-for="(item,index) in popularList"
+                    :key="item.postNo"
+                    @click="fnDetail(item.postNo)">
+
+                    <span class="popular-rank" v-html="getRank(index)"></span>
+
+                    <span class="popular-subject">
+                        {{ item.title }}
+                    </span>
+
+                    <span class="popular-stat">
+                        <i class="fas fa-heart mr-1"></i>{{ item.likeCnt }}
+                        <i class="fas fa-eye ml-2 mr-1"></i>{{ item.viewCnt }}
+                    </span>
                 </div>
             </div>
 
+            <!-- 정렬 버튼 -->
+            <div class="sort-tabs">
+                <div :class="['sort-item', { active: sortType === 'latest' }]" @click="fnChangeSort('latest')">
+                    <i class="fas fa-clock mr-1"></i>최신순
+                </div>
+                <div :class="['sort-item', { active: sortType === 'popular' }]" @click="fnChangeSort('popular')">
+                    <i class="fas fa-fire mr-1"></i>인기순
+                </div>
+                <div :class="['sort-item', { active: sortType === 'view' }]" @click="fnChangeSort('view')">
+                    <i class="fas fa-eye mr-1"></i>조회순
+                </div>
+                <div :class="['sort-item', { active: sortType === 'like' }]" @click="fnChangeSort('like')">
+                    <i class="fas fa-heart mr-1"></i>좋아요순
+                </div>
+            </div>
             <!-- 상단 검색바 -->
             <div class="d-flex justify-content-between align-items-center mb-4 px-3">
                 <div class="text-muted small">Total <span class="text-primary font-weight-bold">{{ totalCount }}</span> Posts</div>
@@ -153,36 +868,92 @@
                     <div class="col-no">No.</div>
                     <div class="col-cate">Category</div>
                     <div class="col-title">Subject</div>
-                    <div class="col-info">Author / Status</div>
+                    <div class="col-date">Date</div>
                 </div>
-                
+
                 <div v-for="item in list" :key="item.postNo" class="list-item" @click="fnDetail(item.postNo)">
                     <div class="col-no">{{ item.postNo }}</div>
+
                     <div class="col-cate">
                         <span :class="['badge-cate', 'cate-' + (item.category || 'default')]">
-                            {{ item.category || '기타' }}
+                            {{ getCategoryLabel(item.category) || '기타' }}
                         </span>
                     </div>
+
                     <div class="col-title">
-                        {{ item.title }}
-                        <span v-if="item.commentCnt > 0" class="comment-count">({{ item.commentCnt }})</span>
-                    </div>
-                    <div class="col-info">
-                        <span class="nickname">@{{ item.nickname }}</span>
-                        <div class="stat-group">
-                            <span><i class="far fa-eye icon-view"></i>{{ item.viewCnt }}</span>
-                            <span class="icon-heart"><i class="fas fa-heart"></i> {{ item.likeCnt }}</span>
+                        <div class="title-main">
+                            <span v-if="popularList.length > 0 && item.postNo === popularList[0].postNo" class="badge-king">
+                                <i class="fas fa-crown mr-1"></i>KING
+                            </span>
+                            <span v-else-if="bestPosts.includes(item.postNo)" class="badge-best">
+                                <i class="fas fa-trophy mr-1"></i>BEST
+                            </span>
+                            <span v-else-if="item.viewCnt >= 100 || item.commentCnt >= 10" class="badge-hot">
+                                <i class="fas fa-fire mr-1"></i>HOT
+                            </span>
+
+                            {{ item.title }}
+
+                            <span v-if="item.imgYn === 'Y'" style="margin-left:8px;color:#ff4d6d;font-size:.9rem;">
+                                <i class="fas fa-image"></i>
+                            </span>
+
+                            <span v-if="item.commentCnt > 0" class="comment-count">
+                                ({{ item.commentCnt }})
+                            </span>
+                        </div>
+
+                        <div class="title-meta" @click.stop>
+                            <span class="nickname-container"
+                                @mouseenter="fnShowHover(item.userId, item.postNo)"
+                                @mouseleave="fnHideHover">
+
+                                <a v-if="item.nickname !== '탈퇴회원'"
+                                    :href="'/userProfile.do?userId=' + item.userId"
+                                    class="nickname-link meta-nickname">
+                                    @{{ item.nickname }}
+                                </a>
+
+                                <b v-else class="text-danger meta-nickname">
+                                    @{{ item.nickname }}
+                                </b>
+
+                                <div v-if="hoverUserId === item.userId && hoverPostNo === item.postNo && hoverInfo"
+                                    class="profile-hover-modal">
+
+                                    <div style="text-align:center;">
+                                        <img
+                                            :src="'/img/profile/' + (hoverInfo.info.profileImg || 'heart.png')"
+                                            style="width:50px;height:50px;border-radius:50%;object-fit:cover;display:block;margin:0 auto;">
+
+                                        <div class="mt-2 font-weight-bold">
+                                            {{ hoverInfo.info.nickName }}
+                                        </div>
+
+                                        <div style="font-size:12px;color:#666;">
+                                            게시글 {{ hoverInfo.postTotal }} | 리뷰 {{ hoverInfo.reviewTotal }}
+                                        </div>
+                                    </div>
+                                </div>
+                            </span>
+
+                            <span>·</span>
+                            조회 {{ item.viewCnt }}
+                            <span>·</span>
+                            좋아요 {{ item.likeCnt }}
                         </div>
                     </div>
+                    <div class="col-date">
+                        {{ formatTime(item.regDate) }}
+                    </div>
                 </div>
-
-                <!-- 데이터 없을 때 -->
                 <div v-if="list.length == 0" class="text-center p-5">
-                    <div class="mb-3" style="font-size: 50px; opacity: 0.3;">📂</div>
-                    <p style="color: #999; font-weight: 500;">작성된 게시물이 없습니다.</p>
+                    <div class="mb-3" style="font-size:50px;opacity:.3;">
+                        <i class="fas fa-folder-open"></i>
+                    </div>
+                    <p style="color:#999;font-weight:500;">작성된 게시물이 없습니다.</p>
                 </div>
             </div>
-
             <!-- 페이지네이션 -->
             <nav class="mt-5">
                 <ul class="pagination justify-content-center">
@@ -202,12 +973,15 @@
                 </ul>
             </nav>
 
+            
             <!-- 플로팅 글쓰기 버튼 -->
             <div class="write-btn-wrapper">
+
                 <button class="btn-write" @click="fnAddPage">
                     <i class="fas fa-pen"></i>
                 </button>
             </div>
+            
         </main>
 
         <jsp:include page="/WEB-INF/common/footer.jsp" />
@@ -222,15 +996,29 @@
                     searchKeyword: "",
                     searchType: "all",
                     searchCategory: "전체",
-                    categories: ["전체", "자유", "질문", "정보"],
+                    categoryList: [
+                        { label: "전체", value: "전체", icon: null },
+                        { label: "자유", value: "자유", icon: "fa-smile" },
+                        { label: "결혼", value: "결혼", icon: "fa-gem " },
+                        { label: "가족행사", value: "가족행사", icon: "fa-users" },
+                        { label: "육아출산", value: "육아출산", icon: "fa-baby" },
+                        { label: "고민", value: "고민", icon: "fa-comment-dots" },
+                        { label: "직장", value: "직장", icon: "fa-briefcase" }
+                    ],
                     currentPage: 1,
                     pageSize: 10,
                     totalCount: 0,
-                    pageBlockSize: 5
+                    pageBlockSize: 5,
+                    hoverPostNo : null,    
+                    hoverInfo: null, // 호버한 유저의 정보가 담길 곳
+                    hoverUserId: null, // 현재 호버 중인 유저의 ID
+                    sortType: "latest", // latest, view, like, popular
+                    popularList : [],
+                    bestPosts : [],
                 };
             },
             computed: {
-                pageNumbers() {
+               pageNumbers() {
                     const totalPages = this.totalPageCount;
                     const startPage = Math.floor((this.currentPage - 1) / this.pageBlockSize) * this.pageBlockSize + 1;
                     let endPage = startPage + this.pageBlockSize - 1;
@@ -247,11 +1035,28 @@
                 }
             },
             methods: {
+                fnShowHover(userId, postNo) {
+                    this.hoverUserId = userId;
+                    this.hoverPostNo = postNo;
+                    // 서버에서 데이터 가져오기
+                    axios.get('/userProfileSimple.dox', { params: { userId: userId  } })
+                        .then(res => {
+                            this.hoverInfo = res.data; // 서버에서 보낸 info, reviewTotal, postTotal 저장
+                        });
+                },
+                fnHideHover() {
+                    this.hoverUserId = null;
+                    this.hoverPostNo = null; // 초기화
+                    this.hoverInfo = null;
+                },
                 fnList() {
+                    // 페이드 아웃
+                    document.querySelector('.board-list-container').classList.add('board-list-fade');
                     const nParam = {
                         searchKeyword: this.searchKeyword,
                         searchType: this.searchType,
                         category: this.searchCategory === "전체" ? "" : this.searchCategory,
+                        sortType: this.sortType,
                         startIndex: (this.currentPage - 1) * this.pageSize,
                         pageSize: this.pageSize
                     };
@@ -265,18 +1070,53 @@
                             this.list = data.list; 
                             this.sessionId = data.sessionId;
                             this.totalCount = data.count; 
+                            // 페이드 인
+                            this.$nextTick(() => {
+                                document.querySelector('.board-list-container').classList.remove('board-list-fade');
+                            });
                         },
                         error: (xhr) => console.error("데이터 로드 실패")
                     });
+                },
+                fnPopularList() {
+                    $.ajax({
+                        url : "/api/community/popularList.dox",
+                        type : "POST",
+                        dataType : "json",
+                        success : (data)=>{
+                            this.popularList = data.list;
+                            this.bestPosts = data.list.map(item => item.postNo);
+                        }
+                    })
+                },
+                getRank(index) {
+                    if(index === 0) return '<i class="fas fa-medal" style="color:#FFD700;"></i>';
+                    if(index === 1) return '<i class="fas fa-medal" style="color:#C0C0C0;"></i>';
+                    if(index === 2) return '<i class="fas fa-medal" style="color:#CD7F32;"></i>';
+                    return index + 1;
                 },
                 fnSearch() {
                     this.currentPage = 1;
                     this.fnList();
                 },
-                fnChangeCategory(cate) {
-                    this.searchCategory = cate;
+                fnChangeCategory(value) {
+                    const scrollY = window.scrollY;
+                    this.searchCategory = value;
                     this.currentPage = 1;
                     this.fnList();
+                    this.$nextTick(() => {
+                        window.scrollTo(0, scrollY);
+                    });
+                },
+
+                fnChangeSort(type) {
+                    const scrollY = window.scrollY;
+                    this.sortType = type;
+                    this.currentPage = 1;
+                    this.fnList();
+                    this.$nextTick(() => {
+                        window.scrollTo(0, scrollY);
+                    });
                 },
                 fnPageChange(page) {
                     if (page < 1 || page > this.totalPageCount) return;
@@ -295,10 +1135,43 @@
                     } else {
                         location.href = "/api/community/add.do";
                     }
-                }
+                },
+                getCategoryLabel(val) {
+                    // categoryList에서 value가 일치하는 항목을 찾아 label을 반환
+                    const found = this.categoryList.find(c => c.value === val);
+                    return found ? found.label : val;
+                },
+                formatTime(date) {
+                    const now = new Date();
+                    const target = new Date(date);
+                    const diff = Math.floor((now - target) / 1000);
+                    if(diff < 60){
+                        return "방금 전";
+                    }
+                    if(diff < 3600){
+                        return Math.floor(diff / 60) + "분 전";
+                    }
+                    if(diff < 86400){
+                        return Math.floor(diff / 3600) + "시간 전";
+                    }
+                    if(diff < 172800){
+                        return "어제";
+                    }
+                    if(diff < 604800){
+                        return Math.floor(diff / 86400) + "일 전";
+                    }
+                    return target.toLocaleDateString('ko-KR');
+                },
             },
             mounted() {
                 this.fnList();
+                 this.fnPopularList();
+                 document.querySelectorAll('.petal').forEach(el => {
+                    el.style.left = Math.random() * 100 + 'vw';
+                    el.style.fontSize = (24 + Math.random() * 24) + 'px';  /* 18~36 → 24~48 */
+                    el.style.animationDuration = (12 + Math.random() * 10) + 's';
+                    el.style.animationDelay = -(Math.random() * 10) + 's';  /* 음수로 처음부터 보이게 */
+                });
             }
         }).mount('#app');
     </script>

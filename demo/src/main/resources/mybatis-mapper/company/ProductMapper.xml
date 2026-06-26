@@ -1,0 +1,231 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.example.demo.company.mapper.ProductMapper">
+
+	<select id="selectProductList" parameterType="map" resultType="com.example.demo.company.model.Product">
+		SELECT 
+			p.product_no,
+			p.product_no AS id,
+			p.company_no,
+			p.product_name,
+			p.product_name AS name,
+			p.product_details,
+			p.product_details AS content,
+			p.original_price,
+			p.original_price AS price,
+			p.is_active,
+			p.img_url,
+			p.img_url AS thumbnail,
+			p.large_category,
+			p.medium_category,
+			p.deposit,
+			p.reg_date,
+			c.com_name,
+			c.com_intro AS comIntro,
+			c.com_address AS comAddress,
+			c.img_url AS comImgUrl, 
+			(SELECT COUNT(*) FROM product_like WHERE product_no = p.product_no) AS likeCnt,
+			(SELECT COUNT(*) FROM product_like WHERE product_no = p.product_no AND user_id = #{loginUserId}) AS isLiked,
+			(SELECT COUNT(*) FROM company_like WHERE company_no = p.company_no AND user_id = #{loginUserId}) AS isCompanyLiked,
+			(
+				SELECT GROUP_CONCAT(DISTINCT pt_all.tag SEPARATOR ',')
+				FROM product_tag_map ptm_all
+				INNER JOIN product_tag pt_all ON ptm_all.tag_id = pt_all.id
+				WHERE ptm_all.product_no = p.product_no
+			) AS tag
+		FROM product p
+		LEFT JOIN company c ON p.company_no = c.company_no
+		<if test="tagList != null and tagList.size() > 0">
+			INNER JOIN product_tag_map ptm ON p.product_no = ptm.product_no
+			INNER JOIN product_tag pt ON ptm.tag_id = pt.id
+		</if>
+		<where>
+			<if test="userid != null and userid != ''">
+				AND c.user_id = #{userid}
+			</if>
+			<if test="companyNo != null and companyNo != ''">
+				AND p.company_no = #{companyNo}
+			</if>
+			<if test="largeCategory != null and largeCategory != ''">
+				AND p.large_category = #{largeCategory}
+			</if>
+			<if test="mediumCategory != null and mediumCategory != ''">
+				AND p.medium_category = #{mediumCategory}
+			</if>
+			<if test="tagList != null and tagList.size() > 0">
+				AND pt.tag IN
+				<foreach collection="tagList" item="tag" open="(" separator="," close=")">
+					#{tag}
+				</foreach>
+			</if>
+		</where>
+		GROUP BY p.product_no
+		<if test="tagList != null and tagList.size() > 0">
+			HAVING COUNT(DISTINCT pt.tag) = #{tagSize}
+		</if>
+		ORDER BY p.reg_date DESC
+	</select>
+
+	<select id="selectProduct" parameterType="map" resultType="com.example.demo.company.model.Product">
+		SELECT 
+			p.product_no,
+			p.product_no AS id,
+			p.company_no,
+			p.product_name,
+			p.product_name AS name,
+			p.product_details,
+			p.product_details AS content,
+			p.original_price,
+			p.original_price AS price,
+			p.is_active,
+			p.img_url,
+			p.img_url AS thumbnail,
+			p.large_category,
+			p.medium_category,
+			p.deposit,
+			p.reg_date,
+			c.com_name,
+			c.com_intro AS comIntro,
+			c.com_address AS comAddress,
+			c.img_url AS comImgUrl,
+			(SELECT COUNT(*) FROM product_like WHERE product_no = p.product_no) AS likeCnt,
+			(SELECT COUNT(*) FROM product_like WHERE product_no = p.product_no AND user_id = #{loginUserId}) AS isLiked,
+			(SELECT COUNT(*) FROM company_like WHERE company_no = p.company_no AND user_id = #{loginUserId}) AS isCompanyLiked,
+			(
+				SELECT GROUP_CONCAT(DISTINCT pt_all.tag SEPARATOR ',')
+				FROM product_tag_map ptm_all
+				INNER JOIN product_tag pt_all ON ptm_all.tag_id = pt_all.id
+				WHERE ptm_all.product_no = p.product_no
+			) AS tag
+		FROM product p
+		LEFT JOIN company c ON p.company_no = c.company_no
+		WHERE p.product_no = #{productNo}
+	</select>
+
+	<update id="updateProduct" parameterType="com.example.demo.company.model.Product">
+		UPDATE product
+		<set>
+			<if test="productName != null">product_name = #{productName},</if>
+			<if test="productDetails != null">product_details = #{productDetails},</if>
+			<if test="originalPrice != null">original_price = #{originalPrice},</if>
+			<if test="isActive != null">is_active = #{isActive},</if>
+			<if test="imgUrl != null and imgUrl != ''">img_url = #{imgUrl},</if>
+			<if test="largeCategory != null">large_category = #{largeCategory},</if>
+			<if test="mediumCategory != null">medium_category = #{mediumCategory},</if>
+			<if test="deposit != null">deposit = #{deposit}</if>
+		</set>
+		WHERE product_no = #{productNo}
+	</update>
+
+	<insert id="insertProduct" parameterType="com.example.demo.company.model.Product" useGeneratedKeys="true" keyProperty="productNo">
+		INSERT INTO product(company_no, product_name, product_details, original_price, is_active, img_url, large_category, medium_category, deposit, reg_date)
+		VALUES(#{companyNo}, #{productName}, #{productDetails}, #{originalPrice}, #{isActive}, #{imgUrl}, #{largeCategory}, #{mediumCategory}, #{deposit}, NOW())
+	</insert>
+
+	<select id="selectTagList" parameterType="map" resultType="String">
+		SELECT tag FROM product_tag ORDER BY id ASC
+	</select>
+
+	<select id="selectProductListForTag" parameterType="map" resultType="com.example.demo.company.model.Product">
+		SELECT 
+			p.product_no,
+			p.product_no AS id,
+			p.company_no,
+			p.product_name,
+			p.product_name AS name,
+			p.product_details,
+			p.product_details AS content,
+			p.original_price,
+			p.original_price AS price,
+			p.is_active,
+			p.img_url,
+			p.img_url AS thumbnail,
+			p.large_category,
+			p.medium_category,
+			p.deposit,
+			p.reg_date
+		FROM product p 
+		WHERE p.large_category = #{largeCategory}
+	</select>
+
+	<insert id="insertUniqueNewTagsOnly" parameterType="map">
+		INSERT IGNORE INTO product_tag(tag)
+		VALUES
+		<foreach collection="uniqueNewTagsOnly" item="tag" separator=",">
+			(#{tag})
+		</foreach>
+	</insert>
+
+	<select id="selectDistinctCategories" resultType="hashmap">
+		SELECT DISTINCT large_category, medium_category 
+		FROM product
+		WHERE large_category IS NOT NULL AND medium_category IS NOT NULL
+		ORDER BY FIELD(large_category, '결혼', '가족행사', '친구와함께'), medium_category ASC
+	</select>
+
+	<select id="selectAllTagsWithMedium" resultType="hashmap">
+		SELECT tag, medium_category 
+		FROM product_tag
+		WHERE tag IS NOT NULL AND medium_category IS NOT NULL
+	</select>
+ 
+	<delete id="deleteProduct" parameterType="map">
+		DELETE FROM product WHERE product_no = #{productNo}
+	</delete>
+
+	<select id="selectTagIdsByNames" parameterType="list" resultType="integer">
+		SELECT id 
+		FROM product_tag 
+		WHERE tag IN
+		<foreach collection="list" item="tag" open="(" separator="," close=")">
+			#{tag}
+		</foreach>
+	</select>
+
+	<insert id="insertProductTagMap" parameterType="map">
+		INSERT INTO product_tag_map (product_no, tag_id)
+		VALUES
+		<foreach collection="tagIds" item="tagId" separator=",">
+			(#{productNo}, #{tagId})
+		</foreach>
+	</insert>
+
+	<delete id="deleteProductTagMap" parameterType="long">
+		DELETE FROM product_tag_map 
+		WHERE product_no = #{productNo}
+	</delete>
+
+	<select id="checkCompanyLike" parameterType="hashmap" resultType="int">
+		SELECT COUNT(*) 
+		FROM company_like 
+		WHERE user_id = #{loginUserId} AND company_no = #{companyNo}
+	</select>
+
+	<insert id="insertCompanyLike" parameterType="hashmap">
+		INSERT INTO company_like (user_id, company_no)
+		VALUES (#{loginUserId}, #{companyNo})
+	</insert>
+
+	<delete id="deleteCompanyLike" parameterType="hashmap">
+		DELETE FROM company_like 
+		WHERE user_id = #{loginUserId} AND company_no = #{companyNo}
+	</delete>
+
+	<select id="checkProductLike" parameterType="hashmap" resultType="int">
+		SELECT COUNT(*) 
+		FROM product_like 
+		WHERE user_id = #{loginUserId} AND product_no = #{productNo}
+	</select>
+
+	<insert id="insertProductLike" parameterType="hashmap">
+		INSERT INTO product_like (user_id, product_no)
+		VALUES (#{loginUserId}, #{productNo})
+	</insert>
+
+	<delete id="deleteProductLike" parameterType="hashmap">
+		DELETE FROM product_like 
+		WHERE user_id = #{loginUserId} AND product_no = #{productNo}
+	</delete>
+	
+</mapper>
