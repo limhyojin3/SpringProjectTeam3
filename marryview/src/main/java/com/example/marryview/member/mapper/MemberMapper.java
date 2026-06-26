@@ -81,6 +81,9 @@ public interface MemberMapper {
 	// 업체 좋아요 조회
 	List<Member> selectMyCompanyLikeList(HashMap<String, Object> map);
 	int selectMyCompanyLikeCount(String userId);
+	// 상품 좋아요 조회
+	List<HashMap<String, Object>> selectMyProductLikeList(HashMap<String, Object> map);
+	int selectMyProductLikeCount(HashMap<String, Object> map);
 	// 글 좋아요 조회
 	List<Member> selectMyPostLikeList(HashMap<String, Object> map);
 	int selectMyPostLikeCount(String userId);

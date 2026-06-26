@@ -480,18 +480,44 @@
 	    AND is_deleted = 0
 	</select>
 	
-	<!-- 업체 좋아요 조회 -->
+	<!-- 업체 좋아요 목록 조회 수정 -->
 	<select id="selectMyCompanyLikeList" parameterType="hashmap"
 	    resultType="com.example.marryview.member.model.Member">
-	    SELECT 
+	    SELECT
 	        CL.like_no,
 	        CL.company_no,
-	        C.com_name
+	        C.com_name,
+	        C.com_address,
+	        C.img_url
 	    FROM company_like CL
 	    JOIN company C ON CL.company_no = C.company_no
 	    WHERE CL.user_id = #{userId}
-	    ORDER BY CL.like_no DESC 
+	    ORDER BY CL.like_no DESC
 	    LIMIT #{pageSize} OFFSET #{offset}
+	</select>
+	
+	<!-- 상품 좋아요 조회 -->
+	<select id="selectMyProductLikeList" parameterType="hashmap"
+	    resultType="hashmap">
+	    SELECT
+	        PL.like_no,
+	        PL.product_no,
+	        P.product_name,
+	        P.original_price,
+	        P.img_url,
+	        C.com_name,
+	        C.com_address
+	    FROM product_like PL
+	    JOIN product P ON PL.product_no = P.product_no
+	    LEFT JOIN company C ON P.company_no = C.company_no
+	    WHERE PL.user_id = #{userId}
+	    ORDER BY PL.like_no DESC
+	    LIMIT #{pageSize} OFFSET #{offset}
+	</select>
+	
+	<!-- 상품 좋아요 총 개수 -->
+	<select id="selectMyProductLikeCount" parameterType="hashmap" resultType="int">
+	    SELECT COUNT(*) FROM product_like WHERE user_id = #{userId}
 	</select>
 	<!-- 페이지 -->
 	<select id="selectMyCompanyLikeCount" parameterType="String" resultType="int">
