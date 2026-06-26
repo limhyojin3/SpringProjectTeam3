@@ -35,7 +35,6 @@ const myReservationListComponent = {
                     // 예약 진행중 탭만 유저가 급박하게 인지해야 하므로 방문일이 가장 가까운 일정 순인 [임박순 - 오름차순] 배정
                     return dateTimeA.localeCompare(dateTimeB);
                 } else {
-                    // 🎯 유저님 가이드 반영 리팩토링 완결: 
                     // [전체(ALL)] 탭을 포함하여 이용완료 및 취소 내역은 가장 먼 미래/가장 나중 날짜가 무조건 상단에 꽂히는 [내림차순] 통합 소팅
                     return dateTimeB.localeCompare(dateTimeA);
                 }

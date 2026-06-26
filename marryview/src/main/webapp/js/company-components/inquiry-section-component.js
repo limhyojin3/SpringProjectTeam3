@@ -36,7 +36,7 @@ const InquirySectionComponent = {
             return this.inquiryList ? this.inquiryList.length : 0;
         },
         /**
-         * 🎯 [신규 이식] 현재 문의 페이지 번호를 기점으로 상시 최대 3개의 번호 블록만 유연하게 다스리는 슬라이딩 수식
+         * 🎯 현재 문의 페이지 번호를 기점으로 상시 최대 3개의 번호 블록만 유연하게 다스리는 슬라이딩 수식
          * @returns {Array} [1, 2, 3] 구조의 유동 인덱스 주머니
          */
         visibleInquiryPageNumbers() {
@@ -93,7 +93,7 @@ const InquirySectionComponent = {
                 type: "POST",
                 data: param,
                 success: function(data) {
-                    // 🎯 [핵심 디버깅 격리] 백엔드가 null이나 누락 필드를 던지더라도 강제로 빈 배열([])을 보존케 마킹!
+                    // 백엔드가 null이나 누락 필드를 던지더라도 강제로 빈 배열([])을 보존케 마킹!
                     self.inquiryList = data.list || [];
                 },
                 error: function() {
@@ -117,10 +117,14 @@ const InquirySectionComponent = {
                 success: function(data) {
                     if (data.result === 'success') {
                         self.inquiryAnswer.inquiryNo = data.info.inquiryNo || '';
-                        self.inquiryAnswer.ansUserId = data.info.ansUserId || '';
                         self.inquiryAnswer.answerNo = data.info.answerNo || '';
                         self.inquiryAnswer.answerContents = data.info.answerContents || '';
-                        self.inquiryAnswer.inquiryAns = data.info.inquiryAns || '';
+                        
+                        // 시스템 숫자 혹은 문자 '0'이 빈칸('')으로 날아가지 않도록 안전핀 장착!
+                        self.inquiryAnswer.inquiryAns = (data.info.inquiryAns !== undefined && data.info.inquiryAns !== null) ? data.info.inquiryAns : '';
+                        
+                        // 💡 [세션 ID 연동 가동] 답변자 기본 명세에 가짜 문자대신 로그인한 진짜 업체 세션 ID(sunsu09)가 뜨도록 사전 매립
+                        self.inquiryAnswer.ansUserId = data.info.ansUserId || window.SESSION_ID;
                     }
                 }
             });
@@ -141,8 +145,11 @@ const InquirySectionComponent = {
             let param = {
                 inquiryNo: self.inquiryAnswer.inquiryNo,
                 answerContents: self.inquiryAnswer.answerContents,
-                ansUserId: self.inquiryAnswer.ansUserId,
-                inquiryAns: self.inquiryAnswer.inquiryAns
+                inquiryAns: self.inquiryAnswer.inquiryAns,
+                
+                // 💡 [외래키 원천 제로 박멸 구간] 유저가 입력창에 장난으로 3을 적었든 홍길동을 적었든 상관없이,
+                // 실제 DB 알림 원격 시스템으로 쏴줄 값은 무조건 세션 로그인 대장 ID인 window.SESSION_ID(sunsu09)로 강제 복사 치환 전송!
+                ansUserId: window.SESSION_ID
             };
             $.ajax({
                 url: "/addProductInquiryAnswer.dox",
@@ -160,13 +167,13 @@ const InquirySectionComponent = {
                 }
             });
         },
-        // 🎯 [신규 추가] 왼쪽 화살표(◀) 단자 무빙 처리 액션
+        // 왼쪽 화살표(◀) 단자 무빙 처리 액션
         fnPrevPage() {
             if (this.currentPage > 1) {
                 this.currentPage--;
             }
         },
-        // 🎯 [신규 추가] 오른쪽 화살표(▶) 단자 무빙 처리 액션
+        // 오른쪽 화살표(▶) 단자 무빙 처리 액션
         fnNextPage() {
             if (this.currentPage < this.totalInquiryPages) {
                 this.currentPage++;
