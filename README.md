@@ -183,7 +183,7 @@ https://github.com/user-attachments/assets/a00ba838-6ce2-4335-ac79-0b14a1077616
 
 [팀원별 페이지 시연 영상]
 
-▶ [임효진](https://drive.google.com/file/d/1bbniE5zir9vcVys8eJ6LSA_GX7GaB4tO/view?usp=drive_link)
+▶ [임효진](https://drive.google.com/file/d/1kXyyePI2AX5bJnvwa5PozuMvjTAVaqJ9/view?usp=sharing)
 
 ▶ [안혜진](https://drive.google.com/file/d/1-sA4meMwrF-o_rPlQGhg24-d-XDc3RGp/view?usp=drive_link)
 
