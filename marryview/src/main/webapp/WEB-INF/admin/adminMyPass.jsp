@@ -430,6 +430,43 @@
                 border-bottom: 1px solid transparent;
 
             }
+
+            .admin-fade-up {
+                opacity: 0;
+                animation: adminFadeUp .45s ease forwards;
+            }
+
+            .admin-fade-up.delay-1 {
+                animation-delay: .5s;
+            }
+
+            .admin-fade-up.delay-2 {
+                animation-delay: .6s;
+            }
+
+            .admin-fade-up.delay-3 {
+                animation-delay: .7s;
+            }
+
+            .admin-fade-up.delay-4 {
+                animation-delay: .8s;
+            }
+
+            .admin-fade-up.delay-5 {
+                animation-delay: .9s;
+            }
+
+            @keyframes adminFadeUp {
+                from {
+                    opacity: 0;
+                    transform: translateY(-12px);
+                }
+
+                to {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
+            }
         </style>
     </head>
 
@@ -437,11 +474,9 @@
         <jsp:include page="/WEB-INF/common/header.jsp" />
         <div id="app">
             <div id="wrapper">
-                <div class="main-content">
+                <div class="main-content admin-fade-up">
                     <div class="right-sections">
-
                         <section class="wallet-page">
-
                             <!-- 상단 보유 카드 -->
                             <div class="wallet-card">
                                 <div class="wallet-count">
@@ -543,7 +578,7 @@
                                     <div class="history-item empty-row" v-for="n in (pageSize - passList.length)"
                                         :key="'empty'+n">
                                     </div>
-                                    
+
                                     <div v-if="passList.length == 0" class="empty-box">
                                         결제 내역이 없습니다.
                                     </div>

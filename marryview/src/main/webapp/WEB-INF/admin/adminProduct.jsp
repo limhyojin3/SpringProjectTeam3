@@ -64,7 +64,7 @@
             <div class="middle">
                 <jsp:include page="/WEB-INF/admin/adminNavi.jsp" />
                 <div class="main">
-                    <div class="container">
+                    <div class="container admin-fade-up">
 
                         <h2>상품 관리</h2>
                         <div class="tab-menu">
@@ -414,7 +414,6 @@
                     data() {
                         return {
                             // 변수 - (key : value)
-                            activeMenu: "",
                             activeTab: "product",
                             list: [],
                             info: {},
@@ -481,7 +480,6 @@
                         },
 
                         fnChangeTab(tab) {
-                            console.log(tab);
                             this.activeTab = tab;
                             this.fnResetSearch();
                         },
@@ -536,9 +534,6 @@
                                     mediumCategory: self.mediumCategory,
                                 },
                                 success: function (res) {
-                                    console.log("응답:", res);
-                                    // console.log("응답 전체 =", JSON.stringify(res));
-                                    console.log("list =", res.list);
                                     self.list = res.list || [];
                                     self.index = Math.ceil((res.totalCount || 0) / self.pageSize);
                                     self.emptyRows = 5 - res.list.length;
@@ -562,8 +557,6 @@
                                     productNo: no
                                 },
                                 success: function (res) {
-                                    console.log(res);
-
                                     if (res.result == "success") {
                                         self.info = res.info;
 
@@ -763,13 +756,9 @@
                         // 처음 시작할 때 실행되는 부분
                         let self = this;
                         const path = location.pathname;
-                        this.activeMenu =
-                            path.includes('adminProduct') ? 'product' : '';
-                        console.log("mounted 실행");
                         self.fnGetList();
                     }
                 });
-
                 app.mount('#app');
             </script>
             <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>

@@ -481,6 +481,12 @@ table button:hover{
     border: 1px solid #d8deea;
 }
 
+.admin-detail-page .summary-box.danger{
+    min-height: 84px;
+	background: #ffe5e5;
+		color: red;
+}
+
 /* 긴 ID 말줄임 */
 .admin-id-cell {
     width: 170px;

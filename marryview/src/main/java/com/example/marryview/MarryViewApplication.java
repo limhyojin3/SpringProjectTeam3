@@ -5,8 +5,10 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
+import org.springframework.scheduling.annotation.EnableScheduling;
 
-@SpringBootApplication 
+@SpringBootApplication
+@EnableScheduling
 @MapperScan("com.example.marryview") 
 public class MarryViewApplication extends SpringBootServletInitializer { // 💡 상속 추가
 

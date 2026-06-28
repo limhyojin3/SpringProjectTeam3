@@ -254,6 +254,12 @@
       AND status = 'UNUSED'
 </update> 
 
+<update id="updateMemberPreviousPayment" parameterType="hashmap">
+    UPDATE member
+    SET previous_payment = #{previousPayment}
+    WHERE user_id = #{userId}
+</update>
+
 <!-- 등록 회사 번호 조회-->
 <select id="selectCompanyInfo" parameterType="hashmap"
         resultType="int">

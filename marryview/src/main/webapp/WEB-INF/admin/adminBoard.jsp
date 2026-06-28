@@ -25,7 +25,7 @@
             <div class="middle">
                 <jsp:include page="/WEB-INF/admin/adminNavi.jsp" />
                 <div class="main">
-                    <div class="container">
+                    <div class="container admin-fade-up-1">
 
                         <h2>게시판 관리</h2>
 
@@ -44,10 +44,13 @@
                             </div>
                             <div class="filter-group">
                                 <select v-model="category" @change="fnGetBoardList">
-                                    <option value="ALL">분류</option>
+                                    <option value="ALL">전체</option>
                                     <option value="자유">자유</option>
-                                    <option value="질문">질문</option>
-                                    <option value="정보">정보</option>
+                                    <option value="결혼">결혼</option>
+                                    <option value="가족행사">가족행사</option>
+                                    <option value="육아출산">육아출산</option>
+                                    <option value="고민">고민</option>
+                                    <option value="직장">직장</option>
                                 </select>
                                 <div>
                                     <select v-model="sortType" @change="fnGetBoardList">
@@ -126,7 +129,6 @@
                 data() {
                     return {
                         // 변수 - (key : value)
-                        activeMenu: "",
                         boardList: [],
                         sessionId: "${sessionScope.sessionId}",
                         sessionRole: "${sessionScope.sessionRole}",
@@ -269,17 +271,6 @@
                     // 처음 시작할 때 실행되는 부분
                     let self = this;
                     const path = location.pathname;
-                    this.activeMenu =
-                        path.includes('adminMain') ? 'main' :
-                            path.includes('adminUser') ? 'user' :
-                                path.includes('adminCompany') ? 'company' :
-                                    path.includes('adminBoard') ? 'board' :
-                                        path.includes('adminReview') ? 'review' :
-                                            path.includes('adminPayment') ? 'payment' :
-                                                path.includes('adminReport') ? 'report' :
-                                                    path.includes('adminInquiry') ? 'inquiry' :
-                                                        path.includes('adminStatistics') ? 'stats' :
-                                                            '';
                     self.fnGetBoardList();
                 }
             });

@@ -392,7 +392,6 @@
                         data() {
                             return {
                                 // 변수 - (key : value)
-                                activeMenu: "",
                                 impUid: null,
                             };
                         },
@@ -407,17 +406,6 @@
                             // 처음 시작할 때 실행되는 부분
                             let self = this;
                             const path = location.pathname;
-
-                            this.activeMenu =
-                                path.includes('adminMain') ? 'main' :
-                                    path.includes('adminUser') ? 'user' :
-                                        path.includes('adminCompany') ? 'company' :
-                                            path.includes('adminBoard') ? 'board' :
-                                                path.includes('adminReviewWait') ? 'reviewWait' :
-                                                    path.includes('adminPayment') ? 'payment' :
-                                                        path.includes('adminReport') ? 'report' :
-                                                            path.includes('adminStatistics') ? 'stats' :
-                                                                '';
                         }
                     });
 

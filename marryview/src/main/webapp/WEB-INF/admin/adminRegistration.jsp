@@ -239,7 +239,7 @@
         <div id="app">
             <div class="middle">
                 <div class="main">
-                    <div class="glass-card">
+                    <div class="glass-card admin-fade-up">
 
                         <!-- 타이틀 -->
                         <div class="pay-header" style="margin-bottom:20px;">
@@ -303,7 +303,6 @@
                 data() {
                     return {
                         // 변수 - (key : value)
-                        activeMenu: "",
                         sessionId: "${sessionId}",
                         sessionRole: "${sessionScope.sessionRole}",
                         isModalOpen: false,
@@ -338,18 +337,10 @@
                                 amount: 1000,      //제품 가격
                             },
                             function (response) {
-                                console.log(response);
-                                console.log("전체 response:", response);
-                                console.log("success:", response.success);
-                                console.log("imp_uid:", response.imp_uid);
-                                console.log("status:", response.status);
-                                console.log("paid_amount:", response.paid_amount);
                                 if (response.success) {
-                                    console.log("포트원 번호: " + response.imp_uid);
                                     // 우리쪽 db에 결제정보 저장
                                     // 페이지 이동 필요하면 페이지 이동 (메인 or 마이)
                                     // 결제 성공 후 서버 검증
-                                    console.log("imp_uid:", response.imp_uid);
                                     self.fnVerifyPayment(response.imp_uid, response.merchant_uid);
                                 } else {
                                     console.log("에러내용: " + response.error_msg);
@@ -361,7 +352,6 @@
 
                     fnVerifyPayment(imp_uid, merchant_uid) {
                         let self = this
-                        console.log("서버로 보내는 imp_uid:", imp_uid);
                         $.ajax({
                             url: "http://localhost:8080/verifyPayment2.dox",
                             type: "POST",
@@ -376,9 +366,7 @@
 
                             },
                             success: function (res) {
-                                console.log(res);
                                 if (res.result == "success") {
-                                    console.log("포트원 번호: " + res.imp_uid);
                                     alert("결제가완료되었습니다");
                                     self.isModalOpen = false;
                                     location.href = "/adminPayFinish.do?payNo=" + res.payNo + "&type=REG";
@@ -406,17 +394,6 @@
                     // 처음 시작할 때 실행되는 부분
                     let self = this;
                     const path = location.pathname;
-
-                    this.activeMenu =
-                        path.includes('adminMain') ? 'main' :
-                            path.includes('adminUser') ? 'user' :
-                                path.includes('adminCompany') ? 'company' :
-                                    path.includes('adminBoard') ? 'board' :
-                                        path.includes('adminReviewWait') ? 'reviewWait' :
-                                            path.includes('adminPayment') ? 'payment' :
-                                                path.includes('adminReport') ? 'report' :
-                                                    path.includes('adminStatistics') ? 'stats' :
-                                                        '';
                 }
             });
 

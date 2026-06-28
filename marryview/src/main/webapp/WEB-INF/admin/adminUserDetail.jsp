@@ -212,7 +212,6 @@
             const app = Vue.createApp({
                 data() {
                     return {
-                        activeMenu: "",
                         selectedUser: null,
                         banHistoryList: [],
                         reportList: [],
@@ -355,17 +354,6 @@
                         this.fnGetReport(userId);
                     }
                     const path = location.pathname;
-                    this.activeMenu =
-                        path.includes('adminMain') ? 'main' :
-                            path.includes('adminUser') ? 'user' :
-                                path.includes('adminCompany') ? 'company' :
-                                    path.includes('adminBoard') ? 'board' :
-                                        path.includes('adminReviewWait') ? 'reviewWait' :
-                                            path.includes('adminPayment') ? 'payment' :
-                                                path.includes('adminReport') ? 'report' :
-                                                    path.includes('adminInquiry') ? 'inquiry' :
-                                                        path.includes('adminStatistics') ? 'stats' :
-                                                            '';
                 }
             });
 
