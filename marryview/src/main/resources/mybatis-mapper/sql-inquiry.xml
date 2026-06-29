@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.marryview.community_review.mapper.InquiryMapper">
+
+	<!-- 문의 작성 -->
+    <insert id="insertInquiry" parameterType="map"
+    	useGeneratedKeys="true"
+        keyProperty="inquiryNo"
+        keyColumn="inquiry_no">
+        INSERT INTO Inquiry (
+            user_id, inquiry_type, title, content
+        ) VALUES (
+            #{userId}, #{inquiryType}, #{title}, #{content}
+        )
+    </insert>
+
+	<!-- 사용자의 문의 목록 조회 -->
+    <select id="selectMyInquiryList" parameterType="map" resultType="com.example.marryview.community_review.model.Inquiry">
+	    SELECT 
+	        inquiry_no AS inquiryNo,
+	        inquiry_type AS inquiryType,
+	        title,
+	        status,
+	        DATE_FORMAT(reg_date, '%Y-%m-%d') AS regDate
+	    FROM Inquiry
+	    WHERE user_id = #{userId}
+	    <if test="searchType != null and searchType != ''">
+	        AND inquiry_type = #{searchType}
+	    </if>
+	    <if test="searchStatus != null and searchStatus != ''">
+	        AND status = #{searchStatus}
+	    </if>
+	    ORDER BY inquiry_no DESC
+	    LIMIT #{startIndex}, #{pageSize}
+	</select>
+	
+	<select id="selectInquiryCount" parameterType="map" resultType="int">
+	    SELECT COUNT(*) FROM Inquiry
+	    WHERE user_id = #{userId}
+	    <if test="searchType != null and searchType != ''">
+	        AND inquiry_type = #{searchType}
+	    </if>
+	    <if test="searchStatus != null and searchStatus != ''">
+	        AND status = #{searchStatus}
+	    </if>
+	</select>
+
+	<!-- 사용자의 상세 문의 내용 -->
+    <select id="selectInquiryDetail" parameterType="map" resultType="com.example.marryview.community_review.model.Inquiry">
+        SELECT 
+            inquiry_no AS inquiryNo,
+            inquiry_type AS inquiryType,
+            title,
+            content,
+            answer_content AS answerContent,
+            status,
+            DATE_FORMAT(reg_date, '%Y-%m-%d %H:%i') AS regDate,
+            DATE_FORMAT(answer_date, '%Y-%m-%d %H:%i') AS answerDate
+        FROM Inquiry
+        WHERE inquiry_no = #{inquiryNo}
+    </select>
+    
+    <!-- 문의 삭제 -->
+    <update id="deleteInquiry">
+        UPDATE Inquiry SET is_deleted = 1 WHERE inquiry_no = #{inquiryNo}
+    </update>
+
+</mapper>

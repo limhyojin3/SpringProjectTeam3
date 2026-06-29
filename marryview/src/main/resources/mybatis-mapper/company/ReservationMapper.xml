@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.example.marryview.company.mapper.ReservationMapper">
+
+	<select id="selectReservation" parameterType="map"
+		resultType="com.example.marryview.company.model.Reservation">
+		SELECT
+			r.res_no,
+			r.res_status,
+			r.user_id AS res_user_id,
+			r.product_no,
+			p.product_name,
+			r.res_date,
+			r.res_time,
+			r.res_content,
+			r.use_date,
+			r.use_time,
+			p.deposit,
+			m.tel,
+			r.pay_date
+		FROM company c
+		JOIN product p ON c.company_no = p.company_no
+		JOIN reservation r ON p.product_no = r.product_no
+		LEFT JOIN member m ON m.user_id = r.user_id
+		WHERE c.user_id = #{userId}
+		ORDER BY r.res_date DESC, r.res_time DESC
+	</select>
+
+	<select id="selectNewResCnt" parameterType="map"
+		resultType="String">
+		SELECT COUNT(RES_NO) AS new_res_cnt
+		FROM company c
+		JOIN product p ON c.company_no = p.company_no
+		JOIN reservation r ON p.product_no = r.product_no
+		LEFT JOIN member m ON m.user_id = r.user_id
+		WHERE c.user_id = #{userId} AND r.res_status = 'WAIT'
+	</select>
+
+	<select id="selectBookedTimes" parameterType="map"
+		resultType="String">
+		SELECT r.use_time 
+		FROM reservation r
+		WHERE r.product_no = #{productNo} AND r.res_status = 'WAIT'
+		<choose>
+			<when test="useDate != null and useDate != ''">
+				AND r.use_date = #{useDate}
+			</when> 
+			<otherwise>
+				AND 1=0
+			</otherwise>
+		</choose>
+	</select>
+
+	<insert id="insertReservation" parameterType="map"
+		useGeneratedKeys="true"
+        keyProperty="resNo"
+        keyColumn="res_no">
+		INSERT INTO reservation(user_id, product_no, company_no, res_date, res_time, res_status, res_content, use_date, use_time, pay_date, pay_no)
+		VALUES(#{userId}, #{productNo}, #{companyNo}, NOW(), NOW(), 'WAIT', #{resContent}, #{useDate}, #{useTime}, NULL, NULL)
+	</insert>
+
+	<select id="selectMyReservationList" parameterType="map"
+		resultType="com.example.marryview.company.model.Reservation">
+		SELECT 
+			r.res_no,
+			r.user_id,
+			m.tel,
+			r.product_no,
+			r.company_no,
+			c.com_name,
+			r.res_date,
+			r.res_time,
+			r.res_status,
+			r.res_content,
+			r.use_date,
+			r.use_time,
+			r.pay_date,
+			r.pay_no,
+			p.product_name,
+			p.product_details,
+			p.original_price,
+			p.is_active,
+			p.img_url,
+			/* 💡 버그 척결 핵심: 존재하지 않아 에러를 내뿜던 유령 컬럼 p.pro_type 완벽 도려내기 차단 완료 */
+			/* 💡 연쇄 버그 방어: p.tag 역시 존재하지 않는 에러 유발선이므로, 안전하게 콤마로 묶어 전달하는 독립 서브쿼리 서랍으로 전면 교체 완료 */
+			(
+				SELECT GROUP_CONCAT(pt_all.tag SEPARATOR ',')
+				FROM product_tag_map ptm_all
+				INNER JOIN product_tag pt_all ON ptm_all.tag_id = pt_all.id
+				WHERE ptm_all.product_no = p.product_no
+			) AS tag,
+			p.deposit,
+			pr.amount,
+			pr.pay_status,
+			pr.refund,
+			pr.refund_date
+		FROM reservation r
+		LEFT JOIN product p ON p.product_no = r.product_no
+		LEFT JOIN payment_reservation pr ON r.res_no = pr.res_no
+		INNER JOIN company c ON c.company_no = r.company_no
+		INNER JOIN member m ON m.user_id = r.user_id
+		WHERE r.user_id = #{userId}
+	</select>
+
+	<select id="selectResNoList" parameterType="map" resultType="integer">
+		SELECT res_no FROM reservation WHERE user_id = #{userId}
+	</select>
+	
+	<select id="selectResNoListForCompanyUser" parameterType="map" resultType="integer">
+		SELECT res_no 
+		FROM reservation 
+		WHERE company_no = (
+			SELECT company_no FROM company WHERE user_id = #{userId}
+		)
+	</select>
+
+	<update id="updateReservationStatus" parameterType="hashmap">
+		<if test="resNoList != null and resNoList.size() > 0">
+			<foreach collection="resNoList" item="resNo" separator=";"> 
+				UPDATE reservation 
+				SET res_status = IF(pay_no IS NOT NULL, 'DONE', 'CANCEL')
+				WHERE res_no = #{resNo} 
+				AND user_id = #{userId} 
+				AND NOW() > STR_TO_DATE(CONCAT(use_date, ' ', use_time), '%Y-%m-%d %H:%i:%s') 
+			</foreach>
+		</if>
+	</update>
+	
+	<update id="updateReservationStatusForCompany" parameterType="hashmap">
+		<if test="resNoList != null and resNoList.size() > 0">
+			<foreach collection="resNoList" item="resNo" separator=";">
+				UPDATE reservation
+				SET res_status = IF(pay_no IS NOT NULL, 'DONE', 'CANCEL')
+				WHERE res_no = #{resNo}
+				AND NOW() > STR_TO_DATE(CONCAT(use_date, ' ', use_time), '%Y-%m-%d %H:%i:%s') 
+			</foreach>
+		</if>
+	</update>
+
+	<update id="checkOver30minute" parameterType="map">
+		UPDATE reservation
+		SET res_status = 'CANCEL'
+		WHERE res_status = 'WAIT'
+		AND res_date IS NOT NULL
+		AND res_time IS NOT NULL
+		AND TIMESTAMPDIFF(MINUTE, ADDTIME(res_date, res_time), NOW()) >= 30
+		AND user_id = #{userId}
+	</update>
+
+	<insert id="insertPaymentFinal" parameterType="map"> 
+		INSERT INTO payment_reservation(pay_no, user_id, amount, pay_status, pay_date, res_no, refund, refund_date, imp_uid, merchant_uid) 
+		VALUES(null, #{userId}, #{amount}, 'SUCCESS', NOW(), #{resNo}, 0, null, #{impUid}, #{merchantUid}) 
+		<selectKey keyProperty="payDate,payNo" resultType="map" order="AFTER">
+			SELECT pay_date AS payDate, pay_no AS payNo
+			FROM payment_reservation
+			WHERE pay_no = LAST_INSERT_ID()
+		</selectKey>
+	</insert>
+	
+	<update id="updatePaymentFinal" parameterType="map">
+		UPDATE reservation
+		SET res_status = 'CONFIRM', pay_date = #{payDate}, pay_no = #{payNo}
+		WHERE res_no = #{resNo}
+	</update>
+</mapper>

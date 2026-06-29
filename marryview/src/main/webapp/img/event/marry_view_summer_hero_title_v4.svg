@@ -1,0 +1,55 @@
+<svg width="100%" viewBox="0 0 800 160" role="img" xmlns="http://www.w3.org/2000/svg" style="">
+  <title style="fill:rgb(0, 0, 0);stroke:none;color:rgb(0, 0, 0);stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:&quot;Anthropic Sans&quot;, -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, sans-serif;font-size:16px;font-weight:400;text-anchor:start;dominant-baseline:auto">MarryView Summer Event hero title v4</title>
+  <desc style="fill:rgb(0, 0, 0);stroke:none;color:rgb(0, 0, 0);stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:&quot;Anthropic Sans&quot;, -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, sans-serif;font-size:16px;font-weight:400;text-anchor:start;dominant-baseline:auto">투명 배경의 여름 이벤트 히어로 타이틀</desc>
+  <defs>
+    <linearGradient id="goldGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#fff0b0"/>
+      <stop offset="40%" stop-color="#d4a017"/>
+      <stop offset="70%" stop-color="#b8860b"/>
+      <stop offset="100%" stop-color="#d4a017"/>
+    </linearGradient>
+    <filter id="glowWhite">
+      <feGaussianBlur stdDeviation="6" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <filter id="subGlow">
+      <feGaussianBlur stdDeviation="4" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+
+  
+  <circle cx="150" cy="38" r="5" fill="#d4a017" opacity="0.6" style="fill:rgb(212, 160, 23);stroke:none;color:rgb(0, 0, 0);stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;opacity:0.6;font-family:&quot;Anthropic Sans&quot;, -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, sans-serif;font-size:16px;font-weight:400;text-anchor:start;dominant-baseline:auto"/>
+  <circle cx="148" cy="36" r="2" fill="#fff8d0" opacity="0.9" style="fill:rgb(255, 248, 208);stroke:none;color:rgb(0, 0, 0);stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;opacity:0.9;font-family:&quot;Anthropic Sans&quot;, -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, sans-serif;font-size:16px;font-weight:400;text-anchor:start;dominant-baseline:auto"/>
+  <circle cx="650" cy="30" r="7" fill="#d4a017" opacity="0.5" style="fill:rgb(212, 160, 23);stroke:none;color:rgb(0, 0, 0);stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;opacity:0.5;font-family:&quot;Anthropic Sans&quot;, -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, sans-serif;font-size:16px;font-weight:400;text-anchor:start;dominant-baseline:auto"/>
+  <circle cx="648" cy="28" r="3" fill="#fff8d0" opacity="0.85" style="fill:rgb(255, 248, 208);stroke:none;color:rgb(0, 0, 0);stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;opacity:0.85;font-family:&quot;Anthropic Sans&quot;, -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, sans-serif;font-size:16px;font-weight:400;text-anchor:start;dominant-baseline:auto"/>
+  <circle cx="220" cy="115" r="4" fill="#d4a017" opacity="0.4" style="fill:rgb(212, 160, 23);stroke:none;color:rgb(0, 0, 0);stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;opacity:0.4;font-family:&quot;Anthropic Sans&quot;, -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, sans-serif;font-size:16px;font-weight:400;text-anchor:start;dominant-baseline:auto"/>
+  <circle cx="580" cy="110" r="5" fill="#d4a017" opacity="0.35" style="fill:rgb(212, 160, 23);stroke:none;color:rgb(0, 0, 0);stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;opacity:0.35;font-family:&quot;Anthropic Sans&quot;, -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, sans-serif;font-size:16px;font-weight:400;text-anchor:start;dominant-baseline:auto"/>
+
+  
+  <text x="175" y="28" font-size="10" fill="#d4a017" opacity="0.8" font-family="serif" text-anchor="middle" style="fill:rgb(212, 160, 23);stroke:none;color:rgb(0, 0, 0);stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;opacity:0.8;font-family:serif;font-size:10px;font-weight:400;text-anchor:middle;dominant-baseline:auto">✦</text>
+  <text x="625" y="22" font-size="12" fill="#d4a017" opacity="0.75" font-family="serif" text-anchor="middle" style="fill:rgb(212, 160, 23);stroke:none;color:rgb(0, 0, 0);stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;opacity:0.75;font-family:serif;font-size:12px;font-weight:400;text-anchor:middle;dominant-baseline:auto">✦</text>
+  <text x="400" y="18" font-size="8" fill="#d4a017" opacity="0.6" font-family="serif" text-anchor="middle" style="fill:rgb(212, 160, 23);stroke:none;color:rgb(0, 0, 0);stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;opacity:0.6;font-family:serif;font-size:8px;font-weight:400;text-anchor:middle;dominant-baseline:auto">✦</text>
+
+  
+  <text x="400" y="82" text-anchor="middle" font-family="'Palatino Linotype', 'Palatino', 'Book Antiqua', Georgia, serif" font-size="58" font-weight="700" font-style="italic" letter-spacing="1" fill="white" opacity="0.85" filter="url(#glowWhite)" style="fill:rgb(255, 255, 255);stroke:none;color:rgb(0, 0, 0);stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;opacity:0.85;font-family:&quot;Palatino Linotype&quot;, Palatino, &quot;Book Antiqua&quot;, Georgia, serif;font-size:58px;font-weight:700;font-style:italic;text-anchor:middle;dominant-baseline:auto">MarryView Summer Event</text>
+
+  
+  <text x="400" y="82" text-anchor="middle" font-family="'Palatino Linotype', 'Palatino', 'Book Antiqua', Georgia, serif" font-size="58" font-weight="700" font-style="italic" letter-spacing="1" fill="url(#goldGrad)" style="stroke:none;color:rgb(0, 0, 0);stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:&quot;Palatino Linotype&quot;, Palatino, &quot;Book Antiqua&quot;, Georgia, serif;font-size:58px;font-weight:700;font-style:italic;text-anchor:middle;dominant-baseline:auto">MarryView Summer Event</text>
+
+  
+  <text x="400" y="118" text-anchor="middle" font-family="'Gill Sans', 'Gill Sans MT', Calibri, sans-serif" font-size="13" font-weight="600" letter-spacing="5" fill="white" opacity="0.8" filter="url(#subGlow)" style="fill:rgb(255, 255, 255);stroke:none;color:rgb(0, 0, 0);stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;opacity:0.8;font-family:&quot;Gill Sans&quot;, &quot;Gill Sans MT&quot;, Calibri, sans-serif;font-size:13px;font-weight:600;text-anchor:middle;dominant-baseline:auto">MARRY MERRY · SUMMER 2026 · WITH YOU</text>
+
+  
+  <text x="400" y="118" text-anchor="middle" font-family="'Gill Sans', 'Gill Sans MT', Calibri, sans-serif" font-size="13" font-weight="600" letter-spacing="5" fill="#c8973a" style="fill:rgb(200, 151, 58);stroke:none;color:rgb(0, 0, 0);stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:&quot;Gill Sans&quot;, &quot;Gill Sans MT&quot;, Calibri, sans-serif;font-size:13px;font-weight:600;text-anchor:middle;dominant-baseline:auto">MARRY MERRY · SUMMER 2026 · WITH YOU</text>
+
+  
+  <line x1="280" y1="130" x2="520" y2="130" stroke="#c8973a" stroke-width="0.8" opacity="0.7" style="fill:rgb(0, 0, 0);stroke:rgb(200, 151, 58);color:rgb(0, 0, 0);stroke-width:0.8px;stroke-linecap:butt;stroke-linejoin:miter;opacity:0.7;font-family:&quot;Anthropic Sans&quot;, -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, sans-serif;font-size:16px;font-weight:400;text-anchor:start;dominant-baseline:auto"/>
+</svg>

@@ -1,0 +1,282 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
+    <!DOCTYPE html>
+    <html lang="en">
+
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Document</title>
+        <script src="https://code.jquery.com/jquery-3.7.1.js"
+            integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
+        <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+        <script src="/js/page-change.js"></script>
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+        <link rel="stylesheet" href="${pageContext.request.contextPath}/css/common.css">
+        <link rel="stylesheet" href="${pageContext.request.contextPath}/css/adminNavi.css">
+        <link rel="stylesheet" href="${pageContext.request.contextPath}/css/admin-common.css">
+        <style>
+        </style>
+    </head>
+
+    <body>
+        <jsp:include page="/WEB-INF/common/header.jsp" />
+        <div id="app">
+            <div class="middle">
+                <jsp:include page="/WEB-INF/admin/adminNavi.jsp" />
+                <div class="main">
+                    <div class="container admin-fade-up-1">
+
+                        <h2>게시판 관리</h2>
+
+                        <!-- 필터 영역 -->
+                        <div class="header">
+                            <div class="keyword-group">
+                                <select v-model="searchType">
+                                    <option value="all">전체</option>
+                                    <option value="userId">ID</option>
+                                    <option value="title">제목</option>
+                                    <option value="content">내용</option>
+                                </select>
+
+                                <input v-model="keyword" placeholder="검색어 입력" @keyup.enter="fnGetBoardList">
+                                <button @click="fnGetBoardList">검색</button>
+                            </div>
+                            <div class="filter-group">
+                                <select v-model="category" @change="fnGetBoardList">
+                                    <option value="ALL">전체</option>
+                                    <option value="자유">자유</option>
+                                    <option value="결혼">결혼</option>
+                                    <option value="가족행사">가족행사</option>
+                                    <option value="육아출산">육아출산</option>
+                                    <option value="고민">고민</option>
+                                    <option value="직장">직장</option>
+                                </select>
+                                <div>
+                                    <select v-model="sortType" @change="fnGetBoardList">
+                                        <option value="latest">최신순</option>
+                                        <option value="old">오래된순</option>
+                                    </select>
+                                </div>
+                                <button @click="fnResetSearch">초기화</button>
+                            </div>
+                        </div>
+
+                        <!-- 테이블 -->
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>번호</th>
+                                    <th>분류</th>
+                                    <th>제목</th>
+                                    <th>ID</th>
+                                    <th>작성일</th>
+                                    <th>관리</th>
+                                </tr>
+                            </thead>
+
+                            <tbody>
+                                <tr v-for="board in boardList"
+                                    :class="{ 'active-row': selectedBoard && selectedBoard.userId === board.userId }">
+                                    <td>{{board.postNo}}</td>
+                                    <td>{{board.category}}</td>
+                                    <td class="text-left" :title="board.title">
+                                        {{ board.title }}
+                                    </td>
+                                    <td class="admin-id-cell">
+                                        <span class="admin-id-text" :title="board.userId">
+                                            {{ board.userId }}
+                                        </span>
+                                    </td>
+                                    <td>{{ formatDate(board.regDate) }}</td>
+                                    <td>
+                                        <button @click="fnSelectBoard(board)">보기</button>
+                                        <button @click="fnToggleBoard(board)"
+                                            :class="board.isDeleted == 0 ? 'btn-stop' : 'btn-done'">
+
+                                            {{ board.isDeleted == 0 ? '숨김' : '복구' }}
+                                        </button>
+                                    </td>
+                                </tr>
+                                <tr v-for="n in emptyRows" class="empty-row" style="height: 56.5px !important;">
+                                    <td colspan="5">&nbsp;</td>
+                                </tr>
+
+                            </tbody>
+                        </table>
+                        <div class="page-box">
+                            <button @click="fnPageMove(currentPage-1)" :disabled="currentPage===1">
+                                <i class="fas fa-chevron-left"></i>
+                            </button>
+                            <template v-for="p in index">
+                                <button
+                                    v-if="p > Math.floor((currentPage - 1) / 5) * 5 && p <= Math.ceil(currentPage / 5) * 5"
+                                    :key="p" @click="fnPageMove(p)" :class="{active: currentPage === p}">
+                                    {{ p }}
+                                </button>
+                            </template>
+                            <button @click="fnPageMove(currentPage+1)" :disabled="currentPage===index">
+                                <i class="fas fa-chevron-right"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <jsp:include page="/WEB-INF/common/footer.jsp" />
+        </div>
+        <script>
+            const app = Vue.createApp({
+                data() {
+                    return {
+                        // 변수 - (key : value)
+                        boardList: [],
+                        sessionId: "${sessionScope.sessionId}",
+                        sessionRole: "${sessionScope.sessionRole}",
+                        searchType: "all",
+                        category: "ALL",
+                        keyword: "",
+                        sortType: "latest",
+                        selectedBoard: null,
+                        pageSize: 8,
+                        index: 1,
+                        currentPage: 1,
+                        emptyRows: 0,
+
+                    };
+                },
+                methods: {
+                    // 함수(메소드) - (key : function())
+                    fnPage: function (url) {
+                        location.href = url;
+                    },
+
+                    fnPageMove(p) {
+                        if (p < 1 || p > this.index) return;
+                        this.currentPage = p;
+                        this.fnGetBoardList();
+                    },
+
+                    formatDate(date) {
+                        return date ? date.substring(0, 10) : '-';
+                    },
+
+                    fnGetBoardList: function () {
+                        let self = this;
+                        let param = {
+                            searchType: self.searchType,
+                            sortType: self.sortType,
+                            keyword: self.keyword,
+                            category: self.category,
+                            pageSize: self.pageSize,
+                            offSet: self.pageSize * (self.currentPage - 1),
+                        };
+                        console.log(param);
+                        console.log("category:", "[" + self.category + "]");
+                        $.ajax({
+                            url: "http://localhost:8080/boardList.dox",
+                            dataType: "json",
+                            type: "POST",
+                            data: param,
+                            success: function (data) {
+                                console.log(data);
+                                console.log(data.list);
+                                self.boardList = data.list || [];
+                                self.index = Math.ceil(data.totalCount / self.pageSize);
+                                self.emptyRows = 8 - data.list.length;
+
+                            }
+                        });
+                    },
+
+                    fnSelectBoard(board) {
+                        window.open('http://localhost:8080/api/community/detail.do?postNo=' + board.postNo, '_blank', 'width=1200, height=1000');
+                    },
+
+                    fnToggleBoard(board) {
+                        let self = this;
+
+                        let msg = board.isDeleted == 0
+                            ? "게시글을 숨김 처리하시겠습니까?"
+                            : "게시글을 복구하시겠습니까?";
+
+                        if (!confirm(msg)) {
+                            return;
+                        }
+
+                        $.ajax({
+                            url: "http://localhost:8080/boardApprove.dox",
+                            type: "POST",
+                            data: {
+                                postNo: board.postNo
+                            },
+                            success: function () {
+                                alert("처리 완료");
+                                self.fnGetBoardList();
+                            }
+                        });
+                    },
+
+                    fnApprove(board) {
+                        let self = this;
+
+                        if (!confirm("삭제하시겠습니까?")) {
+                            return;
+                        }
+
+                        $.ajax({
+                            url: "http://localhost:8080/.dox",
+                            type: "POST",
+                            data: {
+                                userId: board.userId
+                            },
+                            success: function () {
+                                alert("삭제 완료");
+                                self.fnGetBoardList();
+                            }
+                        });
+                    },
+
+                    getStatusInfo(status) {
+                        const map = {
+                            ACTIVE: { text: "활동", color: "green" },
+                            STOP: { text: "정지", color: "red" },
+                            DORMANT: { text: "휴면", color: "gray" },
+                            WITHDRAWN: { text: "탈퇴", color: "black" }
+                        };
+
+                        return map[status] || { text: "알수없음", color: "black" };
+                    },
+
+                    getStatusClass(status) {
+                        const map = {
+                            ACTIVE: "status-active",
+                            STOP: "status-stop",
+                            DORMANT: "status-dormant",
+                            WITHDRAWN: "status-withdraw"
+                        };
+                        return map[status] || "";
+                    },
+
+                    fnResetSearch() {
+                        this.keyword = "";
+                        this.currentPage = 1;
+                        this.sortType = "latest";
+                        this.searchType = "all";
+                        this.category = "ALL"
+                        this.fnGetBoardList();
+                    },
+
+                }, // methods
+                mounted() {
+                    // 처음 시작할 때 실행되는 부분
+                    let self = this;
+                    const path = location.pathname;
+                    self.fnGetBoardList();
+                }
+            });
+
+            app.mount('#app');
+        </script>
+    </body>
+
+    </html>

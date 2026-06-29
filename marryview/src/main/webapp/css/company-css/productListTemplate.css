@@ -1,0 +1,454 @@
+/* ==========================================================================
+   1. 상단 액션 바 영역 (나의 예약 / 나의 문의 보러가기 버튼 그룹)
+   ========================================================================== */
+.top-action-bar {
+	display: flex;
+	justify-content: flex-end; /* 가로 정렬 후 오른쪽 끝으로 배치 */
+	gap: 10px;                 /* 버튼 and 버튼 사이의 간격을 10px로 지정 */
+	margin-bottom: 15px;
+}
+
+.btn-sub-action {
+	padding: 8px 15px;
+	cursor: pointer;
+	border: 1px solid #ccc;
+	background: #fff;
+	border-radius: 4px;
+}
+
+/* 너무 바짝 붙어있던 상품 패키지 / 등록 업체 찾기 탭 간격 시원하게 벌리기 */
+.master-toggle-container {
+	display: flex;
+	gap: 25px !important; /* 간격을 25px로 대폭 넓혀 답답함 해소 */
+	margin-bottom: 20px;
+}
+
+/* 👑 [최상위 마스터 대장 토글 전용 독자 명찰 스타일 영구 잠금 신설 완료] */
+/* 하부 삼색 개조 명세의 명시성에 밀리지 않도록 확실하게 대장 단추 스타일 고정 타격 */
+.large-tab-btn.btn-master-product.active {
+	background-color: #ff7f9f !important;
+	color: #ffffff !important;
+	border-color: #ff7f9f !important;
+	box-shadow: 0 4px 10px rgba(255, 127, 159, 0.25) !important;
+}
+
+.large-tab-btn.btn-master-company.active {
+	background-color: #a78bfa !important;
+	border-color: #a78bfa !important;
+	color: #ffffff !important;
+	box-shadow: 0 4px 12px rgba(167, 139, 250, 0.2) !important;
+}
+
+/* ==========================================================================
+   2. 카테고리 & 태그 필터 검색 영역 (대/중/소 구조)
+   ========================================================================== */
+/* [포근한 솜사탕 필터 박스 구조 고정] */
+div.filter-section {
+	padding: 24px !important;
+	border: none !important;                    
+	background: #fff5f6 !important;            
+	border-radius: 24px !important;            
+	margin-top: 25px !important;               
+	margin-bottom: 30px !important;
+	display: flex !important;
+	flex-direction: column !important;
+	gap: 20px !important;
+	box-shadow: 0 6px 24px rgba(255, 127, 159, 0.06) !important;
+	overflow: hidden !important;               
+}
+
+/* 등록 업체 찾기 모드일 때 상단 필터를 부드러운 우윳빛 연보라 면 디자인과 대형 곡률 강제 집도 */
+div.company-slim-filter {
+	border: none !important;
+	background-color: #f5f3ff !important;
+	border-radius: 24px !important;
+	margin-top: 25px !important;
+	box-shadow: 0 6px 24px rgba(167, 139, 250, 0.06) !important;
+	overflow: hidden !important;
+}
+
+/* 대분류 대형 상단 탭 스타일 */
+.large-category-container {
+	display: flex;
+	border-bottom: 2px solid #ffe0e6;
+	padding-bottom: 10px;
+	gap: 15px;
+}
+
+.large-tab-btn {
+	background: #fdfdfd;
+	border: 1px solid #ffe0e6;
+	padding: 10px 24px;
+	font-size: 1.05rem;
+	font-weight: 700;
+	color: #777;
+	border-radius: 8px 8px 0 0;
+	cursor: pointer;
+	transition: all 0.2s ease-in-out;
+}
+
+/* [대분류 마우스 호버(Hover) 삼색 완전 독립 차단선 배치] */
+.large-tab-btn.btn-cat-wedding:hover:not(.active) {
+	color: #ff7f9f !important;
+	background-color: #fff0f3 !important;
+	border-color: #ffe0e6 !important;
+}
+
+.large-tab-btn.btn-cat-family:hover:not(.active) {
+	color: #0ca678 !important;
+	background-color: #e6fcf5 !important;
+	border-color: #c3fae8 !important;
+}
+
+.large-tab-btn.btn-cat-friends:hover:not(.active) {
+	color: #6741d9 !important;
+	background-color: #f3f0ff !important;
+	border-color: #e5dbff !important;
+}
+
+/* [고유 명찰 기반 삼색 꽉 찬 솔리드 활성화 안착] */
+.large-tab-btn.btn-cat-wedding.active {
+	background-color: #ff7f9f !important;
+	color: #ffffff !important;
+	border: 1px solid #ff7f9f !important;
+	box-shadow: 0 4px 12px rgba(255, 127, 159, 0.2) !important;
+}
+
+.large-tab-btn.btn-cat-family.active {
+	background-color: #0ca678 !important;
+	color: #ffffff !important;
+	border: 1px solid #0ca678 !important;
+	box-shadow: 0 4px 12px rgba(12, 166, 120, 0.2) !important;
+}
+
+.large-tab-btn.btn-cat-friends.active {
+	background-color: #6741d9 !important;
+	color: #ffffff !important;
+	border: 1px solid #6741d9 !important;
+	box-shadow: 0 4px 12px rgba(103, 65, 217, 0.2) !important;
+}
+
+/* 등록 업체 찾기 단추 마우스 호버/활성화 무드 고정 */
+.master-toggle-container .large-tab-btn:last-child:hover:not(.active) {
+	background-color: #f5f3ff !important;
+	border-color: #a78bfa !important;
+	color: #8b5cf6 !important;
+}
+
+.master-toggle-container .large-tab-btn:last-child.active {
+	background-color: #a78bfa !important;
+	border-color: #a78bfa !important;
+	color: #ffffff !important;
+	box-shadow: 0 4px 12px rgba(167, 139, 250, 0.2) !important;
+}
+
+/* 중분류 및 소분류 타이틀 */
+.filter-section h3 {
+	font-size: 1.1rem;
+	font-weight: 700;
+	color: #444;
+	margin: 0 0 12px 0;
+}
+
+/* 칩 정렬 플렉스박스 */
+.chips-flex-box {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 10px;
+}
+
+/* 체크박스 기본 원형 UI 숨김 */
+.custom-hidden-input {
+	display: none !important;
+}
+
+/* 버튼형 토글 칩 라벨 디자인 */
+.chip-toggle-label {
+	cursor: pointer;
+	background: #fff;
+	padding: 7px 16px;
+	border-radius: 25px;
+	font-size: 0.9rem;
+	color: #d6336c;
+	border: 1px solid #ffe0e6;
+	transition: all 0.2s ease;
+	user-select: none;
+}
+
+/* [중분류 및 소분류 칩 대분류 종속성 테마 깔맞춤 통합 관제선] */
+/* A. 결혼 테마 가동 시상대 ➔ 핑크 솔리드 하이라이트 */
+.chip-toggle-label.theme-wedding:hover:not(.active) {
+	background: #fff0f3 !important;
+	border-color: #ff7f9f !important;
+	color: #d6336c !important;
+}
+.chip-toggle-label.theme-wedding.active {
+	background: #ff7f9f !important;
+	color: #ffffff !important;
+	border-color: #ff7f9f !important;
+	font-weight: bold;
+}
+
+/* B. 가족행사 테마 가동 시상대 ➔ 초록 솔리드 하이라이트전환 완공 */
+.chip-toggle-label.theme-family:hover:not(.active) {
+	background: #e6fcf5 !important;
+	border-color: #0ca678 !important;
+	color: #0ca678 !important;
+}
+.chip-toggle-label.theme-family.active {
+	background: #0ca678 !important;
+	color: #ffffff !important;
+	border-color: #0ca678 !important;
+	font-weight: bold;
+}
+
+/* C. 친구와함께 테마 가동 시상대 ➔ 보라 솔리드 하이라이트 전환 완공 */
+.chip-toggle-label.theme-friends:hover:not(.active) {
+	background: #f3f0ff !important;
+	border-color: #6741d9 !important;
+	color: #6741d9 !important;
+}
+.chip-toggle-label.theme-friends.active {
+	background: #6741d9 !important;
+	color: #ffffff !important;
+	border-color: #6741d9 !important;
+	font-weight: bold;
+}
+
+/* 쿠팡 스타일 태그 2개 초과 선택 시 미선택 단추 잠금 비활성화 디자인 */
+.chip-toggle-label.disabled {
+	opacity: 0.4;
+	cursor: not-allowed !important;
+	background: #f8f9fa !important;
+	border-color: #e9ecef !important;
+	color: #adb5bd !important;
+	pointer-events: none;
+}
+
+/* 결혼 분위기 소분류 박스 */
+.tag-filter-container {
+	border-top: 1px dashed #ffe0e6;
+	padding-top: 20px;
+	display: flex;
+	flex-direction: column;
+	gap: 15px;
+}
+
+.sub-tag-group-box {
+	background: #fffbfb;
+	padding: 14px;
+	border-radius: 8px;
+	border: 1px solid #fff0f2;
+}
+
+.sub-group-title {
+	font-size: 0.9rem;
+	font-weight: bold;
+	color: #888;
+	margin: 0 0 8px 4px;
+}
+
+/* 태그 전용 칩 기본 명세 */
+.tag-specific-chip {
+	background: #fff;
+	color: #e64980;
+	border-color: #ffd8a8;
+}
+
+/* ==========================================================================
+   3. [기본 호환] 등록 업체 찾기용 오리지널 가로형 카드 명세
+   ========================================================================== */
+.product-item {
+	display: flex;
+	align-items: flex-start;
+	gap: 20px;
+	background: white;
+	padding: 20px;
+	border-radius: 12px;
+	margin-bottom: 20px;
+	border: 1px solid #eee;
+	transition: all 0.3s ease;
+	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+	cursor: pointer;
+	position: relative;
+}
+
+.product-img-box {
+	box-sizing: border-box;
+	flex-shrink: 0;
+	height: 140px;
+	width: 140px;
+	border-radius: 10px;
+	overflow: hidden;
+	border: 1px solid #f0f0f0;
+}
+
+.product-img-box img {
+	height: 100%;
+	width: 100%;
+	object-fit: cover;
+}
+
+.product-info {
+	flex: 1;
+	display: flex;
+	flex-direction: column;
+	gap: 8px;
+	min-height: 140px;
+}
+
+.tag-span {
+	font-size: 11px;
+	color: #ff7f9f;
+	background: #fff0f3;
+	padding: 2px 6px;
+	border-radius: 4px;
+}
+
+.product-item.company-card-item {
+	border: 1px solid #ede9fe !important;
+	background-color: #ffffff;
+	transition: all 0.2s ease-in-out;
+}
+
+.product-item.company-card-item:hover {
+	box-shadow: 0 6px 16px rgba(167, 139, 250, 0.15) !important;
+	transform: translateY(-2px);
+	border-color: #a78bfa !important;
+}
+
+/* ==========================================================================
+   4. 🃏 수직형 그리드 및 투명 히트박스(Hitbox) 연동 파트
+   ========================================================================== */
+.product-pokemon-grid, .company-pokemon-grid {
+	display: grid !important;
+	grid-template-columns: repeat(3, 1fr) !important; 
+	gap: 25px !important;                              
+	margin-top: 15px !important;
+	margin-bottom: 40px !important;
+	align-items: stretch !important;                   
+}
+
+.product-pokemon-grid .product-item, .company-pokemon-grid .product-item {
+	display: flex !important;
+	flex-direction: column !important; 
+	background: #ffffff !important;
+	border: 1px solid #eee !important;
+	border-radius: 12px !important;
+	padding: 16px !important;
+	gap: 12px !important;
+	position: relative !important;
+	box-shadow: 0 3px 10px rgba(0, 0, 0, 0.03) !important;
+	margin-bottom: 0 !important;
+	width: 100% !important;
+	transition: all 0.25s ease-in-out !important;
+}
+
+.product-pokemon-grid .product-item:hover, .company-pokemon-grid .product-item:hover {
+	transform: translateY(-4px) !important;
+	box-shadow: 0 8px 24px rgba(255, 127, 159, 0.15) !important;
+	border-color: #ff7f9f !important;
+}
+
+.product-pokemon-grid .product-img-box, .company-pokemon-grid .product-img-box {
+	width: 100% !important;
+	height: 190px !important;         
+	border-radius: 8px !important;
+	overflow: hidden !important;
+	margin: 0 !important;
+	flex-shrink: 0 !important;
+}
+
+.product-pokemon-grid .product-img-box img, .company-pokemon-grid .product-img-box img {
+	width: 100% !important;
+	height: 100% !important;
+	object-fit: cover !important;
+}
+
+.product-pokemon-grid .product-info {
+	display: flex !important;
+	flex-direction: column !important;
+	gap: 6px !important;
+	min-height: auto !important;      
+	flex-grow: 1 !important;          
+	padding: 0 !important;
+	width: 100% !important;            
+}
+
+.product-pokemon-grid .product-info h4, .company-pokemon-grid .product-info h4 {
+	font-size: 1.1rem !important;
+	font-weight: 700 !important;
+	color: #222 !important;
+	margin: 4px 0 0 0 !important;
+}
+
+.product-pokemon-grid .product-info .product-content, .company-pokemon-grid .product-info .product-content {
+	font-size: 0.9rem !important;
+	color: #666 !important;
+	line-height: 1.4 !important;
+	margin: 0 0 4px 0 !important;
+}
+
+.product-pokemon-grid .product-tags-wrapper, .company-pokemon-grid .product-tags-wrapper {
+	display: flex !important;
+	flex-wrap: wrap !important;
+	gap: 5px !important;
+	margin-bottom: 10px !important;
+}
+
+.product-price-row {
+	display: flex !important;
+	justify-content: space-between !important; 
+	align-items: center !important;
+	margin-top: auto !important;               
+	width: 100% !important;                    
+	border-top: 1px dashed #ffe0e6 !important; 
+	padding-top: 6px !important; 
+	box-sizing: border-box !important;         
+}
+
+.product-pokemon-grid .product-info .product-price, .company-pokemon-grid .product-info .product-price {
+	font-size: 1.25rem !important;
+	color: #ff1493 !important;         
+	font-weight: 700 !important;
+	margin: 0 !important;
+	text-align: left !important;
+}
+
+/* 전역 마스터 미니멀 투명 히트박스(Hitbox) 명세 고정 보존 구역 */
+.product-item .like-chip-btn {
+	display: inline-flex !important;
+	align-items: center !important;
+	justify-content: center !important;
+	width: 36px !important;     
+	height: 36px !important;    
+	cursor: pointer !important;
+	user-select: none !important;
+	transition: transform 0.15s ease-in-out !important;
+	background: transparent !important;
+	border: none !important;
+	box-shadow: none !important;
+	padding: 0 !important;
+	font-size: 1.35rem !important; 
+}
+
+.product-item .like-chip-btn.active {
+	background: transparent !important;
+	border: none !important;
+	box-shadow: none !important;
+}
+
+.product-item .like-chip-btn:active {
+	transform: scale(1.25) !important;
+}
+
+.product-item.company-card-item .like-chip-btn {
+	position: absolute !important;
+	top: 16px !important;
+	right: 16px !important; 
+	background: transparent !important;
+	border: none !important; 
+	box-shadow: none !important;
+	width: 36px !important;
+	height: 36px !important;
+}

@@ -1,0 +1,375 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
+    <!DOCTYPE html>
+    <html lang="en">
+
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Document</title>
+        <script src="https://code.jquery.com/jquery-3.7.1.js"
+            integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
+        <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+        <script src="/js/page-change.js"></script>
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+        <link rel="stylesheet" href="${pageContext.request.contextPath}/css/common.css">
+        <link rel="stylesheet" href="${pageContext.request.contextPath}/css/adminNavi.css">
+        <link rel="stylesheet" href="${pageContext.request.contextPath}/css/admin-common.css">
+        <style>
+            /* 상태 뱃지 */
+            .badge-success {
+                display: inline-block;
+                background: #e7f8ee;
+                color: #1c9b52;
+                padding: 5px 12px;
+                border-radius: 20px;
+                font-size: 13px;
+                font-weight: 600;
+            }
+
+            .badge-danger {
+                display: inline-block;
+                background: #fff0f0;
+                color: #e04a4a;
+                padding: 5px 12px;
+                border-radius: 20px;
+                font-size: 13px;
+                font-weight: 600;
+            }
+        </style>
+    </head>
+
+    <body>
+        <jsp:include page="/WEB-INF/common/header.jsp" />
+        <div id="app">
+            <div class="middle">
+                <jsp:include page="/WEB-INF/admin/adminNavi.jsp" />
+                <div class="main">
+                    <div class="container admin-fade-up">
+                        <h2>결제 관리</h2>
+                        <div class="tab-menu">
+                            <button :class="{active: activeTab === 'pass'}" @click="fnChangeTab('pass')">패스결제</button>
+                            <button :class="{active: activeTab === 'reservation'}"
+                                @click="fnChangeTab('reservation')">예약결제</button>
+                            <button :class="{active: activeTab === 'registration'}"
+                                @click="fnChangeTab('registration')">제휴결제</button>
+                        </div>
+
+                        <!-- 패스 결제 -->
+                        <transition name="tab-fade-slide" mode="out-in">
+                            <div :key="activeTab">
+                                <table v-if="activeTab === 'pass'" class="table">
+                                    <thead>
+                                        <tr>
+                                            <th>결제번호</th>
+                                            <th>아이디</th>
+                                            <th>패스</th>
+                                            <th>금액</th>
+                                            <th>상태</th>
+                                            <th>날짜</th>
+                                            <th>환불</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr v-for="p in list" :key="p.payNo">
+                                            <td>{{ p.payNo }}</td>
+                                            <td class="admin-id-cell">
+                                                <span class="admin-id-text" :title="p.userId">
+                                                    {{ p.userId }}
+                                                </span>
+                                            </td>
+                                            <td>{{ p.passName }}</td>
+                                            <td>{{ p.amount.toLocaleString() }}</td>
+                                            <td>{{ p.payStatus }}</td>
+                                            <td>{{ formatDate(p.payDate) }}</td>
+                                            <td>
+                                                <button v-if="p.payStatus == 'SUCCESS'" class="btn-warn"
+                                                    @click="fnRefund(p.payNo)">
+                                                    환불
+                                                </button>
+
+                                                <span v-else class="badge-danger">환불완료</span>
+                                            </td>
+                                        </tr>
+                                        <tr v-for="n in emptyRows" class="empty-row">
+                                            <td colspan="7">&nbsp;</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+
+                                <!-- 예약 결제 -->
+                                <table v-else-if="activeTab === 'reservation'" class="table">
+                                    <thead>
+                                        <tr>
+                                            <!-- <th>결제번호</th> -->
+                                            <th>예약번호</th>
+                                            <th>아이디</th>
+                                            <th>상품명</th>
+                                            <th>예약금</th>
+                                            <th>예약일</th>
+                                            <th>결제여부</th>
+                                            <th>진행여부</th>
+                                            <th>결제일</th>
+                                            <th>관리</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr v-for="r in list" :key="r.payNo">
+                                            <!-- <td>{{ r.payNo }}</td> -->
+                                            <td>{{ r.resNo }}</td>
+                                            <td class="admin-id-cell">
+                                                <span class="admin-id-text" :title="r.userId">
+                                                    {{ r.userId }}
+                                                </span>
+                                            </td>
+                                            <td>{{ r.productName }}</td>
+                                            <td>{{ r.amount.toLocaleString() }}</td>
+                                            <td>{{ r.useDate }}</td>
+                                            <td>{{ r.payStatus }}</td>
+                                            <td>{{ r.resStatus }}</td>
+                                            <td>{{ formatDate(r.payDate) }}</td>
+                                            <td>
+                                                <button class="btn-warn" @click="fnRefund2(r.payNo)">환불
+                                                </button>
+                                            </td>
+                                        </tr>
+                                        <tr v-for="n in emptyRows" class="empty-row">
+                                            <td colspan="9">&nbsp;</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+
+                                <!-- 등록 결제 -->
+                                <table v-else-if="activeTab === 'registration'" class="table">
+                                    <thead>
+                                        <tr>
+                                            <th>아이디</th>
+                                            <th>결제번호</th>
+                                            <th>업체명</th>
+                                            <th>금액</th>
+                                            <th>결제일</th>
+                                            <th>상태</th>
+                                            <th>등록</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr v-for="c in list" :key="c.payNo">
+                                            <td class="admin-id-cell">
+                                                <span class="admin-id-text" :title="c.userId">
+                                                    {{ c.userId }}
+                                                </span>
+                                            </td>
+                                            <td>{{ c.payNo }}</td>
+                                            <td>{{ c.comName }}</td>
+                                            <td>{{ c.amount.toLocaleString() }}</td>
+                                            <td>{{ formatDate(c.payDate) }}</td>
+                                            <td>{{ c.registrationFee === "PAID"? "제휴" : "일반" }}</td>
+                                            <td><button class="btn-done" @click="fnRegistration(c)">등록</button></td>
+                                        </tr>
+                                        <tr v-for="n in emptyRows" class="empty-row">
+                                            <td colspan="7">&nbsp;</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                                <div class="page-box" v-if="list.length > 0">
+                                    <button @click="fnPageMove(currentPage-1)" :disabled="currentPage===1">
+                                        <i class="fas fa-chevron-left"></i>
+                                    </button>
+                                    <template v-for="p in index">
+                                        <button
+                                            v-if="p > Math.floor((currentPage - 1) / 5) * 5 && p <= Math.ceil(currentPage / 5) * 5"
+                                            :key="p" @click="fnPageMove(p)" :class="{active: currentPage === p}">
+                                            {{ p }}
+                                        </button>
+                                    </template>
+                                    <button @click="fnPageMove(currentPage+1)" :disabled="currentPage===index">
+                                        <i class="fas fa-chevron-right"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </transition>
+                    </div>
+                </div>
+                <jsp:include page="/WEB-INF/common/footer.jsp" />
+            </div>
+            <script>
+                const app = Vue.createApp({
+                    data() {
+                        return {
+                            // 변수 - (key : value)
+                            sessionId: "${sessionScope.sessionId}",
+                            activeTab: "pass",
+                            list: [],
+                            pageSize: 5,
+                            currentPage: 1,
+                            index: 1,
+                            emptyRows: 0,
+
+                        };
+                    },
+                    methods: {
+                        // 함수(메소드) - (key : function())
+                        fnPage: function (url) {
+                            location.href = url;
+                        },
+
+                        fnPageMove(p) {
+                            if (p < 1 || p > this.index) return;
+                            this.currentPage = p;
+                            this.fnGetList();
+                        },
+
+                        fnChangeTab(tab) {
+                            this.activeTab = tab;
+                            this.currentPage = 1;
+                            this.fnGetList();
+                        },
+
+
+                        formatDate(date) {
+                            return date ? date.substring(0, 10) : '-';
+                        },
+
+                        fnGetList() {
+                            let self = this;
+
+                            let url = "";
+
+                            if (self.activeTab === 'pass') {
+                                url = "/passPaymentList.dox";
+                            } else if (self.activeTab === 'reservation') {
+                                url = "/reservationPaymentList.dox";
+                            } else if (self.activeTab === 'registration') {
+                                url = "/registrationPaymentList.dox";
+                            }
+
+                            $.ajax({
+                                url: url,
+                                type: "POST",
+                                dataType: "json",
+                                data: {
+                                    pageSize: self.pageSize,
+                                    offSet: self.pageSize * (self.currentPage - 1)
+                                },
+                                success: function (res) {
+                                    self.list = res.list;
+                                    self.index = Math.ceil(res.totalCount / self.pageSize);
+                                    self.emptyRows = 5 - res.list.length;
+                                }
+                            });
+                        },
+
+                        fnRefund(payNo) {
+                            let self = this;
+
+                            if (!confirm("정말 환불하시겠습니까?\n환불 후 복구할 수 없습니다.")) {
+                                return;
+                            }
+
+                            $.ajax({
+                                url: "/refundPass.dox",
+                                type: "POST",
+                                dataType: "json",
+                                data: { payNo: payNo },
+                                success: function (data) {
+                                    console.log("성공", data);
+                                    if (data.result == "success") {
+                                        alert(data.message);
+                                        self.fnGetList();
+                                    } else {
+                                        alert(data.message);
+                                    }
+                                },
+
+                                error: function (xhr, status, err) {
+                                    console.log("에러");
+                                    console.log(xhr.responseText);
+                                    console.log(status);
+                                    console.log(err);
+                                    alert("error");
+                                },
+
+                                complete: function () {
+                                    console.log("AJAX 종료");
+                                }
+                            });
+                        },
+                        fnRefund2(payNo) {
+                            let self = this;
+                            console.log("환불 클릭", payNo);
+
+                            if (!confirm("정말 환불하시겠습니까?\n환불 후 복구할 수 없습니다.")) {
+                                return;
+                            }
+
+                            $.ajax({
+                                url: "/refundAdminReservation.dox",
+                                type: "POST",
+                                dataType: "json",
+                                data: { payNo: payNo },
+                                success: function (data) {
+                                    console.log("성공", data);
+                                    if (data.result == "success") {
+                                        alert(data.message);
+                                        self.fnGetList();
+                                    } else {
+                                        alert(data.message);
+                                    }
+                                },
+
+                                error: function (xhr, status, err) {
+                                    console.log("에러");
+                                    console.log(xhr.responseText);
+                                    console.log(status);
+                                    console.log(err);
+                                    alert("error");
+                                },
+
+                                complete: function () {
+                                    console.log("AJAX 종료");
+                                }
+                            });
+                        },
+                        fnRegistration: function (c) {
+                            let self = this;
+                            if (!confirm("정말 등록하시겠습니까?")) {
+                                return;
+                            }
+
+                            $.ajax({
+                                url: "${pageContext.request.contextPath}/adminRegistration.dox",
+                                type: "POST",
+                                dataType: "json",
+                                data: {
+                                    userId: c.userId
+                                },
+                                success: function (data) {
+                                    console.log("성공", data);
+                                    if (data.result == "success") {
+                                        alert(data.message);
+                                        self.fnGetList();
+                                    } else {
+                                        alert(data.message);
+                                    }
+                                },
+                                error: function (err) {
+                                    alert("error");
+                                },
+                            });
+                        }
+
+                    }, // methods
+                    mounted() {
+                        // 처음 시작할 때 실행되는 부분
+                        let self = this;
+                        const path = location.pathname;
+                        self.fnGetList();
+
+                    }
+                });
+
+                app.mount('#app');
+            </script>
+    </body>
+
+    </html>
