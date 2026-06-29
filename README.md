@@ -1,5 +1,7 @@
 # 💟 MarryView 💟 - 웨딩 리뷰 플랫폼
-![MarryView Header](https://capsule-render.vercel.app/api?type=shark&height=300&color=gradient&text=Marry%20View&animation=scaleIn)
+<p align="center">
+  <img src="assets/marryview_banner.svg" alt="MarryView Banner"/>
+</p>
 
 https://github.com/user-attachments/assets/a00ba838-6ce2-4335-ac79-0b14a1077616
 
