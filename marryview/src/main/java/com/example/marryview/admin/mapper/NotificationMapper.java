@@ -10,6 +10,8 @@ import com.example.marryview.admin.model.Notification;
 
 public interface NotificationMapper {
 	List<Notification> selectNotificationList(HashMap<String, Object> map);
+	
+	List<HashMap<String, Object>> selectUpcomingWeddingNews();
 
 	int selectUnreadCount(@Param("receiverId") String receiverId);
 
@@ -32,6 +34,10 @@ public interface NotificationMapper {
 	int insertReservationRequestedForCompany(HashMap<String, Object> map);
 	
 	int insertReservationConfirmedForUser(HashMap<String, Object> map);
+	
+	List<HashMap<String, Object>> selectReviewRequestTargetList(HashMap<String, Object> map);
+
+	int insertReviewRequestNotification(HashMap<String, Object> map);
 	
 	int insertReservationCanceledForUser(HashMap<String, Object> map);
 	

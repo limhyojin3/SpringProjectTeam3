@@ -171,7 +171,7 @@
             <div class="middle">
                 <jsp:include page="/WEB-INF/admin/adminNavi.jsp" />
                 <div class="main">
-                    <div class="container">
+                    <div class="container admin-fade-up">
                         <!-- 상단 필터 영역 -->
                         <h2>신고 관리</h2>
 
@@ -390,7 +390,6 @@
                 data() {
                     return {
                         // 변수 - (key : value)
-                        activeMenu: "",
                         reportList: [],
                         selectedReport: null,
                         selectedReports: [],
@@ -440,7 +439,6 @@
                                 data: { commentNo: uniTargetId },
 
                                 success: function (res) {
-                                    console.log(res);
                                     if (res.result == "success") {
                                         if (res.postNo != null) {
                                             window.open(
@@ -505,7 +503,6 @@
                             dataType: "json",
                             data: { reportNo: reportNo },
                             success: function (res) {
-                                console.log(res);
                                 if (res.result !== "success" || !res.info) {
                                     alert("신고 상세 정보를 불러오지 못했습니다.");
                                     return;
@@ -547,7 +544,6 @@
                             type: "POST",
                             data: param,
                             success: function (data) {
-                                console.log(data);
                                 self.reportList = data.list || [];
                                 self.index = Math.ceil(data.totalCount / self.pageSize);
                                 self.emptyRows = 8 - data.list.length;
@@ -574,9 +570,6 @@
                             return
                         };
 
-
-                        console.log(self.selectedReports);
-
                         $.ajax({
                             url: "http://localhost:8080/reportBatchApprove.dox",
                             type: "POST",
@@ -587,7 +580,6 @@
                             },
                             success: function (res) {
                                 alert("일괄 처리 완료");
-                                console.log(res);
                                 self.selectedReports = [];
                                 self.isAllChecked = false;
                                 self.fnGetReportList();
@@ -605,8 +597,6 @@
                         if (!confirm("일괄 반려하시겠습니까?")) {
                             return;
                         }
-
-                        console.log(self.selectedReports);
 
                         $.ajax({
                             url: "http://localhost:8080/reportBatchReject.dox",
@@ -759,18 +749,6 @@
                     // 처음 시작할 때 실행되는 부분
                     let self = this;
                     const path = location.pathname;
-
-                    this.activeMenu =
-                        path.includes('adminMain') ? 'main' :
-                            path.includes('adminUser') ? 'user' :
-                                path.includes('adminCompany') ? 'company' :
-                                    path.includes('adminBoard') ? 'board' :
-                                        path.includes('adminReview') ? 'review' :
-                                            path.includes('adminPayment') ? 'payment' :
-                                                path.includes('adminReport') ? 'report' :
-                                                    path.includes('adminInquiry') ? 'inquiry' :
-                                                        path.includes('adminStatistics') ? 'stats' :
-                                                            '';
                     self.fnGetReportList();
                 }
             });

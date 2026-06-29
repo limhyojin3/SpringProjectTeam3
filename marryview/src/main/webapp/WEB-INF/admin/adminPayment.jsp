@@ -45,7 +45,7 @@
             <div class="middle">
                 <jsp:include page="/WEB-INF/admin/adminNavi.jsp" />
                 <div class="main">
-                    <div class="container">
+                    <div class="container admin-fade-up">
                         <h2>결제 관리</h2>
                         <div class="tab-menu">
                             <button :class="{active: activeTab === 'pass'}" @click="fnChangeTab('pass')">패스결제</button>
@@ -198,7 +198,6 @@
                         return {
                             // 변수 - (key : value)
                             sessionId: "${sessionScope.sessionId}",
-                            activeMenu: "",
                             activeTab: "pass",
                             list: [],
                             pageSize: 5,
@@ -253,7 +252,6 @@
                                     offSet: self.pageSize * (self.currentPage - 1)
                                 },
                                 success: function (res) {
-                                    console.log(res);
                                     self.list = res.list;
                                     self.index = Math.ceil(res.totalCount / self.pageSize);
                                     self.emptyRows = 5 - res.list.length;
@@ -263,7 +261,6 @@
 
                         fnRefund(payNo) {
                             let self = this;
-                            console.log("환불 클릭", payNo);
 
                             if (!confirm("정말 환불하시겠습니까?\n환불 후 복구할 수 없습니다.")) {
                                 return;
@@ -274,11 +271,6 @@
                                 type: "POST",
                                 dataType: "json",
                                 data: { payNo: payNo },
-
-                                beforeSend: function () {
-                                    console.log("AJAX 시작");
-                                },
-
                                 success: function (data) {
                                     console.log("성공", data);
                                     if (data.result == "success") {
@@ -315,11 +307,6 @@
                                 type: "POST",
                                 dataType: "json",
                                 data: { payNo: payNo },
-
-                                beforeSend: function () {
-                                    console.log("AJAX 시작");
-                                },
-
                                 success: function (data) {
                                     console.log("성공", data);
                                     if (data.result == "success") {
@@ -376,16 +363,6 @@
                         // 처음 시작할 때 실행되는 부분
                         let self = this;
                         const path = location.pathname;
-                        this.activeMenu =
-                            path.includes('adminMain') ? 'main' :
-                                path.includes('adminUser') ? 'user' :
-                                    path.includes('adminCompany') ? 'company' :
-                                        path.includes('adminBoard') ? 'board' :
-                                            path.includes('adminReviewWait') ? 'reviewWait' :
-                                                path.includes('adminPayment') ? 'payment' :
-                                                    path.includes('adminReport') ? 'report' :
-                                                        path.includes('adminStatistics') ? 'stats' :
-                                                            '';
                         self.fnGetList();
 
                     }

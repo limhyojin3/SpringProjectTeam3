@@ -3,6 +3,25 @@
 
 <mapper namespace="com.example.marryview.admin.mapper.NotificationMapper">
 
+	<select id="selectUpcomingWeddingNews" resultType="hashmap">
+	    SELECT
+	        user_id AS userId,
+	        CASE
+	            WHEN CHAR_LENGTH(user_id) &lt;= 2 THEN CONCAT(LEFT(user_id, 1), '***')
+	            WHEN CHAR_LENGTH(user_id) &lt;= 4 THEN CONCAT(LEFT(user_id, 1), '***', RIGHT(user_id, 1))
+	            ELSE CONCAT(LEFT(user_id, 2), '***', RIGHT(user_id, 2))
+	        END AS maskedUserId,
+	        DATE_FORMAT(wedding_date, '%Y. %m. %d') AS weddingDateText,
+	        DATE_FORMAT(wedding_date, '%Y-%m-%d') AS weddingDate,
+	        DATEDIFF(wedding_date, CURDATE()) AS dday
+	    FROM user_detail
+	    WHERE marital_status = 'SINGLE'
+	      AND wedding_date IS NOT NULL
+	      AND wedding_date &gt;= CURDATE()
+	    ORDER BY wedding_date ASC
+	    LIMIT 3
+	</select>
+
 	<select id="selectNotificationList"
 		parameterType="hashmap"
 		resultType="com.example.marryview.admin.model.Notification">
@@ -234,11 +253,15 @@
 	        r.user_id,
 	        c.user_id,
 	        'RESERVATION_CONFIRMED',
-	        '예약이 확정되었습니다.',
+	        CONCAT(
+			    COALESCE(p.product_name, '예약 상품'),
+			    ' 예약이 확정되었습니다. 업체를 이용 하신 후 다른 예비부부를 위해 후기를 남겨주세요.'
+			),
 	        'RESERVATION',
 	        r.res_no
 	    FROM reservation r
 	    INNER JOIN company c ON c.company_no = r.company_no
+	    LEFT JOIN product p ON p.product_no = r.product_no
 	    WHERE r.res_no = #{resNo}
 	    AND r.user_id IS NOT NULL
 	    AND c.user_id IS NOT NULL
@@ -247,6 +270,84 @@
 	        notification_no = notification_no
 	</insert>
 	
+	<select id="selectReviewRequestTargetList"
+        parameterType="hashmap"
+        resultType="hashmap">
+
+    SELECT
+        r.res_no AS resNo,
+        r.user_id AS userId,
+        r.product_no AS productNo,
+        r.company_no AS companyNo,
+        r.use_date AS useDate,
+        r.use_time AS useTime,
+        p.product_name AS productName
+
+    FROM reservation r
+
+    INNER JOIN payment_reservation pr
+        ON pr.pay_no = r.pay_no
+       AND pr.pay_status = 'SUCCESS'
+
+    LEFT JOIN product p
+        ON p.product_no = r.product_no
+
+    WHERE r.user_id IS NOT NULL
+      AND r.product_no IS NOT NULL
+      AND r.pay_no IS NOT NULL
+
+      AND r.res_status IN ('CONFIRM', 'DONE')
+
+      AND r.use_date IS NOT NULL
+      AND TIMESTAMPDIFF(
+            DAY,
+            STR_TO_DATE(r.use_date, '%Y-%m-%d'),
+            CURDATE()
+          ) = #{delayDays}
+
+      AND NOT EXISTS (
+          SELECT 1
+          FROM review rv
+          WHERE rv.user_id = r.user_id
+            AND rv.product_no = r.product_no
+            AND rv.approval_status IN ('WAIT', 'APPROVED')
+      )
+
+      AND NOT EXISTS (
+          SELECT 1
+          FROM notification n
+          WHERE n.receiver_id = r.user_id
+            AND n.notification_type = #{notificationType}
+            AND n.target_type = 'RESERVATION'
+            AND n.target_no = r.res_no
+      )
+
+	</select>
+	
+	<insert id="insertReviewRequestNotification"
+        parameterType="hashmap">
+
+    INSERT INTO notification (
+        receiver_id,
+        sender_id,
+        notification_type,
+        content,
+        target_type,
+        target_no
+    )
+    VALUES (
+        #{userId},
+        'adminmerry',
+        #{notificationType},
+        #{content},
+        'RESERVATION',
+        #{resNo}
+    )
+    ON DUPLICATE KEY UPDATE
+        notification_no = notification_no
+
+</insert>
+
 		<!-- 예약 취소/환불 완료 시 예약 사용자에게 알림 -->
 	<insert id="insertReservationCanceledForUser" parameterType="hashmap">
 	    INSERT INTO notification (

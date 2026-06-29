@@ -12,6 +12,8 @@ import java.util.Map;
 @Mapper
 public interface AdminMapper {
 	public List<Admin> selectSalesList(HashMap<String, Object> map);
+	
+	public Admin selectReviewParticipationStats(HashMap<String, Object> map);
 
 	public List<Admin> selectClientsList(HashMap<String, Object> map);
 

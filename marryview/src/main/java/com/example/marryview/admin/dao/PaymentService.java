@@ -46,7 +46,6 @@ public class PaymentService {
 	@Transactional
 	public void completePassPayment(HashMap<String, Object> map) {
 		paymentMapper.insertPayment(map);
-		System.out.println("생성된 payNo = " + map.get("payNo"));
 		paymentMapper.insertPaymentPass(map);
 	}
 	
@@ -89,10 +88,28 @@ public class PaymentService {
 	    
 	}
 
-	public HashMap<String, Object> verifyPayment(HashMap<String, Object> map) {
-		System.out.println("넘어온 값 : " + map);
-		HashMap<String, Object> result = new HashMap<>();
+	private boolean isBlank(Object value) {
+	    return value == null || value.toString().trim().isEmpty();
+	}
 
+	private HashMap<String, Object> fail(String message) {
+	    HashMap<String, Object> result = new HashMap<>();
+	    result.put("result", "fail");
+	    result.put("message", message);
+	    return result;
+	}
+	
+	public HashMap<String, Object> verifyPayment(HashMap<String, Object> map) {
+		HashMap<String, Object> result = new HashMap<>();
+		
+		if (isBlank(map.get("imp_uid"))) {
+		    return fail("결제 고유번호가 없습니다.");
+		}
+		
+		if (isBlank(map.get("amount"))) {
+		    return fail("결제 금액 정보가 없습니다.");
+		}
+		
 		try {
 
 			// 프론트에서 받은 값
@@ -186,7 +203,8 @@ public class PaymentService {
 			map.put("pay_status", "paid");
 			map.put("discountAmount", discount);
 			map.put("finalAmount", finalAmount);
-
+			map.put("previousPayment", resolvePreviousPayment(payInfo));
+			
 			String type = map.get("type").toString();
 
 			if (type.equals("PASS")) {
@@ -197,11 +215,11 @@ public class PaymentService {
 						cancelPayment(token, impUid);
 						result.put("result", "fail");
 						result.put("message", "체험권은 1회만 구매 가능합니다.");
-						System.out.println("체험용 패스 여부 : " + chk);
 						return result;
 					}
 				}
 				updateWalletCount(map);
+				paymentMapper.updateMemberPreviousPayment(map);
 				completePassPayment(map);
 				
 				if (couponCode != null && !couponCode.isEmpty()) {
@@ -236,9 +254,16 @@ public class PaymentService {
 		return result;
 	}
 	public HashMap<String, Object> verifyPayment2(HashMap<String, Object> map) {
-		System.out.println("넘어온 값 : " + map);
 		HashMap<String, Object> result = new HashMap<>();
+		
+		if (isBlank(map.get("imp_uid"))) {
+		    return fail("결제 고유번호가 없습니다.");
+		}
 
+		if (isBlank(map.get("amount"))) {
+		    return fail("결제 금액 정보가 없습니다.");
+		}
+		
 		try {
 
 			// 프론트에서 받은 값
@@ -277,9 +302,11 @@ public class PaymentService {
 			// 5. DB 저장
 			map.put("pay_status", "paid");
 			map.put("finalAmount", finalAmount);
+			map.put("previousPayment", resolvePreviousPayment(payInfo));
 
+			paymentMapper.updateMemberPreviousPayment(map);
 			completeRegistrationPayment(map);
-
+			
 			boolean notificationCreated =
 				notificationService.createPartnerApplicationReceived(
 					map.get("companyNo"),
@@ -359,9 +386,6 @@ public class PaymentService {
 
 	    br.close();
 
-	    System.out.println("토큰 응답코드 = " + code);
-	    System.out.println("토큰 응답본문 = " + sb.toString());
-
 	    if (code != 200) {
 	        throw new RuntimeException("토큰 발급 실패");
 	    }
@@ -407,8 +431,6 @@ public class PaymentService {
 
 	    br.close();
 
-	    System.out.println("응답 : " + sb.toString());
-
 	    ObjectMapper mapper = new ObjectMapper();
 	    JsonNode root = mapper.readTree(sb.toString());
 
@@ -420,8 +442,31 @@ public class PaymentService {
 
 	    info.put("amount", root.path("response").path("amount").asInt());
 	    info.put("status", root.path("response").path("status").asText());
+	    info.put("pay_method", root.path("response").path("pay_method").asText());
+	    info.put("pg_provider", root.path("response").path("pg_provider").asText());
+	    info.put("emb_pg_provider", root.path("response").path("emb_pg_provider").asText());
 
 	    return info;
+	}
+	
+	private String resolvePreviousPayment(HashMap<String, Object> payInfo) {
+	    String payMethod = getLowerString(payInfo.get("pay_method"));
+	    String pgProvider = getLowerString(payInfo.get("pg_provider"));
+	    String embPgProvider = getLowerString(payInfo.get("emb_pg_provider"));
+
+	    if (pgProvider.contains("kakao") || embPgProvider.contains("kakao")) {
+	        return "KAKAOPAY";
+	    }
+
+	    if (payMethod.contains("card")) {
+	        return "CARD";
+	    }
+
+	    return payMethod.toUpperCase();
+	}
+
+	private String getLowerString(Object value) {
+	    return value == null ? "" : value.toString().trim().toLowerCase();
 	}
 	
 	// 패스 환불
@@ -454,15 +499,10 @@ public class PaymentService {
 				resultMap.put("message", "이미 패스권보다 많은 열람권을 사용하여 환불 불가합니다.");
 				return resultMap;
 			}
-			System.out.println("1. 환불 시작");
 
 			String token = getToken();
-			
-			System.out.println("2. 토큰 완료");
-			
+						
 			boolean success = cancelPayment(token, info.get("impUid").toString());
-
-			System.out.println("3. 포트원 환불 완료");
 
 			if (!success) {
 				throw new RuntimeException();
@@ -473,7 +513,6 @@ public class PaymentService {
 
 			// 2. 결제상태 환불
 			paymentMapper.updateRefundPayment(map);
-			System.out.println("4. payment 상태 변경 완료");
 			// 3. 패스권 상태 환불
 			paymentMapper.updateRefundPass(map);
 
@@ -664,9 +703,15 @@ public class PaymentService {
 	
 	//예약 결제
 	public HashMap<String, Object> verifyPayment3(HashMap<String, Object> map) {
-		System.out.println("전달받은 맵: " + map);
 	    HashMap<String, Object> result = new HashMap<>();
-		
+	    
+	    if (isBlank(map.get("imp_uid"))) {
+	        return fail("결제 고유번호가 없습니다.");
+	    }
+
+	    if (isBlank(map.get("amount"))) {
+	        return fail("결제 금액 정보가 없습니다.");
+	    }
 
 	    try {
 
@@ -692,16 +737,17 @@ public class PaymentService {
 	            return result;
 	        }
 	        
+	        map.put("previousPayment", resolvePreviousPayment(payInfo));
+	        paymentMapper.updateMemberPreviousPayment(map);
+	        
 	        String merchantUid = map.get("merchant_uid").toString();
 	        result.put("result", "success");
 	        result.put("impUid", impUid);
 	        result.put("message", "결제 완료");
 	        result.put("amount", realAmount);
 	        
-	        System.out.println(map);
 	        result.put("merchantUid", merchantUid);
 	        result.put("impUid", impUid);
-	        System.out.println(map);
 	        
 	        result.put("result", "success");
 	        result.put("message", "결제 완료");

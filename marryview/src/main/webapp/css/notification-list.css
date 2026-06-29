@@ -199,6 +199,14 @@
             box-shadow: inset 0 0 0 1px rgba(255, 77, 109, .10);
         }
 
+		.product-ad-img {
+		    width: 100%;
+		    height: 100%;
+		    object-fit: cover;
+		    border-radius: inherit;
+		    display: block;
+		}
+		
         .product-ad-visual.gold { background: linear-gradient(145deg, #fff3d9, #fffaf0); color: #ba8025; }
         .product-ad-visual.lilac { background: linear-gradient(145deg, #efe9ff, #faf8ff); color: #8065c7; }
 
@@ -1245,4 +1253,37 @@
             }
         }
 		
+		.notification-pagination {
+		    display: flex;
+		    align-items: center;
+		    justify-content: center;
+		    gap: 6px;
+		    padding: 18px 16px 22px;
+		    border-top: 1px solid var(--line);
+		}
+
+		.page-btn,
+		.page-number {
+		    min-width: 34px;
+		    height: 34px;
+		    padding: 0 10px;
+		    border: 1px solid rgba(255, 77, 109, .16);
+		    border-radius: 999px;
+		    background: #fff;
+		    color: var(--muted);
+		    cursor: pointer;
+		    font-size: 12px;
+		    font-weight: 800;
+		}
+
+		.page-number.active {
+		    background: var(--primary);
+		    color: #fff;
+		    border-color: var(--primary);
+		}
+
+		.page-btn:disabled {
+		    opacity: .35;
+		    cursor: default;
+		}
 		

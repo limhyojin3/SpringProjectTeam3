@@ -29,6 +29,9 @@ public class AdminService {
 	@Autowired
 	NotificationService notificationService;
 	
+	@Autowired
+	AdminReceiptOcrService adminReceiptOcrService;
+	
 	@Value("${cloudinary.cloud-name}")
 	private String cloudinaryCloudName;
 	
@@ -48,6 +51,26 @@ public class AdminService {
 		return resultMap;
 	}
 
+	public HashMap<String, Object> getReviewParticipationStats(HashMap<String, Object> map) {
+	    HashMap<String, Object> resultMap = new HashMap<String, Object>();
+
+	    try {
+	        Admin info = adminMapper.selectReviewParticipationStats(map);
+
+	        resultMap.put("info", info);
+	        resultMap.put("result", "success");
+	        resultMap.put("message", Message.MSG_SEARCH);
+
+	    } catch (Exception e) {
+	        System.out.println(e.getMessage());
+
+	        resultMap.put("result", "fail");
+	        resultMap.put("message", Message.MSG_SERVER_ERR);
+	    }
+
+	    return resultMap;
+	}
+	
 	public HashMap<String, Object> getclientsList(HashMap<String, Object> map) {
 		HashMap<String, Object> resultMap = new HashMap<String, Object>();
 		try {
@@ -144,6 +167,13 @@ public class AdminService {
 	        	    "receiptUrl",
 	        	    buildCloudinaryImageUrl(receiptName)
 	        	);
+	        
+	        HashMap<String, Object> ocr =
+	                adminReceiptOcrService.extractReceiptFields(
+	                        stringValue(detail.get("receiptUrl"))
+	                );
+
+	        detail.put("ocr", ocr);
 
 	        boolean hasReceipt =
 	                receiptName != null
@@ -854,7 +884,6 @@ public class AdminService {
 			resultMap.put("result", "fail");
 			resultMap.put("message", "조회 실패");
 		}
-System.out.println(resultMap);
 		return resultMap;
 	}
 	
@@ -1155,12 +1184,45 @@ System.out.println(resultMap);
 
 	// 패스 등록
 	public HashMap<String, Object> addPass(HashMap<String, Object> map) {
-
+		
 		HashMap<String, Object> resultMap = new HashMap<>();
 
 		try {
+			if (map.get("passName") == null || map.get("passName").toString().trim().isEmpty()) {
+				resultMap.put("result", "fail");
+				resultMap.put("message", "패스명을 입력해주세요.");
+				return resultMap;
+			}
 
-			map.put("price", Integer.parseInt(map.get("price").toString()));
+			if (map.get("price") == null || map.get("price").toString().trim().isEmpty()) {
+				resultMap.put("result", "fail");
+				resultMap.put("message", "가격을 입력해주세요.");
+				return resultMap;
+			}
+
+			if (map.get("reviewCnt") == null || map.get("reviewCnt").toString().trim().isEmpty()) {
+				resultMap.put("result", "fail");
+				resultMap.put("message", "열람 횟수를 입력해주세요.");
+				return resultMap;
+			}
+
+			if (map.get("description") == null || map.get("description").toString().trim().isEmpty()) {
+				resultMap.put("result", "fail");
+				resultMap.put("message", "패스 설명을 입력해주세요.");
+				return resultMap;
+			}
+			
+			int price = Integer.parseInt(map.get("price").toString());
+			int reviewCnt = Integer.parseInt(map.get("reviewCnt").toString());
+
+			if (price <= 0 || reviewCnt <= 0) {
+				resultMap.put("result", "fail");
+				resultMap.put("message", "가격과 열람 횟수는 1 이상이어야 합니다.");
+				return resultMap;
+			}
+
+			map.put("price", price);
+			map.put("reviewCnt", reviewCnt);	
 
 			int cnt = adminMapper.insertPass(map);
 
@@ -1172,6 +1234,10 @@ System.out.println(resultMap);
 				resultMap.put("message", "등록 실패");
 			}
 
+		} catch (NumberFormatException e) {
+			resultMap.put("result", "fail");
+			resultMap.put("message", "가격과 열람 횟수는 숫자로 입력해주세요.");
+		
 		} catch (Exception e) {
 			e.printStackTrace();
 

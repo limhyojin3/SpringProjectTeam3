@@ -31,6 +31,10 @@ public class NotificationService {
         return notificationMapper.selectUnreadCount(receiverId);
     }
 
+    public List<HashMap<String, Object>> getUpcomingWeddingNews() {
+        return notificationMapper.selectUpcomingWeddingNews();
+    }
+    
     public boolean readNotification(
             long notificationNo,
             String receiverId) {
@@ -199,6 +203,57 @@ public class NotificationService {
             return notificationMapper
                 .insertReservationCanceledForCompany(map) > 0;
         });
+    }
+    
+    public void sendReviewRequestNotifications() {
+        createReviewRequestNotificationsByDelay(
+            1,
+            "REVIEW_REQUEST_1DAY",
+            "이용하신 상품은 어떠셨나요? 다른 예비부부를 위해 후기를 남겨주세요."
+        );
+
+        createReviewRequestNotificationsByDelay(
+            7,
+            "REVIEW_REQUEST_7DAYS",
+            "예약하신 상품 이용일로부터 일주일이 지났어요. 바쁘시겠지만 아직 후기를 남기지 않으셨다면 경험을 공유해주세요. 작은 후기 하나가 다른 예비부부에게 큰 도움이 됩니다."
+        );
+
+        createReviewRequestNotificationsByDelay(
+            30,
+            "REVIEW_REQUEST_30DAYS",
+            "예약하신 상품 이용일로부터 한 달이 지났어요. 혹시 아직 후기를 남기지 않으셨다면 잠시만 시간을 내어 경험을 들려주세요. 회원님의 진솔한 후기가 다른 예비부부들의 선택에 큰 힘이 됩니다."
+        );
+    }
+
+    private void createReviewRequestNotificationsByDelay(
+            int delayDays,
+            String notificationType,
+            String content) {
+
+        try {
+            HashMap<String, Object> param = new HashMap<>();
+
+            param.put("delayDays", delayDays);
+            param.put("notificationType", notificationType);
+
+            List<HashMap<String, Object>> targetList =
+                notificationMapper.selectReviewRequestTargetList(param);
+
+            for (HashMap<String, Object> target : targetList) {
+                target.put("notificationType", notificationType);
+                target.put("content", content);
+
+                notificationMapper.insertReviewRequestNotification(target);
+            }
+
+        } catch (Exception e) {
+            System.err.println(
+                "리뷰 독려 알림 생성 실패("
+                + notificationType
+                + "): "
+                + e.getMessage()
+            );
+        }
     }
     
     public boolean createProductInquiryReceived(Object inquiryNo) {

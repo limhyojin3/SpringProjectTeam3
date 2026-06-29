@@ -929,7 +929,6 @@
                 data() {
                     return {
                         // 변수 - (key : value)
-                        activeMenu: "",
                         passList: [],
                         //sessionId: "hyunwoo1125",       //체험권 비구매자
                         //sessionId: "junho0324",        //체험권 구매자
@@ -1013,18 +1012,12 @@
                             function (response) {
                                 // 결제 종료 시 호출되는 콜백 함수
                                 // response.imp_uid 값으로 결제 단건조회 API를 호출하여 결제 결과를 확인하고,
-                                // 결제 결과를 처리하는 로직을 작성합니다.
-                                console.log(response);
-                                console.log("전체 response:", response);
-                                console.log("success:", response.success);
-                                console.log("imp_uid:", response.imp_uid);
-                                console.log("status:", response.status);
-                                console.log("paid_amount:", response.paid_amount);
+                                // 결제 결과를 처리하는 로직을 작성
                                 if (response.success === true) {
                                     // 우리쪽 db에 결제정보 저장
                                     // 페이지 이동 필요하면 페이지 이동 (메인 or 마이)
                                     // 결제 성공 후 서버 검증
-                                    console.log("imp_uid:", response.imp_uid);
+                                    console.log("포트원거치고검증전" + response)
                                     self.fnVerifyPayment(response.imp_uid, response.merchant_uid, selectedPass);
                                 } else {
                                     console.log("에러내용: " + response.error_msg);
@@ -1037,7 +1030,6 @@
 
                     fnVerifyPayment(imp_uid, merchant_uid, selectedPass) {
                         let self = this
-                        console.log("서버로 보내는 imp_uid:", imp_uid);
                         $.ajax({
                             url: "http://localhost:8080/verifyPayment.dox",
                             type: "POST",
@@ -1053,11 +1045,9 @@
                                 type: "PASS"
                             },
                             success: function (res) {
-                                console.log(res);
                                 if (res.result == "success") {
                                     self.isModalOpen = false;
                                     self.isPaying = false;
-                                    console.log("포트원 번호: " + res.imp_uid);
                                     alert("결제가 완료 되었습니다");
                                     location.href = "/adminPayFinish.do?payNo=" + res.payNo + "&type=PASS";
                                     //예약이면 &type=RES 등록이면 &type=REG
@@ -1083,7 +1073,6 @@
                             type: "POST",
                             data: param,
                             success: function (data) {
-                                console.log(data);
                                 self.passList = data.list;
                             }
                         });
@@ -1106,7 +1095,6 @@
                                 type: "POST",
                                 data: param,
                                 success: function (data) {
-                                    console.log(data);
                                     if (data.info != null) {
                                         alert("이미 체험용 패스권을 구매하셨어요");
                                         return;
@@ -1114,13 +1102,11 @@
                                     self.selectedPass = pass;
                                     self.isModalOpen = true;
                                     self.fnGetCouponList();
-                                    console.log(self.selectedPass);
                                 }
                             });
                         } else {
                             self.selectedPass = pass;
                             self.isModalOpen = true;
-                            console.log(self.selectedPass);
                             self.fnGetCouponList();
                         }
                     },
@@ -1138,8 +1124,6 @@
                                 status: "UNUSED"
                             },
                             success: function (data) {
-                                console.log("쿠폰목록", data);
-
                                 if (data.result == "success") {
                                     self.couponList = data.list;
                                 } else {
@@ -1244,17 +1228,6 @@
                     // 처음 시작할 때 실행되는 부분
                     let self = this;
                     const path = location.pathname;
-
-                    this.activeMenu =
-                        path.includes('adminMain') ? 'main' :
-                            path.includes('adminUser') ? 'user' :
-                                path.includes('adminCompany') ? 'company' :
-                                    path.includes('adminBoard') ? 'board' :
-                                        path.includes('adminReviewWait') ? 'reviewWait' :
-                                            path.includes('adminPayment') ? 'payment' :
-                                                path.includes('adminReport') ? 'report' :
-                                                    path.includes('adminStatistics') ? 'stats' :
-                                                        '';
                     self.fnGetPassList();
                     window.addEventListener("keydown", function (e) {
                         if (e.key === "Escape" && self.isModalOpen) {

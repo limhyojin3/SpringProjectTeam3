@@ -469,7 +469,6 @@
                 data() {
                     return {
                         // 변수 - (key : value)
-                        activeMenu: "",
                         currentMenu: "",
                         list: [],
                         reviewList: [],
@@ -739,18 +738,6 @@
                     // 처음 시작할 때 실행되는 부분
                     let self = this;
                     const path = location.pathname;
-
-                    this.activeMenu =
-                        path.includes('adminMain') ? 'main' :
-                            path.includes('adminUser') ? 'user' :
-                                path.includes('adminCompany') ? 'company' :
-                                    path.includes('adminBoard') ? 'board' :
-                                        path.includes('adminReview') ? 'review' :
-                                            path.includes('adminPayment') ? 'payment' :
-                                                path.includes('adminReport') ? 'report' :
-                                                    path.includes('adminInquiry') ? 'inquiry' :
-                                                        path.includes('adminStatistics') ? 'stats' :
-                                                            '';
 
                     self.fnGetReviewList();
                     self.fnGetReportList();

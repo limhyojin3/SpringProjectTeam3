@@ -50,6 +50,17 @@ public class NotificationController {
     }
 
 	@ResponseBody
+	@PostMapping("/wedding-news.dox")
+	public HashMap<String, Object> weddingNews() {
+	    HashMap<String, Object> resultMap = new HashMap<>();
+
+	    resultMap.put("list", notificationService.getUpcomingWeddingNews());
+	    resultMap.put("result", "success");
+
+	    return resultMap;
+	}
+	
+	@ResponseBody
     @PostMapping("/unread-count.dox")
     public HashMap<String, Object> unreadCount(HttpSession session) {
         HashMap<String, Object> resultMap = new HashMap<>();
