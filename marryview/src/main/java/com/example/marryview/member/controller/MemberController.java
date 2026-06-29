@@ -296,7 +296,7 @@ public class MemberController {
 //	        System.out.println("마이페이지 조회 ID: " + sessionId);
 //	        System.out.println("DB 조회 전체 결과: " + member);
 //	        System.out.println("================================");
-	        System.out.println("maritalStatus: " + member.getMaritalStatus()); // 추가
+//	        System.out.println("maritalStatus: " + member.getMaritalStatus()); // 추가
 	        
 	        // 2. JSP로 전달
 	        model.addAttribute("member", member);
@@ -566,6 +566,21 @@ public class MemberController {
 	    result.put("currentPage", page);
 	    return result;
 	}
+	// 상품 좋아요 조회
+	@GetMapping("/myProductLikeList.dox")
+	@ResponseBody
+	public Map<String, Object> getMyProductLikeList(
+	        @RequestParam(defaultValue = "1") int page,
+	        HttpSession session) {
+	    String userId = (String) session.getAttribute("sessionId");
+	    Map<String, Object> result = new HashMap<>();
+	    result.put("list", memberService.getMyProductLikeList(userId, page));
+	    result.put("totalCount", memberService.getMyProductLikeCount(userId));
+	    result.put("pageSize", 6);
+	    result.put("currentPage", page);
+	    return result;
+	}
+
 	// 글 좋아요 조회
 	@GetMapping("/myPostLikeList.dox")
 	@ResponseBody
@@ -633,6 +648,16 @@ public class MemberController {
 	    String userId = (String) session.getAttribute("sessionId");
 	    int res = memberService.deleteMyCompanyLike(userId, (String) map.get("likeNo"));
 	    result.put("result", res > 0 ? "success" : "fail");
+	    return result;
+	}
+	// 상품 좋아요 취소
+	@PostMapping("/deleteMyProductLike.dox")
+	@ResponseBody
+	public Map<String, Object> deleteMyProductLike(
+	        @RequestBody Map<String, Object> body) {
+	    memberService.deleteMyProductLike((String) body.get("likeNo"));
+	    Map<String, Object> result = new HashMap<>();
+	    result.put("result", "success");
 	    return result;
 	}
 	// 글 좋아요 취소

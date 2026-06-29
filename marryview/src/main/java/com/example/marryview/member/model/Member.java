@@ -74,6 +74,7 @@ public class Member {
 	// Comment table에 있는 컬럼들 입니다.
 	String commentNo;
 	String content;
+	String comAddress;
 	// like table에 있는 컬럼들 입니다.
 	String likeNo; // 세 테이블 다 있음
 	String companyNo; // company_like에만 있음

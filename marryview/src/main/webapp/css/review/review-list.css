@@ -992,4 +992,85 @@
      		transform:
      			translateX(-50%) translateY(0) scale(1);
      	}
+     	
      }
+     .premium-lock-guide {
+    position: absolute;
+    inset: 0;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+    gap: 6px;
+    padding: 20px;
+
+    text-align: center;
+    color: #fff;
+
+    background: rgba(30, 30, 30, 0.28);
+    border-radius: inherit;
+
+    z-index: 6;
+    pointer-events: none;
+}
+
+.premium-lock-guide i {
+    font-size: 1.5rem;
+    margin-bottom: 2px;
+}
+
+.premium-lock-guide strong {
+    font-size: 1rem;
+    font-weight: 800;
+}
+
+.premium-lock-guide span {
+    font-size: 0.78rem;
+    opacity: 0.95;
+}
+.review-card,
+.best-card {
+	cursor: pointer;
+    transition:
+        transform 0.25s ease,
+        box-shadow 0.25s ease,
+        border-color 0.25s ease;
+}
+
+.card-img-box img,
+.best-img-box img {
+    transition:
+        transform 0.35s ease,
+        filter 0.3s ease;
+}
+
+/* 일반 이미지만 살짝 확대 */
+.review-card:hover .card-img-box img:not(.is-blurred),
+.best-card:hover .best-img-box img:not(.is-blurred) {
+    transform: scale(1.05);
+}
+
+/* 잠긴 리뷰는 블러 유지하면서 확대 */
+.review-card:hover .card-img-box img.is-blurred,
+.best-card:hover .best-img-box img.is-blurred {
+    transform: scale(1.05);
+    filter: blur(9px) grayscale(20%);
+}
+
+/* 잠금 안내도 호버 시 살짝 강조 */
+.premium-lock-guide {
+    transition: background 0.25s ease;
+}
+
+.review-card:hover .premium-lock-guide,
+.best-card:hover .premium-lock-guide {
+    background: rgba(30, 30, 30, 0.38);
+}
+
+/* 카드 클릭 느낌 */
+.review-card:active,
+.best-card:active {
+    transform: translateY(-3px);
+}

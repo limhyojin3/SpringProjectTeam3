@@ -40,6 +40,22 @@
                 transition: all 0.3s ease;
             }
 
+            .review-stats-grid {
+                grid-template-columns: repeat(4, 1fr);
+            }
+
+            @media (max-width: 992px) {
+                .review-stats-grid {
+                    grid-template-columns: repeat(2, 1fr);
+                }
+            }
+
+            @media (max-width: 576px) {
+                .review-stats-grid {
+                    grid-template-columns: 1fr;
+                }
+            }
+
             .stats-mini-card {
                 background: #f1f5f9;
                 border: 1px solid #d8e0eb;
@@ -113,6 +129,10 @@
                                 @click="activeTab = 'passes'; fnGetPassSales();">
                                 패스 판매
                             </button>
+                            <button :class="{active: activeTab == 'reviewParticipation'}"
+                                @click="activeTab = 'reviewParticipation'; fnGetReviewParticipationStats();">
+                                리뷰 참여 분석
+                            </button>
                             <button :class="{active: activeTab == 'users'}"
                                 @click="activeTab = 'users'; fnGetUsers('USER');">일반 회원
                                 등록수</button>
@@ -129,127 +149,167 @@
                                 <h2>월별 매출 현황</h2>
                                 <div id="chart-sales"></div>
                             </div>
-                            <div v-if="activeTab == 'passes'">
+
+                            <div v-else-if="activeTab == 'passes'">
                                 <h2>패스별 판매 현황</h2>
                                 <div id="chart-passes"></div>
                             </div>
-                            <div v-if="activeTab == 'users'">
-                                <h2>일반 회원 등록수</h2>
+
+                            <div v-else-if="activeTab == 'reviewParticipation'">
+                                <h2>리뷰 참여 분석</h2>
+                                <div id="chart-review-participation"></div>
+                            </div>
+
+                            <div v-else-if="activeTab == 'users'">
+                                <h2>일반 회원 등록 수</h2>
                                 <div id="chart-users"></div>
                             </div>
-                            <div v-if="activeTab == 'nPartners'">
-                                <h2>일반 업체 등록수</h2>
+
+                            <div v-else-if="activeTab == 'nPartners'">
+                                <h2>일반 업체 등록 수</h2>
                                 <div id="chart-nPartners"></div>
                             </div>
-                            <div v-if="activeTab == 'partners'">
-                                <h2>제휴 업체 등록수</h2>
+
+                            <div v-else-if="activeTab == 'partners'">
+                                <h2>제휴 업체 등록 수</h2>
                                 <div id="chart-partners"></div>
                             </div>
                         </div>
+                        <transition name="tab-fade-slide" mode="out-in">
+                            <div :key="'summary-' + activeTab">
+                                <div v-if="activeTab == 'sales'" class="stats-summary-grid">
 
-                        <div v-if="activeTab == 'sales'" class="stats-summary-grid">
+                                    <div class="stats-mini-card">
+                                        <p>이번달 매출</p>
+                                        <h3>{{salesNow.toLocaleString()}}</h3>
+                                    </div>
 
-                            <div class="stats-mini-card">
-                                <p>이번달 매출</p>
-                                <h3>{{salesNow.toLocaleString()}}</h3>
+                                    <div class="stats-mini-card">
+                                        <p>저번달 매출</p>
+                                        <h3>{{salesBefore.toLocaleString()}}</h3>
+                                    </div>
+
+                                    <div class="stats-mini-card">
+                                        <p>증감률</p>
+                                        <h3
+                                            :class="salesGrowthRate == 0 ? 'same' : (salesGrowthRate < 0 ? 'down' : 'up')">
+                                            {{formatPercent(salesGrowthRate)}}%
+                                        </h3>
+                                    </div>
+
+                                </div>
+
+                                <div v-else-if="activeTab == 'passes'" class="stats-summary-grid">
+
+                                    <div class="stats-mini-card">
+                                        <p>전체 패스 판매</p>
+                                        <h3>{{ passTotalSold.toLocaleString() }}건</h3>
+                                    </div>
+
+                                    <div class="stats-mini-card">
+                                        <p>가장 많이 팔린 패스</p>
+                                        <h3>{{ bestPassName || '-' }}</h3>
+                                    </div>
+
+                                    <div class="stats-mini-card">
+                                        <p>BEST 패스 판매량</p>
+                                        <h3>{{ bestPassSold.toLocaleString() }}건</h3>
+                                    </div>
+
+                                </div>
+
+                                <div v-else-if="activeTab == 'reviewParticipation'"
+                                    class="stats-summary-grid review-stats-grid">
+
+                                    <div class="stats-mini-card">
+                                        <p>일반 회원 수</p>
+                                        <h3>{{ reviewUserCount.toLocaleString() }}명</h3>
+                                    </div>
+
+                                    <div class="stats-mini-card">
+                                        <p>리뷰 작성 회원</p>
+                                        <h3>{{ reviewWriterCount.toLocaleString() }}명</h3>
+                                    </div>
+
+                                    <div class="stats-mini-card">
+                                        <p>리뷰 미작성 회원</p>
+                                        <h3>{{ noReviewUserCount.toLocaleString() }}명</h3>
+                                    </div>
+
+                                    <div class="stats-mini-card">
+                                        <p>리뷰 작성 참여율</p>
+                                        <h3>{{ reviewParticipationRate }}%</h3>
+                                    </div>
+
+                                </div>
+
+                                <div v-else-if="activeTab == 'users'" class="stats-summary-grid">
+
+                                    <div class="stats-mini-card">
+                                        <p>이번달 회원 수</p>
+                                        <h3>{{userNow.toLocaleString()}}</h3>
+                                    </div>
+
+                                    <div class="stats-mini-card">
+                                        <p>저번달 회원 수</p>
+                                        <h3>{{userBefore.toLocaleString()}}</h3>
+                                    </div>
+
+                                    <div class="stats-mini-card">
+                                        <p>증감률</p>
+                                        <h3
+                                            :class="userGrowthRate == 0 ? 'same' : (userGrowthRate < 0 ? 'down' : 'up')">
+                                            {{formatPercent(userGrowthRate)}}%
+                                        </h3>
+                                    </div>
+
+                                </div>
+
+                                <div v-else-if="activeTab == 'nPartners'" class="stats-summary-grid">
+
+                                    <div class="stats-mini-card">
+                                        <p>이번달 일반 업체 수</p>
+                                        <h3>{{nPartnerNow.toLocaleString()}}</h3>
+                                    </div>
+
+                                    <div class="stats-mini-card">
+                                        <p>저번달 일반 업체 수</p>
+                                        <h3>{{nPartnerBefore.toLocaleString()}}</h3>
+                                    </div>
+
+                                    <div class="stats-mini-card">
+                                        <p>증감률</p>
+                                        <h3
+                                            :class="nPartnerGrowthRate == 0 ? 'same' : (nPartnerGrowthRate < 0 ? 'down' : 'up')">
+                                            {{formatPercent(nPartnerGrowthRate)}}%
+                                        </h3>
+                                    </div>
+
+                                </div>
+
+                                <div v-else-if="activeTab == 'partners'" class="stats-summary-grid">
+
+                                    <div class="stats-mini-card">
+                                        <p>이번달 일반 업체 수</p>
+                                        <h3>{{partnerNow.toLocaleString()}}</h3>
+                                    </div>
+
+                                    <div class="stats-mini-card">
+                                        <p>저번달 일반 업체 수</p>
+                                        <h3>{{partnerBefore.toLocaleString()}}</h3>
+                                    </div>
+
+                                    <div class="stats-mini-card">
+                                        <p>증감률</p>
+                                        <h3
+                                            :class="partnerGrowthRate == 0 ? 'same' : (partnerGrowthRate < 0 ? 'down' : 'up')">
+                                            {{formatPercent(partnerGrowthRate)}}%
+                                        </h3>
+                                    </div>
+
+                                </div>
                             </div>
-
-                            <div class="stats-mini-card">
-                                <p>저번달 매출</p>
-                                <h3>{{salesBefore.toLocaleString()}}</h3>
-                            </div>
-
-                            <div class="stats-mini-card">
-                                <p>증감률</p>
-                                <h3 :class="salesGrowthRate == 0 ? 'same' : (salesGrowthRate < 0 ? 'down' : 'up')">
-                                    {{formatPercent(salesGrowthRate)}}%
-                                </h3>
-                            </div>
-
-                        </div>
-
-                        <div v-if="activeTab == 'passes'" class="stats-summary-grid">
-
-                            <div class="stats-mini-card">
-                                <p>전체 패스 판매</p>
-                                <h3>{{ passTotalSold.toLocaleString() }}건</h3>
-                            </div>
-
-                            <div class="stats-mini-card">
-                                <p>가장 많이 팔린 패스</p>
-                                <h3>{{ bestPassName || '-' }}</h3>
-                            </div>
-
-                            <div class="stats-mini-card">
-                                <p>BEST 패스 판매량</p>
-                                <h3>{{ bestPassSold.toLocaleString() }}건</h3>
-                            </div>
-
-                        </div>
-
-                        <div v-if="activeTab == 'users'" class="stats-summary-grid">
-
-                            <div class="stats-mini-card">
-                                <p>이번달 회원 수</p>
-                                <h3>{{userNow.toLocaleString()}}</h3>
-                            </div>
-
-                            <div class="stats-mini-card">
-                                <p>저번달 회원 수</p>
-                                <h3>{{userBefore.toLocaleString()}}</h3>
-                            </div>
-
-                            <div class="stats-mini-card">
-                                <p>증감률</p>
-                                <h3 :class="userGrowthRate == 0 ? 'same' : (userGrowthRate < 0 ? 'down' : 'up')">
-                                    {{formatPercent(userGrowthRate)}}%
-                                </h3>
-                            </div>
-
-                        </div>
-
-                        <div v-if="activeTab == 'nPartners'" class="stats-summary-grid">
-
-                            <div class="stats-mini-card">
-                                <p>이번달 일반 업체 수</p>
-                                <h3>{{nPartnerNow.toLocaleString()}}</h3>
-                            </div>
-
-                            <div class="stats-mini-card">
-                                <p>저번달 일반 업체 수</p>
-                                <h3>{{nPartnerBefore.toLocaleString()}}</h3>
-                            </div>
-
-                            <div class="stats-mini-card">
-                                <p>증감률</p>
-                                <h3
-                                    :class="nPartnerGrowthRate == 0 ? 'same' : (nPartnerGrowthRate < 0 ? 'down' : 'up')">
-                                    {{formatPercent(nPartnerGrowthRate)}}%
-                                </h3>
-                            </div>
-
-                        </div>
-
-                        <div v-if="activeTab == 'partners'" class="stats-summary-grid">
-
-                            <div class="stats-mini-card">
-                                <p>이번달 일반 업체 수</p>
-                                <h3>{{partnerNow.toLocaleString()}}</h3>
-                            </div>
-
-                            <div class="stats-mini-card">
-                                <p>저번달 일반 업체 수</p>
-                                <h3>{{partnerBefore.toLocaleString()}}</h3>
-                            </div>
-
-                            <div class="stats-mini-card">
-                                <p>증감률</p>
-                                <h3 :class="partnerGrowthRate == 0 ? 'same' : (partnerGrowthRate < 0 ? 'down' : 'up')">
-                                    {{formatPercent(partnerGrowthRate)}}%
-                                </h3>
-                            </div>
-
-                        </div>
+                        </transition>
                     </div>
                 </div>
             </div>
@@ -269,7 +329,6 @@
                         monthList: [],
                         clientList: [],
                         role: "",
-                        activeMenu: "",
                         userNow: 1,
                         userBefore: 1,
                         userGrowthRate: 0,
@@ -287,6 +346,18 @@
                         bestPassName: "",
                         bestPassSold: 0,
                         chart: null,
+                        //리뷰작성률
+                        reviewUserCount: 0,
+                        reviewWriterCount: 0,
+                        noReviewUserCount: 0,
+                        reviewParticipationRate: 0,
+                        //리뷰작성률
+                        internalReviewCount: 0,
+                        externalReviewCount: 0,
+                        externalReviewRate: 0,
+                        //리뷰작성률
+                        reviewTypeNameList: [],
+                        reviewTypeCountList: [],
                     };
                 },
                 methods: {
@@ -479,6 +550,123 @@
                         self.chart.render();
                     },
 
+                    fnReviewParticipationChart: function () {
+                        let self = this;
+
+                        if (self.chart) {
+                            self.chart.destroy();
+                        }
+
+                        const options = {
+                            series: self.reviewTypeCountList,
+                            labels: self.reviewTypeNameList,
+
+                            chart: {
+                                height: 380,
+                                type: "donut",
+                                toolbar: {
+                                    show: false
+                                },
+                                dropShadow: {
+                                    enabled: true,
+                                    top: 6,
+                                    left: 2,
+                                    blur: 8,
+                                    opacity: 0.18
+                                }
+                            },
+
+                            colors: [
+                                "#e88aa2",
+                                "#7c8db5"
+                            ],
+
+                            stroke: {
+                                width: 4,
+                                colors: ["#ffffff"]
+                            },
+
+                            plotOptions: {
+                                pie: {
+                                    expandOnClick: true,
+                                    donut: {
+                                        size: "62%",
+                                        labels: {
+                                            show: true,
+
+                                            name: {
+                                                show: true,
+                                                fontSize: "15px",
+                                                color: "#64748b"
+                                            },
+
+                                            value: {
+                                                show: true,
+                                                fontSize: "25px",
+                                                fontWeight: 700,
+                                                formatter: function (value) {
+                                                    return Number(value).toLocaleString() + "건";
+                                                }
+                                            },
+
+                                            total: {
+                                                show: true,
+                                                label: "전체 리뷰",
+                                                fontSize: "14px",
+                                                color: "#64748b",
+                                                formatter: function () {
+                                                    const total =
+                                                        Number(self.internalReviewCount || 0) +
+                                                        Number(self.externalReviewCount || 0);
+
+                                                    return total.toLocaleString() + "건";
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            },
+
+                            dataLabels: {
+                                enabled: true,
+                                formatter: function (percent) {
+                                    return percent.toFixed(1) + "%";
+                                }
+                            },
+
+                            legend: {
+                                position: "bottom",
+                                fontSize: "14px",
+                                formatter: function (name, options) {
+                                    const count =
+                                        options.w.globals.series[options.seriesIndex];
+
+                                    return name + " · " +
+                                        Number(count).toLocaleString() + "건";
+                                }
+                            },
+
+                            tooltip: {
+                                y: {
+                                    formatter: function (value) {
+                                        return Number(value).toLocaleString() + "건";
+                                    }
+                                }
+                            },
+
+                            noData: {
+                                text: "리뷰 통계 데이터가 없습니다."
+                            }
+                        };
+
+                        self.chart = new ApexCharts(
+                            document.querySelector("#chart-review-participation"),
+                            options
+                        );
+
+                        self.chart.render();
+                    },
+
                     fnDrawChart(id, name) {
                         let self = this;
 
@@ -602,6 +790,48 @@
                         });
                     },
 
+                    fnGetReviewParticipationStats: function () {
+                        let self = this;
+
+                        $.ajax({
+                            url: "/reviewParticipationStats.dox",
+                            dataType: "json",
+                            type: "POST",
+                            data: {},
+
+                            success: function (data) {
+                                const info = data.info || {};
+
+                                self.reviewUserCount = Number(info.reviewUserCount || 0);
+                                self.reviewWriterCount = Number(info.reviewWriterCount || 0);
+                                self.noReviewUserCount = Number(info.noReviewUserCount || 0);
+                                self.reviewParticipationRate = Number(info.reviewParticipationRate || 0);
+
+                                self.internalReviewCount = Number(info.internalReviewCount || 0);
+                                self.externalReviewCount = Number(info.externalReviewCount || 0);
+                                self.externalReviewRate = Number(info.externalReviewRate || 0);
+
+                                self.reviewTypeNameList = [
+                                    "내부업체 리뷰",
+                                    "외부업체 리뷰"
+                                ];
+
+                                self.reviewTypeCountList = [
+                                    self.internalReviewCount,
+                                    self.externalReviewCount
+                                ];
+
+                                self.$nextTick(function () {
+                                    self.fnReviewParticipationChart();
+                                });
+                            },
+
+                            error: function () {
+                                alert("리뷰 참여 분석 통계를 불러오지 못했습니다.");
+                            }
+                        });
+                    },
+
                     fnGetUsers: function (role) {
                         let self = this;
                         self.role = role;
@@ -673,19 +903,6 @@
                     // 처음 시작할 때 실행되는 부분
                     let self = this;
                     const path = location.pathname;
-
-                    this.activeMenu =
-                        path.includes('adminMain') ? 'main' :
-                            path.includes('adminUser') ? 'user' :
-                                path.includes('adminCompany') ? 'company' :
-                                    path.includes('adminBoard') ? 'board' :
-                                        path.includes('adminReviewWait') ? 'reviewWait' :
-                                            path.includes('adminPayment') ? 'payment' :
-                                                path.includes('adminReport') ? 'report' :
-                                                    path.includes('adminInquiry') ? 'inquiry' :
-                                                        path.includes('adminStatistics') ? 'stats' :
-                                                            '';
-
                     self.fnGetSales();
                 }
             });

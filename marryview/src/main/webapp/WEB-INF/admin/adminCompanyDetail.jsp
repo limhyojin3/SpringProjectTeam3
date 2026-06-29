@@ -58,7 +58,7 @@
                 <div class="main">
                     <div class="detail-container admin-detail-page" v-if="company">
                         <!-- 상단 -->
-                        <div class="detail-header">
+                        <div class="detail-header admin-fade-up delay-1">
                             <div class="detail-top">
                                 <button class="btn-back" @click="fnPage('/adminCompany.do')">
                                     <i class="fas fa-bars"></i>
@@ -79,8 +79,8 @@
                                 </div>
                             </div>
                         </div>
-                        <!-- ===== 2. 회원 기본 정보 ===== -->
-                        <div class="card p-3 mb-3">
+                        <!-- ===== 0. 회원 기본 정보 ===== -->
+                        <div class="card p-3 mb-3 admin-fade-up delay-3">
                             <h5>👤 회원 정보</h5>
                             <div class="row">
                                 <div class="col-4"><b>ID</b><br><span class="admin-id-text" :title="company.userId">
@@ -96,23 +96,21 @@
                         </div>
 
                         <!-- ===== 1. 업체 기본 정보 ===== -->
-                        <div class="card p-3 mb-3">
+                        <div class="card p-3 mb-3 admin-fade-up delay-5">
                             <h5>🏢 업체 정보</h5>
                             <div class="row">
                                 <div class="col-4"><b>업체명</b><br>{{ company.companyName }}</div>
                                 <div class="col-4"><b>대표자</b><br>{{ company.ceoName }}</div>
                                 <div class="col-4"><b>사업자번호</b><br>{{ company.bizNo }}</div>
-
-                                <div class="col-4 mt-3"><b>업종</b><br>{{ formatComType(company.comType) }}</div>
+                                <!-- <div class="col-4 mt-3"><b>업종</b><br>{{ formatComType(company.comType) }}</div> -->
                                 <div class="col-4 mt-3"><b>전화번호</b><br>{{ company.comTel }}</div>
                                 <div class="col-4 mt-3"><b>이메일</b><br>{{ company.comEmail }}</div>
-
-                                <div class="col-12 mt-3"><b>주소</b><br>{{ company.comAddress }}</div>
+                                <div class="col-4 mt-3"><b>주소</b><br>{{ company.comAddress }}</div>
                             </div>
                         </div>
 
                         <!-- ===== 3. 활동 요약 ===== -->
-                        <div class="card p-3 mb-3">
+                        <div class="card p-3 mb-3 admin-fade-up delay-6">
                             <h5>📊 활동 요약</h5>
                             <div class="row text-center align-items-stretch">
                                 <div class="col-3">
@@ -143,13 +141,13 @@
                         </div>
 
                         <!-- ===== 소개 ===== -->
-                        <div class="card p-3" v-if="company.comIntro">
+                        <div class="card p-3 admin-fade-up delay-6" v-if="company.comIntro">
                             <h5>📝 업체 소개</h5>
                             <p>{{ company.comIntro }}</p>
                         </div>
 
                         <!-- ===== 3. 신고 이력 ===== -->
-                        <div class="card p-3 mb-3">
+                        <div class="card p-3 mb-3 admin-fade-up delay-6">
                             <h5>🚨 신고 이력</h5>
                             <table class="table table-sm table-bordered mt-2">
                                 <thead>
@@ -170,7 +168,7 @@
                         </div>
 
                         <!-- ===== 4. 정지 이력 ===== -->
-                        <div class="card p-3 mb-3">
+                        <div class="card p-3 mb-3 admin-fade-up delay-6">
                             <h5>🔨 정지 이력</h5>
                             <table class="table table-sm table-bordered mt-2">
                                 <thead>
@@ -197,14 +195,14 @@
                         </div>
 
                         <!-- ===== 5. 제재 처리 ===== -->
-                        <div class="card p-3 mb-3" v-if="company.status !== 'STOP'">
+                        <div class="card p-3 mb-3 admin-fade-up delay-6" v-if="company.status !== 'STOP'">
                             <h5 class="text-danger">🚫 정지 처리</h5>
                             <input class="form-control mb-2" v-model="banReason" placeholder="정지 사유 입력"
                                 @keyup.enter="fnBanUser" />
                             <button class="btn btn-danger btn-block" @click="fnBanUser">정지</button>
                         </div>
 
-                        <div class="card p-3" v-if="company.status === 'STOP'">
+                        <div class="card p-3 admin-fade-up delay-6" v-if="company.status === 'STOP'">
                             <h5 class="text-success">✅ 정지 해제</h5>
                             <input class="form-control mb-2" v-model="unbanReason" placeholder="해제 사유 입력" />
                             <button class="btn btn-success btn-block" @click="fnUnbanUser">해제</button>
@@ -221,7 +219,6 @@
             const app = Vue.createApp({
                 data() {
                     return {
-                        activeMenu: "",
                         sessionId: "${sessionScope.sessionId}",
                         sessionRole: "${sessionScope.sessionRole}",
                         company: null,
@@ -374,17 +371,6 @@
                         this.fnGetReport(userId);
                     }
                     const path = location.pathname;
-                    this.activeMenu =
-                        path.includes('adminMain') ? 'main' :
-                            path.includes('adminUser') ? 'user' :
-                                path.includes('adminCompany') ? 'company' :
-                                    path.includes('adminBoard') ? 'board' :
-                                        path.includes('adminReviewWait') ? 'reviewWait' :
-                                            path.includes('adminPayment') ? 'payment' :
-                                                path.includes('adminReport') ? 'report' :
-                                                    path.includes('adminInquiry') ? 'inquiry' :
-                                                        path.includes('adminStatistics') ? 'stats' :
-                                                            '';
                 }
             });
 

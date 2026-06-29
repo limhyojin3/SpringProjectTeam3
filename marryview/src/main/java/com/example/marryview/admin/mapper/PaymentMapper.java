@@ -49,6 +49,8 @@ public interface PaymentMapper {
 	// 쿠폰 사용 수정
 	int updateUsedCoupon(HashMap<String, Object> map);
 	
+	int updateMemberPreviousPayment(HashMap<String, Object> map);
+	
 	Integer selectCompanyInfo(HashMap<String, Object> map);
 	
 	//예약 환불 조회

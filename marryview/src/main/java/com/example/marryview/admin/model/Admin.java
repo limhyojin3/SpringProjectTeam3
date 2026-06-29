@@ -98,7 +98,7 @@ public class Admin {
 	String companyEmail;
 	String comType;
 	String comTel;
-	String comAdress;
+	String comAddress;
 	String memberStatus;
 	String companyStatus;
 	String grade;			// 제휴업체인지 일반업체인지 나눔
@@ -107,6 +107,8 @@ public class Admin {
 	String registrationFee;
 	String comName;
 	String resStatus;
+	String comIntro;
+	String comEmail;
 	
 	// 상품 목록
 //	int productNo;
@@ -151,4 +153,14 @@ public class Admin {
 	String adminId;      // 관리자 아이디
 	String banRegDate;   // 이력 날짜
 
+	// 리뷰 참여 분석 통계
+	int reviewUserCount;              // 일반 회원 수
+	int reviewWriterCount;            // 리뷰 작성 회원 수
+	int noReviewUserCount;            // 리뷰 미작성 회원 수
+	double reviewParticipationRate;   // 리뷰 작성 참여율
+
+	int internalReviewCount;          // 내부업체 리뷰 수
+	int externalReviewCount;          // 외부업체 리뷰 수
+	double externalReviewRate;        // 외부업체 리뷰 비율
+	
 }

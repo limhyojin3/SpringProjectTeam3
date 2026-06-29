@@ -84,7 +84,7 @@
             <div class="middle">
                 <jsp:include page="/WEB-INF/admin/adminNavi.jsp" />
                 <div class="main">
-                    <div class="container">
+                    <div class="container admin-fade-up delay-1">
 
                         <h2>업체 관리</h2>
                         <!-- 필터 영역 -->
@@ -189,7 +189,6 @@
                 data() {
                     return {
                         // 변수 - (key : value)
-                        activeMenu: "",
                         companyList: [],
                         sessionId: "${sessionScope.sessionId}",
                         sessionRole: "${sessionScope.sessionRole}",
@@ -296,16 +295,6 @@
                     // 처음 시작할 때 실행되는 부분
                     let self = this;
                     const path = location.pathname;
-                    this.activeMenu =
-                        path.includes('adminMain') ? 'main' :
-                            path.includes('adminUser') ? 'user' :
-                                path.includes('adminCompany') ? 'company' :
-                                    path.includes('adminBoard') ? 'board' :
-                                        path.includes('adminReview') ? 'review' :
-                                            path.includes('adminPayment') ? 'payment' :
-                                                path.includes('adminReport') ? 'report' :
-                                                    path.includes('adminStatistics') ? 'stats' :
-                                                        '';
                     self.fnGetCompanyList();
                 }
             });
