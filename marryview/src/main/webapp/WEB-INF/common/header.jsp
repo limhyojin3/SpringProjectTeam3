@@ -204,6 +204,19 @@
     .mv-noti-footer a { display: block; padding: 13px; color: #e83f60 !important; font-size: 12px; font-weight: 800; text-align: center; text-decoration: none; }
     .mv-noti-footer a:hover { background: #fff0f3; }
 
+    .partner-mode .mv-noti-btn {
+        background: #f0eeff;
+    }
+    
+    .partner-mode .mv-noti-btn:hover {
+        background: #e4e0f5;
+    }
+
+    .partner-mode .mv-noti-badge {
+        background: #ff4d6d;
+        border-color: #f8f6ff;
+    }
+
     /* 기본 (유저) */
     .nav-name { color: #ff4d6d; font-weight: bold; margin-left: 10px; }
     .nav-icon-btn { color: #ff4d6d !important; padding: 0 10px !important; }
