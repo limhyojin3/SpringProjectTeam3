@@ -192,8 +192,8 @@
             border: 1px solid #ffc7c2;
             border-radius: 12px;
             overflow: hidden;
-            cursor: pointer;
-            transition: 0.2s;
+            display: flex;
+            flex-direction: column;
         }
 
         .product-like-card:hover {
@@ -203,19 +203,24 @@
 
         .product-like-card img {
             width: 100%;
-            height: 150px;
+            height: 200px;
             object-fit: cover;
+            flex-shrink: 0;
         }
 
         .product-like-card-body {
             padding: 12px;
+            min-width: 0;
         }
 
         .product-like-card-body .p-name {
             font-size: 14px;
             font-weight: 700;
             color: #333;
-            margin-bottom: 4px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 100%;
         }
 
         .product-like-card-body .p-company {
@@ -238,6 +243,7 @@
 
         .product-like-card-wrap {
             position: relative;
+            min-width: 0;
         }
 
         .company-like-card-wrap {
@@ -643,7 +649,7 @@
                 reviewTotalCount: 0,
                 productCurrentPage: 1,
                 productTotalCount: 0,
-                pageSize: 5,
+                pageSize: 6,
                 // 체크 박스
                 selectedCompanyLikes: [],
                 selectedPostLikes: [],

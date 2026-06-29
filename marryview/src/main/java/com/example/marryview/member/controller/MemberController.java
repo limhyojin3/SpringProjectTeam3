@@ -576,7 +576,7 @@ public class MemberController {
 	    Map<String, Object> result = new HashMap<>();
 	    result.put("list", memberService.getMyProductLikeList(userId, page));
 	    result.put("totalCount", memberService.getMyProductLikeCount(userId));
-	    result.put("pageSize", 5);
+	    result.put("pageSize", 6);
 	    result.put("currentPage", page);
 	    return result;
 	}

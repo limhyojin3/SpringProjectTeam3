@@ -577,8 +577,8 @@ public class MemberService {
 	public List<HashMap<String, Object>> getMyProductLikeList(String userId, int page) {
 	    HashMap<String, Object> map = new HashMap<>();
 	    map.put("userId", userId);
-	    map.put("pageSize", 5);
-	    map.put("offset", (page - 1) * 5);
+	    map.put("pageSize", 6);
+	    map.put("offset", (page - 1) * 6);
 	    return memberMapper.selectMyProductLikeList(map);
 	}
 
