@@ -48,7 +48,8 @@ public class WebConfig implements WebMvcConfigurer {
                         "/api/community/list.do",
                         "/api/community/list.dox",
                         "/api/community/detail.do",
-                        "/api/community/getPost.dox"
+                        "/api/community/getPost.dox",
+                        "/api/community/popularList.dox"
                 );
     }
 

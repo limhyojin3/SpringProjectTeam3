@@ -11,6 +11,7 @@ const productListComponent = {
 			selectTags: [],             // 선택된 소분류 태그 배열
 			categoriesData: {},          // DB에서 수혈받을 카테고리 트리 저장소
 			userid: window.SESSION_ID || '' , // 전역 세션선 직통 연결
+			isCompanyUser: false,        // 마운트 시점 DB 대조 후 가동될 업체 여부 하드웨어 스위치
 			localProductList: []         // [개인 지갑] 부모 간섭을 차단하기 위한 자체 독립 반응형 자산
 		};
 	},
@@ -33,6 +34,24 @@ const productListComponent = {
 				console.error("AJAX 기반 카테고리 트리 데이터베이스 수혈 실패:", error);
 			}
 		});
+		
+		// [마운트 검문선] 로드 직후 로그인 유저가 company 테이블 소속 회원인지 실시간 체킹
+		if (self.userid && self.userid.trim() !== '') {
+			$.ajax({
+				url: '/checkCompanyUser.dox',
+				type: 'POST',
+				data: { userId: self.userid },
+				dataType: 'json',
+				success: function(res) {
+					if (res.result === 'success' && res.isCompany === true) {
+						self.isCompanyUser = true; // 업체 회원 명부 대조 완료 시 증발용 스위치 레이아웃 즉시 온(ON)!
+					}
+				},
+				error: function() {
+					self.isCompanyUser = false;
+				}
+			});
+		}
 			
 		// 최초 컴포넌트 렌더링 시 기본 조건으로 첫 조회가 트리거되도록 파이프라인 작동
 		this.triggerFilterReload();
@@ -81,6 +100,24 @@ const productListComponent = {
 		}
 	},
 	methods: {
+		// 나의 예약 보러가기 접근 제한 가드레일 검문소
+		fnGoMyReservation() {
+			if (!this.userid || this.userid.trim() === '') {
+				alert("로그인 후 이용 가능합니다.");
+				return;
+			}
+			this.$emit('go-my-res');
+		},
+
+		// 나의 문의 보러가기 접근 제한 가드레일 검문소
+		fnGoMyInquiry() {
+			if (!this.userid || this.userid.trim() === '') {
+				alert("로그인 후 이용 가능합니다.");
+				return;
+			}
+			this.$emit('go-my-inquiry');
+		},
+
 		// 대분류 탭 메뉴 수동 변경 시 하위 카테고리 선택값 초기화
 		changeLargeCategory(largeCat) {
 			this.selectLargeCategory = largeCat;
@@ -96,7 +133,7 @@ const productListComponent = {
 				largeCategory: this.selectLargeCategory,
 				mediumCategory: this.selectCategory,
 				tags: this.selectTags.join(','),
-				loginUserId: this.userid // 💡 [파이프라인 완공] 최초 리스트 호출 시 세션 ID를 누락 없이 공급하여 첫 클릭 롤백 버그 원천 박멸!
+				loginUserId: this.userid 
 			});
 		},
 		

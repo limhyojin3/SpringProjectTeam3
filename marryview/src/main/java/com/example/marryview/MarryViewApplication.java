@@ -19,4 +19,4 @@ public class MarryViewApplication extends SpringBootServletInitializer { // 💡
 		SpringApplication.run(MarryViewApplication.class, args);
 	}
 
-}
+} 

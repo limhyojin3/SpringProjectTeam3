@@ -254,7 +254,7 @@
                     <div class="dashboard-grid">
 
                         <!-- 전체 회원 -->
-                        <div class="summary-card">
+                        <div class="summary-card admin-fade-up delay-1">
                             <div class="summary-top">
                                 <div class="summary-icon users">
                                     <i class="fas fa-users"></i>
@@ -274,7 +274,7 @@
                         </div>
 
                         <!-- 전체 리뷰 -->
-                        <div class="summary-card">
+                        <div class="summary-card admin-fade-up delay-1">
                             <div class="summary-top">
                                 <div class="summary-icon review">
                                     <i class="fas fa-star"></i>
@@ -294,7 +294,7 @@
                         </div>
 
                         <!-- 제휴 업체 -->
-                        <div class="summary-card">
+                        <div class="summary-card admin-fade-up delay-1">
                             <div class="summary-top">
                                 <div class="summary-icon partner">
                                     <i class="fas fa-store"></i>
@@ -314,7 +314,7 @@
                         </div>
 
                         <!-- 이번달 매출 -->
-                        <div class="summary-card">
+                        <div class="summary-card admin-fade-up delay-1">
                             <div class="summary-top">
                                 <div class="summary-icon sales">
                                     <i class="fas fa-coins"></i>
@@ -339,7 +339,7 @@
                     <div class="content-grid">
 
                         <!-- 리뷰 승인 -->
-                        <div class="dashboard-card">
+                        <div class="dashboard-card admin-fade-up delay-5">
 
                             <div class="card-header-box">
                                 <h2>리뷰 승인</h2>
@@ -379,7 +379,7 @@
                         </div>
 
                         <!-- 신고 관리 -->
-                        <div class="dashboard-card">
+                        <div class="dashboard-card admin-fade-up delay-5">
 
                             <div class="card-header-box">
                                 <h2>신고 관리</h2>
@@ -419,7 +419,7 @@
                         </div>
                         <!--  -->
                         <!-- 문의 관리 -->
-                        <div class="dashboard-card">
+                        <div class="dashboard-card admin-fade-up delay-5">
 
                             <div class="card-header-box">
                                 <h2>문의 관리</h2>

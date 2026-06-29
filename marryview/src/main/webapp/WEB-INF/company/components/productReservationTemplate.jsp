@@ -101,7 +101,22 @@
             </button>
         </div>
 
-        <div v-for="(r, index) in filteredAndSortedList" :key="index" class="mini-ticket" @click="$emit('go-detail', r)">
+        <div v-if="filteredAndSortedList.length === 0" class="my-res-empty-box">
+            <div class="empty-icon">
+                <span v-if="currentTab === 'ALL'">📅</span>
+                <span v-else-if="currentTab === 'ING'">⏳</span>
+                <span v-else-if="currentTab === 'DONE'">✨</span>
+                <span v-else-if="currentTab === 'CANCEL'">❌</span>
+            </div>
+            <p class="empty-text">
+                <span v-if="currentTab === 'ALL'">예약하신 내역이 한 건도 존재하지 않습니다.</span>
+                <span v-else-if="currentTab === 'ING'">현재 진행 중인 예약 일정이 없습니다.</span>
+                <span v-else-if="currentTab === 'DONE'">과거 이용 완료된 내역이 존재하지 않습니다.</span>
+                <span v-else-if="currentTab === 'CANCEL'">취소 처리된 예약 내역이 없습니다.</span>
+            </p>
+        </div>
+
+        <div v-else v-for="(r, index) in filteredAndSortedList" :key="index" class="mini-ticket" @click="$emit('go-detail', r)">
             <div class="ticket-img">
                 <img :src="r.imgUrl" :alt="r.productName">
             </div>

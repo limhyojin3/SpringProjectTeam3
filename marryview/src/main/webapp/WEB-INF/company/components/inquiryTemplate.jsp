@@ -45,7 +45,7 @@
                 <button class="btn-reply" @click="fnAnswerToProductInquiry(i)">
                     <i class="fas fa-pen mr-1"></i>답변하기
                 </button>
-            </div>  <!-- content-card 닫힘 -->
+            </div>
             
             <div class="pagination1">
                 <a @click="fnPrevPage" href="javascript:;" :class="{ 'disabled-arrow': currentPage === 1 }">◀</a>
