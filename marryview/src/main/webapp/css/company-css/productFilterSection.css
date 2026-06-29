@@ -1,0 +1,215 @@
+/* ==========================================================================
+   2. 카테고리 & 태그 필터 검색 영역 (대/중/소 구조)
+   ========================================================================== */
+/* [포근한 솜사탕 필터 박스 구조 고정] */
+div.filter-section {
+	padding: 24px !important;
+	border: none !important;                    
+	background: #fff5f6 !important;            
+	border-radius: 24px !important;            
+	margin-top: 25px !important;               
+	margin-bottom: 30px !important;
+	display: flex !important;
+	flex-direction: column !important;
+	gap: 20px !important;
+	box-shadow: 0 6px 24px rgba(255, 127, 159, 0.06) !important;
+	overflow: hidden !important;               
+}
+
+/* 등록 업체 찾기 모드일 때 상단 필터를 부드러운 우윳빛 연보라 면 디자인과 대형 곡률 강제 집도 */
+div.company-slim-filter {
+	border: none !important;
+	background-color: #f5f3ff !important;
+	border-radius: 24px !important;
+	margin-top: 25px !important;
+	box-shadow: 0 6px 24px rgba(167, 139, 250, 0.06) !important;
+	overflow: hidden !important;
+}
+
+/* 대분류 대형 상단 탭 스타일 */
+.large-category-container {
+	display: flex;
+	border-bottom: 2px solid #ffe0e6;
+	padding-bottom: 10px;
+	gap: 15px;
+}
+
+.large-tab-btn {
+	background: #fdfdfd;
+	border: 1px solid #ffe0e6;
+	padding: 10px 24px;
+	font-size: 1.05rem;
+	font-weight: 700;
+	color: #777;
+	border-radius: 8px 8px 0 0;
+	cursor: pointer;
+	transition: all 0.2s ease-in-out;
+}
+
+/* [대분류 마우스 호버(Hover) 삼색 완전 독립 차단선 배치] */
+.large-tab-btn.btn-cat-wedding:hover:not(.active) {
+	color: #ff7f9f !important;
+	background-color: #fff0f3 !important;
+	border-color: #ffe0e6 !important;
+}
+
+.large-tab-btn.btn-cat-family:hover:not(.active) {
+	color: #0ca678 !important;
+	background-color: #e6fcf5 !important;
+	border-color: #c3fae8 !important;
+}
+
+.large-tab-btn.btn-cat-friends:hover:not(.active) {
+	color: #6741d9 !important;
+	background-color: #f3f0ff !important;
+	border-color: #e5dbff !important;
+}
+
+/* [고유 명찰 기반 삼색 꽉 찬 솔리드 활성화 안착] */
+.large-tab-btn.btn-cat-wedding.active {
+	background-color: #ff7f9f !important;
+	color: #ffffff !important;
+	border: 1px solid #ff7f9f !important;
+	box-shadow: 0 4px 12px rgba(255, 127, 159, 0.2) !important;
+}
+
+.large-tab-btn.btn-cat-family.active {
+	background-color: #0ca678 !important;
+	color: #ffffff !important;
+	border: 1px solid #0ca678 !important;
+	box-shadow: 0 4px 12px rgba(12, 166, 120, 0.2) !important;
+}
+
+.large-tab-btn.btn-cat-friends.active {
+	background-color: #6741d9 !important;
+	color: #ffffff !important;
+	border: 1px solid #6741d9 !important;
+	box-shadow: 0 4px 12px rgba(103, 65, 217, 0.2) !important;
+}
+
+/* 등록 업체 찾기 단추 마우스 호버/활성화 무드 고정 */
+.master-toggle-container .large-tab-btn:last-child:hover:not(.active) {
+	background-color: #f5f3ff !important;
+	border-color: #a78bfa !important;
+	color: #8b5cf6 !important;
+}
+
+.master-toggle-container .large-tab-btn:last-child.active {
+	background-color: #a78bfa !important;
+	border-color: #a78bfa !important;
+	color: #ffffff !important;
+	box-shadow: 0 4px 12px rgba(167, 139, 250, 0.2) !important;
+}
+
+/* 중분류 및 소분류 타이틀 */
+.filter-section h3 {
+	font-size: 1.1rem;
+	font-weight: 700;
+	color: #444;
+	margin: 0 0 12px 0;
+}
+
+/* 칩 정렬 플렉스박스 */
+.chips-flex-box {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 10px;
+}
+
+/* 체크박스 기본 원형 UI 숨김 */
+.custom-hidden-input {
+	display: none !important;
+}
+
+/* 버튼형 토글 칩 라벨 디자인 */
+.chip-toggle-label {
+	cursor: pointer;
+	background: #fff;
+	padding: 7px 16px;
+	border-radius: 25px;
+	font-size: 0.9rem;
+	color: #d6336c;
+	border: 1px solid #ffe0e6;
+	transition: all 0.2s ease;
+	user-select: none;
+}
+
+/* [중분류 및 소분류 칩 대분류 종속성 테마 깔맞춤 통합 관제선] */
+/* A. 결혼 테마 가동 시상대 ➔ 핑크 솔리드 하이라이트 */
+.chip-toggle-label.theme-wedding:hover:not(.active) {
+	background: #fff0f3 !important;
+	border-color: #ff7f9f !important;
+	color: #d6336c !important;
+}
+.chip-toggle-label.theme-wedding.active {
+	background: #ff7f9f !important;
+	color: #ffffff !important;
+	border-color: #ff7f9f !important;
+	font-weight: bold;
+}
+
+/* B. 가족행사 테마 가동 시상대 ➔ 초록 솔리드 하이라이트전환 완공 */
+.chip-toggle-label.theme-family:hover:not(.active) {
+	background: #e6fcf5 !important;
+	border-color: #0ca678 !important;
+	color: #0ca678 !important;
+}
+.chip-toggle-label.theme-family.active {
+	background: #0ca678 !important;
+	color: #ffffff !important;
+	border-color: #0ca678 !important;
+	font-weight: bold;
+}
+
+/* C. 친구와함께 테마 가동 시상대 ➔ 보라 솔리드 하이라이트 전환 완공 */
+.chip-toggle-label.theme-friends:hover:not(.active) {
+	background: #f3f0ff !important;
+	border-color: #6741d9 !important;
+	color: #6741d9 !important;
+}
+.chip-toggle-label.theme-friends.active {
+	background: #6741d9 !important;
+	color: #ffffff !important;
+	border-color: #6741d9 !important;
+	font-weight: bold;
+}
+
+/* 쿠팡 스타일 태그 2개 초과 선택 시 미선택 단추 잠금 비활성화 디자인 */
+.chip-toggle-label.disabled {
+	opacity: 0.4;
+	cursor: not-allowed !important;
+	background: #f8f9fa !important;
+	border-color: #e9ecef !important;
+	color: #adb5bd !important;
+	pointer-events: none;
+}
+
+/* 결혼 분위기 소분류 박스 */
+.tag-filter-container {
+	border-top: 1px dashed #ffe0e6;
+	padding-top: 20px;
+	display: flex;
+	flex-direction: column;
+	gap: 15px;
+}
+
+.sub-tag-group-box {
+	background: #fffbfb;
+	padding: 14px;
+	border-radius: 8px;
+	border: 1px solid #fff0f2;
+}
+
+.sub-group-title {
+	font-size: 0.9rem;
+	font-weight: bold;
+	color: #888;
+	margin: 0 0 8px 4px;
+}
+
+/* 태그 전용 칩 기본 명세 */
+.tag-specific-chip {
+	background: #fff;
+	color: #e64980;
+	border-color: #ffd8a8;
+}
