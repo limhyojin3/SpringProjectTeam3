@@ -186,8 +186,8 @@ MarryView는 스·드·메 시장의 고질적인 정보 비대칭 해결을 시
   - 리뷰 게시글의 대한 열람권 차감 로직 구현 -> 무료 리뷰는 전부 보여주고 유료 리뷰는 열람권 소유 여부 유효성 검사를 통해 유료 리뷰 조회 가능
 ---
 
-## <a name="ppt"></a>📝 발표 PPT
-[MarryView 발표 PPT](https://docs.google.com/presentation/d/1Jx6EC_XN0us7FykB43xtrjgjnf6b6ZGl/edit?usp=sharing&ouid=108808101243830684768&rtpof=true&sd=true)
+## <a name="ppt"></a>📝 발표 PPT(PDF)
+[MarryView 발표 PPT(PDF)](https://drive.google.com/file/d/1MjNghbu-x-7VUVQWOUkyl7M8rIZJWzSW/view?usp=sharing)
 
 ## <a name="video"></a>🎥 시연 영상
 ▶ [메리뷰 핵심 기능 시연 영상](https://drive.google.com/file/d/16Tgbzrr97_oLvOAWiNWqGL-nJJD1LcrD/view?usp=sharing)
