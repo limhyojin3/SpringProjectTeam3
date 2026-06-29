@@ -38,12 +38,6 @@ public class PaymentController {
 		return "admin/payment";
 	}
 	
-//	@ResponseBody
-//	@RequestMapping("/payment.do")
-//	public String test(){
-//	    return "ok";
-//	}
-//	
 	@PostMapping("/verifyPayment.dox")
 	@ResponseBody
 	public HashMap<String, Object> verifyPayment(@RequestParam HashMap<String, Object> map) {
@@ -79,14 +73,6 @@ public class PaymentController {
 		return paymentService.verifyPayment3(map);
 	}
 	
-	//환불
-//	@RequestMapping(value = "/refundPayment.dox", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
-//	@ResponseBody
-//	public String refundPayment(Model model, @RequestParam HashMap<String, Object> map) throws Exception {
-//
-//	    HashMap<String, Object> resultMap = paymentService.refundPayment(map);
-//	    return new Gson().toJson(resultMap);
-//	}
 	// 패스 환불
 	@RequestMapping(value="/refundPass.dox", method=RequestMethod.POST, produces="application/json;charset=UTF-8")
 	@ResponseBody

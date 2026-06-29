@@ -17,6 +17,8 @@
                 notifications: [],
                 unreadCount: 0,
                 currentFilter: 'all',
+				currentPage: 1,
+				pageSize: 5,
                 loading: true,
                 refreshing: false,
                 errorMessage: '',
@@ -79,6 +81,7 @@
                     { company: '메종 드 플라워', name: '본식 부케 · 부토니에 세트', discount: '10%', amount: '198,000원', symbol: '✿', tone: 'lilac' }
                 ],
 				notificationChangedHandler: null,
+				sidebarLoading: false,
             };
         },
 
@@ -91,6 +94,14 @@
                     return true;
                 });
             },
+			pagedNotifications: function () {
+			    var start = (this.currentPage - 1) * this.pageSize;
+			    return this.filteredNotifications.slice(start, start + this.pageSize);
+			},
+
+			totalPages: function () {
+			    return Math.max(1, Math.ceil(this.filteredNotifications.length / this.pageSize));
+			},
             unreadBadge: function () {
                 return this.unreadCount > 99 ? '99+' : this.unreadCount;
             },
@@ -143,7 +154,138 @@
                     throw error;
                 });
             },
+	
+			requestFormUrl: function (url, data) {
+			    var body = new URLSearchParams();
+			    Object.keys(data || {}).forEach(function (key) { body.append(key, data[key]); });
 
+			    return fetch(url, {
+			        method: 'POST',
+			        credentials: 'same-origin',
+			        headers: { 'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8' },
+			        body: body.toString()
+			    }).then(function (response) {
+			        if (!response.ok) throw new Error('HTTP 상태: ' + response.status);
+			        return response.json();
+			    });
+			},
+
+			requestJsonUrl: function (url, data) {
+			    return fetch(url, {
+			        method: 'POST',
+			        credentials: 'same-origin',
+			        headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+			        body: JSON.stringify(data || {})
+			    }).then(function (response) {
+			        if (!response.ok) throw new Error('HTTP 상태: ' + response.status);
+			        return response.json();
+			    });
+			},
+
+			loadSidebarData: function () {
+			    var self = this;
+			    this.sidebarLoading = true;
+
+			    return Promise.all([
+			        this.requestFormUrl(this.contextPath + '/productList.dox', {}),
+			        this.request('/wedding-news.dox', {}),
+			        this.requestFormUrl(this.contextPath + '/api/community/popularList.dox', {}),
+					this.requestJsonUrl(this.contextPath + '/api/review/list.dox', {
+					    startIndex: 0,
+					    pageSize: 3,
+					    orderType: 'likes'
+					})
+			    ]).then(function (responses) {
+			        self.productAds = self.mapProductAds(responses[0].list || []);
+			        self.weddingNews = self.mapWeddingNews(responses[1].list || []);
+			        self.popularContent.post = self.mapPopularPosts(responses[2].list || []);
+			        self.popularContent.review = self.mapPopularReviews(responses[3].bestList || []);
+			    }).catch(function () {
+			        self.showToast('사이드 데이터를 불러오지 못했습니다.');
+			    }).finally(function () {
+			        self.sidebarLoading = false;
+			    });
+			},
+
+			mapProductAds: function (list) {
+				var self = this;
+			    return list.slice(0, 3).map(function (item, index) {
+			        return {
+			            productNo: item.productNo,
+			            company: item.comName || item.company || 'MarryView',
+			            name: item.productName || item.name || '추천 상품',
+			            discount: 'NEW',
+			            amount: Number(item.originalPrice || item.price || 0).toLocaleString('ko-KR') + '원',
+			            symbol: ['01', '02', '03'][index] || 'NEW',
+			            tone: index === 1 ? 'gold' : (index === 2 ? 'lilac' : ''),
+						imageUrl: self.normalizeImageUrl(item.imgUrl || item.thumbnail || item.comImgUrl),
+			        };
+			    });
+			},
+
+			mapWeddingNews: function (list) {
+			    return list.slice(0, 3).map(function (item) {
+			        var dday = Number(item.dday);
+			        return {
+			            isMine: false,
+			            names: item.maskedUserId || '***',
+			            date: item.weddingDateText || item.weddingDate || '',
+			            dday: dday === 0 ? 'D-DAY' : 'D-' + dday,
+			            kicker: 'MarryView 회원 결혼 예정 소식',
+			            message: '새로운 시작을 준비하는 회원님의 결혼 예정일이 다가오고 있어요.',
+			            bottom: '따뜻한 축하의 마음을 함께 전해주세요.'
+			        };
+			    });
+			},
+
+			mapPopularPosts: function (list) {
+			    return list.slice(0, 3).map(function (item) {
+			        return {
+			            type: 'post',
+			            postNo: item.postNo,
+			            title: item.title || '인기글',
+			            views: item.viewCnt || 0,
+			            likes: item.likeCnt || 0
+			        };
+			    });
+			},
+
+			mapPopularReviews: function (list) {
+			    return list.slice(0, 3).map(function (item) {
+			        return {
+			            type: 'review',
+			            reviewNo: item.reviewNo,
+			            title: item.title || '인기리뷰',
+			            views: item.viewCnt || 0,
+			            likes: item.likeCnt || 0
+			        };
+			    });
+			},
+
+			goProduct: function (item) {
+			    if (!item || !item.productNo) {
+			        this.showToast('상품 정보를 찾을 수 없습니다.');
+			        return;
+			    }
+			    window.location.href = this.contextPath + '/productCategoryTag.do?productNo=' + item.productNo;
+			},
+
+			goPopularItem: function (item) {
+			    if (!item) return;
+
+			    if (item.type === 'review' && item.reviewNo) {
+			        window.location.href = this.contextPath + '/api/review/detail.do?reviewNo=' + item.reviewNo;
+			        return;
+			    }
+
+			    if (item.type === 'post' && item.postNo) {
+			        window.location.href = this.contextPath + '/api/community/detail.do?postNo=' + item.postNo;
+			        return;
+			    }
+
+			    this.showToast('상세 정보를 찾을 수 없습니다.');
+			},
+			
             refreshAll: function (showMessage) {
                 var self = this;
                 this.refreshing = true;
@@ -205,27 +347,95 @@
                 });
             },
 
-            typeLabel: function (type) {
-                var labels = {
-                    MATCH: '매칭', MESSAGE: '메시지', REVIEW: '리뷰', REVIEW_APPROVED: '리뷰', REVIEW_REJECTED: '리뷰',
-                    SYSTEM: '안내', RESERVATION: '예약', PAYMENT: '결제', INQUIRY_ANSWERED: '문의',
-                    INQUIRY_RECEIVED: '문의', REPORT_RECEIVED: '신고', REPORT_WARNING: '신고', REPORT_RESULT: '신고',
-                    PARTNER_APPROVED: '업체 승인',
-                    PARTNER_APPLICATION_RECEIVED: '제휴 신청'
-                };
-                return labels[type] || type || '새 소식';
-            },
+			typeLabel: function (type) {
+			    var labels = {
+			        MATCH: '매칭',
+			        MESSAGE: '메시지',
+			        SYSTEM: '안내',
 
-            typeIcon: function (type) {
-                var icons = {
-                    MATCH: '♥', MESSAGE: '✉', REVIEW: '★', REVIEW_APPROVED: '★', REVIEW_REJECTED: '★',
-                    SYSTEM: 'i', RESERVATION: '✓', PAYMENT: '₩', INQUIRY_ANSWERED: '?',
-                    INQUIRY_RECEIVED: '?', REPORT_RECEIVED: '!', REPORT_WARNING: '!', REPORT_RESULT: '!',
-                    PARTNER_APPROVED: '✓',
-                    PARTNER_APPLICATION_RECEIVED: '₩'
-                };
-                return icons[type] || '♥';
-            },
+			        REVIEW: '리뷰',
+			        REVIEW_APPROVED: '리뷰 승인',
+			        REVIEW_REJECTED: '리뷰 반려',
+			        REVIEW_REQUEST_1DAY: '리뷰 요청',
+			        REVIEW_REQUEST_7DAYS: '리뷰 요청',
+			        REVIEW_REQUEST_30DAYS: '리뷰 요청',
+			        REVIEW_COMMENTED: '리뷰 댓글',
+			        COMPANY_REVIEW_RECEIVED: '업체 리뷰',
+
+			        RESERVATION: '예약',
+			        RESERVATION_REQUESTED: '예약 요청',
+			        RESERVATION_CONFIRMED: '예약 확정',
+			        RESERVATION_CANCELED: '예약 취소',
+
+			        PAYMENT: '결제',
+
+			        INQUIRY_ANSWERED: '문의 답변',
+			        INQUIRY_RECEIVED: '문의 접수',
+			        PRODUCT_INQUIRY_RECEIVED: '상품 문의',
+			        PRODUCT_INQUIRY_ANSWERED: '상품 답변',
+
+			        REPORT_RECEIVED: '신고 접수',
+			        REPORT_WARNING: '신고 경고',
+			        REPORT_RESULT: '신고 결과',
+			        REPORT_APPROVED: '신고 승인',
+			        REPORT_REJECTED: '신고 반려',
+
+			        PARTNER_APPROVED: '업체 승인',
+			        PARTNER_APPLICATION_RECEIVED: '제휴 신청',
+
+			        COUPON_ISSUED: '쿠폰',
+			        GIFTCON_ISSUED: '기프트콘',
+
+			        POST_COMMENTED: '게시글 댓글'
+			    };
+
+			    return labels[type] || '알림';
+			},
+
+			typeIcon: function (type) {
+			    var icons = {
+			        MATCH: '♥',
+			        MESSAGE: '✉',
+			        SYSTEM: 'i',
+
+			        REVIEW: '★',
+			        REVIEW_APPROVED: '★',
+			        REVIEW_REJECTED: '!',
+			        REVIEW_REQUEST_1DAY: '★',
+			        REVIEW_REQUEST_7DAYS: '★',
+			        REVIEW_REQUEST_30DAYS: '★',
+			        REVIEW_COMMENTED: '💬',
+			        COMPANY_REVIEW_RECEIVED: '★',
+
+			        RESERVATION: '📅',
+			        RESERVATION_REQUESTED: '📅',
+			        RESERVATION_CONFIRMED: '✓',
+			        RESERVATION_CANCELED: '!',
+
+			        PAYMENT: '₩',
+
+			        INQUIRY_ANSWERED: '?',
+			        INQUIRY_RECEIVED: '?',
+			        PRODUCT_INQUIRY_RECEIVED: '?',
+			        PRODUCT_INQUIRY_ANSWERED: '?',
+
+			        REPORT_RECEIVED: '!',
+			        REPORT_WARNING: '!',
+			        REPORT_RESULT: '!',
+			        REPORT_APPROVED: '!',
+			        REPORT_REJECTED: '!',
+
+			        PARTNER_APPROVED: '✓',
+			        PARTNER_APPLICATION_RECEIVED: '+',
+
+			        COUPON_ISSUED: '%',
+			        GIFTCON_ISSUED: '🎁',
+
+			        POST_COMMENTED: '💬'
+			    };
+
+			    return icons[type] || 'i';
+			},
 
             formatDate: function (value) {
                 if (!value) return '';
@@ -298,11 +508,30 @@
                 syncVideoHandler(desktopScreen);
                 if (desktopScreen.addEventListener) desktopScreen.addEventListener('change', syncVideoHandler);
                 else desktopScreen.addListener(syncVideoHandler);
-            }
+            },
+			
+			normalizeImageUrl: function (url) {
+			    if (!url) return '';
+			    if (url.indexOf('http://') === 0 || url.indexOf('https://') === 0 || url.indexOf('/') === 0) {
+			        return url;
+			    }
+			    return this.contextPath + '/' + url;
+			},
+			
+			changeFilter: function (value) {
+			    this.currentFilter = value;
+			    this.currentPage = 1;
+			},
+
+			movePage: function (page) {
+			    if (page < 1 || page > this.totalPages) return;
+			    this.currentPage = page;
+			},
         },
 
         mounted: function () {
             this.refreshAll(false);
+			this.loadSidebarData();
             this.restartProductAdTimer();
             this.setupSideVideo();
 			this.notificationChangedHandler = this.refreshAll.bind(this, false);

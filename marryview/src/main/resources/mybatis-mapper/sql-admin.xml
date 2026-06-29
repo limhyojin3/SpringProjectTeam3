@@ -14,6 +14,86 @@
 		ORDER BY sale_month;
 	</select>
 
+	<select id="selectReviewParticipationStats"
+	        parameterType="hashmap"
+	        resultType="com.example.marryview.admin.model.Admin">
+	
+	    SELECT
+	        userStats.reviewUserCount AS reviewUserCount,
+	        userStats.reviewWriterCount AS reviewWriterCount,
+	        userStats.noReviewUserCount AS noReviewUserCount,
+	        userStats.reviewParticipationRate AS reviewParticipationRate,
+	
+	        reviewStats.internalReviewCount AS internalReviewCount,
+	        reviewStats.externalReviewCount AS externalReviewCount,
+	        reviewStats.externalReviewRate AS externalReviewRate
+	
+	    FROM
+	    (
+	        SELECT
+	            COUNT(DISTINCT m.user_id) AS reviewUserCount,
+	
+	            COUNT(DISTINCT CASE
+	                WHEN rv.user_id IS NOT NULL THEN m.user_id
+	            END) AS reviewWriterCount,
+	
+	            COUNT(DISTINCT m.user_id)
+	                - COUNT(DISTINCT CASE
+	                    WHEN rv.user_id IS NOT NULL THEN m.user_id
+	                END) AS noReviewUserCount,
+	
+	            IFNULL(
+	                ROUND(
+	                    COUNT(DISTINCT CASE
+	                        WHEN rv.user_id IS NOT NULL THEN m.user_id
+	                    END) / NULLIF(COUNT(DISTINCT m.user_id), 0) * 100,
+	                    1
+	                ),
+	                0
+	            ) AS reviewParticipationRate
+	
+	        FROM member m
+	        LEFT JOIN review rv
+	            ON rv.user_id = m.user_id
+	           AND rv.approval_status IN ('WAIT', 'APPROVED')
+	
+	        WHERE m.role = 'USER'
+	          AND m.status != 'WITHDRAWN'
+	    ) userStats
+	
+	    CROSS JOIN
+	    (
+	        SELECT
+	            COUNT(CASE
+	                WHEN company_no IS NOT NULL
+	                  OR product_no IS NOT NULL
+	                THEN 1
+	            END) AS internalReviewCount,
+	
+	            COUNT(CASE
+	                WHEN external_name IS NOT NULL
+	                 AND external_name != ''
+	                THEN 1
+	            END) AS externalReviewCount,
+	
+	            IFNULL(
+	                ROUND(
+	                    COUNT(CASE
+	                        WHEN external_name IS NOT NULL
+	                         AND external_name != ''
+	                        THEN 1
+	                    END) / NULLIF(COUNT(*), 0) * 100,
+	                    1
+	                ),
+	                0
+	            ) AS externalReviewRate
+	
+	        FROM review
+	        WHERE approval_status IN ('WAIT', 'APPROVED')
+	    ) reviewStats
+	
+	</select>
+
 	<!--adminMain에 쓰일 요약 용도-->
 	<select id="selectClientsList" parameterType="hashmap"
 		resultType="com.example.marryview.admin.model.Admin"> SELECT
@@ -764,6 +844,7 @@
 		M.USER_ID AS userId,
 		C.COM_NAME AS companyName,
 		C.COM_EMAIL AS companyEmail,
+		M.TEL AS tel,
 		C.COM_TEL AS comTel,
 		C.COM_ADDRESS AS comAddress,
 		M.LAST_LOGIN AS lastLogin,
@@ -771,6 +852,7 @@
 		M.REG_DATE AS regDate,
 		C.CEO_NAME AS ceoName,
 		C.BIZ_NO AS bizNo,
+		C.COM_EMAIL AS comEmail,
 		M.ROLE AS role,
 		C.registration_fee AS registrationFee,
 		C.com_intro AS comIntro,

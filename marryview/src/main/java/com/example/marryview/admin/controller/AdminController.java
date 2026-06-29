@@ -148,6 +148,16 @@ public class AdminController {
 		return new Gson().toJson(resultMap);
 	}
 
+	@RequestMapping(value = "/reviewParticipationStats.dox", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
+	@ResponseBody
+	public String reviewParticipationStats(Model model, @RequestParam HashMap<String, Object> map) throws Exception {
+	    HashMap<String, Object> resultMap = new HashMap<String, Object>();
+
+	    resultMap = adminService.getReviewParticipationStats(map);
+
+	    return new Gson().toJson(resultMap);
+	}
+	
 	@RequestMapping(value = "/clients.dox", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
 	@ResponseBody
 	public String clients(Model model, @RequestParam HashMap<String, Object> map) throws Exception {
