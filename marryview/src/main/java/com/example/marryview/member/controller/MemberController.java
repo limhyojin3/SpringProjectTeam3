@@ -552,7 +552,7 @@ public class MemberController {
 	    result.put("currentPage", page);
 	    return result;
 	}
-	// 업체 좋아요 조회
+	// 업체 좋아요 조회 
 	@GetMapping("/myCompanyLikeList.dox")
 	@ResponseBody
 	public Map<String, Object> getMyCompanyLikeList(
