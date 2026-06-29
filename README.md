@@ -6,19 +6,19 @@
 https://github.com/user-attachments/assets/a00ba838-6ce2-4335-ac79-0b14a1077616
 
 ## 📚 목차
-1. [프로젝트 소개](#프로젝트-소개-project-introduction)
-2. [개발 기간](#-개발-기간)
-3. [팀원 구성](#-팀원-구성)
-4. [사용 기술](#-사용-기술)
-5. [주요 기능](#-주요-기능-key-features)
-6. [역할 분담](#-역할-분담)
-7. [발표 PPT](#-발표-ppt)
-8. [시연 영상](#-시연-영상)
-9. [프로젝트 자료 모음](#-프로젝트-자료-모음)
+1. [프로젝트 소개](#intro)
+2. [주요 기능](#features)
+3. [개발 기간](#period)
+4. [팀원 구성](#members)
+5. [사용 기술](#tech)
+6. [역할 분담](#roles)
+7. [발표 PPT](#ppt)
+8. [시연 영상](#video)
+9. [프로젝트 자료 모음](#resources)
 
 ---
 
-## 🔍 프로젝트 소개 (Project Introduction)
+## <a name="intro"></a>🔍 프로젝트 소개 (Project Introduction)
 
 ### **"정보 비대칭 해소를 넘어 일상으로 확장되는 웨딩&라이프 올인원 플랫폼, MarryView"**
 
@@ -39,7 +39,7 @@ MarryView는 스·드·메 시장의 고질적인 정보 비대칭 해결을 시
 
 ---
 
-### 🛠️ 주요 기능 (Key Features)
+### <a name="features"></a>🛠️ 주요 기능 (Key Features)
 
 #### 1. 회원 및 권한 관리 (Auth & User Management)
 * 👥 **다중 권한 기반 회원 시스템**
@@ -67,7 +67,7 @@ MarryView는 스·드·메 시장의 고질적인 정보 비대칭 해결을 시
 
 ---
 
-## 🗓 개발 기간
+## <a name="period"></a>🗓 개발 기간
 - **2026.04.02 ~ 2026.04.12** : 기획 및 ERD, 테이블 설계
 - **2026.04.13 ~ 2026.04.27** : 기능 개발
 - **2026.04.28 ~ 2026.05.01** : 테스트 및 보완
@@ -75,7 +75,7 @@ MarryView는 스·드·메 시장의 고질적인 정보 비대칭 해결을 시
 
 ---
 
-## 🤝🏼 팀원 구성
+## <a name="members"></a>🤝🏼 팀원 구성
 | 이름 | GitHub | 이메일 |
 |:---:|:---:|:---:|
 | 임효진 | [@limhyojin3](https://github.com/limhyojin3) | skwlaks1@gmail.com |
@@ -85,7 +85,7 @@ MarryView는 스·드·메 시장의 고질적인 정보 비대칭 해결을 시
 
 ---
 
-## 🖥 사용 기술
+## <a name="tech"></a>🖥 사용 기술
 
 ### 🎨 Frontend
 <p>
@@ -129,7 +129,7 @@ MarryView는 스·드·메 시장의 고질적인 정보 비대칭 해결을 시
 
 ---
 
-## 💪🏼 역할 분담
+## <a name="roles"></a>💪🏼 역할 분담
 
  ### 임효진 (팀장)
 - **작업 페이지:**
@@ -186,10 +186,10 @@ MarryView는 스·드·메 시장의 고질적인 정보 비대칭 해결을 시
   - 리뷰 게시글의 대한 열람권 차감 로직 구현 -> 무료 리뷰는 전부 보여주고 유료 리뷰는 열람권 소유 여부 유효성 검사를 통해 유료 리뷰 조회 가능
 ---
 
-## 📝 발표 PPT
+## <a name="ppt"></a>📝 발표 PPT
 [MarryView 발표 PPT](https://drive.google.com/file/d/1Gw45xMtioo-JcdS8eHzqLzC5GtPcSJ-G/view?usp=sharing)
 
-## 🎥 시연 영상
+## <a name="video"></a>🎥 시연 영상
 ▶ [메리뷰 핵심 기능 시연 영상](https://drive.google.com/file/d/16Tgbzrr97_oLvOAWiNWqGL-nJJD1LcrD/view?usp=sharing)
 
 [팀원별 페이지 시연 영상]
@@ -204,7 +204,7 @@ MarryView는 스·드·메 시장의 고질적인 정보 비대칭 해결을 시
 
 ---
 
-## 📂 프로젝트 자료 모음
+## <a name="resources"></a>📂 프로젝트 자료 모음
 
 | 분류 | 링크 |
 |------|------|
