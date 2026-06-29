@@ -1,0 +1,40 @@
+/* ==========================================================================
+   1. 상단 액션 바 영역 (나의 예약 / 나의 문의 보러가기 버튼 그룹)
+   ========================================================================== */
+.top-action-bar {
+	display: flex;
+	justify-content: flex-end; /* 가로 정렬 후 오른쪽 끝으로 배치 */
+	gap: 10px;                 /* 버튼 and 버튼 사이의 간격을 10px로 지정 */
+	margin-bottom: 15px;
+}
+
+.btn-sub-action {
+	padding: 8px 15px;
+	cursor: pointer;
+	border: 1px solid #ccc;
+	background: #fff;
+	border-radius: 4px;
+}
+
+/* 너무 바짝 붙어있던 상품 패키지 / 등록 업체 찾기 탭 간격 시원하게 벌리기 */
+.master-toggle-container {
+	display: flex;
+	gap: 25px !important; /* 간격을 25px로 대폭 넓혀 답답함 해소 */
+	margin-bottom: 20px;
+}
+
+/* 👑 [최상위 마스터 대장 토글 전용 독자 명찰 스타일 영구 잠금 신설 완료] */
+/* 하부 삼색 개조 명세의 명시성에 밀리지 않도록 확실하게 대장 단추 스타일 고정 타격 */
+.large-tab-btn.btn-master-product.active {
+	background-color: #ff7f9f !important;
+	color: #ffffff !important;
+	border-color: #ff7f9f !important;
+	box-shadow: 0 4px 10px rgba(255, 127, 159, 0.25) !important;
+}
+
+.large-tab-btn.btn-master-company.active {
+	background-color: #a78bfa !important;
+	border-color: #a78bfa !important;
+	color: #ffffff !important;
+	box-shadow: 0 4px 12px rgba(167, 139, 250, 0.2) !important;
+}
