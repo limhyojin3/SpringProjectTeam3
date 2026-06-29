@@ -353,6 +353,13 @@ public class MemberService {
 	public HashMap<String, Object> EditMemberInfo(HashMap<String, Object> map) {
 		HashMap<String, Object> resultMap = new HashMap<>();
 	    
+		if (map.get("weddingDate") != null && map.get("weddingDate").toString().isEmpty()) {
+	        map.put("weddingDate", null);
+	    }
+	    if (map.get("anniversaryDate") != null && map.get("anniversaryDate").toString().isEmpty()) {
+	        map.put("anniversaryDate", null);
+	    }
+		
 	    try {
 	        // 1. MEMBER 테이블 수정 (전화번호 등)
 	        int memberResult = memberMapper.updateMember(map);
