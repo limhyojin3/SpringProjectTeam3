@@ -28,8 +28,9 @@ build/
 ### VS Code ###
 .vscode/
 ### Eclipse ###
-.metadata
+.metadata/
 bin/
+marryview/bin/
 tmp/
 *.tmp
 *.bak
