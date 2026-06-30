@@ -122,7 +122,11 @@
                                                     {{ r.userId }}
                                                 </span>
                                             </td>
-                                            <td>{{ r.productName }}</td>
+                                            <td class="admin-id-cell">
+                                                <span class="admin-id-text" :title="r.productName">
+                                                    {{ r.productName }}
+                                                </span>
+                                            </td>
                                             <td>{{ r.amount.toLocaleString() }}</td>
                                             <td>{{ r.useDate }}</td>
                                             <td>{{ r.payStatus }}</td>
