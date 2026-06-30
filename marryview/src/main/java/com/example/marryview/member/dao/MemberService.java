@@ -383,7 +383,6 @@ public class MemberService {
 	        }
 	    } catch (Exception e) {
 	        // 에러 발생 시 로그 찍기
-	        System.out.println("수정 에러 발생: " + e.getMessage());
 	        resultMap.put("result", "error");
 	    }
 	    return resultMap;
@@ -572,8 +571,8 @@ public class MemberService {
 	public List<Member> getMyCompanyLikeList(String userId, int page) {
 		HashMap<String, Object> map = new HashMap<>();
 	    map.put("userId", userId);
-	    map.put("pageSize", 5);
-	    map.put("offset", (page - 1) * 5);
+	    map.put("pageSize", 6);
+	    map.put("offset", (page - 1) * 6);
 	    return memberMapper.selectMyCompanyLikeList(map);
 	}
 	// 페이지 사이징
