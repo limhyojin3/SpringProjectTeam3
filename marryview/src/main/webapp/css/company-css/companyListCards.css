@@ -1,0 +1,99 @@
+/* ==========================================================================
+   4. [기본 호환] 등록 업체 찾기용 오리지널 가로형 카드 및 하트 찜 명세
+   ========================================================================== */
+.product-item {
+	display: flex;
+	align-items: flex-start;
+	gap: 20px;
+	background: white;
+	padding: 20px;
+	border-radius: 12px;
+	margin-bottom: 20px;
+	border: 1px solid #eee;
+	transition: all 0.3s ease;
+	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+	cursor: pointer;
+	position: relative;
+}
+
+.product-img-box {
+	box-sizing: border-box;
+	flex-shrink: 0;
+	height: 140px;
+	width: 140px;
+	border-radius: 10px;
+	overflow: hidden;
+	border: 1px solid #f0f0f0;
+}
+
+.product-img-box img {
+	height: 100%;
+	width: 100%;
+	object-fit: cover;
+}
+
+.product-info {
+	flex: 1;
+	display: flex;
+	flex-direction: column;
+	gap: 8px;
+	min-height: 140px;
+}
+
+.tag-span {
+	font-size: 11px;
+	color: #ff7f9f;
+	background: #fff0f3;
+	padding: 2px 6px;
+	border-radius: 4px;
+}
+
+.product-item.company-card-item {
+	border: 1px solid #ede9fe !important;
+	background-color: #ffffff;
+	transition: all 0.2s ease-in-out;
+}
+
+.product-item.company-card-item:hover {
+	box-shadow: 0 6px 16px rgba(167, 139, 250, 0.15) !important;
+	transform: translateY(-2px);
+	border-color: #a78bfa !important;
+}
+
+/* 전역 마스터 미니멀 투명 히트박스(Hitbox) 명세 고정 보존 구역 */
+.product-item .like-chip-btn {
+	display: inline-flex !important;
+	align-items: center !important;
+	justify-content: center !important;
+	width: 36px !important;     
+	height: 36px !important;    
+	cursor: pointer !important;
+	user-select: none !important;
+	transition: transform 0.15s ease-in-out !important;
+	background: transparent !important;
+	border: none !important;
+	box-shadow: none !important;
+	padding: 0 !important;
+	font-size: 1.35rem !important; 
+}
+
+.product-item .like-chip-btn.active {
+	background: transparent !important;
+	border: none !important;
+	box-shadow: none !important;
+}
+
+.product-item .like-chip-btn:active {
+	transform: scale(1.25) !important;
+}
+
+.product-item.company-card-item .like-chip-btn {
+	position: absolute !important;
+	top: 16px !important;
+	right: 16px !important; 
+	background: transparent !important;
+	border: none !important; 
+	box-shadow: none !important;
+	width: 36px !important;
+	height: 36px !important;
+}

@@ -1,0 +1,97 @@
+/* ==========================================================================
+   3. 수직형 그리드 및 상품 전용 카드 연동 파트
+   ========================================================================== */
+.product-pokemon-grid, .company-pokemon-grid {
+	display: grid !important;
+	grid-template-columns: repeat(3, 1fr) !important; 
+	gap: 25px !important;                              
+	margin-top: 15px !important;
+	margin-bottom: 40px !important;
+	align-items: stretch !important;                   
+}
+
+.product-pokemon-grid .product-item, .company-pokemon-grid .product-item {
+	display: flex !important;
+	flex-direction: column !important; 
+	background: #ffffff !important;
+	border: 1px solid #eee !important;
+	border-radius: 12px !important;
+	padding: 16px !important;
+	gap: 12px !important;
+	position: relative !important;
+	box-shadow: 0 3px 10px rgba(0, 0, 0, 0.03) !important;
+	margin-bottom: 0 !important;
+	width: 100% !important;
+	transition: all 0.25s ease-in-out !important;
+}
+
+.product-pokemon-grid .product-item:hover, .company-pokemon-grid .product-item:hover {
+	transform: translateY(-4px) !important;
+	box-shadow: 0 8px 24px rgba(255, 127, 159, 0.15) !important;
+	border-color: #ff7f9f !important;
+}
+
+.product-pokemon-grid .product-img-box, .company-pokemon-grid .product-img-box {
+	width: 100% !important;
+	height: 190px !important;         
+	border-radius: 8px !important;
+	overflow: hidden !important;
+	margin: 0 !important;
+	flex-shrink: 0 !important;
+}
+
+.product-pokemon-grid .product-img-box img, .company-pokemon-grid .product-img-box img {
+	width: 100% !important;
+	height: 100% !important;
+	object-fit: cover !important;
+}
+
+.product-pokemon-grid .product-info {
+	display: flex !important;
+	flex-direction: column !important;
+	gap: 6px !important;
+	min-height: auto !important;      
+	flex-grow: 1 !important;          
+	padding: 0 !important;
+	width: 100% !important;            
+}
+
+.product-pokemon-grid .product-info h4, .company-pokemon-grid .product-info h4 {
+	font-size: 1.1rem !important;
+	font-weight: 700 !important;
+	color: #222 !important;
+	margin: 4px 0 0 0 !important;
+}
+
+.product-pokemon-grid .product-info .product-content, .company-pokemon-grid .product-info .product-content {
+	font-size: 0.9rem !important;
+	color: #666 !important;
+	line-height: 1.4 !important;
+	margin: 0 0 4px 0 !important;
+}
+
+.product-pokemon-grid .product-tags-wrapper, .company-pokemon-grid .product-tags-wrapper {
+	display: flex !important;
+	flex-wrap: wrap !important;
+	gap: 5px !important;
+	margin-bottom: 10px !important;
+}
+
+.product-price-row {
+	display: flex !important;
+	justify-content: space-between !important; 
+	align-items: center !important;
+	margin-top: auto !important;               
+	width: 100% !important;                    
+	border-top: 1px dashed #ffe0e6 !important; 
+	padding-top: 6px !important; 
+	box-sizing: border-box !important;         
+}
+
+.product-pokemon-grid .product-info .product-price, .company-pokemon-grid .product-info .product-price {
+	font-size: 1.25rem !important;
+	color: #ff1493 !important;         
+	font-weight: 700 !important;
+	margin: 0 !important;
+	text-align: left !important;
+}

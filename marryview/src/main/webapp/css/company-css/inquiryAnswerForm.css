@@ -1,0 +1,212 @@
+@charset "UTF-8";
+
+/* ==========================================================================
+   [inquiryAnswerForm.css] - viewPage === 'answer' (문의 답변 등록/수정 폼 구역)
+   ========================================================================== */
+
+.answer-card-container {
+    padding: 25px;
+    border: 1px solid #e0d7ff;
+    border-radius: 12px;
+    background-color: #fff;
+    max-width: 800px;
+    margin: 20px auto;
+    box-shadow: 0 4px 15px rgba(155, 143, 212, 0.08);
+}
+
+.answer-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    padding-bottom: 12px;
+    border-bottom: 2px solid #9b8fd4;
+}
+
+.answer-card-title {
+    margin: 0;
+    font-size: 1.4rem;
+    color: #555;
+    font-weight: bold;
+}
+
+/* 리스트로 돌아가기 버튼 */
+.btn-back-to-list {
+    padding: 8px 20px;
+    background-color: #fff;
+    border: 1.5px solid #9b8fd4;
+    color: #9b8fd4;
+    border-radius: 20px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    font-weight: 600;
+    transition: all 0.2s ease;
+}
+
+.btn-back-to-list:hover {
+    background-color: #9b8fd4;
+    color: #fff;
+}
+
+/* 원본 문의 내용 영역 */
+.original-inquiry-box {
+    margin-bottom: 30px;
+    padding: 20px;
+    background-color: #faf9ff;
+    border-radius: 8px;
+    border: 1px solid #e0d7ff;
+}
+
+.original-inquiry-title {
+    margin-top: 0;
+    color: #6a5acd;
+    font-size: 1.1rem;
+    border-bottom: 1px solid #d1ccff;
+    padding-bottom: 8px;
+    font-weight: bold;
+}
+
+/* 답변 등록용 특수 내부 테이블 스타일 */
+.original-inquiry-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 15px;
+    font-size: 0.95rem;
+    background-color: #fff;
+    border-radius: 8px;
+    overflow: hidden;
+    border: 1px solid #eaeaea;
+}
+
+.original-inquiry-table th,
+.original-inquiry-table td {
+    padding: 12px;
+    border: 1px solid #eaeaea;
+    color: #333;
+}
+
+.original-inquiry-table th {
+    text-align: left;
+    color: #555;
+    font-weight: 600;
+}
+
+.table-col-label {
+    width: 20%;
+    background-color: #f5f2fc;
+}
+
+.table-col-content {
+    width: 30%;
+}
+
+/* 폼 유틸리티 보조 클래스 */
+.text-bold {
+    font-weight: bold;
+}
+
+.valign-top {
+    vertical-align: top;
+}
+
+.text-pre-wrap {
+    min-height: 120px;
+    white-space: pre-wrap;
+    line-height: 1.6;
+    color: #444;
+}
+
+/* 답변 작성 인풋 영역 */
+.answer-write-title {
+    margin-top: 0;
+    color: #333;
+    font-size: 1.1rem;
+    font-weight: bold;
+}
+
+.form-input-group {
+    margin-top: 15px;
+}
+
+.form-input-label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 600;
+    color: #555;
+    font-size: 0.95rem;
+}
+
+.form-input-text {
+    width: 50%;
+    padding: 12px;
+    border: 1px solid #d1ccff;
+    border-radius: 6px;
+    font-family: inherit;
+    font-size: 0.95rem;
+    box-sizing: border-box;
+    outline: none;
+    transition: border-color 0.2s;
+}
+
+.form-textarea-text {
+    width: 100%;
+    height: 200px;
+    padding: 12px;
+    border: 1px solid #d1ccff;
+    border-radius: 6px;
+    resize: vertical;
+    font-family: inherit;
+    font-size: 0.95rem;
+    box-sizing: border-box;
+    outline: none;
+    line-height: 1.6;
+    transition: border-color 0.2s;
+}
+
+.form-input-text:focus,
+.form-textarea-text:focus {
+    border-color: #9b8fd4;
+}
+
+/* 하단 액션 버튼 그룹 */
+.answer-action-buttons {
+    margin-top: 30px;
+    text-align: center;
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+}
+
+.btn-action-cancel {
+    padding: 12px 28px;
+    background-color: #fff;
+    border: 1px solid #ccc;
+    border-radius: 20px !important;
+    cursor: pointer;
+    font-size: 1rem;
+    color: #555;
+    font-weight: 500;
+    transition: all 0.2s ease;
+}
+
+.btn-action-cancel:hover {
+    background-color: #f5f5f5;
+}
+
+.btn-action-submit {
+    padding: 12px 28px;
+    background-color: #9b8fd4;
+    border: none;
+    border-radius: 20px !important;
+    cursor: pointer;
+    font-size: 1rem;
+    color: #fff;
+    font-weight: bold;
+    transition: all 0.2s ease;
+    box-shadow: 0 4px 10px rgba(155, 143, 212, 0.2);
+} 
+
+.btn-action-submit:hover {
+    background-color: #8679c4;
+    transform: translateY(-1px);
+}
