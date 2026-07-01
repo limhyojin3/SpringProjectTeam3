@@ -298,112 +298,107 @@
                                         </tr>
                                     </tbody>
                                 </table>
-                                <!-- 쿠폰 등록 모달 -->
-                                <div class="modal fade" id="couponModal">
-                                    <div class="modal-dialog">
-                                        <div class="modal-content">
-
-                                            <div class="modal-header">
-                                                <h5 class="modal-title">등록</h5>
-                                                <button type="button" class="close" data-dismiss="modal">
-                                                    &times;
-                                                </button>
-                                            </div>
-
-                                            <div class="modal-body">
-                                                코드
-                                                <input class="form-control mb-2" v-model="coupon.couponCode"
-                                                    placeholder="코드">
-                                                이름
-                                                <input class="form-control mb-2" v-model="coupon.couponName"
-                                                    placeholder="이름">
-                                                할인율(%)
-                                                <input class="form-control mb-2" v-model="coupon.discountRate"
-                                                    placeholder="할인율">
-                                                발급방식
-                                                <select class="form-control mb-2" v-model="coupon.issueType">
-
-                                                    <option value="AUTO">AUTO</option>
-                                                    <option value="CODE">CODE</option>
-
-                                                </select>
-                                                최대 발급 수
-                                                <input class="form-control mb-2" v-model="coupon.maxIssueCnt"
-                                                    placeholder="최대 발급 수량">
-                                                기프티콘 url
-                                                <input class="form-control mb-2" v-model="coupon.giftconImage"
-                                                    placeholder="기프티콘 url">
-                                            </div>
-
-                                            <div class="modal-footer">
-                                                <button class="btn btn-primary" @click="fnCouponSave()">
-                                                    저장
-                                                </button>
-
-                                                <button class="btn btn-secondary" data-dismiss="modal">
-                                                    닫기
-                                                </button>
-                                            </div>
-
-                                        </div>
-                                    </div>
-                                </div>
-                                <!-- 패스 등록 모달 -->
-                                <div class="modal fade" id="passModal">
-                                    <div class="modal-dialog">
-                                        <div class="modal-content">
-                                            <div class="modal-header">
-                                                <h5 class="modal-title">패스 등록</h5>
-                                                <button type="button" class="close" data-dismiss="modal">
-                                                    &times;
-                                                </button>
-                                            </div>
-
-                                            <div class="modal-body">
-                                                <div class="form-group">
-                                                    <label>패스명</label>
-                                                    <input type="text" v-model="passForm.passName" class="form-control">
-                                                </div>
-
-                                                <div class="form-group">
-                                                    <label>가격</label>
-                                                    <input type="number" v-model="passForm.price" class="form-control">
-                                                </div>
-
-                                                <div class="form-group">
-                                                    <label>리뷰수</label>
-                                                    <input type="number" v-model="passForm.reviewCnt"
-                                                        class="form-control">
-                                                </div>
-
-                                                <div class="form-group">
-                                                    <label>상태</label>
-                                                    <select v-model="passForm.isActive" class="form-control">
-                                                        <option value="1">사용중</option>
-                                                        <option value="0">중지</option>
-                                                    </select>
-                                                </div>
-                                                <div class="form-group">
-                                                    <label>설명</label>
-                                                    <textarea class="form-control" v-model="passForm.description"
-                                                        placeholder="패스 설명 입력"></textarea>
-                                                </div>
-                                            </div>
-
-                                            <div class="modal-footer">
-                                                <button class="btn btn-primary" @click="fnSavePass()">
-                                                    저장
-                                                </button>
-
-                                                <button class="btn btn-secondary" data-dismiss="modal">
-                                                    닫기
-                                                </button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
                             </div>
                         </transition>
+                    </div>
+                </div>
+                <!-- 쿠폰 등록 모달 -->
+                <div class="modal fade" id="couponModal">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+
+                            <div class="modal-header">
+                                <h5 class="modal-title">등록</h5>
+                                <button type="button" class="close" data-dismiss="modal">
+                                    &times;
+                                </button>
+                            </div>
+
+                            <div class="modal-body">
+                                코드
+                                <input class="form-control mb-2" v-model="coupon.couponCode" placeholder="코드">
+                                이름
+                                <input class="form-control mb-2" v-model="coupon.couponName" placeholder="이름">
+                                할인율(%)
+                                <input class="form-control mb-2" v-model="coupon.discountRate" placeholder="할인율">
+                                발급방식
+                                <select class="form-control mb-2" v-model="coupon.issueType">
+
+                                    <option value="AUTO">AUTO</option>
+                                    <option value="CODE">CODE</option>
+
+                                </select>
+                                최대 발급 수
+                                <input class="form-control mb-2" v-model="coupon.maxIssueCnt" placeholder="최대 발급 수량">
+                                기프티콘 url
+                                <input class="form-control mb-2" v-model="coupon.giftconImage" placeholder="기프티콘 url">
+                            </div>
+
+                            <div class="modal-footer">
+                                <button class="btn btn-primary" @click="fnCouponSave()">
+                                    저장
+                                </button>
+
+                                <button class="btn btn-secondary" data-dismiss="modal">
+                                    닫기
+                                </button>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+                <!-- 패스 등록 모달 -->
+                <div class="modal fade" id="passModal">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title">패스 등록</h5>
+                                <button type="button" class="close" data-dismiss="modal">
+                                    &times;
+                                </button>
+                            </div>
+
+                            <div class="modal-body">
+                                <div class="form-group">
+                                    <label>패스명</label>
+                                    <input type="text" v-model="passForm.passName" class="form-control">
+                                </div>
+
+                                <div class="form-group">
+                                    <label>가격</label>
+                                    <input type="number" v-model="passForm.price" class="form-control">
+                                </div>
+
+                                <div class="form-group">
+                                    <label>리뷰수</label>
+                                    <input type="number" v-model="passForm.reviewCnt" class="form-control">
+                                </div>
+
+                                <div class="form-group">
+                                    <label>상태</label>
+                                    <select v-model="passForm.isActive" class="form-control">
+                                        <option value="1">사용중</option>
+                                        <option value="0">중지</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label>설명</label>
+                                    <textarea class="form-control" v-model="passForm.description"
+                                        placeholder="패스 설명 입력"></textarea>
+                                </div>
+                            </div>
+
+                            <div class="modal-footer">
+                                <button class="btn btn-primary" @click="fnSavePass()">
+                                    저장
+                                </button>
+
+                                <button class="btn btn-secondary" data-dismiss="modal">
+                                    닫기
+                                </button>
+                            </div>
+
+                        </div>
                     </div>
                 </div>
             </div>

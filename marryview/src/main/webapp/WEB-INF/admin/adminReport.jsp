@@ -297,7 +297,11 @@
                                 </button>
                             </div>
                         </div>
-                        <div class="modal fade" id="reportModal" tabindex="-1">
+                        
+                    </div>
+                </div>
+            </div>
+<div class="modal fade" id="reportModal" tabindex="-1">
                             <div class="modal-dialog">
                                 <div class="modal-content">
 
@@ -379,10 +383,6 @@
                                 </div>
                             </div>
                         </div>
-                    </div>
-                </div>
-            </div>
-
             <jsp:include page="/WEB-INF/common/footer.jsp" />
         </div>
         <script>
