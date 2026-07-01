@@ -399,7 +399,6 @@
                                                     닫기
                                                 </button>
                                             </div>
-
                                         </div>
                                     </div>
                                 </div>
@@ -407,362 +406,363 @@
                         </transition>
                     </div>
                 </div>
-                <jsp:include page="/WEB-INF/common/footer.jsp" />
             </div>
-            <script>
-                const app = Vue.createApp({
-                    data() {
-                        return {
-                            // 변수 - (key : value)
-                            activeTab: "product",
-                            list: [],
-                            info: {},
-                            keyword: "",
-                            status: "",
-                            pageSize: 5,
-                            currentPage: 1,
-                            index: 1,
-                            emptyRows: 0,
-                            coupon: {
-                                couponCode: "",
-                                couponName: "",
-                                discountRate: "",
-                                issueType: "AUTO",
-                                maxIssueCnt: ""
-                            },
-                            passForm: {
-                                passName: "",
-                                price: 0,
-                                reviewCnt: 0,
-                                isActive: "1"
-                            },
-                            largeCategory: "",
-                            mediumCategory: "",
+            <jsp:include page="/WEB-INF/common/footer.jsp" />
+        </div>
+        <script>
+            const app = Vue.createApp({
+                data() {
+                    return {
+                        // 변수 - (key : value)
+                        activeTab: "product",
+                        list: [],
+                        info: {},
+                        keyword: "",
+                        status: "",
+                        pageSize: 5,
+                        currentPage: 1,
+                        index: 1,
+                        emptyRows: 0,
+                        coupon: {
+                            couponCode: "",
+                            couponName: "",
+                            discountRate: "",
+                            issueType: "AUTO",
+                            maxIssueCnt: ""
+                        },
+                        passForm: {
+                            passName: "",
+                            price: 0,
+                            reviewCnt: 0,
+                            isActive: "1"
+                        },
+                        largeCategory: "",
+                        mediumCategory: "",
 
-                            largeCategoryList: [
-                                "결혼",
-                                "가족행사",
-                                "친구와 함께"
+                        largeCategoryList: [
+                            "결혼",
+                            "가족행사",
+                            "친구와 함께"
+                        ],
+
+                        mediumCategoryMap: {
+                            "결혼": [
+                                "웨딩홀",
+                                "스튜디오",
+                                "드레스",
+                                "메이크업"
                             ],
-
-                            mediumCategoryMap: {
-                                "결혼": [
-                                    "웨딩홀",
-                                    "스튜디오",
-                                    "드레스",
-                                    "메이크업"
-                                ],
-                                "가족행사": [
-                                    "돌잔치",
-                                    "환갑",
-                                    "칠순",
-                                    "가족모임"
-                                ],
-                                "친구와 함께": [
-                                    "파티룸",
-                                    "여행",
-                                    "체험"
-                                ]
-                            }
-                        };
-                    },
-
-                    computed: {
-                        filteredMediumCategoryList() {
-                            return this.mediumCategoryMap[this.largeCategory] || [];
+                            "가족행사": [
+                                "돌잔치",
+                                "환갑",
+                                "칠순",
+                                "가족모임"
+                            ],
+                            "친구와 함께": [
+                                "파티룸",
+                                "여행",
+                                "체험"
+                            ]
                         }
+                    };
+                },
+
+                computed: {
+                    filteredMediumCategoryList() {
+                        return this.mediumCategoryMap[this.largeCategory] || [];
+                    }
+                },
+
+                methods: {
+                    // 함수(메소드) - (key : function())
+                    fnPage: function (url) {
+                        location.href = url;
                     },
 
-                    methods: {
-                        // 함수(메소드) - (key : function())
-                        fnPage: function (url) {
-                            location.href = url;
-                        },
+                    fnChangeTab(tab) {
+                        this.activeTab = tab;
+                        this.fnResetSearch();
+                    },
+                    fnChangeLargeCategory() {
+                        // 카테고리가 변경되면 기존 태그 선택 제거
+                        this.mediumCategory = "";
+                        this.currentPage = 1;
+                        this.fnGetList();
+                    },
 
-                        fnChangeTab(tab) {
-                            this.activeTab = tab;
-                            this.fnResetSearch();
-                        },
-                        fnChangeLargeCategory() {
-                            // 카테고리가 변경되면 기존 태그 선택 제거
-                            this.mediumCategory = "";
-                            this.currentPage = 1;
-                            this.fnGetList();
-                        },
+                    fnCategorySearch() {
+                        this.currentPage = 1;
+                        this.fnGetList();
+                    },
+                    fnResetSearch() {
+                        this.keyword = "";
+                        this.status = "";
+                        this.largeCategory = "";
+                        this.mediumCategory = "";
+                        this.currentPage = 1;
+                        this.fnGetList();
+                    },
 
-                        fnCategorySearch() {
-                            this.currentPage = 1;
-                            this.fnGetList();
-                        },
-                        fnResetSearch() {
-                            this.keyword = "";
-                            this.status = "";
-                            this.largeCategory = "";
-                            this.mediumCategory = "";
-                            this.currentPage = 1;
-                            this.fnGetList();
-                        },
+                    fnPageMove(p) {
+                        if (p < 1 || p > this.index) return;
+                        this.currentPage = p;
+                        this.fnGetList();
+                    },
 
-                        fnPageMove(p) {
-                            if (p < 1 || p > this.index) return;
-                            this.currentPage = p;
-                            this.fnGetList();
-                        },
-
-                        fnGetList() {
-                            let self = this;
-                            let url = "";
-
-                            if (self.activeTab == 'product') {
-                                url = "/productAdminList.dox";
-                            } else if (self.activeTab == 'coupon') {
-                                url = "/couponList.dox";
-                            } else if (self.activeTab == 'pass') {
-                                url = "/passList.dox";
-                            }
-
-                            $.ajax({
-                                url: url,
-                                type: "POST",
-                                dataType: "json",
-                                data: {
-                                    pageSize: self.pageSize,
-                                    offSet: self.pageSize * (self.currentPage - 1),
-                                    keyword: self.keyword,
-                                    status: self.status,
-                                    largeCategory: self.largeCategory,
-                                    mediumCategory: self.mediumCategory,
-                                },
-                                success: function (res) {
-                                    self.list = res.list || [];
-                                    self.index = Math.ceil((res.totalCount || 0) / self.pageSize);
-                                    self.emptyRows = 5 - res.list.length;
-                                },
-                            });
-                        },
-
-                        fnSearch() {
-                            this.currentPage = 1;
-                            this.fnGetList();
-                        },
-
-                        fnView(no) {
-                            let self = this;
-
-                            $.ajax({
-                                url: "/productView.dox",
-                                type: "POST",
-                                dataType: "json",
-                                data: {
-                                    productNo: no
-                                },
-                                success: function (res) {
-                                    if (res.result == "success") {
-                                        self.info = res.info;
-
-                                        $("#productModal").modal("show");
-                                    } else {
-                                        alert("조회 실패");
-                                    }
-                                }
-                            });
-                        },
-
-                        fnStatus(no, status) {
-                            let self = this;
-
-                            let msg = status == 1 ? "재판매 하시겠습니까?" : "판매중지 하시겠습니까?";
-
-                            if (!confirm(msg)) {
-                                return;
-                            }
-
-                            $.ajax({
-                                url: "/productStatusUpdate.dox",
-                                type: "POST",
-                                dataType: "json",
-                                data: {
-                                    productNo: no,
-                                    isActive: status
-                                },
-                                success: function (res) {
-                                    alert(res.message);
-                                    self.fnGetList();
-                                }
-                            });
-                        },
-
-                        fnDelete(no) {
-                            let self = this;
-
-                            if (!confirm("정말 삭제하시겠습니까?")) {
-                                return;
-                            }
-
-                            $.ajax({
-                                url: "/productDelete.dox",
-                                type: "POST",
-                                dataType: "json",
-                                data: {
-                                    productNo: no
-                                },
-                                success: function (res) {
-                                    alert(res.message);
-                                    self.fnGetList();
-                                }
-                            });
-                        },
-
-                        fnCouponModal() {
-
-                            this.coupon = {
-                                couponCode: "",
-                                couponName: "",
-                                discountRate: 10,
-                                issueType: "AUTO",
-                                maxIssueCnt: 1
-                            };
-
-                            $("#couponModal").modal("show");
-                        },
-
-
-                        // 쿠폰 저장
-                        fnCouponSave() {
-                            let self = this;
-                            if (!self.coupon.couponCode || self.coupon.couponCode.trim() == "") {
-                                alert("코드를 입력해주세요.");
-                                return; // 저장 로직이 실행되지 않도록 중단
-                            }
-
-                            if (!self.coupon.couponName || self.coupon.couponName.trim() == "") {
-                                alert("이름을 입력해주세요.");
-                                return;
-                            }
-                            $.ajax({
-                                url: "http://localhost:8080/couponInsert.dox",
-                                type: "POST",
-                                dataType: "json",
-                                data: self.coupon,
-                                success: function (res) {
-                                    alert(res.message);
-                                    if (res.result == "success") {
-                                        $("#couponModal").modal("hide");
-                                        self.fnGetList();
-                                    }
-                                },
-                                error: function (err) {
-                                    console.log(err);
-                                }
-                            });
-                        },
-
-
-                        // 쿠폰 삭제
-                        fnCouponDelete(code) {
-
-                            let self = this;
-
-                            if (!confirm("삭제하시겠습니까?")) {
-                                return;
-                            }
-
-                            $.ajax({
-                                url: "/couponDelete.dox",
-                                type: "POST",
-                                dataType: "json",
-                                data: { couponCode: code },
-                                success: function (res) {
-
-                                    alert(res.message);
-                                    self.fnGetList();
-
-                                }
-                            });
-                        },
-                        fnOpenPassModal() {
-
-                            this.passForm = {
-                                passName: "",
-                                price: 0,
-                                reviewCnt: 0,
-                                isActive: "1"
-                            };
-
-                            $("#passModal").modal("show");
-                        },
-
-                        fnSavePass() {
-
-                            let self = this;
-
-                            $.ajax({
-                                url: "http://localhost:8080/passAdd.dox",
-                                type: "POST",
-                                dataType: "json",
-                                data: self.passForm,
-                                success: function (res) {
-                                    alert(res.message);
-
-                                    if (res.result == "success") {
-                                        $("#passModal").modal("hide");
-                                        self.fnGetList();
-                                    }
-                                }
-                            });
-                        },
-
-                        fnDeletePass(no) {
-
-                            let self = this;
-
-                            if (!confirm("삭제하시겠습니까?")) return;
-
-                            $.ajax({
-                                url: "/passDelete.dox",
-                                type: "POST",
-                                dataType: "json",
-                                data: { passNo: no },
-                                success: function (res) {
-                                    alert(res.message);
-                                    self.fnGetList();
-                                }
-                            });
-                        },
-
-                        fnPassStatus(no, status) {
-
-                            let self = this;
-                            let msg = status == 1 ? "재판매 하시겠습니까?" : "중지 하시겠습니까?";
-                            if (!confirm(msg)) {
-                                return;
-                            }
-                            $.ajax({
-                                url: "/passStatusUpdate.dox",
-                                type: "POST",
-                                dataType: "json",
-                                data: {
-                                    passNo: no,
-                                    isActive: status
-                                },
-                                success: function (res) {
-                                    alert(res.message);
-                                    self.fnGetList();
-                                }
-                            });
-                        },
-                    }, // methods
-                    mounted() {
-                        // 처음 시작할 때 실행되는 부분
+                    fnGetList() {
                         let self = this;
-                        const path = location.pathname;
-                        self.fnGetList();
-                    }
-                });
-                app.mount('#app');
-            </script>
-            <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
-            <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.min.js"></script>
+                        let url = "";
+
+                        if (self.activeTab == 'product') {
+                            url = "/productAdminList.dox";
+                        } else if (self.activeTab == 'coupon') {
+                            url = "/couponList.dox";
+                        } else if (self.activeTab == 'pass') {
+                            url = "/passList.dox";
+                        }
+
+                        $.ajax({
+                            url: url,
+                            type: "POST",
+                            dataType: "json",
+                            data: {
+                                pageSize: self.pageSize,
+                                offSet: self.pageSize * (self.currentPage - 1),
+                                keyword: self.keyword,
+                                status: self.status,
+                                largeCategory: self.largeCategory,
+                                mediumCategory: self.mediumCategory,
+                            },
+                            success: function (res) {
+                                self.list = res.list || [];
+                                self.index = Math.ceil((res.totalCount || 0) / self.pageSize);
+                                self.emptyRows = 5 - res.list.length;
+                            },
+                        });
+                    },
+
+                    fnSearch() {
+                        this.currentPage = 1;
+                        this.fnGetList();
+                    },
+
+                    fnView(no) {
+                        let self = this;
+
+                        $.ajax({
+                            url: "/productView.dox",
+                            type: "POST",
+                            dataType: "json",
+                            data: {
+                                productNo: no
+                            },
+                            success: function (res) {
+                                if (res.result == "success") {
+                                    self.info = res.info;
+
+                                    $("#productModal").modal("show");
+                                } else {
+                                    alert("조회 실패");
+                                }
+                            }
+                        });
+                    },
+
+                    fnStatus(no, status) {
+                        let self = this;
+
+                        let msg = status == 1 ? "재판매 하시겠습니까?" : "판매중지 하시겠습니까?";
+
+                        if (!confirm(msg)) {
+                            return;
+                        }
+
+                        $.ajax({
+                            url: "/productStatusUpdate.dox",
+                            type: "POST",
+                            dataType: "json",
+                            data: {
+                                productNo: no,
+                                isActive: status
+                            },
+                            success: function (res) {
+                                alert(res.message);
+                                self.fnGetList();
+                            }
+                        });
+                    },
+
+                    fnDelete(no) {
+                        let self = this;
+
+                        if (!confirm("정말 삭제하시겠습니까?")) {
+                            return;
+                        }
+
+                        $.ajax({
+                            url: "/productDelete.dox",
+                            type: "POST",
+                            dataType: "json",
+                            data: {
+                                productNo: no
+                            },
+                            success: function (res) {
+                                alert(res.message);
+                                self.fnGetList();
+                            }
+                        });
+                    },
+
+                    fnCouponModal() {
+
+                        this.coupon = {
+                            couponCode: "",
+                            couponName: "",
+                            discountRate: 10,
+                            issueType: "AUTO",
+                            maxIssueCnt: 1
+                        };
+
+                        $("#couponModal").modal("show");
+                    },
+
+
+                    // 쿠폰 저장
+                    fnCouponSave() {
+                        let self = this;
+                        if (!self.coupon.couponCode || self.coupon.couponCode.trim() == "") {
+                            alert("코드를 입력해주세요.");
+                            return; // 저장 로직이 실행되지 않도록 중단
+                        }
+
+                        if (!self.coupon.couponName || self.coupon.couponName.trim() == "") {
+                            alert("이름을 입력해주세요.");
+                            return;
+                        }
+                        $.ajax({
+                            url: "http://localhost:8080/couponInsert.dox",
+                            type: "POST",
+                            dataType: "json",
+                            data: self.coupon,
+                            success: function (res) {
+                                alert(res.message);
+                                if (res.result == "success") {
+                                    $("#couponModal").modal("hide");
+                                    self.fnGetList();
+                                }
+                            },
+                            error: function (err) {
+                                console.log(err);
+                            }
+                        });
+                    },
+
+
+                    // 쿠폰 삭제
+                    fnCouponDelete(code) {
+
+                        let self = this;
+
+                        if (!confirm("삭제하시겠습니까?")) {
+                            return;
+                        }
+
+                        $.ajax({
+                            url: "/couponDelete.dox",
+                            type: "POST",
+                            dataType: "json",
+                            data: { couponCode: code },
+                            success: function (res) {
+
+                                alert(res.message);
+                                self.fnGetList();
+
+                            }
+                        });
+                    },
+                    fnOpenPassModal() {
+
+                        this.passForm = {
+                            passName: "",
+                            price: 0,
+                            reviewCnt: 0,
+                            isActive: "1"
+                        };
+
+                        $("#passModal").modal("show");
+                    },
+
+                    fnSavePass() {
+
+                        let self = this;
+
+                        $.ajax({
+                            url: "http://localhost:8080/passAdd.dox",
+                            type: "POST",
+                            dataType: "json",
+                            data: self.passForm,
+                            success: function (res) {
+                                alert(res.message);
+
+                                if (res.result == "success") {
+                                    $("#passModal").modal("hide");
+                                    self.fnGetList();
+                                }
+                            }
+                        });
+                    },
+
+                    fnDeletePass(no) {
+
+                        let self = this;
+
+                        if (!confirm("삭제하시겠습니까?")) return;
+
+                        $.ajax({
+                            url: "/passDelete.dox",
+                            type: "POST",
+                            dataType: "json",
+                            data: { passNo: no },
+                            success: function (res) {
+                                alert(res.message);
+                                self.fnGetList();
+                            }
+                        });
+                    },
+
+                    fnPassStatus(no, status) {
+
+                        let self = this;
+                        let msg = status == 1 ? "재판매 하시겠습니까?" : "중지 하시겠습니까?";
+                        if (!confirm(msg)) {
+                            return;
+                        }
+                        $.ajax({
+                            url: "/passStatusUpdate.dox",
+                            type: "POST",
+                            dataType: "json",
+                            data: {
+                                passNo: no,
+                                isActive: status
+                            },
+                            success: function (res) {
+                                alert(res.message);
+                                self.fnGetList();
+                            }
+                        });
+                    },
+                }, // methods
+                mounted() {
+                    // 처음 시작할 때 실행되는 부분
+                    let self = this;
+                    const path = location.pathname;
+                    self.fnGetList();
+                }
+            });
+            app.mount('#app');
+        </script>
+        <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.min.js"></script>
     </body>
 
     </html>

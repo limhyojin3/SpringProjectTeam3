@@ -122,7 +122,11 @@
                                                     {{ r.userId }}
                                                 </span>
                                             </td>
-                                            <td>{{ r.productName }}</td>
+                                            <td class="admin-id-cell">
+                                                <span class="admin-id-text" :title="r.productName">
+                                                    {{ r.productName }}
+                                                </span>
+                                            </td>
                                             <td>{{ r.amount.toLocaleString() }}</td>
                                             <td>{{ r.useDate }}</td>
                                             <td>{{ r.payStatus }}</td>
@@ -190,186 +194,187 @@
                         </transition>
                     </div>
                 </div>
-                <jsp:include page="/WEB-INF/common/footer.jsp" />
             </div>
-            <script>
-                const app = Vue.createApp({
-                    data() {
-                        return {
-                            // 변수 - (key : value)
-                            sessionId: "${sessionScope.sessionId}",
-                            activeTab: "pass",
-                            list: [],
-                            pageSize: 5,
-                            currentPage: 1,
-                            index: 1,
-                            emptyRows: 0,
+            <jsp:include page="/WEB-INF/common/footer.jsp" />
+        </div>
+        <script>
+            const app = Vue.createApp({
+                data() {
+                    return {
+                        // 변수 - (key : value)
+                        sessionId: "${sessionScope.sessionId}",
+                        activeTab: "pass",
+                        list: [],
+                        pageSize: 5,
+                        currentPage: 1,
+                        index: 1,
+                        emptyRows: 0,
 
-                        };
+                    };
+                },
+                methods: {
+                    // 함수(메소드) - (key : function())
+                    fnPage: function (url) {
+                        location.href = url;
                     },
-                    methods: {
-                        // 함수(메소드) - (key : function())
-                        fnPage: function (url) {
-                            location.href = url;
-                        },
 
-                        fnPageMove(p) {
-                            if (p < 1 || p > this.index) return;
-                            this.currentPage = p;
-                            this.fnGetList();
-                        },
+                    fnPageMove(p) {
+                        if (p < 1 || p > this.index) return;
+                        this.currentPage = p;
+                        this.fnGetList();
+                    },
 
-                        fnChangeTab(tab) {
-                            this.activeTab = tab;
-                            this.currentPage = 1;
-                            this.fnGetList();
-                        },
+                    fnChangeTab(tab) {
+                        this.activeTab = tab;
+                        this.currentPage = 1;
+                        this.fnGetList();
+                    },
 
 
-                        formatDate(date) {
-                            return date ? date.substring(0, 10) : '-';
-                        },
+                    formatDate(date) {
+                        return date ? date.substring(0, 10) : '-';
+                    },
 
-                        fnGetList() {
-                            let self = this;
+                    fnGetList() {
+                        let self = this;
 
-                            let url = "";
+                        let url = "";
 
-                            if (self.activeTab === 'pass') {
-                                url = "/passPaymentList.dox";
-                            } else if (self.activeTab === 'reservation') {
-                                url = "/reservationPaymentList.dox";
-                            } else if (self.activeTab === 'registration') {
-                                url = "/registrationPaymentList.dox";
-                            }
-
-                            $.ajax({
-                                url: url,
-                                type: "POST",
-                                dataType: "json",
-                                data: {
-                                    pageSize: self.pageSize,
-                                    offSet: self.pageSize * (self.currentPage - 1)
-                                },
-                                success: function (res) {
-                                    self.list = res.list;
-                                    self.index = Math.ceil(res.totalCount / self.pageSize);
-                                    self.emptyRows = 5 - res.list.length;
-                                }
-                            });
-                        },
-
-                        fnRefund(payNo) {
-                            let self = this;
-
-                            if (!confirm("정말 환불하시겠습니까?\n환불 후 복구할 수 없습니다.")) {
-                                return;
-                            }
-
-                            $.ajax({
-                                url: "/refundPass.dox",
-                                type: "POST",
-                                dataType: "json",
-                                data: { payNo: payNo },
-                                success: function (data) {
-                                    console.log("성공", data);
-                                    if (data.result == "success") {
-                                        alert(data.message);
-                                        self.fnGetList();
-                                    } else {
-                                        alert(data.message);
-                                    }
-                                },
-
-                                error: function (xhr, status, err) {
-                                    console.log("에러");
-                                    console.log(xhr.responseText);
-                                    console.log(status);
-                                    console.log(err);
-                                    alert("error");
-                                },
-
-                                complete: function () {
-                                    console.log("AJAX 종료");
-                                }
-                            });
-                        },
-                        fnRefund2(payNo) {
-                            let self = this;
-                            console.log("환불 클릭", payNo);
-
-                            if (!confirm("정말 환불하시겠습니까?\n환불 후 복구할 수 없습니다.")) {
-                                return;
-                            }
-
-                            $.ajax({
-                                url: "/refundAdminReservation.dox",
-                                type: "POST",
-                                dataType: "json",
-                                data: { payNo: payNo },
-                                success: function (data) {
-                                    console.log("성공", data);
-                                    if (data.result == "success") {
-                                        alert(data.message);
-                                        self.fnGetList();
-                                    } else {
-                                        alert(data.message);
-                                    }
-                                },
-
-                                error: function (xhr, status, err) {
-                                    console.log("에러");
-                                    console.log(xhr.responseText);
-                                    console.log(status);
-                                    console.log(err);
-                                    alert("error");
-                                },
-
-                                complete: function () {
-                                    console.log("AJAX 종료");
-                                }
-                            });
-                        },
-                        fnRegistration: function (c) {
-                            let self = this;
-                            if (!confirm("정말 등록하시겠습니까?")) {
-                                return;
-                            }
-
-                            $.ajax({
-                                url: "${pageContext.request.contextPath}/adminRegistration.dox",
-                                type: "POST",
-                                dataType: "json",
-                                data: {
-                                    userId: c.userId
-                                },
-                                success: function (data) {
-                                    console.log("성공", data);
-                                    if (data.result == "success") {
-                                        alert(data.message);
-                                        self.fnGetList();
-                                    } else {
-                                        alert(data.message);
-                                    }
-                                },
-                                error: function (err) {
-                                    alert("error");
-                                },
-                            });
+                        if (self.activeTab === 'pass') {
+                            url = "/passPaymentList.dox";
+                        } else if (self.activeTab === 'reservation') {
+                            url = "/reservationPaymentList.dox";
+                        } else if (self.activeTab === 'registration') {
+                            url = "/registrationPaymentList.dox";
                         }
 
-                    }, // methods
-                    mounted() {
-                        // 처음 시작할 때 실행되는 부분
+                        $.ajax({
+                            url: url,
+                            type: "POST",
+                            dataType: "json",
+                            data: {
+                                pageSize: self.pageSize,
+                                offSet: self.pageSize * (self.currentPage - 1)
+                            },
+                            success: function (res) {
+                                self.list = res.list;
+                                self.index = Math.ceil(res.totalCount / self.pageSize);
+                                self.emptyRows = 5 - res.list.length;
+                            }
+                        });
+                    },
+
+                    fnRefund(payNo) {
                         let self = this;
-                        const path = location.pathname;
-                        self.fnGetList();
 
+                        if (!confirm("정말 환불하시겠습니까?\n환불 후 복구할 수 없습니다.")) {
+                            return;
+                        }
+
+                        $.ajax({
+                            url: "/refundPass.dox",
+                            type: "POST",
+                            dataType: "json",
+                            data: { payNo: payNo },
+                            success: function (data) {
+                                console.log("성공", data);
+                                if (data.result == "success") {
+                                    alert(data.message);
+                                    self.fnGetList();
+                                } else {
+                                    alert(data.message);
+                                }
+                            },
+
+                            error: function (xhr, status, err) {
+                                console.log("에러");
+                                console.log(xhr.responseText);
+                                console.log(status);
+                                console.log(err);
+                                alert("error");
+                            },
+
+                            complete: function () {
+                                console.log("AJAX 종료");
+                            }
+                        });
+                    },
+                    fnRefund2(payNo) {
+                        let self = this;
+                        console.log("환불 클릭", payNo);
+
+                        if (!confirm("정말 환불하시겠습니까?\n환불 후 복구할 수 없습니다.")) {
+                            return;
+                        }
+
+                        $.ajax({
+                            url: "/refundAdminReservation.dox",
+                            type: "POST",
+                            dataType: "json",
+                            data: { payNo: payNo },
+                            success: function (data) {
+                                console.log("성공", data);
+                                if (data.result == "success") {
+                                    alert(data.message);
+                                    self.fnGetList();
+                                } else {
+                                    alert(data.message);
+                                }
+                            },
+
+                            error: function (xhr, status, err) {
+                                console.log("에러");
+                                console.log(xhr.responseText);
+                                console.log(status);
+                                console.log(err);
+                                alert("error");
+                            },
+
+                            complete: function () {
+                                console.log("AJAX 종료");
+                            }
+                        });
+                    },
+                    fnRegistration: function (c) {
+                        let self = this;
+                        if (!confirm("정말 등록하시겠습니까?")) {
+                            return;
+                        }
+
+                        $.ajax({
+                            url: "${pageContext.request.contextPath}/adminRegistration.dox",
+                            type: "POST",
+                            dataType: "json",
+                            data: {
+                                userId: c.userId
+                            },
+                            success: function (data) {
+                                console.log("성공", data);
+                                if (data.result == "success") {
+                                    alert(data.message);
+                                    self.fnGetList();
+                                } else {
+                                    alert(data.message);
+                                }
+                            },
+                            error: function (err) {
+                                alert("error");
+                            },
+                        });
                     }
-                });
 
-                app.mount('#app');
-            </script>
+                }, // methods
+                mounted() {
+                    // 처음 시작할 때 실행되는 부분
+                    let self = this;
+                    const path = location.pathname;
+                    self.fnGetList();
+
+                }
+            });
+
+            app.mount('#app');
+        </script>
     </body>
 
     </html>
