@@ -32,6 +32,7 @@ public interface MemberMapper {
 	public int updateMember(HashMap<String, Object> map);
 	// 유저 내 정보 수정(유저 디테일 테이블)
 	public int updateUserDetail(HashMap<String, Object> map);
+	Map<String, Object> selectUserDetail(Map<String, Object> map);
 	// 유저 탈퇴 (status 상태를 WITHDRAWN로 변경)
 	public int updateUserStatus(HashMap<String, Object> map);
 	// 탈퇴 날짜조회

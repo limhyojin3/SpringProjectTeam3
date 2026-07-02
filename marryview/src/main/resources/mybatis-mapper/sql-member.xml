@@ -135,6 +135,13 @@
         	ANNIVERSARY_DATE = #{anniversaryDate}
 	    WHERE USER_ID = #{userId}
 	</update>
+	
+	<!-- 유저 디테일 단건 조회 (기존 anniversaryDate 확인용) -->
+	<select id="selectUserDetail" parameterType="map" resultType="hashmap">
+	    SELECT ANNIVERSARY_DATE as anniversaryDate
+	    FROM USER_DETAIL
+	    WHERE USER_ID = #{userId}
+	</select>
 
 	<!--회원 탈퇴 (db 삭제하지 않고 status를 변경합니다.)-->
 	<update id="updateUserStatus" parameterType="map">
