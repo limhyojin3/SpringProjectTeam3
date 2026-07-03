@@ -198,7 +198,7 @@ MarryView는 스·드·메 시장의 고질적인 정보 비대칭 해결을 시
 
 ▶ [안혜진](https://drive.google.com/file/d/1kxYzbKtFlfdL6WbU__c3j-mil4AWzKQH/view?usp=sharing)
 
-▶ [이태화](https://drive.google.com/file/d/1pqQ_pyURBMwpx7uKTF0D3lAdYQb8Qd0c/view?usp=drive_link)
+▶ [이태화](https://drive.google.com/file/d/1BGvALR-ZngjIJ-xRXDlRs-O8hXfHIIua/view?usp=sharing)
 
 ▶ [최제현](https://drive.google.com/file/d/1cptjY-CzqURMIsnRAyQsBYt6H4_IdXcV/view?usp=sharing)
 
