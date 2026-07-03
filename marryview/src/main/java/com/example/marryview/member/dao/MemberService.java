@@ -360,6 +360,13 @@ public class MemberService {
 	        map.put("anniversaryDate", null);
 	    }
 		
+	    // ▼▼▼ 추가: 기존 anniversaryDate가 있으면 수정 못하게 막기
+	    Map<String, Object> existingInfo = memberMapper.selectUserDetail(map); // userId로 조회하는 메서드 필요
+	    if (existingInfo != null && existingInfo.get("anniversaryDate") != null) {
+	        map.put("anniversaryDate", existingInfo.get("anniversaryDate")); // 기존 값으로 덮어씀
+	    }
+	    // ▲▲▲ 여기까지 추가
+	    
 	    try {
 	        // 1. MEMBER 테이블 수정 (전화번호 등)
 	        int memberResult = memberMapper.updateMember(map);
@@ -377,13 +384,10 @@ public class MemberService {
 	             // 결혼 예정일 등록 쿠폰 지급 (이미 받은 경우 giveCoupon 내부에서 걸러짐)
 	                this.giveCoupon(userId, "WEDDING10");
 	                resultMap.put("couponMsg", "결혼 예정일 등록 축하 쿠폰이 발급되었습니다! 🎉");
-	             }else {
-		            resultMap.put("result", "fail");
-		        }
+	             }
 	        }
 	    } catch (Exception e) {
 	        // 에러 발생 시 로그 찍기
-	        System.out.println("수정 에러 발생: " + e.getMessage());
 	        resultMap.put("result", "error");
 	    }
 	    return resultMap;
@@ -572,8 +576,8 @@ public class MemberService {
 	public List<Member> getMyCompanyLikeList(String userId, int page) {
 		HashMap<String, Object> map = new HashMap<>();
 	    map.put("userId", userId);
-	    map.put("pageSize", 5);
-	    map.put("offset", (page - 1) * 5);
+	    map.put("pageSize", 6);
+	    map.put("offset", (page - 1) * 6);
 	    return memberMapper.selectMyCompanyLikeList(map);
 	}
 	// 페이지 사이징
