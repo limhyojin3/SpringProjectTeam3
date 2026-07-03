@@ -200,7 +200,7 @@ MarryView는 스·드·메 시장의 고질적인 정보 비대칭 해결을 시
 
 ▶ [이태화](https://drive.google.com/file/d/1BGvALR-ZngjIJ-xRXDlRs-O8hXfHIIua/view?usp=sharing)
 
-▶ [최제현](https://drive.google.com/file/d/1cptjY-CzqURMIsnRAyQsBYt6H4_IdXcV/view?usp=sharing)
+▶ [최제현](https://drive.google.com/file/d/1A8Yc5vAPMHX0CQKeiolNd4fHvOJ_MzoI/view?usp=sharing)
 
 ---
 
