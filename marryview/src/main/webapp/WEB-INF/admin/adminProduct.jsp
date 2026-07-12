@@ -81,7 +81,8 @@
                                 <div v-if="activeTab == 'product'">
                                     <div class="header">
                                         <div class="keyword-group">
-                                            <input type="text" v-model="keyword" placeholder="상품명 / 업체명 검색">
+                                            <input type="text" v-model="keyword" placeholder="상품명 / 업체명 검색"
+                                                @keyup.enter="fnSearch()">
                                             <button @click="fnSearch()">검색</button>
                                         </div>
                                         <div class="filter-group">
@@ -178,7 +179,8 @@
                                 <div v-if="activeTab == 'coupon'">
                                     <div class="header">
                                         <div class="keyword-group">
-                                            <input type="text" v-model="keyword" placeholder="코드 / 이름 검색">
+                                            <input type="text" v-model="keyword" placeholder="코드 / 이름 검색"
+                                                @keyup.enter="fnSearch()">
                                             <button @click="fnSearch()">검색</button>
                                         </div>
                                         <div class="filter-group">
@@ -205,6 +207,9 @@
                                         </tr>
                                     </thead>
                                     <tbody>
+                                        <tr v-if="list.length === 0" class="no-data-row">
+                                            <td colspan="7">조건에 맞는 쿠폰이 없습니다.</td>
+                                        </tr>
                                         <tr v-for="c in list" :key="c.couponCode">
                                             <td>{{ c.couponCode }}</td>
                                             <td>{{ c.couponType }}</td>
@@ -219,7 +224,7 @@
                                             </td>
                                         </tr>
                                         <tr v-for="n in emptyRows" class="empty-row">
-                                            <td colspan="6">&nbsp;</td>
+                                            <td colspan="7">&nbsp;</td>
                                         </tr>
                                     </tbody>
                                 </table>
@@ -244,7 +249,8 @@
                                 <div v-if="activeTab == 'pass'">
                                     <div class="header">
                                         <div class="keyword-group">
-                                            <input type="text" v-model="keyword" placeholder="패스명 검색">
+                                            <input type="text" v-model="keyword" placeholder="패스명 검색"
+                                                @keyup.enter="fnSearch()">
                                             <button @click="fnSearch()">검색</button>
                                         </div>
                                         <div class="filter-group">
@@ -271,6 +277,9 @@
                                         </tr>
                                     </thead>
                                     <tbody>
+                                        <tr v-if="list.length === 0" class="no-data-row">
+                                            <td colspan="6">조건에 맞는 패스가 없습니다.</td>
+                                        </tr>
                                         <tr v-for="p in list" :key="p.passNo">
                                             <td>{{ p.passNo }}</td>
                                             <td>{{ p.passName }}</td>
@@ -296,6 +305,9 @@
                                                 </button>
                                             </td>
                                         </tr>
+                                        <tr v-for="n in emptyRows" class="empty-row">
+                                            <td colspan="6">&nbsp;</td>
+                                        </tr>
                                     </tbody>
                                 </table>
                             </div>
@@ -319,6 +331,11 @@
                                 <input class="form-control mb-2" v-model="coupon.couponCode" placeholder="코드">
                                 이름
                                 <input class="form-control mb-2" v-model="coupon.couponName" placeholder="이름">
+                                종류
+                                <select class="form-control mb-2" v-model="coupon.couponType">
+                                    <option value="COUPON">COUPON</option>
+                                    <option value="GIFTCON">GIFTCON</option>
+                                </select>
                                 할인율(%)
                                 <input class="form-control mb-2" v-model="coupon.discountRate" placeholder="할인율">
                                 발급방식
@@ -421,9 +438,11 @@
                         coupon: {
                             couponCode: "",
                             couponName: "",
+                            couponType: "COUPON",
                             discountRate: "",
                             issueType: "AUTO",
-                            maxIssueCnt: ""
+                            maxIssueCnt: "",
+                            giftconImage: ""
                         },
                         passForm: {
                             passName: "",
@@ -531,7 +550,7 @@
                             success: function (res) {
                                 self.list = res.list || [];
                                 self.index = Math.ceil((res.totalCount || 0) / self.pageSize);
-                                self.emptyRows = 5 - res.list.length;
+                                self.emptyRows = self.pageSize - self.list.length;
                             },
                         });
                     },
@@ -613,9 +632,11 @@
                         this.coupon = {
                             couponCode: "",
                             couponName: "",
+                            couponType: "COUPON",
                             discountRate: 10,
                             issueType: "AUTO",
-                            maxIssueCnt: 1
+                            maxIssueCnt: 1,
+                            giftconImage: ""
                         };
 
                         $("#couponModal").modal("show");
