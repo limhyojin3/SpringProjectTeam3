@@ -276,7 +276,7 @@ public class AdminService {
 
 	        detail.put(
 	            "policyNotice",
-	            "확인할 수 없음과 허위를 구분합니다. 자동 결과만으로 승인 또는 반려하지 않습니다."
+	            "확인할 수 없음과 허위를 구분합니다. 표시된 참고사항만으로 승인 또는 반려하지 않습니다."
 	        );
 
 	        resultMap.put("detail", detail);
