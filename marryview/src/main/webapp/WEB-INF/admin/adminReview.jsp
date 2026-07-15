@@ -288,7 +288,7 @@
                                         <button @click="fnSelectReview(r.reviewNo)">보기</button>
 
                                         <button class="btn-receipt-review" @click="fnOpenReceiptReview(r)">
-                                            영수증 검토
+                                            영수증 확인
                                         </button>
 
                                         <button class="btn-done" @click="fnApprove(r)">승인</button>
@@ -338,7 +338,7 @@
                                 </h5>
 
                                 <p class="small text-muted mb-0">
-                                    자동 승인/반려가 아니라, 영수증과 리뷰 정보 사이의 확인 포인트를 관리자에게 보여줍니다.
+                                    영수증 원본과 OCR 추출 정보를 함께 확인합니다.
                                 </p>
                             </div>
 
@@ -426,38 +426,122 @@
                                         <p class="small text-muted mt-2 mb-0">
                                             이미지를 누르면 원본 크기로 확인할 수 있습니다.
                                         </p>
+                                        <div class="review-policy-card mt-3">
+                                            <h6 class="font-weight-bold">OCR 읽은 내용</h6>
+
+                                            <div v-if="getOcrAmountCandidates().length" class="mb-2">
+                                                <details>
+                                                    <summary class="small text-muted" style="cursor: pointer;">
+                                                        금액 후보 보기
+                                                    </summary>
+
+                                                    <ul class="small mt-2 mb-0 pl-3">
+                                                        <li v-for="candidate in getOcrAmountCandidates()"
+                                                            :key="candidate.label + '-' + candidate.amount">
+                                                            {{ candidate.label }}:
+                                                            {{ formatAmount(candidate.amount) }}
+                                                        </li>
+                                                    </ul>
+                                                </details>
+                                            </div>
+
+                                            <div v-if="receiptReview.detail.ocr && receiptReview.detail.ocr.rawText">
+                                                <details>
+                                                    <summary class="small text-muted" style="cursor: pointer;">
+                                                        원문 보기
+                                                    </summary>
+
+                                                    <pre class="small mt-2 p-2 mb-0"
+                                                        style="white-space: pre-wrap; max-height: 220px; overflow:auto; background:#f8f9fa; border:1px solid #e5e5e5; border-radius:6px;">{{ receiptReview.detail.ocr.rawText }}</pre>
+                                                </details>
+                                            </div>
+
+                                            <p v-if="!getOcrAmountCandidates().length && (!receiptReview.detail.ocr || !receiptReview.detail.ocr.rawText)"
+                                                class="small text-muted mb-0">
+                                                OCR로 읽은 내용이 없습니다.
+                                            </p>
+                                        </div>
                                     </div>
 
                                     <div class="col-lg-5">
                                         <div class="review-policy-card mb-3">
-                                            <h6 class="font-weight-bold">DB 값 / OCR 추출값 비교</h6>
+                                            <h6 class="font-weight-bold">OCR 추출 정보</h6>
 
                                             <dl class="receipt-data-grid mb-0">
-                                                <dt>DB 금액</dt>
-                                                <dd>{{ formatAmount(receiptReview.detail.totalCost) }}</dd>
-
-                                                <dt>OCR 금액</dt>
-                                                <dd>{{ formatAmount(getOcrAmount()) }}</dd>
-
-                                                <dt>예약 이용일</dt>
-                                                <dd>{{ receiptReview.detail.reservationUseDate || '정보 없음' }}</dd>
-
-                                                <dt>OCR 날짜</dt>
+                                                <dt>추출 결제 일자</dt>
                                                 <dd>{{ getOcrDate() }}</dd>
+
+                                                <dt>대표 금액</dt>
+                                                <dd>
+                                                    {{ formatAmount(getOcrAmount()) }}
+                                                    <span v-if="getOcrAmountLabel()" class="small text-muted">
+                                                        ({{ getOcrAmountLabel() }})
+                                                    </span>
+                                                </dd>
                                             </dl>
 
                                             <p class="small text-muted mt-2 mb-0">
-                                                OCR 결과는 관리자 검토 보조용입니다. 이 값만으로 자동 승인 또는 반려하지 않습니다.
+                                                OCR은 영수증에서 날짜와 금액 후보를 추출해 관리자 검토를 보조합니다.
                                             </p>
 
-                                            <p v-if="receiptReview.detail.ocr && receiptReview.detail.ocr.message"
-                                                class="small text-muted mt-1 mb-0">
-                                                {{ receiptReview.detail.ocr.message }}
+                                            <div v-if="receiptReview.detail.ocr && receiptReview.detail.ocr.message"
+                                                class="mt-2">
+                                                <span class="badge"
+                                                    :class="receiptReview.detail.ocr.available ? 'badge-success' : 'badge-warning'">
+                                                    {{ receiptReview.detail.ocr.message }}
+                                                </span>
+                                            </div>
+                                        </div>
+
+                                        <div class="review-policy-card mb-3">
+                                            <h6 class="font-weight-bold">리뷰 등록 정보</h6>
+
+                                            <dl class="receipt-data-grid mb-0">
+                                                <dt>작성자 입력 금액</dt>
+                                                <dd>{{ formatAmount(receiptReview.detail.totalCost) }}</dd>
+
+                                                <dt>업체</dt>
+                                                <dd>{{ displayCompanyName(receiptReview.detail) }}</dd>
+
+                                                <dt>상품</dt>
+                                                <dd>{{ receiptReview.detail.productName || '등록 정보 없음' }}</dd>
+
+                                                <dt>예약 경로</dt>
+                                                <dd>{{ receiptReview.detail.bookingSource || '입력 정보 없음' }}</dd>
+                                            </dl>
+
+                                            <p class="small text-muted mt-2 mb-0">
+                                                리뷰 등록 정보는 사용자가 리뷰 작성 시 입력했거나 선택한 값입니다.
+                                            </p>
+                                        </div>
+
+                                        <div class="review-policy-card mb-3">
+                                            <h6 class="font-weight-bold">예약 연동 정보</h6>
+
+                                            <dl class="receipt-data-grid mb-0">
+                                                <dt>연동 여부</dt>
+                                                <dd>
+                                                    {{ receiptReview.detail.reservationLinked ? '메리뷰 예약 연동' : '예약 연동 없음'
+                                                    }}
+                                                </dd>
+
+                                                <template v-if="receiptReview.detail.reservationLinked">
+                                                    <dt>예약 이용일</dt>
+                                                    <dd>{{ receiptReview.detail.reservationUseDate || '정보 없음' }}</dd>
+
+                                                    <dt>연동 결제금액</dt>
+                                                    <dd>{{ formatAmount(receiptReview.detail.linkedPaymentAmount) }}
+                                                    </dd>
+                                                </template>
+                                            </dl>
+
+                                            <p class="small text-muted mt-2 mb-0">
+                                                메리뷰 예약으로 결제된 리뷰에서만 예약 이용일과 결제금액이 표시됩니다.
                                             </p>
                                         </div>
 
                                         <div class="mb-3">
-                                            <h6 class="font-weight-bold">자동 확인 결과</h6>
+                                            <h6 class="font-weight-bold">검토 참고사항</h6>
 
                                             <div
                                                 v-if="receiptReview.detail.warnings && receiptReview.detail.warnings.length">
@@ -473,7 +557,7 @@
                                             </div>
 
                                             <div v-else class="receipt-warning">
-                                                자동 확인 항목이 없습니다. 증빙 원본은 관리자가 직접 확인해주세요.
+                                                별도 참고사항이 없습니다. 증빙 원본은 관리자가 직접 확인해주세요.
                                             </div>
                                         </div>
 
@@ -628,6 +712,66 @@
                         }
 
                         return ocr.extractedAmount;
+                    },
+
+                    getOcrAmountLabel() {
+                        const ocr = this.receiptReview.detail && this.receiptReview.detail.ocr;
+
+                        if (!ocr || !ocr.amountLabel) {
+                            return "";
+                        }
+
+                        return ocr.amountLabel;
+                    },
+
+                    getOcrProductTotalAmount() {
+                        const ocr = this.receiptReview.detail && this.receiptReview.detail.ocr;
+
+                        if (!ocr || ocr.productTotalAmount === null || ocr.productTotalAmount === undefined || ocr.productTotalAmount === "") {
+                            return null;
+                        }
+
+                        return ocr.productTotalAmount;
+                    },
+
+                    getOcrProductTotalLabel() {
+                        const ocr = this.receiptReview.detail && this.receiptReview.detail.ocr;
+
+                        if (!ocr || !ocr.productTotalLabel) {
+                            return "";
+                        }
+
+                        return ocr.productTotalLabel;
+                    },
+
+                    getOcrPaymentAmount() {
+                        const ocr = this.receiptReview.detail && this.receiptReview.detail.ocr;
+
+                        if (!ocr || ocr.paymentAmount === null || ocr.paymentAmount === undefined || ocr.paymentAmount === "") {
+                            return null;
+                        }
+
+                        return ocr.paymentAmount;
+                    },
+
+                    getOcrPaymentLabel() {
+                        const ocr = this.receiptReview.detail && this.receiptReview.detail.ocr;
+
+                        if (!ocr || !ocr.paymentLabel) {
+                            return "";
+                        }
+
+                        return ocr.paymentLabel;
+                    },
+
+                    getOcrAmountCandidates() {
+                        const ocr = this.receiptReview.detail && this.receiptReview.detail.ocr;
+
+                        if (!ocr || !Array.isArray(ocr.amountCandidates)) {
+                            return [];
+                        }
+
+                        return ocr.amountCandidates;
                     },
 
                     getOcrDate() {

@@ -215,6 +215,7 @@
 	
 	        c.com_name AS companyName,
 	        p.product_name AS productName,
+	        p.deposit AS deposit,
 	
 	        CASE
 	            WHEN r.res_no IS NOT NULL
@@ -1398,6 +1399,7 @@
 	    (
 	        coupon_code,
 	        coupon_name,
+	        coupon_type,
 	        discount_rate,
 	        issue_type,
 	        max_issue_cnt,
@@ -1407,6 +1409,7 @@
 	    (
 	        #{couponCode},
 	        #{couponName},
+	        #{couponType},
 	        #{discountRate},
 	        #{issueType},
 	        #{maxIssueCnt},
