@@ -187,6 +187,7 @@
             .dashboard-table {
                 width: 100%;
                 border-collapse: collapse;
+                table-layout: fixed;
             }
 
             .dashboard-table thead {
@@ -199,6 +200,7 @@
                 color: #495057;
                 font-weight: 700;
                 border-bottom: 1px solid #e9ecef;
+                text-align: left;
             }
 
             .dashboard-table td {
@@ -206,9 +208,9 @@
                 font-size: 14px;
                 color: #343a40;
                 border-bottom: 1px solid #f1f3f5;
-                text-align: center;
+                text-align: left;
             }
-
+            
             /* hover */
             .dashboard-table tbody tr {
                 transition: 0.15s;
@@ -365,7 +367,7 @@
 
                                 <tbody>
                                     <tr v-for="item in reviewList.slice(0,5)">
-                                        <td class="text" :title="item.title">{{item.title}}</td></a>
+                                        <td class="text" :title="item.title">{{item.title}}</td>
                                         <td class="admin-id-cell">
                                             <span class="admin-id-text" :title="item.userId">
                                                 {{ item.userId }}
