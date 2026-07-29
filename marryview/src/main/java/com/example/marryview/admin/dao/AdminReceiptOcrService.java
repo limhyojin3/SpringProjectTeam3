@@ -16,6 +16,8 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 public class AdminReceiptOcrService {
@@ -51,8 +53,34 @@ public class AdminReceiptOcrService {
 
             result.put("available", true);
             result.put("rawText", rawText);
+            List<HashMap<String, Object>> amountCandidates = extractAmountCandidates(rawText);
+            HashMap<String, Object> productTotal = findAmountCandidate(amountCandidates, "상품 총액", "상품총액", "총액");
+            HashMap<String, Object> paymentTotal = findAmountCandidate(amountCandidates, "합계", "결제금액", "승인금액", "받을금액", "예약금");
+
             result.put("extractedDate", extractDate(rawText));
-            result.put("extractedAmount", extractAmount(rawText));
+            result.put("amountCandidates", amountCandidates);
+
+            if (productTotal != null) {
+                result.put("productTotalAmount", productTotal.get("amount"));
+                result.put("productTotalLabel", productTotal.get("label"));
+            }
+
+            if (paymentTotal != null) {
+                result.put("paymentAmount", paymentTotal.get("amount"));
+                result.put("paymentLabel", paymentTotal.get("label"));
+            }
+
+            if (productTotal != null) {
+                result.put("extractedAmount", productTotal.get("amount"));
+                result.put("amountLabel", productTotal.get("label"));
+            } else if (paymentTotal != null) {
+                result.put("extractedAmount", paymentTotal.get("amount"));
+                result.put("amountLabel", paymentTotal.get("label"));
+            } else if (!amountCandidates.isEmpty()) {
+                result.put("extractedAmount", amountCandidates.get(0).get("amount"));
+                result.put("amountLabel", amountCandidates.get(0).get("label"));
+            }
+
             result.put("message", "OCR 추출 완료");
 
         } catch (Exception e) {
@@ -113,7 +141,7 @@ public class AdminReceiptOcrService {
         }
 
         Pattern pattern = Pattern.compile(
-                "(20\\d{2})[.\\-/년\\s]*(0?[1-9]|1[0-2])[.\\-/월\\s]*(0?[1-9]|[12]\\d|3[01])"
+                "(20\\d{2})[.\\-/년\\s]*(0?[1-9]|1[0-2])[.\\-/월\\s]*(3[01]|[12]\\d|0?[1-9])"
         );
 
         Matcher matcher = pattern.matcher(text);
@@ -267,5 +295,74 @@ public class AdminReceiptOcrService {
         } catch (Exception e) {
             return null;
         }
+    }
+    
+    private List<HashMap<String, Object>> extractAmountCandidates(String text) {
+        List<HashMap<String, Object>> candidates = new ArrayList<>();
+
+        if (text == null || text.isBlank()) {
+            return candidates;
+        }
+
+        String[] lines = text.split("\\r?\\n");
+        Pattern amountPattern = Pattern.compile("([0-9]{1,3}(?:,[0-9]{3})+|[0-9]{4,7})\\s*(원|₩)?");
+
+        for (String line : lines) {
+            if (line == null || line.isBlank()) {
+                continue;
+            }
+
+            if (isExcludedAmountLine(line)) {
+                continue;
+            }
+
+            Matcher matcher = amountPattern.matcher(line);
+
+            while (matcher.find()) {
+                Integer amount = parseAmount(matcher.group(1));
+
+                if (!isValidAmountCandidate(amount)) {
+                    continue;
+                }
+
+                String label = line.substring(0, matcher.start()).trim();
+                label = label.replaceAll("\\s+", " ");
+
+                if (label.isBlank()) {
+                    label = "금액 후보";
+                }
+
+                HashMap<String, Object> candidate = new HashMap<>();
+                candidate.put("label", label);
+                candidate.put("amount", amount);
+                candidate.put("line", line.trim());
+
+                candidates.add(candidate);
+            }
+        }
+
+        return candidates;
+    }
+    
+    private HashMap<String, Object> findAmountCandidate(
+            List<HashMap<String, Object>> candidates,
+            String... keywords) {
+
+        if (candidates == null || candidates.isEmpty()) {
+            return null;
+        }
+
+        for (String keyword : keywords) {
+            for (HashMap<String, Object> candidate : candidates) {
+                String label = String.valueOf(candidate.getOrDefault("label", ""));
+                String line = String.valueOf(candidate.getOrDefault("line", ""));
+
+                if (label.contains(keyword) || line.contains(keyword)) {
+                    return candidate;
+                }
+            }
+        }
+
+        return null;
     }
 }
