@@ -26,12 +26,20 @@ public class WebConfig implements WebMvcConfigurer {
         registry.addInterceptor(new LoginCheckInterceptor())
                 .order(1)
                 .addPathPatterns(
-                        "/userMyPage*.do",
+                		"/userMyPage*.do",
                         "/company10.do",
                         "/admin*.do",
                         "/add.do",
                         "/api/review/**",
-                        "/api/community/**"
+                        "/api/community/**",
+                        "/api/notification/**",
+                        "/viewReview.dox",
+                        "/viewReport.dox",
+                        "/sales.dox",
+                        "/clients.dox",
+                        "/allClients.dox",
+                        "/allPartners.dox",
+                        "/inquiry.dox"
                 ) 
                 .excludePathPatterns(
                         "/merryViewHome.do",
