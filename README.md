@@ -187,7 +187,7 @@ MarryView는 스·드·메 시장의 고질적인 정보 비대칭 해결을 시
 ---
 
 ## <a name="ppt"></a>📝 발표 PPT(PDF)
-[MarryView 발표 PPT(PDF)](https://drive.google.com/file/d/1SRi0H5XJaY-FDAixQt0T7ZVjnqrOn5H0/view?usp=drive_link)
+[MarryView 발표 PPT(PDF)](https://drive.google.com/file/d/198LWFyVSX4lbMMuY6yog0ihar47wJwjP/view?usp=drive_link)
 
 ## <a name="video"></a>🎥 시연 영상
 ▶ [메리뷰 핵심 기능 시연 영상](https://drive.google.com/file/d/1op6AI0f61pmAyQ2Gk2aSXxMW1y2C48cg/view?usp=sharing)
