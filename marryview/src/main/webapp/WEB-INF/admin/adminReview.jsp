@@ -334,7 +334,7 @@
                         <div class="modal-header">
                             <div>
                                 <h5 class="modal-title mb-1">
-                                    영수증 검토 보조
+                                    영수증 확인
                                 </h5>
 
                                 <p class="small text-muted mb-0">
@@ -361,7 +361,7 @@
                             </div>
 
                             <div v-else-if="receiptReview.detail">
-                                <div class="review-scope-card mb-3">
+                                <!-- <div class="review-scope-card mb-3">
                                     <div class="d-flex align-items-start justify-content-between flex-wrap">
                                         <div>
                                             <span class="review-scope-badge">
@@ -405,7 +405,7 @@
                                             <dd>{{ formatAmount(receiptReview.detail.linkedPaymentAmount) }}</dd>
                                         </template>
                                     </dl>
-                                </div>
+                                </div> -->
 
                                 <div class="row">
                                     <div class="col-lg-7 mb-3 mb-lg-0">
